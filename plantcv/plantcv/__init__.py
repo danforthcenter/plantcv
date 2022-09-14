@@ -3,12 +3,17 @@ from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.classes import Params
 from plantcv.plantcv.classes import Outputs
 from plantcv.plantcv.classes import Spectral_data
+from plantcv.plantcv.classes import PSII_data
+from plantcv.plantcv.classes import Points
+from plantcv.plantcv.classes import Objects
+
 # Initialize an instance of the Params and Outputs class with default values
 # params and outputs are available when plantcv is imported
 params = Params()
 outputs = Outputs()
 
 from plantcv.plantcv.deprecation_warning import deprecation_warning
+from plantcv.plantcv.warn import warn
 from plantcv.plantcv.print_image import print_image
 from plantcv.plantcv.plot_image import plot_image
 from plantcv.plantcv.color_palette import color_palette
@@ -68,7 +73,7 @@ from plantcv.plantcv.output_mask_ori_img import output_mask
 from plantcv.plantcv.auto_crop import auto_crop
 from plantcv.plantcv.background_subtraction import background_subtraction
 from plantcv.plantcv.naive_bayes_classifier import naive_bayes_classifier
-from plantcv.plantcv.acute import acute
+from plantcv.plantcv import homology
 from plantcv.plantcv.distance_transform import distance_transform
 from plantcv.plantcv.canny_edge_detect import canny_edge_detect
 from plantcv.plantcv.opening import opening
@@ -85,22 +90,26 @@ from plantcv.plantcv.crop import crop
 from plantcv.plantcv.stdev_filter import stdev_filter
 from plantcv.plantcv.spatial_clustering import spatial_clustering
 from plantcv.plantcv import photosynthesis
+from plantcv.plantcv import annotate
+from plantcv.plantcv import io
+from plantcv.plantcv.segment_image_series import segment_image_series
 # add new functions to end of lists
 
 # Auto versioning
 from . import _version
 __version__ = _version.get_versions()['version']
 
-__all__ = ["fatal_error", "Params", "Outputs", "Spectral_data", "deprecation_warning", "print_image", "plot_image",
-           "color_palette", "rgb2gray", "rgb2gray_hsv", "rgb2gray_lab", "rgb2gray_cmyk", "gaussian_blur", "transform",
-           "hyperspectral", "spectral_index", "apply_mask", "readimage", "readbayer", "laplace_filter", "sobel_filter",
-           "scharr_filter", "hist_equalization", "image_add", "image_fusion", "image_subtract", "erode", "dilate",
-           "watershed_segmentation", "rectangle_mask", "median_blur", "fill", "invert", "logical_and", "logical_or",
+__all__ = ["fatal_error", "Params", "Outputs", "Spectral_data", 'PSII_data', 'Points', "Objects", "deprecation_warning", "print_image",
+           "plot_image", "color_palette", "rgb2gray", "rgb2gray_hsv", "rgb2gray_lab", "rgb2gray_cmyk", "gaussian_blur",
+           "transform", "hyperspectral", "spectral_index", "apply_mask", "readimage", "readbayer", "laplace_filter",
+           "sobel_filter", "scharr_filter", "hist_equalization", "image_add", "image_fusion", "image_subtract", "erode",
+           "dilate", "watershed_segmentation", "rectangle_mask", "median_blur", "fill", "invert", "logical_and", "logical_or",
            "logical_xor", "find_objects", "roi_objects", "object_composition", "within_frame", "analyze_object",
            "analyze_bound_horizontal", "analyze_bound_vertical", "analyze_color", "analyze_nir_intensity", "print_results",
            "flip", "crop_position_mask", "get_nir", "report_size_marker_area", "white_balance", "acute_vertex",
            "scale_features", "landmark_reference_pt_dist", "x_axis_pseudolandmarks", "y_axis_pseudolandmarks",
            "cluster_contours", "cluster_contour_splitimg", "rotate", "shift_img", "output_mask", "auto_crop",
-           "background_subtraction", "naive_bayes_classifier", "acute", "distance_transform", "canny_edge_detect", "opening",
+           "background_subtraction", "naive_bayes_classifier", "distance_transform", "canny_edge_detect", "opening",
            "closing", "roi", "threshold", "cluster_contour_mask", "analyze_thermal_values", "visualize", "morphology",
-           "fill_holes", "get_kernel", "crop", "stdev_filter", "spatial_clustering", "photosynthesis"]
+           "fill_holes", "get_kernel", "crop", "stdev_filter", "spatial_clustering", "photosynthesis", "homology", "annotate",
+           "io", "segment_image_series"]

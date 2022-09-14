@@ -7,9 +7,8 @@ def test_json2csv(utils_test_data, tmpdir):
     """Test for PlantCV."""
     # Create tmp directory
     tmp_dir = tmpdir.mkdir("cache")
-    json2csv(json_file=utils_test_data.plantcv_results_file, csv_file=os.path.join(str(tmp_dir), "exports"))
-    assert all([os.path.exists(os.path.join(str(tmp_dir), "exports-single-value-traits.csv")),
-                os.path.exists(os.path.join(str(tmp_dir), "exports-multi-value-traits.csv"))])
+    json2csv(json_file=utils_test_data.plantcv_results_file, csv_file=os.path.join(str(tmp_dir), "exports.csv"))
+    assert os.path.exists(os.path.join(str(tmp_dir), "exports.csv"))
 
 
 def test_json2csv_no_json(utils_test_data, tmpdir):

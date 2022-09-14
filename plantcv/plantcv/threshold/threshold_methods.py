@@ -5,6 +5,9 @@ import cv2
 import math
 import numpy as np
 from matplotlib import pyplot as plt
+from plantcv.plantcv import rgb2gray
+from plantcv.plantcv import rgb2gray_hsv
+from plantcv.plantcv import rgb2gray_lab
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
@@ -721,5 +724,112 @@ def mask_bad(float_img, bad_type='native'):
         print('{} does not appear in the current image.'.format(bad_type.lower()))
 
     _debug(visual=mask, filename=os.path.join(params.debug_outdir, str(params.device) + "_bad_mask.png"))
+
+    return mask
+
+
+# functions to get a given channel with parameters compatible
+# with rgb2gray_lab and rgb2gray_hsv to use in the dict
+def _get_R(rgb_img, _):
+    """ Get the red channel from a RGB image """
+    return rgb_img[:, :, 2]
+
+
+def _get_G(rgb_img, _):
+    """ Get the green channel from a RGB image """
+    return rgb_img[:, :, 1]
+
+
+def _get_B(rgb_img, _):
+    """ Get the blue channel from a RGB image """
+    return rgb_img[:, :, 0]
+
+
+def _get_gray(rgb_img, _):
+    """ Get the gray scale transformation of a RGB image """
+    return rgb2gray(rgb_img=rgb_img)
+
+
+def _get_index(rgb_img, _):
+    """ Get a vector with linear indices of the pixels in an image """
+    h, w, _ = rgb_img.shape
+    return np.arange(h*w).reshape(h, w)
+
+
+def _not_valid(*args):
+    """ Error for a non valid channel """
+    return fatal_error("channel not valid, use R, G, B, l, a, b, h, s, v, gray, or index")
+
+
+def dual_channels(rgb_img, x_channel, y_channel, points, above=True, max_value=255):
+    """Create a binary image from an RGB image based on the pixels values in two channels.
+    The x and y channels define a 2D plane and the two input points define a straight line.
+    Pixels in the plane above and below the straight line are assigned two different values.
+    Inputs:
+    rgb_img   = RGB image
+    ch_x      = Channel to use for the horizontal coordinate.
+                Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'gray', and 'index'
+    ch_y      = Channel to use for the vertical coordinate.
+                Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'gray', and 'index'
+    points    = List containing two points as tuples defining the segmenting straight line
+    above     = Whether the pixels above the line are given the value of 0 or max_value
+    max_value = Value to apply above threshold (usually 255 = white)
+
+    Returns:
+    bin_img      = Thresholded, binary image
+    :param rgb_img: numpy.ndarray
+    :param x_channel: str
+    :param y_channel: str
+    :param points: list of two tuples
+    :param above: bool
+    :param max_value: int
+    :return bin_img: numpy.ndarray
+    """
+
+    # dictionary returns the function that gets the required image channel
+    channel_dict = {
+        'R': _get_R,
+        'G': _get_G,
+        'B': _get_B,
+        'l': rgb2gray_lab,
+        'a': rgb2gray_lab,
+        'b': rgb2gray_lab,
+        'gray': _get_gray,
+        'h': rgb2gray_hsv,
+        's': rgb2gray_hsv,
+        'v': rgb2gray_hsv,
+        'index': _get_index,
+    }
+
+    debug = params.debug
+    params.debug = None
+    # get channels
+    img_x_ch = channel_dict.get(x_channel, _not_valid)(rgb_img, x_channel)
+    img_y_ch = channel_dict.get(y_channel, _not_valid)(rgb_img, y_channel)
+    params.debug = debug
+
+    if len(points) < 2:
+        fatal_error('Two points are required')
+
+    if len(points) > 2:
+        # Print warning statement
+        print("Warning: only the first two points are used in this function")
+
+    mask = np.ones(rgb_img.shape, dtype=np.uint8)
+    x0, y0 = points[0]
+    x1, y1 = points[1]
+
+    m = (y1-y0) / (x1-x0+1e-10)  # avoid division by 0
+    b = y0 - m*x0
+
+    y_line = m*img_x_ch + b
+
+    if above:
+        mask = max_value*(img_y_ch > y_line)
+    else:
+        mask = max_value*(img_y_ch < y_line)
+
+    _debug(visual=mask, filename=os.path.join(params.debug_outdir,
+                                              str(params.device) + '_' + x_channel + y_channel + '_2D_threshold_mask.png'))
 
     return mask

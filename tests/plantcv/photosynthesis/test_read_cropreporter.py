@@ -1,15 +1,25 @@
-import pytest
-from plantcv.plantcv import params
+import os
+import shutil
+from plantcv.plantcv import PSII_data
 from plantcv.plantcv.photosynthesis import read_cropreporter
 
 
-@pytest.mark.parametrize("debug", ["print", "plot", None])
-def test_read_cropreporter(debug, photosynthesis_test_data, tmpdir):
+def test_read_cropreporter(photosynthesis_test_data):
+    """Test for PlantCV."""
+    ps = read_cropreporter(filename=photosynthesis_test_data.cropreporter)
+    assert isinstance(ps, PSII_data) and ps.darkadapted.shape == (966, 1296, 21, 1)
+
+
+def test_read_cropreporter_spc_only(photosynthesis_test_data, tmpdir):
     """Test for PlantCV."""
     # Create a test tmp directory
-    cache_dir = tmpdir.mkdir("cache")
-    params.debug_outdir = cache_dir
-    params.debug = debug
-    fdark, fmin, fmax = read_cropreporter(filename=photosynthesis_test_data.cropreporter)
-    print(fdark.shape, fmin.shape, fmax.shape)
-    assert all([fdark.shape == (966, 1296), fmin.shape == (966, 1296), fmax.shape == (966, 1296)])
+    cache_dir = tmpdir.mkdir("sub")
+    # Create dataset with only SPC
+    shutil.copyfile(photosynthesis_test_data.cropreporter, os.path.join(cache_dir, "PSII_HDR_test.INF"))
+    spc_dat = photosynthesis_test_data.cropreporter.replace("HDR", "SPC")
+    spc_dat = spc_dat.replace("INF", "DAT")
+    shutil.copyfile(spc_dat, os.path.join(cache_dir, "PSII_SPC_test.DAT"))
+    fluor_filename = os.path.join(cache_dir, "PSII_HDR_test.INF")
+    ps = read_cropreporter(filename=fluor_filename)
+    print(os.listdir(cache_dir))
+    assert isinstance(ps, PSII_data) and ps.spectral.array_data.shape == (966, 1296, 3)

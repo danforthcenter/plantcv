@@ -5,12 +5,12 @@ import numpy as np
 import os
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import rgb2gray_hsv
-from plantcv.plantcv import find_objects
 from plantcv.plantcv.threshold import binary as binary_threshold
 from plantcv.plantcv import roi_objects
 from plantcv.plantcv import object_composition
 from plantcv.plantcv import apply_mask
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _cv2_findcontours
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
@@ -73,7 +73,7 @@ def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_c
             # Threshold the HSV image
             marker_bin = binary_threshold(gray_img=marker_hsv, threshold=thresh, max_value=255, object_type=objcolor)
             # Identify contours in the masked image
-            contours, hierarchy = find_objects(img=ref_img, mask=marker_bin)
+            contours, hierarchy = _cv2_findcontours(bin_img=marker_bin)
             # Filter marker contours using the input ROI
             kept_contours, kept_hierarchy, kept_mask, obj_area = roi_objects(img=ref_img, object_contour=contours,
                                                                              obj_hierarchy=hierarchy,
@@ -90,7 +90,7 @@ def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_c
             fatal_error('thresh_channel and thresh must be defined in detect mode')
     elif marker.upper() == "DEFINE":
         # Identify contours in the masked image
-        contours, hierarchy = find_objects(img=ref_img, mask=roi_mask)
+        contours, hierarchy = _cv2_findcontours(bin_img=roi_mask)
         # If there are more than one contour detected, combine them into one
         # These become the marker contour and mask
         marker_contour, marker_mask = object_composition(img=ref_img, contours=contours, hierarchy=hierarchy)
