@@ -30,9 +30,9 @@ def find_objects(img, mask):
         ori_img = cv2.cvtColor(ori_img, cv2.COLOR_GRAY2BGR)
     cnts, hierarchy = _cv2_findcontours(bin_img=mask)
     # Cast tuple objects as a list
-    objects = list(cnts)
-    for i, cnt in enumerate(objects):
-        cv2.drawContours(ori_img, objects, i, (255, 102, 255), -1, lineType=8, hierarchy=hierarchy)
+    cnts = list(cnts)
+    for i, cnt in enumerate(cnts):
+        cv2.drawContours(ori_img, cnts, i, (255, 102, 255), -1, lineType=8, hierarchy=hierarchy)
 
     objects = Objects(contours=[cnts], hierarchy=hierarchy)  # contours already in list format
 
