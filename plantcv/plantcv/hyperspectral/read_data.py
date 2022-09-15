@@ -118,6 +118,20 @@ def _find_hdr(filename):
     return None
 
 
+def _parse_hdr(headername):
+    """Parse a header file and create dictionary of relevant metadata
+
+        Keyword arguments:
+        headername = File path/name of a hyperspectral data file.
+
+        Returns:
+        hdr_dict = File path/name of hyperspectral header file.
+
+        :param headername: str
+        :return hdr_dict: dict
+        """
+
+
 def read_data(filename):
     """Read hyperspectral image data from file.
     Inputs:
