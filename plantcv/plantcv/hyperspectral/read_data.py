@@ -130,28 +130,6 @@ def _parse_hdr(headername):
         :param headername: str
         :return hdr_dict: dict
         """
-
-
-def read_data(filename):
-    """Read hyperspectral image data from file.
-    Inputs:
-    filename          = Name of image file
-
-    Returns:
-    spectral_array    = Hyperspectral data instance
-
-    :param filename: str
-    :return spectral_array: __main__.Spectral_data
-    """
-    # Initialize dictionary
-    header_dict = {}
-
-    # Remove any file extension and set .hdr filename
-    headername = _find_hdr(filename=filename)
-
-    if headername is None:
-        fatal_error(f"Unable to find the header file corresponding to {filename}")
-
     with open(headername, "r") as f:
         # Replace characters for easier parsing
         hdata = f.read()
@@ -189,10 +167,36 @@ def read_data(filename):
     for j, wavelength in enumerate(header_dict["wavelength"]):
         wavelength_dict.update({float(wavelength): float(j)})
 
-    # Replace datatype ID number with the numpy datatype
-    dtype_dict = {"1": np.uint8, "2": np.int16, "3": np.int32, "4": np.float32, "5": np.float64, "6": np.complex64,
-                  "9": np.complex128, "12": np.uint16, "13": np.uint32, "14": np.int64, "15": np.uint64}
-    header_dict["datatype"] = dtype_dict[header_dict["datatype"]]
+        # Replace datatype ID number with the numpy datatype
+        dtype_dict = {"1": np.uint8, "2": np.int16, "3": np.int32, "4": np.float32, "5": np.float64, "6": np.complex64,
+                      "9": np.complex128, "12": np.uint16, "13": np.uint32, "14": np.int64, "15": np.uint64}
+        header_dict["datatype"] = dtype_dict[header_dict["datatype"]]
+
+    return header_dict
+
+
+
+def read_data(filename):
+    """Read hyperspectral image data from file.
+    Inputs:
+    filename          = Name of image file
+
+    Returns:
+    spectral_array    = Hyperspectral data instance
+
+    :param filename: str
+    :return spectral_array: __main__.Spectral_data
+    """
+    # Initialize dictionary
+    header_dict = {}
+
+    # Remove any file extension and set .hdr filename
+    headername = _find_hdr(filename=filename)
+
+    if headername is None:
+        fatal_error(f"Unable to find the header file corresponding to {filename}")
+
+    # _parse_hdr
 
     # Read in the data from the file
     raw_data = np.fromfile(filename, header_dict["datatype"], -1)
