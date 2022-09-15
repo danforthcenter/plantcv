@@ -43,4 +43,4 @@ left_landmarks = pcv.outputs.observations['default']['left_lmk']['value']
 
 ![Screenshot](img/documentation_images/y_axis_pseudolandmarks/yap_output.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/y_axis_pseudolandmarks.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/y_axis_pseudolandmarks.py)

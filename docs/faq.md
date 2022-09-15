@@ -12,7 +12,7 @@ Related pages: guides to
 and [updating documentation](documentation.md).
 
 - Q: Which version of PlantCV should I use?
-    - A: We suggest using the latest code from GitHub ('master' branch),
+    - A: We suggest using the latest code from GitHub ('main' branch),
     as described in the installation instructions.
     If you are trying to reproduce the results from a specific manuscript,
     you may prefer to use one of the [stable releases](https://github.com/danforthcenter/plantcv/releases).

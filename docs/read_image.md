@@ -42,4 +42,4 @@ img, path, img_filename = pcv.readimage(filename="home/user/images/test-image.pn
 
 ```
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/readimage.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/readimage.py)

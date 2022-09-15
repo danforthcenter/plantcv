@@ -26,5 +26,5 @@ pcv.transform.save_matrix(matrix=matrix, filename=fname)
 
 ```
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/transform/color_correction.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/transform/color_correction.py)
 

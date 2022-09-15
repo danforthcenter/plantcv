@@ -47,4 +47,4 @@ flipped= pcv.flip(img=img, direction='vertical')
 
 ![Screenshot](img/documentation_images/flip/flipped1.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/flip.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/flip.py)

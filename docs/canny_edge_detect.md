@@ -56,4 +56,4 @@ edges2 = pcv.canny_edge_detect(img=img, sigma=0.1)
 
 
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/canny_edge_detect.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/canny_edge_detect.py)

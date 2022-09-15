@@ -24,4 +24,4 @@ filename = "test.npz"
 matrix = pcv.transform.load_matrix(filename=filename)
 
 ```
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/transform/color_correction.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/transform/color_correction.py)

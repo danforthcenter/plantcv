@@ -28,4 +28,4 @@ corrected_img = pcv.transform.gamma_correct(img=img, gamma=1, gain=1)
 
 ![Screenshot](img/documentation_images/gamma_correct/corrected_image.png)
 
-**Source Code**: [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/transform/gamma_correct.py)
+**Source Code**: [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/transform/gamma_correct.py)

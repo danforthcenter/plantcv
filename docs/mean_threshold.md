@@ -61,4 +61,4 @@ threshold_mean3 = pcv.threshold.mean(gray_img=gray_img, block_size=2000, offset=
 
 ![Screenshot](img/documentation_images/adaptive_threshold/pollen_grains_adaptive_mean_2000-25_scaled.png)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/threshold/threshold_methods.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/threshold/threshold_methods.py)

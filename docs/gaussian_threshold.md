@@ -63,4 +63,4 @@ bin_gauss1 = pcv.threshold.gaussian(gray_img=gray_img, block_size=2000, offset=1
 
 ![Screenshot](img/documentation_images/adaptive_threshold/pollen_grains_adaptive_Gauss_2000-15_scaled.png)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/threshold/threshold_methods.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/threshold/threshold_methods.py)

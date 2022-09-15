@@ -40,4 +40,4 @@ clust_img, clust_masks = pcv.spatial_clustering(mask=mask, algorithm="DBSCAN", m
 
 ![Screenshot](img/documentation_images/spatial_clustering/Full_Image_Mask.png)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/spatial_clustering.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/spatial_clustering.py)

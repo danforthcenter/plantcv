@@ -35,4 +35,4 @@ fill_image = pcv.fill_holes(bin_img=binary_img)
 
 ![Screenshot](img/documentation_images/fill_holes/filled_holes.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/fill_holes.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/fill_holes.py)

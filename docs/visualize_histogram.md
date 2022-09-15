@@ -71,4 +71,4 @@ hist_figure, hist_data = pcv.visualize.histogram(img=rgb_img, mask=mask, hist_da
 ```
 ![Screenshot](img/documentation_images/histogram/RGB_histogram.png)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/visualize/histogram.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/visualize/histogram.py)
