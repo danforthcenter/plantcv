@@ -122,13 +122,16 @@ def _parse_hdr(headername):
     """Parse a header file and create dictionary of relevant metadata
 
         Keyword arguments:
-        headername = File path/name of a hyperspectral data file.
+        headername      = File path/name of a hyperspectral data file.
 
         Returns:
-        hdr_dict = File path/name of hyperspectral header file.
+        header_dict     = Dictionary of hdr metadata
+        wavelength_dict = Dictionary of wavelength metadata
 
         :param headername: str
-        :return hdr_dict: dict
+        :return header_dict: dict
+        :return wavelength_dict: dict
+
         """
     # Initialize dictionary
     header_dict = {}
@@ -174,7 +177,7 @@ def _parse_hdr(headername):
                   "9": np.complex128, "12": np.uint16, "13": np.uint32, "14": np.int64, "15": np.uint64}
     header_dict["datatype"] = dtype_dict[header_dict["datatype"]]
 
-    return header_dict
+    return header_dict, wavelength_dict
 
 
 
@@ -195,7 +198,7 @@ def read_data(filename):
     if headername is None:
         fatal_error(f"Unable to find the header file corresponding to {filename}")
 
-    header_dict = _parse_hdr(headername=headername)
+    header_dict, wavelength_dict = _parse_hdr(headername=headername)
 
     # Read in the data from the file
     raw_data = np.fromfile(filename, header_dict["datatype"], -1)
