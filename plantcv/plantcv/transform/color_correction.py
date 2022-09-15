@@ -30,6 +30,7 @@ def std_color_matrix(pos=0):
                         values for each color chip
 
     :param pos: int
+    :return color_matrix: numpy.ndarray
     """
     # list of rgb values as indicated in the color card specs. They need to be
     # aranged depending on the orientation of the color card of reference in the
