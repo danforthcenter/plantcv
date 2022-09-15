@@ -3,7 +3,7 @@
 Returns a color matrix with the standard *R*, *G*, *B* values compatible with the x-rite ColorCheker Classic,
 ColorChecker Mini, and ColorChecker Passport targets.
 
-Source: https://en.wikipedia.org/wiki/ColorChecker
+Source: [https://en.wikipedia.org/wiki/ColorChecker](https://en.wikipedia.org/wiki/ColorChecker)
 
 **plantcv.transform.std_color_matrix**(*pos=0*)
 
