@@ -95,7 +95,7 @@ setuptools.setup(
     setup_requires=["pytest-runner"],
     tests_require=['pytest'],
     cmdclass=versioneer.get_cmdclass(),
-    scripts=["plantcv-train.py", "plantcv-utils.py", "plantcv-workflow.py"]
+    # scripts=["plantcv-train.py", "plantcv-utils.py", "plantcv-workflow.py"]
 
     # If there are data files included in your packages that need to be
     # installed, specify them here.  If using Python 2.6 or less, then these
@@ -113,9 +113,11 @@ setuptools.setup(
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and allow
     # pip to create the appropriate form of executable for the target platform.
-    # entry_points={
-    #     'console_scripts': [
-    #         'sample=sample:main',
-    #     ],
-    # },
+    entry_points={
+        'console_scripts': [
+            'plantcv-run-workflow=plantcv.parallel.__main__:main',
+            'plantcv-train=plantcv.learn.__main__:main',
+            'plantcv-utils=plantcv.utils.__main__:main'
+        ],
+    },
 )
