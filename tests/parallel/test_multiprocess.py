@@ -13,7 +13,6 @@ def test_create_dask_cluster_local(tmpdir):
     dask.config.set(temporary_directory=tmp_dir)
     client = create_dask_cluster(cluster="LocalCluster", cluster_config={})
     status = client.status
-    client.shutdown()
     assert status == "running"
 
 
@@ -25,7 +24,6 @@ def test_create_dask_cluster(tmpdir):
     dask.config.set(temporary_directory=tmp_dir)
     client = create_dask_cluster(cluster="HTCondorCluster", cluster_config={"cores": 1, "memory": "1GB", "disk": "1GB"})
     status = client.status
-    client.shutdown()
     assert status == "running"
 
 
