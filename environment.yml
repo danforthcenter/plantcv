@@ -3,7 +3,7 @@
 name: plantcv
 dependencies:
   - python=3.9
-  - matplotlib>=1.5
+  - matplotlib>=1.5,<3.6
   - numpy>=1.11,<1.23
   - pandas
   - python-dateutil
