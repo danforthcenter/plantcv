@@ -115,9 +115,9 @@ setuptools.setup(
     # pip to create the appropriate form of executable for the target platform.
     entry_points={
         'console_scripts': [
-            'plantcv-run-workflow=plantcv.parallel.__main__:main',
-            'plantcv-train=plantcv.learn.__main__:main',
-            'plantcv-utils=plantcv.utils.__main__:main'
+            'plantcv-run-workflow=plantcv.parallel.cli:main',
+            'plantcv-train=plantcv.learn.cli:main',
+            'plantcv-utils=plantcv.utils.cli:main'
         ],
     },
 )

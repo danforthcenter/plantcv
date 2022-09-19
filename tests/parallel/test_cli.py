@@ -4,7 +4,7 @@ import pytest
 import shutil
 import dask
 from plantcv.parallel import WorkflowConfig
-from plantcv.parallel.__main__ import main
+from plantcv.parallel.cli import main
 
 
 def test_parallel_cli_template(tmpdir):
