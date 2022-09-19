@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 from plantcv.plantcv import segment_image_series
 from plantcv.plantcv.roi import multi
+from plantcv.plantcv import params
 
 
 def test_plantcv_segment_image_series(tmpdir):
@@ -20,6 +21,7 @@ def test_plantcv_segment_image_series(tmpdir):
     rng = np.random.default_rng(0)
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("cache")
+    params.debug_outdir = cache_dir
     cache_img_dir = os.path.join(cache_dir, 'segment_image_series_images')
     os.mkdir(cache_img_dir)
     cache_mask_dir = os.path.join(cache_dir, 'segment_image_series_masks')
