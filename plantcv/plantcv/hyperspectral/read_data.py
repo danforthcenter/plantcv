@@ -181,6 +181,38 @@ def _parse_envi(headername):
     return header_dict, wavelength_dict
 
 
+def _parse_arcgis(headername):
+    """Parse a header file and create dictionary of relevant metadata
+
+        Keyword arguments:
+        headername      = File path/name of a hyperspectral data file.
+
+        Returns:
+        header_dict     = Dictionary of hdr metadata
+        wavelength_dict = Dictionary of wavelength metadata
+
+        :param headername: str
+        :return header_dict: dict
+        :return wavelength_dict: dict
+
+        """
+    # Initialize dictionary
+    header_dict = {}
+    keyword_dict = {"LAYOUT": "interleave", "NROWS": "samples", "NCOLS": "lines", "NBANDS": "bands",
+                    "NBITS": "data types", "WAVELENGTHS": "wavelength"}
+    keywords = ["interleave", "LAYOUT", "samples", "NROWS", "lines", "NCOLS", "bands", "NBANDS",
+                "data type", "NBITS", "wavelength", "WAVELENGTHS"]
+    with open(headername, "r") as f:
+        # Replace characters for easier parsing
+        hdata = f.read()
+
+    hdata = hdata.split("\n")
+
+    # Loop through and create a dictionary from the header file
+    for string in hdata:
+        if string.lower() in keywords:
+            header_data = string.split(" ")
+
 
 def read_data(filename, mode="ENVI"):
     """Read hyperspectral image data from file.
@@ -204,7 +236,7 @@ def read_data(filename, mode="ENVI"):
     if mode.upper() == "ENVI":
         header_dict, wavelength_dict = _parse_envi(headername=headername)
     elif mode.upper() == "ARCGIS":
-        header_dict, wavelength_dict = _parse_envi(headername=headername)
+        header_dict, wavelength_dict = _parse_arcgis(headername=headername)
 
     # Read in the data from the file
     raw_data = np.fromfile(filename, header_dict["datatype"], -1)
