@@ -154,10 +154,12 @@ def _parse_envi(headername):
         string = string.replace(' ', '')
         if '=' in string:
             header_data = string.split("=")
+            header_data[0] = header_data[0].lower()
+            header_dict.update({header_data[0].rstrip(): header_data[1].rstrip()})
         elif ':' in string:
             header_data = string.split(":")
-        header_data[0] = header_data[0].lower()
-        header_dict.update({header_data[0].rstrip(): header_data[1].rstrip()})
+            header_data[0] = header_data[0].lower()
+            header_dict.update({header_data[0].rstrip(): header_data[1].rstrip()})
 
 
     # Reformat wavelengths
