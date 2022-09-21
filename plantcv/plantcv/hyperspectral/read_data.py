@@ -118,7 +118,7 @@ def _find_hdr(filename):
     return None
 
 
-def _parse_hdr(headername):
+def _parse_envi(headername):
     """Parse a header file and create dictionary of relevant metadata
 
         Keyword arguments:
@@ -180,15 +180,17 @@ def _parse_hdr(headername):
 
 
 
-def read_data(filename):
+def read_data(filename, mode="ENVI"):
     """Read hyperspectral image data from file.
     Inputs:
     filename          = Name of image file
+    mode              = Format of img data
 
     Returns:
     spectral_array    = Hyperspectral data instance
 
     :param filename: str
+    :param mode: str
     :return spectral_array: __main__.Spectral_data
     """
     # Remove any file extension and set .hdr filename
@@ -197,7 +199,10 @@ def read_data(filename):
     if headername is None:
         fatal_error(f"Unable to find the header file corresponding to {filename}")
 
-    header_dict, wavelength_dict = _parse_hdr(headername=headername)
+    if mode.upper() == "ENVI":
+        header_dict, wavelength_dict = _parse_envi(headername=headername)
+    elif mode.upper() == "ARCGIS":
+        header_dict, wavelength_dict = _parse_envi(headername=headername)
 
     # Read in the data from the file
     raw_data = np.fromfile(filename, header_dict["datatype"], -1)
