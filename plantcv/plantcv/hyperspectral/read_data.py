@@ -196,25 +196,37 @@ def _parse_arcgis(headername):
         :return wavelength_dict: dict
 
         """
-    # Initialize dictionary
+    # Initialize dictionary/lists
     header_dict = {}
+    wavelength_dict = {}
+    bands_list = []
     keyword_dict = {"LAYOUT": "interleave", "NROWS": "samples", "NCOLS": "lines", "NBANDS": "bands",
                     "NBITS": "data type", "WAVELENGTHS": "wavelength"}
-
+    # Read in metadata
     with open(headername, "r") as f:
         hdata = f.read()
-
-    hdata = hdata.split("\n") # split on line returns 
+    hdata = hdata.split("\n") # split on line returns
 
     # Loop through and create a dictionary from the header file
     for string in hdata:
-        header_data = string.split(" ")
+        header_data = string.split(" ") # split string on white space
         if header_data[0] == 'WAVELENGTHS':
-            header_dict.update({"wavelength": header_data[1].rstrip()})
-
+            header_dict.update({"wavelength": []})
+            continue;
+        elif len(header_data) == 1:
+            # when reached "wavelengths_end" then populate with bands list
+            if "END" in header_data[0]:
+                header_dict["wavelength"] = bands_list
+                break;
+            # Otherwise, lines without white space contain wavelength band values, add to list
+            bands_list.append(header_data[0].rstrip())
+        # 
         elif header_data[0] in keyword_dict:
-            key = keyword_dict[header_data[0]].rstrip
+            key = keyword_dict[header_data[0]]
             header_dict.update({key: header_data[1].rstrip()})
+
+    for j, wavelength in enumerate(header_dict["wavelength"]):
+        wavelength_dict.update({float(wavelength): float(j)})
 
 
 def read_data(filename, mode="ENVI"):
