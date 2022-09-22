@@ -199,19 +199,22 @@ def _parse_arcgis(headername):
     # Initialize dictionary
     header_dict = {}
     keyword_dict = {"LAYOUT": "interleave", "NROWS": "samples", "NCOLS": "lines", "NBANDS": "bands",
-                    "NBITS": "data types", "WAVELENGTHS": "wavelength"}
-    keywords = ["interleave", "LAYOUT", "samples", "NROWS", "lines", "NCOLS", "bands", "NBANDS",
-                "data type", "NBITS", "wavelength", "WAVELENGTHS"]
+                    "NBITS": "data type", "WAVELENGTHS": "wavelength"}
+
     with open(headername, "r") as f:
-        # Replace characters for easier parsing
         hdata = f.read()
 
-    hdata = hdata.split("\n")
+    hdata = hdata.split("\n") # split on line returns 
 
     # Loop through and create a dictionary from the header file
     for string in hdata:
-        if string.lower() in keywords:
-            header_data = string.split(" ")
+        header_data = string.split(" ")
+        if header_data[0] == 'WAVELENGTHS':
+            header_dict.update({"wavelength": header_data[1].rstrip()})
+
+        elif header_data[0] in keyword_dict:
+            key = keyword_dict[header_data[0]].rstrip
+            header_dict.update({key: header_data[1].rstrip()})
 
 
 def read_data(filename, mode="ENVI"):
