@@ -220,13 +220,15 @@ def _parse_arcgis(headername):
                 break;
             # Otherwise, lines without white space contain wavelength band values, add to list
             bands_list.append(header_data[0].rstrip())
-        # 
+        #
         elif header_data[0] in keyword_dict:
             key = keyword_dict[header_data[0]]
             header_dict.update({key: header_data[1].rstrip()})
 
     for j, wavelength in enumerate(header_dict["wavelength"]):
         wavelength_dict.update({float(wavelength): float(j)})
+
+    return header_dict, wavelength_dict
 
 
 def read_data(filename, mode="ENVI"):
