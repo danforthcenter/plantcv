@@ -75,4 +75,4 @@ hist_all_wv = pcv.visualize.hyper_histogram(hsi=hsi, mask=mask, wvlengths=list(h
 
 ```
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/visualize/hyper_histogram.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/visualize/hyper_histogram.py)

@@ -55,4 +55,4 @@ tips_img = pcv.morphology.find_tips(skel_img=skeleton, mask=plant_mask, label=re
 
 ![Screenshot](img/documentation_images/find_tips/tips_debug_mask.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/morphology/find_tips.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/morphology/find_tips.py)

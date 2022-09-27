@@ -22,4 +22,4 @@ pcv.plot_image(img)
 
 ```
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/plot_image.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/plot_image.py)

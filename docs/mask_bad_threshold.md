@@ -35,6 +35,6 @@ We can see that a mask indicating locations of "bad" pixels generated.
 
 ![Screenshot](img/documentation_images/mask_bad_threshold/bad_mask_both.png)
 
-To visualize the original image with "bad" pixels highlighted, check [here](https://github.com/danforthcenter/plantcv/blob/master/docs/visualize_pseudocolor.md)
+To visualize the original image with "bad" pixels highlighted, check [here](https://github.com/danforthcenter/plantcv/blob/main/docs/visualize_pseudocolor.md)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/threshold/threshold_methods.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/threshold/threshold_methods.py)

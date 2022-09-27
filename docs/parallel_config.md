@@ -208,5 +208,5 @@ Windows you will need to specify the whole path to `plantcv-workflow.py`.
 python %CONDA_PREFIX%/Scripts/plantcv-workflow.py --config my_config.json
 ```
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/parallel/__init__.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/parallel/__init__.py)
 

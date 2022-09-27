@@ -39,4 +39,4 @@ num_cycles = pcv.outputs.observations['default']['num_cycles']['value']
 
 ![Screenshot](img/documentation_images/check_cycles/plot_cycles.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/morphology/check_cycles.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/morphology/check_cycles.py)
