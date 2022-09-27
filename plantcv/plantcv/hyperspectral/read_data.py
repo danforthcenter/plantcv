@@ -121,18 +121,18 @@ def _find_hdr(filename):
 def _parse_envi(headername):
     """Parse a header file and create dictionary of relevant metadata
 
-        Keyword arguments:
-        headername      = File path/name of a hyperspectral data file.
+    Keyword arguments:
+    headername      = File path/name of a hyperspectral data file.
 
-        Returns:
-        header_dict     = Dictionary of hdr metadata
-        wavelength_dict = Dictionary of wavelength metadata
+    Returns:
+    header_dict     = Dictionary of hdr metadata
+    wavelength_dict = Dictionary of wavelength metadata
 
-        :param headername: str
-        :return header_dict: dict
-        :return wavelength_dict: dict
+    :param headername: str
+    :return header_dict: dict
+    :return wavelength_dict: dict
 
-        """
+    """
     # Initialize dictionary
     header_dict = {}
     with open(headername, "r") as f:
@@ -161,7 +161,6 @@ def _parse_envi(headername):
             header_data[0] = header_data[0].lower()
             header_dict.update({header_data[0].rstrip(): header_data[1].rstrip()})
 
-
     # Reformat wavelengths
     header_dict["wavelength"] = header_dict["wavelength"].replace("{", "")
     header_dict["wavelength"] = header_dict["wavelength"].replace("}", "")
@@ -184,18 +183,18 @@ def _parse_envi(headername):
 def _parse_arcgis(headername):
     """Parse a header file and create dictionary of relevant metadata
 
-        Keyword arguments:
-        headername      = File path/name of a hyperspectral data file.
+    Keyword arguments:
+    headername      = File path/name of a hyperspectral data file.
 
-        Returns:
-        header_dict     = Dictionary of hdr metadata
-        wavelength_dict = Dictionary of wavelength metadata
+    Returns:
+    header_dict     = Dictionary of hdr metadata
+    wavelength_dict = Dictionary of wavelength metadata
 
-        :param headername: str
-        :return header_dict: dict
-        :return wavelength_dict: dict
+    :param headername: str
+    :return header_dict: dict
+    :return wavelength_dict: dict
 
-        """
+    """
     # Initialize dictionary/lists
     header_dict = {}
     wavelength_dict = {}
@@ -205,11 +204,11 @@ def _parse_arcgis(headername):
     # Read in metadata
     with open(headername, "r") as f:
         hdata = f.read()
-    hdata = hdata.split("\n") # split on line returns
+    hdata = hdata.split("\n")  # split on line returns
 
     # Loop through and create a dictionary from the header file
     for string in hdata:
-        header_data = string.split(" ") # split string on white space
+        header_data = string.split(" ")  # split string on white space
         if header_data[0] == 'WAVELENGTHS':
             header_dict.update({"wavelength": []})
         elif len(header_data) == 1:
