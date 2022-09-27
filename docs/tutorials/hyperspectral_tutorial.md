@@ -21,7 +21,7 @@ Also see [here](#Hyperspectral-script) for the complete script.
 
 To run a hyperspectral workflow over a single hyperspectral image there are two required inputs:
 
-1.  **Image:** ENVI type hyperspectral images are currently compatible with PlantCV, however the functions added to PlantCV are shaped in large part 
+1.  **Image:** ENVI and ARCGIS type hyperspectral images are currently compatible with PlantCV, however the functions added to PlantCV are shaped in large part 
 by the end users so please post feature requests, questions, and comments on the 
 [GitHub issues page](https://github.com/danforthcenter/plantcv/issues). 
 2.  **Output directory:** If debug mode is set to 'print' output images from each step are produced, otherwise ~4 final output images are produced.
