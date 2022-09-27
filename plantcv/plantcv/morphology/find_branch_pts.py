@@ -6,8 +6,8 @@ import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import dilate
 from plantcv.plantcv import outputs
-from plantcv.plantcv import find_objects
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _cv2_findcontours
 
 
 def find_branch_pts(skel_img, mask=None, label="default"):
@@ -79,11 +79,11 @@ def find_branch_pts(skel_img, mask=None, label="default"):
         # Make debugging image on mask
         mask_copy = mask.copy()
         branch_plot = cv2.cvtColor(mask_copy, cv2.COLOR_GRAY2RGB)
-        skel_obj, skel_hier = find_objects(skel_img, skel_img)
+        skel_obj, skel_hier = _cv2_findcontours(bin_img=skel_img)
         cv2.drawContours(branch_plot, skel_obj, -1, (150, 150, 150), params.line_thickness, lineType=8,
                          hierarchy=skel_hier)
 
-    branch_objects, _ = find_objects(branch_pts_img, branch_pts_img)
+    branch_objects, _ = _cv2_findcontours(bin_img=branch_pts_img)
 
     # Initialize list of tip data points
     branch_list = []

@@ -7,9 +7,9 @@ from plantcv.plantcv import params
 from plantcv.plantcv import erode
 from plantcv.plantcv import dilate
 from plantcv.plantcv import outputs
-from plantcv.plantcv import find_objects
 from plantcv.plantcv import color_palette
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _cv2_findcontours
 
 
 def check_cycles(skel_img, label="default"):
@@ -45,7 +45,7 @@ def check_cycles(skel_img, label="default"):
     just_cycles = erode(just_cycles, 2, 1)
 
     # Use pcv.find_objects to turn plots of holes into countable contours
-    cycle_objects, cycle_hierarchies = find_objects(just_cycles, just_cycles)
+    cycle_objects, cycle_hierarchies = _cv2_findcontours(bin_img=just_cycles)
 
     # Count the number of holes
     num_cycles = len(cycle_objects)

@@ -29,6 +29,8 @@ nav:
       - 'Analyze NIR': analyze_NIR_intensity.md
       - 'Analyze Shape': analyze_shape.md
       - 'Analyze Thermal': analyze_thermal_values.md
+      - 'Annotation Tools':
+          - 'Points': Points.md
       - 'Apply Mask': apply_mask.md
       - 'Auto Crop': auto_crop.md
       - 'Background Subtraction': background_subtraction.md
@@ -68,12 +70,22 @@ nav:
           - 'Calibrate': calibrate.md
           - 'Spectral Index': spectral_index.md
           - 'Extract wavelength': extract_wavelength.md
+          - 'Rotate Hyperspectral Datacubes ': hyperspectral_rot90.md
           - 'Spectral data objects': Spectral_data.md
+          - 'Write data': write_data.md
       - 'Image Add': image_add.md
       - 'Image Subtract': image_subtract.md
       - 'Image Fusion': image_fusion.md
       - 'Invert': invert.md
+      - 'I/O Functions':
+          - 'Random Subset': io_random_subset.md
+          - 'Read Dataset': io_read_dataset.md
       - 'Landmark Analysis':
+        - 'Acute': homology_acute.md
+        - 'Space': homology_space.md
+        - 'StarScape': homology_starscape.md
+        - 'Constella': homology_constella.md
+        - 'ConstellaQC': homology_constellaqc.md
         - 'Acute Vertex': acute_vertex.md
         - 'x-Axis Pseudolandmarks': x_axis_pseudolandmarks.md
         - 'y-Axis Pseudolandmarks': y_axis_pseudolandmarks.md
@@ -104,12 +116,15 @@ nav:
         - 'Skeletonize': skeletonize.md
       - 'Naive Bayes Classifier': naive_bayes_classifier.md
       - 'Object Composition': object_composition.md
+      - 'Objects Class': objects.md
       - 'Opening': opening.md
       - 'Output Mask': output_mask.md
       - 'Outputs Class': outputs.md
       - 'Photosynthesis Functions':
           - 'Read CropReporter Data': photosynthesis_read_cropreporter.md
-          - 'Analyze Fv/Fm': photosynthesis_analyze_fvfm.md
+          - 'Analyze YII': photosynthesis_analyze_yii.md
+          - 'Analyze NPQ': photosynthesis_analyze_npq.md
+          - 'Reassign Frame Labels': photosynthesis_reassign_frame_labels.md
       - 'Params (Debugging)': params.md
       - 'Print Image': print_image.md
       - 'Print Results': print_results.md
@@ -125,9 +140,11 @@ nav:
         - 'Create a Custom ROI': roi_custom.md
         - 'Create ROI from Binary Image': roi_from_binary_image.md
         - 'Create Multi ROIs': 'roi_multi.md'
+        - 'Create Grid of ROIs Automatically': roi_auto_grid.md
         - 'Filter Objects by ROI': roi_objects.md
         - 'Convert ROI to Mask': roi2mask.md
       - 'Rotate': rotate2.md
+      - 'Segment Image Series': segment_image_series.md
       - 'Shift Image': shift.md
       - 'Spatial Clustering': spatial_clustering.md
       - 'Spectral Index': spectral_index.md
@@ -140,6 +157,7 @@ nav:
         - 'Mean Adaptive Threshold': mean_threshold.md
         - 'Otsu Auto Threshold': otsu_threshold.md
         - 'Saturation Threshold': saturation_threshold.md
+        - 'Threshold Two Channels': threshold_dual_channels.md
         - 'Triangle Auto Threshold': triangle_threshold.md
         - 'Texture Threshold': texture_threshold.md
       - 'Transformation Methods':
@@ -153,6 +171,7 @@ nav:
           - 'Quick Color Check': quick_color_check.md
           - 'Load Matrix': load_matrix.md
           - 'Save Matrix': save_matrix.md
+          - 'Standard Color Matrix': std_color_matrix.md
           - 'Gamma Correction': transform_gamma_correct.md
           - 'Nonuniform Illumination Correction': nonuniform_illumination.md
           - 'Perspective warp': transform_warp.md
@@ -169,7 +188,9 @@ nav:
           - 'Overlay Images': visualize_ovelay_two_imgs.md
           - 'Object Size ECDF': visualize_obj_size_ecdf.md
           - 'Object Sizes': visualize_obj_sizes.md
+          - 'Pixel Scatter Plot': 'visualize_pixel_scatter_vis.md'
           - 'Pseudocolor': visualize_pseudocolor.md
+          - 'Time Lapse Video': visualize_time_lapse_video.md
       - 'Watershed Segmentation': watershed.md
       - 'White balance': white_balance.md
       - 'Within Frame': within_frame.md
@@ -178,6 +199,7 @@ nav:
       - 'Naive Bayes Multiclass': naive_bayes_multiclass.md
     - 'Parallelization':
         - 'Configure Parallelization': parallel_config.md
+        - 'Workflow Inputs Management': parallel_workflow_inputs.md
         - 'Metadata Parser': parallel_metadata_parser.md
         - 'Job Builder': parallel_job_builder.md
         - 'Multiprocess': parallel_multiprocess.md

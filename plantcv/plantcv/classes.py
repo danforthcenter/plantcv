@@ -1,7 +1,12 @@
 # PlantCV classes
 import os
+import cv2
 import json
+import numpy as np
 from plantcv.plantcv import fatal_error
+import matplotlib.pyplot as plt
+from math import floor
+from plantcv.plantcv.annotate.points import _find_closest_pt
 
 
 class Params:
@@ -54,9 +59,7 @@ class Params:
 
 
 class Outputs:
-    """PlantCV outputs class
-
-    """
+    """PlantCV outputs class"""
 
     def __init__(self):
         self.measurements = {}
@@ -182,7 +185,8 @@ class Outputs:
 
 
 class Spectral_data:
-    # PlantCV Hyperspectral data class
+    """PlantCV Hyperspectral data class"""
+
     def __init__(self, array_data, max_wavelength, min_wavelength, max_value, min_value, d_type, wavelength_dict,
                  samples, lines, interleave, wavelength_units, array_type, pseudo_rgb, filename, default_bands):
         # The actual array/datacube
@@ -211,3 +215,103 @@ class Spectral_data:
         self.filename = filename
         # The default band indices needed to make an pseudo_rgb image, if not available then store None
         self.default_bands = default_bands
+
+
+class PSII_data:
+    """PSII data class"""
+
+    def __init__(self):
+        self.darkadapted = None
+        self.lightadapted = None
+        self.spectral = None
+        self.chlorophyll = None
+        self.datapath = None
+        self.filename = None
+
+    def __repr__(self):
+        mvars = []
+        for k, v in self.__dict__.items():
+            if v is not None:
+                mvars.append(k)
+        return "PSII variables defined:\n" + '\n'.join(mvars)
+
+    def add_data(self, protocol):
+        """
+        Input:
+            protocol: xr.DataArray with name equivalent to initialized attributes
+        """
+        self.__dict__[protocol.name] = protocol
+
+
+class Points(object):
+    """Point annotation/collection class to use in Jupyter notebooks. It allows the user to
+    interactively click to collect coordinates from an image. Left click collects the point and
+    right click removes the closest collected point
+    """
+
+    def __init__(self, img, figsize=(12, 6)):
+        """
+        Initialization
+        :param img: image data
+        :param figsize: desired figure size, (12,6) by default
+        :attribute points: list of points as (x,y) coordinates tuples
+        """
+
+        self.fig, self.ax = plt.subplots(1, 1, figsize=figsize)
+        self.ax.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+
+        self.points = []
+        self.events = []
+
+        self.fig.canvas.mpl_connect('button_press_event', self.onclick)
+
+    def onclick(self, event):
+        """ Handle mouse click events
+        """
+        self.events.append(event)
+        if event.button == 1:
+
+            self.ax.plot(event.xdata, event.ydata, 'x', c='red')
+            self.points.append((floor(event.xdata), floor(event.ydata)))
+
+        else:
+            idx_remove, _ = _find_closest_pt((event.xdata, event.ydata), self.points)
+            # remove the closest point to the user right clicked one
+            self.points.pop(idx_remove)
+            ax0plots = self.ax.lines
+            self.ax.lines.remove(ax0plots[idx_remove])
+        self.fig.canvas.draw()
+
+
+class Objects:
+    """Class for managing image contours/objects and their hierarchical relationships."""
+    def __init__(self, contours: list = None, hierarchy: list = None):
+        self.contours = contours
+        self.hierarchy = hierarchy
+        if contours is None:
+            self.contours = []
+            self.hierarchy = []
+
+    def __iter__(self):
+        self.n = 0
+        return self
+
+    def __next__(self):
+        if self.n < len(self.contours):
+            self.n += 1
+            return self.contours[self.n-1], self.hierarchy[self.n-1]
+        else:
+            raise StopIteration
+
+    def append(self, contour, h):
+        self.contours.append(contour)
+        self.hierarchy.append(h)
+
+    def save(self, filename):
+        np.savez(filename, contours=self.contours, hierarchy=self.hierarchy)
+
+    @staticmethod
+    def load(filename):
+        file = np.load(filename)
+        obj = Objects(file['contours'].tolist(), file['hierarchy'])
+        return obj

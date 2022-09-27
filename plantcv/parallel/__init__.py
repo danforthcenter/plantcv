@@ -3,15 +3,14 @@ import sys
 import json
 import datetime
 from plantcv.parallel.parsers import metadata_parser
-from plantcv.parallel.parsers import convert_datetime_to_unixtime
-from plantcv.parallel.parsers import check_date_range
 from plantcv.parallel.job_builder import job_builder
 from plantcv.parallel.process_results import process_results
 from plantcv.parallel.multiprocess import multiprocess
 from plantcv.parallel.multiprocess import create_dask_cluster
+from plantcv.parallel.workflow_inputs import workflow_inputs, WorkflowInputs
 
-__all__ = ["metadata_parser", "convert_datetime_to_unixtime", "check_date_range", "job_builder", "process_results",
-           "multiprocess", "create_dask_cluster", "WorkflowConfig"]
+__all__ = ["metadata_parser", "job_builder", "process_results", "multiprocess", "create_dask_cluster", "WorkflowConfig",
+           "workflow_inputs", "WorkflowInputs"]
 
 
 class WorkflowConfig:
@@ -28,10 +27,11 @@ class WorkflowConfig:
         self.imgformat = "png"
         self.delimiter = "_"
         self.metadata_filters = {}
-        self.timestampformat = "%Y-%m-%d %H:%M:%S.%f"
+        self.timestampformat = "%Y-%m-%dT%H:%M:%S.%fZ"
         self.writeimg = False
-        self.other_args = []
-        self.coprocess = None
+        self.other_args = {}
+        self.groupby = ["filepath"]
+        self.group_name = "imgtype"
         self.cleanup = True
         self.append = True
         self.cluster = "LocalCluster"
@@ -76,6 +76,11 @@ class WorkflowConfig:
                     "datatype": "<class 'str'>",
                     "value": "none"
                 },
+                "rotation": {
+                    "label": "sample rotation in degrees",
+                    "datatype": "<class 'str'>",
+                    "value": "none"
+                },
                 "lifter": {
                     "label": "imaging platform height setting",
                     "datatype": "<class 'str'>",
@@ -93,7 +98,7 @@ class WorkflowConfig:
                     "datatype": "<class 'str'>",
                     "value": "none"
                 },
-                "plantbarcode": {
+                "barcode": {
                     "label": "plant barcode identifier",
                     "datatype": "<class 'str'>",
                     "value": "none"

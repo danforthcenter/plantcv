@@ -26,112 +26,24 @@ def options():
         ValueError: if a metadata field is not supported.
     """
     parser = argparse.ArgumentParser(description='Parallel imaging processing with PlantCV.')
-    config_grp = parser.add_argument_group('CONFIG')
-    config_grp.add_argument("--config", required=False,
-                            help="Input configuration file (exported from WorkflowConfig)."
-                                 "If provided all other arguments are ignored.")
-    cmdline_grp = parser.add_argument_group("COMMAND-LINE")
-    cmdline_grp.add_argument("-d", "--dir", help='Input directory containing images or snapshots.',
-                             required="--config" not in sys.argv)
-    cmdline_grp.add_argument("-a", "--adaptor",
-                             help='Image metadata reader adaptor. PhenoFront metadata is stored in a CSV file and the '
-                                  'image file name. For the filename option, all metadata is stored in the image file '
-                                  'name. Current adaptors: phenofront, filename', default="phenofront")
-    cmdline_grp.add_argument("-p", "--workflow", help='Workflow script file.', required="--config" not in sys.argv)
-    cmdline_grp.add_argument("-j", "--json", help='Output database file name.', required="--config" not in sys.argv)
-    cmdline_grp.add_argument("-f", "--meta",
-                             help='Image filename metadata structure. Comma-separated list of valid metadata terms. '
-                                  'Valid metadata fields are: ' +
-                                  ', '.join(map(str, list(vars(plantcv.parallel.WorkflowConfig()).keys()))),
-                             required="--config" not in sys.argv)
-    cmdline_grp.add_argument("-i", "--outdir", help='Output directory for images. Not required by all workflows.',
-                             default=".")
-    cmdline_grp.add_argument("-T", "--cpu", help='Number of CPU processes to use.', default=1, type=int)
-    cmdline_grp.add_argument("-c", "--create",
-                             help='will overwrite an existing database'
-                                  'Warning: activating this option will delete an existing database!',
-                             default=False, action="store_true")
-    cmdline_grp.add_argument("-D", "--dates",
-                             help='Date range. Format: YYYY-MM-DD-hh-mm-ss_YYYY-MM-DD-hh-mm-ss. If the second date '
-                                  'is excluded then the current date is assumed.',
-                             required=False)
-    cmdline_grp.add_argument("-t", "--type", help='Image format type (extension).', default="png")
-    cmdline_grp.add_argument("-l", "--delimiter", help='Image file name metadata delimiter character.Alternatively,'
-                                                       'a regular expression for parsing filename metadata.',
-                             default='_')
-    cmdline_grp.add_argument("-M", "--match",
-                             help='Restrict analysis to images with metadata matching input criteria. Input a '
-                                  'metadata:value comma-separated list. This is an exact match search. '
-                                  'E.g. imgtype:VIS,camera:SV,zoom:z500',
-                             required=False)
-    cmdline_grp.add_argument("-C", "--coprocess",
-                             help='Coprocess the specified imgtype with the imgtype specified in --match '
-                                  '(e.g. coprocess NIR images with VIS).',
-                             default=None)
-    cmdline_grp.add_argument("-s", "--timestampformat",
-                             help='a date format code compatible with strptime C library, '
-                                  'e.g. "%%Y-%%m-%%d %%H_%%M_%%S", except "%%" symbols must be escaped on Windows with '
-                                  '"%%" e.g. "%%%%Y-%%%%m-%%%%d %%%%H_%%%%M_%%%%S"'
-                                  'default format code is "%%Y-%%m-%%d %%H:%%M:%%S.%%f"',
-                             required=False, default='%Y-%m-%d %H:%M:%S.%f')
-    cmdline_grp.add_argument("-w", "--writeimg", help='Include analysis images in output.', default=False,
-                             action="store_true")
-    cmdline_grp.add_argument("-o", "--other_args", help='Other arguments to pass to the workflow script.',
-                             required=False)
-    cmdline_grp.add_argument("-z", "--cleanup", help='Remove temporary working directory', default=False)
+    config_grp = parser.add_argument_group("CONFIG")
+    config_grp.add_argument("--template", required=False, help="Create a template configuration file.")
+    run_grp = parser.add_argument_group("RUN")
+    run_grp.add_argument("--config", required=False,
+                         help="Input configuration file (created using the --template option).")
     args = parser.parse_args()
 
     # Create a config
     config = plantcv.parallel.WorkflowConfig()
 
+    # Create a template configuration file if requested
+    if args.template:
+        config.save_config(config_file=args.template)
+        sys.exit()
+
     # Import a configuration if provided
     if args.config:
         config.import_config(config_file=args.config)
-    else:
-        if args.dates:
-            dates = args.dates.split('_')
-            if len(dates) == 1:
-                # End is current time
-                dates.append(datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S'))
-            start = map(int, dates[0].split('-'))
-            end = map(int, dates[1].split('-'))
-            # Use the parsed input datetimes to create datetime strings that match the input timestampformat
-            args.start_date = datetime.datetime(*start).strftime(args.timestampformat)
-            args.end_date = datetime.datetime(*end).strftime(args.timestampformat)
-        else:
-            args.start_date = datetime.datetime(1970, 1, 1, 0, 0, 1).strftime(args.timestampformat)
-            args.end_date = datetime.datetime.now().strftime(args.timestampformat)
-
-        # Metadata restrictions
-        args.imgtype = {}
-        if args.match is not None:
-            pairs = args.match.split(',')
-            for pair in pairs:
-                key, value = pair.split(':')
-                if key not in args.imgtype:
-                    args.imgtype[key] = []
-                args.imgtype[key].append(value)
-
-        # Populate config object
-        config.input_dir = args.dir
-        config.json = args.json
-        config.filename_metadata = args.meta.split(",")
-        config.workflow = args.workflow
-        config.img_outdir = args.outdir
-        config.start_date = args.start_date
-        config.end_date = args.end_date
-        config.imgformat = args.type
-        config.delimiter = args.delimiter
-        config.metadata_filters = args.imgtype
-        config.timestampformat = args.timestampformat
-        config.writeimg = args.writeimg
-        if args.other_args:
-            config.other_args = args.other_args.split(" ")
-        config.coprocess = args.coprocess
-        config.cleanup = args.cleanup
-        config.append = not args.create
-        config.cluster = "LocalCluster"
-        config.cluster_config = {"n_workers": args.cpu, "cores": 1, "memory": "1GB", "disk": "1GB"}
 
     if not config.validate_config():
         raise ValueError("Invalid configuration file. Check errors above.")
@@ -151,12 +63,12 @@ def main():
     Raises:
 
     """
+    # Get options
+    config = options()
+
     # Job start time
     start_time = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     print("Starting run " + start_time + '\n', file=sys.stderr)
-
-    # Get options
-    config = options()
 
     # Create temporary directory for job
     if config.tmp_dir is not None:

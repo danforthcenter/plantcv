@@ -42,7 +42,7 @@ jobs:
     - name: Test and generate coverage report
       # Run coverage analysis on pytest tests
       run: |
-        python setup.py install
+        pip install .
         py.test --cov-report=xml --cov=plantcv tests/
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1

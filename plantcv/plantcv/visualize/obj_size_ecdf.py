@@ -5,6 +5,7 @@ import cv2
 import pandas as pd
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _cv2_findcontours
 from statsmodels.distributions.empirical_distribution import ECDF
 from plotnine import ggplot, aes, geom_point, labels, scale_x_log10
 
@@ -24,7 +25,7 @@ def obj_size_ecdf(mask, title=None):
     :param title: str
     :return fig_ecdf: plotnine.ggplot.ggplot
     """
-    objects, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
+    objects, _ = _cv2_findcontours(bin_img=mask)
     areas = [cv2.contourArea(cnt) for cnt in objects]
     # Remove objects with areas < 1px
     areas = [i for i in areas if i >= 1.0]
