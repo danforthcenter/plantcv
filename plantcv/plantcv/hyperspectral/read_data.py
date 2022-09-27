@@ -212,12 +212,11 @@ def _parse_arcgis(headername):
         header_data = string.split(" ") # split string on white space
         if header_data[0] == 'WAVELENGTHS':
             header_dict.update({"wavelength": []})
-            continue;
         elif len(header_data) == 1:
             # when reached "wavelengths_end" then populate with bands list
             if "END" in header_data[0]:
                 header_dict["wavelength"] = bands_list
-                break;
+                break
             # Otherwise, lines without white space contain wavelength band values, add to list
             bands_list.append(header_data[0].rstrip())
         #
