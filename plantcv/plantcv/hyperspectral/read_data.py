@@ -233,7 +233,7 @@ def read_data(filename, mode="ENVI"):
     """Read hyperspectral image data from file.
     Inputs:
     filename          = Name of image file
-    mode              = Format of img data
+    mode              = Format of img data (ENVI or ARCGIS, case insensitive)
 
     Returns:
     spectral_array    = Hyperspectral data instance
