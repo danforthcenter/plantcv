@@ -310,6 +310,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, objects, hierarchy = **plantcv.find_objects**(*img, mask, device, debug=None*)
 * post v3.0dev2: objects, hierarchy = **plantcv.find_objects**(*img, mask*)
+* post v4.0: objects = **plantcv.find_objects**(*img, mask*)
 
 #### plantcv.flip
 
@@ -702,6 +703,12 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.circle**(*x, y, r, img*)
 * post v3.2: roi_contour, roi_hierarchy = **plantcv.roi.circle**(*img, x, y, r*)
 
+#### plantcv.roi.custom
+
+* pre v3.0dev1: NA
+* post v3.14: roi_contour, roi_hierarchy = **plantcv.roi.custom**(*img, vertices*)
+* post v4.0: roi = **plantcv.roi.custom**(*img, vertices*)
+
 #### plantcv.roi.ellipse
 
 * pre v3.0dev1: NA
@@ -726,6 +733,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.8: NA
 * post v3.8: mask = **pcv.roi.roi2mask**(*img, contour*)
+* post v4.0: mask = **pcv.roi.roi2mask**(*img, roi*)
 
 #### plantcv.roi.auto_grid
 
@@ -1033,6 +1041,11 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev1: NA
 * post v3.0dev2: **plantcv.transform.save_matrix**(*matrix, filename*)
+
+#### plantcv.transform.std_color_matrix
+
+* pre v4.0: NA
+* post v4.0: **plantcv.transform.std_color_matrix**(*pos=0*)
 
 #### plantcv.triangle_auto_threshold
 

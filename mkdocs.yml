@@ -171,6 +171,7 @@ nav:
           - 'Quick Color Check': quick_color_check.md
           - 'Load Matrix': load_matrix.md
           - 'Save Matrix': save_matrix.md
+          - 'Standard Color Matrix': std_color_matrix.md
           - 'Gamma Correction': transform_gamma_correct.md
           - 'Nonuniform Illumination Correction': nonuniform_illumination.md
           - 'Perspective warp': transform_warp.md
