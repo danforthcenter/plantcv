@@ -35,5 +35,11 @@ def test_read_data_bad_filename(hyperspectral_test_data):
 
 def test_read_data_parse_arcgis(hyperspectral_test_data):
     """Test for PlantCV."""
+    with pytest.raises(RuntimeError):
+        _ = read_data(filename=hyperspectral_test_data.arcgis_hdr, mode="arcgis")
+
+
+def test_parse_arcgis(hyperspectral_test_data):
+    """Test for PlantCV."""
     header_dict, wavelength_dict = _parse_arcgis(headername=hyperspectral_test_data.arcgis_hdr)
     assert len(wavelength_dict) == len(header_dict["wavelength"])
