@@ -554,7 +554,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, group, mask = **plantcv.object_composition**(*img, contours, hierarchy, device, debug=None*)
 * post v3.0dev2: group, mask = **plantcv.object_composition**(*img, contours, hierarchy*)
-
+* post v4.0: group, mask = **plantcv.object_composition**(*img, objs*)
 #### plantcv.opening
 
 * pre v3.3: NA
