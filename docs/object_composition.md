@@ -2,14 +2,13 @@
 
 Combine objects together for downstream analysis, usually done after object filtering.
 
-**plantcv.object_composition**(*img, contours, hierarchy*)
+**plantcv.object_composition**(*img, objs*)
 
 **returns** grouped object, image mask
 
 - **Parameters:**
     - img - RGB or grayscale image data for plotting
-    - contours - Contour list
-    - hierarchy - Contour hierarchy NumPy array
+    - objs - an Objects instance with a contour list and hierarchy NumPy array
    
 - **Context:**
     - This function combines objects together. This is important for downstream analysis of shape characteristics, if plant objects are not combined then one plant can appear to be many different objects.
@@ -34,7 +33,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Combine objects so downstream analysis can be run on a single plant object
-obj, mask = pcv.object_composition(img, roi_objects, hierarchy)
+obj, mask = pcv.object_composition(img, objs)
 
 ```
 
