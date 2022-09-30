@@ -200,7 +200,7 @@ def _parse_arcgis(headername):
     wavelength_dict = {}
     bands_list = []
     keyword_dict = {"LAYOUT": "interleave", "NROWS": "samples", "NCOLS": "lines", "NBANDS": "bands",
-                    "NBITS": "data type", "WAVELENGTHS": "wavelength"}
+                    "NBITS": "datatype", "WAVELENGTHS": "wavelength"}
     # Read in metadata
     with open(headername, "r") as f:
         hdata = f.read()
