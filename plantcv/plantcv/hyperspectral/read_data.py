@@ -201,6 +201,7 @@ def _parse_arcgis(headername):
     bands_list = []
     keyword_dict = {"LAYOUT": "interleave", "NROWS": "samples", "NCOLS": "lines", "NBANDS": "bands",
                     "NBITS": "datatype", "WAVELENGTHS": "wavelength"}
+
     # Read in metadata
     with open(headername, "r") as f:
         hdata = f.read()
@@ -225,6 +226,9 @@ def _parse_arcgis(headername):
 
     for j, wavelength in enumerate(header_dict["wavelength"]):
         wavelength_dict.update({float(wavelength): float(j)})
+
+    dtype_dict = {"8": np.uint8, "16": np.int16, "32": np.int32, "64": np.float32}
+    header_dict["datatype"] = dtype_dict[header_dict["datatype"]]
 
     return header_dict, wavelength_dict
 
