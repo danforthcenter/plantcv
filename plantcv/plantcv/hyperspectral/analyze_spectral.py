@@ -39,7 +39,7 @@ def analyze_spectral(array, mask, histplot=None, label="default"):
     wavelength_data = array_data[np.where(mask > 0)]
 
     # Calculate mean reflectance across wavelengths
-    wavelength_freq = wavelength_data.mean(axis=0)
+    wavelength_means = wavelength_data.mean(axis=0)
     max_per_band = wavelength_data.max(axis=0)
     min_per_band = wavelength_data.min(axis=0)
     std_per_band = wavelength_data.std(axis=0)
@@ -83,9 +83,9 @@ def analyze_spectral(array, mask, histplot=None, label="default"):
                             trait='pixel-wise standard deviation per band',
                             method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='None', datatype=float,
                             value=float(std_reflectance), label='reflectance')
-    outputs.add_observation(sample=label, variable='global_spectral_std', trait='pixel-wise standard deviation ',
-                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='None', datatype=float,
-                            value=float(std_reflectance), label='reflectance')
+    outputs.add_observation(sample=label, variable='wavelength_means', trait='pixel-wise standard deviation ',
+                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='None', datatype=list,
+                            value=wavelength_means, label=wavelength_labels)
     outputs.add_observation(sample=label, variable='max_reflectance', trait='maximum reflectance per band',
                             method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='reflectance', datatype=list,
                             value=new_max_per_band, label=wavelength_labels)
@@ -100,7 +100,7 @@ def analyze_spectral(array, mask, histplot=None, label="default"):
                             value=new_freq, label=wavelength_labels)
 
     dataset = pd.DataFrame({'Wavelength (' + array.wavelength_units + ')': new_wavelengths,
-                            'Reflectance': wavelength_freq})
+                            'Reflectance': wavelength_means})
     mean_spectra = (ggplot(data=dataset,
                     mapping=aes(x='Wavelength (' + array.wavelength_units + ')', y='Reflectance'))
                     + geom_line(color='purple')
