@@ -2,7 +2,7 @@
 
 **plantcv.roi.rectangle**(*img, x, y, h, w*)
 
-**returns** roi_contour, roi_hierarchy
+**returns** roi
 
 - **Parameters:**
     - img - An RGB or grayscale image to plot the ROI on in debug mode.
@@ -25,7 +25,7 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
-roi_contour, roi_hierarchy = pcv.roi.rectangle(img=rgb_img, x=100, y=100, h=200, w=200)
+roi = pcv.roi.rectangle(img=rgb_img, x=100, y=100, h=200, w=200)
 
 ```
 
