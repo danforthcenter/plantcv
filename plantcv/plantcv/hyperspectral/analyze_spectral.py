@@ -58,7 +58,7 @@ def analyze_spectral(array, mask, histplot=None, label="default"):
 
     for i, wavelength in enumerate(array.wavelength_dict):
         new_wavelengths.append(wavelength)
-        new_freq.append((wavelength_freq[i]).astype(float))
+        new_freq.append((wavelength_means[i]).astype(float))
         new_std_per_band.append(std_per_band[i].astype(float))
         new_max_per_band.append(max_per_band[i].astype(float))
         new_min_per_band.append(min_per_band[i].astype(float))
