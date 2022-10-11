@@ -83,9 +83,9 @@ def analyze_spectral(array, mask, histplot=None, label="default"):
                             trait='pixel-wise standard deviation per band',
                             method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='None', datatype=float,
                             value=float(std_reflectance), label='reflectance')
-    outputs.add_observation(sample=label, variable='wavelength_means', trait='pixel-wise standard deviation ',
+    outputs.add_observation(sample=label, variable='wavelength_means', trait='mean reflectance per band',
                             method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='reflectance', datatype=list,
-                            value=wavelength_means, label=wavelength_labels)
+                            value=wavelength_means.tolist(), label=wavelength_labels)
     outputs.add_observation(sample=label, variable='max_reflectance', trait='maximum reflectance per band',
                             method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='reflectance', datatype=list,
                             value=new_max_per_band, label=wavelength_labels)
