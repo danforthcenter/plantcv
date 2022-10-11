@@ -14,7 +14,8 @@ the values out as observations to get saved out. Can also print out a histogram 
     - label         - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
 - **Example use:**
     - Below 
-- **Output data stored:** Data ('max_reflectance', 'min_reflectance', 'median_reflectance', 'spectral_std', 'spectral_frequencies', 'global_mean_reflectance', 'global_median_reflectance', 'global_spectral_std') automatically gets stored to the 
+- **Output data stored:** Data ('global_mean_reflectance', 'global_median_reflectance', 'global_spectral_std', 'wavelength_means', 'max_reflectance', 
+    'min_reflectance', 'spectral_std', 'spectral_frequencies') automatically gets stored to the 
     [`Outputs` class](outputs.md) when this function is ran. 
     These data can always get accessed during a workflow (example below). For more detail about data output see [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
