@@ -8,7 +8,7 @@ This local threshold depends on the local average, computed in a squared portion
 
 In the Gaussian adaptive threshold, the local average is a weighted average of the pixel values in the block, where the weights are a 2D Gaussian centered in the middle.
 
-**plantcv.threshold.gaussian**(*gray_img, max_value, object_type="light"*)
+**plantcv.threshold.gaussian**(*gray_img, block_size, offset, object_type="light", max_value=255*)
 
 **returns** thresholded/binary image
 
