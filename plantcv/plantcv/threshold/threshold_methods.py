@@ -98,7 +98,7 @@ def gaussian(gray_img, block_size, offset, object_type="light", max_value=255):
     params.device += 1
 
     bin_img = _call_adaptive_threshold(gray_img, block_size, offset, max_value, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-                                        threshold_method, "_gaussian_threshold_")
+                                       threshold_method, "_gaussian_threshold_")
 
     return bin_img
 
@@ -147,7 +147,7 @@ def mean(gray_img, block_size, offset, object_type="light", max_value=255):
     params.device += 1
 
     bin_img = _call_adaptive_threshold(gray_img, block_size, offset, max_value, cv2.ADAPTIVE_THRESH_MEAN_C,
-                                        threshold_method, "_mean_threshold_")
+                                       threshold_method, "_mean_threshold_")
 
     return bin_img
 
