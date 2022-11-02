@@ -14,18 +14,8 @@ PlantCV has been tested on the following systems:
 #### Required dependencies
 
 - Python (tested with versions 3.7, 3.8, and 3.9)
-    - cv2 (a.k.a. OpenCV or opencv-python on PyPI; requires at least 3.4 and <4)
-    - dask
-    - dask-jobqueue 
-    - matplotlib (>=1.5 and <3.6)
-    - numpy (>=1.11,<1.23)
-    - pandas
-    - plotnine
-    - python-dateutil
-    - scikit-image
-    - scikit-learn
-    - scipy
-    - statsmodels
+    - Package managers will automatically solve for the required dependencies, which can be found in the 
+    [requirements configuration files](https://github.com/danforthcenter/plantcv/blob/main/requirements.txt). 
 
 #### Optional but recommended
 
