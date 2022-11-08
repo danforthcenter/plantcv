@@ -7,7 +7,7 @@ Manually combine segments from a segmented skeleton
 **returns** Labeled image, new segment objects list 
 
 - **Parameters:**
-    - segment_list - List of segments to get combined to get combined
+    - segment_list - List of segments to get combined
     - objects - Segment objects (output from either [plantcv.morphology.prune](prune.md),,
     [plantcv.morphology.segment_skeleton](segment_skeleton.md), or
     [plantcv.morphology.segment_sort](segment_sort.md)).
