@@ -24,18 +24,18 @@ def from_binary_image(img, bin_img):
 
     :param img: numpy.ndarray
     :param bin_img: numpy.ndarray
-    :return roi_contour: list
-    :return roi_hierarchy: numpy.ndarray
+    :return roi: plantcv.plantcv.classes.Objects
     """
     # Make sure the input bin_img is binary
     if len(np.unique(bin_img)) != 2:
         fatal_error("Input image is not binary!")
     # Use the binary image to create an ROI contour
     roi_contour, roi_hierarchy = _cv2_findcontours(bin_img=bin_img)
+    roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
     # Draw the ROI if requested
     _draw_roi(img=img, roi_contour=roi_contour)
 
-    return roi_contour, roi_hierarchy
+    return roi
 
 
 # Create a rectangular ROI
