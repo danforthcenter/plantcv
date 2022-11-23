@@ -254,7 +254,10 @@ def _dat_filepath(dataset, datapath, filename):
     """
     filename_components = filename.split("_")
     # Find corresponding bin img filepath based on .INF filepath
-    filename_components[1] = dataset  # replace header with bin img type
+    for i in range(0,len(filename_components)):
+        if filename_components[i] == 'HDR':
+            filename_components[i] = dataset  # replace header with bin img type
+            break
     bin_filenames = "_".join(filename_components)
     bin_filename = bin_filenames.replace(".INF", ".DAT")
     bin_filepath = os.path.join(datapath, bin_filename)
