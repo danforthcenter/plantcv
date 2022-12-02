@@ -28,9 +28,7 @@ with labeled frames.
 
 !!! note
     This function assumes a specific pattern between the .INF metadata file and the corresponding .DAT binary image
-    filenames. We assume that for every metadata file `xx_HDR_xxx.INF` there will be a corresponding image files with
-    the same path named `xx_XXX_xxx.DAT` where XXX is the analysis protocol (e.g. PSD, PSL, etc.). Some CropReporter
-    imaging protocols will results in multiple binary image .DAT files per .INF metadata file.
+    filenames. We assume that for metadata file  `HDR_xx.INF` or `xx_HDR_xx.INF` there will be a corresponding image files with the same path, containing `XXX_xxx.DAT` or `xx_XXX_xxx.DAT` where XXX is the analysis protocol (e.g. PSD, PSL, etc.). Some CropReporter imaging protocols will results in multiple binary image .DAT files per .INF metadata file.
 
 ```python
 from plantcv import plantcv as pcv      
