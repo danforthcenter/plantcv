@@ -96,15 +96,13 @@ def circle(img, x, y, r):
     r             = The radius of the circle.
 
     Outputs:
-    roi_contour   = An ROI set of points (contour).
-    roi_hierarchy = The hierarchy of ROI contour(s).
+    roi           = A dataclass with the roi object and hierarchy.
 
     :param img: numpy.ndarray
     :param x: int
     :param y: int
     :param r: int
-    :return roi_contour: list
-    :return roi_hierarchy: numpy.ndarray
+    :return roi: plantcv.plantcv.classes.Objects
     """
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
@@ -116,6 +114,7 @@ def circle(img, x, y, r):
 
     # Use the binary image to create an ROI contour
     roi_contour, roi_hierarchy = _cv2_findcontours(bin_img=bin_img)
+    roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
 
     # Draw the ROI if requested
     _draw_roi(img=img, roi_contour=roi_contour)
@@ -124,7 +123,7 @@ def circle(img, x, y, r):
     if x - r < 0 or x + r > width or y - r < 0 or y + r > height:
         fatal_error("The ROI extends outside of the image!")
 
-    return roi_contour, roi_hierarchy
+    return roi
 
 
 # Create an elliptical ROI
