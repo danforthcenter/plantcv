@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 from plantcv.plantcv import dilate
 from plantcv.plantcv import params
+from plantcv.plantcv import outputs 
 from plantcv.plantcv import logical_and
 from plantcv.plantcv.morphology import find_tips
 from plantcv.plantcv._debug import _debug
