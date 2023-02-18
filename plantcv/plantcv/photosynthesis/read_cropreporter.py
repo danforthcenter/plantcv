@@ -71,8 +71,12 @@ def _process_psd_data(ps, metadata):
         img_cube, frame_labels, frame_nums = _read_dat_file(dataset="PSD", filename=bin_filepath,
                                                             height=int(metadata["ImageRows"]),
                                                             width=int(metadata["ImageCols"]))
-        
-        if 'FvFmFrameF0' in metadata:
+        # If not all frames are saved the order is fixed
+        # Phenovation does not update the framenumbers in the references.
+        if metadata['SaveAllFrames'] == '0':
+            f0_frame = 1
+            fm_frame = 2
+        elif 'FvFmFrameF0' in metadata:
             f0_frame = int(metadata["FvFmFrameF0"]) + 1  
             fm_frame = int(metadata["FvFmFrameFm"]) + 1
         elif 'DkOjipFrameF0' in metadata:
@@ -115,7 +119,12 @@ def _process_psl_data(ps, metadata):
                                                             height=int(metadata["ImageRows"]),
                                                             width=int(metadata["ImageCols"]))
         
-        if 'FqFmFrameFsp' in metadata:
+        # If not all frames are saved the order is fixed
+        # Phenovation does not update the framenumbers in the references.
+        if metadata['SaveAllFrames'] == '0':
+            fsp_frame = 1
+            fmp_frame = 2
+        elif 'FqFmFrameFsp' in metadata:
             fsp_frame = int(metadata["FqFmFrameFsp"]) + 1
             fmp_frame = int(metadata["FqFmFrameFmp"]) + 1            
         elif 'LtOjipFrameFsp' in metadata:
