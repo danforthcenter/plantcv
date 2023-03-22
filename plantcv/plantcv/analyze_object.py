@@ -152,9 +152,6 @@ def analyze_object(img, obj, mask, label="default"):
 
         analysis_images.append(mask)
 
-    else:
-        pass
-
     outputs.add_observation(sample=label, variable='area', trait='area',
                             method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
                             value=area, label='pixels')
