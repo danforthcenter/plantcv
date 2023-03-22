@@ -13,15 +13,13 @@ def segment_combine(segment_list, objects, mask):
     """Combine user specified segments together.
 
     Inputs:
-    segment_list  = List of segments to get combined, or list of lists of segments to get combined
+    segment_list  = List of segment indices to get combined
     objects       = List of contours
-    hierarchy     = Contour hierarchy NumPy array
     mask          = Binary mask for debugging image
 
     Returns:
     segmented_img = Segmented image
     objects       = Updated list of contours
-    hierarchy     = Updated contour hierarchy NumPy array
 
     :param segment_list: list
     :param objects: list
@@ -32,54 +30,33 @@ def segment_combine(segment_list, objects, mask):
     label_coord_x = []
     label_coord_y = []
     all_objects = objects[:]
+    if type(segment_list[0]) is not int:
+        fatal_error("segment_list must be a list of object ID's")
+    segment_list_copy = sorted(segment_list, reverse=True)
 
     # If user provides a single list of objects to combine
-    if type(segment_list[0]) is int:
-        num_contours = len(segment_list)
-        count = 1
+    num_contours = len(segment_list)
+    count = 1
 
-        # Store the first object into the new object array
-        new_objects = all_objects[segment_list[0]]
-        # Remove the objects getting combined from the list of all objects
-        all_objects.remove(objects[segment_list[0]])
+    # Store the first object into the new object array
+    combined_object = objects[segment_list_copy[0]]
+    # Remove the objects getting combined from the list of all objects
+    all_objects.pop(segment_list_copy[0])
 
-        while count < num_contours:
-            # Combine objects into a single array
-            new_objects = np.append(new_objects, objects[segment_list[count]], 0)
-            # Remove the objects getting combined from the list of all objects
-            all_objects.remove(objects[segment_list[count]])
-            count += 1
-        # Replace with the combined object
-        all_objects.append(new_objects)
-
-    # If user provides a list of lists of objects to combine
-    elif type(segment_list[0]) is list:
-        # For each list provided
-        for lists in segment_list:
-            num_contours = len(lists)
-            count = 1
-            # Store the first object into the new object array
-            new_objects = all_objects[lists[0]]
-            # Remove the objects getting combined from the list of all objects
-            all_objects.remove(objects[lists[0]])
-
-            while count < num_contours:
-                # Combine objects into a single array
-                new_objects = np.append(new_objects, objects[lists[count]], 0)
-                # Remove the objects getting combined from the list of all objects
-                all_objects.remove(objects[lists[count]])
-                count += 1
-            # Add combined contour to list of all contours
-            all_objects.append(new_objects)
-    else:
-        fatal_error("segment_list must be a list of object ID's or a list of lists of ID's!")
+    while count < num_contours:
+        # Combine segments into a single object
+        combined_object = np.append(combined_object, objects[segment_list_copy[count]], 0)
+        # Remove the segment that was combined from the list of all objects
+        all_objects.pop(segment_list_copy[count])
+        count += 1
+    # Replace with the combined object
+    all_objects.append(combined_object)
 
     labeled_img = mask.copy()
     labeled_img = cv2.cvtColor(labeled_img, cv2.COLOR_GRAY2RGB)
 
     # Color each segment a different color, use a previously saved scale if available
     rand_color = color_palette(num=len(all_objects), saved=True)
-
     # Plot all segment contours
     for i, cnt in enumerate(all_objects):
         cv2.drawContours(labeled_img, all_objects[i], -1, rand_color[i], params.line_thickness, lineType=8)
