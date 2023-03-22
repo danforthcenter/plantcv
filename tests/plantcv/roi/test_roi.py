@@ -11,9 +11,9 @@ def test_from_binary_image(roi_test_data):
     # Create a binary image
     bin_img = np.zeros(np.shape(rgb_img)[0:2], dtype=np.uint8)
     cv2.rectangle(bin_img, (100, 100), (10, 10), 255, -1)
-    roi, _ = from_binary_image(bin_img=bin_img, img=rgb_img)
+    roi = from_binary_image(bin_img=bin_img, img=rgb_img)
     # Assert the contours and hierarchy lists contain only the ROI
-    assert np.shape(roi) == (1, 360, 1, 2)
+    assert np.shape(roi.contours[0]) == (1, 360, 1, 2)
 
 
 def test_from_binary_image_grayscale_input(roi_test_data):
@@ -23,9 +23,9 @@ def test_from_binary_image_grayscale_input(roi_test_data):
     # Create a binary image
     bin_img = np.zeros(np.shape(gray_img)[0:2], dtype=np.uint8)
     cv2.rectangle(bin_img, (100, 100), (10, 10), 255, -1)
-    roi, _ = from_binary_image(bin_img=bin_img, img=gray_img)
+    roi = from_binary_image(bin_img=bin_img, img=gray_img)
     # Assert the contours and hierarchy lists contain only the ROI
-    assert np.shape(roi) == (1, 360, 1, 2)
+    assert np.shape(roi.contours[0]) == (1, 360, 1, 2)
 
 
 def test_from_binary_image_bad_binary_input(roi_test_data):
@@ -34,7 +34,7 @@ def test_from_binary_image_bad_binary_input(roi_test_data):
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
     # Binary input is required but an RGB input is provided
     with pytest.raises(RuntimeError):
-        _, _ = from_binary_image(bin_img=rgb_img, img=rgb_img)
+        _ = from_binary_image(bin_img=rgb_img, img=rgb_img)
 
 
 def test_rectangle(roi_test_data):
