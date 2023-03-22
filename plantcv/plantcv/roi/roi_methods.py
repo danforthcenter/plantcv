@@ -19,8 +19,7 @@ def from_binary_image(img, bin_img):
     bin_img       = Binary image to extract an ROI contour from.
 
     Outputs:
-    roi_contour   = An ROI set of points (contour).
-    roi_hierarchy = The hierarchy of ROI contour(s).
+    roi
 
     :param img: numpy.ndarray
     :param bin_img: numpy.ndarray
