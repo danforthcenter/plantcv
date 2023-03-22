@@ -31,7 +31,7 @@ from plantcv import plantcv as pcv
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
 
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 # Caclulates the proportion of pixels that fall into a signal bin and writes the values to a file. Also provides a histogram of this data
 analysis_image  = pcv.analyze_nir_intensity(gray_img, mask, 256, histplot=True, label="default")
