@@ -13,7 +13,7 @@ PlantCV has been tested on the following systems:
 
 #### Required dependencies
 
-- Python (tested with versions 3.7, 3.8, and 3.9)
+- Python (tested with versions 3.8, 3.9, and 3.10)
     - Package managers will automatically solve for the required dependencies, which can be found in the 
     [requirements configuration files](https://github.com/danforthcenter/plantcv/blob/main/requirements.txt). 
 
