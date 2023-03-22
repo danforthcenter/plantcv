@@ -16,26 +16,20 @@ def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, 
 
     Inputs:
     img            = RGB or grayscale image data for plotting
-    roi_contour    = contour of roi, output from "View and Adjust ROI" function
-    roi_hierarchy  = contour of roi, output from "View and Adjust ROI" function
-    object_contour = contours of objects, output from "find_objects" function
-    obj_hierarchy  = hierarchy of objects, output from "find_objects" function
+    roi            = region of interest, an instance of the Object class output from a roi function
+    obj            = contours of objects, output from "find_objects" function
     roi_type       = 'cutto', 'partial' (for partially inside, default), or 'largest' (keep only the largest contour)
 
     Returns:
-    kept_cnt       = kept contours
-    hierarchy      = contour hierarchy list
+    kept_cnt       = kept contours as an instance of the Object class
     mask           = mask image
     obj_area       = total object pixel area
 
     :param img: numpy.ndarray
+    :param roi: plantcv.plantcv.classes.Objects
+    :param obj: plantcv.plantcv.classes.Objects
     :param roi_type: str
-    :param roi_contour: list
-    :param roi_hierarchy: numpy.ndarray
-    :param object_contour: list
-    :param obj_hierarchy: numpy.ndarray
-    :return kept_cnt: list
-    :return hierarchy: numpy.ndarray
+    :return kept_cnt: plantcv.plantcv.classes.Objects
     :return mask: numpy.ndarray
     :return obj_area: int
     """
