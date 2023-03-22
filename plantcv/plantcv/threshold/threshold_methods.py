@@ -8,7 +8,7 @@ from matplotlib import pyplot as plt
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
-from skimage.feature import greycomatrix, greycoprops
+from skimage.feature import graycomatrix, graycoprops
 from scipy.ndimage import generic_filter
 
 
@@ -301,9 +301,9 @@ def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity'
         inputs = np.reshape(a=inputs, newshape=[ksize, ksize])
         inputs = inputs.astype(np.uint8)
         # Greycomatrix takes image, distance offset, angles (in radians), symmetric, and normed
-        # http://scikit-image.org/docs/dev/api/skimage.feature.html#skimage.feature.greycomatrix
-        glcm = greycomatrix(inputs, [offset], [0], 256, symmetric=True, normed=True)
-        diss = greycoprops(glcm, texture_method)[0, 0]
+        # http://scikit-image.org/docs/dev/api/skimage.feature.html#skimage.feature.graycomatrix
+        glcm = graycomatrix(inputs, [offset], [0], 256, symmetric=True, normed=True)
+        diss = graycoprops(glcm, texture_method)[0, 0]
         return diss
 
     # Make an array the same size as the original image
