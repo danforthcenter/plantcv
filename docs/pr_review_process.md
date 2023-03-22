@@ -47,7 +47,7 @@ Iterate as needed.
 ### Step 4: Review the tests
 
 1. Do all tests pass?
-    1. Running relevant tests locally: `py.test --cov=plantcv -k test_name_or_keywords` in a local terminal with an activated PlantCV environment
+    1. Running relevant tests locally: `py.test --cov=plantcv -k test_name_or_keywords` in a local terminal with an activated PlantCV environment. If you get an error, make sure pytest-cov is installed in your environment (e.g. `conda install pytest-cov`)
 2. Does coverage remain at 100%?
 3. Do any new or modified tests accurately test the PR code?
 
