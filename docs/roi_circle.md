@@ -21,8 +21,8 @@
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), 
-# or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
+# or "plot" (Jupyter Notebooks)
+pcv.params.debug = "plot"
 
 roi = pcv.roi.circle(img=rgb_img, x=200, y=225, r=75)
 
