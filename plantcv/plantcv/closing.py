@@ -23,7 +23,7 @@ def closing(gray_img, kernel=None):
 
     # If image is binary use the faster method
     if len(np.unique(gray_img)) == 2:
-        bool_img = morphology.binary_closing(image=gray_img, selem=kernel)
+        bool_img = morphology.binary_closing(gray_img, kernel)
         filtered_img = np.copy(bool_img.astype(np.uint8) * 255)
     # Otherwise use method appropriate for grayscale images
     else:

@@ -25,7 +25,7 @@ def fill(bin_img, size):
     :return filtered_img: numpy.ndarray
     """
     # Make sure the image is binary
-    if len(np.shape(bin_img)) != 2 or len(np.unique(bin_img)) != 2:
+    if len(np.shape(bin_img)) != 2 or len(np.unique(bin_img)) > 2:
         fatal_error("Image is not binary")
 
     # Cast binary image to boolean
