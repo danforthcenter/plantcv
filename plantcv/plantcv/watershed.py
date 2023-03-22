@@ -41,7 +41,9 @@ def watershed_segmentation(rgb_img, mask, distance=10, label="default"):
 
     dist_transform = cv2.distanceTransformWithLabels(mask, cv2.DIST_L2, maskSize=0)[0]
 
-    local_max = peak_local_max(dist_transform, indices=False, min_distance=distance, labels=mask)
+    local_max_coordinates = peak_local_max(dist_transform, min_distance=distance, labels=mask)
+    local_max = np.zeros_like(dist_transform, dtype=bool)
+    local_max[tuple(local_max_coordinates.T)] = True
 
     markers = ndi.label(local_max, structure=np.ones((3, 3)))[0]
     dist_transform1 = -dist_transform
