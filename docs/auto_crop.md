@@ -26,7 +26,7 @@ from plantcv import plantcv as pcv
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
 
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 # Crop image
 crop_img = pcv.auto_crop(img=rgb_img, obj=id_objects, padding_x=20, padding_y=20, color='black')
