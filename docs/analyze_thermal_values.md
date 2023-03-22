@@ -34,7 +34,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 # Caclulates the proportion of pixels that fall into a signal bin and writes the values to a file. Also provides a histogram of this data
-thermal_hist  = pcv.analyze_thermal_values(thermal_array=thermal_img, maks=mask, histplot=True, label="default")
+thermal_hist  = pcv.analyze_thermal_values(thermal_array=thermal_img, mask=mask, histplot=True, label="default")
 
 # Access data stored out from analyze_thermal_values
 temp_range = pcv.outputs.observations['default']['max_temp']['value'] - pcv.outputs.observations['default']['min_temp']['value']
