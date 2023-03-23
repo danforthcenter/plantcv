@@ -29,7 +29,7 @@ from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 # Identify objects (plant material) in an image, all objects regardless of 
 # hierarchy are filled (e.g. holes between leaves).
