@@ -19,23 +19,22 @@ def from_binary_image(img, bin_img):
     bin_img       = Binary image to extract an ROI contour from.
 
     Outputs:
-    roi_contour   = An ROI set of points (contour).
-    roi_hierarchy = The hierarchy of ROI contour(s).
+    roi
 
     :param img: numpy.ndarray
     :param bin_img: numpy.ndarray
-    :return roi_contour: list
-    :return roi_hierarchy: numpy.ndarray
+    :return roi: plantcv.plantcv.classes.Objects
     """
     # Make sure the input bin_img is binary
     if len(np.unique(bin_img)) != 2:
         fatal_error("Input image is not binary!")
     # Use the binary image to create an ROI contour
     roi_contour, roi_hierarchy = _cv2_findcontours(bin_img=bin_img)
+    roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
     # Draw the ROI if requested
     _draw_roi(img=img, roi_contour=roi_contour)
 
-    return roi_contour, roi_hierarchy
+    return roi
 
 
 # Create a rectangular ROI
@@ -51,16 +50,14 @@ def rectangle(img, x, y, h, w):
     w             = The width of the rectangle.
 
     Outputs:
-    roi_contour   = An ROI set of points (contour).
-    roi_hierarchy = The hierarchy of ROI contour(s).
+    roi
 
     :param img: numpy.ndarray
     :param x: int
     :param y: int
     :param h: int
     :param w: int
-    :return roi_contour: list
-    :return roi_hierarchy: numpy.ndarray
+    :return roi: plantcv.plantcv.classes.Objects
     """
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
@@ -74,6 +71,7 @@ def rectangle(img, x, y, h, w):
     # Create the ROI contour
     roi_contour = [np.array([[pt1], [pt2], [pt3], [pt4]], dtype=np.int32)]
     roi_hierarchy = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
+    roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
 
     # Draw the ROI if requested
     _draw_roi(img=img, roi_contour=roi_contour)
@@ -82,7 +80,7 @@ def rectangle(img, x, y, h, w):
     if x < 0 or y < 0 or x + w > width or y + h > height:
         fatal_error("The ROI extends outside of the image!")
 
-    return roi_contour, roi_hierarchy
+    return roi
 
 
 # Create a circular ROI
@@ -97,15 +95,13 @@ def circle(img, x, y, r):
     r             = The radius of the circle.
 
     Outputs:
-    roi_contour   = An ROI set of points (contour).
-    roi_hierarchy = The hierarchy of ROI contour(s).
+    roi           = A dataclass with the roi object and hierarchy.
 
     :param img: numpy.ndarray
     :param x: int
     :param y: int
     :param r: int
-    :return roi_contour: list
-    :return roi_hierarchy: numpy.ndarray
+    :return roi: plantcv.plantcv.classes.Objects
     """
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
@@ -117,6 +113,7 @@ def circle(img, x, y, r):
 
     # Use the binary image to create an ROI contour
     roi_contour, roi_hierarchy = _cv2_findcontours(bin_img=bin_img)
+    roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
 
     # Draw the ROI if requested
     _draw_roi(img=img, roi_contour=roi_contour)
@@ -125,7 +122,7 @@ def circle(img, x, y, r):
     if x - r < 0 or x + r > width or y - r < 0 or y + r > height:
         fatal_error("The ROI extends outside of the image!")
 
-    return roi_contour, roi_hierarchy
+    return roi
 
 
 # Create an elliptical ROI
@@ -142,8 +139,7 @@ def ellipse(img, x, y, r1, r2, angle):
     angle         = The angle of rotation in degrees of the major axis.
 
     Outputs:
-    roi_contour   = An ROI set of points (contour).
-    roi_hierarchy = The hierarchy of ROI contour(s).
+    roi           = a dataclass with the roi object and hierarchy
 
     :param img: numpy.ndarray
     :param x: int
@@ -151,8 +147,7 @@ def ellipse(img, x, y, r1, r2, angle):
     :param r1: int
     :param r2: int
     :param angle: double
-    :return roi_contour: list
-    :return roi_hierarchy: numpy.ndarray
+    :return roi: plantcv.plantcv.classes.Objects
     """
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
@@ -164,6 +159,7 @@ def ellipse(img, x, y, r1, r2, angle):
 
     # Use the binary image to create an ROI contour
     roi_contour, roi_hierarchy = _cv2_findcontours(bin_img=bin_img)
+    roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
 
     # Draw the ROI if requested
     _draw_roi(img=img, roi_contour=roi_contour)
@@ -173,7 +169,7 @@ def ellipse(img, x, y, r1, r2, angle):
             len(roi_contour) == 0:
         fatal_error("The ROI extends outside of the image, or ROI is not on the image!")
 
-    return roi_contour, roi_hierarchy
+    return roi
 
 
 # Draw the ROI on a reference image
@@ -397,19 +393,18 @@ def custom(img, vertices):
         vertices      = List of vertices of the desired polygon ROI
 
         Outputs:
-        roi_contour   = An ROI set of points (contour).
-        roi_hierarchy = The hierarchy of ROI contour(s).
+        roi           = a dataclass with the roi object and hierarchy
 
         :param img: numpy.ndarray
         :param vertices: list
-        :return roi_contour: list
-        :return roi_hierarchy: numpy.ndarray
+        :return roi: plantcv.plantcv.classes.Objects
     """
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
 
     roi_contour = [np.array(vertices, dtype=np.int32)]
     roi_hierarchy = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
+    roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
 
     # Draw the ROIs if requested
     _draw_roi(img=img, roi_contour=roi_contour)
@@ -419,4 +414,5 @@ def custom(img, vertices):
         (x, y) = i
         if x < 0 or x > width or y < 0 or y > height:
             fatal_error("An ROI extends outside of the image!")
-    return roi_contour, roi_hierarchy
+
+    return roi

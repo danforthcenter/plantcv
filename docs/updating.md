@@ -310,6 +310,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, objects, hierarchy = **plantcv.find_objects**(*img, mask, device, debug=None*)
 * post v3.0dev2: objects, hierarchy = **plantcv.find_objects**(*img, mask*)
+* post v4.0: objects = **plantcv.find_objects**(*img, mask*)
 
 #### plantcv.flip
 
@@ -672,6 +673,7 @@ pages for more details on the input and output variable types.
 * post v3.1: marker_header, marker_data, analysis_image = **plantcv.report_size_marker_area**(*img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None, thresh=None*)
 * post v3.3: analysis_image = **plantcv.report_size_marker_area**(*img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None, thresh=None*)
 * post v3.11: analysis_image = **plantcv.report_size_marker_area**(*img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None, thresh=None, label="default"*)
+* post v4.0: analysis_image = **plantcv.report_size_marker_area**(*img, roi, marker='define', objcolor='dark', thresh_channel=None, thresh=None, label="default"*)
 
 #### plantcv.resize
 
@@ -700,29 +702,40 @@ pages for more details on the input and output variable types.
 * pre v3.0dev1: NA
 * post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.circle**(*x, y, r, img*)
 * post v3.2: roi_contour, roi_hierarchy = **plantcv.roi.circle**(*img, x, y, r*)
+* post v4.0: roi = **plantcv.roi.circle**(*img, x, y, r*)
+
+#### plantcv.roi.custom
+
+* pre v3.0dev1: NA
+* post v3.14: roi_contour, roi_hierarchy = **plantcv.roi.custom**(*img, vertices*)
+* post v4.0: roi = **plantcv.roi.custom**(*img, vertices*)
 
 #### plantcv.roi.ellipse
 
 * pre v3.0dev1: NA
 * post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.ellipse**(*x, y, r1, r2, angle, img*)
 * post v3.2: roi_contour, roi_hierarchy = **plantcv.roi.ellipse**(*img, x, y, r1, r2, angle*)
+* post v4.0: roi = **plantcv.roi.ellipse**(*img, x, y, r1, r2, angle*)
 
 #### plantcv.roi.from_binary_image
 
 * pre v3.0dev1: NA
 * post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.from_binary_image**(*bin_img, img*)
 * post v3.2: roi_contour, roi_hierarchy = **plantcv.roi.from_binary**(*img, bin_img*)
+* post v4.0: roi = **plantcv.roi.from_binary**(*img, bin_img*)
 
 #### plantcv.roi.rectangle
 
 * pre v3.0dev1: NA
 * post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.rectangle**(*x, y, h, w, img*)
 * post v3.2: roi_contour, roi_hierarchy = **plantcv.roi.rectangle**(*img, x, y, h, w*)
+* post v4.0: roi = **plantcv.roi.rectangle**(*img, x, y, h, w*)
 
 #### plantcv.roi.roi2mask
 
 * pre v3.8: NA
 * post v3.8: mask = **pcv.roi.roi2mask**(*img, contour*)
+* post v4.0: mask = **pcv.roi.roi2mask**(*img, roi*)
 
 #### plantcv.roi.auto_grid
 
@@ -931,11 +944,13 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: NA
 * post v3.0dev2: bin_img = **plantcv.threshold.gaussian**(*gray_img, max_value, object_type="light"*)
+* post v4.0: bin_img = **plantcv.threshold.gaussian**(*gray_img, block_size, offset, object_type="light", max_value=255*)
 
 #### plantcv.threshold.mean
 
 * pre v3.0dev2: NA
 * post v3.0dev2: bin_img = **plantcv.threshold.mean**(*gray_img, max_value, object_type="light"*)
+* post v4.0: bin_img = **plantcv.threshold.mean**(*gray_img, block_size, offset, object_type="light", max_value=255*)
 
 #### plantcv.threshold.otsu
 
@@ -1030,6 +1045,11 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev1: NA
 * post v3.0dev2: **plantcv.transform.save_matrix**(*matrix, filename*)
+
+#### plantcv.transform.std_color_matrix
+
+* pre v4.0: NA
+* post v4.0: **plantcv.transform.std_color_matrix**(*pos=0*)
 
 #### plantcv.triangle_auto_threshold
 
