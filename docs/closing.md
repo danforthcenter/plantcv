@@ -20,7 +20,7 @@ Filters out dark noise from an image.
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 # Apply closing
 filtered_img = pcv.closing(gray_img=gray_img)
