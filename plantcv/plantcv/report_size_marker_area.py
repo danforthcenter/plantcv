@@ -13,6 +13,7 @@ from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
+from plantcv.plantcv import Objects
 
 
 def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_channel=None,
@@ -74,14 +75,14 @@ def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_c
             marker_bin = binary_threshold(gray_img=marker_hsv, threshold=thresh, max_value=255, object_type=objcolor)
             # Identify contours in the masked image
             contours, hierarchy = _cv2_findcontours(bin_img=marker_bin)
+            obj = Objects([contours], [hierarchy])
+
             # Filter marker contours using the input ROI
-            kept_contours, kept_hierarchy, kept_mask, obj_area = roi_objects(img=ref_img, object_contour=contours,
-                                                                             obj_hierarchy=hierarchy,
-                                                                             roi_contour=roi.contours[0],
-                                                                             roi_hierarchy=roi.hierarchy[0],
-                                                                             roi_type="partial")
+            kept_obj, kept_mask, obj_area = roi_objects(img=ref_img, obj=obj, roi=roi, roi_type="partial")
             # If there are more than one contour detected, combine them into one
             # These become the marker contour and mask
+            kept_contours = kept_obj.contours[0]
+            kept_hierarchy = kept_obj.hierarchy[0]
             marker_contour, marker_mask = object_composition(img=ref_img, contours=kept_contours,
                                                              hierarchy=kept_hierarchy)
         else:

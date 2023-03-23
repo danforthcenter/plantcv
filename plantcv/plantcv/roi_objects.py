@@ -8,6 +8,7 @@ from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
+from plantcv.plantcv import Objects
 
 
 def roi_objects(img, roi, obj, roi_type="partial"):
@@ -142,4 +143,4 @@ def roi_objects(img, roi, obj, roi_type="partial"):
     _debug(ori_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_obj_on_img.png'))
     _debug(mask, filename=os.path.join(params.debug_outdir, str(params.device) + '_roi_mask.png'), cmap='gray')
 
-    return kept_cnt, mask, obj_area
+    return Objects(contours=[kept_cnt], hierarchy=[kept_hierarchy]), mask, obj_area
