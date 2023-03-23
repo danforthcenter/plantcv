@@ -17,7 +17,7 @@ Reference associated issue numbers. Does this pull request close any issues?
 Add any other context about the problem here.
 
 **For the reviewer**
-See [this page](https://plantcv.readthedocs.io/en/stable/pr_review_process/) for instructions on how to review the pull request.
+See [this page](https://plantcv.readthedocs.io/en/latest/pr_review_process/) for instructions on how to review the pull request.
 - [ ] PR functionality reviewed in a Jupyter Notebook
 - [ ] All tests pass
 - [ ] Test coverage remains 100%
