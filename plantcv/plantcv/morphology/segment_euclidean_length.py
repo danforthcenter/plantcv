@@ -6,9 +6,9 @@ import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 from plantcv.plantcv import fatal_error
-from plantcv.plantcv import find_objects
 from plantcv.plantcv import color_palette
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _cv2_findcontours
 from plantcv.plantcv.morphology import find_tips
 from scipy.spatial.distance import euclidean
 
@@ -49,7 +49,7 @@ def segment_euclidean_length(segmented_img, objects, label="default"):
         finding_tips_img = np.zeros(segmented_img.shape[:2], np.uint8)
         cv2.drawContours(finding_tips_img, objects, i, (255, 255, 255), 1, lineType=8)
         segment_tips = find_tips(finding_tips_img)
-        tip_objects, tip_hierarchies = find_objects(segment_tips, segment_tips)
+        tip_objects, _ = _cv2_findcontours(bin_img=segment_tips)
         points = []
         if not len(tip_objects) == 2:
             fatal_error("Too many tips found per segment, try pruning again")

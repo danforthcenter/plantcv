@@ -1,9 +1,9 @@
 import cv2
 import numpy as np
 from plantcv.plantcv import params
-from plantcv.plantcv import find_objects
 from plantcv.plantcv import image_subtract
 from plantcv.plantcv.morphology import find_tips
+from plantcv.plantcv._helpers import _cv2_findcontours
 
 
 def _iterative_prune(skel_img, size):
@@ -25,7 +25,7 @@ def _iterative_prune(skel_img, size):
     params.debug = None
 
     # Check to see if the skeleton has multiple objects
-    objects, _ = find_objects(pruned_img, pruned_img)
+    objects, _ = _cv2_findcontours(bin_img=pruned_img)
 
     # Iteratively remove endpoints (tips) from a skeleton
     for i in range(0, size):
@@ -35,8 +35,8 @@ def _iterative_prune(skel_img, size):
     # Make debugging image
     pruned_plot = np.zeros(skel_img.shape[:2], np.uint8)
     pruned_plot = cv2.cvtColor(pruned_plot, cv2.COLOR_GRAY2RGB)
-    skel_obj, skel_hierarchy = find_objects(skel_img, skel_img)
-    pruned_obj, pruned_hierarchy = find_objects(pruned_img, pruned_img)
+    skel_obj, skel_hierarchy = _cv2_findcontours(bin_img=pruned_img)
+    pruned_obj, pruned_hierarchy = _cv2_findcontours(bin_img=pruned_img)
 
     # Reset debug mode
     params.debug = debug

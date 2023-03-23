@@ -1,7 +1,8 @@
 import pytest
 import numpy as np
 import cv2
-from plantcv.plantcv.threshold import binary, gaussian, mean, otsu, custom_range, saturation, triangle, texture, mask_bad
+from plantcv.plantcv.threshold import binary, gaussian, mean, otsu, custom_range, saturation, triangle, texture, \
+    mask_bad, dual_channels
 from plantcv.plantcv import params
 
 
@@ -28,7 +29,7 @@ def test_gaussian(objtype, threshold_test_data):
     """Test for PlantCV."""
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
-    binary_img = gaussian(gray_img=gray_img, max_value=255, object_type=objtype)
+    binary_img = gaussian(gray_img=gray_img, block_size=11, offset=2, object_type=objtype, max_value=255,)
     # Assert that the output image has the dimensions of the input image and is binary
     assert gray_img.shape == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
@@ -38,15 +39,15 @@ def test_gaussian_incorrect_object_type(threshold_test_data):
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
     with pytest.raises(RuntimeError):
-        _ = gaussian(gray_img=gray_img, max_value=255, object_type="lite")
+        _ = gaussian(gray_img=gray_img, block_size=11, offset=2, object_type="lite", max_value=255)
 
 
-@pytest.mark.parametrize("objtype", ["dark", "light"])
-def test_mean(objtype, threshold_test_data):
+@pytest.mark.parametrize("objtype, size", [["dark", 11], ["light", 10]])
+def test_mean(objtype, size, threshold_test_data):
     """Test for PlantCV."""
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
-    binary_img = mean(gray_img=gray_img, max_value=255, object_type=objtype)
+    binary_img = mean(gray_img=gray_img, block_size=size, offset=2, object_type=objtype, max_value=255)
     # Assert that the output image has the dimensions of the input image and is binary
     assert gray_img.shape == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
@@ -56,7 +57,15 @@ def test_mean_incorrect_object_type(threshold_test_data):
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
     with pytest.raises(RuntimeError):
-        _ = mean(gray_img=gray_img, max_value=255, object_type="lite")
+        _ = mean(gray_img=gray_img, block_size=11, offset=2, object_type="lite", max_value=255)
+
+
+def test_mean_incorrect_block_size(threshold_test_data):
+    """Test for PlantCV."""
+    # Read in test data
+    gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
+    with pytest.raises(RuntimeError):
+        _ = mean(gray_img=gray_img, block_size=1, offset=2, object_type="dark", max_value=255)
 
 
 @pytest.mark.parametrize("objtype", ["dark", "light"])
@@ -208,3 +217,37 @@ def test_mask_bad_input_color_img(threshold_test_data):
     bad_img = cv2.imread(threshold_test_data.small_rgb_img)
     with pytest.raises(RuntimeError):
         _ = mask_bad(bad_img, bad_type='nan')
+
+
+@pytest.mark.parametrize("y_ch,abv,expected", [
+    ['R', True, 255], ['G', True, 0], ['l', True, 255], ['a', True, 255], ['b', True, 255], ['h', False, 0],
+    ['s', False, 0], ['v', False, 0], ['gray', True, 255], ['index', True, 0]])
+def test_dual_channels(y_ch, abv, expected):
+    # Create a synthetic RGB image containing a single pixel
+    img = np.array([100, 50, 200], dtype=np.uint8).reshape((1, 1, 3))
+    # first two points for a straight line of slope 1 and y-intercept of 0
+    # last two points are ignored ut trigger the warning
+    pts = [(0, 0), (255, 255), (0, 1), (2, 3)]
+    x_ch = 'B'
+    mask = dual_channels(img, x_channel=x_ch, y_channel=y_ch, points=pts, above=abv, max_value=255)
+    assert mask[0, 0] == expected
+
+
+def test_dual_channels_bad_points():
+    # Create a synthetic RGB image containing a single pixel
+    img = np.array([100, 50, 200], dtype=np.uint8).reshape((1, 1, 3))
+    # only one point given
+    pts = [(0, 0)]
+    x_ch = 'B'
+    y_ch = 'R'
+    with pytest.raises(RuntimeError):
+        _ = dual_channels(img, x_channel=x_ch, y_channel=y_ch, points=pts, above=True, max_value=255)
+
+
+def test_dual_channels_bad_channel():
+    # Create a synthetic RGB image containing a single pixel
+    img = np.array([100, 50, 200], dtype=np.uint8).reshape((1, 1, 3))
+    # only one point given
+    pts = [(0, 0), (255, 255)]
+    with pytest.raises(RuntimeError):
+        _ = dual_channels(img, x_channel='wrong_ch', y_channel='index', points=pts, above=True, max_value=255)
