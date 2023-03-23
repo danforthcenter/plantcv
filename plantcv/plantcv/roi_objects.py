@@ -10,7 +10,7 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 
 
-def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, roi_type="partial"):
+def roi_objects(img, roi, obj, roi_type="partial"):
     """
     Find objects partially inside a region of interest or cut objects to the ROI.
 
@@ -36,6 +36,11 @@ def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, 
     # Store debug
     debug = params.debug
     params.debug = None
+
+    roi_contour = roi.contours[0]
+    roi_hierarchy = roi.hierarchy[0]
+    object_contour = obj.contours[0]
+    obj_hierarchy = obj.hierarchy[0]
 
     # Create an empty grayscale (black) image the same dimensions as the input image
     mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
@@ -137,4 +142,4 @@ def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, 
     _debug(ori_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_obj_on_img.png'))
     _debug(mask, filename=os.path.join(params.debug_outdir, str(params.device) + '_roi_mask.png'), cmap='gray')
 
-    return kept_cnt, kept_hierarchy, mask, obj_area
+    return kept_cnt, mask, obj_area
