@@ -23,5 +23,5 @@ def test_objects_iteration():
     """Test for PlantCV."""
     obj = Objects([1, 2], [3, 4])
     for i in obj:
-        _, x = i
+        x = i.hierarchy[0]
     assert x == 4
