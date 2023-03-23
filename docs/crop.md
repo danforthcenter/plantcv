@@ -24,7 +24,7 @@ from plantcv import plantcv as pcv
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
 
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 # Crop image
 crop_img = pcv.crop(img=img, x=800, y=400, h=1200, w=900)
