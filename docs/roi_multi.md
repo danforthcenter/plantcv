@@ -28,7 +28,7 @@ from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 # Make a grid of ROIs 
 rois1, roi_hierarchy1 = pcv.roi.multi(img=img1, coord=(25,120), radius=20, 
