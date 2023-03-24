@@ -26,7 +26,7 @@ from plantcv import plantcv as pcv
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
 
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 # Create binary image from a gray image based
 threshold_gaussian = pcv.threshold.gaussian(gray_img=gray_img, max_value=255, object_type='dark')
