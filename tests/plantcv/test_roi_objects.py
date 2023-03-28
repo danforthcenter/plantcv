@@ -19,6 +19,20 @@ def test_roi_objects(mode, exp, test_data):
     # Assert that the contours were filtered as expected
     assert area == exp
 
+def test_roi_objects_multi(test_data):
+    """Test for PlantCV."""
+    # Read in test data
+    img = cv2.imread(test_data.small_rgb_img)
+    cnt, cnt_str = test_data.load_contours(test_data.small_contours_file)
+    cnt_Obj = Objects(contours=[cnt], hierarchy=[cnt_str])
+    roi = [np.array([[[150, 150]], [[150, 174]], [[249, 174]], [[249, 150]]], dtype=np.int32)]
+    roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
+    # make a multi-ROI by repeating the same roi twice
+    roi_Obj = Objects(contours=[roi, roi], hierarchy=[roi_str, roi_str])
+    _, _, area = roi_objects(img=img, roi=roi_Obj, obj=cnt_Obj, roi_type="partial")
+    # Assert that the contours were filtered as expected
+    assert area == 221
+
 
 def test_roi_objects_bad_input(test_data):
     """Test for PlantCV."""
