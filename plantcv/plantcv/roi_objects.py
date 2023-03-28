@@ -38,6 +38,9 @@ def roi_objects(img, roi, obj, roi_type="partial"):
     debug = params.debug
     params.debug = None
 
+    if len(roi.contours) > 1:
+        print("Warning: received a multi-ROI but only the first ROI will be used. Consider using a for loop for multi-ROI")
+
     roi_contour = roi.contours[0]
     roi_hierarchy = roi.hierarchy[0]
     object_contour = obj.contours[0]
