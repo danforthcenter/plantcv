@@ -192,6 +192,13 @@ def read_data(filename):
             "reshape": (int(header_dict["lines"]), int(header_dict["bands"]), int(header_dict["samples"])),
             "transpose": (0, 2, 1)
         },
+        # Band Interleaved by Pixel (BIP)
+        "BIP": {
+            # Divide the raw data by Y (lines), and X (samples), Z (spectral bands)
+            # Then reorder into a cube in Y, X, Z order
+            "reshape": (int(header_dict["lines"]), int(header_dict["samples"]), int(header_dict["bands"])),
+            "transpose": (0, 1, 2)
+        },
         # Band Sequential (BSQ)
         "BSQ": {
             # Divide the raw data by Z (spectral bands), Y (lines), and X (samples)

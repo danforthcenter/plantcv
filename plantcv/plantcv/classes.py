@@ -299,7 +299,7 @@ class Objects:
     def __next__(self):
         if self.n < len(self.contours):
             self.n += 1
-            return self.contours[self.n-1], self.hierarchy[self.n-1]
+            return Objects(contours=[self.contours[self.n-1]], hierarchy=[self.hierarchy[self.n-1]])
         else:
             raise StopIteration
 

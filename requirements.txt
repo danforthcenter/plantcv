@@ -1,9 +1,9 @@
-matplotlib>=1.5
+matplotlib>=1.5,<3.6
 numpy>=1.11,<1.23
 pandas
 python-dateutil
 scipy
-scikit-image>=0.13
+scikit-image>=0.19
 scikit-learn
 plotnine
 dask

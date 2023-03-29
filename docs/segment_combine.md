@@ -7,14 +7,14 @@ Manually combine segments from a segmented skeleton
 **returns** Labeled image, new segment objects list 
 
 - **Parameters:**
-    - segment_list - List of segments to get combined, or list of lists of segments to get combined
+    - segment_list - List of segments to get combined
     - objects - Segment objects (output from either [plantcv.morphology.prune](prune.md),,
     [plantcv.morphology.segment_skeleton](segment_skeleton.md), or
     [plantcv.morphology.segment_sort](segment_sort.md)).
     - mask - Binary mask for debugging images.
 
 - **Context:**
-    - Images with more complexity will often cause issues with the algorithms used in functions within the 
+    - Objects with more complexity will often cause issues with the algorithms used in functions within the 
     `plantcv.morphology` sub-package. However, it is still possible to collect accurate data from such images
     with a manual step such as `plantcv.morphology.segment_combine`. An example workflow would use 
     [plantcv.morphology.check_cycles](check_cycles.md) to identify images that have parts of plant that occlude 
@@ -37,13 +37,13 @@ pcv.params.text_thickness = 3
 
 # Plot an image with ID's labeled so the specific segment ID's can get used
 # to combine segments 
-segment_img, id_labeled_img = pcv.morphology.segment_id(pruned_img, segment_objects, mask)
+segment_img, id_labeled_img = pcv.morphology.segment_id(skel_img=pruned_img, objects=segment_objects, mask=mask)
 
 # Combine the segments of the really floppy leaf
-labeled_img, new_objects = pcv.morphology.segment_combine([12,6], segment_objects, mask)
+labeled_img, new_objects = pcv.morphology.segment_combine(segment_list=[12,6], objects=segment_objects, mask=mask)
 
 # Combine the segments of the leaf obscuring the floppy leaf 
-labeled_img2, new_objects = pcv.morphology.segment_combine([7,6], new_objects, mask)
+labeled_img2, new_objects = pcv.morphology.segment_combine(segment_list=[7,6], objects=new_objects, mask=mask)
 
 # Optionally, if all ID's were legible we could combine multiple segments in one step. 
 # Users can provide a list of lists in which each list contains segments that should 

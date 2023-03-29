@@ -60,13 +60,7 @@ def multiprocess(jobs, client):
     :param client: distributed.client.Client
     """
     # Keep a list of job futures
-    processed = []
-    # Submit the jobs to the scheduler
-    for job in jobs:
-        # Submit individual job
-        processed.append(client.submit(_process_images_multiproc, job))
+    futures = client.map(_process_images_multiproc, jobs)
     # Watch job progress and print a progress bar
-    progress(processed)
-    # Each job outputs results to disk so we do not need to gather results here
-    client.shutdown()
+    progress(futures)
 ###########################################
