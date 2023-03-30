@@ -35,6 +35,8 @@ Subcommands:
 
 ```
 
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/learn/cli.py)
+
 ### PlantCV utilities
 
 `plantcv-utils` is a command-line tool for running various utilities.
