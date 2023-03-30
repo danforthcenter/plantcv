@@ -39,12 +39,12 @@ Subcommands:
 
 `plantcv-utils` is a command-line tool for running various utilities.
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv-utils)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/utils/cli.py)
 
 
 #### Convert output JSON data files to CSV tables
 
-`plantcv-utils json2csv` is a command-line tool for converting the output JSON files from `plantcv-workflow.py` to
+`plantcv-utils json2csv` is a command-line tool for converting the output JSON files from `plantcv-run-workflow` to
 CSV-formatted tables for downstream analysis in [R](https://www.r-project.org/), 
 [MVApp](http://mvapp.kaust.edu.sa/MVApp/), or other programs.
 
@@ -58,7 +58,7 @@ optional arguments:
 
 ```
 
-The input JSON file is generally created by running `plantcv-workflow.py`, although there are some advanced scenarios
+The input JSON file is generally created by running `plantcv-run-workflow`, although there are some advanced scenarios
 where it is created by running `plantcv.parallel.process_results` on a directory of JSON files. This 
 [hierarchical data structure](output_measurements.md) is convenient for flexible data processing but not for downstream
 analysis. The tool creates an output CSV file. The format of this table is one row per value/label (i.e. R long format). 
@@ -94,9 +94,9 @@ random images requested must be less than or equal to the number of images in th
 
 ### Parallel workflow processing
 
-`plantcv-workflow.py` is a command-line tool for parallel processing of user-defined PlantCV workflows. It is used to
+`plantcv-run-workflow` is a command-line tool for parallel processing of user-defined PlantCV workflows. It is used to
 process metadata and execute custom workflows on each image in a dataset. More detail is provided in the 
 [Workflow Parallelization Tutorial](pipeline_parallel.md).
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv-workflow.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/parallel/cli.py)
 

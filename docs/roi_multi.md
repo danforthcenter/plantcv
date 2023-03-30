@@ -59,11 +59,11 @@ import numpy as np
 
 img_copy = np.copy(img)
 
-# The result file should exist if plantcv-workflow.py was run
+# The result file should exist if plantcv-run-workflow was run
 if os.path.exists(args.result):
     # Open the result file
     results = open(args.result, "r")
-    # The result file would have image metadata in it from plantcv-workflow.py, read it into memory
+    # The result file would have image metadata in it from plantcv-run-workflow, read it into memory
     metadata = results.read()
     # Close the file
     results.close()

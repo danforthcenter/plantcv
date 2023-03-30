@@ -10,7 +10,7 @@
 ### Running PlantCV workflows over a dataset
 
 We normally execute workflows in a shell script or in in a cluster scheduler job file. The parallelization tool
-`plantcv-workflow.py` has many configuration parameters. To make it easier to manage the number of input parameters,
+`plantcv-run-workflow` has many configuration parameters. To make it easier to manage the number of input parameters,
 a configuration file can be edited and input.
 
 ### Configuration-based method
@@ -18,7 +18,7 @@ a configuration file can be edited and input.
 To create a configuration file, run the following:
 
 ```bash
-plantcv-workflow.py --template my_config.txt
+plantcv-run-workflow --template my_config.txt
 
 ```
 
@@ -40,11 +40,11 @@ Differences between JSON and Python will be automatically converted appropriatel
 Once configured, a workflow can be run in parallel over a dataset using the command:
 
 ```bash
-plantcv-workflow.py --config config.json
+plantcv-run-workflow --config config.json
 
 ```
 
-As noted on the [WorkflowConfig](parallel_config.md) page, `plantcv-workflow.py` can be configured to run PlantCV
+As noted on the [WorkflowConfig](parallel_config.md) page, `plantcv-run-workflow` can be configured to run PlantCV
 workflows locally or distribute workflows to a cluster using a scheduler service (e.g. HTCondor, SLURM, etc.).
 
 ### Running PlantCV workflows over a flat directory of images
@@ -129,7 +129,7 @@ Sample image filename: `cam1_16-08-06-16:45_el1100s1_p19.jpg`
 
 ```
 
-Running `plantcv-workflow.py --config config.json` with the example configuration options above will run the PlantCV
+Running `plantcv-run-workflow --config config.json` with the example configuration options above will run the PlantCV
 workflow script `2016-08_pat-edger_brassica-cam1-splitimg.py` on the images in the input directory using an HTCondor
 compute cluster with up to 16 worker jobs checked out of the cluster.
 
@@ -264,4 +264,4 @@ plantcv-utils json2csv -j output.json -c result-table.csv
 
 See [Accessory Tools](tools.md) for more information.
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv-workflow.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/parallel/cli.py)
