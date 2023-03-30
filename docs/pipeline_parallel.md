@@ -258,7 +258,7 @@ To identify each image within our workflow, we will name them based on the `imgt
 ### Convert the output JSON file into CSV tables
 
 ```bash
-plantcv-utils.py json2csv -j output.json -c result-table.csv
+plantcv-utils json2csv -j output.json -c result-table.csv
 
 ```
 

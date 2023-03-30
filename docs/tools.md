@@ -37,19 +37,19 @@ Subcommands:
 
 ### PlantCV utilities
 
-`plantcv-utils.py` is a command-line tool for running various utilities.
+`plantcv-utils` is a command-line tool for running various utilities.
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv-utils.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv-utils)
 
 
 #### Convert output JSON data files to CSV tables
 
-`plantcv-utils.py json2csv` is a command-line tool for converting the output JSON files from `plantcv-workflow.py` to
+`plantcv-utils json2csv` is a command-line tool for converting the output JSON files from `plantcv-workflow.py` to
 CSV-formatted tables for downstream analysis in [R](https://www.r-project.org/), 
 [MVApp](http://mvapp.kaust.edu.sa/MVApp/), or other programs.
 
 ```
-usage: plantcv-utils.py json2csv [-h] -j JSON -c CSV
+usage: plantcv-utils json2csv [-h] -j JSON -c CSV
 
 optional arguments:
   -h, --help            Show this help message and exit
@@ -68,11 +68,11 @@ analysis. The tool creates an output CSV file. The format of this table is one r
 
 #### Collect a random sample of images for testing workflows
 
-`plantcv-utils.py sample_images` is a command-line tool for gathering a random set of images for
+`plantcv-utils sample_images` is a command-line tool for gathering a random set of images for
 testing workflows before running over a full image set. 
 
 ```
-usage: plantcv-utils.py sample_images [-h] -s SOURCE_DIRECTORY -o OUTPUT_DIRECTORY -n NUMBER
+usage: plantcv-utils sample_images [-h] -s SOURCE_DIRECTORY -o OUTPUT_DIRECTORY -n NUMBER
 
 optional arguments:
   -h, --help                                      Show this help message and exit
