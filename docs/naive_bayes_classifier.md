@@ -13,7 +13,7 @@ labeled as plant (255) or background (0) if P(Pixel = plant) > P(Pixel = backgro
 
 - **Parameters:**
     - rgb_img - RGB image data
-    - pdf_file - (str): output file containing PDFs from `plantcv-train.py`
+    - pdf_file - (str): output file containing PDFs from `plantcv-train`
    
 - **Context:**
     - Used to help differentiate plant and background

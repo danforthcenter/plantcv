@@ -5,16 +5,16 @@ available by downloading/cloning the GitHub repository.
 
 ### Training machine learning models
 
-`plantcv-train.py` is a command-line tool for training machine learning classifiers or other models in PlantCV. More
+`plantcv-train` is a command-line tool for training machine learning classifiers or other models in PlantCV. More
 detail is provided in the [Machine Learning Tutorial](tutorials/machine_learning_tutorial.md) but command/input details are
 provided below:
 
 ```
-usage: plantcv-train.py [-h] {naive_bayes,naive_bayes_multiclass}
+usage: plantcv-train [-h] {naive_bayes,naive_bayes_multiclass}
 
 Subcommands:
     naive_bayes
-        usage: plantcv-train.py naive_bayes [-h] -i IMGDIR -b MASKDIR -o OUTFILE [-p]
+        usage: plantcv-train naive_bayes [-h] -i IMGDIR -b MASKDIR -o OUTFILE [-p]
         
         optional arguments:
             -h, --help                       Show this help message and exit
@@ -24,7 +24,7 @@ Subcommands:
             -p, --plots                      Make output plots.
         
     naive_bayes_multiclass
-        usage: plantcv-train.py naive_bayes_multiclass [-h] -f FILE -o OUTFILE [-p]
+        usage: plantcv-train naive_bayes_multiclass [-h] -f FILE -o OUTFILE [-p]
         
         optional arguments:
             -h, --help                       Show this help message and exit
