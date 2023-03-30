@@ -2,6 +2,3 @@ include versioneer.py
 include plantcv/plantcv/_version.py
 include requirements.txt
 include LICENSE
-include plantcv-train.py
-include plantcv-utils.py
-include plantcv-workflow.py
