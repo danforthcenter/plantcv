@@ -19,7 +19,7 @@ Reads image into numpy ndarray and splits the path and image filename (*see note
     - Comma separated data can be read in with `mode='csv'` so that, for example, [thermal](tutorials/thermal_tutorial.md) data can 
     be used in downstream analysis, such as [pcv.analyze_thermal_values](analyze_thermal_values.md) 
     - Hyperspectral data can be read in with `mode="envi"` where the filename parameter is the raw data file. There is also support for 
-    ArcGis style hyperspectral images. These modes of 
+    ArcGis style hyperspectral images (`mode="arcgis"`). These modes of 
     reading in data expects a `filename`.hdr file which gets used for shaping the hyperspectral datacube and labeling bands of data
     to the corresponding wavelength. An instance of the [`Spectral_data` class](Spectral_data.md) is created while reading in the data and this instance 
     is returned to the user rather than the usual `img, path, filename` that is returned under other modes of `pcv.readimage`. There is some flexibility 
