@@ -37,5 +37,3 @@ def test_read_data_parse_arcgis(hyperspectral_test_data):
     """Test for PlantCV."""
     array_data = read_data(filename=hyperspectral_test_data.arcgis, mode="arcgis")
     assert np.shape(array_data.array_data) == (1, 1600, 978)
-
-
