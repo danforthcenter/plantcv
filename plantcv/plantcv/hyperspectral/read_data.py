@@ -214,11 +214,11 @@ def _parse_arcgis(headername):
             # Only keep the pair if the keyword is in the keyword dictionary
             if header_data[0] in keyword_dict:
                 header_dict[keyword_dict[header_data[0]]] = header_data[1]
-            # Otherwise if the line has one element it is either the WAVELENGTH or WAVELENGTH_END keyword
-            # or a wavelength value
-            elif header_data[0] not in ["WAVELENGTHS", "WAVELENGTHS_END", ""]:
-                # Append the wavelength value to the wavelength list
-                header_dict["wavelength"].append(header_data[0])
+        # Otherwise if the line has one element it is either the WAVELENGTH or WAVELENGTH_END keyword
+        # or a wavelength value
+        elif header_data[0] not in ["WAVELENGTHS", "WAVELENGTHS_END", ""]:
+            # Append the wavelength value to the wavelength list
+            header_dict["wavelength"].append(header_data[0])
     # Build the wavelength dictionary from the list and index values of wavelengths
     for j, wavelength in enumerate(header_dict["wavelength"]):
         wavelength_dict.update({float(wavelength): float(j)})
