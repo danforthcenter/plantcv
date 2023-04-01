@@ -2,7 +2,7 @@
 
 The `plantcv.spectral_index` subpackage contains functions that calculate indices from multi-channel image data, 
 typically from a hyperspectral datacube, which is a [`Spectral_data` class](Spectral_data.md) instance created while 
-reading in with the [pcv.readimage](read_image.md) function with `mode='envi'`. RGB images are valid input for certain 
+reading in with the [pcv.readimage](read_image.md) function with `mode='envi'` or `mode='arcgis'`. RGB images are valid input for certain 
 indices. There is also a parameter to allow some flexibility if the required wavelengths are not available for a specific index.
 
 !!! note
