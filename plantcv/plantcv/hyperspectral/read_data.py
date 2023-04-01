@@ -196,9 +196,8 @@ def _parse_arcgis(headername):
 
     """
     # Initialize dictionary/lists
-    header_dict = {}
+    header_dict = {"wavelength": []}
     wavelength_dict = {}
-    bands_list = []
     keyword_dict = {"LAYOUT": "interleave", "NROWS": "lines", "NCOLS": "samples", "NBANDS": "bands",
                     "NBITS": "datatype", "WAVELENGTHS": "wavelength"}
 
@@ -209,21 +208,18 @@ def _parse_arcgis(headername):
 
     # Loop through and create a dictionary from the header file
     for string in hdata:
-        header_data = string.split(" ")  # split string on white space
-        if header_data[0] == 'WAVELENGTHS':
-            header_dict.update({"wavelength": []})
-        elif len(header_data) == 1:
-            # when reached "wavelengths_end" then populate with bands list
-            if "END" in header_data[0]:
-                header_dict["wavelength"] = bands_list
-                break
-            # Otherwise, lines without white space contain wavelength band values, add to list
-            bands_list.append(header_data[0].rstrip())
-        #
-        elif header_data[0] in keyword_dict:
-            key = keyword_dict[header_data[0]]
-            header_dict.update({key: header_data[1].rstrip()})
-
+        header_data = string.upper().split(" ")  # split string on white space
+        # If there are two elements then it is a keyword and value pair
+        if len(header_data) == 2:
+            # Only keep the pair if the keyword is in the keyword dictionary
+            if header_data[0] in keyword_dict:
+                header_dict[keyword_dict[header_data[0]]] = header_data[1]
+            # Otherwise if the line has one element it is either the WAVELENGTH or WAVELENGTH_END keyword
+            # or a wavelength value
+            elif header_data[0] not in ["WAVELENGTHS", "WAVELENGTHS_END", ""]:
+                # Append the wavelength value to the wavelength list
+                header_dict["wavelength"].append(header_data[0])
+    # Build the wavelength dictionary from the list and index values of wavelengths
     for j, wavelength in enumerate(header_dict["wavelength"]):
         wavelength_dict.update({float(wavelength): float(j)})
 
