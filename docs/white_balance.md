@@ -26,7 +26,7 @@ Corrects the exposure of an image. A color standard can be specified.
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 # Corrects image based on color standard and stores output as corrected_img
 corrected_img = pcv.white_balance(img=img, mode='hist', roi=[5, 5, 80, 80])
