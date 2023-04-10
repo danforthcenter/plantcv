@@ -26,7 +26,7 @@ from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 # Many plants absorb 430nm wavelength light. 
 blue_array_obj = pcv.hyperspectral.extract_wavelength(spectral_data=spectral_array_obj, wavelength=430)

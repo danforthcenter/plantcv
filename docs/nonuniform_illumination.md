@@ -25,7 +25,7 @@ from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 # Correct illumination in the image
 corrected_img = pcv.transform.nonuniform_illumination(img=img, ksize=31)

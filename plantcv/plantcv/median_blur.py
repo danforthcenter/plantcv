@@ -4,7 +4,7 @@ import os
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
 from plantcv.plantcv import fatal_error
-from scipy.ndimage.filters import median_filter
+from scipy.ndimage import median_filter
 
 
 def median_blur(gray_img, ksize):
