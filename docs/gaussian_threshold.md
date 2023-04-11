@@ -37,7 +37,8 @@ from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file),
 # or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
+
+pcv.params.debug = "plot"
 
 # Adaptive threshold with different parameters
 bin_gauss1 = pcv.threshold.gaussian(gray_img=gray_img, block_size=250, offset=15,
