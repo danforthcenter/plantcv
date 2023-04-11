@@ -1,7 +1,7 @@
 ## Naive Bayes Multiclass Training Module
 
 The modules in the `plantcv.learn` subpackage are not necessarily meant to be used directly. Instead,
-each module is implemented in the `plantcv-train.py` script, but feel free to use these functions within your own
+each module is implemented in the `plantcv-train` script, but feel free to use these functions within your own
 script if needed. See the [Machine Learning Tutorial](tutorials/machine_learning_tutorial.md) for more details.
 
 The `naive_bayes_multiclass` function reads a text file containing a tab-delimited table. Each column is a user-defined

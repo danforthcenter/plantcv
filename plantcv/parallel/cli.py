@@ -123,8 +123,3 @@ def main():
     if config.cleanup is True:
         shutil.rmtree(config.tmp_dir)
 ###########################################
-
-
-if __name__ == '__main__':
-    __spec__ = None
-    main()
