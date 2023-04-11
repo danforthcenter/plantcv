@@ -13,7 +13,7 @@ labeled as plant (255) or background (0) if P(Pixel = plant) > P(Pixel = backgro
 
 - **Parameters:**
     - rgb_img - RGB image data
-    - pdf_file - (str): output file containing PDFs from `plantcv-train.py`
+    - pdf_file - (str): output file containing PDFs from `plantcv-train`
    
 - **Context:**
     - Used to help differentiate plant and background
@@ -30,7 +30,7 @@ from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 # Create binary image from a gray image based on threshold values. 
 # Targeting light objects in the image.

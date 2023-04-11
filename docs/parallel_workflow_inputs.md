@@ -55,7 +55,7 @@ nir_img, nirpath, nirname = pcv.readimage(filename=args.nir)
 ### Parallel workflow inputs
 
 The `WorkflowInputs` class is used to manage inputs in Jupyter where inputs are hardcoded for testing and workflow
-development. After converting a notebook to a Python script for use with `plantcv-workflow.py`, `WorkflowInputs` is replaced
+development. After converting a notebook to a Python script for use with `plantcv-run-workflow`, `WorkflowInputs` is replaced
 with the function `workflow_inputs`.
 
 **plantcv.parallel.workflow_inputs**(*\*other_args*)
@@ -65,7 +65,7 @@ with the function `workflow_inputs`.
 * **Parameters**:
   * \*other_args - (list, optional): list of additional user-defined workflow inputs.
 * **Context**:
-    * Used to parse command-line inputs to the workflow. Inputs are constructed by `plantcv-workflow.py`.
+    * Used to parse command-line inputs to the workflow. Inputs are constructed by `plantcv-run-workflow`.
 * **Example use**:
     * [Converting from Jupyter to Python](jupyter.md)
 

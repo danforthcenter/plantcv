@@ -8,7 +8,7 @@ to run workflows in parallel.
 Create a configuration file from a template:
 
 ```bash
-plantcv-workflow.py --template my_config.txt
+plantcv-run-workflow --template my_config.txt
 ```
 
 *class* **plantcv.parallel.WorkflowConfig**
@@ -209,17 +209,17 @@ config.save_config(config_file="my_config.json")
 You may also edit your configuration file directly in a text editor, just remember that JSON syntax applies. 
 See [Workflow Parallization tutorial for examples](pipeline_parallel.md)
 
-To run `plantcv-workflow.py` with a config file you can use the following:
+To run `plantcv-run-workflow` with a config file you can use the following:
 
 ```shell
-plantcv-workflow.py --config my_config.json
+plantcv-run-workflow --config my_config.json
 ```
 
-Remember that `python` and `plantcv-workflow.py` need to be in your PATH, for example with Conda environment. On 
-Windows you will need to specify the whole path to `plantcv-workflow.py`.
+Remember that `python` and `plantcv-run-workflow` need to be in your PATH, for example with Conda environment. On 
+Windows you will need to specify the whole path to `plantcv-run-workflow`.
 
 ```shell
-python %CONDA_PREFIX%/Scripts/plantcv-workflow.py --config my_config.json
+python %CONDA_PREFIX%/Scripts/plantcv-run-workflow --config my_config.json
 ```
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/parallel/__init__.py)

@@ -78,7 +78,3 @@ def main():
     # Parse command-line options and run the selected method
     options()
 ###########################################
-
-
-if __name__ == '__main__':
-    main()
