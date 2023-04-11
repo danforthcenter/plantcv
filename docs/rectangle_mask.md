@@ -26,7 +26,7 @@ from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 # Makes a rectangle area that will be treated as a mask
 masked, binary, contours, hierarchy = pcv.rectangle_mask(img=img, p1=(0,0), p2=(75,252), 
