@@ -24,7 +24,7 @@ from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 # image converted from RGB to CMYK, channels are then split. 
 y_channel = pcv.rgb2gray_cmyk(rgb_img=rgb_img, channel='Y')

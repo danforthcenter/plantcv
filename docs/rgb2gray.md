@@ -22,7 +22,7 @@ from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 # image converted from RGB to gray.
 gray = pcv.rgb2gray(rgb_img=img)
