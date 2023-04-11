@@ -35,7 +35,7 @@ from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 # Define an ROI for the marker
 roi_contour, roi_hierarchy = pcv.roi.rectangle(img=img1, x=3550, y=850, h=500, w=500)
