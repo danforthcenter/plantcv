@@ -24,7 +24,7 @@ from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 #read in image
 fdark, fmin, fmax = pcv.photosynthesis.read_cropreporter(filename="PSII_PSD_20200826_22_rep6.DAT")
