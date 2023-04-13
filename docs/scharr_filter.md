@@ -29,7 +29,7 @@ from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 # Apply to a grayscale image
 sr_x_img = pcv.scharr_filter(gray_img=gray_img, dx=1, dy=0, scale=1)
