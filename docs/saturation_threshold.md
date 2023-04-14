@@ -28,7 +28,7 @@ from plantcv import plantcv as pcv
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
 
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 # Create binary image from a gray image based on texture values.
 sat_thresh = pcv.threshold.saturation(rgb_img=rgb_img, threshold=250, channel="any")
