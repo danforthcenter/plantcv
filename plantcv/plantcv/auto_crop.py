@@ -8,13 +8,13 @@ from plantcv.plantcv import params
 from plantcv.plantcv import fatal_error
 
 
-def auto_crop(img, obj, padding_x=0, padding_y=0, color='black'):
+def auto_crop(img, objects, padding_x=0, padding_y=0, color='black'):
     """
     Resize image.
 
     Inputs:
     img       = RGB or grayscale image data
-    obj       = contours
+    objects   = contours
     padding_x = integer or tuple to add padding the x direction
     padding_y = integer or tuple to add padding the y direction
     color     = either 'black', 'white', or 'image'
@@ -23,7 +23,7 @@ def auto_crop(img, obj, padding_x=0, padding_y=0, color='black'):
     cropped   = cropped image
 
     :param img: numpy.ndarray
-    :param obj: list
+    :param objects: list
     :param padding_x: int
     :param padding_y: int
     :param color: str
@@ -36,7 +36,7 @@ def auto_crop(img, obj, padding_x=0, padding_y=0, color='black'):
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
 
-    x, y, w, h = cv2.boundingRect(obj)
+    x, y, w, h = cv2.boundingRect(objects)
     cv2.rectangle(img_copy, (x, y), (x + w, y + h), (0, 255, 0), 5)
 
     crop_img = img[y:y + h, x:x + w]
