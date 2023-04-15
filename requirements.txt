@@ -1,6 +1,6 @@
 matplotlib>=1.5,<3.6
 numpy>=1.11,<1.23
-pandas
+pandas<2
 python-dateutil
 scipy
 scikit-image>=0.19

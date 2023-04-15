@@ -5,16 +5,16 @@ available by downloading/cloning the GitHub repository.
 
 ### Training machine learning models
 
-`plantcv-train.py` is a command-line tool for training machine learning classifiers or other models in PlantCV. More
+`plantcv-train` is a command-line tool for training machine learning classifiers or other models in PlantCV. More
 detail is provided in the [Machine Learning Tutorial](tutorials/machine_learning_tutorial.md) but command/input details are
 provided below:
 
 ```
-usage: plantcv-train.py [-h] {naive_bayes,naive_bayes_multiclass}
+usage: plantcv-train [-h] {naive_bayes,naive_bayes_multiclass}
 
 Subcommands:
     naive_bayes
-        usage: plantcv-train.py naive_bayes [-h] -i IMGDIR -b MASKDIR -o OUTFILE [-p]
+        usage: plantcv-train naive_bayes [-h] -i IMGDIR -b MASKDIR -o OUTFILE [-p]
         
         optional arguments:
             -h, --help                       Show this help message and exit
@@ -24,7 +24,7 @@ Subcommands:
             -p, --plots                      Make output plots.
         
     naive_bayes_multiclass
-        usage: plantcv-train.py naive_bayes_multiclass [-h] -f FILE -o OUTFILE [-p]
+        usage: plantcv-train naive_bayes_multiclass [-h] -f FILE -o OUTFILE [-p]
         
         optional arguments:
             -h, --help                       Show this help message and exit
@@ -35,21 +35,23 @@ Subcommands:
 
 ```
 
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/learn/cli.py)
+
 ### PlantCV utilities
 
-`plantcv-utils.py` is a command-line tool for running various utilities.
+`plantcv-utils` is a command-line tool for running various utilities.
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv-utils.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/utils/cli.py)
 
 
 #### Convert output JSON data files to CSV tables
 
-`plantcv-utils.py json2csv` is a command-line tool for converting the output JSON files from `plantcv-workflow.py` to
+`plantcv-utils json2csv` is a command-line tool for converting the output JSON files from `plantcv-run-workflow` to
 CSV-formatted tables for downstream analysis in [R](https://www.r-project.org/), 
 [MVApp](http://mvapp.kaust.edu.sa/MVApp/), or other programs.
 
 ```
-usage: plantcv-utils.py json2csv [-h] -j JSON -c CSV
+usage: plantcv-utils json2csv [-h] -j JSON -c CSV
 
 optional arguments:
   -h, --help            Show this help message and exit
@@ -58,7 +60,7 @@ optional arguments:
 
 ```
 
-The input JSON file is generally created by running `plantcv-workflow.py`, although there are some advanced scenarios
+The input JSON file is generally created by running `plantcv-run-workflow`, although there are some advanced scenarios
 where it is created by running `plantcv.parallel.process_results` on a directory of JSON files. This 
 [hierarchical data structure](output_measurements.md) is convenient for flexible data processing but not for downstream
 analysis. The tool creates an output CSV file. The format of this table is one row per value/label (i.e. R long format). 
@@ -68,11 +70,11 @@ analysis. The tool creates an output CSV file. The format of this table is one r
 
 #### Collect a random sample of images for testing workflows
 
-`plantcv-utils.py sample_images` is a command-line tool for gathering a random set of images for
+`plantcv-utils sample_images` is a command-line tool for gathering a random set of images for
 testing workflows before running over a full image set. 
 
 ```
-usage: plantcv-utils.py sample_images [-h] -s SOURCE_DIRECTORY -o OUTPUT_DIRECTORY -n NUMBER
+usage: plantcv-utils sample_images [-h] -s SOURCE_DIRECTORY -o OUTPUT_DIRECTORY -n NUMBER
 
 optional arguments:
   -h, --help                                      Show this help message and exit
@@ -94,9 +96,9 @@ random images requested must be less than or equal to the number of images in th
 
 ### Parallel workflow processing
 
-`plantcv-workflow.py` is a command-line tool for parallel processing of user-defined PlantCV workflows. It is used to
+`plantcv-run-workflow` is a command-line tool for parallel processing of user-defined PlantCV workflows. It is used to
 process metadata and execute custom workflows on each image in a dataset. More detail is provided in the 
 [Workflow Parallelization Tutorial](pipeline_parallel.md).
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv-workflow.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/parallel/cli.py)
 

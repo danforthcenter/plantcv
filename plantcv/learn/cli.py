@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
 import os
 import sys
 import argparse
@@ -86,7 +85,3 @@ def main():
     # Parse command-line options and run training method
     options()
 ###########################################
-
-
-if __name__ == '__main__':
-    main()
