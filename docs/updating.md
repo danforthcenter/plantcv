@@ -222,7 +222,9 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, cropped = **plantcv.auto_crop**(*device, img, objects, padding_x=0, padding_y=0, color='black', debug=None*)
 * post v3.0dev2: cropped = **plantcv.auto_crop**(*img, objects, padding_x=0, padding_y=0, color='black'*)
-* post v3.2: cropped = **plantcv.auto_crop**(*img, obj, padding_x=0, padding_y=0, color='black'*)
+* post v3.2: cropped = **plantcv.auto_crop**(*img, obj, padding_x=0, padding_y=0, color='black'*) 
+* post v4.: cropped = **plantcv.auto_crop**(*img, objects, padding_x=0, padding_y=0, color='black'*) 
+
 
 #### plantcv.background_subtraction
 
