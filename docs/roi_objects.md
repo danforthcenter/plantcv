@@ -1,27 +1,25 @@
 ## Find Objects within a Region of Interest
 
-Find objects within a region of interest, either cut those objects to the region of interest 
+Find objects within a region of interest, either cut those objects to the region of interest
 or include objects that overlap with the region of interest.
 
-**plantcv.roi_objects**(*img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, roi_type='partial'*)
+**plantcv.roi_objects**(*img, roi, obj, roi_type='partial'*)
 
-**returns** kept objects, object hierarchy, object mask, object area
+**returns** kept objects, object mask, object area
 
-**Important Note:** If your ROI object detection does not perform first check that the ROI is 
+**Important Note:** If your ROI object detection does not perform first check that the ROI is
 completely within the image.
 
 - **Parameters:**
     - img = RGB or grayscale image data to display kept objects on
-    - roi_contour = contour of roi, output from one of the pcv.roi subpackage functions
-    - roi_hierarchy = contour of roi, output from one of the pcv.roi subpackage functions
-    - object_contour = contours of objects, output from "find_objects" function 
-    - obj_hierarchy = hierarchy of objects, output from "find_objects" function
+    - roi = region of interest, an instance of the Objects class, output from one of the pcv.roi subpackage functions
+    - obj = contours of objects, output from "find_objects" function
     - roi_type = 'partial' (for partially inside, default), 'cutto', or 'largest' (keep only the largest contour)
-    
+
 - **Context:**
     - Used to find objects within a region of interest and decide which ones to keep.
-- **Warning:** 
-    - Using `roi_type='largest` will only return the largest outer contour. All child contours are left behind. 
+- **Warning:**
+    - Using `roi_type='largest` will only return the largest outer contour. All child contours are left behind.
 - **Example use:**
     - [Use In VIS Tutorial](tutorials/vis_tutorial.md)
     - [Use In NIR Tutorial](tutorials/nir_tutorial.md)
@@ -32,13 +30,12 @@ completely within the image.
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), 
+# Set global debug behavior to None (default), "print" (to file),
 # or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 # ROI objects allows the user to define if objects partially inside ROI are included or if objects are cut to ROI.
-roi_objects, hierarchy, kept_mask, obj_area = pcv.roi_objects(img, roi, roi_hierarchy, 
-                                                              objects, obj_hierarchy, 'partial')
+roi_objects, kept_mask, obj_area = pcv.roi_objects(img, roi, objects, 'partial')
 
 ```
 
@@ -59,10 +56,10 @@ roi_objects, hierarchy, kept_mask, obj_area = pcv.roi_objects(img, roi, roi_hier
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 # Define region of interest in an image, there is a futher function 'ROI Objects' that allows the user to define if you want to include objects partially inside ROI or if you want to do cut objects to ROI.
-roi_objects, hierarchy, kept_mask, obj_area = pcv.roi_objects(img, roi, roi_hierarchy, objects, obj_hierarchy, 'cutto')
+roi_objects, kept_mask, obj_area = pcv.roi_objects(img, roi, objects, 'cutto')
 ```
 
 **Object (green) that is cut to the ROI**
