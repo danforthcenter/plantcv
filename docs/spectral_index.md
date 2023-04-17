@@ -2,7 +2,7 @@
 
 The `plantcv.spectral_index` subpackage contains functions that calculate indices from multi-channel image data, 
 typically from a hyperspectral datacube, which is a [`Spectral_data` class](Spectral_data.md) instance created while 
-reading in with the [pcv.readimage](read_image.md) function with `mode='envi'`. RGB images are valid input for certain 
+reading in with the [pcv.readimage](read_image.md) function with `mode='envi'` or `mode='arcgis'`. RGB images are valid input for certain 
 indices. There is also a parameter to allow some flexibility if the required wavelengths are not available for a specific index.
 
 !!! note
@@ -585,7 +585,7 @@ from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 # Extract NDVI index from the datacube 
 ndvi_array  = pcv.spectral_index.ndvi(hsi=spectral_data, distance=20)

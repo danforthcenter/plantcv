@@ -15,7 +15,7 @@ def readimage(filename, mode="native"):
 
     Inputs:
     filename = name of image file
-    mode     = mode of imread ("native", "rgb", "rgba", "gray", "csv", "envi")
+    mode     = mode of imread ("native", "rgb", "rgba", "gray", "csv", "envi", "arcgis")
 
     Returns:
     img      = image object as numpy array
@@ -37,8 +37,8 @@ def readimage(filename, mode="native"):
     elif mode.upper() == "CSV":
         inputarray = pd.read_csv(filename, sep=',', header=None)
         img = inputarray.values
-    elif mode.upper() == "ENVI":
-        array_data = read_data(filename)
+    elif mode.upper() in ["ENVI", "ARCGIS"]:
+        array_data = read_data(filename, mode=mode)
         return array_data
     else:
         img = cv2.imread(filename, -1)
