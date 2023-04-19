@@ -30,7 +30,7 @@ from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 labeled_img = pcv.morphology.segment_path_length(segmented_img=segmented_img, 
                                                  objects=obj, label="default")
