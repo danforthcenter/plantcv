@@ -34,7 +34,7 @@ from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 # ROI objects allows the user to define if objects partially inside ROI are included or if objects are cut to ROI.
 roi_objects, hierarchy, kept_mask, obj_area = pcv.roi_objects(img, roi, roi_hierarchy, 
@@ -59,7 +59,7 @@ roi_objects, hierarchy, kept_mask, obj_area = pcv.roi_objects(img, roi, roi_hier
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 # Define region of interest in an image, there is a futher function 'ROI Objects' that allows the user to define if you want to include objects partially inside ROI or if you want to do cut objects to ROI.
 roi_objects, hierarchy, kept_mask, obj_area = pcv.roi_objects(img, roi, roi_hierarchy, objects, obj_hierarchy, 'cutto')
