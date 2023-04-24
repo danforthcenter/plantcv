@@ -66,7 +66,6 @@ def analyze_nir_intensity(gray_img, mask, bins=256, histplot=None, label="defaul
     # Print or plot masked image
     _debug(visual=masked1, filename=os.path.join(params.debug_outdir, str(params.device) + "_masked_nir_plant.png"))
 
-
     fig_hist = fig_hist + labs(x="Grayscale pixel intensity (0-{})".format(maxval), y="Proportion of pixels (%)")
 
     # Print or plot histogram

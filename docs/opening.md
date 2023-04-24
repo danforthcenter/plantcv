@@ -20,7 +20,7 @@ Filters out bright noise from an image.
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 # Apply opening
 filtered_img = pcv.opening(gray_img=gray_img)
@@ -42,7 +42,7 @@ from plantcv import plantcv as pcv
 import numpy as np
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 # Apply opening with an X-shaped kernel 
 filtered_img = pcv.opening(gray_img=gray_img, kernel=np.array([[1, 0, 1], [0, 1, 0], [1, 0, 1]]))
