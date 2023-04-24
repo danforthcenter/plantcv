@@ -2,7 +2,6 @@
 
 import os
 import numpy as np
-from plantcv.plantcv.threshold import binary as binary_threshold
 from plantcv.plantcv import params
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv._debug import _debug
@@ -35,23 +34,13 @@ def _hist_gray(gray_img, bins, lower_bound, upper_bound, mask=None):
     :return hist_gray_data: numpy.ndarray
     """
     params.device += 1
-    debug = params.debug
+    # Create a dummy mask if none was supplied
+    if mask is None:
+        mask = np.ones(gray_img.shape, dtype=np.uint8)
 
-    # Apply mask if one is supplied
-    if mask is not None:
-        min_val = np.min(gray_img)
-        pixels = len(np.where(mask > 0)[0])
-        # apply plant shaped mask to image
-        params.debug = None
-        mask1 = binary_threshold(mask, 0, 255, 'light')
-        mask1 = (mask1 / 255)
-        masked = np.where(mask1 != 0, gray_img, min_val - 5000)
-
-    else:
-        pixels = gray_img.shape[0] * gray_img.shape[1]
-        masked = gray_img
-
-    params.debug = debug
+    # Apply mask
+    pixels = len(np.where(mask > 0)[0])
+    masked = gray_img[np.where(mask > 0)]
 
     # Store histogram data
     hist_gray_data, hist_bins = np.histogram(masked, bins, (lower_bound, upper_bound))
