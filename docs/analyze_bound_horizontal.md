@@ -28,7 +28,7 @@ from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 # Set Boundary Line    
 boundary_image = pcv.analyze_bound_horizontal(img=img, obj=obj, mask=bin_mask, line_position=300, label="default")
