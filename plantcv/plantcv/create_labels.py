@@ -24,7 +24,6 @@ def create_labels(mask, rois, roi_type="partial"):
     :return num_labels: int 
     """
     # Initialize chip list
-    masks = []
     bin_img = np.zeros((np.shape(mask)[0], np.shape(mask)[1]), dtype=np.uint8)
     mask_copy = np.copy(mask)
     contours, hierarchy = _cv2_findcontours(mask) 
@@ -32,12 +31,11 @@ def create_labels(mask, rois, roi_type="partial"):
     if rois is not None:
         num_labels = len(rois.contours)
     else:
-        # Dealing with a single entity/plant, or the edge case of seed scatter (have to assume 1:1 ratio of contours and entities)
         if roi_type.upper() == "AUTO":
-            for i, cnt in enumerate(contours): # assume 1:1 ratio of contours and entities
+            for i, cnt in enumerate(contours): # assume 1:1 ratio of contours and entities (seed scatter edge case)
                 labeled_masks = cv2.drawContours(mask_copy, cnt, -1, (i+1), -1)
                 
-        else: # assume single entity even if there are multiple contours 
+        else: # assume single entity even if there are multiple contours (single plant)
             labeled_masks = cv2.drawContours(mask_copy, contours, -1, (255), -1)
             num_labels = len(contours)
     # Intermediate. Will change when implementing _roi_filter
@@ -54,15 +52,12 @@ def create_labels(mask, rois, roi_type="partial"):
                                                                obj=plant_obj, roi_type=roi_type)
         # Pixel intensity of (i+1) such that the first object has value 
         labeled_masks = cv2.drawContours(mask_copy, objects.contours[0], -1, (i+1), -1)
-        masks.append(intermediate_mask)
         
     # Restore debug parameter
     params.debug = debug
     colorful = label2rgb(labeled_masks)
 
-
     _debug(colorful, filename=os.path.join(params.debug_outdir, str(params.device) + '_label_colored_mask.png'))
 
     
     return labeled_masks, num_labels
-
