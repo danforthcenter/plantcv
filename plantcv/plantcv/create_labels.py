@@ -1,8 +1,10 @@
-from plantcv.plantcv import params, roi_objects, Objects
+# Create labels base on clean mask and optionally, multiple ROIs 
+
+from plantcv.plantcv import params, roi_objects, Objects, _debug
 from plantcv.plantcv._helpers import _cv2_findcontours
 from skimage.color import label2rgb
 import numpy as np
-import cv2
+import cv2, os
 
 
 def create_labels(mask, rois, roi_type="partial"):
@@ -10,14 +12,16 @@ def create_labels(mask, rois, roi_type="partial"):
     Inputs:
     mask            = Input RGB image data containing a color card.
     rois            = list of multiple ROIs (from roi.multi or roi.auto_grid)
+    roi_type        = 'cutto', 'partial' (for partially inside, default), 'largest' (keep only the largest contour), or 'auto' (use the mask alone withtout roi filtering)
 
     Returns:
-    mask           = Labeled mask of chips
-    num_labels  = Number of labeled objects 
+    mask            = Labeled mask of chips
+    num_labels      = Number of labeled objects 
 
     :param mask: numpy.ndarray
     :param rois: plantcv.plantcv.classes.Objects
     :return mask: numpy.ndarray
+    :return num_labels: int 
     """
     # Initialize chip list
     masks = []
@@ -54,6 +58,11 @@ def create_labels(mask, rois, roi_type="partial"):
         
     # Restore debug parameter
     params.debug = debug
+    colorful = label2rgb(labeled_masks)
+
+
+    _debug(colorful, filename=os.path.join(params.debug_outdir, str(params.device) + '_label_colored_mask.png'))
+
     
     return labeled_masks, num_labels
 
