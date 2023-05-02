@@ -439,10 +439,10 @@ def filter(mask, roi, roi_type="partial"):
 
     found_obj, found_hier = _cv2_findcontours(bin_img=mask)
 
-    kept_cnt, kept_hierarchy, mask = _roi_filter(img=mask, roi=roi, obj=found_obj,
+    kept_cnt, kept_hierarchy, filtered_mask = _roi_filter(img=mask, roi=roi, obj=found_obj,
                                                 hierarchy=found_hier, roi_type=roi_type)
 
 
-    _debug(mask, filename=os.path.join(params.debug_outdir, str(params.device) + '_roi_filter.png'), cmap='gray')
+    _debug(filtered_mask, filename=os.path.join(params.debug_outdir, str(params.device) + '_roi_filter.png'), cmap='gray')
 
-    return Objects(contours=[kept_cnt], hierarchy=[kept_hierarchy]), mask, obj_area
+    return filtered_mask
