@@ -6,6 +6,7 @@ import numpy as np
 from sklearn.mixture import GaussianMixture
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours
+from plantcv.plantcv._helpers import _roi_filter
 from plantcv.plantcv import fatal_error, params, Objects
 
 
@@ -416,3 +417,32 @@ def custom(img, vertices):
             fatal_error("An ROI extends outside of the image!")
 
     return roi
+
+# Filter a mask based on a region of interest
+def filter(mask, roi, roi_type="partial"):
+    """
+    Filter a mask using a region of interest. Connected regions of non-zero pixels outside the ROI turn to zero
+
+    Inputs:
+    mask           = binary image data to be filtered
+    roi            = region of interest, an instance of the Object class output from a roi function
+    roi_type       = 'cutto', 'partial' (for partially inside, default), or 'largest' (keep only the largest contour)
+
+    Returns:
+    filtered_mask     = mask image
+
+    :param mask: numpy.ndarray
+    :param roi: plantcv.plantcv.classes.Objects
+    :param roi_type: str
+    :return filtered_mask: numpy.ndarray
+    """
+
+    found_obj, found_hier = _cv2_findcontours(bin_img=mask)
+
+    kept_cnt, kept_hierarchy, mask = _roi_filter(img=mask, roi=roi, obj=found_obj,
+                                                hierarchy=found_hier, roi_type=roi_type)
+
+
+    _debug(mask, filename=os.path.join(params.debug_outdir, str(params.device) + '_roi_filter.png'), cmap='gray')
+
+    return Objects(contours=[kept_cnt], hierarchy=[kept_hierarchy]), mask, obj_area

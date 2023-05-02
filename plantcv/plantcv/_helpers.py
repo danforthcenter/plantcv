@@ -139,10 +139,9 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
         mask = cv2.multiply(background1, background2)
         obj_area = cv2.countNonZero(mask)
         kept_cnt, kept_hierarchy = _cv2_findcontours(bin_img=mask)
-        cv2.drawContours(ori_img, kept_cnt, -1, (0, 255, 0), -1, lineType=8, hierarchy=kept_hierarchy)
-        cv2.drawContours(ori_img, roi_contour, -1, (255, 0, 0), params.line_thickness, lineType=8,
-                         hierarchy=roi_hierarchy)
     else:
+        # Reset debug mode
+        params.debug = debug
         fatal_error('ROI Type ' + str(roi_type) + ' is not "cutto", "largest", or "partial"!')
 
 
