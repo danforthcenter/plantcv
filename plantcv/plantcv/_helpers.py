@@ -1,9 +1,8 @@
 import cv2
 import numpy as np
 import os
-from plantcv.plantcv import logical_and
+from plantcv.plantcv.logical_and import logical_and
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _cv2_findcontours
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 from plantcv.plantcv import Objects
@@ -42,6 +41,7 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
     Returns:
     kept_cnt       = kept contours
     kept_hier      = kept hierarchy
+    mask           = mask image
 
 
     :param img: numpy.ndarray
@@ -51,6 +51,7 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
     :param roi_type: str
     :return kept_cnt: list
     :return kept_hier: np.array
+    :return mask: numpy.ndarray
     """
     # Store debug
     debug = params.debug
@@ -148,4 +149,4 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
     # Reset debug mode
     params.debug = debug
 
-    return kept_cnt, kept_hierarchy
+    return kept_cnt, kept_hierarchy, mask
