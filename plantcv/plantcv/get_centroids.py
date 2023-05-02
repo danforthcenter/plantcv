@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 
+
 def get_centroids(bin_img):
     """ Get the coordinates (row,column) of the centroid of each connected
     region in a binary image.
@@ -17,9 +18,7 @@ def get_centroids(bin_img):
     """
 
     # find contours in the binary image
-    _, contours, _ = cv2.findContours(bin_img.astype(np.uint8),
-                                        cv2.RETR_TREE,
-                                        cv2.CHAIN_APPROX_SIMPLE)
+    contours = cv2.findContours(bin_img.astype(np.uint8), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[-2]
     coor = []
     for c in contours:
         # calculate moments for each contour
@@ -27,6 +26,6 @@ def get_centroids(bin_img):
         # calculate row,col coordinates of centroid
         col = int(M["m10"] / M["m00"])
         row = int(M["m01"] / M["m00"])
-        coor.append([row,col])
+        coor.append([row, col])
 
     return coor
