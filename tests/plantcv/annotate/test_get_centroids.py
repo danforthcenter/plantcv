@@ -1,5 +1,5 @@
 import cv2
-from plantcv.plantcv import get_centroids
+from plantcv.plantcv.annotate import get_centroids
 
 
 def test_get_centroids(test_data):
