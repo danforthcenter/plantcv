@@ -25,7 +25,7 @@ completely within the image.
     - [Use In VIS Tutorial](tutorials/vis_tutorial.md)
     - [Use In NIR Tutorial](tutorials/nir_tutorial.md)
     - [Use In PSII Tutorial](tutorials/psII_tutorial.md)
-    
+
 **RGB image**
 
 ![Screenshot](img/documentation_images/roi_filter/rgb_img.png)
