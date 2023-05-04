@@ -1,5 +1,5 @@
 import cv2
-from plantcv.plantcv import detect_discs
+from plantcv.plantcv.annotate import detect_discs
 
 
 def test_detect_discs(test_data):
