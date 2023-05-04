@@ -9,6 +9,32 @@ from plantcv.plantcv.roi import circle
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv._debug import _debug
 
+def affine_color_correction(img, source_matrix, target_matrix):
+    h,w,c = img.shape
+
+    n = source_matrix.shape[0]
+    S = np.concatenate((source_matrix[:,1:].copy(),np.ones((n,1))),axis=1)
+    T = target_matrix[:,1:].copy()
+
+    tr = T[:,0]
+    tg = T[:,1]
+    tb = T[:,2]
+
+    ar = np.matmul(np.linalg.pinv(S), tr)
+    ag = np.matmul(np.linalg.pinv(S), tg)
+    ab = np.matmul(np.linalg.pinv(S), tb)
+
+    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img_pix = np.concatenate((img_rgb.reshape(h*w,c).astype(np.float64)/255, np.ones((h*w,1))), axis=1)
+
+    img_r_cc = (255*np.clip(np.matmul(img_pix,ar),0,1)).astype(np.uint8)
+    img_g_cc = (255*np.clip(np.matmul(img_pix,ag),0,1)).astype(np.uint8)
+    img_b_cc = (255*np.clip(np.matmul(img_pix,ab),0,1)).astype(np.uint8)
+
+    img_cc = np.stack((img_b_cc,img_g_cc,img_r_cc), axis=1).reshape(h,w,c)
+
+    return img_cc
+
 
 def get_color_matrix(rgb_img, mask):
     """Calculate the average value of pixels in each color chip for each color channel.
