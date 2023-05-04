@@ -1,10 +1,11 @@
 import pytest
 import numpy as np
-from plantcv.plantcv import create_labels
+import cv2
+from plantcv.plantcv import create_labels, outputs, Objects
 
 
 @pytest.mark.parametrize("mode", ["largest", "cutto", "partial", "auto"])
-def test_create_labels(seq):
+def test_create_labels(mode, test_data):
     """Test for PlantCV."""
     cnt, cnt_str = test_data.load_contours(test_data.small_contours_file)
     mask = cv2.imread(test_data.small_bin_img, -1)
