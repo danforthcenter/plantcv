@@ -2,9 +2,9 @@ import cv2
 from plantcv.plantcv.annotate import get_centroids
 
 
-def test_get_centroids(test_data):
+def test_get_centroids(annotate_test_data):
     # Read in test data
-    mask = cv2.imread(test_data.discs_mask, -1)
+    mask = cv2.imread(annotate_test_data.discs_mask, -1)
 
     coor = get_centroids(bin_img=mask)
 
