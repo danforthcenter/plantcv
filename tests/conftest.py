@@ -80,8 +80,7 @@ class TestData:
         self.cluster_names = os.path.join(self.datadir, "cluster_names.txt")
         # Clustered contours names file with too many labels
         self.cluster_names_too_many = os.path.join(self.datadir, "cluster_names_too_many.txt")
-        # Disc image mask
-        self.discs_mask = os.path.join(self.datadir, "discs_binary.png")
+
 
     @staticmethod
     def load_hsi(pkl_file):
