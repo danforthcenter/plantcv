@@ -17,13 +17,15 @@ completely within the image.
 
 - **Context:**
     - Used to filter objects within a region of interest and decide which ones to keep.
+
 - **Warning:**
     - Using `roi_type='largest` will only keep the largest outer connected region of non-zero pixels.
+
 - **Example use:**
     - [Use In VIS Tutorial](tutorials/vis_tutorial.md)
     - [Use In NIR Tutorial](tutorials/nir_tutorial.md)
     - [Use In PSII Tutorial](tutorials/psII_tutorial.md)
-
+    
 **RGB image**
 
 ![Screenshot](img/documentation_images/roi_filter/rgb_img.png)
@@ -63,7 +65,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 # ROI filter allows the user to define if objects partially inside ROI are included or if objects are cut to ROI.
-roi_objects, kept_mask, obj_area = pcv.roi_objects(img, roi, objects, 'cutto')
+filtered_mask = pcv.roi.filter(mask=mask, roi=roi, roi_type='cutto')
 ```
 
 **Filtered mask with `roi_type='cutto'`**
