@@ -1,8 +1,8 @@
 import os
 import numpy as np
 from skimage.measure import label, regionprops
-from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
+from plantcv.plantcv._debug import _debug
 
 def detect_discs(bin_img, ecc_thresh=0):
     """ Detect disc-shaped regions in a binary image based on eccentricity.
