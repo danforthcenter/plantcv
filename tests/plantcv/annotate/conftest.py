@@ -13,6 +13,8 @@ class AnnotateTestData:
         self.datadir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "testdata")
         # RGB image
         self.small_rgb_img = os.path.join(self.datadir, "setaria_small_plant_rgb.png")
+        # Disc image mask
+        self.discs_mask = os.path.join(self.datadir, "discs_binary.png")
 
 
 @pytest.fixture(scope="session")
