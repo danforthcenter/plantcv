@@ -5,6 +5,8 @@ from plantcv.plantcv.classes import Spectral_data
 from plantcv.plantcv.classes import PSII_data
 from plantcv.plantcv.classes import Points
 from plantcv.plantcv.classes import Objects
+from plantcv.plantcv.classes import ClickCount
+
 
 # Initialize an instance of the Params and Outputs class with default values
 # params and outputs are available when plantcv is imported
