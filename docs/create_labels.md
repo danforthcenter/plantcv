@@ -26,6 +26,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 # Label grid of seeds using ROIs
+grid_rois = pcv.roi.multi(img=img, coord=(31,31), radius=20, spacing=(67, 67), nrows=4, ncols=7)
 labeled_mask, num_seeds = pcv.create_labels(mask=clean_mask, rois=grid_rois, roi_type="partial")
 
 # Don't use ROIs but instead assume one "object of interest" per contour 
