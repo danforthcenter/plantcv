@@ -4,7 +4,7 @@ Detects disc-shaped regions in a binary image based on eccentricity.
 A value of eccentricity between 0 and 1 corresponds to an ellipse.
 The closer the value to 0 the closer the shape is to a circle.
 
-**plantcv.detect_discs**(*bin_img, ecc_thresh=0*)
+**plantcv.annotate.detect_discs**(*bin_img, ecc_thresh=0*)
 
 **returns** mask, coordinates of centroids
 
@@ -34,11 +34,11 @@ pcv.params.debug = "plot"
 
 # Apply detect discs to the binary image with an
 # eccentricity threshold of 0.9
-discs_mask, discs_coor = pcv.detect_discs(bin_img=binary_img, ecc_thresh=0.9)
+discs_mask, discs_coor = pcv.annotate.detect_discs(bin_img=binary_img, ecc_thresh=0.9)
 
 # Apply detect discs to the binary image with an
 # eccentricity threshold of 0.5
-discs_mask, discs_coor = pcv.detect_discs(bin_img=binary_img, ecc_thresh=0.5)
+discs_mask, discs_coor = pcv.annotate.detect_discs(bin_img=binary_img, ecc_thresh=0.5)
 
 ```
 
