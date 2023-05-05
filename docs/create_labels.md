@@ -25,18 +25,21 @@ from plantcv import plantcv as pcv
 
 pcv.params.debug = "plot"
 
-# Crop image
+# Label grid of seeds using ROIs
 labeled_mask, num_seeds = pcv.create_labels(mask=clean_mask, rois=grid_rois, roi_type="partial")
+
+# Don't use ROIs but instead assume one "object of interest" per contour 
+labeled_mask2, num_seeds2 = pcv.create_labels(mask=clean_mask, rois=None, roi_type="auto")
 
 ```
 
 **Debug Labeled Image**
 
-![Screenshot](img/documentation_images/ .jpg)
+![Screenshot](img/documentation_images/create_labels/colorful_labels.jpg)
 
 
 **Output Mask Image**
 
-![Screenshot](img/documentation_images/ .jpg)
+![Screenshot](img/documentation_images/create_labels/grayscale_labeled_mask.jpg
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/crop.py)
