@@ -8,12 +8,10 @@ Create a labeled mask for analyzing multiple objects in the same image
 
 - **Parameters:**
     - mask - Binary mask
-    - rois - Objects class instance, typically output from `pcv.roi.multi` or `pcv.roi.auto_grid`, or `None` in the case 
-    - roi_type - 'partial' (for partially inside, default), 'cutto' (hard cut off at ROI boundary), 'largest' (keep only the largest contour), or 'auto' (use the mask alone withtout roi filtering)
-    - h - Height 
-    - w - Width
+    - rois - Objects class instance, typically output from [`pcv.roi.multi`](roi_multi.md) or [`pcv.roi.auto_grid`](roi_auto_grid.md), or `None` in the case where each blob is to be treated as a separate object 
+    - roi_type - 'partial' (for partially inside, default), 'cutto' (hard cut off at ROI boundary), 'largest' (keep only the largest contour), or 'auto' (use the mask alone withtout ROI filtering)
 - **Context:**
-    - Used to identify and separate multiple objects from a binary mask for downstream analysis. Such as grid of pots or seed scatter images.
+    - Used to identify and separate multiple objects from a binary mask for downstream analysis. Such as grid of pots or seed scatter images. 
     
 
 ```python
@@ -26,6 +24,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 # Label grid of seeds using ROIs
+grid_rois = pcv.roi.multi(img=img, coord=(31,31), radius=20, spacing=(67, 67), nrows=4, ncols=7)
 labeled_mask, num_seeds = pcv.create_labels(mask=clean_mask, rois=grid_rois, roi_type="partial")
 
 # Don't use ROIs but instead assume one "object of interest" per contour 
