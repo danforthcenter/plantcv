@@ -1,11 +1,9 @@
 import cv2
 import numpy as np
-import os
 from plantcv.plantcv.logical_and import logical_and
-from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
-from plantcv.plantcv import Objects
+
 
 def _cv2_findcontours(bin_img):
     """
@@ -43,7 +41,6 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
     kept_hier      = kept hierarchy
     mask           = mask image
 
-
     :param img: numpy.ndarray
     :param roi: plantcv.plantcv.classes.Objects
     :param obj: list
@@ -61,7 +58,6 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
         print("Warning: received a multi-ROI but only the first ROI will be used. Consider using a for loop for multi-ROI")
 
     roi_contour = roi.contours[0]
-    roi_hierarchy = roi.hierarchy[0]
     object_contour = obj
     obj_hierarchy = hierarchy
 
@@ -137,13 +133,11 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
         roi_points = np.vstack(roi_contour[0])
         cv2.fillPoly(background2, [roi_points], (255))
         mask = cv2.multiply(background1, background2)
-        obj_area = cv2.countNonZero(mask)
         kept_cnt, kept_hierarchy = _cv2_findcontours(bin_img=mask)
     else:
         # Reset debug mode
         params.debug = debug
         fatal_error('ROI Type ' + str(roi_type) + ' is not "cutto", "largest", or "partial"!')
-
 
     # Reset debug mode
     params.debug = debug
