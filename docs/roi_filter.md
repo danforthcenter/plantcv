@@ -19,7 +19,7 @@ completely within the image.
     - Used to filter objects within a region of interest and decide which ones to keep.
 
 - **Warning:**
-    - Using `roi_type='largest` will only keep the largest outer connected region of non-zero pixels.
+    - Using `roi_type='largest'` will only keep the largest outer connected region of non-zero pixels.
 
 - **Example use:**
     - [Use In VIS Tutorial](tutorials/vis_tutorial.md)
