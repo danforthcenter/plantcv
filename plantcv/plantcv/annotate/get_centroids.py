@@ -18,7 +18,8 @@ def get_centroids(bin_img):
     """
 
     # find contours in the binary image
-    contours = cv2.findContours(bin_img.astype(np.uint8), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[-2]
+    contours = cv2.findContours(bin_img.astype(np.uint8), cv2.RETR_TREE, 
+                                cv2.CHAIN_APPROX_SIMPLE)[-2]
     coor = []
     for c in contours:
         # calculate moments for each contour
