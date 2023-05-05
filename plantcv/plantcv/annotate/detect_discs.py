@@ -42,8 +42,12 @@ def detect_discs(bin_img, ecc_thresh=0):
             coords = tuple(map(int, obj.centroid))
             discs_coor.append(coords)
             discs_mask = discs_mask + (labeled_img == i+1)
+            discs_mask = 255*discs_mask
 
-    _debug(visual=255*discs_mask, filename=os.path.join(params.debug_outdir, str(params.device) + 
-                                                        "_discs_mask" + str(int(ecc_thresh*10)) + ".png"))
+    _debug(visual=discs_mask, filename=os.path.join(params.debug_outdir,
+                                                    str(params.device) +
+                                                    "_discs_mask" +
+                                                    str(int(ecc_thresh*10)) +
+                                                    ".png"))
 
-    return 255*discs_mask, discs_coor
+    return discs_mask, discs_coor
