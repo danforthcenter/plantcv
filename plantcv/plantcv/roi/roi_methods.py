@@ -234,7 +234,7 @@ def _adjust_radius_max_min(height, width, radius, xmax, xmin, ymax, ymin):
     if min_distance < radius:
         print('Shrinking radius to make ROIs fit in the image')
         radius = min_distance - 1
-    return(radius)
+    return radius
 
 
 def _rois_from_coordinates(img, coord=None, radius=None):
@@ -418,6 +418,7 @@ def custom(img, vertices):
 
     return roi
 
+
 # Filter a mask based on a region of interest
 def filter(mask, roi, roi_type="partial"):
     """
@@ -439,9 +440,8 @@ def filter(mask, roi, roi_type="partial"):
 
     found_obj, found_hier = _cv2_findcontours(bin_img=mask)
 
-    kept_cnt, kept_hierarchy, filtered_mask = _roi_filter(img=mask, roi=roi, obj=found_obj,
-                                                hierarchy=found_hier, roi_type=roi_type)
-
+    _, _, filtered_mask = _roi_filter(img=mask, roi=roi, obj=found_obj,
+                                      hierarchy=found_hier, roi_type=roi_type)
 
     _debug(filtered_mask, filename=os.path.join(params.debug_outdir, str(params.device) + '_roi_filter.png'), cmap='gray')
 
