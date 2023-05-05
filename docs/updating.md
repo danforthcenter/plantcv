@@ -312,6 +312,16 @@ pages for more details on the input and output variable types.
 * pre v4.0: NA
 * post v4.0: yii, yii_hist = **plantcv.analyze.yii**(*ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None*)
 
+#### plantcv.annotate.detect_discs
+
+* pre v4.0: NA
+* post v4.0: discs_mask, discs_coor = **plantcv.annotate.detect_discs**(*bin_img, ecc_thresh=0*)
+
+#### plantcv.annotate.get_centroids
+
+* pre v4.0: NA
+* post v4.0: coordinates = **plantcv.annotate.get_centroids**(*bin_img*)
+
 #### plantcv.apply_mask
 
 * pre v3.0dev2: device, masked_img = **plantcv.apply_mask**(*img, mask, mask_color, device, debug=None*)
