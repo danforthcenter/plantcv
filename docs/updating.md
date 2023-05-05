@@ -267,6 +267,12 @@ pages for more details on the input and output variable types.
 * post v3.0: colors = **plantcv.color_palette**(*num*)
 * post v3.9: colors = **plantcv.color_palette**(*num, saved=False*)
 
+#### plantcv.create_labels
+
+* pre v4.0: NA
+* post v4.0: labeled_masks, num_labels = **plantcv.create_labels**(*mask, rois, roi_type="partial"*)
+
+
 #### plantcv.crop_position_mask
 
 * pre v3.0dev2: device, newmask = **plantcv.crop_position_mask**(*img, mask, device, x, y, v_pos="top", h_pos="right", debug=None*)
