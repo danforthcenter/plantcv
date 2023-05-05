@@ -8,12 +8,10 @@ Create a labeled mask for analyzing multiple objects in the same image
 
 - **Parameters:**
     - mask - Binary mask
-    - rois - Objects class instance, typically output from `pcv.roi.multi` or `pcv.roi.auto_grid`, or `None` in the case 
-    - roi_type - 'partial' (for partially inside, default), 'cutto' (hard cut off at ROI boundary), 'largest' (keep only the largest contour), or 'auto' (use the mask alone withtout roi filtering)
-    - h - Height 
-    - w - Width
+    - rois - Objects class instance, typically output from [`pcv.roi.multi`](roi_multi.md) or [`pcv.roi.auto_grid`](roi_auto_grid.md), or `None` in the case where each blob is to be treated as a separate object 
+    - roi_type - 'partial' (for partially inside, default), 'cutto' (hard cut off at ROI boundary), 'largest' (keep only the largest contour), or 'auto' (use the mask alone withtout ROI filtering)
 - **Context:**
-    - Used to identify and separate multiple objects from a binary mask for downstream analysis. Such as grid of pots or seed scatter images.
+    - Used to identify and separate multiple objects from a binary mask for downstream analysis. Such as grid of pots or seed scatter images. 
     
 
 ```python
