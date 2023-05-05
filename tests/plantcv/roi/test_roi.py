@@ -252,6 +252,7 @@ def test_filter(mode, exp, test_data):
     # Assert that the contours were filtered as expected
     assert area == exp
 
+
 def test_filter_multi(test_data):
     """Test for PlantCV."""
     # Read in test data
