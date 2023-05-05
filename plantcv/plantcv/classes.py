@@ -29,6 +29,7 @@ def _find_closest_pt(pt, pts):
     idx = np.argmin(dists)
     return idx, pts[idx]
 
+
 # Class definitions
 class Params:
     """PlantCV parameters class."""
