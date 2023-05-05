@@ -4,6 +4,7 @@ from skimage.measure import label, regionprops
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 
+
 def detect_discs(bin_img, ecc_thresh=0):
     """ Detect disc-shaped regions in a binary image based on eccentricity.
     A value of eccentricity between 0 and 1 corresponds to an ellipse.
@@ -35,15 +36,14 @@ def detect_discs(bin_img, ecc_thresh=0):
     discs_mask = np.zeros(labeled_img.shape, dtype=np.uint8)
     # Store the list of coordinates (row,col) for the objects that pass the
     discs_coor = []
-    for i,obj in enumerate(obj_measures):
+    for i, obj in enumerate(obj_measures):
         if obj.eccentricity < ecc_thresh:
             # Convert coord values to int
             coords = tuple(map(int, obj.centroid))
             discs_coor.append(coords)
             discs_mask = discs_mask + (labeled_img == i+1)
 
-    _debug(visual=255*discs_mask, filename=os.path.join(params.debug_outdir,
-            str(params.device) + "_discs_mask" +
-            str(int(ecc_thresh*10)) + ".png"))
+    _debug(visual=255*discs_mask, filename=os.path.join(params.debug_outdir, str(params.device) + 
+                                                        "_discs_mask" + str(int(ecc_thresh*10)) + ".png"))
 
     return 255*discs_mask, discs_coor
