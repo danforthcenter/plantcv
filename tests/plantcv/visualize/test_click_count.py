@@ -2,7 +2,7 @@ import os
 import numpy as np
 import matplotlib
 from plantcv.plantcv.transform import rescale
-from plantcv.plantcv.visualize import ClickCount
+from plantcv.plantcv.annotate.click_count import ClickCount
 
 
 def test_plantcv_visualize_click_count(tmpdir):
