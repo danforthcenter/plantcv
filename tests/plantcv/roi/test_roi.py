@@ -1,7 +1,8 @@
 import pytest
 import cv2
 import numpy as np
-from plantcv.plantcv.roi import from_binary_image, rectangle, circle, ellipse, auto_grid, multi, custom
+from plantcv.plantcv import Objects
+from plantcv.plantcv.roi import from_binary_image, rectangle, circle, ellipse, auto_grid, multi, custom, filter
 
 
 def test_from_binary_image(roi_test_data):
@@ -233,3 +234,101 @@ def test_custom_bad_input(roi_test_data):
     # ROI goes out of bounds
     with pytest.raises(RuntimeError):
         _ = custom(img=img, vertices=[[226, -1], [3130, 1848], [2404, 2029], [2205, 2298], [1617, 1761]])
+
+
+@pytest.mark.parametrize("mode,exp", [["largest", 221], ["cutto", 152], ["partial", 221]])
+def test_filter(mode, exp, test_data):
+    """Test for PlantCV."""
+    # Read in test data
+    img = cv2.imread(test_data.small_rgb_img)
+    mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
+    cnt, cnt_str = test_data.load_contours(test_data.small_contours_file)
+    cv2.drawContours(mask, cnt, -1, (255), -1, lineType=8, hierarchy=cnt_str)
+    roi = [np.array([[[150, 150]], [[150, 174]], [[249, 174]], [[249, 150]]], dtype=np.int32)]
+    roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
+    roi_Obj = Objects(contours=[roi], hierarchy=[roi_str])
+    filtered_mask = filter(mask=mask, roi=roi_Obj, roi_type=mode)
+    area = cv2.countNonZero(filtered_mask)
+    # Assert that the contours were filtered as expected
+    assert area == exp
+
+
+def test_filter_multi(test_data):
+    """Test for PlantCV."""
+    # Read in test data
+    img = cv2.imread(test_data.small_rgb_img)
+    mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
+    cnt, cnt_str = test_data.load_contours(test_data.small_contours_file)
+    cv2.drawContours(mask, cnt, -1, (255), -1, lineType=8, hierarchy=cnt_str)
+    roi = [np.array([[[150, 150]], [[150, 174]], [[249, 174]], [[249, 150]]], dtype=np.int32)]
+    roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
+    # make a multi-ROI by repeating the same roi twice
+    roi_Obj = Objects(contours=[roi, roi], hierarchy=[roi_str, roi_str])
+    filtered_mask = filter(mask=mask, roi=roi_Obj, roi_type="partial")
+    area = cv2.countNonZero(filtered_mask)
+    # Assert that the contours were filtered as expected
+    assert area == 221
+
+
+def test_filter_bad_input(test_data):
+    """Test for PlantCV."""
+    # Read in test data
+    img = cv2.imread(test_data.small_rgb_img)
+    mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
+    cnt, cnt_str = test_data.load_contours(test_data.small_contours_file)
+    cv2.drawContours(mask, cnt, -1, (255), -1, lineType=8, hierarchy=cnt_str)
+    roi = [np.array([[[150, 150]], [[150, 174]], [[249, 174]], [[249, 150]]], dtype=np.int32)]
+    roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
+    roi_Obj = Objects(contours=[roi], hierarchy=[roi_str])
+    with pytest.raises(RuntimeError):
+        _ = filter(mask=mask, roi=roi_Obj, roi_type="cut")
+
+
+def test_filter_grayscale_input(test_data):
+    """Test for PlantCV."""
+    # Read in test data
+    img = cv2.imread(test_data.small_gray_img, -1)
+    mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
+    cnt, cnt_str = test_data.load_contours(test_data.small_contours_file)
+    cv2.drawContours(mask, cnt, -1, (255), -1, lineType=8, hierarchy=cnt_str)
+    roi = [np.array([[[150, 150]], [[150, 174]], [[249, 174]], [[249, 150]]], dtype=np.int32)]
+    roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
+    roi_Obj = Objects(contours=[roi], hierarchy=[roi_str])
+    filtered_mask = filter(mask=mask, roi=roi_Obj, roi_type="partial")
+    area = cv2.countNonZero(filtered_mask)
+    # Assert that the contours were filtered as expected
+    assert area == 221
+
+
+def test_filter_no_overlap(test_data):
+    """Test for PlantCV."""
+    # Read in test data
+    img = cv2.imread(test_data.small_rgb_img)
+    mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
+    cnt, cnt_str = test_data.load_contours(test_data.small_contours_file)
+    cv2.drawContours(mask, cnt, -1, (255), -1, lineType=8, hierarchy=cnt_str)
+    roi = [np.array([[[0, 0]], [[0, 24]], [[24, 24]], [[24, 0]]], dtype=np.int32)]
+    roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
+    roi_Obj = Objects(contours=[roi], hierarchy=[roi_str])
+    filtered_mask = filter(mask=mask, roi=roi_Obj, roi_type="partial")
+    area = cv2.countNonZero(filtered_mask)
+    # Assert that the contours were filtered as expected
+    assert area == 0
+
+
+def test_filter_nested():
+    """Test for PlantCV."""
+    # Create test data
+    img = np.zeros((100, 100), dtype=np.uint8)
+    mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
+    cnt = [np.array([[[25, 25]], [[25, 49]], [[49, 49]], [[49, 25]]], dtype=np.int32),
+           np.array([[[34, 35]], [[35, 34]], [[39, 34]], [[40, 35]], [[40, 39]], [[39, 40]], [[35, 40]], [[34, 39]]],
+                    dtype=np.int32)]
+    cnt_str = np.array([[[-1, -1,  1, -1], [-1, -1, -1,  0]]], dtype=np.int32)
+    cv2.drawContours(mask, cnt, -1, (255), -1, lineType=8, hierarchy=cnt_str)
+    roi = [np.array([[[0, 0]], [[0, 99]], [[99, 99]], [[99, 0]]], dtype=np.int32)]
+    roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
+    roi_Obj = Objects(contours=[roi], hierarchy=[roi_str])
+    filtered_mask = filter(mask=mask, roi=roi_Obj, roi_type="largest")
+    area = cv2.countNonZero(filtered_mask)
+    assert area == 580
