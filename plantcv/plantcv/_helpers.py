@@ -43,3 +43,35 @@ def _iterate_analysis(img, labeled_mask, n_labels, label, function, **kwargs):
     for i in range(1, n_labels + 1):
         submask = np.where(mask_copy == i, 255, 0).astype(np.uint8)
         function(img=img, mask=submask, label=label, **kwargs)
+
+
+def _object_composition(contours, hierarchy):
+    """
+    Groups objects into a single object, usually done after object filtering.
+
+    Inputs:
+    contours  = Contour tuple
+    hierarchy = Contour hierarchy NumPy array
+
+    Returns:
+    group    = grouped contours list
+
+    :param contours: tuple
+    :param hierarchy: numpy.ndarray
+    :return group: numpy.ndarray
+    """
+    stack = np.zeros((len(contours), 1))
+
+    for c, cnt in enumerate(contours):
+        if hierarchy[0][c][2] == -1 and hierarchy[0][c][3] > -1:
+            stack[c] = 0
+        else:
+            stack[c] = 1
+
+    ids = np.where(stack == 1)[0]
+    group = np.array([], dtype=np.int32)
+    if len(ids) > 0:
+        contour_list = [contours[i] for i in ids]
+        group = np.vstack(contour_list)
+
+    return group
