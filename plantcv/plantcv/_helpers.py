@@ -20,22 +20,26 @@ def _cv2_findcontours(bin_img):
     return contours, hierarchy
 
 
-def _iterate_analysis(img, labeled_mask, n_labels, function, **kwargs):
+def _iterate_analysis(img, labeled_mask, n_labels, label, function, **kwargs):
     """Iterate over labels and apply an analysis function.
     Inputs:
-    img = image to be used for visualization
-    mask = labeled mask
+    img      = image to be used for visualization
+    mask     = labeled mask
     n_labels = number of expected labels
+    label    = label parameter, modifies the variable name of observations recorded
     function = analysis function to apply to each submask
+    kwargs   = additional keyword arguments to pass to the analysis function
 
     :param img: np.ndarray
     :param mask: np.ndarray
     :param n_labels: int
+    :param label: str
     :param function: function
+    :param kwargs: dict
     """
     mask_copy = np.copy(labeled_mask)
     if len(np.unique(mask_copy)) == 2 and np.max(mask_copy) == 255:
         mask_copy = np.where(mask_copy == 255, 1, 0).astype(np.uint8)
     for i in range(1, n_labels + 1):
         submask = np.where(mask_copy == i, 255, 0).astype(np.uint8)
-        function(img=img, mask=submask, **kwargs)
+        function(img=img, mask=submask, label=label, **kwargs)
