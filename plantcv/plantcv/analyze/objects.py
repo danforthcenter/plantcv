@@ -20,7 +20,7 @@ def objects(img, labeled_mask, n_labels, label="default"):
     :param label: str
     :return analysis_image: numpy.ndarray
     """
-    _iterate_analysis(img=img, labeled_mask=labeled_mask, n_labels=n_labels, function=_analyze_object, label=label)
+    _iterate_analysis(img=img, labeled_mask=labeled_mask, n_labels=n_labels, label=label, function=_analyze_object)
 
 
 def _analyze_object(img, mask, label):
