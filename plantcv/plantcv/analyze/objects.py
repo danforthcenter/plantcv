@@ -1,5 +1,5 @@
 # A function that analyzes the shape and size of objects and outputs data
-from plantcv.plantcv._helpers import _iterate_analysis
+from plantcv.plantcv._helpers import _iterate_analysis, _cv2_findcontours
 
 
 def objects(img, labeled_mask, n_labels, label="default"):
