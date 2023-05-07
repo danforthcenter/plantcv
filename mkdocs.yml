@@ -142,6 +142,7 @@ nav:
         - 'Create Multi ROIs': 'roi_multi.md'
         - 'Create Grid of ROIs Automatically': roi_auto_grid.md
         - 'Filter Objects by ROI': roi_objects.md
+        - 'Filter a mask by ROI': roi_filter.md
         - 'Convert ROI to Mask': roi2mask.md
       - 'Rotate': rotate2.md
       - 'Segment Image Series': segment_image_series.md

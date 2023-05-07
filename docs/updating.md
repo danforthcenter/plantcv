@@ -222,8 +222,8 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, cropped = **plantcv.auto_crop**(*device, img, objects, padding_x=0, padding_y=0, color='black', debug=None*)
 * post v3.0dev2: cropped = **plantcv.auto_crop**(*img, objects, padding_x=0, padding_y=0, color='black'*)
-* post v3.2: cropped = **plantcv.auto_crop**(*img, obj, padding_x=0, padding_y=0, color='black'*) 
-* post v4.: cropped = **plantcv.auto_crop**(*img, objects, padding_x=0, padding_y=0, color='black'*) 
+* post v3.2: cropped = **plantcv.auto_crop**(*img, obj, padding_x=0, padding_y=0, color='black'*)
+* post v4.: cropped = **plantcv.auto_crop**(*img, objects, padding_x=0, padding_y=0, color='black'*)
 
 
 #### plantcv.background_subtraction
@@ -718,6 +718,11 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.ellipse**(*x, y, r1, r2, angle, img*)
 * post v3.2: roi_contour, roi_hierarchy = **plantcv.roi.ellipse**(*img, x, y, r1, r2, angle*)
 * post v4.0: roi = **plantcv.roi.ellipse**(*img, x, y, r1, r2, angle*)
+
+#### plantcv.roi.filter
+
+* pre v4.0: NA
+* post v4.0: filtered_mask = **pcv.roi.filter**(*mask, roi, roi_type='partial'*)
 
 #### plantcv.roi.from_binary_image
 
