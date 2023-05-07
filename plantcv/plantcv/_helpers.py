@@ -42,7 +42,8 @@ def _iterate_analysis(img, labeled_mask, n_labels, label, function, **kwargs):
         mask_copy = np.where(mask_copy == 255, 1, 0).astype(np.uint8)
     for i in range(1, n_labels + 1):
         submask = np.where(mask_copy == i, 255, 0).astype(np.uint8)
-        function(img=img, mask=submask, label=label, **kwargs)
+        img = function(img=img, mask=submask, label=label, **kwargs)
+    return img
 
 
 def _object_composition(contours, hierarchy):
