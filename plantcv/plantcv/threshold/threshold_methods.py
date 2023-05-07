@@ -841,7 +841,9 @@ def dual_channels(rgb_img, x_channel, y_channel, points, above=True, max_value=2
     params.debug = None
     # get channels
     img_x_ch = channel_dict.get(x_channel, _not_valid)(rgb_img, x_channel)
+    img_x_ch = img_x_ch.astype(np.float64)
     img_y_ch = channel_dict.get(y_channel, _not_valid)(rgb_img, y_channel)
+    img_y_ch = img_y_ch.astype(np.float64)
     params.debug = debug
 
     if len(points) < 2:
@@ -851,7 +853,9 @@ def dual_channels(rgb_img, x_channel, y_channel, points, above=True, max_value=2
         # Print warning statement
         print("Warning: only the first two points are used in this function")
 
-    mask = np.ones(rgb_img.shape, dtype=np.uint8)
+    # avoid overflow when casting as uint8 if max_value > 255
+    max_value = min(max_value,255)
+
     x0, y0 = points[0]
     x1, y1 = points[1]
 
@@ -861,11 +865,13 @@ def dual_channels(rgb_img, x_channel, y_channel, points, above=True, max_value=2
     y_line = m*img_x_ch + b
 
     if above:
-        mask = max_value*(img_y_ch > y_line)
+        bin_img = max_value*(img_y_ch > y_line)
     else:
-        mask = max_value*(img_y_ch < y_line)
+        bin_img = max_value*(img_y_ch < y_line)
 
-    _debug(visual=mask, filename=os.path.join(params.debug_outdir,
+    bin_img = bin_img.astype(np.uint8)
+
+    _debug(visual=bin_img, filename=os.path.join(params.debug_outdir,
                                               str(params.device) + '_' + x_channel + y_channel + '_2D_threshold_mask.png'))
 
-    return mask
+    return bin_img
