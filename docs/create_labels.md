@@ -8,17 +8,17 @@ Create a labeled mask for analyzing multiple objects in the same image
 
 - **Parameters:**
     - mask - Binary mask
-    - rois - Objects class instance, typically output from [`pcv.roi.multi`](roi_multi.md) or [`pcv.roi.auto_grid`](roi_auto_grid.md), or `None` in the case where each blob is to be treated as a separate object 
+    - rois - Objects class instance, typically output from [`pcv.roi.multi`](roi_multi.md) or [`pcv.roi.auto_grid`](roi_auto_grid.md), or `None` in the case where each blob is to be treated as a separate object
     - roi_type - 'partial' (for partially inside, default), 'cutto' (hard cut off at ROI boundary), 'largest' (keep only the largest contour), or 'auto' (use the mask alone withtout ROI filtering)
 - **Context:**
-    - Used to identify and separate multiple objects from a binary mask for downstream analysis. Such as grid of pots or seed scatter images. 
-    
+    - Used to identify and separate multiple objects from a binary mask for downstream analysis. Such as grid of pots or seed scatter images.
+
 
 ```python
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), 
+# Set global debug behavior to None (default), "print" (to file),
 # or "plot" (Jupyter Notebooks or X11)
 
 pcv.params.debug = "plot"
@@ -27,7 +27,7 @@ pcv.params.debug = "plot"
 grid_rois = pcv.roi.multi(img=img, coord=(31,31), radius=20, spacing=(67, 67), nrows=4, ncols=7)
 labeled_mask, num_seeds = pcv.create_labels(mask=clean_mask, rois=grid_rois, roi_type="partial")
 
-# Don't use ROIs but instead assume one "object of interest" per contour 
+# Don't use ROIs but instead assume one "object of interest" per contour
 labeled_mask2, num_seeds2 = pcv.create_labels(mask=clean_mask, rois=None, roi_type="auto")
 
 ```
@@ -39,6 +39,6 @@ labeled_mask2, num_seeds2 = pcv.create_labels(mask=clean_mask, rois=None, roi_ty
 
 **Output Mask Image**
 
-![Screenshot](img/documentation_images/create_labels/grayscale_labeled_mask.jpg
+![Screenshot](img/documentation_images/create_labels/grayscale_labeled_mask.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/crop.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/create_labels.py)
