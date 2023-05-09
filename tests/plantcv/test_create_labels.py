@@ -18,5 +18,5 @@ def test_create_labels_no_roi(test_data):
     """Test for PlantCV."""
     # cnt, cnt_str = test_data.load_contours(test_data.small_contours_file)
     mask = cv2.imread(test_data.small_bin_img, -1)
-    masks, num = create_labels(mask=mask, rois=None, roi_type="auto")
+    masks, num = create_labels(mask=mask)
     assert num == 1
