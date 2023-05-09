@@ -1,29 +1,27 @@
 # Create labels base on clean mask and optionally, multiple ROIs
-import cv2, os
+import cv2
+import os
 import numpy as np
 from skimage.measure import label
 from skimage.color import label2rgb
 from plantcv.plantcv import params, roi_objects, Objects, warn
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _roi_filter
-from plantcv.plantcv._helpers import _cv2_findcontours
-
-
-
-
+from plantcv.plantcv._helpers import _roi_filter, _cv2_findcontours
 
 
 def create_labels(mask, rois, roi_type="partial"):
-    """Create a labeled mask where connected regions of non-zero pixels are assigned
-    a label value based on the provided region of interest (ROI)
-
-    If the order of labels is not important `roi_type='auto'` and `rois=None` can
+    """Create a labeled mask where connected regions of non-zero
+    pixels are assigned a label value based on the provided
+    region of interest (ROI). If the order of labels is not
+    important `roi_type='auto'` and `rois=None` can
     be used to automatically assign the labels
 
     Inputs:
     mask            = mask image
     rois            = list of multiple ROIs (from roi.multi or roi.auto_grid)
-    roi_type        = 'cutto', 'partial' (for partially inside, default), 'largest' (keep only the largest contour), or 'auto' (use the mask alone withtout roi filtering)
+    roi_type        = 'cutto', 'partial' (for partially inside, default),
+                    'largest' (keep only the largest contour), or 'auto'
+                    (use the mask alone withtout roi filtering)
 
     Returns:
     mask            = Labeled mask
