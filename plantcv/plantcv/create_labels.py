@@ -12,9 +12,7 @@ from plantcv.plantcv._helpers import _roi_filter, _cv2_findcontours
 def create_labels(mask, rois=None, roi_type="partial"):
     """Create a labeled mask where connected regions of non-zero
     pixels are assigned a label value based on the provided
-    region of interest (ROI). If the order of labels is not
-    important `roi_type='auto'` and `rois=None` can
-    be used to automatically assign the labels
+    region of interest (ROI). 
 
     Inputs:
     mask            = mask image
@@ -38,27 +36,32 @@ def create_labels(mask, rois=None, roi_type="partial"):
     params.debug = None
 
     # Use contours for labeling
-    if rois == None:      
+    if rois is None:
         # label will work with any number of objects in the mask
-        labeled_mask, num_labels = label(mask, background=0, return_num=True, connectivity=2)
+        labeled_mask, num_labels = label(mask, background=0,
+                                         return_num=True, connectivity=2)
 
     # Use the rois for labeling
     else:
         contours, hierarchy = _cv2_findcontours(mask)
         labeled_mask = np.zeros(mask.shape[:2], dtype=np.int32)
         for i, roi in enumerate(rois):
-            kept_cnt, kept_hierarchy, mask = _roi_filter(img=mask, roi=roi, obj=contours,
-                                                hierarchy=hierarchy, roi_type=roi_type)
+            kept_cnt, kept_hierarchy, mask = _roi_filter(img=mask, roi=roi,
+                                                         obj=contours,
+                                                         hierarchy=hierarchy,
+                                                         roi_type=roi_type)
 
             # Pixel intensity of (i+1) such that the first object has value
             cv2.drawContours(labeled_mask, kept_cnt, -1, (i+1), -1)
-            num_labels = np.unique(labeled_mask).size -1
+            num_labels = np.unique(labeled_mask).size - 1
 
     # Restore debug parameter
     params.debug = debug
     colorful = label2rgb(labeled_mask)
     colorful2 = ((255*colorful).astype(np.uint8))
 
-    _debug(colorful2, filename=os.path.join(params.debug_outdir, str(params.device) + '_label_colored_mask.png'))
+    _debug(colorful2, filename=os.path.join(params.debug_outdir,
+                                            str(params.device) +
+                                            '_label_colored_mask.png'))
 
     return labeled_mask, num_labels
