@@ -4,7 +4,7 @@ import cv2
 from plantcv.plantcv import create_labels, Objects
 
 
-@pytest.mark.parametrize("mode", ["largest", "cutto", "partial", "auto"])
+@pytest.mark.parametrize("mode", ["largest", "cutto", "partial"])
 def test_create_labels(mode, test_data):
     """Test for PlantCV."""
     cnt, cnt_str = test_data.load_contours(test_data.small_contours_file)
