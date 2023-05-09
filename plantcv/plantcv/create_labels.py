@@ -9,7 +9,7 @@ from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _roi_filter, _cv2_findcontours
 
 
-def create_labels(mask, rois, roi_type="partial"):
+def create_labels(mask, rois=None, roi_type="partial"):
     """Create a labeled mask where connected regions of non-zero
     pixels are assigned a label value based on the provided
     region of interest (ROI). If the order of labels is not
@@ -37,15 +37,12 @@ def create_labels(mask, rois, roi_type="partial"):
     debug = params.debug
     params.debug = None
 
-    # Auto logic for when the order of labels is not important
-    if roi_type.upper() == "AUTO":
-        if rois is not None:
-            warn("When using roi_type='auto' the rois parameter is ignored")
-
+    # Use contours for labeling
+    if rois == None:      
         # label will work with any number of objects in the mask
         labeled_mask, num_labels = label(mask, background=0, return_num=True, connectivity=2)
 
-    # use the rois for labeling
+    # Use the rois for labeling
     else:
         contours, hierarchy = _cv2_findcontours(mask)
         labeled_mask = np.zeros(mask.shape[:2], dtype=np.int32)
