@@ -13,6 +13,10 @@ from plantcv.plantcv._debug import _debug
 def affine_color_correction(img, source_matrix, target_matrix):
     """
     """
+
+    if source_matrix.shape != target_matrix.shape:
+        fatal_error("Missmatch between the color matrices' shapes")
+
     h,w,c = img.shape
 
     n = source_matrix.shape[0]
