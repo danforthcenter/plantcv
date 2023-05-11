@@ -11,6 +11,8 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv._debug import _debug
 
 def affine_color_correction(img, source_matrix, target_matrix):
+    """
+    """
     h,w,c = img.shape
 
     n = source_matrix.shape[0]
@@ -32,9 +34,14 @@ def affine_color_correction(img, source_matrix, target_matrix):
     img_g_cc = (255*np.clip(np.matmul(img_pix,ag),0,1)).astype(np.uint8)
     img_b_cc = (255*np.clip(np.matmul(img_pix,ab),0,1)).astype(np.uint8)
 
-    img_cc = np.stack((img_b_cc,img_g_cc,img_r_cc), axis=1).reshape(h,w,c)
+    corrected_img = np.stack((img_b_cc,img_g_cc,img_r_cc), axis=1).reshape(h,w,c)
 
-    return img_cc
+    # For debugging, create a horizontal view of the image before and after color correction
+    debug_img = np.hstack([img, corrected_img])
+    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_affine_corrected.png'))
+
+
+    return corrected_img
 
 
 def std_color_matrix(pos=0):
