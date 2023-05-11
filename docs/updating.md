@@ -270,7 +270,7 @@ pages for more details on the input and output variable types.
 #### plantcv.create_labels
 
 * pre v4.0: NA
-* post v4.0: labeled_masks, num_labels = **plantcv.create_labels**(*mask, rois, roi_type="partial"*)
+* post v4.0: labeled_masks, num_labels = **plantcv.create_labels**(*mask, rois=None, roi_type="partial"*)
 
 
 #### plantcv.crop_position_mask
