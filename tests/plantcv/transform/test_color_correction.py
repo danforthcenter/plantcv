@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 from plantcv.plantcv.transform import (get_color_matrix, get_matrix_m, calc_transformation_matrix, apply_transformation_matrix,
                                        save_matrix, load_matrix, correct_color, create_color_card_mask, quick_color_check,
-                                       find_color_card)
+                                       find_color_card, std_color_matrix)
 from plantcv.plantcv import outputs
 
 
@@ -31,7 +31,7 @@ def test_std_color_matrix_bad_pos():
     """Test for PlantCV"""
     with pytest.raises(RuntimeError):
         _ = std_color_matrix(pos=4.5)
-        
+
 
 def test_get_color_matrix(transform_test_data):
     """Test for PlantCV."""
