@@ -4,7 +4,7 @@ import os
 import numpy as np
 from skimage.measure import label
 from skimage.color import label2rgb
-from plantcv.plantcv import params, roi_objects, Objects, warn
+from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _roi_filter, _cv2_findcontours
 
@@ -12,7 +12,7 @@ from plantcv.plantcv._helpers import _roi_filter, _cv2_findcontours
 def create_labels(mask, rois=None, roi_type="partial"):
     """Create a labeled mask where connected regions of non-zero
     pixels are assigned a label value based on the provided
-    region of interest (ROI). 
+    region of interest (ROI).
 
     Inputs:
     mask            = mask image
