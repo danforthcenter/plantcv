@@ -13,7 +13,7 @@ from plantcv.plantcv._debug import _debug
 def affine_color_correction(rgb_img, source_matrix, target_matrix):
     """Correct the color of the input image based on the target color matrix using an affine transformation
     in the RGB space. The vector containing the regression coefficients is calculated as the one that minimizes the
-    Euclidean distace between the transformed source color values and the target color values.
+    Euclidean distance between the transformed source color values and the target color values.
 
     Inputs:
     rgb_img         = an RGB image with color chips visualized
