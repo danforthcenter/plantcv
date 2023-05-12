@@ -19,37 +19,33 @@ Euclidean distance between the transformed source color values and the target co
 
 **Reference Images**
 
- Target Image
+ RGB image
 
-![Screenshot](img/documentation_images/correct_color_imgs/target_img_plant_resize.jpg)
-
- Source Image
-
-![Screenshot](img/documentation_images/correct_color_imgs/source_img_plant.jpg)
+![Screenshot](img/documentation_images/transform_affine_color_corr/tobacco_leaves.jpg)
 
 
 ```python
 
 from plantcv import plantcv as pcv
-import cv2
 
-target_img, targetpath, targetname = pcv.readimage(filename="target_img.png")
-source_img, sourcepath, sourcename = pcv.readimage(filename="source1_img.png")
-
-target_mask, tmaskpath, tmaskname = pcv.readimage(filename="mask_img.png")
-source_mask, smaskpath, smaskname = pcv.readimage(filename="mask_img.png") # in this case, as our images share a zoom level and colorchecker placement, the same mask is used for both the target and the source.
-
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file),
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = 'plot'
 
-target_matrix, source_matrix, transformation_matrix, corrected_img = pcv.transform.correct_color(target_img=target_img,
-                                                                                                 target_mask=t_mask,
-                                                                                                 source_img=img,
-                                                                                                 source_mask=mask,
-                                                                                                 output_directory=outdir)
+# the source matrix needs to be computed form the RGB image, see the functions
+# plantcv.transform.create_color_card_mask and plantcv.transform.get_color_matrix
+
+# using standard color values for the color card
+tgt_matrix = pcv.transform.std_color_matrix(pos=2)
+
+corrected_img = pcv.transform.correct_color(rgb_img=img,
+                                            source_matrix=src_matrix,
+                                            target_matrix=tgt_matrix)
 
 ```
 
-![Screenshot](img/documentation_images/correct_color_imgs/hstack.jpg)
+Corrected image
+
+![Screenshot](img/documentation_images/transform_affine_color_corr/tobacco_leaves_corrected.jpg)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/transform/color_correction.py)
