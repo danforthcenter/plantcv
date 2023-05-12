@@ -9,7 +9,7 @@ def test_create_labels(test_data):
     cnt, cnt_str = test_data.load_contours(test_data.small_contours_file)
     mask = cv2.imread(test_data.small_bin_img, -1)
     cnt_Obj = Objects(contours=[cnt], hierarchy=[cnt_str])
-    masks, num = create_labels(mask=mask, rois=cnt_Obj, roi_type="partial)
+    masks, num = create_labels(mask=mask, rois=cnt_Obj, roi_type="partial")
     assert np.unique(masks).size == (num + 1)
 
 
