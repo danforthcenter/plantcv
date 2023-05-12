@@ -17,7 +17,7 @@ def test_affine_color_correction(transform_test_data):
                                     spacing=(145,145), nrows=6, ncols=4)
     _, s_matrix = get_color_matrix(rgb_img=img, mask=mask)
     t_matrix = std_color_matrix(pos=3)
-    corrected_img = affine_color_correction(img=img, source_matrix=s_matrix,
+    corrected_img = affine_color_correction(rgb_img=img, source_matrix=s_matrix,
                                             target_matrix=t_matrix)
     _, c_matrix = get_color_matrix(rgb_img=corrected_img, mask=mask)
 
@@ -33,7 +33,7 @@ def test_affine_color_correction_bad_shape(transform_test_data):
     img = cv2.imread(transform_test_data.colorcard_img)
     t_matrix = std_color_matrix(pos=3)
     with pytest.raises(RuntimeError):
-        _ = affine_color_correction(img=img, source_matrix=t_matrix,
+        _ = affine_color_correction(rgb_img=img, source_matrix=t_matrix,
                                     target_matrix=t_matrix[0:-1,:])
 
 
