@@ -44,7 +44,7 @@ shape_image = pcv.analyze.size(img=img, labeled_mask=mask, n_labels=1, label="de
 pcv.print_image(shape_image, '/home/malia/setaria_shape_img.png')
 
 # Access data stored out from analyze_object
-plant_solidity = pcv.outputs.observations['default']['solidity']['value']
+plant_solidity = pcv.outputs.observations['default1']['solidity']['value']
 
 ```
 
