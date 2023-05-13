@@ -1,21 +1,21 @@
 import cv2
 import numpy as np
 from plantcv.plantcv import outputs
-from plantcv.plantcv.analyze import objects as analyze_object
+from plantcv.plantcv.analyze import size as analyze_size
 
 
-def test_object(test_data):
+def test_size(test_data):
     """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     # Read in test data
     img = cv2.imread(test_data.small_rgb_img)
     mask = cv2.imread(test_data.small_bin_img, -1)
-    _ = analyze_object(img=img, labeled_mask=mask, n_labels=1)
+    _ = analyze_size(img=img, labeled_mask=mask, n_labels=1)
     assert int(outputs.observations["default"]["area"]["value"]) == 221
 
 
-def test_object_zero_slope():
+def test_size_zero_slope():
     """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
@@ -32,11 +32,11 @@ def test_object_zero_slope():
                             [[19, 10]], [[18, 10]], [[17, 10]], [[16, 10]], [[15, 10]], [[14, 10]], [[13, 10]],
                             [[12, 10]], [[11, 10]]], dtype=np.int32)
     mask = cv2.drawContours(mask, obj_contour, -1, (255), thickness=-1)
-    _ = analyze_object(img=img, labeled_mask=mask, n_labels=1)
+    _ = analyze_size(img=img, labeled_mask=mask, n_labels=1)
     assert outputs.observations["default"]["longest_path"]["value"] == 30
 
 
-def test_object_longest_axis_2d():
+def test_size_longest_axis_2d():
     """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
@@ -48,11 +48,11 @@ def test_object_longest_axis_2d():
                             [[1, 3]], [[1, 4]], [[2, 4]], [[3, 4]], [[4, 4]], [[4, 3]], [[4, 2]],
                             [[4, 1]], [[3, 1]], [[2, 1]]], dtype=np.int32)
     mask = cv2.drawContours(mask, obj_contour, -1, (255), thickness=-1)
-    _ = analyze_object(img=img, labeled_mask=mask, n_labels=1)
+    _ = analyze_size(img=img, labeled_mask=mask, n_labels=1)
     assert outputs.observations["default"]["longest_path"]["value"] == 186
 
 
-def test_object_longest_axis_2e():
+def test_size_longest_axis_2e():
     """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
@@ -70,11 +70,11 @@ def test_object_longest_axis_2e():
                             [[20, 10]], [[19, 10]], [[18, 10]], [[17, 10]], [[16, 10]], [[15, 10]], [[14, 10]],
                             [[13, 10]], [[12, 10]], [[11, 10]]], dtype=np.int32)
     mask = cv2.drawContours(mask, obj_contour, -1, (255), thickness=-1)
-    _ = analyze_object(img=img, labeled_mask=mask, n_labels=1)
+    _ = analyze_size(img=img, labeled_mask=mask, n_labels=1)
     assert outputs.observations["default"]["longest_path"]["value"] == 141
 
 
-def test_object_small_contour(test_data):
+def test_size_small_contour(test_data):
     """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
@@ -83,5 +83,5 @@ def test_object_small_contour(test_data):
     mask = np.zeros(img.shape[:2], dtype=np.uint8)
     obj_contour = [np.array([[[0, 0]], [[0, 50]], [[50, 50]], [[50, 0]]], dtype=np.int32)]
     mask = cv2.drawContours(mask, obj_contour, -1, (255), thickness=-1)
-    _ = analyze_object(img=img, labeled_mask=mask, n_labels=1)
+    _ = analyze_size(img=img, labeled_mask=mask, n_labels=1)
     assert "defaults" not in outputs.observations

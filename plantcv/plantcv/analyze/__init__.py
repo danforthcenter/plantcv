@@ -1,3 +1,3 @@
-from plantcv.plantcv.analyze.objects import objects
+from plantcv.plantcv.analyze.size import size
 
-__all__ = ["objects"]
+__all__ = ["size"]
