@@ -27,6 +27,8 @@ def size(img, labeled_mask, n_labels=1, label="default"):
     :return analysis_image: numpy.ndarray
     """
     img = _iterate_analysis(img=img, labeled_mask=labeled_mask, n_labels=n_labels, label=label, function=_analyze_size)
+    # Debugging
+    _debug(visual=img, filename=os.path.join(params.debug_outdir, str(params.device) + '_shapes.png'))
     return img
 
 
@@ -162,8 +164,6 @@ def _analyze_size(img, mask, label):
     outputs.add_observation(sample=label, variable='ellipse_eccentricity', trait='ellipse eccentricity',
                             method='plantcv.plantcv.analyze_object', scale='none', datatype=float,
                             value=float(ellipse_eccentricity), label='none')
-    # Debugging
-    _debug(visual=plt_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_shapes.png'))
     return plt_img
 
 
