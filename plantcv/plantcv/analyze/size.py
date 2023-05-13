@@ -14,7 +14,7 @@ def size(img, labeled_mask, n_labels=1, label="default"):
     Inputs:
     img          = RGB or grayscale image data for plotting
     labeled_mask = Labeled mask of objects (32-bit).
-    n_labels     = Total number of labels > 0 in the image (default = 1).
+    n_labels     = Total number expected individual objects (default = 1).
     label        = Optional label parameter, modifies the variable name of observations recorded (default = "default").
 
     Returns:
