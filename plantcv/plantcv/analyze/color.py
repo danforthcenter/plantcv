@@ -156,48 +156,6 @@ def _analyze_color(img, mask, colorspaces="all", label="default"):
                 scale_color_manual(fig_opts[colorspaces.upper()]["plot_colors"])
                 )
 
-    # if colorspaces.upper() == 'RGB':
-    #     df_rgb = pd.melt(dataset, id_vars=['bins'], value_vars=['blue', 'green', 'red'],
-    #                      var_name='color Channel', value_name='proportion of pixels (%)')
-    #     hist_fig = (ggplot(df_rgb, aes(x='bins', y='proportion of pixels (%)', color='color Channel'))
-    #                 + geom_line()
-    #                 + scale_x_continuous(breaks=list(range(0, 256, 25)))
-    #                 + scale_color_manual(['blue', 'green', 'red'])
-    #                 )
-
-    # elif colorspaces.upper() == 'LAB':
-    #     df_lab = pd.melt(dataset, id_vars=['bins'],
-    #                      value_vars=['lightness', 'green-magenta', 'blue-yellow'],
-    #                      var_name='color Channel', value_name='proportion of pixels (%)')
-    #     hist_fig = (ggplot(df_lab, aes(x='bins', y='proportion of pixels (%)', color='color Channel'))
-    #                 + geom_line()
-    #                 + scale_x_continuous(breaks=list(range(0, 256, 25)))
-    #                 + scale_color_manual(['yellow', 'magenta', 'dimgray'])
-    #                 )
-
-    # elif colorspaces.upper() == 'HSV':
-    #     df_hsv = pd.melt(dataset, id_vars=['bins'],
-    #                      value_vars=['hue', 'saturation', 'value'],
-    #                      var_name='color Channel', value_name='proportion of pixels (%)')
-    #     hist_fig = (ggplot(df_hsv, aes(x='bins', y='proportion of pixels (%)', color='color Channel'))
-    #                 + geom_line()
-    #                 + scale_x_continuous(breaks=list(range(0, 256, 25)))
-    #                 + scale_color_manual(['blueviolet', 'cyan', 'orange'])
-    #                 )
-
-    # elif colorspaces.upper() == 'ALL':
-    #     s = pd.Series(['blue', 'green', 'red', 'lightness', 'green-magenta',
-    #                    'blue-yellow', 'hue', 'saturation', 'value'], dtype="category")
-    #     color_channels = ['blue', 'yellow', 'green', 'magenta', 'blueviolet',
-    #                       'dimgray', 'red', 'cyan', 'orange']
-    #     df_all = pd.melt(dataset, id_vars=['bins'], value_vars=s, var_name='color Channel',
-    #                      value_name='proportion of pixels (%)')
-    #     hist_fig = (ggplot(df_all, aes(x='bins', y='proportion of pixels (%)', color='color Channel'))
-    #                 + geom_line()
-    #                 + scale_x_continuous(breaks=list(range(0, 256, 25)))
-    #                 + scale_color_manual(color_channels)
-    #                 )
-
     hist_fig = hist_fig + labs(x="Pixel intensity", y="Proportion of pixels (%)")
 
     # Hue values of zero are red but are also the value for pixels where hue is undefined. The hue value of a pixel will
