@@ -230,4 +230,4 @@ def _analyze_color(img, mask, colorspaces="all", label="default"):
     # Store images
     outputs.images.append(analysis_image)
 
-    return analysis_image
+    return img
