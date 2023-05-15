@@ -10,6 +10,7 @@ from plantcv.plantcv.roi import circle
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv._debug import _debug
 
+
 def affine_color_correction(rgb_img, source_matrix, target_matrix):
     """Correct the color of the input image based on the target color matrix using an affine transformation
     in the RGB space. The vector containing the regression coefficients is calculated as the one that minimizes the
@@ -38,7 +39,7 @@ def affine_color_correction(rgb_img, source_matrix, target_matrix):
     if source_matrix.shape != target_matrix.shape:
         fatal_error("Missmatch between the color matrices' shapes")
 
-    h,w,c = rgb_img.shape
+    h, w, c = rgb_img.shape
 
     # number of references
     n = source_matrix.shape[0]
@@ -46,13 +47,13 @@ def affine_color_correction(rgb_img, source_matrix, target_matrix):
     # the column zero (index) of the matrices is not used in this model
     # augment matrix of source values with a column of 1s for the constant part of
     # the affine transformation
-    S = np.concatenate((source_matrix[:,1:].copy(),np.ones((n,1))),axis=1)
+    S = np.concatenate((source_matrix[:, 1:].copy(), np.ones((n, 1))), axis=1)
 
     # make vectors of taget values for each color
-    T = target_matrix[:,1:].copy()
-    tr = T[:,0]
-    tg = T[:,1]
-    tb = T[:,2]
+    T = target_matrix[:, 1:].copy()
+    tr = T[:, 0]
+    tg = T[:, 1]
+    tb = T[:, 2]
 
     # calculate regression vector for each color as the pseudoinverse of the source
     # values matrix multiplied by each color target vector
@@ -60,25 +61,23 @@ def affine_color_correction(rgb_img, source_matrix, target_matrix):
     ag = np.matmul(np.linalg.pinv(S), tg)
     ab = np.matmul(np.linalg.pinv(S), tb)
 
-
     img_rgb = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2RGB)
     # reshape image as a 2D array where the rows are pixels and the colums are color channels
     # and augment the channels with a column of 1s for the affine transformation
-    img_pix = np.concatenate((img_rgb.reshape(h*w,c).astype(np.float64)/255, np.ones((h*w,1))), axis=1)
+    img_pix = np.concatenate((img_rgb.reshape(h*w, c).astype(np.float64)/255, np.ones((h*w, 1))), axis=1)
 
     # calculate the corrected colors, eliminate values outside the range [0-1] and
     # convert to [0-255] unit8
-    img_r_cc = (255*np.clip(np.matmul(img_pix,ar),0,1)).astype(np.uint8)
-    img_g_cc = (255*np.clip(np.matmul(img_pix,ag),0,1)).astype(np.uint8)
-    img_b_cc = (255*np.clip(np.matmul(img_pix,ab),0,1)).astype(np.uint8)
+    img_r_cc = (255*np.clip(np.matmul(img_pix, ar), 0, 1)).astype(np.uint8)
+    img_g_cc = (255*np.clip(np.matmul(img_pix, ag), 0, 1)).astype(np.uint8)
+    img_b_cc = (255*np.clip(np.matmul(img_pix, ab), 0, 1)).astype(np.uint8)
 
     # reconstruct the RGB (actually BGR for openCV) image
-    corrected_img = np.stack((img_b_cc,img_g_cc,img_r_cc), axis=1).reshape(h,w,c)
+    corrected_img = np.stack((img_b_cc, img_g_cc, img_r_cc), axis=1).reshape(h, w, c)
 
     # For debugging, create a horizontal view of the image before and after color correction
     debug_img = np.hstack([rgb_img, corrected_img])
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_affine_corrected.png'))
-
 
     return corrected_img
 

@@ -13,8 +13,8 @@ def test_affine_color_correction(transform_test_data):
     # get closer to the standard values
     img = cv2.imread(transform_test_data.colorcard_img)
     # parameters hard coded for the image used
-    mask = create_color_card_mask(rgb_img=img, radius=20, start_coord=(1000,400),
-                                    spacing=(145,145), nrows=6, ncols=4)
+    mask = create_color_card_mask(rgb_img=img, radius=20, start_coord=(1000, 400),
+                                  spacing=(145, 145), nrows=6, ncols=4)
     _, s_matrix = get_color_matrix(rgb_img=img, mask=mask)
     t_matrix = std_color_matrix(pos=3)
     corrected_img = affine_color_correction(rgb_img=img, source_matrix=s_matrix,
@@ -29,12 +29,13 @@ def test_affine_color_correction(transform_test_data):
 
     assert dist_correct <= dist_source
 
+
 def test_affine_color_correction_bad_shape(transform_test_data):
     img = cv2.imread(transform_test_data.colorcard_img)
     t_matrix = std_color_matrix(pos=3)
     with pytest.raises(RuntimeError):
         _ = affine_color_correction(rgb_img=img, source_matrix=t_matrix,
-                                    target_matrix=t_matrix[0:-1,:])
+                                    target_matrix=t_matrix[0:-1, :])
 
 
 @pytest.mark.parametrize("pos", [0, 1, 2, 3])
