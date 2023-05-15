@@ -201,3 +201,22 @@ def _object_composition(contours, hierarchy):
         group = np.vstack(contour_list)
 
     return group
+
+
+def _grayscale_to_rgb(img):
+    """
+    Convert a grayscale image to an RGB image.
+
+    Inputs:
+    img = Grayscale or RGB image data
+
+    Returns:
+    img = RGB image data
+
+    :param img: np.ndarray
+    :return img: np.ndarray
+    """
+    if len(np.shape(img)) == 2:
+        img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+
+    return img
