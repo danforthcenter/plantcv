@@ -166,19 +166,21 @@ nav:
           - 'Auto-Detect Color Card': find_color_card.md
           - 'Create Color Card Mask': create_color_card_mask.md
           - 'Convert Color Card to Matrix': get_color_matrix.md
-          - 'Calculate Moore-Penrose Inverse Matrix': mp_inverse.md
-          - 'Create Color Correction Matrix': transformation_matrix.md
-          - 'Apply Color Correction Matrix': apply_transformation_matrix.md
           - 'Color Correction Workflow': transform_correct_color.md
           - 'Quick Color Check': quick_color_check.md
-          - 'Load Matrix': load_matrix.md
-          - 'Save Matrix': save_matrix.md
+          - 'Affine Color Correction': transform_affine_color_correction.md
           - 'Standard Color Matrix': std_color_matrix.md
           - 'Gamma Correction': transform_gamma_correct.md
           - 'Nonuniform Illumination Correction': nonuniform_illumination.md
           - 'Perspective warp': transform_warp.md
           - 'Rescale Image Values': transform_rescale.md
           - 'Resize Images': transform_resize.md
+      - 'Transformation Helpers':
+            - 'Calculate Moore-Penrose Inverse Matrix': mp_inverse.md
+            - 'Create Color Correction Matrix': transformation_matrix.md
+            - 'Apply Color Correction Matrix': apply_transformation_matrix.md
+            - 'Load Matrix': load_matrix.md
+            - 'Save Matrix': save_matrix.md
       - 'Visualization Methods':
           - 'Auto Threshold Methods': visualize_auto_threshold_methods.md
           - 'Clustered Contours': visualize_clustered_contours.md
