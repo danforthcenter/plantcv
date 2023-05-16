@@ -170,7 +170,7 @@ def _analyze_color(img, mask, colorspaces="all", label="default"):
 
     # Plot or print the histogram
     analysis_image = hist_fig
-    _debug(visual=hist_fig, filename=os.path.join(params.debug_outdir, str(params.device) + '_analyze_color_hist.png'))
+    # _debug(visual=hist_fig, filename=os.path.join(params.debug_outdir, str(params.device) + '_analyze_color_hist.png'))
 
     # Store into global measurements
     # RGB signal values are in an unsigned 8-bit scale of 0-255
