@@ -5,7 +5,7 @@ import numpy as np
 from plantcv.plantcv import deprecation_warning, params
 from plantcv.plantcv import outputs
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv import fatal_error, warn
 from plantcv.plantcv.visualize import histogram
 from plotnine import labs
 
@@ -71,7 +71,7 @@ def analyze_index(index_array, mask, bins=100, min_bin=0, max_bin=1, histplot=No
 
     # Print a warning if observed min/max outside user defined range
     if observed_max > maxval or observed_min < b:
-        print("WARNING!!! The observed range of pixel values in your masked index provided is [" + str(observed_min) +
+        warn("The observed range of pixel values in your masked index provided is [" + str(observed_min) +
               ", " + str(observed_max) + "] but the user defined range of bins for pixel frequencies is [" + str(b) +
               ", " + str(maxval) + "]. Adjust min_bin and max_bin in order to avoid cutting off data being collected.")
 
