@@ -8,7 +8,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def bound_horizontal(img, labeled_mask, n_labels=1, line_position, label="default"):
+def bound_horizontal(img, labeled_mask, line_position, n_labels=1, label="default"):
     """A function that analyzes the shape and size of objects and outputs data.
 
     Inputs:
@@ -74,7 +74,12 @@ def _analyze_bound_horizontal(img, mask, line_position, label="default"):
     cv2.rectangle(background, rec_point1, rec_point2, (255), 1)
     below_contour, below_hierarchy = _cv2_findcontours(bin_img=background)
 
-    obj, _ = _cv2_findcontours(mask)
+    # Find contours
+    cnt, cnt_str = _cv2_findcontours(bin_img=mask)
+
+    # Consolidate contours
+    obj = _object_composition(contours=cnt, hierarchy=cnt_str)
+
     x, y, width, height = cv2.boundingRect(obj)
 
     if y_coor - y <= 0:
@@ -164,8 +169,6 @@ def _analyze_bound_horizontal(img, mask, line_position, label="default"):
                      params.line_thickness)
             cv2.line(wback, (int(cmx), y_coor - 2), (int(cmx), y_coor + height_below_bound), (0, 255, 0),
                      params.line_thickness)
-    _debug(visual=wback, filename=os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_white.png'))
-    _debug(visual=ori_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_img.png'))
 
     outputs.add_observation(sample=label, variable='horizontal_reference_position',
                             trait='horizontal reference position',
