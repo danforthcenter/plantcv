@@ -8,7 +8,7 @@ from matplotlib import pyplot as plt
 from plantcv.plantcv import rgb2gray
 from plantcv.plantcv import rgb2gray_hsv
 from plantcv.plantcv import rgb2gray_lab
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv import fatal_error, warn
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 from skimage.feature import graycomatrix, graycoprops
@@ -851,7 +851,7 @@ def dual_channels(rgb_img, x_channel, y_channel, points, above=True, max_value=2
 
     if len(points) > 2:
         # Print warning statement
-        print("Warning: only the first two points are used in this function")
+        warn("only the first two points are used in this function")
 
     # avoid overflow when casting as uint8 if max_value > 255
     max_value = min(max_value,255)
