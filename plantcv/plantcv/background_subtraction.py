@@ -5,7 +5,7 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv import fatal_error, warn
 from plantcv.plantcv import params
 
 
@@ -40,7 +40,7 @@ def background_subtraction(background_image, foreground_image):
         if len(bg_img.shape) != len(fg_img.shape):
             fatal_error("Images must both be single-channel/grayscale/binary or RGB")
         # Forcibly resizing largest image to smallest image
-        print("WARNING: Images are not of same size.\nResizing")
+        warn("Images are not of same size.\nResizing")
         if bg_img.shape > fg_img.shape:
             width, height = fg_img.shape[1], fg_img.shape[0]
             bg_img = cv2.resize(bg_img, (width, height), interpolation=cv2.INTER_AREA)
