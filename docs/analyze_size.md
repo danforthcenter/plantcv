@@ -8,7 +8,7 @@ Size and shape analysis outputs numeric properties for individual plants, seeds,
 
 - **Parameters:**
     - img - RGB or grayscale image data for plotting.
-    - labeled_mask - Labeled mask of objects (32-bit).
+    - labeled_mask - Labeled mask of objects (32-bit, output from [`pcv.create_labels`](create_labels.md) or [`pcv.roi.filter`](roi_filter.md)).
     - n_labels - Total number expected individual objects (default = 1).
     - label - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
 - **Context:**
