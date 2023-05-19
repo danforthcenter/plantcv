@@ -1,7 +1,7 @@
 import pytest
 import cv2
 import numpy as np
-from plantcv.plantcv.homology.x_axis_pseudolandmarks import x_axis_pseudolandmarks
+from plantcv.plantcv.homology.x_axis_pseudolandmarks import x_axis_pseudolandmarks as x_axis_pseudolandmarks
 
 
 def test_x_axis_pseudolandmarks(test_data):

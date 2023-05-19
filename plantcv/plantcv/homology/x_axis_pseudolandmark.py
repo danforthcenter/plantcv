@@ -10,7 +10,7 @@ from plantcv.plantcv import outputs
 from plantcv.plantcv import fatal_error
 
 
-def x_axis_pseudolandmarks1(img, mask, label="default"):
+def x_axis_pseudolandmarks(img, mask, label="default"):
     """
     Divide up object contour into 20 equidistance segments and generate landmarks for each
 
