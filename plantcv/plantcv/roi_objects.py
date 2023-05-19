@@ -6,7 +6,7 @@ import os
 from plantcv.plantcv import logical_and
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv import fatal_error, warn
 from plantcv.plantcv import params
 from plantcv.plantcv import Objects
 
@@ -39,7 +39,7 @@ def roi_objects(img, roi, obj, roi_type="partial"):
     params.debug = None
 
     if len(roi.contours) > 1:
-        print("Warning: received a multi-ROI but only the first ROI will be used. Consider using a for loop for multi-ROI")
+        warn("Received a multi-ROI but only the first ROI will be used. Consider using a for loop for multi-ROI")
 
     roi_contour = roi.contours[0]
     roi_hierarchy = roi.hierarchy[0]
@@ -79,7 +79,7 @@ def roi_objects(img, roi, obj, roi_type="partial"):
         # Find the largest contour if roi_type is set to 'largest'
         if roi_type.upper() == 'LARGEST':
             # Print warning statement about this feature
-            print("Warning: roi_type='largest' will only return the largest contour and its immediate children. Other "
+            warn("roi_type='largest' will only return the largest contour and its immediate children. Other "
                   "subcontours will be dropped.")
             # Find the index of the largest contour in the list of contours
             largest_area = 0
