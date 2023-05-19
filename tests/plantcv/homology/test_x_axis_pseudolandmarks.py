@@ -23,8 +23,8 @@ def test_x_axis_pseudolandmarks(test_data):
 def test_x_axis_pseudolandmarks_small_obj(obj, mask, shape, test_data):
     """Test for PlantCV."""
     img = cv2.imread(test_data.small_rgb_img)
-    mask = cv2.drawContours(mask, obj, -1, (255), thickness=-1)
-    top, bottom, center_v = x_axis(img=img, mask=mask)
+    n_mask = cv2.drawContours(mask, obj, -1, (255), thickness=-1)
+    top, bottom, center_v = x_axis(img=img, mask=n_mask)
     assert all([np.shape(top) == shape, np.shape(bottom) == shape, np.shape(center_v) == shape])
 
 
