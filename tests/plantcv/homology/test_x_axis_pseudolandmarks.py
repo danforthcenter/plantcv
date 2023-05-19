@@ -1,15 +1,14 @@
 import pytest
 import cv2
 import numpy as np
-from plantcv.plantcv import x_axis_pseudolandmarks
+from plantcv.plantcv.homology import x_axis_pseudolandmarks
 
 
 def test_x_axis_pseudolandmarks(test_data):
     """Test for PlantCV."""
     img = cv2.imread(test_data.small_rgb_img)
     mask = cv2.imread(test_data.small_bin_img, -1)
-    obj_contour = test_data.load_composed_contours(test_data.small_composed_contours_file)
-    top, bottom, center_v = x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
+    top, bottom, center_v = x_axis_pseudolandmarks(img=img, mask=mask)
     assert all([top.shape == (20, 1, 2), bottom.shape == (20, 1, 2), center_v.shape == (20, 1, 2)])
 
 
@@ -24,7 +23,8 @@ def test_x_axis_pseudolandmarks(test_data):
 def test_x_axis_pseudolandmarks_small_obj(obj, mask, shape, test_data):
     """Test for PlantCV."""
     img = cv2.imread(test_data.small_rgb_img)
-    top, bottom, center_v = x_axis_pseudolandmarks(obj=obj, mask=mask, img=img)
+    mask = cv2.drawContours(mask, obj, -1, (255), thickness=-1)
+    top, bottom, center_v = x_axis_pseudolandmarks(img=img, mask=mask)
     assert all([np.shape(top) == shape, np.shape(bottom) == shape, np.shape(center_v) == shape])
 
 
@@ -32,13 +32,15 @@ def test_x_axis_pseudolandmarks_bad_input():
     """Test for PlantCV."""
     img = np.array([])
     mask = np.array([])
-    obj_contour = np.array([])
-    result = x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
+    result = x_axis_pseudolandmarks(img=img, mask=mask)
     assert np.array_equal(np.unique(result), np.array(["NA"]))
 
 
 def test_x_axis_pseudolandmarks_bad_obj_input(test_data):
     """Test for PlantCV."""
     img = cv2.imread(test_data.small_rgb_img)
+    blank = np.array([[0, 0], [0, 0]])
+    obj = np.array([[-2, -2], [-2, -2]])
+    mask = cv2.drawContours(blank, obj, -1, (255), thickness=-1)
     with pytest.raises(RuntimeError):
-        _ = x_axis_pseudolandmarks(obj=np.array([[-2, -2], [-2, -2]]), mask=np.array([[-2, -2], [-2, -2]]), img=img)
+        _ = x_axis_pseudolandmarks(img=img, mask=mask)
