@@ -31,9 +31,11 @@ def color(rgb_img, labeled_mask, n_labels=1, colorspaces="all", label="default")
     :param label: str
     :return analysis_images: list
     """
-    img = _iterate_analysis(img=rgb_img, labeled_mask=labeled_mask, n_labels=n_labels, label=label, function=_analyze_color,
-                            **{"colorspaces": colorspaces})
-    return img
+    _ = _iterate_analysis(img=rgb_img, labeled_mask=labeled_mask, n_labels=n_labels, label=label, function=_analyze_color,
+                          **{"colorspaces": colorspaces})
+    hue_chart = outputs.plot_dists(variable="hue_frequencies")
+    _debug(visual=hue_chart, filename=os.path.join(params.debug_outdir, str(params.device) + '_hue_hist.png'))
+    return hue_chart
 
 
 def _analyze_color(img, mask, colorspaces="all", label="default"):
@@ -170,7 +172,6 @@ def _analyze_color(img, mask, colorspaces="all", label="default"):
 
     # Plot or print the histogram
     analysis_image = hist_fig
-    # _debug(visual=hist_fig, filename=os.path.join(params.debug_outdir, str(params.device) + '_analyze_color_hist.png'))
 
     # Store into global measurements
     # RGB signal values are in an unsigned 8-bit scale of 0-255
