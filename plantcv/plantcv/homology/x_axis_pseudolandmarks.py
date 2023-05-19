@@ -4,20 +4,20 @@ import cv2
 import os
 import numpy as np
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 from plantcv.plantcv import fatal_error
 
 
-def x_axis_pseudolandmarks(img, obj, mask, label="default"):
+def x_axis_pseudolandmarks1(img, mask, label="default"):
     """
     Divide up object contour into 20 equidistance segments and generate landmarks for each
 
     Inputs:
-    img      = This is a copy of the original plant image generated using np.copy if debug is true it will be drawn on
-    obj      = a contour of the plant object (this should be output from the object_composition.py fxn)
-    mask     = this is a binary image. The object should be white and the background should be black
-    label    = optional label parameter, modifies the variable name of observations recorded
+    img          = RGB or grayscale image data for plotting
+    mask         = a contour of the plant object
+    label        = optional label parameter, modifies the variable name of observations recorded
 
     Returns:
     top      = List of landmark points within 'top' portion
@@ -32,6 +32,11 @@ def x_axis_pseudolandmarks(img, obj, mask, label="default"):
     :return bottom: list
     :return center_v: list
     """
+    # Find contours
+    cnt, cnt_str = _cv2_findcontours(bin_img=mask)
+    # Consolidate contours
+    obj = _object_composition(contours=cnt, hierarchy=cnt_str)
+
     # Lets get some landmarks scanning along the x-axis
     if not np.any(obj):
         return ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA')
