@@ -7,7 +7,7 @@ from sklearn.mixture import GaussianMixture
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours
 from plantcv.plantcv._helpers import _roi_filter
-from plantcv.plantcv import fatal_error, params, Objects
+from plantcv.plantcv import fatal_error, warn, params, Objects
 
 
 # Create an ROI from a binary mask
@@ -331,7 +331,7 @@ def auto_grid(mask, nrows, ncols, radius=None, img=None):
     roi_objects, overlap_img, all_roi_img = _grid_roi(img, nrows, ncols,
                                                       coord, radius, spacing)
     if np.amax(overlap_img) > 255:
-        print("WARNING: Two or more of the user defined regions of interest overlap! "
+        warn("Two or more of the user defined regions of interest overlap! "
               "If you only see one ROI then they may overlap exactly.")
     # Draw the ROIs if requested
     # Create an array of contours and list of hierarchy for debug image
@@ -375,7 +375,7 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
                     "For automatic detection of a grid layout from just nrows, ncols, and a binary mask, use auto_grid")
 
     if np.amax(overlap_img) > 255:
-        print("WARNING: Two or more of the user defined regions of interest overlap! "
+        warn("Two or more of the user defined regions of interest overlap! "
               "If you only see one ROI then they may overlap exactly.")
 
     # Draw the ROIs if requested
