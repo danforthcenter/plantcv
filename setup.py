@@ -93,7 +93,7 @@ setuptools.setup(
     #     'test': ['pytest-runner', 'pytest'],
     # },
     setup_requires=["pytest-runner"],
-    tests_require=['pytest', 'ipython'],
+    tests_require=['pytest'],
     cmdclass=versioneer.get_cmdclass(),
     # scripts=["plantcv-train.py", "plantcv-utils.py", "plantcv-workflow.py"]
 
