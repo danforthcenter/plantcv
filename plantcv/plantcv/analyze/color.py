@@ -56,10 +56,41 @@ def _analyze_color(img, mask, colorspaces="all", label="default"):
     :param label: str
     :return analysis_images: list
     """
-    # Save user debug setting
-    debug = params.debug
-    if len(np.shape(img)) < 3:
-        fatal_error("rgb_img must be an RGB image")
+    # Initialize output data
+    # Create list of bin labels for 8-bit data
+    binval = np.arange(0, 256)
+
+    # Histogram plot types
+    hist_types = {"all": ("b", "g", "r", "l", "m", "y", "h", "s", "v"),
+                  "rgb": ("b", "g", "r"),
+                  "lab": ("l", "m", "y"),
+                  "hsv": ("h", "s", "v")}
+
+    if colorspaces.lower() not in hist_types:
+        fatal_error(f"Colorspace '{colorspaces}' is not supported, must be be one of the following: "
+                    f"{', '.join(map(str, hist_types.keys()))}")
+
+    # Empty histograms
+    histograms = {
+        "b": {"label": "blue", "graph_color": "blue",
+              "hist": [0] * 256},
+        "g": {"label": "green", "graph_color": "forestgreen",
+              "hist": [0] * 256},
+        "r": {"label": "red", "graph_color": "red",
+              "hist": [0] * 256},
+        "l": {"label": "lightness", "graph_color": "dimgray",
+              "hist": [0] * 256},
+        "m": {"label": "green-magenta", "graph_color": "magenta",
+              "hist": [0] * 256},
+        "y": {"label": "blue-yellow", "graph_color": "yellow",
+              "hist": [0] * 256},
+        "h": {"label": "hue", "graph_color": "blueviolet",
+              "hist": [0] * 256},
+        "s": {"label": "saturation", "graph_color": "cyan",
+              "hist": [0] * 256},
+        "v": {"label": "value", "graph_color": "orange",
+              "hist": [0] * 256}
+    }
 
     # Mask the input image
     masked = cv2.bitwise_and(img, img, mask=mask)
@@ -74,56 +105,24 @@ def _analyze_color(img, mask, colorspaces="all", label="default"):
     # Extract the hue, saturation, and value channels
     h, s, v = cv2.split(hsv)
 
-    # Color channel dictionary
-    channels = {"b": b, "g": g, "r": r, "l": l, "m": m, "y": y, "h": h, "s": s, "v": v}
+    # Skip empty masks
+    if np.count_nonzero(mask) != 0:
+        # Save user debug setting
+        debug = params.debug
+        if len(np.shape(img)) < 3:
+            fatal_error("rgb_img must be an RGB image")
 
-    # Histogram plot types
-    hist_types = {"all": ("b", "g", "r", "l", "m", "y", "h", "s", "v"),
-                  "rgb": ("b", "g", "r"),
-                  "lab": ("l", "m", "y"),
-                  "hsv": ("h", "s", "v")}
+        # Color channel dictionary
+        channels = {"b": b, "g": g, "r": r, "l": l, "m": m, "y": y, "h": h, "s": s, "v": v}
 
-    if colorspaces.lower() not in hist_types:
-        fatal_error(f"Colorspace '{colorspaces}' is not supported, must be be one of the following: "
-                    f"{', '.join(map(str, hist_types.keys()))}")
+        # Calculate histogram
+        params.debug = None
+        for channel in hist_types["all"]:
+            histograms[channel]["hist"] = histogram(channels[channel], mask, 256, 0, 255,
+                                                    hist_data=True)[1]['proportion of pixels (%)'].tolist()
 
-    # Calculate histogram
-    params.debug = None
-    histograms = {
-        "b": {"label": "blue", "graph_color": "blue",
-              "hist": histogram(channels["b"], mask, 256, 0, 255,
-                                hist_data=True)[1]['proportion of pixels (%)'].tolist()},
-        "g": {"label": "green", "graph_color": "forestgreen",
-              "hist": histogram(channels["g"], mask, 256, 0, 255,
-                                hist_data=True)[1]['proportion of pixels (%)'].tolist()},
-        "r": {"label": "red", "graph_color": "red",
-              "hist": histogram(channels["r"], mask, 256, 0, 255,
-                                hist_data=True)[1]['proportion of pixels (%)'].tolist()},
-        "l": {"label": "lightness", "graph_color": "dimgray",
-              "hist": histogram(channels["l"], mask, 256, 0, 255,
-                                hist_data=True)[1]['proportion of pixels (%)'].tolist()},
-        "m": {"label": "green-magenta", "graph_color": "magenta",
-              "hist": histogram(channels["m"], mask, 256, 0, 255,
-                                hist_data=True)[1]['proportion of pixels (%)'].tolist()},
-        "y": {"label": "blue-yellow", "graph_color": "yellow",
-              "hist": histogram(channels["y"], mask, 256, 0, 255,
-                                hist_data=True)[1]['proportion of pixels (%)'].tolist()},
-        "h": {"label": "hue", "graph_color": "blueviolet",
-              "hist": histogram(channels["h"], mask, 256, 0, 255,
-                                hist_data=True)[1]['proportion of pixels (%)'].tolist()},
-        "s": {"label": "saturation", "graph_color": "cyan",
-              "hist": histogram(channels["s"], mask, 256, 0, 255,
-                                hist_data=True)[1]['proportion of pixels (%)'].tolist()},
-        "v": {"label": "value", "graph_color": "orange",
-              "hist": histogram(channels["v"], mask, 256, 0, 255,
-                                hist_data=True)[1]['proportion of pixels (%)'].tolist()}
-    }
-
-    # Restore user debug setting
-    params.debug = debug
-
-    # Create list of bin labels for 8-bit data
-    binval = np.arange(0, 256)
+        # Restore user debug setting
+        params.debug = debug
 
     # Create a dataframe of bin labels and histogram data
     dataset = pd.DataFrame({'bins': binval, 'blue': histograms["b"]["hist"],
