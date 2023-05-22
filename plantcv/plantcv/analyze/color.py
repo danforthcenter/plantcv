@@ -1,9 +1,7 @@
 import os
 import cv2
 import numpy as np
-import pandas as pd
 from scipy import stats
-from plotnine import ggplot, aes, geom_line, scale_x_continuous, scale_color_manual, labs
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
@@ -57,9 +55,6 @@ def _analyze_color(img, mask, colorspaces="all", label="default"):
     :return analysis_images: list
     """
     # Initialize output data
-    # Create list of bin labels for 8-bit data
-    binval = np.arange(0, 256)
-
     # Histogram plot types
     hist_types = {"all": ("b", "g", "r", "l", "m", "y", "h", "s", "v"),
                   "rgb": ("b", "g", "r"),
@@ -92,18 +87,10 @@ def _analyze_color(img, mask, colorspaces="all", label="default"):
               "hist": [0] * 256}
     }
 
-    # Mask the input image
-    masked = cv2.bitwise_and(img, img, mask=mask)
-    # Extract the blue, green, and red channels
-    b, g, r = cv2.split(masked)
-    # Convert the BGR image to LAB
-    lab = cv2.cvtColor(masked, cv2.COLOR_BGR2LAB)
-    # Extract the lightness, green-magenta, and blue-yellow channels
-    l, m, y = cv2.split(lab)
-    # Convert the BGR image to HSV
-    hsv = cv2.cvtColor(masked, cv2.COLOR_BGR2HSV)
-    # Extract the hue, saturation, and value channels
-    h, s, v = cv2.split(hsv)
+    # Undefined defaults
+    hue_median = np.nan
+    hue_circular_mean = np.nan
+    hue_circular_std = np.nan
 
     # Skip empty masks
     if np.count_nonzero(mask) != 0:
@@ -111,6 +98,19 @@ def _analyze_color(img, mask, colorspaces="all", label="default"):
         debug = params.debug
         if len(np.shape(img)) < 3:
             fatal_error("rgb_img must be an RGB image")
+
+        # Mask the input image
+        masked = cv2.bitwise_and(img, img, mask=mask)
+        # Extract the blue, green, and red channels
+        b, g, r = cv2.split(masked)
+        # Convert the BGR image to LAB
+        lab = cv2.cvtColor(masked, cv2.COLOR_BGR2LAB)
+        # Extract the lightness, green-magenta, and blue-yellow channels
+        l, m, y = cv2.split(lab)
+        # Convert the BGR image to HSV
+        hsv = cv2.cvtColor(masked, cv2.COLOR_BGR2HSV)
+        # Extract the hue, saturation, and value channels
+        h, s, v = cv2.split(hsv)
 
         # Color channel dictionary
         channels = {"b": b, "g": g, "r": r, "l": l, "m": m, "y": y, "h": h, "s": s, "v": v}
@@ -124,53 +124,15 @@ def _analyze_color(img, mask, colorspaces="all", label="default"):
         # Restore user debug setting
         params.debug = debug
 
-    # Create a dataframe of bin labels and histogram data
-    dataset = pd.DataFrame({'bins': binval, 'blue': histograms["b"]["hist"],
-                            'green': histograms["g"]["hist"], 'red': histograms["r"]["hist"],
-                            'lightness': histograms["l"]["hist"], 'green-magenta': histograms["m"]["hist"],
-                            'blue-yellow': histograms["y"]["hist"], 'hue': histograms["h"]["hist"],
-                            'saturation': histograms["s"]["hist"], 'value': histograms["v"]["hist"]})
-    # Make the histogram figure using plotnine
-    fig_opts = {
-        "RGB": {
-            "value_vars": ["blue", "green", "red"],
-            "plot_colors": ["blue", "green", "red"]
-        },
-        "LAB": {
-            "value_vars": ["lightness", "green-magenta", "blue-yellow"],
-            "plot_colors": ["yellow", "magenta", "dimgray"]
-        },
-        "HSV": {
-            "value_vars": ["hue", "saturation", "value"],
-            "plot_colors": ["blueviolet", "cyan", "orange"]
-        },
-        "ALL": {
-            "value_vars": ["blue", "green", "red", "lightness", "green-magenta", "blue-yellow", "hue", "saturation", "value"],
-            "plot_colors": ["blue", "green", "red", "yellow", "magenta", "dimgray", "blueviolet", "cyan", "orange"]
-        }
-    }
-    df = pd.melt(dataset, id_vars=['bins'], value_vars=fig_opts[colorspaces.upper()]["value_vars"],
-                 var_name='color Channel', value_name='proportion of pixels (%)')
-    hist_fig = (ggplot(df, aes(x='bins', y='proportion of pixels (%)', color='color Channel')) +
-                geom_line() +
-                scale_x_continuous(breaks=list(range(0, 256, 25))) +
-                scale_color_manual(fig_opts[colorspaces.upper()]["plot_colors"])
-                )
+        # Hue values of zero are red but are also the value for pixels where hue is undefined. The hue value of a pixel will
+        # be undef. when the color values are saturated. Therefore, hue values of 0 are excluded from the calculations below
+        # Calculate the median hue value (median is rescaled from the encoded 0-179 range to the 0-359 degree range)
+        hue_median = np.median(h[np.where(h > 0)]) * 2
 
-    hist_fig = hist_fig + labs(x="Pixel intensity", y="Proportion of pixels (%)")
-
-    # Hue values of zero are red but are also the value for pixels where hue is undefined. The hue value of a pixel will
-    # be undef. when the color values are saturated. Therefore, hue values of 0 are excluded from the calculations below
-    # Calculate the median hue value (median is rescaled from the encoded 0-179 range to the 0-359 degree range)
-    hue_median = np.median(h[np.where(h > 0)]) * 2
-
-    # Calculate the circular mean and standard deviation of the encoded hue values
-    # The mean and standard-deviation are rescaled from the encoded 0-179 range to the 0-359 degree range
-    hue_circular_mean = stats.circmean(h[np.where(h > 0)], high=179, low=0) * 2
-    hue_circular_std = stats.circstd(h[np.where(h > 0)], high=179, low=0) * 2
-
-    # Plot or print the histogram
-    analysis_image = hist_fig
+        # Calculate the circular mean and standard deviation of the encoded hue values
+        # The mean and standard-deviation are rescaled from the encoded 0-179 range to the 0-359 degree range
+        hue_circular_mean = stats.circmean(h[np.where(h > 0)], high=179, low=0) * 2
+        hue_circular_std = stats.circstd(h[np.where(h > 0)], high=179, low=0) * 2
 
     # Store into global measurements
     # RGB signal values are in an unsigned 8-bit scale of 0-255
@@ -226,8 +188,5 @@ def _analyze_color(img, mask, colorspaces="all", label="default"):
     outputs.add_observation(sample=label, variable='hue_median', trait='hue median',
                             method='plantcv.plantcv.analyze_color', scale='degrees', datatype=float,
                             value=hue_median, label='degrees')
-
-    # Store images
-    outputs.images.append(analysis_image)
 
     return img
