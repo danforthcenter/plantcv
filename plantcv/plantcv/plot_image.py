@@ -53,7 +53,7 @@ def plot_image(img, cmap=None, **kwargs):
 
     # Altair FacetChart
     elif isinstance(img, FacetChart):
-        print(img)
+        img.display()
 
     elif isinstance(img, PSII_data):
         fatal_error("You need to plot an underlying DataArray.")
