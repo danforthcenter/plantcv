@@ -4,7 +4,7 @@ import numpy as np
 import cv2
 import os
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import params
+from plantcv.plantcv import params, warn
 
 
 def object_composition(img, contours, hierarchy):
@@ -55,5 +55,5 @@ def object_composition(img, contours, hierarchy):
         _debug(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_objcomp_mask.png'))
 
         return group, mask
-    print("Warning: Invalid contour.")
+    warn("Invalid contour.")
     return None, None
