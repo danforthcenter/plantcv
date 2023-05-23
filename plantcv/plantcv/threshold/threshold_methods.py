@@ -854,7 +854,7 @@ def dual_channels(rgb_img, x_channel, y_channel, points, above=True, max_value=2
         warn("only the first two points are used in this function")
 
     # avoid overflow when casting as uint8 if max_value > 255
-    max_value = min(max_value,255)
+    max_value = min(max_value, 255)
 
     x0, y0 = points[0]
     x1, y1 = points[1]
@@ -872,6 +872,6 @@ def dual_channels(rgb_img, x_channel, y_channel, points, above=True, max_value=2
     bin_img = bin_img.astype(np.uint8)
 
     _debug(visual=bin_img, filename=os.path.join(params.debug_outdir,
-                                              str(params.device) + '_' + x_channel + y_channel + '_2D_threshold_mask.png'))
+                                                 str(params.device) + '_' + x_channel + y_channel + '_2D_threshold_mask.png'))
 
     return bin_img
