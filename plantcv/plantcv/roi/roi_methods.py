@@ -332,7 +332,7 @@ def auto_grid(mask, nrows, ncols, radius=None, img=None):
                                                       coord, radius, spacing)
     if np.amax(overlap_img) > 255:
         warn("Two or more of the user defined regions of interest overlap! "
-              "If you only see one ROI then they may overlap exactly.")
+             "If you only see one ROI then they may overlap exactly.")
     # Draw the ROIs if requested
     # Create an array of contours and list of hierarchy for debug image
     roi_contour1, _ = _cv2_findcontours(bin_img=all_roi_img)
@@ -376,7 +376,7 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
 
     if np.amax(overlap_img) > 255:
         warn("Two or more of the user defined regions of interest overlap! "
-              "If you only see one ROI then they may overlap exactly.")
+             "If you only see one ROI then they may overlap exactly.")
 
     # Draw the ROIs if requested
     # Create an array of contours and list of hierarchy for debug image
