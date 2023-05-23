@@ -232,7 +232,7 @@ def _adjust_radius_max_min(height, width, radius, xmax, xmin, ymax, ymin):
     distances_to_edge = [xmin, width-xmax, ymin, height-ymax]
     min_distance = min(distances_to_edge)
     if min_distance < radius:
-        print('Shrinking radius to make ROIs fit in the image')
+        warn('Shrinking radius to make ROIs fit in the image')
         radius = min_distance - 1
     return radius
 
