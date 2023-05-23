@@ -146,14 +146,14 @@ def test_auto_grid_one_column(roi_test_data):
     assert len(rois.contours) == 2
 
 
-def test_auto_grid_overlap(roi_test_data, capfd):
+def test_auto_grid_overlap(roi_test_data, capsys):
     """Test for PlantCV."""
     # Read in test binary mask
     mask = cv2.imread(roi_test_data.bin_grid_img, 0)
     # Check for the overlapping ROI warning
     _ = auto_grid(mask=mask, nrows=2, ncols=1, radius=50)
-    out, err = capfd.readouterr()
-    assert len(out) == 172
+    cap = capsys.readouterr()
+    assert len(cap.err) == 181
 
 
 def test_auto_grid_multiple_cols_rows(roi_test_data):
