@@ -214,7 +214,7 @@ pages for more details on the input and output variable types.
 
 #### plantcv.analyze.color
 * pre v4.0: (see plantcv.analyze_color)
-* post v4.0: histogram = **plantcv.analyze.color**(*rgb_img, labeled_mask, n_labels=1, colorspaces="all", label="default"*)
+* post v4.0: histogram = **plantcv.analyze.color**(*rgb_img, labeled_mask, n_labels=1, colorspaces="hsv", label="default"*)
 
 #### plantcv.analyze.size
 
