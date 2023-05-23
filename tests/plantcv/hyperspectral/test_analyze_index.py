@@ -39,14 +39,14 @@ def test_analyze_index_auto_range(hyperspectral_test_data):
 def test_analyze_index_outside_range_warning(hyperspectral_test_data):
     """Test for PlantCV."""
     import io
-    from contextlib import redirect_stdout
+    from contextlib import redirect_stderr
     index_array = hyperspectral_test_data.load_hsi(hyperspectral_test_data.savi_file)
     mask = np.ones(np.shape(index_array.array_data), dtype=np.uint8) * 255
     f = io.StringIO()
-    with redirect_stdout(f):
+    with redirect_stderr(f):
         _ = analyze_index(index_array=index_array, mask=mask, min_bin=.5, max_bin=.55, label="i")
     out = f.getvalue()
-    assert out[0:10] == 'WARNING!!!'
+    assert out[0:7] == 'Warning'
 
 
 def test_analyze_index_bad_input_mask(hyperspectral_test_data):
