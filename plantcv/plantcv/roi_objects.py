@@ -80,7 +80,7 @@ def roi_objects(img, roi, obj, roi_type="partial"):
         if roi_type.upper() == 'LARGEST':
             # Print warning statement about this feature
             warn("roi_type='largest' will only return the largest contour and its immediate children. Other "
-                  "subcontours will be dropped.")
+                 "subcontours will be dropped.")
             # Find the index of the largest contour in the list of contours
             largest_area = 0
             index = 0
