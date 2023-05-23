@@ -1,7 +1,6 @@
 import os
 import cv2
 import numpy as np
-
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _iterate_analysis, _cv2_findcontours, _object_composition, _grayscale_to_rgb
 from plantcv.plantcv import params
@@ -32,10 +31,11 @@ def bound_horizontal(img, labeled_mask, line_position, n_labels=1, label="defaul
     """
     img = _iterate_analysis(img=img, labeled_mask=labeled_mask, n_labels=n_labels,
                             label=label, function=_analyze_bound_horizontal,
-                            **{"line_position":line_position})
+                            **{"line_position": line_position})
     # Debugging
     _debug(visual=img, filename=os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_img.png'))
     return img
+
 
 def _analyze_bound_horizontal(img, mask, line_position, label="default"):
     """
