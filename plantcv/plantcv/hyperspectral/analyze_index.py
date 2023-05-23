@@ -71,9 +71,9 @@ def analyze_index(index_array, mask, bins=100, min_bin=0, max_bin=1, histplot=No
 
     # Print a warning if observed min/max outside user defined range
     if observed_max > maxval or observed_min < b:
-        warn("The observed range of pixel values in your masked index provided is [" + str(observed_min) +
-              ", " + str(observed_max) + "] but the user defined range of bins for pixel frequencies is [" + str(b) +
-              ", " + str(maxval) + "]. Adjust min_bin and max_bin in order to avoid cutting off data being collected.")
+        warn(f"The observed range of pixel values in your masked index provided is [{str(observed_min)}"
+             f", {str(observed_max)}] but the user defined range of bins for pixel frequencies is [{str(b)}, "
+             f"{str(maxval)}]. Adjust min_bin and max_bin in order to avoid cutting off data being collected.")
 
     # Calculate histogram
     hist_fig, hist_data = histogram(index_array.array_data, mask=mask, bins=bins, lower_bound=b, upper_bound=maxval,
