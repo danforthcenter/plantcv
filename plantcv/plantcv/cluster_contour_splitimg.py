@@ -3,9 +3,7 @@ import os
 import cv2
 import numpy as np
 from datetime import datetime
-from plantcv.plantcv import print_image
-from plantcv.plantcv import apply_mask
-from plantcv.plantcv import params
+from plantcv.plantcv import params, print_image, apply_mask, warn
 from plantcv.plantcv._debug import _debug
 
 
@@ -63,8 +61,7 @@ def cluster_contour_splitimg(img, grouped_contour_indexes, contours, hierarchy, 
     if len(namelist) == len(grouped_contour_indexes):
         corrected_contour_indexes = grouped_contour_indexes
     elif len(namelist) < len(grouped_contour_indexes):
-        print("Warning number of names is less than number of grouped contours, attempting to fix, to double check "
-              "output")
+        warn("Number of names is less than number of grouped contours, attempting to fix, to double check output")
         diff = len(grouped_contour_indexes) - len(namelist)
         size = []
         for i, x in enumerate(grouped_contour_indexes):
@@ -89,7 +86,7 @@ def cluster_contour_splitimg(img, grouped_contour_indexes, contours, hierarchy, 
             corrected_contour_indexes.append(grouped_contour_indexes[index])
 
     elif len(namelist) > len(grouped_contour_indexes):
-        print("Warning number of names is more than number of  grouped contours, double check output")
+        warn("Number of names is more than number of  grouped contours, double check output")
         diff = len(namelist) - len(grouped_contour_indexes)
         namelist = namelist[0:-diff]
         corrected_contour_indexes = grouped_contour_indexes
