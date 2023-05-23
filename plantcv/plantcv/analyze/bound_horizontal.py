@@ -192,7 +192,4 @@ def _analyze_bound_horizontal(img, mask, line_position, label="default"):
                             method='plantcv.plantcv.analyze_bound_horizontal', scale='none', datatype=float,
                             value=percent_bound_area_below, label='none')
 
-    # Store images
-    outputs.images.append(analysis_images)
-
     return ori_img
