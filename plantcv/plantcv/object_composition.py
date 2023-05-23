@@ -3,8 +3,8 @@
 import numpy as np
 import cv2
 import os
-from plantcv.plantcv._debug import _debug, warn
-from plantcv.plantcv import params
+from plantcv.plantcv._debug import _debug
+from plantcv.plantcv import params, warn
 
 
 def object_composition(img, contours, hierarchy):
