@@ -51,7 +51,6 @@ def _analyze_bound_horizontal(img, mask, line_position, label="default"):
     analysis_images = list of output images
 
     :param img: numpy.ndarray
-    :param obj: list
     :param mask: numpy.ndarray
     :param line_position: int
     :param label: str
