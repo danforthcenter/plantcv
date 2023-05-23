@@ -10,7 +10,7 @@ from plantcv.plantcv.visualize import histogram
 from plantcv.plantcv._helpers import _iterate_analysis
 
 
-def color(rgb_img, labeled_mask, n_labels=1, colorspaces="all", label="default"):
+def color(rgb_img, labeled_mask, n_labels=1, colorspaces="hsv", label="default"):
     """A function that analyzes the shape and size of objects and outputs data.
 
     Inputs:
