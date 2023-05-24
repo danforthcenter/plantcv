@@ -14,11 +14,11 @@ def color(rgb_img, labeled_mask, n_labels=1, colorspaces="hsv", label="default")
     """A function that analyzes the shape and size of objects and outputs data.
 
     Inputs:
-    rgb_img          = RGB image data
-    mask             = Binary mask made from selected contours
-    hist_plot_type   = None, 'all', 'rgb','lab' or 'hsv' (to be deprecated)
-    colorspaces      = 'all', 'rgb', 'lab', or 'hsv'
-    label            = optional label parameter, modifies the variable name of observations recorded
+    rgb_img          = RGB image data.
+    labeled_mask     = Labeled mask of objects (32-bit).
+    n_labels         = Total number expected individual objects (default = 1).
+    colorspaces      = 'all', 'rgb', 'lab', or 'hsv' (default = 'hsv').
+    label            = optional label parameter, modifies the variable name of observations recorded.
 
     Returns:
     analysis_image   = histogram output
@@ -36,12 +36,11 @@ def color(rgb_img, labeled_mask, n_labels=1, colorspaces="hsv", label="default")
     return hue_chart
 
 
-def _analyze_color(img, mask, colorspaces="all", label="default"):
+def _analyze_color(img, mask, colorspaces="hsv", label="default"):
     """Analyze the color properties of an image object
     Inputs:
     img              = RGB image data
     mask             = Binary mask made from selected contours
-    hist_plot_type   = None, 'all', 'rgb','lab' or 'hsv' (to be deprecated)
     colorspaces      = 'all', 'rgb', 'lab', or 'hsv'
     label            = optional label parameter, modifies the variable name of observations recorded
 
