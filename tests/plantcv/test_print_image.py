@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from plotnine import ggplot
+import altair as alt
 from plantcv.plantcv import print_image, PSII_data
 
 
@@ -68,3 +69,18 @@ def test_print_image_psiidata():
     psii = PSII_data()
     with pytest.raises(RuntimeError):
         print_image(img=psii, filename='/dev/null')
+
+
+def test_print_altair_chart(tmpdir):
+    """Test for PlantCV."""
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("cache")
+    filename = os.path.join(cache_dir, 'chart.html')
+    source = pd.DataFrame({
+        "x": ["A", "B", "C", "D", "E", "F", "G", "H", "I"],
+        "y": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        "z": ["row", "row", "row", "row", "row", "row", "row", "row", "row"]
+    })
+    chart = alt.Chart(source).mark_area(interpolate='monotone').encode(alt.X('x:O'), alt.Y('y:Q')).facet(alt.Row("z:O"))
+    print_image(img=chart, filename=filename)
+    assert os.path.exists(filename)

@@ -8,6 +8,7 @@ from plantcv.plantcv.classes import PSII_data
 from plantcv.plantcv import params
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv._show_dataarray import _show_dataarray
+from altair.vegalite.v5.api import FacetChart
 
 
 def print_image(img, filename, **kwargs):
@@ -35,6 +36,10 @@ def print_image(img, filename, **kwargs):
     # Print ggplot type images
     elif isinstance(img, ggplot):
         img.save(filename, verbose=False)
+
+    # Print altair type images
+    elif isinstance(img, FacetChart):
+        img.save(filename)
 
     elif isinstance(img, DataArray):
         fig_handle = _show_dataarray(img, **kwargs)
