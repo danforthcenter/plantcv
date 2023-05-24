@@ -180,26 +180,26 @@ def _analyze_bound_vertical(img, mask, line_position, label="default"):
                          params.line_thickness)
 
     outputs.add_observation(sample=label, variable='vertical_reference_position', trait='vertical reference position',
-                            method='plantcv.plantcv.analyze_bound_vertical', scale='none', datatype=int,
+                            method='plantcv.plantcv.analyze.bound_vertical', scale='none', datatype=int,
                             value=line_position, label='none')
     outputs.add_observation(sample=label, variable='width_left_reference', trait='width left of reference',
-                            method='plantcv.plantcv.analyze_bound_vertical', scale='pixels', datatype=int,
+                            method='plantcv.plantcv.analyze.bound_vertical', scale='pixels', datatype=int,
                             value=width_left_bound, label='pixels')
     outputs.add_observation(sample=label, variable='width_right_reference', trait='width right of reference',
-                            method='plantcv.plantcv.analyze_bound_vertical', scale='pixels', datatype=int,
+                            method='plantcv.plantcv.analyze.bound_vertical', scale='pixels', datatype=int,
                             value=width_right_bound, label='pixels')
     outputs.add_observation(sample=label, variable='area_left_reference', trait='area left of reference',
-                            method='plantcv.plantcv.analyze_bound_vertical', scale='pixels', datatype=int,
+                            method='plantcv.plantcv.analyze.bound_vertical', scale='pixels', datatype=int,
                             value=left_bound_area, label='pixels')
     outputs.add_observation(sample=label, variable='percent_area_left_reference',
-                            trait='percent area left of reference', method='plantcv.plantcv.analyze_bound_vertical',
+                            trait='percent area left of reference', method='plantcv.plantcv.analyze.bound_vertical',
                             scale='none', datatype=float,
                             value=percent_bound_area_left, label='none')
     outputs.add_observation(sample=label, variable='area_right_reference', trait='area right of reference',
-                            method='plantcv.plantcv.analyze_bound_vertical', scale='pixels', datatype=int,
+                            method='plantcv.plantcv.analyze.bound_vertical', scale='pixels', datatype=int,
                             value=right_bound_area, label='pixels')
     outputs.add_observation(sample=label, variable='percent_area_right_reference',
-                            trait='percent area right of reference', method='plantcv.plantcv.analyze_bound_vertical',
+                            trait='percent area right of reference', method='plantcv.plantcv.analyze.bound_vertical',
                             scale='none', datatype=float, value=percent_bound_area_right, label='none')
 
     # Store images
