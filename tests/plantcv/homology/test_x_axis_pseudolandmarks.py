@@ -30,7 +30,7 @@ def test_x_axis_pseudolandmarks_small_obj(obj, mask, shape, test_data):
     # Clear previous outputs
     outputs.clear()
     img = cv2.imread(test_data.small_rgb_img)
-    n_mask = cv2.drawContours(mask, np.array(obj), -1, (255), thickness=-1)
+    n_mask = cv2.drawContours(mask, np.array(obj, dtype=np.uint8), -1, (255), thickness=-1)
     top, bottom, center_v = x_axis(img=img, mask=n_mask)
     assert all([np.shape(top) == shape, np.shape(bottom) == shape, np.shape(center_v) == shape])
 
@@ -46,8 +46,8 @@ def test_x_axis_pseudolandmarks_bad_input():
 def test_x_axis_pseudolandmarks_bad_obj_input(test_data):
     """Test for PlantCV."""
     img = cv2.imread(test_data.small_rgb_img)
-    blank = np.array([[0, 0], [0, 0]])
-    obj = np.array([[-2, -2], [-2, -2]])
+    blank = np.array([[0, 0], [0, 0]], dtype=np.uint8)
+    obj = np.array([[-2, -2], [-2, -2]], dtype=np.uint8)
     mask = cv2.drawContours(blank, obj, -1, (255), thickness=-1)
     with pytest.raises(RuntimeError):
         _ = x_axis(img=img, mask=mask)
