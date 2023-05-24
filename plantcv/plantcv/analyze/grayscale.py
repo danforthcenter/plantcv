@@ -87,10 +87,10 @@ def _analyze_grayscale(img, mask, bins=100, label="default"):
         outputs.add_observation(sample=label, variable='gray_mean', trait='grayscale mean',
                                 method='plantcv.plantcv.analyze.grayscale', scale='none', datatype=float,
                                 value=masked_gray_mean, label='none')
-        outputs.add_observation(sample=label, variable='nir_median', trait='grayscale median',
+        outputs.add_observation(sample=label, variable='gray_median', trait='grayscale median',
                                 method='plantcv.plantcv.analyze.grayscale', scale='none', datatype=float,
                                 value=masked_gray_median, label='none')
-        outputs.add_observation(sample=label, variable='nir_stdev', trait='grayscale standard deviation',
+        outputs.add_observation(sample=label, variable='gray_stdev', trait='grayscale standard deviation',
                                 method='plantcv.plantcv.analyze.grayscale', scale='none', datatype=float,
                                 value=masked_gray_std, label='none')
     # Restore user debug setting
