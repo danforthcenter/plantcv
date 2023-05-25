@@ -28,7 +28,7 @@ def grayscale(gray_img, labeled_mask, n_labels=1, bins=100, label="default"):
     """
     _ = _iterate_analysis(img=gray_img, labeled_mask=labeled_mask, n_labels=n_labels, label=label, function=_analyze_grayscale,
                           **{"bins": bins})
-    gray_chart = outputs.plot_dists(variable="hue_frequencies")
+    gray_chart = outputs.plot_dists(variable="gray_frequencies")
     _debug(visual=gray_chart, filename=os.path.join(params.debug_outdir, str(params.device) + '_hue_hist.png'))
     return gray_chart
 
