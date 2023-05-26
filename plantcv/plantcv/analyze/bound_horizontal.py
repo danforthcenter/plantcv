@@ -64,10 +64,9 @@ def _analyze_bound_horizontal(img, mask, line_position, label="default"):
     below_bound_area = 0
     percent_bound_area_below = 0
 
+    ori_img = np.copy(img)
     # Skip empty masks
     if np.count_nonzero(mask) != 0:
-        ori_img = np.copy(img)
-
         # Draw line horizontal line through bottom of image, that is adjusted to user input height
         ori_img = _grayscale_to_rgb(ori_img)
         iy, ix, iz = np.shape(ori_img)
