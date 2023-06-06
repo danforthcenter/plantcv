@@ -212,9 +212,24 @@ pages for more details on the input and output variable types.
 * post v3.5: thermal_histogram = **plantcv.analyze_thermal_values**(*thermal_array, mask, histplot=False*)
 * post v3.11: thermal_histogram = **plantcv.analyze_thermal_values**(*thermal_array, mask, histplot=False, label="default"*)
 
+
+#### plantcv.analyze.bound_horizontal
+
+* pre v4.0: (see plantcv.analyze_bound_horizontal)
+* post v4.0: analysis_image = **plantcv.analyze.bound_horizontal**(*img, labeled_mask, line_position, n_labels=1, label="default"*)
+
+
+#### plantcv.analyze.bound_vertical
+
+* pre v4.0: (see plantcv.analyze_bound_vertical)
+* post v4.0: analysis_image = **plantcv.analyze.bound_vertical**(*img, labeled_mask, line_position, n_labels=1, label="default"*)
+
+
 #### plantcv.analyze.color
+
 * pre v4.0: (see plantcv.analyze_color)
 * post v4.0: histogram = **plantcv.analyze.color**(*rgb_img, labeled_mask, n_labels=1, colorspaces="hsv", label="default"*)
+
 
 #### plantcv.analyze.size
 
