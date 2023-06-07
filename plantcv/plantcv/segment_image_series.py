@@ -74,7 +74,7 @@ def segment_image_series(imgs_paths, masks_paths, rois, save_labels=True, ksize=
         # stacks init
         img_stack = np.zeros((h, w, d))
         mask_stack = np.zeros((h, w, d))
-        markers = np.zeros((h, w, d))
+        markers = np.zeros((h, w, d), dtype=np.int32)
 
         # The number of frames used is always the same but the borders are
         # treated as 'constant' or 'zero padding'
