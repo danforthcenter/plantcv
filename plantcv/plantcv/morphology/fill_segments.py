@@ -27,7 +27,7 @@ def fill_segments(mask, objects, stem_objects=None, label="default"):
     :return filled_mask: numpy.ndarray
     """
     h, w = mask.shape
-    markers = np.zeros((h, w))
+    markers = np.zeros((h, w), dtype=np.int32)
 
     objects_unique = objects.copy()
     if stem_objects is not None:
