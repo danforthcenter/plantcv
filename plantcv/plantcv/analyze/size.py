@@ -120,49 +120,49 @@ def _analyze_size(img, mask, label):
 
     # Store outputs
     outputs.add_observation(sample=label, variable='area', trait='area',
-                            method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
+                            method='plantcv.plantcv.analyze.size', scale='pixels', datatype=int,
                             value=area, label='pixels')
     outputs.add_observation(sample=label, variable='convex_hull_area', trait='convex hull area',
-                            method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
+                            method='plantcv.plantcv.analyze.size', scale='pixels', datatype=int,
                             value=hull_area, label='pixels')
     outputs.add_observation(sample=label, variable='solidity', trait='solidity',
-                            method='plantcv.plantcv.analyze_object', scale='none', datatype=float,
+                            method='plantcv.plantcv.analyze.size', scale='none', datatype=float,
                             value=solidity, label='none')
     outputs.add_observation(sample=label, variable='perimeter', trait='perimeter',
-                            method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
+                            method='plantcv.plantcv.analyze.size', scale='pixels', datatype=int,
                             value=perimeter, label='pixels')
     outputs.add_observation(sample=label, variable='width', trait='width',
-                            method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
+                            method='plantcv.plantcv.analyze.size', scale='pixels', datatype=int,
                             value=width, label='pixels')
     outputs.add_observation(sample=label, variable='height', trait='height',
-                            method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
+                            method='plantcv.plantcv.analyze.size', scale='pixels', datatype=int,
                             value=height, label='pixels')
     outputs.add_observation(sample=label, variable='longest_path', trait='longest path',
-                            method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
+                            method='plantcv.plantcv.analyze.size', scale='pixels', datatype=int,
                             value=caliper_length, label='pixels')
     outputs.add_observation(sample=label, variable='center_of_mass', trait='center of mass',
-                            method='plantcv.plantcv.analyze_object', scale='none', datatype=tuple,
+                            method='plantcv.plantcv.analyze.size', scale='none', datatype=tuple,
                             value=(cmx, cmy), label=("x", "y"))
     outputs.add_observation(sample=label, variable='convex_hull_vertices', trait='convex hull vertices',
-                            method='plantcv.plantcv.analyze_object', scale='none', datatype=int,
+                            method='plantcv.plantcv.analyze.size', scale='none', datatype=int,
                             value=hull_vertices, label='none')
     outputs.add_observation(sample=label, variable='object_in_frame', trait='object in frame',
-                            method='plantcv.plantcv.analyze_object', scale='none', datatype=bool,
+                            method='plantcv.plantcv.analyze.size', scale='none', datatype=bool,
                             value=in_bounds, label='none')
     outputs.add_observation(sample=label, variable='ellipse_center', trait='ellipse center',
-                            method='plantcv.plantcv.analyze_object', scale='none', datatype=tuple,
+                            method='plantcv.plantcv.analyze.size', scale='none', datatype=tuple,
                             value=(ellipse_center[0], ellipse_center[1]), label=("x", "y"))
     outputs.add_observation(sample=label, variable='ellipse_major_axis', trait='ellipse major axis length',
-                            method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
+                            method='plantcv.plantcv.analyze.size', scale='pixels', datatype=int,
                             value=ellipse_major_axis, label='pixels')
     outputs.add_observation(sample=label, variable='ellipse_minor_axis', trait='ellipse minor axis length',
-                            method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
+                            method='plantcv.plantcv.analyze.size', scale='pixels', datatype=int,
                             value=ellipse_minor_axis, label='pixels')
     outputs.add_observation(sample=label, variable='ellipse_angle', trait='ellipse major axis angle',
-                            method='plantcv.plantcv.analyze_object', scale='degrees', datatype=float,
+                            method='plantcv.plantcv.analyze.size', scale='degrees', datatype=float,
                             value=float(ellipse_angle), label='degrees')
     outputs.add_observation(sample=label, variable='ellipse_eccentricity', trait='ellipse eccentricity',
-                            method='plantcv.plantcv.analyze_object', scale='none', datatype=float,
+                            method='plantcv.plantcv.analyze.size', scale='none', datatype=float,
                             value=float(ellipse_eccentricity), label='none')
     return plt_img
 

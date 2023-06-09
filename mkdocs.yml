@@ -27,7 +27,10 @@ nav:
     - 'PlantCV':
       - 'Analysis Methods':
         - 'Analyze Color': analyze_color2.md
+        - 'Analyze Grayscale': analyze_grayscale.md
         - 'Analyze Size and Shape': analyze_size.md
+        - 'Horizontal Boundary Tool': analyze_bound_horizontal2.md
+        - 'Vertical Boundary Tool': analyze_bound_vertical2.md
       - 'Analyze Color': analyze_color.md
       - 'Analyze NIR': analyze_NIR_intensity.md
       - 'Analyze Shape': analyze_shape.md
