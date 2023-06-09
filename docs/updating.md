@@ -243,6 +243,12 @@ pages for more details on the input and output variable types.
 * post v4.0: analysis_image = **plantcv.analyze.size**(*img, labeled_mask, n_labels=1, label="default"*)
 
 
+#### plantcv.analyze.thermal
+
+* pre v4.0: (see plantcv.analyze_thermal_values)
+* post v4.0: analysis_image = **plantcv.analyze.thermal**(*thermal_img, labeled_mask, n_labels=1, label="default"*)
+
+
 #### plantcv.apply_mask
 
 * pre v3.0dev2: device, masked_img = **plantcv.apply_mask**(*img, mask, mask_color, device, debug=None*)

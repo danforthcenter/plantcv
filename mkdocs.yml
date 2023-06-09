@@ -31,6 +31,7 @@ nav:
         - 'Analyze Size and Shape': analyze_size.md
         - 'Horizontal Boundary Tool': analyze_bound_horizontal2.md
         - 'Vertical Boundary Tool': analyze_bound_vertical2.md
+        - 'Analyze Thermal': analyze_thermal.md
       - 'Analyze Color': analyze_color.md
       - 'Analyze NIR': analyze_NIR_intensity.md
       - 'Analyze Shape': analyze_shape.md
