@@ -231,6 +231,12 @@ pages for more details on the input and output variable types.
 * post v4.0: histogram = **plantcv.analyze.color**(*rgb_img, labeled_mask, n_labels=1, colorspaces="hsv", label="default"*)
 
 
+#### plantcv.analyze.grayscale
+
+* pre v4.0: (see plantcv.analyze_nir_intensity)
+* post v4.0: histogram = **plantcv.analyze.grayscale**(*gray_img, labeled_mask, n_labels=1, bins=100, label="default"*)
+
+
 #### plantcv.analyze.size
 
 * pre v4.0: (see plantcv.analyze_object)
