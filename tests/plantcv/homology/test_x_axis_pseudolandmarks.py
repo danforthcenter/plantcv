@@ -30,7 +30,7 @@ def test_x_axis_pseudolandmarks_small_obj(obj, mask, shape, test_data):
     # Clear previous outputs
     outputs.clear()
     img = cv2.imread(test_data.small_rgb_img)
-    n_mask = cv2.drawContours(mask, np.array(obj, dtype=np.uint8), -1, (255), thickness=-1)
+    n_mask = cv2.drawContours(mask, obj, -1, (255), thickness=-1)
     top, bottom, center_v = x_axis(img=img, mask=n_mask)
     assert all([np.shape(top) == shape, np.shape(bottom) == shape, np.shape(center_v) == shape])
 
