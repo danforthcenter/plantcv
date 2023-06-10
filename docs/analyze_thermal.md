@@ -43,10 +43,11 @@ temp_range = pcv.outputs.observations['default1']['max_temp']['value'] - pcv.out
 
 **Thermal Frequency histogram**
 
-![Screenshot](img/documentation_images/analyze_thermal_values/thermal_hist.jpg)
+![Screenshot](img/documentation_images/analyze_thermal_values/temp_hist.png)
 
-**Note:** A grayscale input image and object mask can be used with the [pcv.visualize.pseudocolor](visualize_pseudocolor.md) function
-which allows the user to pick a colormap for plotting.
+!!!Note
+    A grayscale input image and object mask can be used with the [pcv.visualize.pseudocolor](visualize_pseudocolor.md) function
+    which allows the user to pick a colormap for plotting.
 
 ```python
 
