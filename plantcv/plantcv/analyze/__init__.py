@@ -3,5 +3,6 @@ from plantcv.plantcv.analyze.size import size
 from plantcv.plantcv.analyze.bound_horizontal import bound_horizontal
 from plantcv.plantcv.analyze.bound_vertical import bound_vertical
 from plantcv.plantcv.analyze.grayscale import grayscale
+from plantcv.plantcv.analyze.thermal import thermal
 
-__all__ = ["color", "bound_horizontal", "bound_vertical", "grayscale", "size"]
+__all__ = ["color", "bound_horizontal", "bound_vertical", "grayscale", "size", "thermal"]
