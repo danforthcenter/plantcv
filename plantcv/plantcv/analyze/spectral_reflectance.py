@@ -83,25 +83,25 @@ def _analyze_spectral(img, mask, label="default"):
 
     # Store data into outputs class
     outputs.add_observation(sample=label, variable='global_mean_reflectance', trait='global mean reflectance',
-                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='reflectance',
+                            method='plantcv.plantcv.analyze.spectral_reflectance', scale='reflectance',
                             datatype=float, value=float(avg_reflectance), label='reflectance')
     outputs.add_observation(sample=label, variable='global_median_reflectance', trait='global median reflectance',
-                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='reflectance',
+                            method='plantcv.plantcv.analyze.spectral_reflectance', scale='reflectance',
                             datatype=float, value=float(median_reflectance), label='reflectance')
     outputs.add_observation(sample=label, variable='global_spectral_std',
                             trait='pixel-wise standard deviation per band',
-                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='None', datatype=float,
+                            method='plantcv.plantcv.analyze.spectral_reflectance', scale='None', datatype=float,
                             value=float(std_reflectance), label='reflectance')
     outputs.add_observation(sample=label, variable='wavelength_means', trait='mean reflectance per band',
-                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='reflectance', datatype=list,
+                            method='plantcv.plantcv.analyze.spectral_reflectance', scale='reflectance', datatype=list,
                             value=band_averages, label=wavelength_labels)
     outputs.add_observation(sample=label, variable='max_reflectance', trait='maximum reflectance per band',
-                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='reflectance', datatype=list,
+                            method='plantcv.plantcv.analyze.spectral_reflectance', scale='reflectance', datatype=list,
                             value=new_max_per_band, label=wavelength_labels)
     outputs.add_observation(sample=label, variable='min_reflectance', trait='minimum reflectance per band',
-                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='reflectance', datatype=list,
+                            method='plantcv.plantcv.analyze.spectral_reflectance', scale='reflectance', datatype=list,
                             value=new_min_per_band, label=wavelength_labels)
     outputs.add_observation(sample=label, variable='spectral_std', trait='pixel-wise standard deviation per band',
-                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='None', datatype=list,
+                            method='plantcv.plantcv.analyze.spectral_reflectance', scale='None', datatype=list,
                             value=new_std_per_band, label=wavelength_labels)
     return img
