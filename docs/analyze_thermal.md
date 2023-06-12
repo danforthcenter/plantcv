@@ -2,7 +2,7 @@
 
 This function calculates the temperature of each pixel and stores summary statistics and the distribution of temperature values.
 
-**plantcv.analyze.thermal**(*thermal_img, labeled_mask, n_labels=1, label="default"*)
+**plantcv.analyze.thermal**(*thermal_img, labeled_mask, n_labels=1, bins=100, label="default"*)
 
 **returns** temperature histogram
 
@@ -10,6 +10,7 @@ This function calculates the temperature of each pixel and stores summary statis
     - thermal_img - Numpy array of thermal image data (most likely read in with [pcv.readimage](read_image.md) with `mode='csv'`)
     - labeled_mask - Labeled mask of objects (32-bit, output from [`pcv.create_labels`](create_labels.md) or [`pcv.roi.filter`](roi_filter.md)).
     - n_labels - Total number expected individual objects (default = 1).
+    - bins     - Number of histogram bins (default = 100)
     - label - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
 - **Context:**
     - Data about image temperature within a masked region. 
