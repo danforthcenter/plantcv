@@ -246,7 +246,7 @@ pages for more details on the input and output variable types.
 #### plantcv.analyze.thermal
 
 * pre v4.0: (see plantcv.analyze_thermal_values)
-* post v4.0: analysis_image = **plantcv.analyze.thermal**(*thermal_img, labeled_mask, n_labels=1, label="default"*)
+* post v4.0: analysis_image = **plantcv.analyze.thermal**(*thermal_img, labeled_mask, n_labels=1, bins=100, label="default"*)
 
 
 #### plantcv.apply_mask
