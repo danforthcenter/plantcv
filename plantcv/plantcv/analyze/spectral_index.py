@@ -104,19 +104,19 @@ def _analyze_index(img, mask, bins=100, min_bin=0, max_bin=1, label="default"):
     params.debug = debug
 
     outputs.add_observation(sample=label, variable=f"mean_{img.array_type}", trait=f"Average {img.array_type} reflectance",
-                            method="plantcv.plantcv.hyperspectral.analyze_index", scale="reflectance", datatype=float,
+                            method="plantcv.plantcv.analyze.spectral_index", scale="reflectance", datatype=float,
                             value=float(index_mean), label="none")
 
     outputs.add_observation(sample=label, variable=f"med_{img.array_type}", trait=f"Median {img.array_type} reflectance",
-                            method="plantcv.plantcv.hyperspectral.analyze_index", scale="reflectance", datatype=float,
+                            method="plantcv.plantcv.analyze.spectral_index", scale="reflectance", datatype=float,
                             value=float(index_median), label="none")
 
     outputs.add_observation(sample=label, variable=f"std_{img.array_type}",
                             trait=f"Standard deviation {img.array_type} reflectance",
-                            method="plantcv.plantcv.hyperspectral.analyze_index", scale="reflectance", datatype=float,
+                            method="plantcv.plantcv.analyze.spectral_index", scale="reflectance", datatype=float,
                             value=float(index_std), label="none")
 
     outputs.add_observation(sample=label, variable=f"index_frequencies_{img.array_type}",
-                            trait="index frequencies", method="plantcv.plantcv.analyze_index", scale="frequency",
+                            trait="index frequencies", method="plantcv.plantcv.analyze.spectral_index", scale="frequency",
                             datatype=list, value=hist_percent, label=bin_labels)
     return img
