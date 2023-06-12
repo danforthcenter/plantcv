@@ -243,6 +243,12 @@ pages for more details on the input and output variable types.
 * post v4.0: analysis_image = **plantcv.analyze.size**(*img, labeled_mask, n_labels=1, label="default"*)
 
 
+#### plantcv.analyze.spectral_reflectance
+
+* pre v4.0: (see plantcv.hyperspectral.analyze_spectral)
+* post v4.0: analysis_image = **plantcv.analyze.spectral_reflectance**(*hsi, labeled_mask, n_labels=1, label="default"*)
+
+
 #### plantcv.analyze.thermal
 
 * pre v4.0: (see plantcv.analyze_thermal_values)
