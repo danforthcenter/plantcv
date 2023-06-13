@@ -430,6 +430,8 @@ pages for more details on the input and output variable types.
 * pre v3.7: NA
 * post v3.7: spectral_histogram = **plantcv.hyperspectral.analyze_spectral**(*array, mask, histplot=True*)
 * post v3.11: spectral_histogram =**plantcv.hyperspectral.analyze_spectral**(*array, mask, histplot=True, label="default"*)
+* * post v4.0: Deprecated, see:
+    * analysis_image = **plantcv.analyze.spectral_reflectance**(*hsi, labeled_mask, n_labels=1, label="default"*)
 
 #### plantcv.hyperspectral.extract_index
 
