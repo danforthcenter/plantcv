@@ -13,10 +13,10 @@ def test_y_axis_pseudolandmarks(test_data):
 
 
 @pytest.mark.parametrize("mask,shape", [
-    [np.array(([[0, 0]], [[10, 0]], [[10, 10]], [[0, 10]])),
+    [np.array(([[0, 0]], [[10, 0]], [[10, 10]], [[0, 10]]), dtype=np.uint8),
      (20, 1, 2)],
-    [np.array(([[42, 161]], [[2, 47]], [[211, 222]])), (20, 1, 2)],
-    [np.array(([[38, 54]], [[144, 169]], [[81, 137]])), (20, 1, 2)]
+    [np.array(([[42, 161]], [[2, 47]], [[211, 222]]), dtype=np.uint8), (20, 1, 2)],
+    [np.array(([[38, 54]], [[144, 169]], [[81, 137]]), dtype=np.uint8), (20, 1, 2)]
 ])
 def test_y_axis_pseudolandmarks_small_obj(mask, shape, test_data):
     """Test for PlantCV."""
