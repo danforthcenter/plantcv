@@ -1,7 +1,6 @@
 # Pseudocolor any grayscale image
 
 import os
-import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 from plantcv.plantcv import params
@@ -9,14 +8,12 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv.apply_mask import apply_mask
 
 
-def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255,
-                axes=True, colorbar=True, obj_padding="auto", title=None, bad_mask=None, bad_color="red"):
+def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0, max_value=255,
+                axes=True, colorbar=True, title=None, bad_mask=None, bad_color="red"):
     """Pseudocolor any grayscale image to custom colormap
 
     Inputs:
     gray_img    = grayscale image data
-    obj         = (optional) ROI or plant contour object. If provided, the pseudocolored image gets cropped
-                  down to the region of interest. default = None
     mask        = (optional) binary mask
     cmap        = (optional) colormap. default is the matplotlib default, viridis
     background  = (optional) background color/type, options are "image" (gray_img), "white", or "black"
@@ -25,9 +22,6 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
     max_value   = (optional) maximum value for range of interest. default = 255
     axes        = (optional) if False then x- and y-axis won't be displayed, nor will the title. default = True
     colorbar    = (optional) if False then colorbar won't be displayed. default = True
-    obj_padding = (optional) if "auto" (default) and an obj is supplied, then the image is cropped to an extent 20%
-                  larger in each dimension than the object. An single integer is also accepted to define the padding
-                  in pixels
     title       = (optional) custom title for the plot gets drawn if title is not None. default = None
     bad_mask    = (optional) binary mask of pixels with "bad" values, e.g. nan or inf or any other values considered
                   to be not informative and to be excluded from analysis. default = None
@@ -64,45 +58,6 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
 
     # Apply the mask if given
     if mask is not None:
-        if obj is not None:
-            # Copy the image
-            img_copy = np.copy(gray_img1)
-            # Extract contour size
-            x, y, w, h = cv2.boundingRect(obj)
-            cv2.rectangle(img_copy, (x, y), (x + w, y + h), (0, 255, 0), 5)
-
-            # Crop down the image
-            crop_img = gray_img[y:y + h, x:x + w]
-
-            # Setup a buffer around the bounding box of obj
-            if type(obj_padding) is int:
-                offsetx = obj_padding
-                offsety = obj_padding
-            elif type(obj_padding) is str and obj_padding.upper() == "AUTO":
-                # Calculate the buffer size based on the contour size
-                offsetx = int(w / 5)
-                offsety = int(h / 5)
-            else:
-                fatal_error("Padding must either be 'auto' or an integer.")
-
-            if background.upper() == "IMAGE":
-                gray_img1 = gray_img1[y - offsety:y + h + offsety, x - offsetx:x + w + offsetx]
-            else:
-                # Crop img including buffer
-                gray_img1 = cv2.copyMakeBorder(crop_img, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT,
-                                               value=(0, 0, 0))
-
-            # Crop the mask to the same size as the image
-            crop_mask = mask[y:y + h, x:x + w]
-            mask = cv2.copyMakeBorder(crop_mask, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT,
-                                      value=(0, 0, 0))
-
-            # Crop the bad mask if there is one
-            if bad_mask is not None:
-                crop_bad_mask = bad_mask[y:y + h, x:x + w]
-                bad_mask = cv2.copyMakeBorder(crop_bad_mask, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT,
-                                              value=(0, 0, 0))
-
         # Apply the mask
         masked_img = np.ma.array(gray_img1, mask=~mask.astype(bool))
 
