@@ -73,20 +73,22 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
     masked_img = np.ma.array(gray_img1, mask=~mask.astype(bool))
 
     # Set the background color or type
-    if background.upper() == "BLACK":
-        # Background is all zeros
-        bkg_img = np.zeros(np.shape(gray_img1), dtype=np.uint8)
-        # Use the gray cmap for the background
-        bkg_cmap = "gray"
-    elif background.upper() == "WHITE":
-        # Background is all 255 (white)
-        bkg_img = np.zeros(np.shape(gray_img1), dtype=np.uint8)
-        bkg_img += 255
-        bkg_cmap = "gray_r"
-    elif background.upper() == "IMAGE":
-        # Set the background to the input gray image
-        bkg_img = gray_img1
-        bkg_cmap = "gray"
+    bkgd = {
+        "BLACK": {
+            "image": np.zeros(np.shape(gray_img1), dtype=np.uint8),
+            "cmap": "gray"
+            },
+        "WHITE": {
+            "image": np.zeros(np.shape(gray_img1), dtype=np.uint8) + 255,
+            "cmap": "gray_r"
+            },
+        "IMAGE": {
+            "image": gray_img1,
+            "cmap": "gray"
+            }
+    }
+    bkg_img = bkgd[background.upper()]["image"]
+    bkg_cmap = bkgd[background.upper()]["cmap"]
 
     if bad_mask is not None:
         debug_mode = params.debug
