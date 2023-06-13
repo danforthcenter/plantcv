@@ -4,8 +4,8 @@ import cv2
 import os
 import numpy as np
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import params
-from plantcv.plantcv import outputs
+from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
+from plantcv.plantcv import params, outputs
 from plantcv.plantcv import fatal_error
 
 
@@ -30,9 +30,16 @@ def y_axis_pseudolandmarks(img, mask, label="default"):
     :return right: list
     :return center_h: list
     """
-    # Lets get some landmarks scanning along the y-axis
+     # Find contours
+    cnt, cnt_str = _cv2_findcontours(bin_img=mask)
+    # Consolidate contours
+    obj = _object_composition(contours=cnt, hierarchy=cnt_str)
+    
+    # Empty pot type scenario
     if not np.any(obj):
         return ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA')
+    
+    # Bounding rectangle
     x, y, width, height = cv2.boundingRect(obj)
     extent = height
 
