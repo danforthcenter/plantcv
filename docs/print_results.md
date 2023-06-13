@@ -7,7 +7,7 @@ An [Outputs](outputs.md) class has been added that automatically stores measurem
 functions:
 
 * `analyze.bound_horizontal`
-* `analyze_bound_vertical`
+* `analyze.bound_vertical`
 * `analyze.color`
 * `analyze_nir_intensity`
 * `analyze_object`
