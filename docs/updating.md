@@ -178,7 +178,7 @@ pages for more details on the input and output variable types.
 * post v3.0.5: bound_header, bound_data, analysis_images = **plantcv.analyze_bound_vertical**(*img, obj, mask, line_position*)
 * post v3.3: analysis_image = **plantcv.analyze_bound_vertical**(*img, obj, mask, line_position*)
 * post v3.11: analysis_image = **plantcv.analyze_bound_vertical**(*img, obj, mask, line_position, label="default"*)
-
+* post v4.0: DEPRECATED see plantcv.analyze.bound_vertical
 
 #### plantcv.analyze_color
 
