@@ -31,18 +31,18 @@ This function calculates the spectral index statistics and writes the values as 
 
 from plantcv import plantcv as pcv
 
-pcv.analyze.spectral_index(index_img=ndvi_index, labeled_mask=leaf_mask, n_labels=2, bins=100,
-                           min_bin=0, max_bin="auto", label="spot")
+pcv.analyze.spectral_index(index_img=ndvi_index, labeled_mask=mask,
+                           min_bin=-1, max_bin=1, label="plant")
 
 ```
 
 *NDVI Index Image* 
 
-![Screenshot](img/tutorial_images/hyperspectral/NDVI_index.jpg)
+![Screenshot](img/documentation_images/analyze_spectral_index/ndvi.jpg)
 
 
 *Masked Index Histogram*
 
-![Screenshot](img/documentation_images/analyze_index/index_ndvi_hist.jpg)
+![Screenshot](img/documentation_images/analyze_spectral_index/ndvi_hist.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/analyze/spectral_index.py)
