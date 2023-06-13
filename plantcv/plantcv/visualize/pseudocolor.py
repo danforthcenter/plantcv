@@ -14,7 +14,7 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
 
     Inputs:
     gray_img    = grayscale image data
-    mask        = (optional) binary mask
+    mask        = (optional) binary or labeled mask
     cmap        = (optional) colormap. default is the matplotlib default, viridis
     background  = (optional) background color/type, options are "image" (gray_img), "white", or "black"
                   (requires a mask). default = 'image'
@@ -30,7 +30,6 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
     pseudo_image = pseudocolored image
 
     :param gray_img: numpy.ndarray
-    :param obj: numpy.ndarray
     :param mask: numpy.ndarray
     :param cmap: str
     :param background: str
@@ -38,11 +37,10 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
     :param max_value: numeric
     :param axes: bool
     :param colorbar: bool
-    :param obj_padding: str, int
     :param title: str
-    :return pseudo_image: numpy.ndarray
     :param bad_mask: numpy.ndarray
     :param bad_color: str
+    :return pseudo_image: matplotlib.figure.Figure
     """
     # Auto-increment the device counter
     params.device += 1
@@ -54,84 +52,69 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
     if len(np.shape(gray_img)) != 2:
         fatal_error("Image must be grayscale.")
 
+    # Check if background is a supported type
+    if background.upper() not in ["IMAGE", "WHITE", "BLACK"]:
+        fatal_error("Background type {0} is not supported. Please use 'white', 'black', or 'image'.".format(background))
+
     bad_idx, bad_idy = [], []
 
-    # Apply the mask if given
-    if mask is not None:
-        # Apply the mask
-        masked_img = np.ma.array(gray_img1, mask=~mask.astype(bool))
+    # Create a whole-image mask if mask is None
+    if mask is None:
+        mask = np.ones(np.shape(gray_img), dtype=np.uint8)
 
-        # Set the background color or type
-        if background.upper() == "BLACK":
-            # Background is all zeros
-            bkg_img = np.zeros(np.shape(gray_img1), dtype=np.uint8)
-            # Use the gray cmap for the background
-            bkg_cmap = "gray"
-        elif background.upper() == "WHITE":
-            # Background is all 255 (white)
-            bkg_img = np.zeros(np.shape(gray_img1), dtype=np.uint8)
-            bkg_img += 255
-            bkg_cmap = "gray_r"
-        elif background.upper() == "IMAGE":
-            # Set the background to the input gray image
-            bkg_img = gray_img1
-            bkg_cmap = "gray"
-        else:
-            fatal_error(
-                "Background type {0} is not supported. Please use 'white', 'black', or 'image'.".format(background))
+    # Convert the input mask to binary
+    mask = mask.copy()
+    # Set all values greater than 0 to 255
+    mask[np.where(mask > 0)] = 255
+    # Change type to unsigned 8-bit integer
+    mask = mask.astype(np.uint8)
 
-        if bad_mask is not None:
-            debug_mode = params.debug
-            params.debug = None
-            bad_mask = apply_mask(bad_mask, mask, mask_color='black')
-            bad_idx, bad_idy = np.where(bad_mask > 0)
-            params.debug = debug_mode
+    # Apply the mask
+    masked_img = np.ma.array(gray_img1, mask=~mask.astype(bool))
 
-        plt.figure()
-        # Pseudocolor the image, plot the background first
-        plt.imshow(bkg_img, cmap=bkg_cmap)
-        # Overlay the masked grayscale image with the user input colormap
-        plt.imshow(masked_img, cmap=cmap, vmin=min_value, vmax=max_value)
-        plt.plot(bad_idy, bad_idx, '.', color=bad_color)
+    # Set the background color or type
+    if background.upper() == "BLACK":
+        # Background is all zeros
+        bkg_img = np.zeros(np.shape(gray_img1), dtype=np.uint8)
+        # Use the gray cmap for the background
+        bkg_cmap = "gray"
+    elif background.upper() == "WHITE":
+        # Background is all 255 (white)
+        bkg_img = np.zeros(np.shape(gray_img1), dtype=np.uint8)
+        bkg_img += 255
+        bkg_cmap = "gray_r"
+    elif background.upper() == "IMAGE":
+        # Set the background to the input gray image
+        bkg_img = gray_img1
+        bkg_cmap = "gray"
 
-        if colorbar:
-            plt.colorbar(fraction=0.033, pad=0.04)
+    if bad_mask is not None:
+        debug_mode = params.debug
+        params.debug = None
+        bad_mask = apply_mask(bad_mask, mask, mask_color='black')
+        bad_idx, bad_idy = np.where(bad_mask > 0)
+        params.debug = debug_mode
 
-        if axes:
-            # Include image title
-            if title is not None:
-                plt.title(title)
-        else:
-            # Remove axes
-            plt.xticks([])
-            plt.yticks([])
+    plt.figure()
+    # Pseudocolor the image, plot the background first
+    plt.imshow(bkg_img, cmap=bkg_cmap)
+    # Overlay the masked grayscale image with the user input colormap
+    plt.imshow(masked_img, cmap=cmap, vmin=min_value, vmax=max_value)
+    plt.plot(bad_idy, bad_idx, '.', color=bad_color)
 
-        # Store the current figure
-        pseudo_img = plt.gcf()
+    if colorbar:
+        plt.colorbar(fraction=0.033, pad=0.04)
 
+    if axes and title is not None:
+        # Include image title
+        plt.title(title)
     else:
+        # Remove axes
+        plt.xticks([])
+        plt.yticks([])
 
-        if bad_mask is not None:
-            bad_idx, bad_idy = np.where(bad_mask > 0)
-        plt.figure()
-        # Pseudocolor the image
-        plt.imshow(gray_img1, cmap=cmap, vmin=min_value, vmax=max_value)
-        plt.plot(bad_idy, bad_idx, '.', color=bad_color)
-
-        if colorbar:
-            # Include the colorbar
-            plt.colorbar(fraction=0.033, pad=0.04)
-
-        if axes:
-            # Include image title
-            if title is not None:
-                plt.title(title)
-        else:
-            # Remove axes
-            plt.xticks([])
-            plt.yticks([])
-
-        pseudo_img = plt.gcf()
+    # Store the current figure
+    pseudo_img = plt.gcf()
 
     # Print or plot if debug is turned on
     if params.debug is not None:
