@@ -395,7 +395,7 @@ pages for more details on the input and output variable types.
 #### plantcv.homology.acute
 
 * pre v4.0: NA, see plantcv.acute
-* post v4.0: homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = **plantcv.homology.acute**(*img, obj, mask, win, threshold*)
+* post v4.0: homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = **plantcv.homology.acute**(*img, mask, win, threshold*)
 
 #### plantcv.homology.space
 
