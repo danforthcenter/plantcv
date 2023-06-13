@@ -957,6 +957,11 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: NA
 * post v3.0dev2: bin_img = **plantcv.threshold.triangle**(*gray_img, max_value, object_type="light", xstep=1*)
 
+#### plantcv.transform.affine_color_correction
+
+* pre v4.0: NA
+* post v4.0: **plantcv.transform.affine_color_correction**(*rgb_img, source_matrix, target_matrix*)
+
 #### plantcv.transform.apply_transformation_matrix
 
 * pre v3.0dev1: NA
@@ -1030,6 +1035,11 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev1: NA
 * post v3.0dev2: **plantcv.transform.save_matrix**(*matrix, filename*)
+
+#### plantcv.transform.std_color_matrix
+
+* pre v4.0: NA
+* post v4.0: **plantcv.transform.std_color_matrix**(*pos=0*)
 
 #### plantcv.triangle_auto_threshold
 
