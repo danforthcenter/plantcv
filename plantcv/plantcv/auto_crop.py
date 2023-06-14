@@ -8,13 +8,13 @@ from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
 from plantcv.plantcv import params, fatal_error
 
 
-def auto_crop(img, labeled_mask, padding_x=0, padding_y=0, color='black'):
+def auto_crop(img, mask, padding_x=0, padding_y=0, color='black'):
     """
     Resize image.
 
     Inputs:
     img          = RGB or grayscale image data
-    labeled_mask = Labeled mask of objects (32-bit).
+    mask         = Binary mask image data
     padding_x    = integer or tuple to add padding the x direction
     padding_y    = integer or tuple to add padding the y direction
     color        = either 'black', 'white', or 'image'
@@ -23,7 +23,7 @@ def auto_crop(img, labeled_mask, padding_x=0, padding_y=0, color='black'):
     cropped   = cropped image
 
     :param img: numpy.ndarray
-    :param labeled_mask: numpy.ndarray
+    :param mask: numpy.ndarray
     :param padding_x: int
     :param padding_y: int
     :param color: str
@@ -37,7 +37,7 @@ def auto_crop(img, labeled_mask, padding_x=0, padding_y=0, color='black'):
     height, width = np.shape(img)[:2]
 
     # Find contours
-    cnt, cnt_str = _cv2_findcontours(bin_img=labeled_mask)
+    cnt, cnt_str = _cv2_findcontours(bin_img=mask)
 
     # Consolidate contours
     obj = _object_composition(contours=cnt, hierarchy=cnt_str)
