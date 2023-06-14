@@ -243,6 +243,18 @@ pages for more details on the input and output variable types.
 * post v4.0: analysis_image = **plantcv.analyze.size**(*img, labeled_mask, n_labels=1, label="default"*)
 
 
+#### plantcv.analyze.spectral_reflectance
+
+* pre v4.0: (see plantcv.hyperspectral.analyze_spectral)
+* post v4.0: analysis_image = **plantcv.analyze.spectral_reflectance**(*hsi, labeled_mask, n_labels=1, label="default"*)
+
+
+#### plantcv.analyze.thermal
+
+* pre v4.0: (see plantcv.analyze_thermal_values)
+* post v4.0: analysis_image = **plantcv.analyze.thermal**(*thermal_img, labeled_mask, n_labels=1, bins=100, label="default"*)
+
+
 #### plantcv.apply_mask
 
 * pre v3.0dev2: device, masked_img = **plantcv.apply_mask**(*img, mask, mask_color, device, debug=None*)
@@ -418,6 +430,8 @@ pages for more details on the input and output variable types.
 * pre v3.7: NA
 * post v3.7: spectral_histogram = **plantcv.hyperspectral.analyze_spectral**(*array, mask, histplot=True*)
 * post v3.11: spectral_histogram =**plantcv.hyperspectral.analyze_spectral**(*array, mask, histplot=True, label="default"*)
+* * post v4.0: Deprecated, see:
+    * analysis_image = **plantcv.analyze.spectral_reflectance**(*hsi, labeled_mask, n_labels=1, label="default"*)
 
 #### plantcv.hyperspectral.extract_index
 
