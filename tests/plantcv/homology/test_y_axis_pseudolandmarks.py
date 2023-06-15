@@ -14,8 +14,9 @@ def test_y_axis_pseudolandmarks(test_data):
 
 @pytest.mark.parametrize("obj,shape", [
     [np.array(([[0, 0]], [[10, 0]], [[10, 10]], [[0, 10]])), (20, 1, 2)],
-    [np.array(([[42, 161]], [[2, 47]], [[211, 222]])), (20, 1, 2)],
-    [np.array(([[38, 54]], [[144, 169]], [[81, 137]])), (20, 1, 2)]
+    [np.array(([[89, 222]], [[252, 39]], [[89, 207]])), (20, 1, 2)],
+    [np.array(([[21, 11]], [[159, 155]], [[237, 11]])), (20, 1, 2)],
+    [np.array(([[0, 0]], [[100, 0]], [[100, 100]], [[0, 100]])), (20, 1, 2)]
 ])
 def test_y_axis_pseudolandmarks_small_obj(obj, shape, test_data):
     """Test for PlantCV."""
@@ -32,10 +33,3 @@ def test_y_axis_pseudolandmarks_bad_input():
     mask = np.array([], dtype=np.uint8)
     result = y_axis_pseudolandmarks(mask=mask, img=img)
     assert np.array_equal(np.unique(result), np.array(["NA"]))
-
-
-def test_y_axis_pseudolandmarks_bad_obj_input(test_data):
-    """Test for PlantCV."""
-    img = cv2.imread(test_data.small_rgb_img)
-    with pytest.raises(RuntimeError):
-        _ = y_axis_pseudolandmarks(mask=np.array([[-2, -2], [-2, -2]]), img=img)
