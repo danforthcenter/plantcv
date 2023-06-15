@@ -7,7 +7,6 @@ from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
-from plantcv.plantcv import fatal_error
 
 
 def x_axis_pseudolandmarks(img, mask, label="default"):
@@ -25,7 +24,6 @@ def x_axis_pseudolandmarks(img, mask, label="default"):
     center_v = List of landmark points within the middle portion
 
     :param img: numpy.ndarray
-    :param obj: list
     :param mask: numpy.ndarray
     :param label: str
     :return top: list
@@ -184,15 +182,12 @@ def x_axis_pseudolandmarks(img, mask, label="default"):
         bottom = np.array(bottom)
         bottom.shape = (20, 1, 2)
         m = cv2.moments(mask, binaryImage=True)
-        if m['m00'] == 0:
-            fatal_error('Check input parameters, first moment=0')
-        else:
-            # Centroid (center of mass x, center of mass y)
-            cmx, cmy = (m['m10'] / m['m00'], m['m01'] / m['m00'])
-            c_points = [cmy] * 20
-            center_v = list(zip(x_coords, c_points))
-            center_v = np.array(center_v)
-            center_v.shape = (20, 1, 2)
+        # Centroid (center of mass x, center of mass y)
+        _, cmy = (m['m10'] / m['m00'], m['m01'] / m['m00'])
+        c_points = [cmy] * 20
+        center_v = list(zip(x_coords, c_points))
+        center_v = np.array(center_v)
+        center_v.shape = (20, 1, 2)
 
         img2 = np.copy(img)
         for i in top:
