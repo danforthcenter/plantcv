@@ -79,7 +79,6 @@ from plantcv.plantcv.opening import opening
 from plantcv.plantcv.closing import closing
 from plantcv.plantcv import roi
 from plantcv.plantcv import threshold
-from plantcv.plantcv.cluster_contour_mask import cluster_contour_mask
 from plantcv.plantcv.analyze_thermal_values import analyze_thermal_values
 from plantcv.plantcv import visualize
 from plantcv.plantcv import morphology
@@ -111,6 +110,6 @@ __all__ = ["fatal_error", "Params", "Outputs", "Spectral_data", 'PSII_data', 'Po
            "scale_features", "landmark_reference_pt_dist", "y_axis_pseudolandmarks",
            "cluster_contours", "cluster_contour_splitimg", "rotate", "shift_img", "output_mask", "auto_crop",
            "background_subtraction", "naive_bayes_classifier", "distance_transform", "canny_edge_detect", "opening",
-           "closing", "roi", "threshold", "cluster_contour_mask", "analyze_thermal_values", "visualize", "morphology",
+           "closing", "roi", "threshold", "analyze_thermal_values", "visualize", "morphology",
            "fill_holes", "get_kernel", "crop", "stdev_filter", "spatial_clustering", "photosynthesis", "homology", "annotate",
            "io", "segment_image_series", "create_labels", "analyze"]
