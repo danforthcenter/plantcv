@@ -28,8 +28,8 @@ def test_y_axis_pseudolandmarks_small_obj(obj, shape, test_data):
 
 def test_y_axis_pseudolandmarks_bad_input():
     """Test for PlantCV."""
-    img = np.array([])
-    mask = np.array([])
+    img = np.array([], dtype=np.uint8)
+    mask = np.array([], dtype=np.uint8)
     result = y_axis_pseudolandmarks(mask=mask, img=img)
     assert np.array_equal(np.unique(result), np.array(["NA"]))
 
