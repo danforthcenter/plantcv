@@ -9,7 +9,7 @@ def test_auto_crop(padx, pady, expected, test_data):
     """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.small_rgb_img, -1)
-    blank = np.zeros(np.shape(img), dtype=np.uint8)
+    blank = np.zeros(img.shape[:2], dtype=np.uint8)
     contour = test_data.load_composed_contours(test_data.small_composed_contours_file)
     mask = cv2.drawContours(blank, contour, -1, (255), thickness=-1)
     cropped = auto_crop(img=img, mask=mask, padding_x=padx, padding_y=pady, color='image')
