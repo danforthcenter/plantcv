@@ -2,7 +2,7 @@
 
 Identify landmark positions within a contour for morphometric analysis
 
-**plantcv.homology.acute**(*img, obj, mask, win, threshold*)
+**plantcv.homology.acute**(*img, mask, win, threshold*)
 
 **returns**
 
@@ -19,7 +19,6 @@ chain       = raw angle scores for entire contour, used to visualize landmark cl
 
 - **Parameters:**
     - img - The original image, used for plotting purposes
-    - obj - A contour of the plant object
     - mask - Binary mask used to generate contour array (necessary for ptvals)
     - win - The maximum cumulative pixel distance window for calculating angle score; 1 cm in pixels often works well
     - thresh - Angle score threshold to be applied for mapping out landmark coordinate clusters within each contour
@@ -43,12 +42,11 @@ from plantcv import plantcv as pcv
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
 
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 # Given an image, mask, and object contours, identify pseudo-landmarks with acute
 
-homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = pcv.homology.acute(img=img, obj=obj, 
-                                                                               mask=mask, win=25, threshold=90)
+homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = pcv.homology.acute(img=img, mask=mask, win=25, threshold=90)
 
 ```
 
