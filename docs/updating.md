@@ -243,6 +243,12 @@ pages for more details on the input and output variable types.
 * post v4.0: analysis_image = **plantcv.analyze.size**(*img, labeled_mask, n_labels=1, label="default"*)
 
 
+#### plantcv.analyze.spectral_index
+
+* pre v4.0: (see plantcv.hyperspectral.analyze_index)
+* post v4.0: analysis_image = **plantcv.analyze.spectral_index**(*index_img, labeled_mask, n_labels=1, bins=100, min_bin=0, max_bin=1, label="default"*)
+
+
 #### plantcv.analyze.spectral_reflectance
 
 * pre v4.0: (see plantcv.hyperspectral.analyze_spectral)
