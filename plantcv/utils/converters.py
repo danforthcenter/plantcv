@@ -70,8 +70,9 @@ def json2csv(json_file, csv_file):
                     if var in obs:
                         if obs[var]["label"] != "none":
                             for i in range(0, len(obs[var]["value"])):
-                                row = [sample, var, obs[var]["value"][i], obs[var]["label"][i]]
-                                csv.write(",".join(map(str, meta_row + row)) + "\n")
+                                if not isinstance(obs[var]["value"][i], (list, tuple)):
+                                    row = [sample, var, obs[var]["value"][i], obs[var]["label"][i]]
+                                    csv.write(",".join(map(str, meta_row + row)) + "\n")
                     else:
                         csv.write(",".join(map(str, meta_row + [sample, var, "NA", "NA"])) + "\n")
         csv.close()
