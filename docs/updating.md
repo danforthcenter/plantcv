@@ -441,7 +441,7 @@ pages for more details on the input and output variable types.
 #### plantcv.homology.scale_features
 
 * pre v4.0: see plantcv.scale_features
-* post v4.0: rescaled, centroid_scaled, boundary_line_scaled = **plantcv.homology.scale_features**(*obj, mask, points, line_position*)
+* post v4.0: rescaled, centroid_scaled, boundary_line_scaled = **plantcv.homology.scale_features**(*mask, points, line_position*)
 
 #### plantcv.hyperspectral.analyze_index
 
