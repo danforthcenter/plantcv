@@ -428,6 +428,16 @@ pages for more details on the input and output variable types.
 * pre v4.0: see plantcv.landmark_reference_pt_dist
 * post v4.0: **plantcv.homology.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r, label="default"*)
 
+#### plantcv.homology.x_axis_pseudolandmarks
+
+* pre v4.0: see plantcv.x_axis_pseudolandmarks
+* post v4.0: top, bottom, center_v = **plantcv.homology.x_axis_pseudolandmarks**(*img, mask, label="default"*)
+
+#### plantcv.homology.y_axis_pseudolandmarks
+
+* pre v4.0: see plantcv.y_axis_pseudolandmarks
+* post v4.0: left, right, center_h = **plantcv.homology.y_axis_pseudolandmarks**(*img, mask, label="default"*)
+
 #### plantcv.hyperspectral.analyze_index
 
 * pre v3.7: NA
@@ -1215,7 +1225,8 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: top, bottom, center_v = **plantcv.x_axis_pseudolandmarks**(*obj, mask, img*)
 * post v3.2: top, bottom, center_v = **plantcv.x_axis_pseudolandmarks**(*img, obj, mask*)
 * post v3.11: top, bottom, center_v = **plantcv.x_axis_pseudolandmarks**(*img, obj, mask, label="default"*)
-* post v4.0: top, bottom, center_v = **plantcv.homology.x_axis_pseudolandmarks**(*img, mask, label="default"*)
+* post v4.0: DEPRECATED, see: plantcv.homology.x_axis_pseudolandmarks
+
 
 #### plantcv.y_axis_pseudolandmarks
 
@@ -1223,6 +1234,4 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: left, right, center_h = **plantcv.y_axis_pseudolandmarks**(*obj, mask, img*)
 * post v3.2: left, right, center_h = **plantcv.y_axis_pseudolandmarks**(*img, obj, mask*)
 * post v3.11: left, right, center_h = **plantcv.y_axis_pseudolandmarks**(*img, obj, mask, label="default"*)
-* post v4.0: Deprecated, see:
-    * top, bottom, center_v = **plantcv.homology.x_axis_pseudolandmarks**(*img, mask, label="default"*)
-
+* post v4.0: Deprecated, see: plantcv.homology.y_axis_pseudolandmarks
