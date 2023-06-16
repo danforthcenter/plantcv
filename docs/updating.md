@@ -423,6 +423,11 @@ pages for more details on the input and output variable types.
 * pre v4.0: NA
 * post v4.0: **plantcv.homology.constellaqc**(*denovo_groups, annotated_groups*)
 
+#### plantcv.homology.landmark_reference_pt_dist
+
+* pre v4.0: see plantcv.landmark_reference_pt_dist
+* post v4.0: **plantcv.homology.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r, label="default"*)
+
 #### plantcv.hyperspectral.analyze_index
 
 * pre v3.7: NA
@@ -492,6 +497,7 @@ pages for more details on the input and output variable types.
 * post v3.2: landmark_header, landmark_data = **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r*)
 * post v3.3: **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r*)
 * post v3.11: **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r, label="default"*)
+* post v4.0: DEPRECATED see plantcv.homology.landmark_reference_pt_dist
 
 
 #### plantcv.laplace_filter

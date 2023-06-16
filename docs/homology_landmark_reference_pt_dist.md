@@ -4,7 +4,7 @@ This is a function to measure the distance from user defined points to the centr
 along the x-axis and baseline coordinate (top of pot) along the y-axis. Calculating the vertical distance between leaf tip points 
 to the centroid of the plant object in side-view images may provide a proxy measure of turgor pressure.
  
-**plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r, label="default"*)
+**plantcv.homology.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r, label="default"*)
 
 **returns** none
 
@@ -32,7 +32,7 @@ pcv.params.debug = "plot"
 
 # Identify acute vertices (tip points) of an object
 # Results in set of point values that may indicate tip points
-pcv.landmark_reference_pt_dist(points_r=points_r, centroid_r=centroid_r, bline_r=bline_r, label="default")
+pcv.homology.landmark_reference_pt_dist(points_r=points_r, centroid_r=centroid_r, bline_r=bline_r, label="default")
 
 # Access data stored out from landmark_reference_pt_dist
 avg_vert_distance = pcv.outputs.observations['default']['vert_ave_c']['value']
@@ -43,4 +43,4 @@ avg_vert_distance = pcv.outputs.observations['default']['vert_ave_c']['value']
 
 ![Screenshot](img/documentation_images/landmark_reference_pt_dist/lrpd_output.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/landmark_reference_pt_dist.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/homology/landmark_reference_pt_dist.py)

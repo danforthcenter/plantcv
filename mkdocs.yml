@@ -100,7 +100,7 @@ nav:
         - 'x-Axis Pseudolandmarks': x_axis_pseudolandmarks.md
         - 'y-Axis Pseudolandmarks': y_axis_pseudolandmarks.md
         - 'Scale Features': scale_features.md
-        - 'Landmark Reference Point Distribution': landmark_reference_pt_dist.md
+        - 'Landmark Reference Point Distribution': homology_landmark_reference_pt_dist.md
       - 'Logical Operations':
         - 'Logical Operations-And': logical_and.md
         - 'Logical Operations-Or': logical_or.md
