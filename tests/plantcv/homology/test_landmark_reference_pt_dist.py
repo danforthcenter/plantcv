@@ -1,6 +1,7 @@
 import pytest
 import numpy as np
-from plantcv.plantcv import landmark_reference_pt_dist, outputs
+from plantcv.plantcv import outputs
+from plantcv.plantcv.homology import landmark_reference_pt_dist
 
 
 @pytest.mark.parametrize("points,centroid,bline", [
