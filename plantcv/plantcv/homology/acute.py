@@ -5,15 +5,15 @@ import math
 import cv2
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
 
 
-def acute(img, obj, mask, win, threshold):
+def acute(img, mask, win, threshold):
     """
     Identify landmark positions within a contour for morphometric analysis
 
     Inputs:
     img         = Original image used for plotting purposes
-    obj         = An opencv contour array of interest to be scanned for landmarks
     mask        = binary mask used to generate contour array (necessary for ptvals)
     win         = maximum cumulative pixel distance window for calculating angle
                   score; 1 cm in pixels often works well
@@ -33,12 +33,14 @@ def acute(img, obj, mask, win, threshold):
                   in troubleshooting.
 
     :param img: numpy.ndarray
-    :param obj: numpy.ndarray
     :param mask: numpy.ndarray
     :param win: int
     :param threshold: int
     :return homolog_pts:
     """
+    # Find contours
+    contours, hierarchy = _cv2_findcontours(bin_img=mask)
+    obj = _object_composition(contours=contours, hierarchy=hierarchy)
 
     chain = []                                         # Create empty chain to store angle scores
     for k in list(range(len(obj))):                    # Coordinate-by-coordinate 3-point assignments
