@@ -243,6 +243,12 @@ pages for more details on the input and output variable types.
 * post v4.0: analysis_image = **plantcv.analyze.size**(*img, labeled_mask, n_labels=1, label="default"*)
 
 
+#### plantcv.analyze.spectral_index
+
+* pre v4.0: (see plantcv.hyperspectral.analyze_index)
+* post v4.0: analysis_image = **plantcv.analyze.spectral_index**(*index_img, labeled_mask, n_labels=1, bins=100, min_bin=0, max_bin=1, label="default"*)
+
+
 #### plantcv.analyze.spectral_reflectance
 
 * pre v4.0: (see plantcv.hyperspectral.analyze_spectral)
@@ -395,7 +401,7 @@ pages for more details on the input and output variable types.
 #### plantcv.homology.acute
 
 * pre v4.0: NA, see plantcv.acute
-* post v4.0: homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = **plantcv.homology.acute**(*img, obj, mask, win, threshold*)
+* post v4.0: homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = **plantcv.homology.acute**(*img, mask, win, threshold*)
 
 #### plantcv.homology.space
 
@@ -1160,6 +1166,7 @@ pages for more details on the input and output variable types.
 * post v3.2: pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, dpi=None, axes=True, colorbar=True*)
 * post v3.3: pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, axes=True, colorbar=True*)
 * post v3.12: pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, axes=True, colorbar=True, obj_padding="auto", title=None*)
+* post v4.0: pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, mask=None, cmap=None, background="image", min_value=0, max_value=255, axes=True, colorbar=True, title=None*)
 
 #### plantcv.visualize.obj_sizes
 
@@ -1202,6 +1209,7 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: top, bottom, center_v = **plantcv.x_axis_pseudolandmarks**(*obj, mask, img*)
 * post v3.2: top, bottom, center_v = **plantcv.x_axis_pseudolandmarks**(*img, obj, mask*)
 * post v3.11: top, bottom, center_v = **plantcv.x_axis_pseudolandmarks**(*img, obj, mask, label="default"*)
+* post v4.0: top, bottom, center_v = **plantcv.homology.x_axis_pseudolandmarks**(*img, mask, label="default"*)
 
 #### plantcv.y_axis_pseudolandmarks
 
@@ -1209,3 +1217,6 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: left, right, center_h = **plantcv.y_axis_pseudolandmarks**(*obj, mask, img*)
 * post v3.2: left, right, center_h = **plantcv.y_axis_pseudolandmarks**(*img, obj, mask*)
 * post v3.11: left, right, center_h = **plantcv.y_axis_pseudolandmarks**(*img, obj, mask, label="default"*)
+* post v4.0: Deprecated, see:
+    * top, bottom, center_v = **plantcv.homology.x_axis_pseudolandmarks**(*img, mask, label="default"*)
+
