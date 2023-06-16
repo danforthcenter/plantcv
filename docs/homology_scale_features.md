@@ -3,7 +3,7 @@
 This is a function to to transform the coordiantes of landmark points onto a common scale (0-1.0)
 Scaling is used to remove the influence of size on shape parameters. Returns a list of tuples.
 
-**plantcv.scale_features**(*obj, mask, points, line_position*)
+**plantcv.homology.scale_features**(*obj, mask, points, line_position*)
 
 **returns** rescaled landmark points, a rescaled centroid point, a rescaled baseline point
 
@@ -29,8 +29,8 @@ pcv.params.debug = "plot"
 
 # Identify acute vertices (tip points) of an object
 # Results in set of point values that may indicate tip points
-points_rescaled, centroid_rescaled, base_rescaled = pcv.scale_features(obj, mask, landmark_points, 
-                                                                       boundary_line_position)
+points_rescaled, centroid_rescaled, base_rescaled = pcv.homology.scale_features(obj, mask, landmark_points,
+                                                                                boundary_line_position)
                                                                        
 ```
 
@@ -38,4 +38,4 @@ points_rescaled, centroid_rescaled, base_rescaled = pcv.scale_features(obj, mask
 
 ![Screenshot](img/documentation_images/scale_features/sf_output.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/scale_features.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/homology/scale_features.py)

@@ -438,6 +438,11 @@ pages for more details on the input and output variable types.
 * pre v4.0: see plantcv.y_axis_pseudolandmarks
 * post v4.0: left, right, center_h = **plantcv.homology.y_axis_pseudolandmarks**(*img, mask, label="default"*)
 
+#### plantcv.homology.scale_features
+
+* pre v4.0: see plantcv.scale_features
+* post v4.0: rescaled, centroid_scaled, boundary_line_scaled = **plantcv.homology.scale_features**(*obj, mask, points, line_position*)
+
 #### plantcv.hyperspectral.analyze_index
 
 * pre v3.7: NA
@@ -866,6 +871,7 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, rescaled, centroid_scaled, boundary_line_scaled = **plantcv.scale_features**(*obj, mask, points, boundary_line, device, debug=None*)
 * post v3.0dev2: rescaled, centroid_scaled, boundary_line_scaled = **plantcv.scale_features**(*obj, mask, points, boundary_line*)
 * post v3.2: rescaled, centroid_scaled, boundary_line_scaled = **plantcv.scale_features**(*obj, mask, points, line_position*)
+* post v4.0: DEPRECATED, seee: plantcv.homology.scale_features
 
 #### plantcv.scharr_filter
 

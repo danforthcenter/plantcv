@@ -1,7 +1,7 @@
 import pytest
 import cv2
 import numpy as np
-from plantcv.plantcv import scale_features
+from plantcv.plantcv.homology import scale_features
 
 
 @pytest.mark.parametrize("pos", ["NA", 50])
