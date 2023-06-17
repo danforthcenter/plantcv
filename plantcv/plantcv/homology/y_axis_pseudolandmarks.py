@@ -4,18 +4,16 @@ import cv2
 import os
 import numpy as np
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import params
-from plantcv.plantcv import outputs
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
+from plantcv.plantcv import params, outputs
 
 
-def y_axis_pseudolandmarks(img, obj, mask, label="default"):
+def y_axis_pseudolandmarks(img, mask, label="default"):
     """
     Divide up object contour into 19 equidistant segments and generate landmarks for each
 
     Inputs:
     img      = This is a copy of the original plant image generated using np.copy if debug is true it will be drawn on
-    obj      = a contour of the plant object (this should be output from the object_composition.py fxn)
     mask     = this is a binary image. The object should be white and the background should be black
     label        = optional label parameter, modifies the variable name of observations recorded
 
@@ -25,16 +23,22 @@ def y_axis_pseudolandmarks(img, obj, mask, label="default"):
     center_h = List of landmarks within the center
 
     :param img: numpy.ndarray
-    :param obj: list
     :param mask: numpy.ndarray
     :param label: str
     :return left: list
     :return right: list
     :return center_h: list
     """
-    # Lets get some landmarks scanning along the y-axis
+    # Find contours
+    cnt, cnt_str = _cv2_findcontours(bin_img=mask)
+    # Consolidate contours
+    obj = _object_composition(contours=cnt, hierarchy=cnt_str)
+
+    # Empty pot type scenario
     if not np.any(obj):
         return ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA')
+
+    # Bounding rectangle
     x, y, width, height = cv2.boundingRect(obj)
     extent = height
 
@@ -176,14 +180,11 @@ def y_axis_pseudolandmarks(img, obj, mask, label="default"):
         right.shape = (20, 1, 2)
         m = cv2.moments(mask, binaryImage=True)
         # Centroid (center of mass x, center of mass y)
-        if m['m00'] == 0:
-            fatal_error('Check input parameters, first moment=0')
-        else:
-            cmx, cmy = (m['m10'] / m['m00'], m['m01'] / m['m00'])
-            c_points = [cmx] * 20
-            center_h = list(zip(c_points, y_coords))
-            center_h = np.array(center_h)
-            center_h.shape = (20, 1, 2)
+        cmx, _ = (m['m10'] / m['m00'], m['m01'] / m['m00'])
+        c_points = [cmx] * 20
+        center_h = list(zip(c_points, y_coords))
+        center_h = np.array(center_h)
+        center_h.shape = (20, 1, 2)
 
         img2 = np.copy(img)
         for i in left:
