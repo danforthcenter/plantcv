@@ -12,12 +12,14 @@ matplotlib.use("Template")
 class PhotosynthesisTestData:
     def __init__(self):
         """Initialize simple variables."""
-        # Test data directory
-        self.datadir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "testdata")
+        # Test data directories
+        self.datadir_v441 = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "testdata","cropreporter_v441")
+        self.datadir_v653 = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "testdata","cropreporter_v653")
         # CropReporter data file
-        self.cropreporter = os.path.join(self.datadir, "PSII_HDR_020321_WT_TOP_1.INF")
+        self.cropreporter = os.path.join(self.datadir_v441, "PSII_HDR_020321_WT_TOP_1.INF")
+        self.cropreporter_v653_ojip = os.path.join(self.datadir_v653, "HDR_OJIP_dark_light.INF")
         # Mask image
-        self.ps_mask = os.path.join(self.datadir, "PSII_HDR_020321_WT_TOP_1_mask.png")
+        self.ps_mask = os.path.join(self.datadir_v441, "PSII_HDR_020321_WT_TOP_1_mask.png")
 
     @staticmethod
     def psii_walz(var):
