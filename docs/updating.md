@@ -302,6 +302,8 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: output_path = **plantcv.cluster_contour_splitimg**(*rgb_img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None, filenames=None*)
 * post v3.3: output_path, output_imgs, output_masks = **plantcv.cluster_contour_splitimg**(*rgb_img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None, filenames=None*)
 * post v3.12 output_path, output_imgs, output_masks = **plantcv.cluster_contour_splitimg**(*img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None, filenames=None*)
+* post v4.0: DEPRECATED 
+
 
 #### plantcv.cluster_contours
 
