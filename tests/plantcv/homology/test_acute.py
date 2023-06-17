@@ -12,8 +12,7 @@ def test_acute(win, homology_test_data):
     # Read in test data
     img = cv2.imread(homology_test_data.small_rgb_img)
     mask = cv2.imread(homology_test_data.small_bin_img, -1)
-    cnt = homology_test_data.load_composed_contours(homology_test_data.small_composed_contours_file)
-    homology_pts = acute(img=img, obj=cnt, mask=mask, win=win, threshold=15)
+    homology_pts = acute(img=img, mask=mask, win=win, threshold=15)
     assert all([i == j] for i, j in zip(np.shape(homology_pts), (29, 1, 2)))
 
 
@@ -24,8 +23,9 @@ def test_acute_small_contours(obj, win, thresh, homology_test_data):
     params.debug = "plot"
     # Read in test data
     img = cv2.imread(homology_test_data.small_rgb_img)
-    mask = cv2.imread(homology_test_data.small_bin_img, -1)
-    homology_pts = acute(img=img, obj=obj, mask=mask, win=win, threshold=thresh)
+    mask = np.zeros(img.shape[:2], dtype=np.uint8)
+    cv2.drawContours(mask, [obj], -1, 255, -1)
+    homology_pts = acute(img=img, mask=mask, win=win, threshold=thresh)
     assert all([i == j] for i, j in zip(np.shape(homology_pts), (29, 1, 2)))
 
 
@@ -34,8 +34,9 @@ def test_acute_flipped_contour(homology_test_data):
     params.debug = None
     # Read in test data
     img = cv2.imread(homology_test_data.small_gray_img, -1)
-    mask = cv2.imread(homology_test_data.small_bin_img, -1)
+    mask = np.zeros(img.shape, dtype=np.uint8)
     cnt = homology_test_data.load_composed_contours(homology_test_data.small_composed_contours_file)
     cnt = np.flip(cnt)
-    homology_pts = acute(img=img, obj=cnt, mask=mask, win=5, threshold=15)
+    cv2.drawContours(mask, [cnt], -1, 255, -1)
+    homology_pts = acute(img=img, mask=mask, win=5, threshold=15)
     assert all([i == j] for i, j in zip(np.shape(homology_pts), (29, 1, 2)))

@@ -4,20 +4,19 @@ import cv2
 import os
 import numpy as np
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
-from plantcv.plantcv import fatal_error
 
 
-def x_axis_pseudolandmarks(img, obj, mask, label="default"):
+def x_axis_pseudolandmarks(img, mask, label="default"):
     """
     Divide up object contour into 20 equidistance segments and generate landmarks for each
 
     Inputs:
-    img      = This is a copy of the original plant image generated using np.copy if debug is true it will be drawn on
-    obj      = a contour of the plant object (this should be output from the object_composition.py fxn)
-    mask     = this is a binary image. The object should be white and the background should be black
-    label    = optional label parameter, modifies the variable name of observations recorded
+    img          = RGB or grayscale image data for plotting
+    mask         = a contour of the plant object
+    label        = optional label parameter, modifies the variable name of observations recorded
 
     Returns:
     top      = List of landmark points within 'top' portion
@@ -25,13 +24,17 @@ def x_axis_pseudolandmarks(img, obj, mask, label="default"):
     center_v = List of landmark points within the middle portion
 
     :param img: numpy.ndarray
-    :param obj: list
     :param mask: numpy.ndarray
     :param label: str
     :return top: list
     :return bottom: list
     :return center_v: list
     """
+    # Find contours
+    cnt, cnt_str = _cv2_findcontours(bin_img=mask)
+    # Consolidate contours
+    obj = _object_composition(contours=cnt, hierarchy=cnt_str)
+
     # Lets get some landmarks scanning along the x-axis
     if not np.any(obj):
         return ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA')
@@ -179,15 +182,12 @@ def x_axis_pseudolandmarks(img, obj, mask, label="default"):
         bottom = np.array(bottom)
         bottom.shape = (20, 1, 2)
         m = cv2.moments(mask, binaryImage=True)
-        if m['m00'] == 0:
-            fatal_error('Check input parameters, first moment=0')
-        else:
-            # Centroid (center of mass x, center of mass y)
-            cmx, cmy = (m['m10'] / m['m00'], m['m01'] / m['m00'])
-            c_points = [cmy] * 20
-            center_v = list(zip(x_coords, c_points))
-            center_v = np.array(center_v)
-            center_v.shape = (20, 1, 2)
+        # Centroid (center of mass x, center of mass y)
+        _, cmy = (m['m10'] / m['m00'], m['m01'] / m['m00'])
+        c_points = [cmy] * 20
+        center_v = list(zip(x_coords, c_points))
+        center_v = np.array(center_v)
+        center_v.shape = (20, 1, 2)
 
         img2 = np.copy(img)
         for i in top:

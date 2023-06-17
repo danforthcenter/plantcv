@@ -30,6 +30,8 @@ class TestData:
         self.hsi_file = os.path.join(self.datadir, "hsi.pkl")
         # Binary mask for HSI
         self.hsi_mask_file = os.path.join(self.datadir, "hsi_mask.png")
+        # SAVI index file
+        self.savi_file = os.path.join(self.datadir, "savi.pkl")
         # Outputs results file - JSON
         self.outputs_results_json = os.path.join(self.datadir, "outputs_results.json")
         # Outputs results file - CSV
@@ -103,7 +105,7 @@ class TestData:
         """Create simple mask for PSII"""
         mask = np.zeros((10, 10), dtype=np.uint8)
         mask[5, 5] = 255
-        return(mask)
+        return mask
 
     def psii_cropreporter(self, var):
         """Create simple data for PSII"""
@@ -130,7 +132,7 @@ class TestData:
                           dims=('x', 'y', 'frame_label', 'measurement'),
                           coords={'frame_label': frame_labels, 'frame_num': ('frame_label', [0, 1, 2, 3]),
                                   'measurement': measurements}, name=var)
-        return(da)
+        return da
 
 
 @pytest.fixture(scope="session")
