@@ -57,12 +57,6 @@ from plantcv.plantcv.crop_position_mask import crop_position_mask
 from plantcv.plantcv.get_nir import get_nir
 from plantcv.plantcv.report_size_marker_area import report_size_marker_area
 from plantcv.plantcv.white_balance import white_balance
-from plantcv.plantcv.scale_features import scale_features
-from plantcv.plantcv.landmark_reference_pt_dist import landmark_reference_pt_dist
-from plantcv.plantcv.x_axis_pseudolandmarks import x_axis_pseudolandmarks
-from plantcv.plantcv.y_axis_pseudolandmarks import y_axis_pseudolandmarks
-from plantcv.plantcv.cluster_contours import cluster_contours
-from plantcv.plantcv.cluster_contour_splitimg import cluster_contour_splitimg
 from plantcv.plantcv.rotate import rotate
 from plantcv.plantcv.shift_img import shift_img
 from plantcv.plantcv.output_mask_ori_img import output_mask
@@ -76,7 +70,6 @@ from plantcv.plantcv.opening import opening
 from plantcv.plantcv.closing import closing
 from plantcv.plantcv import roi
 from plantcv.plantcv import threshold
-from plantcv.plantcv.cluster_contour_mask import cluster_contour_mask
 from plantcv.plantcv.analyze_thermal_values import analyze_thermal_values
 from plantcv.plantcv import visualize
 from plantcv.plantcv import morphology
@@ -106,6 +99,7 @@ __all__ = [
     'Points',
     "Objects",
     "deprecation_warning",
+    "warn",
     "print_image",
     "plot_image",
     "color_palette",
@@ -149,12 +143,6 @@ __all__ = [
     "get_nir",
     "report_size_marker_area",
     "white_balance",
-    "scale_features",
-    "landmark_reference_pt_dist",
-    "x_axis_pseudolandmarks",
-    "y_axis_pseudolandmarks",
-    "cluster_contours",
-    "cluster_contour_splitimg",
     "rotate",
     "shift_img",
     "output_mask",
@@ -167,7 +155,6 @@ __all__ = [
     "closing",
     "roi",
     "threshold",
-    "cluster_contour_mask",
     "analyze_thermal_values",
     "visualize",
     "morphology",

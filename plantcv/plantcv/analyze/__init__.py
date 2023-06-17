@@ -5,5 +5,7 @@ from plantcv.plantcv.analyze.bound_vertical import bound_vertical
 from plantcv.plantcv.analyze.grayscale import grayscale
 from plantcv.plantcv.analyze.thermal import thermal
 from plantcv.plantcv.analyze.spectral_reflectance import spectral_reflectance
+from plantcv.plantcv.analyze.spectral_index import spectral_index
 
-__all__ = ["color", "bound_horizontal", "bound_vertical", "grayscale", "size", "thermal", "spectral_reflectance"]
+__all__ = ["color", "bound_horizontal", "bound_vertical", "grayscale", "size", "thermal", "spectral_reflectance",
+           "spectral_index"]
