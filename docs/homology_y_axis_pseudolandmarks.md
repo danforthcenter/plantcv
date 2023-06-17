@@ -4,7 +4,7 @@ Divide plant object into twenty equidistant bins along the y-axis and assign pse
 actual (not scaled) position. Once this data is scaled this approach may provide some information regarding shape 
 independent of size.
 
-**plantcv.y_axis_pseudolandmarks**(*img, obj, mask, label="default"*)
+**plantcv.homology.y_axis_pseudolandmarks**(*img, obj, mask, label="default"*)
 
 **returns** landmarks_on_leftside (left), landmarks_on_right (right), landmarks_at_center_along_the_horizontal_axis (center_h)
 
@@ -32,7 +32,7 @@ pcv.params.debug = "plot"
 
 # Identify a set of land mark points
 # Results in set of point values that may indicate tip points
-left, right, center_h  = pcv.y_axis_pseudolandmarks(img=img, obj=obj, mask=mask, label="default")
+left, right, center_h  = pcv.homology.y_axis_pseudolandmarks(img=img, obj=obj, mask=mask, label="default")
 
 # Access data stored out from y_axis_pseudolandmarks
 left_landmarks = pcv.outputs.observations['default']['left_lmk']['value']

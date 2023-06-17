@@ -272,7 +272,7 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, cropped = **plantcv.auto_crop**(*device, img, objects, padding_x=0, padding_y=0, color='black', debug=None*)
 * post v3.0dev2: cropped = **plantcv.auto_crop**(*img, objects, padding_x=0, padding_y=0, color='black'*)
 * post v3.2: cropped = **plantcv.auto_crop**(*img, obj, padding_x=0, padding_y=0, color='black'*)
-* post v4.: cropped = **plantcv.auto_crop**(*img, objects, padding_x=0, padding_y=0, color='black'*)
+* post v4.0: cropped = **plantcv.auto_crop**(*img, mask, padding_x=0, padding_y=0, color='black'*)
 
 
 #### plantcv.background_subtraction
@@ -302,6 +302,8 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: output_path = **plantcv.cluster_contour_splitimg**(*rgb_img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None, filenames=None*)
 * post v3.3: output_path, output_imgs, output_masks = **plantcv.cluster_contour_splitimg**(*rgb_img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None, filenames=None*)
 * post v3.12 output_path, output_imgs, output_masks = **plantcv.cluster_contour_splitimg**(*img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None, filenames=None*)
+* post v4.0: DEPRECATED 
+
 
 #### plantcv.cluster_contours
 
@@ -309,6 +311,8 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: grouped_contour_indexes, contours, roi_obj_hierarchy = **plantcv.cluster_contours**(*img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1*)
 * post v3.2: grouped_contour_indexes, contours, roi_obj_hierarchy = **plantcv.cluster_contours**(*img, roi_objects, roi_object_hierarchy, nrow=1, ncol=1, show_grid=False*)
 * post v3.12: grouped_contour_indexes, contours, roi_obj_hierarchy = **plantcv.cluster_contours**(*img, roi_objects, roi_object_hierarchy, nrow=1, ncol=1, show_grid=False, bounding=True*)
+* post v4.0: DEPRECATED see plantcv.roi.auto_grid
+
 
 #### plantcv.color_palette
 
@@ -423,6 +427,26 @@ pages for more details on the input and output variable types.
 * pre v4.0: NA
 * post v4.0: **plantcv.homology.constellaqc**(*denovo_groups, annotated_groups*)
 
+#### plantcv.homology.landmark_reference_pt_dist
+
+* pre v4.0: see plantcv.landmark_reference_pt_dist
+* post v4.0: **plantcv.homology.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r, label="default"*)
+
+#### plantcv.homology.x_axis_pseudolandmarks
+
+* pre v4.0: see plantcv.x_axis_pseudolandmarks
+* post v4.0: top, bottom, center_v = **plantcv.homology.x_axis_pseudolandmarks**(*img, mask, label="default"*)
+
+#### plantcv.homology.y_axis_pseudolandmarks
+
+* pre v4.0: see plantcv.y_axis_pseudolandmarks
+* post v4.0: left, right, center_h = **plantcv.homology.y_axis_pseudolandmarks**(*img, mask, label="default"*)
+
+#### plantcv.homology.scale_features
+
+* pre v4.0: see plantcv.scale_features
+* post v4.0: rescaled, centroid_scaled, boundary_line_scaled = **plantcv.homology.scale_features**(*mask, points, line_position*)
+
 #### plantcv.hyperspectral.analyze_index
 
 * pre v3.7: NA
@@ -492,6 +516,7 @@ pages for more details on the input and output variable types.
 * post v3.2: landmark_header, landmark_data = **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r*)
 * post v3.3: **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r*)
 * post v3.11: **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r, label="default"*)
+* post v4.0: DEPRECATED see plantcv.homology.landmark_reference_pt_dist
 
 
 #### plantcv.laplace_filter
@@ -850,6 +875,7 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, rescaled, centroid_scaled, boundary_line_scaled = **plantcv.scale_features**(*obj, mask, points, boundary_line, device, debug=None*)
 * post v3.0dev2: rescaled, centroid_scaled, boundary_line_scaled = **plantcv.scale_features**(*obj, mask, points, boundary_line*)
 * post v3.2: rescaled, centroid_scaled, boundary_line_scaled = **plantcv.scale_features**(*obj, mask, points, line_position*)
+* post v4.0: DEPRECATED, seee: plantcv.homology.scale_features
 
 #### plantcv.scharr_filter
 
@@ -1166,6 +1192,7 @@ pages for more details on the input and output variable types.
 * post v3.2: pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, dpi=None, axes=True, colorbar=True*)
 * post v3.3: pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, axes=True, colorbar=True*)
 * post v3.12: pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, axes=True, colorbar=True, obj_padding="auto", title=None*)
+* post v4.0: pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, mask=None, cmap=None, background="image", min_value=0, max_value=255, axes=True, colorbar=True, title=None*)
 
 #### plantcv.visualize.obj_sizes
 
@@ -1208,7 +1235,8 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: top, bottom, center_v = **plantcv.x_axis_pseudolandmarks**(*obj, mask, img*)
 * post v3.2: top, bottom, center_v = **plantcv.x_axis_pseudolandmarks**(*img, obj, mask*)
 * post v3.11: top, bottom, center_v = **plantcv.x_axis_pseudolandmarks**(*img, obj, mask, label="default"*)
-* post v4.0: top, bottom, center_v = **plantcv.homology.x_axis_pseudolandmarks**(*img, mask, label="default"*)
+* post v4.0: DEPRECATED, see: plantcv.homology.x_axis_pseudolandmarks
+
 
 #### plantcv.y_axis_pseudolandmarks
 
@@ -1216,3 +1244,4 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: left, right, center_h = **plantcv.y_axis_pseudolandmarks**(*obj, mask, img*)
 * post v3.2: left, right, center_h = **plantcv.y_axis_pseudolandmarks**(*img, obj, mask*)
 * post v3.11: left, right, center_h = **plantcv.y_axis_pseudolandmarks**(*img, obj, mask, label="default"*)
+* post v4.0: Deprecated, see: plantcv.homology.y_axis_pseudolandmarks

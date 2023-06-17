@@ -5,22 +5,21 @@ import cv2
 import numpy as np
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
+from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
 
 
-def scale_features(obj, mask, points, line_position):
+def scale_features(mask, points, line_position):
     """
     scale_features: returns feature scaled points
 
     This is a function to transform the coordinates of landmark points onto a common scale (0 - 1.0).
 
     Inputs:
-    obj           = a contour of the plant object (this should be output from the object_composition.py fxn)
     mask          = this is a binary image. The object should be white and the background should be black
     points        = the points to scale
     line_position = A vertical coordinate that denotes the height of the plant pot, the coordinates of this reference
                     point is also rescaled
 
-    :param obj: ndarray
     :param mask: ndarray
     :param points: ndarray
     :param line_position: int
@@ -29,11 +28,17 @@ def scale_features(obj, mask, points, line_position):
     :return boundary_line_scaled: tuple
     """
     # Get the dimensions of the image from the binary thresholded object (mask)
-    if not np.any(mask) or not np.any(obj):
+    if not np.any(mask):
         rescaled = ('NA', 'NA')
         centroid_scaled = ('NA', 'NA')
         boundary_line_scaled = ('NA', 'NA')
         return rescaled, centroid_scaled, boundary_line_scaled
+
+    # Convert mask to contours
+    cnt, cnt_str = _cv2_findcontours(bin_img=mask)
+    # Compose contours into a single object
+    obj = _object_composition(contours=cnt, hierarchy=cnt_str)
+
     iy, ix = np.shape(mask)
     x, y, width, height = cv2.boundingRect(obj)
     m = cv2.moments(mask, binaryImage=True)
