@@ -61,10 +61,6 @@ from plantcv.plantcv.get_nir import get_nir
 from plantcv.plantcv.report_size_marker_area import report_size_marker_area
 from plantcv.plantcv.white_balance import white_balance
 from plantcv.plantcv.acute_vertex import acute_vertex
-from plantcv.plantcv.scale_features import scale_features
-from plantcv.plantcv.landmark_reference_pt_dist import landmark_reference_pt_dist
-from plantcv.plantcv.y_axis_pseudolandmarks import y_axis_pseudolandmarks
-from plantcv.plantcv.cluster_contours import cluster_contours
 from plantcv.plantcv.rotate import rotate
 from plantcv.plantcv.shift_img import shift_img
 from plantcv.plantcv.output_mask_ori_img import output_mask
@@ -107,8 +103,7 @@ __all__ = ["fatal_error", "Params", "Outputs", "Spectral_data", 'PSII_data', 'Po
            "logical_xor", "find_objects", "roi_objects", "object_composition", "within_frame", "analyze_object",
            "analyze_bound_horizontal", "analyze_bound_vertical", "analyze_color", "analyze_nir_intensity", "print_results",
            "flip", "crop_position_mask", "get_nir", "report_size_marker_area", "white_balance", "acute_vertex",
-           "scale_features", "landmark_reference_pt_dist", "y_axis_pseudolandmarks",
-           "cluster_contours", "rotate", "shift_img", "output_mask", "auto_crop",
+           "rotate", "shift_img", "output_mask", "auto_crop",
            "background_subtraction", "naive_bayes_classifier", "distance_transform", "canny_edge_detect", "opening",
            "closing", "roi", "threshold", "cluster_contour_mask", "analyze_thermal_values", "visualize", "morphology",
            "fill_holes", "get_kernel", "crop", "stdev_filter", "spatial_clustering", "photosynthesis", "homology", "annotate",
