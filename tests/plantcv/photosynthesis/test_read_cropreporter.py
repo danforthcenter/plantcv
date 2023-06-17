@@ -1,5 +1,4 @@
 import os
-import numpy as np
 import shutil
 from plantcv.plantcv import PSII_data
 from plantcv.plantcv.photosynthesis import read_cropreporter
@@ -18,7 +17,7 @@ def test_read_cropreporter(photosynthesis_test_data, tmpdir):
     assert all([a == b for a, b in zip(ps.darkadapted.coords['frame_label'].to_dict()['data'], true_labels)])
 
     # Create dataset with only 3 frames
-    cache_dir = os.path.join(tmpdir,"sub")
+    cache_dir = os.path.join(tmpdir, "sub")
     shutil.copytree(os.path.dirname(photosynthesis_test_data.cropreporter_v653_ojip), cache_dir)
     inffilename = os.path.join(cache_dir, photosynthesis_test_data.cropreporter_v653_ojip.split(os.sep)[-1])
 
@@ -32,7 +31,7 @@ def test_read_cropreporter(photosynthesis_test_data, tmpdir):
     metadata_dict['SaveAllFrames'] = 0
     new_text = ""
     for key, value in metadata_dict.items():
-        new_text= new_text + f"{key}={value}\n"
+        new_text = new_text + f"{key}={value}\n"
     with open(inffilename, "w") as fp:
         fp.writelines(new_text)
     # run test
