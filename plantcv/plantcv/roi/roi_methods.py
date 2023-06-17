@@ -6,7 +6,8 @@ import numpy as np
 from sklearn.mixture import GaussianMixture
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours
-from plantcv.plantcv import fatal_error, params, Objects
+from plantcv.plantcv._helpers import _roi_filter
+from plantcv.plantcv import fatal_error, warn, params, Objects
 
 
 # Create an ROI from a binary mask
@@ -19,23 +20,22 @@ def from_binary_image(img, bin_img):
     bin_img       = Binary image to extract an ROI contour from.
 
     Outputs:
-    roi_contour   = An ROI set of points (contour).
-    roi_hierarchy = The hierarchy of ROI contour(s).
+    roi
 
     :param img: numpy.ndarray
     :param bin_img: numpy.ndarray
-    :return roi_contour: list
-    :return roi_hierarchy: numpy.ndarray
+    :return roi: plantcv.plantcv.classes.Objects
     """
     # Make sure the input bin_img is binary
     if len(np.unique(bin_img)) != 2:
         fatal_error("Input image is not binary!")
     # Use the binary image to create an ROI contour
     roi_contour, roi_hierarchy = _cv2_findcontours(bin_img=bin_img)
+    roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
     # Draw the ROI if requested
     _draw_roi(img=img, roi_contour=roi_contour)
 
-    return roi_contour, roi_hierarchy
+    return roi
 
 
 # Create a rectangular ROI
@@ -51,16 +51,14 @@ def rectangle(img, x, y, h, w):
     w             = The width of the rectangle.
 
     Outputs:
-    roi_contour   = An ROI set of points (contour).
-    roi_hierarchy = The hierarchy of ROI contour(s).
+    roi
 
     :param img: numpy.ndarray
     :param x: int
     :param y: int
     :param h: int
     :param w: int
-    :return roi_contour: list
-    :return roi_hierarchy: numpy.ndarray
+    :return roi: plantcv.plantcv.classes.Objects
     """
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
@@ -74,6 +72,7 @@ def rectangle(img, x, y, h, w):
     # Create the ROI contour
     roi_contour = [np.array([[pt1], [pt2], [pt3], [pt4]], dtype=np.int32)]
     roi_hierarchy = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
+    roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
 
     # Draw the ROI if requested
     _draw_roi(img=img, roi_contour=roi_contour)
@@ -82,7 +81,7 @@ def rectangle(img, x, y, h, w):
     if x < 0 or y < 0 or x + w > width or y + h > height:
         fatal_error("The ROI extends outside of the image!")
 
-    return roi_contour, roi_hierarchy
+    return roi
 
 
 # Create a circular ROI
@@ -97,15 +96,13 @@ def circle(img, x, y, r):
     r             = The radius of the circle.
 
     Outputs:
-    roi_contour   = An ROI set of points (contour).
-    roi_hierarchy = The hierarchy of ROI contour(s).
+    roi           = A dataclass with the roi object and hierarchy.
 
     :param img: numpy.ndarray
     :param x: int
     :param y: int
     :param r: int
-    :return roi_contour: list
-    :return roi_hierarchy: numpy.ndarray
+    :return roi: plantcv.plantcv.classes.Objects
     """
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
@@ -117,6 +114,7 @@ def circle(img, x, y, r):
 
     # Use the binary image to create an ROI contour
     roi_contour, roi_hierarchy = _cv2_findcontours(bin_img=bin_img)
+    roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
 
     # Draw the ROI if requested
     _draw_roi(img=img, roi_contour=roi_contour)
@@ -125,7 +123,7 @@ def circle(img, x, y, r):
     if x - r < 0 or x + r > width or y - r < 0 or y + r > height:
         fatal_error("The ROI extends outside of the image!")
 
-    return roi_contour, roi_hierarchy
+    return roi
 
 
 # Create an elliptical ROI
@@ -142,8 +140,7 @@ def ellipse(img, x, y, r1, r2, angle):
     angle         = The angle of rotation in degrees of the major axis.
 
     Outputs:
-    roi_contour   = An ROI set of points (contour).
-    roi_hierarchy = The hierarchy of ROI contour(s).
+    roi           = a dataclass with the roi object and hierarchy
 
     :param img: numpy.ndarray
     :param x: int
@@ -151,8 +148,7 @@ def ellipse(img, x, y, r1, r2, angle):
     :param r1: int
     :param r2: int
     :param angle: double
-    :return roi_contour: list
-    :return roi_hierarchy: numpy.ndarray
+    :return roi: plantcv.plantcv.classes.Objects
     """
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
@@ -164,6 +160,7 @@ def ellipse(img, x, y, r1, r2, angle):
 
     # Use the binary image to create an ROI contour
     roi_contour, roi_hierarchy = _cv2_findcontours(bin_img=bin_img)
+    roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
 
     # Draw the ROI if requested
     _draw_roi(img=img, roi_contour=roi_contour)
@@ -173,7 +170,7 @@ def ellipse(img, x, y, r1, r2, angle):
             len(roi_contour) == 0:
         fatal_error("The ROI extends outside of the image, or ROI is not on the image!")
 
-    return roi_contour, roi_hierarchy
+    return roi
 
 
 # Draw the ROI on a reference image
@@ -235,9 +232,9 @@ def _adjust_radius_max_min(height, width, radius, xmax, xmin, ymax, ymin):
     distances_to_edge = [xmin, width-xmax, ymin, height-ymax]
     min_distance = min(distances_to_edge)
     if min_distance < radius:
-        print('Shrinking radius to make ROIs fit in the image')
+        warn('Shrinking radius to make ROIs fit in the image')
         radius = min_distance - 1
-    return(radius)
+    return radius
 
 
 def _rois_from_coordinates(img, coord=None, radius=None):
@@ -334,8 +331,8 @@ def auto_grid(mask, nrows, ncols, radius=None, img=None):
     roi_objects, overlap_img, all_roi_img = _grid_roi(img, nrows, ncols,
                                                       coord, radius, spacing)
     if np.amax(overlap_img) > 255:
-        print("WARNING: Two or more of the user defined regions of interest overlap! "
-              "If you only see one ROI then they may overlap exactly.")
+        warn("Two or more of the user defined regions of interest overlap! "
+             "If you only see one ROI then they may overlap exactly.")
     # Draw the ROIs if requested
     # Create an array of contours and list of hierarchy for debug image
     roi_contour1, _ = _cv2_findcontours(bin_img=all_roi_img)
@@ -378,8 +375,8 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
                     "For automatic detection of a grid layout from just nrows, ncols, and a binary mask, use auto_grid")
 
     if np.amax(overlap_img) > 255:
-        print("WARNING: Two or more of the user defined regions of interest overlap! "
-              "If you only see one ROI then they may overlap exactly.")
+        warn("Two or more of the user defined regions of interest overlap! "
+             "If you only see one ROI then they may overlap exactly.")
 
     # Draw the ROIs if requested
     # Create an array of contours and list of hierarchy for debug image
@@ -397,19 +394,18 @@ def custom(img, vertices):
         vertices      = List of vertices of the desired polygon ROI
 
         Outputs:
-        roi_contour   = An ROI set of points (contour).
-        roi_hierarchy = The hierarchy of ROI contour(s).
+        roi           = a dataclass with the roi object and hierarchy
 
         :param img: numpy.ndarray
         :param vertices: list
-        :return roi_contour: list
-        :return roi_hierarchy: numpy.ndarray
+        :return roi: plantcv.plantcv.classes.Objects
     """
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
 
     roi_contour = [np.array(vertices, dtype=np.int32)]
     roi_hierarchy = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
+    roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
 
     # Draw the ROIs if requested
     _draw_roi(img=img, roi_contour=roi_contour)
@@ -419,4 +415,34 @@ def custom(img, vertices):
         (x, y) = i
         if x < 0 or x > width or y < 0 or y > height:
             fatal_error("An ROI extends outside of the image!")
-    return roi_contour, roi_hierarchy
+
+    return roi
+
+
+# Filter a mask based on a region of interest
+def filter(mask, roi, roi_type="partial"):
+    """
+    Filter a mask using a region of interest. Connected regions of non-zero pixels outside the ROI turn to zero
+
+    Inputs:
+    mask           = binary image data to be filtered
+    roi            = region of interest, an instance of the Object class output from a roi function
+    roi_type       = 'cutto', 'partial' (for partially inside, default), or 'largest' (keep only the largest contour)
+
+    Returns:
+    filtered_mask     = mask image
+
+    :param mask: numpy.ndarray
+    :param roi: plantcv.plantcv.classes.Objects
+    :param roi_type: str
+    :return filtered_mask: numpy.ndarray
+    """
+
+    found_obj, found_hier = _cv2_findcontours(bin_img=mask)
+
+    _, _, filtered_mask = _roi_filter(img=mask, roi=roi, obj=found_obj,
+                                      hierarchy=found_hier, roi_type=roi_type)
+
+    _debug(filtered_mask, filename=os.path.join(params.debug_outdir, str(params.device) + '_roi_filter.png'), cmap='gray')
+
+    return filtered_mask

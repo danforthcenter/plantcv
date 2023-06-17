@@ -4,7 +4,7 @@ Find objects within the image.
 
 **plantcv.find_objects**(*img, mask*)
 
-**returns** objects, object hierarchy
+**returns** objects
 
 - **Parameters:**
     - img - RGB or grayscale image data for plotting
@@ -33,7 +33,7 @@ pcv.params.debug = "plot"
 
 # Identify objects (plant material) in an image, all objects regardless of 
 # hierarchy are filled (e.g. holes between leaves).
-id_objects, obj_hierarchy = pcv.find_objects(img=img, mask=mask)
+objects = pcv.find_objects(img=img, mask=mask)
 
 ```
 

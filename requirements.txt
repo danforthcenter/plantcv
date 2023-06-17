@@ -11,3 +11,4 @@ dask-jobqueue
 opencv-python
 xarray
 statsmodels
+altair

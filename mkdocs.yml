@@ -25,6 +25,15 @@ nav:
   - 'Exporting Data': db-exporter.md
   - 'PlantCV Namespace':
     - 'PlantCV':
+      - 'Analysis Methods':
+        - 'Analyze Color': analyze_color2.md
+        - 'Analyze Grayscale': analyze_grayscale.md
+        - 'Analyze Size and Shape': analyze_size.md
+        - 'Horizontal Boundary Tool': analyze_bound_horizontal2.md
+        - 'Vertical Boundary Tool': analyze_bound_vertical2.md
+        - 'Analyze Thermal': analyze_thermal.md
+        - 'Analyze Spectral Reflectance': analyze_spectral_reflectance.md
+        - 'Analyze Spectral Index': analyze_spectral_index.md
       - 'Analyze Color': analyze_color.md
       - 'Analyze NIR': analyze_NIR_intensity.md
       - 'Analyze Shape': analyze_shape.md
@@ -39,14 +48,13 @@ nav:
         - 'Vertical Boundary Tool': analyze_bound_vertical.md
       - 'Canny Edge Detection': canny_edge_detect.md
       - 'Closing': closing.md
-      - 'Cluster Contours': cluster_contours.md
-      - 'Cluster Contours and Split Images': cluster_contours_splitimg.md
       - 'Color Palette': color_palette.md
       - 'Colorspace Conversion':
         - 'RGB to Gray': rgb2gray.md
         - 'RGB to CMYK': rgb2cmyk.md
         - 'RGB to LAB': rgb2lab.md
         - 'RGB to HSV': rgb2hsv.md
+      - 'Create Labels': create_labels.md
       - 'Crop': crop.md
       - 'Crop and Position Mask': crop_position_mask.md
       - 'Dilation': dilate.md
@@ -87,10 +95,10 @@ nav:
         - 'Constella': homology_constella.md
         - 'ConstellaQC': homology_constellaqc.md
         - 'Acute Vertex': acute_vertex.md
-        - 'x-Axis Pseudolandmarks': x_axis_pseudolandmarks.md
-        - 'y-Axis Pseudolandmarks': y_axis_pseudolandmarks.md
-        - 'Scale Features': scale_features.md
-        - 'Landmark Reference Point Distribution': landmark_reference_pt_dist.md
+        - 'x-Axis Pseudolandmarks': homology_x_axis_pseudolandmarks.md
+        - 'y-Axis Pseudolandmarks': homology_y_axis_pseudolandmarks.md
+        - 'Scale Features': homology_scale_features.md
+        - 'Landmark Reference Point Distribution': homology_landmark_reference_pt_dist.md
       - 'Logical Operations':
         - 'Logical Operations-And': logical_and.md
         - 'Logical Operations-Or': logical_or.md
@@ -142,6 +150,7 @@ nav:
         - 'Create Multi ROIs': 'roi_multi.md'
         - 'Create Grid of ROIs Automatically': roi_auto_grid.md
         - 'Filter Objects by ROI': roi_objects.md
+        - 'Filter a mask by ROI': roi_filter.md
         - 'Convert ROI to Mask': roi2mask.md
       - 'Rotate': rotate2.md
       - 'Segment Image Series': segment_image_series.md

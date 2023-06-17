@@ -6,42 +6,45 @@ import os
 from plantcv.plantcv import logical_and
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv import fatal_error, warn
 from plantcv.plantcv import params
+from plantcv.plantcv import Objects
 
 
-def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, roi_type="partial"):
+def roi_objects(img, roi, obj, roi_type="partial"):
     """
     Find objects partially inside a region of interest or cut objects to the ROI.
 
     Inputs:
     img            = RGB or grayscale image data for plotting
-    roi_contour    = contour of roi, output from "View and Adjust ROI" function
-    roi_hierarchy  = contour of roi, output from "View and Adjust ROI" function
-    object_contour = contours of objects, output from "find_objects" function
-    obj_hierarchy  = hierarchy of objects, output from "find_objects" function
+    roi            = region of interest, an instance of the Object class output from a roi function
+    obj            = contours of objects, output from "find_objects" function
     roi_type       = 'cutto', 'partial' (for partially inside, default), or 'largest' (keep only the largest contour)
 
     Returns:
-    kept_cnt       = kept contours
-    hierarchy      = contour hierarchy list
+    kept_cnt       = kept contours as an instance of the Object class
     mask           = mask image
     obj_area       = total object pixel area
 
     :param img: numpy.ndarray
+    :param roi: plantcv.plantcv.classes.Objects
+    :param obj: plantcv.plantcv.classes.Objects
     :param roi_type: str
-    :param roi_contour: list
-    :param roi_hierarchy: numpy.ndarray
-    :param object_contour: list
-    :param obj_hierarchy: numpy.ndarray
-    :return kept_cnt: list
-    :return hierarchy: numpy.ndarray
+    :return kept_cnt: plantcv.plantcv.classes.Objects
     :return mask: numpy.ndarray
     :return obj_area: int
     """
     # Store debug
     debug = params.debug
     params.debug = None
+
+    if len(roi.contours) > 1:
+        warn("Received a multi-ROI but only the first ROI will be used. Consider using a for loop for multi-ROI")
+
+    roi_contour = roi.contours[0]
+    roi_hierarchy = roi.hierarchy[0]
+    object_contour = obj.contours[0]
+    obj_hierarchy = obj.hierarchy[0]
 
     # Create an empty grayscale (black) image the same dimensions as the input image
     mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
@@ -76,8 +79,8 @@ def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, 
         # Find the largest contour if roi_type is set to 'largest'
         if roi_type.upper() == 'LARGEST':
             # Print warning statement about this feature
-            print("Warning: roi_type='largest' will only return the largest contour and its immediate children. Other "
-                  "subcontours will be dropped.")
+            warn("roi_type='largest' will only return the largest contour and its immediate children. Other "
+                 "subcontours will be dropped.")
             # Find the index of the largest contour in the list of contours
             largest_area = 0
             index = 0
@@ -143,4 +146,4 @@ def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, 
     _debug(ori_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_obj_on_img.png'))
     _debug(mask, filename=os.path.join(params.debug_outdir, str(params.device) + '_roi_mask.png'), cmap='gray')
 
-    return kept_cnt, kept_hierarchy, mask, obj_area
+    return Objects(contours=[kept_cnt], hierarchy=[kept_hierarchy]), mask, obj_area

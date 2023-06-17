@@ -7,6 +7,8 @@ from plantcv.plantcv import fatal_error
 import matplotlib.pyplot as plt
 from math import floor
 from plantcv.plantcv.annotate.points import _find_closest_pt
+import altair as alt
+import pandas as pd
 
 
 class Params:
@@ -183,6 +185,51 @@ class Outputs:
                                ]
                         csv_table.write(",".join(map(str, row)) + "\n")
 
+    def plot_dists(self, variable):
+        """Plot a distribution of data.
+
+        Keyword arguments/parameters:
+        variable      = A local unique identifier of a variable, e.g. a short name,
+                        that is a key linking the definitions of variables with observations.
+        Returns:
+        chart          = Altair chart object
+        :param variable: str
+        :return chart: altair.vegalite.v4.api.Chart
+        """
+        alt.data_transformers.disable_max_rows()
+        data = {"sample": [], "value": [], "label": []}
+        # Iterate over measurement sample groups
+        for sample in self.observations:
+            # If the measurement variable is present in the sample
+            # And the data type is a list
+            if variable in self.observations[sample] and "list" in (self.observations[sample][variable]["datatype"]):
+                data["value"] = data["value"] + self.observations[sample][variable]["value"]
+                data["label"] = data["label"] + self.observations[sample][variable]["label"]
+                data["sample"] = data["sample"] + [sample] * len(self.observations[sample][variable]["value"])
+        df = pd.DataFrame(data)
+        step = 10
+        overlap = 10
+        chart = alt.Chart(df, height=step, width=500).mark_area(
+            interpolate="monotone", fillOpacity=0.8, stroke='lightgray', strokeWidth=0.5
+        ).encode(
+            alt.X('label:Q').title('Bin labels'),
+            alt.Y('value:Q').axis(None).scale(range=[step, -step * overlap])
+        ).facet(
+            alt.Row('sample:N').title(None).header(labelAngle=0, labelAlign='left', labelOrient="left")
+        ).configure_facet(
+            spacing=0,
+            columns=1
+        ).properties(
+            bounds='flush'
+        ).configure_title(
+            anchor="end"
+        ).configure_view(
+            stroke=None
+        ).configure_axis(
+            grid=False
+        )
+        return chart
+
 
 class Spectral_data:
     """PlantCV Hyperspectral data class"""
@@ -299,7 +346,7 @@ class Objects:
     def __next__(self):
         if self.n < len(self.contours):
             self.n += 1
-            return self.contours[self.n-1], self.hierarchy[self.n-1]
+            return Objects(contours=[self.contours[self.n-1]], hierarchy=[self.hierarchy[self.n-1]])
         else:
             raise StopIteration
 

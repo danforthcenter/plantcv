@@ -116,7 +116,7 @@ Example (abbreviated) JSON data:
 ```
 
 Data in this structure can be converted to tables for downstream analysis using the provided script 
-`plantcv-utils.py json2csv`, see [Accessory Tools](tools.md) for more details.
+`plantcv-utils json2csv`, see [Accessory Tools](tools.md) for more details.
 
 ## Summary of Output Metadata
 
@@ -159,8 +159,8 @@ Functions that automatically store data to the [`Outputs` class](outputs.md) are
 [morphology.segment_insertion_angle](segment_insertion_angle.md), 
 [morphology.segment_path_length](segment_pathlength.md), [morphology.segment_tangent_angle](segment_tangent_angle.md), 
 [report_size_marker_area](report_size_marker.md), [watershed_segmentation](watershed.md),
-[within_frame](within_frame.md), [x_axis_pseudolandmarks](x_axis_pseudolandmarks.md), and 
-[y_axis_pseudolandmarks](y_axis_pseudolandmarks.md). All of these functions include an optional `label` parameter 
+[within_frame](within_frame.md), [x_axis_pseudolandmarks](homology_x_axis_pseudolandmarks.md), and 
+[y_axis_pseudolandmarks](homology_y_axis_pseudolandmarks.md). All of these functions include an optional `label` parameter 
 that allows users to append custom prefixes to the unique variable identifier. 
 
 For more detail about the traits measured by each function see the [Observation Traits Summary Table](https://docs.google.com/spreadsheets/d/1gk5VocBA-63gyF_vA6yPNvWreZ1R7-_z4vOfm37YBl8/edit?usp=sharing).
