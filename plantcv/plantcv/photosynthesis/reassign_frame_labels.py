@@ -1,12 +1,8 @@
 import numpy as np
-import os
-import pandas as pd
 from skimage.util import img_as_bool
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv.classes import PSII_data
-from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
-from plotnine import ggplot, aes, geom_line, geom_point, labs
 
 
 def reassign_frame_labels(ps_da, mask):
@@ -31,6 +27,7 @@ def reassign_frame_labels(ps_da, mask):
     :return ind_fig: ggplot figure
     :return ind_df: pandas.core.frame.DataFrame
     """
+    params.device += 1
 
     try:
         if ps_da.name != "lightadapted" and ps_da.name != "darkadapted":
@@ -72,18 +69,4 @@ def reassign_frame_labels(ps_da, mask):
     # assign new labels back to dataarray
     ps_da = ps_da.assign_coords({'frame_label': ('frame_label', idx)})
 
-    # save induction curve data to dataframe
-    ind_df = pd.DataFrame({"Timepoints": range(0, ind_size), "Fluorescence": fluor_values})  # "Measurement": meas})
-
-    # Make the histogram figure using plotnine
-    ind_fig = (ggplot(data=ind_df, mapping=aes(x='Timepoints', y='Fluorescence'))
-               + geom_line(show_legend=True, color="green")
-               + geom_point()
-               + labs(title=f"{ps_da.name} fluorescence")
-               )
-
-    # Plot/Print out the histograms
-    _debug(visual=ind_fig,
-           filename=os.path.join(params.debug_outdir, str(params.device) + "_fluor_histogram.png"))
-
-    return ps_da, ind_fig, ind_df
+    return ps_da
