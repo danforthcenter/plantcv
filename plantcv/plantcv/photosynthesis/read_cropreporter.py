@@ -71,8 +71,19 @@ def _process_psd_data(ps, metadata):
         img_cube, frame_labels, frame_nums = _read_dat_file(dataset="PSD", filename=bin_filepath,
                                                             height=int(metadata["ImageRows"]),
                                                             width=int(metadata["ImageCols"]))
-        f0_frame = int(metadata["FvFmFrameF0"]) + 1  # data cube includes Fdark at the beginning
-        fm_frame = int(metadata["FvFmFrameFm"]) + 1
+        # If not all frames are saved the order is fixed
+        # Phenovation does not update the framenumbers in the references.
+        # Default frames (when SaveAllFrames == 0)
+        f0_frame = 1
+        fm_frame = 2
+        # If the method is labeled FvFm
+        if 'FvFmFrameF0' in metadata and metadata["SaveAllFrames"] != "0":
+            f0_frame = int(metadata["FvFmFrameF0"]) + 1
+            fm_frame = int(metadata["FvFmFrameFm"]) + 1
+        # If the method is labeled DkOjip
+        if 'DkOjipFrameF0' in metadata and metadata["SaveAllFrames"] != "0":
+            f0_frame = int(metadata["DkOjipFrameF0"]) + 1  # data cube includes Fdark at the beginning
+            fm_frame = int(metadata["DkOjipFrameFm"]) + 1
         frame_labels[0] = 'Fdark'
         frame_labels[f0_frame] = 'F0'
         frame_labels[fm_frame] = 'Fm'
@@ -109,8 +120,19 @@ def _process_psl_data(ps, metadata):
         img_cube, frame_labels, frame_nums = _read_dat_file(dataset="PSL", filename=bin_filepath,
                                                             height=int(metadata["ImageRows"]),
                                                             width=int(metadata["ImageCols"]))
-        fsp_frame = int(metadata["FqFmFrameFsp"]) + 1
-        fmp_frame = int(metadata["FqFmFrameFmp"]) + 1
+        # If not all frames are saved the order is fixed
+        # Phenovation does not update the framenumbers in the references.
+        # Default frames (when SaveAllFrames == 0)
+        fsp_frame = 1
+        fmp_frame = 2
+        # If the method is labeled FqFm
+        if 'FqFmFrameFsp' in metadata and metadata["SaveAllFrames"] != "0":
+            fsp_frame = int(metadata["FqFmFrameFsp"]) + 1
+            fmp_frame = int(metadata["FqFmFrameFmp"]) + 1
+        # If the method is labeled LtOjip
+        if 'LtOjipFrameFsp' in metadata and metadata["SaveAllFrames"] != "0":
+            fsp_frame = int(metadata["LtOjipFrameFsp"]) + 1
+            fmp_frame = int(metadata["LtOjipFrameFmp"]) + 1
         frame_labels[0] = "Flight"
         frame_labels[fsp_frame] = 'Fp'
         frame_labels[fmp_frame] = 'Fmp'
@@ -254,7 +276,8 @@ def _dat_filepath(dataset, datapath, filename):
     """
     filename_components = filename.split("_")
     # Find corresponding bin img filepath based on .INF filepath
-    filename_components[1] = dataset  # replace header with bin img type
+    # replace header with bin img type
+    filename_components[filename_components.index('HDR')] = dataset
     bin_filenames = "_".join(filename_components)
     bin_filename = bin_filenames.replace(".INF", ".DAT")
     bin_filepath = os.path.join(datapath, bin_filename)
