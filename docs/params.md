@@ -19,7 +19,7 @@ Attributes are accessed as plantcv.params.*attribute*.
 **debug_outdir**: The directory to output debug images to when `plantcv.debug` = "print".
 
 **line_thickness**: The line thickness for plots created by [plantcv.analyze_object](analyze_shape.md), [plantcv.analyze.bound_horizontal](analyze_bound_horizontal2.md).
-[plantcv.analyze_bound_vertical](analyze_bound_vertical.md), [plantcv.roi_objects](roi_objects.md), [plantcv.object_composition](object_composition.md),
+[plantcv.analyze.bound_vertical](analyze_bound_vertical2.md), [plantcv.roi_objects](roi_objects.md), [plantcv.object_composition](object_composition.md),
 [plantcv.homology.scale_features](homology_scale_features.md), [plantcv.homology.x_axis_pseudolandmarks](homology_x_axis_pseudolandmarks.md), [plantcv.homology.y_axis_pseudolandmarks](homology_y_axis_pseudolandmarks.md),
 [plantcv.morphology.prune](prune.md), [plantcv.morphology.find_branch_pts](find_branch_pts.md), [plantcv.morphology.check_cycles](check_cycles.md),
  [plantcv.morphology.find_tips](find_tips.md), [plantcv.morphology.segment_skeleton](segment_skeleton.md), [plantcv.morphology.segment_tangent_angle](segment_tangent_angle.md),
