@@ -146,6 +146,7 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: acute = **plantcv.acute_vertex**(*obj, win, thresh, sep, img*)
 * post v3.2: acute, analysis_image = **plantcv.acute_vertex**(*img, obj, win, thresh, sep*)
 * post v3.11: acute, analysis_image = **plantcv.acute_vertex**(**img, obj, win, thresh, sep, label="default"*)
+* post v4.0: DEPRECATED see plantcv.homology.acute
 
 #### plantcv.adaptive_threshold
 
@@ -167,6 +168,7 @@ pages for more details on the input and output variable types.
 * post v3.0: bound_header, bound_data, analysis_images = **plantcv.analyze_bound_horizontal**(*img, obj, mask, line_position*)
 * post v3.3: analysis_image = **plantcv.analyze_bound_horizontal**(*img, obj, mask, line_position*)
 * post v3.11: analysis_image = **plantcv.analyze_bound_horizontal**(*img, obj, mask, line_position, label="default"*)
+* post v4.0: DEPRECATED see plantcv.analyze.bound_horizontal
 
 
 #### plantcv.analyze_bound_vertical

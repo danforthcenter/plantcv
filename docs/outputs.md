@@ -7,7 +7,7 @@ A global PlantCV output class.
 An `Outputs` class has been added that automatically stores measurements and images collected by the following 
 functions:
 
-* `analyze_bound_horizontal`
+* `analyze.bound_horizontal`
 * `analyze_bound_vertical`
 * `analyze_color`
 * `analyze_nir_intensity`
