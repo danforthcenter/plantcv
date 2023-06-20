@@ -50,7 +50,6 @@ from plantcv.plantcv.roi_objects import roi_objects
 from plantcv.plantcv.object_composition import object_composition
 from plantcv.plantcv.within_frame import within_frame
 from plantcv.plantcv.analyze_object import analyze_object
-from plantcv.plantcv.analyze_bound_horizontal import analyze_bound_horizontal
 from plantcv.plantcv.analyze_bound_vertical import analyze_bound_vertical
 from plantcv.plantcv.analyze_color import analyze_color
 from plantcv.plantcv.analyze_nir_intensity import analyze_nir_intensity
@@ -139,7 +138,6 @@ __all__ = [
     "object_composition",
     "within_frame",
     "analyze_object",
-    "analyze_bound_horizontal",
     "analyze_bound_vertical",
     "analyze_color",
     "analyze_nir_intensity",
