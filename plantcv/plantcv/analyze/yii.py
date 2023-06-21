@@ -36,7 +36,7 @@ def yii(ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None,
     :return yii_chart: altair.vegalite.v4.api.FacetChart
     """
     # Validate that the input mask has the same 2D shape as the input DataArray
-    if labeled_mask.shape != labeled_mask.shape[:2]:
+    if labeled_mask.shape != ps_da.shape[:2]:
         fatal_error(f"Mask needs to have shape {ps_da.shape[:2]}")
 
     # Validate that the input measurement_labels is the same length as the number of measurements in the DataArray
