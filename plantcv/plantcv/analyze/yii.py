@@ -122,7 +122,7 @@ def yii(ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None,
            col_wrap=int(np.ceil(yii_global.measurement.size / 4)),
            vmin=0, vmax=1)
 
-    return yii_chart, yii_global.squeeze()
+    return yii_global.squeeze(), yii_chart
 
 
 def _create_histogram(yii_img, mlabel):
@@ -144,7 +144,6 @@ def _create_histogram(yii_img, mlabel):
     :return hist_df: pandas.DataFrame
     :return hist_fig: plotnine.ggplot.ggplot
     """
-
     # Calculate the histogram of Fv/Fm, Fv'/Fm', or Fq'/Fm' non-zero values
     yii_hist, yii_bins = np.histogram(yii_img[np.where(yii_img > 0)], 100, range=(0, 1))
     # yii_bins is a bins + 1 length list of bin endpoints, so we need to calculate bin midpoints so that
@@ -155,8 +154,11 @@ def _create_histogram(yii_img, mlabel):
     # Calculate which non-zero bin has the maximum Fv/Fm value
     yii_mode = yii_bins[np.argmax(yii_hist)]
 
+    # Convert the histogram pixel counts to proportional frequencies
+    yii_percent = (yii_hist / float(np.sum(yii_hist))) * 100
+
     # Create a dataframe for the histogram
-    hist_df = pd.DataFrame({'Plant Pixels': yii_hist, mlabel: yii_bins[:-1]})
+    hist_df = pd.DataFrame({'proportion of pixels (%)': yii_percent, mlabel: yii_bins[:-1]})
 
     return hist_df, yii_mode
 
@@ -197,7 +199,7 @@ def _add_observations(yii_da, measurements, measurement_labels, label):
         # hist frequencies
         outputs.add_observation(sample=label, variable=f"yii_hist_{mlabel}", trait="yii frequencies",
                                 method='plantcv.plantcv.analyze.yii', scale='none', datatype=list,
-                                value=hist_df['Plant Pixels'].values.tolist(),
+                                value=hist_df['proportion of pixels (%)'].values.tolist(),
                                 label=np.around(hist_df[mlabel].values.tolist(), decimals=2).tolist())
 
 
