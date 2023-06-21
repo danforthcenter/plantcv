@@ -4,8 +4,6 @@ import os
 import numpy as np
 import pandas as pd
 import xarray as xr
-from plotnine import ggplot, aes, geom_line, geom_point, theme, scale_color_brewer
-from plotnine.labels import labs
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params, outputs, fatal_error
 from plantcv.plantcv.photosynthesis import reassign_frame_labels
@@ -16,21 +14,26 @@ def yii(ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None,
     Calculate and analyze PSII efficiency estimates from fluorescence image data.
 
     Inputs:
-    ps_da               = photosynthesis xarray DataArray
-    labeled_mask        = mask of plant (binary, single channel)
+    ps_da               = Photosynthesis xarray DataArray (either darkadapted or lightadapted)
+    labeled_mask        = Labeled mask of objects (32-bit).
+    n_labels            = Total number expected individual objects (default = 1).
+    auto_fm             = Automatically calculate the frame with maximum fluorescence per label, otherwise
+                          use a fixed frame for all labels (default = False).
     measurement_labels  = labels for each measurement, modifies the variable name of observations recorded
     label               = optional label parameter, modifies the variable name of observations recorded
 
     Returns:
-    yii       = DataArray of efficiency estimate values
-    hist_fig  = Histogram of efficiency estimate
+    yii_global          = DataArray of efficiency estimate values
+    yii_chart           = Histograms of efficiency estimate
 
     :param ps_da: xarray.core.dataarray.DataArray
-    :param mask: numpy.ndarray
+    :param labeled_mask: numpy.ndarray
+    :param n_labels: int
+    :param auto_fm: bool
     :param measurement_labels: list
     :param label: str
-    :return yii: xarray.core.dataarray.DataArray
-    :return hist_fig: plotnine.ggplot.ggplot
+    :return yii_global: xarray.core.dataarray.DataArray
+    :return yii_chart: altair.vegalite.v4.api.FacetChart
     """
     # Validate that the input mask has the same 2D shape as the input DataArray
     if labeled_mask.shape != labeled_mask.shape[:2]:
@@ -43,16 +46,22 @@ def yii(ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None,
     # The name of the DataArray
     var = ps_da.name.lower()
 
+    # Validate that var is a supported type
+    if var not in ['darkadapted', 'lightadapted']:
+        fatal_error(f"Unsupported DataArray type: {var}")
+
     # Make an zeroed array of the same shape as the input DataArray
-    yii = xr.zeros_like(ps_da, dtype=float)
+    yii_global = xr.zeros_like(ps_da, dtype=float)
     # Drop the frame_label coordinate
-    yii = yii[:, :, 0, :].drop_vars('frame_label')
+    yii_global = yii_global[:, :, 0, :].drop_vars('frame_label')
 
     # Make a copy of the labeled mask
     mask_copy = np.copy(labeled_mask)
+
     # If the labeled mask is a binary mask with values 0 and 255, convert to 0 and 1
     if len(np.unique(mask_copy)) == 2 and np.max(mask_copy) == 255:
         mask_copy = np.where(mask_copy == 255, 1, 0).astype(np.uint8)
+
     # Iterate over the label values 1 to n_labels
     for i in range(1, n_labels + 1):
         # Create a binary submask for each label
@@ -66,60 +75,28 @@ def yii(ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None,
             ps_da = reassign_frame_labels(ps_da=ps_da, mask=submask.squeeze().squeeze())
 
         # Mask the input DataArray with the submask
-        yii0 = ps_da.astype('float').where(submask > 0, other=np.nan)
+        yii_masked = ps_da.astype('float').where(submask > 0, other=np.nan)
+
         # Dark-adapted datasets (Fv/Fm)
         if var == 'darkadapted':
             # Calculate Fv/Fm
-            yii1 = (yii0.sel(frame_label='Fm') - yii0.sel(frame_label='F0')) / yii0.sel(frame_label='Fm')
+            yii_lbl = (yii_masked.sel(frame_label='Fm') - yii_masked.sel(frame_label='F0')) / yii_masked.sel(frame_label='Fm')
+
         # Light-adapted datasets (Fq'/Fm')
-        elif var == 'lightadapted':
-            # Create a helper function to apply the Fq'/Fm' calculation to the DataArray
-            def _calc_yii(da):
-                return (da.sel(frame_label='Fmp') - da.sel(frame_label='Fp')) / da.sel(frame_label='Fmp')
+        if var == 'lightadapted':
             # Calculate Fq'/Fm'
-            yii1 = yii0.groupby('measurement', squeeze=False).map(_calc_yii)
+            yii_lbl = yii_masked.groupby('measurement', squeeze=False).map(_calc_yii)
+
         # Drop the frame_label coordinate
-        yii1 = yii1.drop_vars('frame_label')
+        yii_lbl = yii_lbl.drop_vars('frame_label')
         # Fill NaN values with 0 so that we can add DataArrays together
-        yii1 = yii1.fillna(0)
+        yii_lbl = yii_lbl.fillna(0)
         # Add the Fv/Fm values for this label to the yii DataArray
-        yii = yii + yii1
+        yii_global = yii_global + yii_lbl
 
-        # compute observations to store in Outputs, per labeled region
-        yii_mean = yii1.where(yii1 > 0).groupby('measurement').mean(['x', 'y']).values
-        yii_median = yii1.where(yii1 > 0).groupby('measurement').median(['x', 'y']).values
-        yii_max = yii1.where(yii1 > 0).groupby('measurement').max(['x', 'y']).values
-
-        # Create variables to label traits based on measurement label in data array
-        for n, mlabel in enumerate(ps_da.measurement.values):
-            if measurement_labels is not None:
-                mlabel = measurement_labels[n]
-
-            # mean value
-            outputs.add_observation(sample=f"{label}{i}", variable=f"yii_mean_{mlabel}", trait="mean yii value",
-                                    method='plantcv.plantcv.photosynthesis.analyze_yii', scale='none', datatype=float,
-                                    value=float(yii_mean[n]), label='none')
-            # median value
-            outputs.add_observation(sample=f"{label}{i}", variable=f"yii_median_{mlabel}", trait="median yii value",
-                                    method='plantcv.plantcv.photosynthesis.analyze_yii', scale='none', datatype=float,
-                                    value=float(yii_median[n]), label='none')
-            # max value
-            outputs.add_observation(sample=f"{label}{i}", variable=f"yii_max_{mlabel}", trait="peak yii value",
-                                    method='plantcv.plantcv.photosynthesis.analyze_yii', scale='none', datatype=float,
-                                    value=float(yii_max[n]), label='none')
-
-            hist_df, hist_fig, yii_mode = _create_histogram(yii.isel({'measurement': n}).values, mlabel,
-                                                            outputs.observations[f"{label}{i}"])
-
-            # mode value
-            outputs.add_observation(sample=f"{label}{i}", variable=f"yii_mode_{mlabel}", trait="mode yii value",
-                                    method='plantcv.plantcv.photosynthesis.analyze_yii', scale='none', datatype=float,
-                                    value=float(yii_mode), label='none')
-            # hist frequencies
-            outputs.add_observation(sample=f"{label}{i}", variable=f"yii_hist_{mlabel}", trait="yii frequencies",
-                                    method='plantcv.plantcv.photosynthesis.analyze_yii', scale='none', datatype=list,
-                                    value=hist_df['Plant Pixels'].values.tolist(),
-                                    label=np.around(hist_df[mlabel].values.tolist(), decimals=2).tolist())
+        # Record observations for each labeled region
+        _add_observations(yii_da=yii_lbl, measurements=ps_da.measurement.values, label=f"{label}{i}",
+                          measurement_labels=measurement_labels)
 
     # Convert the labeled mask to a binary mask
     bin_mask = np.where(labeled_mask > 0, 255, 0)
@@ -128,32 +105,27 @@ def yii(ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None,
     bin_mask = bin_mask[..., None]
 
     # Set the background values to NaN
-    yii = yii.where(bin_mask > 0, other=np.nan)
+    yii_global = yii_global.where(bin_mask > 0, other=np.nan)
 
     # drop coords identifying frames if they exist
-    res = [i for i in list(yii.coords) if 'frame' in i]
-    yii = yii.drop_vars(res)  # does not fail if res is []
+    res = [i for i in list(yii_global.coords) if 'frame' in i]
+    yii_global = yii_global.drop_vars(res)  # does not fail if res is []
 
     # Create a ridgeline plot of the YII values
-    yii_chart = None
-    for i, mlabel in enumerate(ps_da.measurement.values):
-        if measurement_labels is not None:
-            mlabel = measurement_labels[i]
-        yii_chart = outputs.plot_dists(variable=f"yii_hist_{mlabel}")
-        _debug(visual=yii_chart, filename=os.path.join(params.debug_outdir, str(params.device) + '_yii_hist.png'))
+    yii_chart = _ridgeline_plots(measurements=ps_da.measurement.values, measurement_labels=measurement_labels)
 
     # Create a pseudocolor image of the YII values
-    _debug(visual=yii,
+    _debug(visual=yii_global,
            filename=os.path.join(params.debug_outdir, str(params.device) + "_YII_dataarray.png"),
            robust=True,
            col='measurement',
-           col_wrap=int(np.ceil(yii.measurement.size / 4)),
+           col_wrap=int(np.ceil(yii_global.measurement.size / 4)),
            vmin=0, vmax=1)
 
-    return yii_chart, yii.squeeze()
+    return yii_chart, yii_global.squeeze()
 
 
-def _create_histogram(yii_img, mlabel, obs):
+def _create_histogram(yii_img, mlabel):
     """
     Compute histogram of YII
 
@@ -186,26 +158,64 @@ def _create_histogram(yii_img, mlabel, obs):
     # Create a dataframe for the histogram
     hist_df = pd.DataFrame({'Plant Pixels': yii_hist, mlabel: yii_bins[:-1]})
 
-    # Round values for plotting
-    bins = np.around(yii_bins, decimals=2)
-    round_mean = np.around(obs[f"yii_mean_{mlabel}"]["value"], decimals=2)
-    round_median = np.around(obs[f"yii_median_{mlabel}"]["value"], decimals=2)
-    round_mode = np.around(yii_mode, decimals=2)
-    mean_index = bins.tolist().index(round_mean)
-    median_index = bins.tolist().index(round_median)
-    mode_index = np.argmax(yii_hist)
-    # Create a dataframe for the statistics
-    stats_df = pd.DataFrame({'Plant Pixels': [yii_hist[mean_index], yii_hist[median_index], yii_hist[mode_index]],
-                             mlabel: [round_mean, round_median, round_mode],
-                             "Stat": ["mean", "median", "mode"]})
+    return hist_df, yii_mode
 
-    # Make the histogram figure using plotnine
-    hist_fig = (ggplot(data=hist_df, mapping=aes(x=mlabel, y='Plant Pixels'))
-                + geom_line(show_legend=True, color="darkblue")
-                + geom_point(data=stats_df, mapping=aes(color='Stat'))
-                + labs(title=f"measurement: {mlabel}",
-                       x='photosynthetic efficiency (yii)')
-                + theme(subplots_adjust={"right": 0.8})
-                + scale_color_brewer(type="qual", palette=2))
 
-    return hist_df, hist_fig, yii_mode
+def _add_observations(yii_da, measurements, measurement_labels, label):
+    """
+    Add observations for each labeled region
+    """
+    # compute observations to store in Outputs, per labeled region
+    yii_mean = yii_da.where(yii_da > 0).groupby('measurement').mean(['x', 'y']).values
+    yii_median = yii_da.where(yii_da > 0).groupby('measurement').median(['x', 'y']).values
+    yii_max = yii_da.where(yii_da > 0).groupby('measurement').max(['x', 'y']).values
+
+    # Create variables to label traits based on measurement label in data array
+    for n, mlabel in enumerate(measurements):
+        if measurement_labels is not None:
+            mlabel = measurement_labels[n]
+
+        # mean value
+        outputs.add_observation(sample=label, variable=f"yii_mean_{mlabel}", trait="mean yii value",
+                                method='plantcv.plantcv.analyze.yii', scale='none', datatype=float,
+                                value=float(yii_mean[n]), label='none')
+        # median value
+        outputs.add_observation(sample=label, variable=f"yii_median_{mlabel}", trait="median yii value",
+                                method='plantcv.plantcv.analyze.yii', scale='none', datatype=float,
+                                value=float(yii_median[n]), label='none')
+        # max value
+        outputs.add_observation(sample=label, variable=f"yii_max_{mlabel}", trait="peak yii value",
+                                method='plantcv.plantcv.analyze.yii', scale='none', datatype=float,
+                                value=float(yii_max[n]), label='none')
+
+        hist_df, yii_mode = _create_histogram(yii_da.isel({'measurement': n}).values, mlabel)
+
+        # mode value
+        outputs.add_observation(sample=label, variable=f"yii_mode_{mlabel}", trait="mode yii value",
+                                method='plantcv.plantcv.analyze.yii', scale='none', datatype=float,
+                                value=float(yii_mode), label='none')
+        # hist frequencies
+        outputs.add_observation(sample=label, variable=f"yii_hist_{mlabel}", trait="yii frequencies",
+                                method='plantcv.plantcv.analyze.yii', scale='none', datatype=list,
+                                value=hist_df['Plant Pixels'].values.tolist(),
+                                label=np.around(hist_df[mlabel].values.tolist(), decimals=2).tolist())
+
+
+def _calc_yii(da):
+    """
+    Helper function to apply the Fq'/Fm' calculation to the DataArray
+    """
+    return (da.sel(frame_label='Fmp') - da.sel(frame_label='Fp')) / da.sel(frame_label='Fmp')
+
+
+def _ridgeline_plots(measurements, measurement_labels):
+    """
+    Create ridgeline plots of YII values
+    """
+    yii_chart = None
+    for i, mlabel in enumerate(measurements):
+        if measurement_labels is not None:
+            mlabel = measurement_labels[i]
+        yii_chart = outputs.plot_dists(variable=f"yii_hist_{mlabel}")
+        _debug(visual=yii_chart, filename=os.path.join(params.debug_outdir, str(params.device) + '_yii_hist.png'))
+    return yii_chart
