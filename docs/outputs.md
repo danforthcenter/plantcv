@@ -8,8 +8,8 @@ An `Outputs` class has been added that automatically stores measurements and ima
 functions:
 
 * `analyze.bound_horizontal`
-* `analyze_bound_vertical`
-* `analyze_color`
+* `analyze.bound_vertical`
+* `analyze.color`
 * `analyze_nir_intensity`
 * `analyze_object`
 * `analyze_thermal_values` 

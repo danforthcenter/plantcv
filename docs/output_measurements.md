@@ -146,8 +146,8 @@ suggestions for additional metadata we should track that would be useful to you,
 ## Output Observations
 
 Functions that automatically store data to the [`Outputs` class](outputs.md) are 
-[analyze_color](analyze_color.md), [analyze.bound_horizontal](analyze_bound_horizontal2.md), 
-[analyze_bound_vertical](analyze_bound_vertical.md), [analyze_nir_intensity](analyze_NIR_intensity),
+[analyze.color](analyze_color2.md), [analyze.bound_horizontal](analyze_bound_horizontal2.md), 
+[analyze.bound_vertical](analyze_bound_vertical2.md), [analyze_nir_intensity](analyze_NIR_intensity),
 [analyze_object](analyze_shape.md), [analyze_thermal_values](analyze_thermal_values.md), 
 [photosynthesis.analyze_fvfm](photosynthesis_analyze_yii.md), 
 [photosynthesis.analyze_npq](photosynthesis_analyze_npq.md), [hyperspectral.analyze_spectral](analyze_spectral.md),
