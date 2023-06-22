@@ -26,7 +26,7 @@ The photosynthesis subpackage is dependent on a PSII_Data instance file structur
 
 **Fluorescence images**
 
-![Screenshot](img/documentation_images/fluor_fvfm/fvfm_images.jpg)
+![Screenshot](img/documentation_images/analyze_yii/fvfm_images.jpg)
 
 From top-left to bottom-right: Dark-adapted (F-dark, F0, Fm) and Light-adapted (F-light', F', and Fm')
 
