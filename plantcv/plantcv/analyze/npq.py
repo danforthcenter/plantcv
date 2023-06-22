@@ -169,8 +169,11 @@ def _create_histogram(npq_img, mlabel, obs, min_bin, max_bin):
     # Calculate which non-zero bin has the maximum Fv/Fm value
     npq_mode = npq_bins[np.argmax(npq_hist)]
 
+    # Convert the histogram pixel counts to proportional frequencies
+    npq_percent = (npq_hist / float(np.sum(npq_hist))) * 100
+
     # Create a dataframe
-    hist_df = pd.DataFrame({'Plant Pixels': npq_hist, mlabel: npq_bins[:-1]})
+    hist_df = pd.DataFrame({'proportion of pixels (%)': npq_percent, mlabel: npq_bins[:-1]})
 
     return hist_df, npq_mode
 
@@ -197,15 +200,15 @@ def _add_observations(npq_da, measurements, measurement_labels, label, max_bin, 
 
         # mean value
         outputs.add_observation(sample=label, variable=f"npq_mean_{mlabel}", trait="mean npq value",
-                                method='plantcv.plantcv.photosynthesis.analyze_npq', scale='none', datatype=float,
+                                method='plantcv.plantcv.analyze.npq', scale='none', datatype=float,
                                 value=float(npq_mean[i]), label='none')
         # median value
         outputs.add_observation(sample=label, variable=f"npq_median_{mlabel}", trait="median npq value",
-                                method='plantcv.plantcv.photosynthesis.analyze_npq', scale='none', datatype=float,
+                                method='plantcv.plantcv.analyze.npq', scale='none', datatype=float,
                                 value=float(npq_median[i]), label='none')
         # max value
         outputs.add_observation(sample=label, variable=f"npq_max_{mlabel}", trait="peak npq value",
-                                method='plantcv.plantcv.photosynthesis.analyze_npq', scale='none', datatype=float,
+                                method='plantcv.plantcv.analyze.npq', scale='none', datatype=float,
                                 value=float(npq_max[i]), label='none')
 
         hist_df, npq_mode = _create_histogram(npq_da.isel({'measurement': i}).values, mlabel,
@@ -213,12 +216,12 @@ def _add_observations(npq_da, measurements, measurement_labels, label, max_bin, 
 
         # mode value
         outputs.add_observation(sample=label, variable=f"npq_mode_{mlabel}", trait="mode npq value",
-                                method='plantcv.plantcv.photosynthesis.analyze_npq', scale='none', datatype=float,
+                                method='plantcv.plantcv.analyze.npq', scale='none', datatype=float,
                                 value=float(npq_mode), label='none')
         # hist frequencies
         outputs.add_observation(sample=label, variable=f"npq_hist_{mlabel}", trait="frequencies",
-                                method='plantcv.plantcv.photosynthesis.analyze_npq', scale='none', datatype=list,
-                                value=hist_df['Plant Pixels'].values.tolist(),
+                                method='plantcv.plantcv.analyze.npq', scale='none', datatype=list,
+                                value=hist_df['proportion of pixels (%)'].values.tolist(),
                                 label=np.around(hist_df[mlabel].values.tolist(), decimals=2).tolist())
 
 
