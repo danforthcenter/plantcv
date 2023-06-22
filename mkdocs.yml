@@ -66,7 +66,6 @@ nav:
       - 'Get NIR Images': get_nir.md
       - 'Histogram Normalization': HistEqualization.md
       - 'Hyperspectral Data':
-          - 'Analyze index': analyze_index.md
           - 'Analyze spectral': analyze_spectral.md
           - 'Calibrate': calibrate.md
           - 'Spectral Index': spectral_index.md

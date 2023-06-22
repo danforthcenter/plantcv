@@ -13,7 +13,7 @@ functions:
 * `analyze.size`
 * `analyze.thermal`
 * `fluor_fvfm`
-* `hyperspectral.analyze_index`
+* `analyze.spectral_index`
 * `hyperspectral.analyze_spectral`
 * `morphology.check_cycles`
 * `morphology.segment_angle`
