@@ -50,65 +50,19 @@ rois2 = pcv.roi.multi(img=img1, coord=[(25,120), (165,260), (310, 260)],
 
 ### Next steps:
 
-Since this function returns lists of objects and hierarchies, the downstream steps require users to loop 
-over each. The [pcv.roi_objects](roi_objects.md) and [pcv.object_composition](object_composition.md) functions usually 
-follow an ROI step.
+This function returns an Objects dataclass, which can be used with [create_labels](create_labels.md) to createa a labeled
+mask for use with analysis functions.
 
 ```python
-import numpy as np 
+lbl_mask, n_lbls = pcv.create_labels(mask=mask, rois=rois)
 
-img_copy = np.copy(img)
+# Analyze the shape of each plant 
+shape_img = pcv.analyze.size(img=img_copy, labeled_mask=lbl_mask, n_labels=n_lbls, label="plant")
 
-# The result file should exist if plantcv-run-workflow was run
-if os.path.exists(args.result):
-    # Open the result file
-    results = open(args.result, "r")
-    # The result file would have image metadata in it from plantcv-run-workflow, read it into memory
-    metadata = results.read()
-    # Close the file
-    results.close()
-    # Delete the file, we will create new ones
-    os.remove(args.result)
+# Print out a text file with shape data for each plant in the image 
+pcv.outputs.save_results(filename=filename)
 
-for roi, hierarchy in rois1:
-    # Find objects
-    filtered_contours, filtered_hierarchy, filtered_mask, filtered_area = pcv.roi_objects(
-        img=img, roi_type="partial", roi_contour=roi, roi_hierarchy=hierarchy, object_contour=obj, 
-        obj_hierarchy=obj_hierarchy)
-    
-    # Combine objects together in each plant     
-    plant_contour, plant_mask = pcv.object_composition(img=img, contours=filtered_contours, hierarchy=filtered_hierarchy)        
-    
-    # Analyze the shape of each plant 
-    analysis_images = pcv.analyze_object(img=img_copy, obj=plant_contour, mask=plant_mask)
-    
-    # Save the image with shape characteristics 
-    img_copy = analysis_images
-    
-    # Print out a text file with shape data for each plant in the image 
-    filename = args.result[:-4] + "_" + str(i) + ".txt" 
-    with open(filename, "w") as r:
-        r.write(metadata)
-    pcv.outputs.save_results(filename=filename)
-    # Clear the measurements stored globally into the Outputs class
-    pcv.outputs.clear()
-    
-# Plot out the image with shape analysis on each plant in the image 
-pcv.plot_image(img_copy)
 ```
-**Custom list of ROIs** 
-
-![Screenshot](img/documentation_images/multi/first_plant_mask.jpg)
-
-**Custom list of ROIs** 
-
-![Screenshot](img/documentation_images/multi/first_plant_object.jpg)
-
-**Custom list of ROIs** 
-
-![Screenshot](img/documentation_images/multi/first_plant_shape.jpg)
-
-Many intermediate outputs later... 
 
 **Image with shape analysis characteristics on each plant** 
 

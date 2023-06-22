@@ -49,7 +49,6 @@ from plantcv.plantcv.find_objects import find_objects
 from plantcv.plantcv.roi_objects import roi_objects
 from plantcv.plantcv.object_composition import object_composition
 from plantcv.plantcv.within_frame import within_frame
-from plantcv.plantcv.analyze_object import analyze_object
 from plantcv.plantcv.print_results import print_results
 from plantcv.plantcv.flip import flip
 from plantcv.plantcv.crop_position_mask import crop_position_mask
@@ -134,7 +133,6 @@ __all__ = [
     "roi_objects",
     "object_composition",
     "within_frame",
-    "analyze_object",
     "print_results",
     "flip",
     "crop_position_mask",
