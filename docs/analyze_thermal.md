@@ -22,7 +22,7 @@ This function calculates the temperature of each pixel and stores summary statis
 
 **Original thermal array image**
 
-![Screenshot](img/documentation_images/analyze_thermal_values/scaled_thermal_img.jpg)
+![Screenshot](img/documentation_images/analyze_thermal/scaled_thermal_img.jpg)
 
 ```python
 
@@ -36,7 +36,7 @@ pcv.params.debug = "plot"
 # Caclulates the proportion of pixels that fall into a signal bin and writes the values to a file. Also provides a histogram of this data
 thermal_hist  = pcv.analyze.thermal(thermal_img=thermal_img, labeled_mask=mask, label="default")
 
-# Access data stored out from analyze_thermal_values
+# Access data stored out from analyze.thermal
 temp_range = pcv.outputs.observations['default1']['max_temp']['value'] - pcv.outputs.observations['default1']['min_temp']['value']
 
 ```
@@ -44,7 +44,7 @@ temp_range = pcv.outputs.observations['default1']['max_temp']['value'] - pcv.out
 
 **Thermal Frequency histogram**
 
-![Screenshot](img/documentation_images/analyze_thermal_values/temp_hist.png)
+![Screenshot](img/documentation_images/analyze_thermal/temp_hist.png)
 
 !!!Note
     A grayscale input image and object mask can be used with the [pcv.visualize.pseudocolor](visualize_pseudocolor.md) function
@@ -57,6 +57,6 @@ pseudocolor_img  = pcv.visualize.pseudocolor(thermal_img, min_value=31, max_valu
 
 ```
 
-![Screenshot](img/documentation_images/analyze_thermal_values/thermal_pseudocolored.jpg)
+![Screenshot](img/documentation_images/analyze_thermal/thermal_pseudocolored.jpg)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/analyze/thermal.py)
