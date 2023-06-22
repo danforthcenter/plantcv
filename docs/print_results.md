@@ -9,7 +9,7 @@ functions:
 * `analyze.bound_horizontal`
 * `analyze.bound_vertical`
 * `analyze.color`
-* `analyze_nir_intensity`
+* `analyze.grayscale`
 * `analyze_object`
 * `analyze_thermal_values`
 * `fluor_fvfm`

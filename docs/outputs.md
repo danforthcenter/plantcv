@@ -10,7 +10,7 @@ functions:
 * `analyze.bound_horizontal`
 * `analyze.bound_vertical`
 * `analyze.color`
-* `analyze_nir_intensity`
+* `analyze.grayscale`
 * `analyze_object`
 * `analyze_thermal_values` 
 * `fluor_fvfm`
@@ -98,7 +98,7 @@ pcv.outputs.clear()
 
 ######## More workflow steps here ########
 
-nir_imgs = pcv.analyze_nir_intensity(nir2, nir_combinedmask, 256, label="default")
+nir_hist = pcv.analyze.grayscale(gray_img=nir2, labeled_mask=nir_combinedmask, n_labels=1, bins=100, label="default")
 shape_img = pcv.analyze_object(nir2, nir_combined, nir_combinedmask, label="default")
 
 # Write the NIR and shape data to a file 

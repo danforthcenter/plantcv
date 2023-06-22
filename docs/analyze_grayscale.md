@@ -23,7 +23,7 @@ below). For more detail about data output see [Summary of Output Observations](o
 
 **Original grayscale image**
 
-![Screenshot](img/documentation_images/analyze_NIR_intensity/original_image.jpg)
+![Screenshot](img/documentation_images/analyze_grayscale/original_image.jpg)
 
 ```python
 
@@ -46,6 +46,6 @@ nir_frequencies = pcv.outputs.observations['default1']['gray_frequencies']['valu
 
 **Near-infrared signal histogram**
 
-![Screenshot](img/documentation_images/analyze_NIR_intensity/nir_histogram.jpg)
+![Screenshot](img/documentation_images/analyze_grayscale/nir_histogram.jpg)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/analyze/grayscale.py)
