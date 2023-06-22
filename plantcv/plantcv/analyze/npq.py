@@ -82,8 +82,8 @@ def npq(ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bi
         # Calculate NPQ for the labeled region
         npq_lbl = ps_da_light.sel(frame_label='Fmp').groupby('measurement', squeeze=False).map(_calc_npq, fm=fm)
 
-        # Drop the frame_label coordinate
-        npq_lbl = npq_lbl.drop_vars('frame_label')
+        # Drop the frame_label coordinate - not needed with xarray v2022.11.0+
+        # npq_lbl = npq_lbl.drop_vars('frame_label')
         # Fill NaN values with 0 so that we can add DataArrays together
         npq_lbl = npq_lbl.fillna(0)
         # Add the NPQ values for this label to the NPQ DataArray
