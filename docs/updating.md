@@ -198,6 +198,7 @@ pages for more details on the input and output variable types.
 * post v3.0: hist_header, hist_data, nir_hist = **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False*)
 * post v3.3: nir_hist = **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False*)
 * post v3.11: nir_hist = **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False, label="default"*)
+* post v4.0: DEPRECATED: see plantcv.analyze.grayscale
 
 
 #### plantcv.analyze_object
