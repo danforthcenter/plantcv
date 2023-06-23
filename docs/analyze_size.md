@@ -25,7 +25,7 @@ run. These data can be accessed during a workflow (example below). For more deta
     
 **Original image**
 
-![Screenshot](img/documentation_images/analyze_shape/original_image.jpg)
+![Screenshot](img/documentation_images/analyze_size/original_image.jpg)
 
 ```python
 
@@ -43,17 +43,17 @@ shape_image = pcv.analyze.size(img=img, labeled_mask=mask, n_labels=1, label="de
 # Save returned images with more specific naming
 pcv.print_image(shape_image, '/home/malia/setaria_shape_img.png')
 
-# Access data stored out from analyze_object
+# Access data stored out from analyze.size
 plant_solidity = pcv.outputs.observations['default1']['solidity']['value']
 
 ```
 
 **Image with identified objects**
 
-![Screenshot](img/documentation_images/analyze_shape/objects_on_image.jpg)
+![Screenshot](img/documentation_images/analyze_size/objects_on_image.jpg)
 
 **Image with shape characteristics**
 
-![Screenshot](img/documentation_images/analyze_shape/shapes_on_image.jpg)
+![Screenshot](img/documentation_images/analyze_size/shapes_on_image.jpg)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/analyze/size.py)

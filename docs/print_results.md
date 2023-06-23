@@ -10,7 +10,7 @@ functions:
 * `analyze.bound_vertical`
 * `analyze.color`
 * `analyze.grayscale`
-* `analyze_object`
+* `analyze.size`
 * `analyze_thermal_values`
 * `fluor_fvfm`
 * `hyperspectral.analyze_index`

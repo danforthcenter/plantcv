@@ -43,49 +43,20 @@ rois = pcv.roi.auto_grid(mask=mask, nrows=3, ncols=6, radius=20, img=img)
 
 ### Next steps:
 
-This function returns an Objects dataclass, which contains contours and hierarchy attributes. Since
-  these attributes are lists, the downstream steps require users to loop over each. The 
-  [pcv.roi_objects](roi_objects.md) and [pcv.object_composition](object_composition.md) functions 
-  usually follow an ROI step.
+This function returns an Objects dataclass, which can be used with [create_labels](create_labels.md) to createa a labeled
+mask for use with analysis functions.
 
 ```python
-import numpy as np 
 
-img_copy = np.copy(img)
+lbl_mask, n_lbls = pcv.create_labels(mask=mask, rois=rois)
 
-roi_id = 0
-for roi, hierarchy in rois:
-    roi_id += 1
-    # Find objects
-    filtered_contours, filtered_hierarchy, filtered_mask, filtered_area = pcv.roi_objects(
-        img=img, roi_type="partial", roi_contour=roi, roi_hierarchy=hierarchy, object_contour=obj, 
-        obj_hierarchy=obj_hierarchy)
-
-    # Combine objects together in each plant     
-    plant_contour, plant_mask = pcv.object_composition(img=img, contours=filtered_contours, hierarchy=filtered_hierarchy)        
-
-    # Analyze the shape of each plant 
-    img_copy = pcv.analyze_object(img=img_copy, obj=plant_contour, mask=plant_mask, label=f"plant_{roi_id}")
+# Analyze the shape of each plant 
+shape_img = pcv.analyze.size(img=img_copy, labeled_mask=lbl_mask, n_labels=n_lbls, label="plant")
 
 # Print out a text file with shape data for each plant in the image 
 pcv.outputs.save_results(filename=filename)
-    
-# Plot out the image with shape analysis on each plant in the image 
-pcv.plot_image(img_copy)
+
 ```
-**Custom list of ROIs** 
-
-![Screenshot](img/documentation_images/multi/first_plant_mask.jpg)
-
-**Custom list of ROIs** 
-
-![Screenshot](img/documentation_images/multi/first_plant_object.jpg)
-
-**Custom list of ROIs** 
-
-![Screenshot](img/documentation_images/multi/first_plant_shape.jpg)
-
-Many intermediate outputs later... 
 
 **Image with shape analysis characteristics on each plant** 
 

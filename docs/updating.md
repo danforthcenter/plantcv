@@ -208,6 +208,7 @@ pages for more details on the input and output variable types.
 * post v3.0: shape_header, shape_data, analysis_images = **plantcv.analyze_object**(*img, obj, mask*)
 * post v3.3: analysis_image = **plantcv.analyze_object**(*img, obj, mask*)
 * post v3.11: analysis_image = **plantcv.analyze_object**(*img, obj, mask, label="default"*)
+* post v4.0: DEPRECATED, see plantcv.analyze.size
 
 
 #### plantcv.analyze_thermal_values

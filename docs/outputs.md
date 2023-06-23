@@ -11,7 +11,7 @@ functions:
 * `analyze.bound_vertical`
 * `analyze.color`
 * `analyze.grayscale`
-* `analyze_object`
+* `analyze.size`
 * `analyze_thermal_values` 
 * `fluor_fvfm`
 * `hyperspectral.analyze_spectral`
@@ -85,10 +85,10 @@ from plantcv import plantcv as pcv
 ######## workflow steps here ########
 
 # Find shape properties, output shape image (optional)
-shape_img = pcv.analyze_object(img, obj, mask, label="default")
+shape_img = pcv.analyze.size(img=img, labeled_mask=mask, n_labels=1, label="default")
 
 # Look at object area data without writing to a file 
-plant_area = pcv.outputs.observations['default']['pixel_area']['value']
+plant_area = pcv.outputs.observations['default1']['pixel_area']['value']
 
 # Write shape data to results file
 pcv.outputs.save_results(filename=args.result, outformat="json")
@@ -99,7 +99,7 @@ pcv.outputs.clear()
 ######## More workflow steps here ########
 
 nir_hist = pcv.analyze.grayscale(gray_img=nir2, labeled_mask=nir_combinedmask, n_labels=1, bins=100, label="default")
-shape_img = pcv.analyze_object(nir2, nir_combined, nir_combinedmask, label="default")
+shape_img = pcv.analyze.size(img=nir2, labeled_mask=nir_combinedmask, n_labels=1, label="default")
 
 # Write the NIR and shape data to a file 
 pcv.outputs.save_results(filename=args.coresult, outformat="json")
