@@ -198,6 +198,7 @@ pages for more details on the input and output variable types.
 * post v3.0: hist_header, hist_data, nir_hist = **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False*)
 * post v3.3: nir_hist = **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False*)
 * post v3.11: nir_hist = **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False, label="default"*)
+* post v4.0: DEPRECATED: see plantcv.analyze.grayscale
 
 
 #### plantcv.analyze_object
@@ -207,6 +208,7 @@ pages for more details on the input and output variable types.
 * post v3.0: shape_header, shape_data, analysis_images = **plantcv.analyze_object**(*img, obj, mask*)
 * post v3.3: analysis_image = **plantcv.analyze_object**(*img, obj, mask*)
 * post v3.11: analysis_image = **plantcv.analyze_object**(*img, obj, mask, label="default"*)
+* post v4.0: DEPRECATED, see plantcv.analyze.size
 
 
 #### plantcv.analyze_thermal_values
@@ -214,7 +216,7 @@ pages for more details on the input and output variable types.
 * pre v3.5: NA
 * post v3.5: thermal_histogram = **plantcv.analyze_thermal_values**(*thermal_array, mask, histplot=False*)
 * post v3.11: thermal_histogram = **plantcv.analyze_thermal_values**(*thermal_array, mask, histplot=False, label="default"*)
-
+* post v4.0: DEPRECATED, see plantcv.analyze.thermal
 
 #### plantcv.analyze.bound_horizontal
 
@@ -464,7 +466,7 @@ pages for more details on the input and output variable types.
 * post v3.7: **plantcv.hyperspectral.analyze_index**(*index_array, mask*)
 * post v3.8: index_histogram = **plantcv.hyperspectral.analyze_index**(*index_array, mask, histplot=False, bins=100, max_bin=0, min_bin=1*)
 * post v3.11: index_histogram = **plantcv.hyperspectral.analyze_index**(*index_array, mask, histplot=False, bins=100, max_bin=0, min_bin=1, label="default"*)
-
+* post v4.0: DEPRECATED, see plantcv.analyze.spectral_index
 
 #### plantcv.hyperspectral.analyze_spectral
 
@@ -750,6 +752,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, img1, bnk, contour, hierarchy = **plantcv.rectangle_mask**(*img, p1, p2, device, debug=None, color="black"*)
 * post v3.0dev2: img1, bnk, contour, hierarchy = **plantcv.rectangle_mask**(*img, p1, p2, color="black"*)
+* post v4.0: DEPRECATED
 
 #### plantcv.report_size_marker_area
 

@@ -38,7 +38,6 @@ from plantcv.plantcv.image_subtract import image_subtract
 from plantcv.plantcv.erode import erode
 from plantcv.plantcv.dilate import dilate
 from plantcv.plantcv.watershed import watershed_segmentation
-from plantcv.plantcv.rectangle_mask import rectangle_mask
 from plantcv.plantcv.median_blur import median_blur
 from plantcv.plantcv.fill import fill
 from plantcv.plantcv.invert import invert
@@ -49,8 +48,6 @@ from plantcv.plantcv.find_objects import find_objects
 from plantcv.plantcv.roi_objects import roi_objects
 from plantcv.plantcv.object_composition import object_composition
 from plantcv.plantcv.within_frame import within_frame
-from plantcv.plantcv.analyze_object import analyze_object
-from plantcv.plantcv.analyze_nir_intensity import analyze_nir_intensity
 from plantcv.plantcv.print_results import print_results
 from plantcv.plantcv.flip import flip
 from plantcv.plantcv.crop_position_mask import crop_position_mask
@@ -70,7 +67,6 @@ from plantcv.plantcv.opening import opening
 from plantcv.plantcv.closing import closing
 from plantcv.plantcv import roi
 from plantcv.plantcv import threshold
-from plantcv.plantcv.analyze_thermal_values import analyze_thermal_values
 from plantcv.plantcv import visualize
 from plantcv.plantcv import morphology
 from plantcv.plantcv.fill_holes import fill_holes
@@ -124,7 +120,6 @@ __all__ = [
     "erode",
     "dilate",
     "watershed_segmentation",
-    "rectangle_mask",
     "median_blur",
     "fill",
     "invert",
@@ -135,8 +130,6 @@ __all__ = [
     "roi_objects",
     "object_composition",
     "within_frame",
-    "analyze_object",
-    "analyze_nir_intensity",
     "print_results",
     "flip",
     "crop_position_mask",
@@ -155,7 +148,6 @@ __all__ = [
     "closing",
     "roi",
     "threshold",
-    "analyze_thermal_values",
     "visualize",
     "morphology",
     "fill_holes",
