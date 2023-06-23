@@ -68,7 +68,6 @@ from plantcv.plantcv.opening import opening
 from plantcv.plantcv.closing import closing
 from plantcv.plantcv import roi
 from plantcv.plantcv import threshold
-from plantcv.plantcv.analyze_thermal_values import analyze_thermal_values
 from plantcv.plantcv import visualize
 from plantcv.plantcv import morphology
 from plantcv.plantcv.fill_holes import fill_holes
@@ -151,7 +150,6 @@ __all__ = [
     "closing",
     "roi",
     "threshold",
-    "analyze_thermal_values",
     "visualize",
     "morphology",
     "fill_holes",

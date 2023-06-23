@@ -216,7 +216,7 @@ pages for more details on the input and output variable types.
 * pre v3.5: NA
 * post v3.5: thermal_histogram = **plantcv.analyze_thermal_values**(*thermal_array, mask, histplot=False*)
 * post v3.11: thermal_histogram = **plantcv.analyze_thermal_values**(*thermal_array, mask, histplot=False, label="default"*)
-
+* post v4.0: DEPRECATED, see plantcv.analyze.thermal
 
 #### plantcv.analyze.bound_horizontal
 

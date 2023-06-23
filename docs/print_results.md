@@ -11,7 +11,7 @@ functions:
 * `analyze.color`
 * `analyze.grayscale`
 * `analyze.size`
-* `analyze_thermal_values`
+* `analyze.thermal`
 * `fluor_fvfm`
 * `hyperspectral.analyze_index`
 * `hyperspectral.analyze_spectral`

@@ -118,7 +118,7 @@ These are the general categories of object analysis that are available in PlantC
 *  Object shape parameters: see the [analyze.size](analyze_size.md), [analyze.bound_horizontal](analyze_bound_horizontal2.md),
 and [analyze.bound_vertical](analyze_bound_vertical2.md) functions.
 *  Object color or other signal intensity values: see the [analyze.color](analyze_color2.md), 
-[analyze.grayscale](analyze_grayscale.md), [analyze thermal](analyze_thermal_values.md),
+[analyze.grayscale](analyze_grayscale.md), [analyze.thermal](analyze_thermal.md),
 and [analyze FvFm](photosynthesis_analyze_yii.md) functions.
 *  Object classification (For example, classification of disease symptoms, identification of organ structures 
 [naive-bayesian multiclass mode](naive_bayes_multiclass.md)).
