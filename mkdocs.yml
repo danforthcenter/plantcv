@@ -34,8 +34,6 @@ nav:
         - 'Analyze Thermal': analyze_thermal.md
         - 'Analyze Spectral Reflectance': analyze_spectral_reflectance.md
         - 'Analyze Spectral Index': analyze_spectral_index.md
-      - 'Analyze Shape': analyze_shape.md
-      - 'Analyze Thermal': analyze_thermal_values.md
       - 'Annotation Tools':
           - 'Points': Points.md
       - 'Apply Mask': apply_mask.md
