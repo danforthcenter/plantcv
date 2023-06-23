@@ -249,7 +249,7 @@ Binary mask after [filtering objects by the region of interest](../roi_objects.m
                                                                
 ``` 
 
-[Extract reflectance statistics from an index](../analyze_index.md) and store it out to the Outputs class.
+[Extract reflectance statistics from an index](../analyze_spectral_index.md) and store it out to the Outputs class.
 
 
 ```python
