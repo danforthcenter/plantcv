@@ -754,6 +754,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, img1, bnk, contour, hierarchy = **plantcv.rectangle_mask**(*img, p1, p2, device, debug=None, color="black"*)
 * post v3.0dev2: img1, bnk, contour, hierarchy = **plantcv.rectangle_mask**(*img, p1, p2, color="black"*)
+* post v4.0: DEPRECATED
 
 #### plantcv.report_size_marker_area
 

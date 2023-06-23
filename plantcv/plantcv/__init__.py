@@ -38,7 +38,6 @@ from plantcv.plantcv.image_subtract import image_subtract
 from plantcv.plantcv.erode import erode
 from plantcv.plantcv.dilate import dilate
 from plantcv.plantcv.watershed import watershed_segmentation
-from plantcv.plantcv.rectangle_mask import rectangle_mask
 from plantcv.plantcv.median_blur import median_blur
 from plantcv.plantcv.fill import fill
 from plantcv.plantcv.invert import invert
@@ -121,7 +120,6 @@ __all__ = [
     "erode",
     "dilate",
     "watershed_segmentation",
-    "rectangle_mask",
     "median_blur",
     "fill",
     "invert",

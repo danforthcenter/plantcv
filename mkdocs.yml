@@ -130,7 +130,6 @@ nav:
       - 'Plot Image': plot_image.md
       - 'Read Image': read_image.md
       - 'Read Bayer Raw Image': read_bayer.md
-      - 'Rectangle Mask': rectangle_mask.md
       - 'Report Size Marker': report_size_marker.md
       - 'Region of Interest Tools':
         - 'Create a Circular ROI': roi_circle.md
