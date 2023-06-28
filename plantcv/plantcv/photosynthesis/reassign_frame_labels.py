@@ -56,16 +56,18 @@ def reassign_frame_labels(ps_da, mask):
     ind_size = ps_da.frame_label.size
     # Create a new frame label array populated with the current labels
     idx = ps_da.frame_label.values
+    # Find the frame corresponding to the first frame after F0/Fp
+    f = idx.tolist().index(datasets[ps_da.name.lower()]['F']) + 1
     # Reset the frame labels after F0/Fp
-    for i in range(2, ind_size):
+    for i in range(f, ind_size):
         idx[i] = f"{datasets[ps_da.name.lower()]['label']}{i}"
     # get plant mean for each frame based on mask
     exp_mask = np.copy(mask)[..., None, None]
     fluor_values = ps_da.where(exp_mask > 0).mean(['x', 'y', 'measurement'])
     # find frame with max mean after the control and F/F' frames
-    max_ind = np.argmax(fluor_values.data[2:])
+    max_ind = np.argmax(fluor_values.data[f:])
     # assign max frame label
-    idx[max_ind + 2] = f"Fm{datasets[ps_da.name.lower()]['prime']}"
+    idx[max_ind + f] = f"Fm{datasets[ps_da.name.lower()]['prime']}"
     # assign new labels back to dataarray
     ps_da = ps_da.assign_coords({'frame_label': ('frame_label', idx)})
 
