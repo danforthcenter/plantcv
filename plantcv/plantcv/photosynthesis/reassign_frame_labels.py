@@ -44,11 +44,13 @@ def reassign_frame_labels(ps_da, mask):
     datasets = {
         "lightadapted": {
             "prime": "p",
-            "label": "PSL"
+            "label": "PSL",
+            "F": "Fp"
         },
         "darkadapted": {
             "prime": "",
-            "label": "PSD"
+            "label": "PSD",
+            "F": "F0"
         }
     }
 
