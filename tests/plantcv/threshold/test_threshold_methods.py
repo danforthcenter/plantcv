@@ -29,7 +29,7 @@ def test_gaussian(objtype, threshold_test_data):
     """Test for PlantCV."""
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
-    binary_img = gaussian(gray_img=gray_img, block_size=11, offset=2, object_type=objtype, max_value=255,)
+    binary_img = gaussian(gray_img=gray_img, block_size=11, offset=2, object_type=objtype)
     # Assert that the output image has the dimensions of the input image and is binary
     assert gray_img.shape == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
@@ -39,7 +39,7 @@ def test_gaussian_incorrect_object_type(threshold_test_data):
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
     with pytest.raises(RuntimeError):
-        _ = gaussian(gray_img=gray_img, block_size=11, offset=2, object_type="lite", max_value=255)
+        _ = gaussian(gray_img=gray_img, block_size=11, offset=2, object_type="lite")
 
 
 @pytest.mark.parametrize("objtype, size", [["dark", 11], ["light", 10]])
