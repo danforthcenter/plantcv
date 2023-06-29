@@ -47,7 +47,7 @@ def test_mean(objtype, size, threshold_test_data):
     """Test for PlantCV."""
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
-    binary_img = mean(gray_img=gray_img, block_size=size, offset=2, object_type=objtype, max_value=255)
+    binary_img = mean(gray_img=gray_img, block_size=size, offset=2, object_type=objtype)
     # Assert that the output image has the dimensions of the input image and is binary
     assert gray_img.shape == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
@@ -57,7 +57,7 @@ def test_mean_incorrect_object_type(threshold_test_data):
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
     with pytest.raises(RuntimeError):
-        _ = mean(gray_img=gray_img, block_size=11, offset=2, object_type="lite", max_value=255)
+        _ = mean(gray_img=gray_img, block_size=11, offset=2, object_type="lite")
 
 
 def test_mean_incorrect_block_size(threshold_test_data):
@@ -65,7 +65,7 @@ def test_mean_incorrect_block_size(threshold_test_data):
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
     with pytest.raises(RuntimeError):
-        _ = mean(gray_img=gray_img, block_size=1, offset=2, object_type="dark", max_value=255)
+        _ = mean(gray_img=gray_img, block_size=1, offset=2, object_type="dark")
 
 
 @pytest.mark.parametrize("objtype", ["dark", "light"])
