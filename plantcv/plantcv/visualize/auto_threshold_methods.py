@@ -48,7 +48,7 @@ def auto_threshold_methods(gray_img, grid_img=True, object_type="light"):
     x = int(np.shape(gray_img)[1] / 8)
 
     # Create mask imgs from each thresholding method
-    all_methods.append(otsu(gray_img=gray_img, max_value=255, object_type=object_type))
+    all_methods.append(otsu(gray_img=gray_img, object_type=object_type))
     all_methods.append(triangle(gray_img=gray_img, max_value=255, object_type=object_type, xstep=1))
 
     # Plot labels of each colorspace on the corresponding img

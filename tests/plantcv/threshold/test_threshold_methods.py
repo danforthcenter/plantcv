@@ -73,7 +73,7 @@ def test_otsu(objtype, threshold_test_data):
     """Test for PlantCV."""
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
-    binary_img = otsu(gray_img=gray_img, max_value=255, object_type=objtype)
+    binary_img = otsu(gray_img=gray_img, object_type=objtype)
     # Assert that the output image has the dimensions of the input image and is binary
     assert gray_img.shape == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
@@ -83,7 +83,7 @@ def test_otsu_incorrect_object_type(threshold_test_data):
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
     with pytest.raises(RuntimeError):
-        _ = otsu(gray_img=gray_img, max_value=255, object_type="lite")
+        _ = otsu(gray_img=gray_img, object_type="lite")
 
 
 @pytest.mark.parametrize("channel,lower_thresh,upper_thresh", [["HSV", [0, 0, 0], [100, 100, 100]],
