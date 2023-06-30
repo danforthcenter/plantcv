@@ -70,17 +70,8 @@ Workflows start by importing necessary packages, and by defining user inputs.
 import os
 import argparse
 from plantcv import plantcv as pcv
+from plantcv.parallel import workflow_inputs
 from skimage.util import img_as_ubyte
-
-### Parse command-line arguments
-def options():
-    parser = argparse.ArgumentParser(description="Imaging processing with opencv")
-    parser.add_argument("-i", "--image", help="Input INF file.", required=True)
-    parser.add_argument("-o", "--outdir", help="Output directory for image files.", required=True)
-    parser.add_argument("-w", "--writeimg", help="Save output images.", action="store_true")
-    parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.", action="store_true")
-    args = parser.parse_args()
-    return args
 
 ```
 
@@ -89,16 +80,14 @@ All required frames are contained within the `.DAT` files. See the documentation
 how this type of data is read in.
 
 ```python
-### Main workflow
-def main():
-    # Get options
-    args = options()
+# Parse command-line options
+args = workflow_inputs()
 
-    pcv.params.debug = args.debug #set debug mode
-    pcv.params.debug_outdir = args.outdir #set output directory
+pcv.params.debug = args.debug  # set debug mode
+pcv.params.debug_outdir = args.outdir  # set output directory
 
-    # Read fluorescence image data
-    ps = pcv.photosynthesis.read_cropreporter(filename=args.image)
+# Read fluorescence image data
+ps = pcv.photosynthesis.read_cropreporter(filename=args.image1)
 
 ```
 
@@ -144,21 +133,21 @@ using the autothreshold method [Otsu](../otsu_threshold.md). Missing areas of th
 using the [fill_holes](../fill_holes.md) function.
 
 ```python
-    # Threshold the chlorophyll image
+# Threshold the chlorophyll image
 
-    # Inputs:
-    #   gray_img        - Grayscale image data
-    #   max_value       - Value to apply above threshold (255 = white)
-    #   object_type     - 'light' (default) or 'dark'. If the object is lighter than the
-    #                       background then standard threshold is done. If the object is
-    #                       darker than the background then inverse thresholding is done.
-    mask = pcv.threshold.otsu(gray_img=img_as_ubyte(ps.chlorophyll.sel(frame_label="Chl").data), 
-                              max_value=255, object_type="light")
-    # Fill small objects
+# Inputs:
+#   gray_img        - Grayscale image data
+#   max_value       - Value to apply above threshold (255 = white)
+#   object_type     - 'light' (default) or 'dark'. If the object is lighter than the
+#                       background then standard threshold is done. If the object is
+#                       darker than the background then inverse thresholding is done.
+mask = pcv.threshold.otsu(gray_img=img_as_ubyte(ps.chlorophyll.sel(frame_label="Chl").data), 
+                          max_value=255, object_type="light")
+# Fill small objects
 
-    # Inputs:
-    #   bin_img         - Binary image data
-    mask = pcv.fill_holes(bin_img=mask)
+# Inputs:
+#   bin_img         - Binary image data
+mask = pcv.fill_holes(bin_img=mask)
 
 ```
 
@@ -166,177 +155,193 @@ using the [fill_holes](../fill_holes.md) function.
 
 ![Screenshot](../img/tutorial_images/psII/mask.png)
 
-#### Relabel the Fm and Fm' frames (optional)
+#### Visualize the chlorophyll fluorescence induction curves (optional)
 
 In this experiment, the plant was dark-adapted. An image is taken of the plant in the dark (F-dark). The plant is then
 exposed to a saturating red light pulse briefly. An image of chlorophyll fluorescence is taken immediately after the
 pulse to measure minimal fluorescence (F0). Successive images are taken at a fixed time interval (20 total frames from
-F0 to F19 in this example). Here we will use the [reassign_frame_labels](../photosynthesis_reassign_frame_labels.md)
-function to analyze the fluorescence induction curve and identify the frame with maximal fluorescence (Fm).
+F0 to F19 in this example). Here we will chart the induction curves using
+[visualize.chlorophyll_fluorescence](../visualize_chlorophyll_fluorescence.md) to see if the maximum fluorescence frames
+are set at a reasonable place or whether we want to adjust them in a later step.
 
 ```python
-    # Dark-adapted fluorescence induction curve
+# Dark-adapted fluorescence induction curve
 
-    # Inputs:
-    # ps_da       = photosynthesis xarray DataArray
-    # mask        = mask of plant (binary, single channel)
-    # 
-    # Returns:
-    # ps_da       = dataarray with updated frame_label coordinate
-    # ind_fig     = ggplot induction curve of fluorescence
-    # ind_df      = data frame of mean fluorescence in the masked region at each timepoint
+# Inputs:
+# ps_da            = photosynthesis xarray DataArray
+# labeled_mask     = Labeled mask of objects (32-bit).
+# n_labels         = Total number expected individual objects (default = 1).
+# label            = optional label parameter, modifies the prefix of the group plotting label
 
-    dark_da, dark_fig, dark_df = pcv.photosynthesis.reassign_frame_labels(ps_da=ps.darkadapted, mask=mask)
+# Returns:
+# chart            = Plot of the chlorophyll fluorescence induction curve for each object
+
+dark_fig = pcv.visualize.chlorophyll_fluorescence(ps_da=ps.darkadapted, labeled_mask=mask)
 
 ```
 
 **Figure 6.** Dark-adapted fluorescence induction curve.  
 
-![Screenshot](../img/documentation_images/photosynthesis_reassign_frame_labels/da_induction.png)
+![Screenshot](../img/tutorial_images/psII/dark_chl_curve.png)
 
 After the Fv/Fm protocol, the plant is light-adapted. An image is taken of the plant in the light (F-light). The plant
 is then exposed to an actinic light, and an image of chlorophyll fluorescence is taken to measure steady-state
 fluorescence (F'). The plant is then exposed to a saturating red light pulse briefly. Successive images are taken at a 
 fixed time interval (20 total frames from F0 to F19 in this example). Here we will use the 
-[reassign_frame_labels](../photosynthesis_reassign_frame_labels.md) function to analyze the fluorescence induction curve 
-and identify the frame with maximal fluorescence (Fm').
+[visualize.chlorophyll_fluorescence](../visualize_chlorophyll_fluorescence.md) function to chart the fluorescence induction
+curve.
 
 ```python
-    # Light-adapted fluorescence induction curve
+# Light-adapted fluorescence induction curve
 
-    # Inputs:
-    # ps_da       = photosynthesis xarray DataArray
-    # mask        = mask of plant (binary, single channel)
-    # 
-    # Returns:
-    # ps_da       = dataarray with updated frame_label coordinate
-    # ind_fig     = ggplot induction curve of fluorescence
-    # ind_df      = data frame of mean fluorescence in the masked region at each timepoint
+# Inputs:
+# ps_da            = photosynthesis xarray DataArray
+# labeled_mask     = Labeled mask of objects (32-bit).
+# n_labels         = Total number expected individual objects (default = 1).
+# label            = optional label parameter, modifies the prefix of the group plotting label
 
-    light_da, light_fig, light_df = pcv.photosynthesis.reassign_frame_labels(ps_da=ps.lightadapted, mask=mask)
+# Returns:
+# chart            = Plot of the chlorophyll fluorescence induction curve for each object
+
+light_fig = pcv.photosynthesis.reassign_frame_labels(ps_da=ps.lightadapted, labeled_mask=mask)
 
 ```
 
 **Figure 7.** Light-adapted fluorescence induction curve.  
 
-![Screenshot](../img/documentation_images/photosynthesis_reassign_frame_labels/la_induction.png)
+![Screenshot](../img/tutorial_images/psII/light_chl_curve.png)
 
 #### Estimate the efficiency of PSII
 
 Using the dark-adapted and light-adapted datasets, calculate the metric Fv/Fm to estimate the maximum efficiency of
 PSII and the metric Fq'/Fm' to estimate the operating efficiency of PSII. In both cases the function 
-[analyze_yii](../photosynthesis_analyze_yii.md) is used.
+[analyze.yii](../analyze_yii.md) is used. Setting `auto_fm=True` will use
+[photosynthesis.reassign_frame_labels](../photosynthesis_reassign_frame_labels.md) to automatically find the frame with the maximum
+fluorescence for each masked region.
 
 ```python
-    # Analyze Fv/Fm
+# Analyze Fv/Fm
 
-    # Inputs:
-    # ps_da               = photosynthesis xarray DataArray
-    # mask                = mask of plant (binary, single channel)
-    # measurement_labels  = labels for each measurement, modifies the variable name of observations recorded
-    # label               = optional label parameter, modifies the variable name of observations recorded
-    # 
-    # Returns:
-    # yii       = DataArray of efficiency estimate values
-    # hist_fig  = Histogram of efficiency estimate
+# Inputs:
+# ps_da               = Photosynthesis xarray DataArray (either darkadapted or lightadapted)
+# labeled_mask        = Labeled mask of objects (32-bit).
+# n_labels            = Total number expected individual objects (default = 1).
+# auto_fm             = Automatically calculate the frame with maximum fluorescence per label, otherwise
+#                       use a fixed frame for all labels (default = False).
+# measurement_labels  = labels for each measurement, modifies the variable name of observations recorded
+# label               = optional label parameter, modifies the variable name of observations recorded
 
-    fvfm, fvfm_hist = pcv.photosynthesis.analyze_yii(ps_da=dark_da, mask=mask, measurement_labels=["Fv/Fm"])
+# Returns:
+# yii_global          = DataArray of efficiency estimate values
+# yii_chart           = Histograms of efficiency estimate
+
+fvfm, fvfm_hist = pcv.analyze.yii(ps_da=ps.darkadapted, labeled_mask=mask, auto_fm=True,
+                                    measurement_labels=["Fv/Fm"], label="plant")
 
 ```
 
 **Figure 8.** Fv/Fm histogram.  
 
-![Screenshot](../img/tutorial_images/psII/fvfm_hist.png)
+![Screenshot](../img/documentation_images/analyze_yii/fvfm_histogram.png)
 
 ```python
-    # Analyze Fq'/Fm'
+# Analyze Fq'/Fm'
 
-    # Inputs:
-    # ps_da               = photosynthesis xarray DataArray
-    # mask                = mask of plant (binary, single channel)
-    # measurement_labels  = labels for each measurement, modifies the variable name of observations recorded
-    # label               = optional label parameter, modifies the variable name of observations recorded
-    # 
-    # Returns:
-    # yii       = DataArray of efficiency estimate values
-    # hist_fig  = Histogram of efficiency estimate
+# Inputs:
+# ps_da               = Photosynthesis xarray DataArray (either darkadapted or lightadapted)
+# labeled_mask        = Labeled mask of objects (32-bit).
+# n_labels            = Total number expected individual objects (default = 1).
+# auto_fm             = Automatically calculate the frame with maximum fluorescence per label, otherwise
+#                       use a fixed frame for all labels (default = False).
+# measurement_labels  = labels for each measurement, modifies the variable name of observations recorded
+# label               = optional label parameter, modifies the variable name of observations recorded
 
-    fqfm, fqfm_hist = pcv.photosynthesis.analyze_yii(ps_da=light_da, mask=mask, measurement_labels=["Fq'/Fm'"])
+# Returns:
+# yii_global          = DataArray of efficiency estimate values
+# yii_chart           = Histograms of efficiency estimate
+
+fqfm, fqfm_hist = pcv.analyze.yii(ps_da=ps.lightadapted, labeled_mask=mask, auto_fm=True,
+                                    measurement_labels=["Fq'/Fm'"], label="plant")
 
 ```
 
 **Figure 9.** Fq'/Fm' histogram.  
 
-![Screenshot](../img/tutorial_images/psII/fqfm_hist.png)
+![Screenshot](../img/documentation_images/analyze_yii/fqfm_histogram.png)
 
 #### Estimate non-photochemical quenching
 
-Nonphotochemical quanching (NPQ) can be estimated using the [analyze_npq](../photosynthesis_analyze_npq.md) function.
+Nonphotochemical quanching (NPQ) can be estimated using the [analyze.npq](../analyze_npq.md) function.
 
 ```python
-    # Analyze NPQ
+# Analyze NPQ
 
-    # Inputs:
-    # ps_da_light        = photosynthesis xarray DataArray for which to compute npq
-    # ps_da_dark         = photosynthesis xarray DataArray that contains frame_label `Fm`
-    # mask               = mask of plant (binary, single channel)
-    # measurement_labels = labels for each measurement in ps_da_light, modifies the variable name of observations recorded
-    # label              = optional label parameter, modifies the entity name of observations recorded
-    # 
-    # Returns:
-    # npq       = DataArray of npq values
-    # hist_fig  = Histogram of npq estimate
+# Inputs:
+# ps_da_light        = Photosynthesis xarray DataArray that contains frame_label `Fmp` (lightadapted)
+# ps_da_dark         = Photosynthesis xarray DataArray that contains frame_label `Fm` (darkadapted)
+# labeled_mask       = Labeled mask of objects (32-bit).
+# n_labels           = Total number expected individual objects (default = 1).
+# auto_fm            = Automatically calculate the frame with maximum fluorescence per label, otherwise
+#                      use a fixed frame for all labels (default = False).
+# min_bin            = minimum bin value ("auto" or user input minimum value - must be an integer)
+# max_bin            = maximum bin value ("auto" or user input maximum value - must be an integer)
+# measurement_labels = labels for each measurement in ps_da_light, modifies the variable name of observations recorded
+# label              = optional label parameter, modifies the entity name of observations recorded
 
-    npq, npq_hist = pcv.photosynthesis.analyze_npq(ps_da_light=light_da, ps_da_dark=dark_da, 
-                                                   mask=mask, measurement_labels=["NPQ"])
+# Returns:
+# npq_global         = DataArray of NPQ values
+# npq_chart          = Histograms of NPQ estimates
+
+npq, npq_hist = pcv.analyze.npq(ps_da_light=ps.lightadapted, ps_da_dark=ps.darkadapted, labeled_mask=mask,
+                                auto_fm=True, measurement_labels=["NPQ"], label="plant")
 
 ```
 
 **Figure 10.** NPQ histogram.  
 
-![Screenshot](../img/tutorial_images/psII/npq_hist.png)
+![Screenshot](../img/documentation_images/analyze_npq/npq_histogram.png)
 
 Optionally, the Fv/Fm, Fq'/Fm', and NPQ images can be visualized using the [pseudocolor](../visualize_pseudocolor.md)
 function to assess the distribution of values across the plant.
 
 ```python
-    # Pseudocolor the PSII metric images
+# Pseudocolor the PSII metric images
 
-    # Inputs:
-    # gray_img    - grayscale image data
-    # obj         - (optional) ROI or plant contour object. If provided, the pseudocolored image gets cropped
-    #               down to the region of interest. default = None
-    # mask        - (optional) binary mask
-    # cmap        - (optional) colormap. default is the matplotlib default, viridis
-    # background  - (optional) background color/type, options are "image" (gray_img), "white", or "black"
-    #               (requires a mask). default = 'image'
-    # min_value   - (optional) minimum value for range of interest. default = 0
-    # max_value   - (optional) maximum value for range of interest. default = 255
-    # axes        - (optional) if False then x- and y-axis won't be displayed, nor will the title. default = True
-    # colorbar    - (optional) if False then colorbar won't be displayed. default = True
-    # obj_padding - (optional) if "auto" (default) and an obj is supplied, then the image is cropped to an extent 20%
-    #               larger in each dimension than the object. An single integer is also accepted to define the padding
-    #               in pixels
-    # title       - (optional) custom title for the plot gets drawn if title is not None. default = None
-    # bad_mask    - (optional) binary mask of pixels with "bad" values, e.g. nan or inf or any other values considered
-    #               to be not informative and to be excluded from analysis. default = None
-    # bad_color   - (optional) desired color to show "bad" pixels. default = "red"
-    fvfm_cmap = pcv.visualize.pseudocolor(gray_img=fvfm, mask=mask, cmap="viridis", 
-                                          min_value=0, max_value=1, title="Fv/Fm")
-    fqfm_cmap = pcv.visualize.pseudocolor(gray_img=fqfm, mask=mask, cmap="viridis", 
-                                          min_value=0, max_value=1, title="Fq'/Fm'")
-    npq_cmap = pcv.visualize.pseudocolor(gray_img=npq, mask=mask, cmap="viridis", 
-                                         min_value=0, max_value=1, title="NPQ")
+# Inputs:
+# gray_img    - grayscale image data
+# obj         - (optional) ROI or plant contour object. If provided, the pseudocolored image gets cropped
+#               down to the region of interest. default = None
+# mask        - (optional) binary mask
+# cmap        - (optional) colormap. default is the matplotlib default, viridis
+# background  - (optional) background color/type, options are "image" (gray_img), "white", or "black"
+#               (requires a mask). default = 'image'
+# min_value   - (optional) minimum value for range of interest. default = 0
+# max_value   - (optional) maximum value for range of interest. default = 255
+# axes        - (optional) if False then x- and y-axis won't be displayed, nor will the title. default = True
+# colorbar    - (optional) if False then colorbar won't be displayed. default = True
+# obj_padding - (optional) if "auto" (default) and an obj is supplied, then the image is cropped to an extent 20%
+#               larger in each dimension than the object. An single integer is also accepted to define the padding
+#               in pixels
+# title       - (optional) custom title for the plot gets drawn if title is not None. default = None
+# bad_mask    - (optional) binary mask of pixels with "bad" values, e.g. nan or inf or any other values considered
+#               to be not informative and to be excluded from analysis. default = None
+# bad_color   - (optional) desired color to show "bad" pixels. default = "red"
+fvfm_cmap = pcv.visualize.pseudocolor(gray_img=fvfm, mask=mask, cmap="viridis", 
+                                        min_value=0, max_value=1, title="Fv/Fm")
+fqfm_cmap = pcv.visualize.pseudocolor(gray_img=fqfm, mask=mask, cmap="viridis", 
+                                        min_value=0, max_value=1, title="Fq'/Fm'")
+npq_cmap = pcv.visualize.pseudocolor(gray_img=npq, mask=mask, cmap="viridis", 
+                                        min_value=0, max_value=1, title="NPQ")
 
 ```
 
 **Figure 11.** Pseudocolored Fv/Fm.  
 
-![Screenshot](../img/documentation_images/fluor_fvfm/fvfm_colormap.png)
+![Screenshot](../img/documentation_images/analyze_yii/fvfm_colormap.png)
 
 **Figure 12.** Pseudocolored Fq'/Fm'.  
 
-![Screenshot](../img/documentation_images/fluor_fvfm/fqfm_colormap.png)
+![Screenshot](../img/documentation_images/analyze_yii/fqfm_colormap.png)
 
 **Figure 13.** Pseudocolored NPQ.  
 
@@ -349,26 +354,29 @@ function to assess the distribution of values across the plant.
 Calculate ARI using the [ari](../spectral_index.md) function, plot a colormap, and analyze the plant values.
 
 ```python
-    # Inputs:
-    # hsi         = hyperspectral image (PlantCV Spectral_data instance)
-    # distance    = how lenient to be if the required wavelengths are not available
-    # 
-    # Returns:
-    # index_array = Index data as a Spectral_data instance
-    ari = pcv.spectral_index.ari(hsi=ps.spectral)
-    
-    ari_ps = pcv.visualize.pseudocolor(gray_img=ari.array_data, min_value=0, max_value=10, 
-                                       cmap="Purples", mask=mask, background="black", 
-                                       title="Anthocyanin Reflectance Index")
-    # Inputs:
-    # index_array  = Instance of the Spectral_data class, usually the output from pcv.hyperspectral.extract_index
-    # mask         = Binary mask made from selected contours
-    # histplot     = if True plots histogram of intensity values
-    # bins         = optional, number of classes to divide spectrum into
-    # min_bin      = optional, minimum bin value ("auto" or user input minimum value)
-    # max_bin      = optional, maximum bin value ("auto" or user input maximum value)
-    # label        = optional label parameter, modifies the variable name of observations recorded
-    ari_hist = pcv.hyperspectral.analyze_index(index_array=ari, mask=mask, min_bin=0, max_bin=10)
+# Inputs:
+# hsi         = hyperspectral image (PlantCV Spectral_data instance)
+# distance    = how lenient to be if the required wavelengths are not available
+# 
+# Returns:
+# index_array = Index data as a Spectral_data instance
+ari = pcv.spectral_index.ari(hsi=ps.spectral)
+
+ari_ps = pcv.visualize.pseudocolor(gray_img=ari.array_data, min_value=0, max_value=10, 
+                                    cmap="Purples", mask=mask, background="black", 
+                                    title="Anthocyanin Reflectance Index")
+# Inputs:
+# index_img    = Index image data (PlantCV Spectral_data object)
+# labeled_mask = Labeled mask of objects (32-bit).
+# n_labels     = Total number expected individual objects (default = 1).
+# bins         = Number of histogram bins (default = 100)
+# min_bin      = Minimum bin value (default = 0). "auto" will use the minimum value of the index image.
+# max_bin      = Maximum bin value (default = 1). "auto" will use the maximum value of the index image.
+# label        = optional label parameter, modifies the variable name of observations recorded (default = "default").
+
+# Returns:
+# index_hist = Spectral index histogram plot
+ari_hist = pcv.analyze.spectral_index(index_img=ari, labeled_mask=mask, min_bin=0, max_bin=10, label="plant")
 
 ```
 
@@ -385,26 +393,29 @@ Calculate ARI using the [ari](../spectral_index.md) function, plot a colormap, a
 Calculate CI using the [ci_rededge](../spectral_index.md) function, plot a colormap, and analyze the plant values.
 
 ```python
-    # Inputs:
-    # hsi         = hyperspectral image (PlantCV Spectral_data instance)
-    # distance    = how lenient to be if the required wavelengths are not available
-    # 
-    # Returns:
-    # index_array = Index data as a Spectral_data instance
-    ci = pcv.spectral_index.ci_rededge(hsi=ps.spectral)
-    
-    ci_ps = pcv.visualize.pseudocolor(gray_img=ci.array_data, min_value=0, max_value=5, 
-                                      cmap="Greens", mask=mask, background="black", 
-                                      title="Chlorophyll Index Red Edge")
-    # Inputs:
-    # index_array  = Instance of the Spectral_data class, usually the output from pcv.hyperspectral.extract_index
-    # mask         = Binary mask made from selected contours
-    # histplot     = if True plots histogram of intensity values
-    # bins         = optional, number of classes to divide spectrum into
-    # min_bin      = optional, minimum bin value ("auto" or user input minimum value)
-    # max_bin      = optional, maximum bin value ("auto" or user input maximum value)
-    # label        = optional label parameter, modifies the variable name of observations recorded
-    ci_hist = pcv.hyperspectral.analyze_index(index_array=ci, mask=mask, min_bin=0, max_bin=5)
+# Inputs:
+# hsi         = hyperspectral image (PlantCV Spectral_data instance)
+# distance    = how lenient to be if the required wavelengths are not available
+# 
+# Returns:
+# index_array = Index data as a Spectral_data instance
+ci = pcv.spectral_index.ci_rededge(hsi=ps.spectral)
+
+ci_ps = pcv.visualize.pseudocolor(gray_img=ci.array_data, min_value=0, max_value=5, 
+                                    cmap="Greens", mask=mask, background="black", 
+                                    title="Chlorophyll Index Red Edge")
+# Inputs:
+# index_img    = Index image data (PlantCV Spectral_data object)
+# labeled_mask = Labeled mask of objects (32-bit).
+# n_labels     = Total number expected individual objects (default = 1).
+# bins         = Number of histogram bins (default = 100)
+# min_bin      = Minimum bin value (default = 0). "auto" will use the minimum value of the index image.
+# max_bin      = Maximum bin value (default = 1). "auto" will use the maximum value of the index image.
+# label        = optional label parameter, modifies the variable name of observations recorded (default = "default").
+
+# Returns:
+# index_hist = Spectral index histogram plot
+ci_hist = pcv.analyze.spectral_index(index_img=ci, labeled_mask=mask, min_bin=0, max_bin=5, label="plant")
 
 ```
 
@@ -421,26 +432,29 @@ Calculate CI using the [ci_rededge](../spectral_index.md) function, plot a color
 Calculate NDVI using the [ndvi](../spectral_index.md) function, plot a colormap, and analyze the plant values.
 
 ```python
-    # Inputs:
-    # hsi         = hyperspectral image (PlantCV Spectral_data instance)
-    # distance    = how lenient to be if the required wavelengths are not available
-    # 
-    # Returns:
-    # index_array = Index data as a Spectral_data instance
-    ndvi = pcv.spectral_index.ndvi(hsi=ps.spectral)
-    
-    ndvi_ps = pcv.visualize.pseudocolor(gray_img=ndvi.array_data, min_value=0, max_value=1, 
-                                        cmap="jet", mask=mask, background="black", 
-                                        title="Normalized Difference Vegetation Index")
-    # Inputs:
-    # index_array  = Instance of the Spectral_data class, usually the output from pcv.hyperspectral.extract_index
-    # mask         = Binary mask made from selected contours
-    # histplot     = if True plots histogram of intensity values
-    # bins         = optional, number of classes to divide spectrum into
-    # min_bin      = optional, minimum bin value ("auto" or user input minimum value)
-    # max_bin      = optional, maximum bin value ("auto" or user input maximum value)
-    # label        = optional label parameter, modifies the variable name of observations recorded
-    ndvi_hist = pcv.hyperspectral.analyze_index(index_array=ndvi, mask=mask, min_bin=0, max_bin=1)
+# Inputs:
+# hsi         = hyperspectral image (PlantCV Spectral_data instance)
+# distance    = how lenient to be if the required wavelengths are not available
+# 
+# Returns:
+# index_array = Index data as a Spectral_data instance
+ndvi = pcv.spectral_index.ndvi(hsi=ps.spectral)
+
+ndvi_ps = pcv.visualize.pseudocolor(gray_img=ndvi.array_data, min_value=0, max_value=1, 
+                                    cmap="jet", mask=mask, background="black", 
+                                    title="Normalized Difference Vegetation Index")
+# Inputs:
+# index_img    = Index image data (PlantCV Spectral_data object)
+# labeled_mask = Labeled mask of objects (32-bit).
+# n_labels     = Total number expected individual objects (default = 1).
+# bins         = Number of histogram bins (default = 100)
+# min_bin      = Minimum bin value (default = 0). "auto" will use the minimum value of the index image.
+# max_bin      = Maximum bin value (default = 1). "auto" will use the maximum value of the index image.
+# label        = optional label parameter, modifies the variable name of observations recorded (default = "default").
+
+# Returns:
+# index_hist = Spectral index histogram plot
+ndvi_hist = pcv.analyze.spectral_index(index_img=ndvi, labeled_mask=mask, min_bin=0, max_bin=1, label="plant")
 
 ```
 
@@ -455,274 +469,25 @@ Calculate NDVI using the [ndvi](../spectral_index.md) function, plot a colormap,
 #### Save results and finish the workflow
 
 ```python
-    # Save Fv/Fm, Fq'/Fm', and NPQ results
-    pcv.outputs.save_results(filename=args.result)
-    
-    if args.writeimg:
-        pcv.print_image(img=dark_fig, filename=os.path.join(args.outdir, ps.filename[:-4] + "_fvfm_induction.png"))
-        pcv.print_image(img=light_fig, filename=os.path.join(args.outdir, ps.filename[:-4] + "_fqfm_induction.png"))
-        pcv.print_image(img=fvfm_hist, filename=os.path.join(args.outdir, ps.filename[:-4] + "_fvfm_histogram.png"))
-        pcv.print_image(img=fqfm_hist, filename=os.path.join(args.outdir, ps.filename[:-4] + "_fqfm_histogram.png"))
-        pcv.print_image(img=npq_hist, filename=os.path.join(args.outdir, ps.filename[:-4] + "_npq_histogram.png"))
-        pcv.print_image(img=fvfm_cmap, filename=os.path.join(args.outdir, ps.filename[:-4] + "_fvfm_cmap.png"))
-        pcv.print_image(img=fqfm_cmap, filename=os.path.join(args.outdir, ps.filename[:-4] + "_fqfm_cmap.png"))
-        pcv.print_image(img=npq_cmap, filename=os.path.join(args.outdir, ps.filename[:-4] + "_npq_cmap.png"))
-        pcv.print_image(img=ari_ps, filename=os.path.join(args.outdir, ps.filename[:-4] + "_ari_cmap.png"))
-        pcv.print_image(img=ari_hist, filename=os.path.join(args.outdir, ps.filename[:-4] + "_ari_hist.png"))
-        pcv.print_image(img=ci_ps, filename=os.path.join(args.outdir, ps.filename[:-4] + "_ci_cmap.png"))
-        pcv.print_image(img=ci_hist, filename=os.path.join(args.outdir, ps.filename[:-4] + "_ci_hist.png"))
-        pcv.print_image(img=ndvi_ps, filename=os.path.join(args.outdir, ps.filename[:-4] + "_ndvi_cmap.png"))
-        pcv.print_image(img=ndvi_hist, filename=os.path.join(args.outdir, ps.filename[:-4] + "_ndvi_hist.png"))
+# Save Fv/Fm, Fq'/Fm', and NPQ results
+pcv.outputs.save_results(filename=args.result)
 
-if __name__ == '__main__':
-    main()
+if args.writeimg:
+    pcv.print_image(img=dark_fig, filename=os.path.join(args.outdir, ps.filename[:-4] + "_fvfm_induction.png"))
+    pcv.print_image(img=light_fig, filename=os.path.join(args.outdir, ps.filename[:-4] + "_fqfm_induction.png"))
+    pcv.print_image(img=fvfm_hist, filename=os.path.join(args.outdir, ps.filename[:-4] + "_fvfm_histogram.png"))
+    pcv.print_image(img=fqfm_hist, filename=os.path.join(args.outdir, ps.filename[:-4] + "_fqfm_histogram.png"))
+    pcv.print_image(img=npq_hist, filename=os.path.join(args.outdir, ps.filename[:-4] + "_npq_histogram.png"))
+    pcv.print_image(img=fvfm_cmap, filename=os.path.join(args.outdir, ps.filename[:-4] + "_fvfm_cmap.png"))
+    pcv.print_image(img=fqfm_cmap, filename=os.path.join(args.outdir, ps.filename[:-4] + "_fqfm_cmap.png"))
+    pcv.print_image(img=npq_cmap, filename=os.path.join(args.outdir, ps.filename[:-4] + "_npq_cmap.png"))
+    pcv.print_image(img=ari_ps, filename=os.path.join(args.outdir, ps.filename[:-4] + "_ari_cmap.png"))
+    pcv.print_image(img=ari_hist, filename=os.path.join(args.outdir, ps.filename[:-4] + "_ari_hist.png"))
+    pcv.print_image(img=ci_ps, filename=os.path.join(args.outdir, ps.filename[:-4] + "_ci_cmap.png"))
+    pcv.print_image(img=ci_hist, filename=os.path.join(args.outdir, ps.filename[:-4] + "_ci_hist.png"))
+    pcv.print_image(img=ndvi_ps, filename=os.path.join(args.outdir, ps.filename[:-4] + "_ndvi_cmap.png"))
+    pcv.print_image(img=ndvi_hist, filename=os.path.join(args.outdir, ps.filename[:-4] + "_ndvi_hist.png"))
 
 ```
 
 To deploy a workflow over a full image set please see tutorial on [workflow parallelization](../pipeline_parallel.md).
-
-## PSII Script
-
-In the terminal:
-
-```
-./workflowname.py -i /home/user/images/PSII_PSD_testimg_22_rep6.INF -o /home/user/output-images -D 'print'
-
-```
-
-* Always test workflows (preferably with -D flag for debug mode) before running over a full image set.
-
-Python script:
-
-```python
-#!/usr/bin/env python
-import os
-import argparse
-from plantcv import plantcv as pcv
-from skimage.util import img_as_ubyte
-
-### Parse command-line arguments
-def options():
-    parser = argparse.ArgumentParser(description="Imaging processing with opencv")
-    parser.add_argument("-i", "--image", help="Input INF file.", required=True)
-    parser.add_argument("-o", "--outdir", help="Output directory for image files.", required=True)
-    parser.add_argument("-w", "--writeimg", help="Save output images.", action="store_true")
-    parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.", action="store_true")
-    args = parser.parse_args()
-    return args
-
-
-### Main workflow
-def main():
-    # Get options
-    args = options()
-
-    pcv.params.debug = args.debug #set debug mode
-    pcv.params.debug_outdir = args.outdir #set output directory
-
-    # Read fluorescence image data
-    ps = pcv.photosynthesis.read_cropreporter(filename=args.image)
-
-    # Threshold the chlorophyll image
-
-    # Inputs:
-    #   gray_img        - Grayscale image data
-    #   max_value       - Value to apply above threshold (255 = white)
-    #   object_type     - 'light' (default) or 'dark'. If the object is lighter than the
-    #                       background then standard threshold is done. If the object is
-    #                       darker than the background then inverse thresholding is done.
-    mask = pcv.threshold.otsu(gray_img=img_as_ubyte(ps.chlorophyll.sel(frame_label="Chl").data), 
-                              max_value=255, object_type="light")
-
-    # Fill small objects
-
-    # Inputs:
-    #   bin_img         - Binary image data
-    mask = pcv.fill_holes(bin_img=mask)
-    
-    # Dark-adapted fluorescence induction curve
-
-    # Inputs:
-    # ps_da       = photosynthesis xarray DataArray
-    # mask        = mask of plant (binary, single channel)
-    # 
-    # Returns:
-    # ps_da       = dataarray with updated frame_label coordinate
-    # ind_fig     = ggplot induction curve of fluorescence
-    # ind_df      = data frame of mean fluorescence in the masked region at each timepoint
-
-    dark_da, dark_fig, dark_df = pcv.photosynthesis.reassign_frame_labels(ps_da=ps.darkadapted, mask=mask)
-
-    # Light-adapted fluorescence induction curve
-
-    # Inputs:
-    # ps_da       = photosynthesis xarray DataArray
-    # mask        = mask of plant (binary, single channel)
-    # 
-    # Returns:
-    # ps_da       = dataarray with updated frame_label coordinate
-    # ind_fig     = ggplot induction curve of fluorescence
-    # ind_df      = data frame of mean fluorescence in the masked region at each timepoint
-
-    light_da, light_fig, light_df = pcv.photosynthesis.reassign_frame_labels(ps_da=ps.lightadapted, mask=mask)
-    
-    # Analyze Fv/Fm
-    # Inputs:
-    # ps_da               = photosynthesis xarray DataArray
-    # mask                = mask of plant (binary, single channel)
-    # measurement_labels  = labels for each measurement, modifies the variable name of observations recorded
-    # label               = optional label parameter, modifies the variable name of observations recorded
-    # 
-    # Returns:
-    # yii       = DataArray of efficiency estimate values
-    # hist_fig  = Histogram of efficiency estimate
-
-    fvfm, fvfm_hist = pcv.photosynthesis.analyze_yii(ps_da=dark_da, mask=mask, measurement_labels=["Fv/Fm"])
-    
-    # Analyze Fq'/Fm'
-
-    # Inputs:
-    # ps_da               = photosynthesis xarray DataArray
-    # mask                = mask of plant (binary, single channel)
-    # measurement_labels  = labels for each measurement, modifies the variable name of observations recorded
-    # label               = optional label parameter, modifies the variable name of observations recorded
-    # 
-    # Returns:
-    # yii       = DataArray of efficiency estimate values
-    # hist_fig  = Histogram of efficiency estimate
-
-    fqfm, fqfm_hist = pcv.photosynthesis.analyze_yii(ps_da=light_da, mask=mask, measurement_labels=["Fq'/Fm'"])
-    
-    # Analyze NPQ
-
-    # Inputs:
-    # ps_da_light        = photosynthesis xarray DataArray for which to compute npq
-    # ps_da_dark         = photosynthesis xarray DataArray that contains frame_label `Fm`
-    # mask               = mask of plant (binary, single channel)
-    # measurement_labels = labels for each measurement in ps_da_light, modifies the variable name of observations recorded
-    # label              = optional label parameter, modifies the entity name of observations recorded
-    # 
-    # Returns:
-    # npq       = DataArray of npq values
-    # hist_fig  = Histogram of npq estimate
-
-    npq, npq_hist = pcv.photosynthesis.analyze_npq(ps_da_light=light_da, ps_da_dark=dark_da, 
-                                                   mask=mask, measurement_labels=["NPQ"])
-
-    # Pseudocolor the PSII metric images
-
-    # Inputs:
-    # gray_img    - grayscale image data
-    # obj         - (optional) ROI or plant contour object. If provided, the pseudocolored image gets cropped
-    #               down to the region of interest. default = None
-    # mask        - (optional) binary mask
-    # cmap        - (optional) colormap. default is the matplotlib default, viridis
-    # background  - (optional) background color/type, options are "image" (gray_img), "white", or "black"
-    #               (requires a mask). default = 'image'
-    # min_value   - (optional) minimum value for range of interest. default = 0
-    # max_value   - (optional) maximum value for range of interest. default = 255
-    # axes        - (optional) if False then x- and y-axis won't be displayed, nor will the title. default = True
-    # colorbar    - (optional) if False then colorbar won't be displayed. default = True
-    # obj_padding - (optional) if "auto" (default) and an obj is supplied, then the image is cropped to an extent 20%
-    #               larger in each dimension than the object. An single integer is also accepted to define the padding
-    #               in pixels
-    # title       - (optional) custom title for the plot gets drawn if title is not None. default = None
-    # bad_mask    - (optional) binary mask of pixels with "bad" values, e.g. nan or inf or any other values considered
-    #               to be not informative and to be excluded from analysis. default = None
-    # bad_color   - (optional) desired color to show "bad" pixels. default = "red"
-    fvfm_cmap = pcv.visualize.pseudocolor(gray_img=fvfm, mask=mask, cmap="viridis", 
-                                          min_value=0, max_value=1, title="Fv/Fm")
-    fqfm_cmap = pcv.visualize.pseudocolor(gray_img=fqfm, mask=mask, cmap="viridis", 
-                                          min_value=0, max_value=1, title="Fq'/Fm'")
-    npq_cmap = pcv.visualize.pseudocolor(gray_img=npq, mask=mask, cmap="viridis", 
-                                         min_value=0, max_value=1, title="NPQ")
-    
-    # ARI spectral index
-    # Inputs:
-    # hsi         = hyperspectral image (PlantCV Spectral_data instance)
-    # distance    = how lenient to be if the required wavelengths are not available
-    # 
-    # Returns:
-    # index_array = Index data as a Spectral_data instance
-    ari = pcv.spectral_index.ari(hsi=ps.spectral)
-    
-    ari_ps = pcv.visualize.pseudocolor(gray_img=ari.array_data, min_value=0, max_value=10, 
-                                       cmap="Purples", mask=mask, background="black", 
-                                       title="Anthocyanin Reflectance Index")
-    # Inputs:
-    # index_array  = Instance of the Spectral_data class, usually the output from pcv.hyperspectral.extract_index
-    # mask         = Binary mask made from selected contours
-    # histplot     = if True plots histogram of intensity values
-    # bins         = optional, number of classes to divide spectrum into
-    # min_bin      = optional, minimum bin value ("auto" or user input minimum value)
-    # max_bin      = optional, maximum bin value ("auto" or user input maximum value)
-    # label        = optional label parameter, modifies the variable name of observations recorded
-    ari_hist = pcv.hyperspectral.analyze_index(index_array=ari, mask=mask, min_bin=0, max_bin=10)
-    
-    # CI spectral index
-    # Inputs:
-    # hsi         = hyperspectral image (PlantCV Spectral_data instance)
-    # distance    = how lenient to be if the required wavelengths are not available
-    # 
-    # Returns:
-    # index_array = Index data as a Spectral_data instance
-    ci = pcv.spectral_index.ci_rededge(hsi=ps.spectral)
-    
-    ci_ps = pcv.visualize.pseudocolor(gray_img=ci.array_data, min_value=0, max_value=5, 
-                                      cmap="Greens", mask=mask, background="black", 
-                                      title="Chlorophyll Index Red Edge")
-    # Inputs:
-    # index_array  = Instance of the Spectral_data class, usually the output from pcv.hyperspectral.extract_index
-    # mask         = Binary mask made from selected contours
-    # histplot     = if True plots histogram of intensity values
-    # bins         = optional, number of classes to divide spectrum into
-    # min_bin      = optional, minimum bin value ("auto" or user input minimum value)
-    # max_bin      = optional, maximum bin value ("auto" or user input maximum value)
-    # label        = optional label parameter, modifies the variable name of observations recorded
-    ci_hist = pcv.hyperspectral.analyze_index(index_array=ci, mask=mask, min_bin=0, max_bin=5)
-    
-    # Inputs:
-    # hsi         = hyperspectral image (PlantCV Spectral_data instance)
-    # distance    = how lenient to be if the required wavelengths are not available
-    # 
-    # Returns:
-    # index_array = Index data as a Spectral_data instance
-    ndvi = pcv.spectral_index.ndvi(hsi=ps.spectral)
-    
-    ndvi_ps = pcv.visualize.pseudocolor(gray_img=ndvi.array_data, min_value=0, max_value=1, 
-                                        cmap="jet", mask=mask, background="black", 
-                                        title="Normalized Difference Vegetation Index")
-    # Inputs:
-    # index_array  = Instance of the Spectral_data class, usually the output from pcv.hyperspectral.extract_index
-    # mask         = Binary mask made from selected contours
-    # histplot     = if True plots histogram of intensity values
-    # bins         = optional, number of classes to divide spectrum into
-    # min_bin      = optional, minimum bin value ("auto" or user input minimum value)
-    # max_bin      = optional, maximum bin value ("auto" or user input maximum value)
-    # label        = optional label parameter, modifies the variable name of observations recorded
-    ndvi_hist = pcv.hyperspectral.analyze_index(index_array=ndvi, mask=mask, min_bin=0, max_bin=1)
-
-    # Save Fv/Fm, Fq'/Fm', NPQ, and spectral results
-    pcv.outputs.save_results(filename=args.result)
-    
-    if args.writeimg:
-        pcv.print_image(img=dark_fig, filename=os.path.join(args.outdir, ps.filename[:-4] + "_fvfm_induction.png"))
-        pcv.print_image(img=light_fig, filename=os.path.join(args.outdir, ps.filename[:-4] + "_fqfm_induction.png"))
-        pcv.print_image(img=fvfm_hist, filename=os.path.join(args.outdir, ps.filename[:-4] + "_fvfm_histogram.png"))
-        pcv.print_image(img=fqfm_hist, filename=os.path.join(args.outdir, ps.filename[:-4] + "_fqfm_histogram.png"))
-        pcv.print_image(img=npq_hist, filename=os.path.join(args.outdir, ps.filename[:-4] + "_npq_histogram.png"))
-        pcv.print_image(img=fvfm_cmap, filename=os.path.join(args.outdir, ps.filename[:-4] + "_fvfm_cmap.png"))
-        pcv.print_image(img=fqfm_cmap, filename=os.path.join(args.outdir, ps.filename[:-4] + "_fqfm_cmap.png"))
-        pcv.print_image(img=npq_cmap, filename=os.path.join(args.outdir, ps.filename[:-4] + "_npq_cmap.png"))
-        pcv.print_image(img=ari_ps, filename=os.path.join(args.outdir, ps.filename[:-4] + "_ari_cmap.png"))
-        pcv.print_image(img=ari_hist, filename=os.path.join(args.outdir, ps.filename[:-4] + "_ari_hist.png"))
-        pcv.print_image(img=ci_ps, filename=os.path.join(args.outdir, ps.filename[:-4] + "_ci_cmap.png"))
-        pcv.print_image(img=ci_hist, filename=os.path.join(args.outdir, ps.filename[:-4] + "_ci_hist.png"))
-        pcv.print_image(img=ndvi_ps, filename=os.path.join(args.outdir, ps.filename[:-4] + "_ndvi_cmap.png"))
-        pcv.print_image(img=ndvi_hist, filename=os.path.join(args.outdir, ps.filename[:-4] + "_ndvi_hist.png"))
-        
-
-if __name__ == '__main__':
-    main()
-
-```

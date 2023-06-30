@@ -16,7 +16,7 @@ dependencies:
   - nb_conda
   - opencv
   - statsmodels
-  - xarray
+  - xarray>=2022.11.0
   - mkdocs
   - pytest
   - pytest-cov

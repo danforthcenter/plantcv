@@ -16,13 +16,12 @@ from scipy.ndimage import generic_filter
 
 
 # Binary threshold
-def binary(gray_img, threshold, max_value, object_type="light"):
+def binary(gray_img, threshold, object_type="light"):
     """Creates a binary image from a grayscale image based on the threshold value.
 
     Inputs:
     gray_img     = Grayscale image data
     threshold    = Threshold value (0-255)
-    max_value    = value to apply above threshold (usually 255 = white)
     object_type  = "light" or "dark" (default: "light")
                    - If object is lighter than the background then standard thresholding is done
                    - If object is darker than the background then inverse thresholding is done
@@ -32,7 +31,6 @@ def binary(gray_img, threshold, max_value, object_type="light"):
 
     :param gray_img: numpy.ndarray
     :param threshold: int
-    :param max_value: int
     :param object_type: str
     :return bin_img: numpy.ndarray
     """
@@ -48,7 +46,7 @@ def binary(gray_img, threshold, max_value, object_type="light"):
     params.device += 1
 
     # Threshold the image
-    bin_img = _call_threshold(gray_img, threshold, max_value, threshold_method, "_binary_threshold_")
+    bin_img = _call_threshold(gray_img, threshold, 255, threshold_method, "_binary_threshold_")
 
     return bin_img
 
@@ -341,7 +339,7 @@ def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity'
     generic_filter(gray_img, calc_texture, size=ksize, output=output, mode=borders)
 
     # Threshold so higher texture measurements stand out
-    bin_img = binary(gray_img=output, threshold=threshold, max_value=max_value, object_type='light')
+    bin_img = binary(gray_img=output, threshold=threshold, object_type='light')
 
     _debug(visual=bin_img, filename=os.path.join(params.debug_outdir, str(params.device) + "_texture_mask.png"))
 

@@ -9,6 +9,6 @@ plotnine
 dask
 dask-jobqueue
 opencv-python
-xarray
+xarray>=2022.11.0
 statsmodels
 altair

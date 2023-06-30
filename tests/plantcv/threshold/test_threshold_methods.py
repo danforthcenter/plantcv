@@ -11,7 +11,7 @@ def test_binary(objtype, threshold_test_data):
     """Test for PlantCV."""
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
-    binary_img = binary(gray_img=gray_img, threshold=25, max_value=255, object_type=objtype)
+    binary_img = binary(gray_img=gray_img, threshold=25, object_type=objtype)
     # Assert that the output image has the dimensions of the input image and is binary
     assert gray_img.shape == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
@@ -21,7 +21,7 @@ def test_binary_incorrect_object_type(threshold_test_data):
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
     with pytest.raises(RuntimeError):
-        _ = binary(gray_img=gray_img, threshold=25, max_value=255, object_type="lite")
+        _ = binary(gray_img=gray_img, threshold=25, object_type="lite")
 
 
 @pytest.mark.parametrize("objtype", ["dark", "light"])
