@@ -34,6 +34,8 @@ nav:
         - 'Analyze Thermal': analyze_thermal.md
         - 'Analyze Spectral Reflectance': analyze_spectral_reflectance.md
         - 'Analyze Spectral Index': analyze_spectral_index.md
+        - 'Analyze YII': analyze_yii.md
+        - 'Analyze NPQ': analyze_npq.md
       - 'Annotation Tools':
           - 'Points': Points.md
       - 'Apply Mask': apply_mask.md
@@ -121,8 +123,6 @@ nav:
       - 'Outputs Class': outputs.md
       - 'Photosynthesis Functions':
           - 'Read CropReporter Data': photosynthesis_read_cropreporter.md
-          - 'Analyze YII': photosynthesis_analyze_yii.md
-          - 'Analyze NPQ': photosynthesis_analyze_npq.md
           - 'Reassign Frame Labels': photosynthesis_reassign_frame_labels.md
       - 'Params (Debugging)': params.md
       - 'Print Image': print_image.md
@@ -180,6 +180,7 @@ nav:
             - 'Save Matrix': save_matrix.md
       - 'Visualization Methods':
           - 'Auto Threshold Methods': visualize_auto_threshold_methods.md
+          - 'Chlorophyll Fluorescence': visualize_chlorophyll_fluorescence.md
           - 'Clustered Contours': visualize_clustered_contours.md
           - 'Colorize Label Image': visualize_colorize_label_img.md
           - 'Colorize Masks': visualize_colorize_masks.md
