@@ -8,7 +8,7 @@ This local threshold depends on the local average, computed in a squared portion
 
 In the mean adaptive threshold, the local average is the average of the pixel values in the block.
 
-**plantcv.threshold.mean**(*gray_img, block_size, offset, object_type="light", max_value=255*)
+**plantcv.threshold.mean**(*gray_img, block_size, offset, object_type="light"*)
 
 **returns** thresholded/binary image
 
@@ -19,10 +19,9 @@ In the mean adaptive threshold, the local average is the average of the pixel va
     A negative offset sets the local threshold above the local average.
     - object_type - "light" or "dark" (default: "light").
       - "light" for objects brighter than the background, sets the pixels above
-      the local threshold to max_value and the pixels below to 0.
+      the local threshold to 255 and the pixels below to 0.
       - "dark" for objects darker than the background, sets the pixels below the
-      local threshold to max_value and the pixels above to 0.
-    - max_value - Value to apply above threshold (default: 255 = white)
+      local threshold to 255 and the pixels above to 0.
 - **Context:**
     - Useful for unevenly illuminated images
 
@@ -41,13 +40,13 @@ pcv.params.debug = "plot"
 
 # Adaptive threshold with different parameters
 threshold_mean1 = pcv.threshold.mean(gray_img=gray_img, block_size=250, offset=25,
-                                    object_type='dark', max_value=255)
+                                    object_type='dark')
 
 threshold_mean2 = pcv.threshold.mean(gray_img=gray_img, block_size=15, offset=5,
-                                    object_type='dark', max_value=255)
+                                    object_type='dark')
 
 threshold_mean3 = pcv.threshold.mean(gray_img=gray_img, block_size=2000, offset=25,
-                                    object_type='dark', max_value=255)
+                                    object_type='dark')
 ```
 
 **Thresholded image**

@@ -1046,7 +1046,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: NA
 * post v3.0dev2: bin_img = **plantcv.threshold.mean**(*gray_img, max_value, object_type="light"*)
-* post v4.0: bin_img = **plantcv.threshold.mean**(*gray_img, block_size, offset, object_type="light", max_value=255*)
+* post v4.0: bin_img = **plantcv.threshold.mean**(*gray_img, block_size, offset, object_type="light"*)
 
 #### plantcv.threshold.otsu
 
