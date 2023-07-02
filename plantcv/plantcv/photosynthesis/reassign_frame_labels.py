@@ -1,12 +1,7 @@
 import numpy as np
-import os
-import pandas as pd
-from skimage.util import img_as_bool
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv.classes import PSII_data
-from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
-from plotnine import ggplot, aes, geom_line, geom_point, labs
 
 
 def reassign_frame_labels(ps_da, mask):
@@ -31,6 +26,7 @@ def reassign_frame_labels(ps_da, mask):
     :return ind_fig: ggplot figure
     :return ind_df: pandas.core.frame.DataFrame
     """
+    params.device += 1
 
     try:
         if ps_da.name != "lightadapted" and ps_da.name != "darkadapted":
@@ -48,11 +44,13 @@ def reassign_frame_labels(ps_da, mask):
     datasets = {
         "lightadapted": {
             "prime": "p",
-            "label": "PSL"
+            "label": "PSL",
+            "F": "Fp"
         },
         "darkadapted": {
             "prime": "",
-            "label": "PSD"
+            "label": "PSD",
+            "F": "F0"
         }
     }
 
@@ -60,30 +58,19 @@ def reassign_frame_labels(ps_da, mask):
     ind_size = ps_da.frame_label.size
     # Create a new frame label array populated with the current labels
     idx = ps_da.frame_label.values
+    # Find the frame corresponding to the first frame after F0/Fp
+    f = idx.tolist().index(datasets[ps_da.name.lower()]['F']) + 1
     # Reset the frame labels after F0/Fp
-    for i in range(2, ind_size):
+    for i in range(f, ind_size):
         idx[i] = f"{datasets[ps_da.name.lower()]['label']}{i}"
     # get plant mean for each frame based on mask
-    fluor_values = ps_da.where(img_as_bool(mask)[..., None, None]).mean(['x', 'y', 'measurement'])
-    # find frame with max mean
-    max_ind = np.argmax(fluor_values.data)
+    exp_mask = np.copy(mask)[..., None, None]
+    fluor_values = ps_da.where(exp_mask > 0).mean(['x', 'y', 'measurement'])
+    # find frame with max mean after the control and F/F' frames
+    max_ind = np.argmax(fluor_values.data[f:])
     # assign max frame label
-    idx[max_ind] = f"Fm{datasets[ps_da.name.lower()]['prime']}"
+    idx[max_ind + f] = f"Fm{datasets[ps_da.name.lower()]['prime']}"
     # assign new labels back to dataarray
     ps_da = ps_da.assign_coords({'frame_label': ('frame_label', idx)})
 
-    # save induction curve data to dataframe
-    ind_df = pd.DataFrame({"Timepoints": range(0, ind_size), "Fluorescence": fluor_values})  # "Measurement": meas})
-
-    # Make the histogram figure using plotnine
-    ind_fig = (ggplot(data=ind_df, mapping=aes(x='Timepoints', y='Fluorescence'))
-               + geom_line(show_legend=True, color="green")
-               + geom_point()
-               + labs(title=f"{ps_da.name} fluorescence")
-               )
-
-    # Plot/Print out the histograms
-    _debug(visual=ind_fig,
-           filename=os.path.join(params.debug_outdir, str(params.device) + "_fluor_histogram.png"))
-
-    return ps_da, ind_fig, ind_df
+    return ps_da

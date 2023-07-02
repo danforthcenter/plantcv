@@ -16,13 +16,12 @@ from scipy.ndimage import generic_filter
 
 
 # Binary threshold
-def binary(gray_img, threshold, max_value, object_type="light"):
+def binary(gray_img, threshold, object_type="light"):
     """Creates a binary image from a grayscale image based on the threshold value.
 
     Inputs:
     gray_img     = Grayscale image data
     threshold    = Threshold value (0-255)
-    max_value    = value to apply above threshold (usually 255 = white)
     object_type  = "light" or "dark" (default: "light")
                    - If object is lighter than the background then standard thresholding is done
                    - If object is darker than the background then inverse thresholding is done
@@ -32,7 +31,6 @@ def binary(gray_img, threshold, max_value, object_type="light"):
 
     :param gray_img: numpy.ndarray
     :param threshold: int
-    :param max_value: int
     :param object_type: str
     :return bin_img: numpy.ndarray
     """
@@ -48,7 +46,7 @@ def binary(gray_img, threshold, max_value, object_type="light"):
     params.device += 1
 
     # Threshold the image
-    bin_img = _call_threshold(gray_img, threshold, max_value, threshold_method, "_binary_threshold_")
+    bin_img = _call_threshold(gray_img, threshold, 255, threshold_method, "_binary_threshold_")
 
     return bin_img
 
@@ -104,7 +102,7 @@ def gaussian(gray_img, block_size, offset, object_type="light", max_value=255):
 
 
 # Mean adaptive threshold
-def mean(gray_img, block_size, offset, object_type="light", max_value=255):
+def mean(gray_img, block_size, offset, object_type="light"):
     """Creates a binary image from a grayscale image based on the mean adaptive threshold method.
 
     Adaptive thresholds use a threshold value that varies across the image.
@@ -120,10 +118,9 @@ def mean(gray_img, block_size, offset, object_type="light", max_value=255):
                     A negative offset sets the local threshold above the local average.
     object_type  = "light" or "dark" (default: "light")
                    - "light" (for objects brighter than the background) sets the pixels above
-                        the local threshold to max_value and the pixels below to 0.
+                        the local threshold to 255 and the pixels below to 0.
                    - "dark" (for objects darker than the background) sets the pixels below the
-                        local threshold to max_value and the pixels above to 0.
-    max_value    = Value to apply above threshold (default: 255 = white)
+                        local threshold to 255 and the pixels above to 0.
 
     Returns:
     bin_img      = Thresholded, binary image
@@ -132,7 +129,6 @@ def mean(gray_img, block_size, offset, object_type="light", max_value=255):
     :param block_size: int
     :param offset: float
     :param object_type: str
-    :param max_value: int
     :return bin_img: numpy.ndarray
     """
     # Set the threshold method
@@ -146,7 +142,7 @@ def mean(gray_img, block_size, offset, object_type="light", max_value=255):
 
     params.device += 1
 
-    bin_img = _call_adaptive_threshold(gray_img, block_size, offset, max_value, cv2.ADAPTIVE_THRESH_MEAN_C,
+    bin_img = _call_adaptive_threshold(gray_img, block_size, offset, 255, cv2.ADAPTIVE_THRESH_MEAN_C,
                                        threshold_method, "_mean_threshold_")
 
     return bin_img
@@ -341,7 +337,7 @@ def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity'
     generic_filter(gray_img, calc_texture, size=ksize, output=output, mode=borders)
 
     # Threshold so higher texture measurements stand out
-    bin_img = binary(gray_img=output, threshold=threshold, max_value=max_value, object_type='light')
+    bin_img = binary(gray_img=output, threshold=threshold, object_type='light')
 
     _debug(visual=bin_img, filename=os.path.join(params.debug_outdir, str(params.device) + "_texture_mask.png"))
 
