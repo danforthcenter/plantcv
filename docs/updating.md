@@ -241,6 +241,10 @@ pages for more details on the input and output variable types.
 * pre v4.0: (see plantcv.analyze_nir_intensity)
 * post v4.0: histogram = **plantcv.analyze.grayscale**(*gray_img, labeled_mask, n_labels=1, bins=100, label="default"*)
 
+#### plantcv.analyze.npq
+
+* pre v4.0: NA
+* post v4.0: npq, npq_hist = **plantcv.analyze.npq**(*ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto", measurement_labels=None, label="default"*)
 
 #### plantcv.analyze.size
 
@@ -265,6 +269,10 @@ pages for more details on the input and output variable types.
 * pre v4.0: (see plantcv.analyze_thermal_values)
 * post v4.0: analysis_image = **plantcv.analyze.thermal**(*thermal_img, labeled_mask, n_labels=1, bins=100, label="default"*)
 
+#### plantcv.analyze.yii
+
+* pre v4.0: NA
+* post v4.0: yii, yii_hist = **plantcv.analyze.yii**(*ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label="default"*)
 
 #### plantcv.apply_mask
 
@@ -683,17 +691,7 @@ pages for more details on the input and output variable types.
 * post v3.10: analysis_images = **plantcv.photosynthesis.analyze_fvfm**(*fdark, fmin, fmax, mask, bins=256*)
 * post v3.11: analysis_images = **plantcv.photosynthesis.analyze_fvfm**(*fdark, fmin, fmax, mask, bins=256, label="default"*)
 * post v4.0: Deprecated, see:
-  * yii, hist_fig = **plantcv.photosynthesis.analyze_yii**(*ps_da, mask, bins=256, measurement_labels=None, label="default"*)
-
-#### plantcv.photosynthesis.analyze_yii
-
-* pre v4.0: NA
-* post v4.0: yii, hist_fig = **plantcv.photosynthesis.analyze_yii**(*ps_da, mask, measurement_labels=None, label="default"*)
-
-#### plantcv.photosynthesis.analyze_npq
-
-* pre v4.0: NA
-* post v4.0: npq, hist_fig = **plantcv.photosynthesis.analyze_npq**(*ps_da_light, ps_da_dark, mask, min_bin=0, max_bin="auto", measurement_labels=None, label="default"*)
+  * yii, hist_fig = **plantcv.analyze.yii**(*ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label="default"*)
 
 #### plantcv.photosynthesis.read_cropreporter
 
@@ -704,7 +702,7 @@ pages for more details on the input and output variable types.
 #### plantcv.photosynthesis.reassign_frame_labels
 
 * pre v4.0: NA
-* post v4.0: ps_da, ind_fig, ind_df = **plantcv.photosynthesis.reassign_frame_labels(*ps_da, mask*)**
+* post v4.0: ps_da = **plantcv.photosynthesis.reassign_frame_labels(*ps_da, mask*)**
 
 #### plantcv.plot_hist
 
@@ -1030,6 +1028,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: NA
 * post v3.0dev2: bin_img = **plantcv.threshold.binary**(*gray_img, threshold, max_value, object_type="light"*)
+* post v4.0: bin_img = **plantcv.threshold.binary**(*gray_img, threshold, object_type="light"*)
 
 #### plantcv.threshold.custom_range
 
@@ -1047,12 +1046,13 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: NA
 * post v3.0dev2: bin_img = **plantcv.threshold.mean**(*gray_img, max_value, object_type="light"*)
-* post v4.0: bin_img = **plantcv.threshold.mean**(*gray_img, block_size, offset, object_type="light", max_value=255*)
+* post v4.0: bin_img = **plantcv.threshold.mean**(*gray_img, block_size, offset, object_type="light"*)
 
 #### plantcv.threshold.otsu
 
 * pre v3.0dev2: NA
 * post v3.0dev2: bin_img = **plantcv.threshold.otsu**(*gray_img, max_value, object_type="light"*)
+* post v4.0: bin_img = **plantcv.threshold.otsu**(*gray_img, object_type="light"*)
 
 #### plantcv.threshold.saturation
 
@@ -1158,6 +1158,11 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, bin_img = **plantcv.triangle_auto_threshold**(*device, img, maxvalue, object_type, xstep=1, debug=None*)
 * post v3.0dev2: Deprecated, see:
     * bin_img = **plantcv.threshold.triangle**(*gray_img, max_value, object_type="light", xstep=1*)
+
+#### plantcv.visualize.chlorophyll_fluorescence
+
+* pre v4.0: NA
+* post v4.0: chart = **plantcv.visualize.chlorophyll_fluorescence**(*ps_da, labeled_mask, n_labels=1, label="object"*)
 
 #### plantcv.visualize.colorize_label_img
 
