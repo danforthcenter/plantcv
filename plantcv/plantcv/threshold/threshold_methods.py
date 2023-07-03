@@ -149,12 +149,11 @@ def mean(gray_img, block_size, offset, object_type="light"):
 
 
 # Otsu autothreshold
-def otsu(gray_img, max_value, object_type="light"):
+def otsu(gray_img, object_type="light"):
     """Creates a binary image from a grayscale image using Otsu's thresholding.
 
     Inputs:
     gray_img     = Grayscale image data
-    max_value    = value to apply above threshold (usually 255 = white)
     object_type  = "light" or "dark" (default: "light")
                    - If object is lighter than the background then standard thresholding is done
                    - If object is darker than the background then inverse thresholding is done
@@ -163,7 +162,6 @@ def otsu(gray_img, max_value, object_type="light"):
     bin_img      = Thresholded, binary image
 
     :param gray_img: numpy.ndarray
-    :param max_value: int
     :param object_type: str
     :return bin_img: numpy.ndarray
     """
@@ -179,7 +177,7 @@ def otsu(gray_img, max_value, object_type="light"):
     params.device += 1
 
     # Threshold the image
-    bin_img = _call_threshold(gray_img, 0, max_value, threshold_method, "_otsu_threshold_")
+    bin_img = _call_threshold(gray_img, 0, 255, threshold_method, "_otsu_threshold_")
 
     return bin_img
 
