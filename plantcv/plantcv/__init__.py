@@ -46,7 +46,6 @@ from plantcv.plantcv.logical_or import logical_or
 from plantcv.plantcv.logical_xor import logical_xor
 from plantcv.plantcv.find_objects import find_objects
 from plantcv.plantcv.roi_objects import roi_objects
-from plantcv.plantcv.object_composition import object_composition
 from plantcv.plantcv.within_frame import within_frame
 from plantcv.plantcv.print_results import print_results
 from plantcv.plantcv.flip import flip
@@ -128,7 +127,6 @@ __all__ = [
     "logical_xor",
     "find_objects",
     "roi_objects",
-    "object_composition",
     "within_frame",
     "print_results",
     "flip",
