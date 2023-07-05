@@ -105,8 +105,6 @@ the region of interest with the [`roi_objects` function](roi_objects.md).
 
 *  Once the target object or objects are segmented you then need to decide if it is desirable to connect or split the 
 objects.
-*  Even if there is a single plant in an image it may be detected as multiple objects, in which case it may need to be
-joined or composed together using the [object composition function](object_composition.md).
 *  If there are multiple plants in an object and you would like to analyze them individually (get shape parameters for 
 each plant for example) then there are functions in PlantCV to split the image apart so there is a single target object 
 in each sub-image. For more information on this process see the [Multi Plant Tutorial](tutorials/multi-plant_tutorial.md). 
