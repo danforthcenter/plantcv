@@ -29,13 +29,13 @@ def chlorophyll_fluorescence(ps_da, labeled_mask, n_labels=1, label="object"):
 
     # Check that the dataarray is valid
     try:
-        if ps_da.name != "lightadapted" and ps_da.name != "darkadapted":
-            fatal_error("You must provide a xarray DataArray with name lightadapted or darkadapted")
+        if not ps_da.name in["lightadapted", "darkadapted", "pam_lightadapted", "pam_darkadapted"]:
+            fatal_error("You must provide a xarray DataArray with name lightadapted, darkadapted, pam_lightadapted or pam_darkadapted")
     except AttributeError:
         if isinstance(ps_da, PSII_data):
-            fatal_error("You need to provide the `darkadapted` or `lightadapted` dataarray")
+            fatal_error("You need to provide the 'lightadapted', 'darkadapted', 'pam_lightadapted' or 'pam_darkadapted' dataarray")
         else:
-            fatal_error("You must provide a xarray DataArray with name lightadapted or darkadapted")
+            fatal_error("You must provide a xarray DataArray with name lightadapted, darkadapted, pam_lightadapted or pam_darkadapted")
 
     # Prime is empty for Fv/Fm (dark- and light-adapted) and p for Fq'/Fm'
     datasets = {
@@ -46,7 +46,15 @@ def chlorophyll_fluorescence(ps_da, labeled_mask, n_labels=1, label="object"):
         "darkadapted": {
             "prime": "",
             "label": "PSD"
-        }
+        },
+        "pam_lightadapted": {
+            "prime": "p",
+            "label": "PML"
+        },
+        "pam_darkadapted": {
+            "prime": "",
+            "label": "PMD"
+        },        
     }
 
     # Get the number of frame labels
