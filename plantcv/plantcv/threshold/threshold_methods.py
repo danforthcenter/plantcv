@@ -93,7 +93,7 @@ def gaussian(gray_img, block_size, offset, object_type="light"):
 
     params.device += 1
 
-    bin_img = _call_adaptive_threshold(gray_img, block_size, offset, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+    bin_img = _call_adaptive_threshold(gray_img, block_size, offset, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
                                        threshold_method, "_gaussian_threshold_")
 
     return bin_img
@@ -140,7 +140,7 @@ def mean(gray_img, block_size, offset, object_type="light"):
 
     params.device += 1
 
-    bin_img = _call_adaptive_threshold(gray_img, block_size, offset, 255, cv2.ADAPTIVE_THRESH_MEAN_C,
+    bin_img = _call_adaptive_threshold(gray_img, block_size, offset, cv2.ADAPTIVE_THRESH_MEAN_C,
                                        threshold_method, "_mean_threshold_")
 
     return bin_img
@@ -491,7 +491,7 @@ def _call_threshold(gray_img, threshold, threshold_method, method_name):
 
 
 # Internal method for calling the OpenCV adaptiveThreshold function to reduce code duplication
-def _call_adaptive_threshold(gray_img, block_size, offset, max_value, adaptive_method, threshold_method, method_name):
+def _call_adaptive_threshold(gray_img, block_size, offset, adaptive_method, threshold_method, method_name):
 
     if block_size < 3:
         fatal_error("block_size must be >= 3")
@@ -502,7 +502,7 @@ def _call_adaptive_threshold(gray_img, block_size, offset, max_value, adaptive_m
         block_size = block_size + 1
 
     # Threshold the image
-    bin_img = cv2.adaptiveThreshold(gray_img, max_value, adaptive_method, threshold_method, block_size, offset)
+    bin_img = cv2.adaptiveThreshold(gray_img, 255, adaptive_method, threshold_method, block_size, offset)
 
     # Print or plot the binary image if debug is on
     _debug(visual=bin_img, filename=os.path.join(params.debug_outdir, str(params.device) + method_name + '.png'))
