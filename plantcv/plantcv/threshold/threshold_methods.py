@@ -286,8 +286,7 @@ def triangle(gray_img, object_type="light", xstep=1):
     return bin_img
 
 
-def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity', borders='nearest',
-            max_value=255):
+def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity', borders='nearest'):
     """Creates a binary image from a grayscale image using skimage texture calculation for thresholding.
     This function is quite slow.
 
@@ -302,7 +301,6 @@ def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity'
                      scikit-image.
     borders        = How the array borders are handled, either 'reflect',
                      'constant', 'nearest', 'mirror', or 'wrap'
-    max_value      = Value to apply above threshold (usually 255 = white)
 
     Returns:
     bin_img        = Thresholded, binary image
@@ -313,7 +311,6 @@ def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity'
     :param offset: int
     :param texture_method: str
     :param borders: str
-    :param max_value: int
     :return bin_img: numpy.ndarray
     """
     # Function that calculates the texture of a kernel
