@@ -181,12 +181,11 @@ def otsu(gray_img, object_type="light"):
 
 
 # Triangle autothreshold
-def triangle(gray_img, max_value, object_type="light", xstep=1):
+def triangle(gray_img, object_type="light", xstep=1):
     """Creates a binary image from a grayscale image using Zack et al.'s (1977) thresholding.
 
     Inputs:
     gray_img     = Grayscale image data
-    max_value    = value to apply above threshold (usually 255 = white)
     object_type  = "light" or "dark" (default: "light")
                    - If object is lighter than the background then standard thresholding is done
                    - If object is darker than the background then inverse thresholding is done
@@ -197,7 +196,6 @@ def triangle(gray_img, max_value, object_type="light", xstep=1):
     bin_img      = Thresholded, binary image
 
     :param gray_img: numpy.ndarray
-    :param max_value: int
     :param object_type: str
     :param xstep: int
     :return bin_img: numpy.ndarray
@@ -261,7 +259,7 @@ def triangle(gray_img, max_value, object_type="light", xstep=1):
     params.device += 1
 
     # Threshold the image
-    bin_img = _call_threshold(gray_img, autothreshval, max_value, threshold_method, "_triangle_threshold_")
+    bin_img = _call_threshold(gray_img, autothreshval, 255, threshold_method, "_triangle_threshold_")
 
     # Additional figures created by this method, if debug is on
     if params.debug is not None:
