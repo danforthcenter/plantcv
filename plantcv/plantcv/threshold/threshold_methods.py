@@ -46,7 +46,7 @@ def binary(gray_img, threshold, object_type="light"):
     params.device += 1
 
     # Threshold the image
-    bin_img = _call_threshold(gray_img, threshold, 255, threshold_method, "_binary_threshold_")
+    bin_img = _call_threshold(gray_img, threshold, threshold_method, "_binary_threshold_")
 
     return bin_img
 
@@ -175,7 +175,7 @@ def otsu(gray_img, object_type="light"):
     params.device += 1
 
     # Threshold the image
-    bin_img = _call_threshold(gray_img, 0, 255, threshold_method, "_otsu_threshold_")
+    bin_img = _call_threshold(gray_img, 0, threshold_method, "_otsu_threshold_")
 
     return bin_img
 
@@ -259,7 +259,7 @@ def triangle(gray_img, object_type="light", xstep=1):
     params.device += 1
 
     # Threshold the image
-    bin_img = _call_threshold(gray_img, autothreshval, 255, threshold_method, "_triangle_threshold_")
+    bin_img = _call_threshold(gray_img, autothreshval, threshold_method, "_triangle_threshold_")
 
     # Additional figures created by this method, if debug is on
     if params.debug is not None:
@@ -476,9 +476,9 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
 
 
 # Internal method for calling the OpenCV threshold function to reduce code duplication
-def _call_threshold(gray_img, threshold, max_value, threshold_method, method_name):
+def _call_threshold(gray_img, threshold, threshold_method, method_name):
     # Threshold the image
-    ret, bin_img = cv2.threshold(gray_img, threshold, max_value, threshold_method)
+    _, bin_img = cv2.threshold(gray_img, threshold, 255, threshold_method)
 
     if bin_img.dtype != 'uint16':
         bin_img = np.uint8(bin_img)
