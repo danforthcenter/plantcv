@@ -47,7 +47,7 @@ def yii(ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None,
     var = ps_da.name.lower()
 
     # Validate that var is a supported type
-    if var not in ['darkadapted', 'lightadapted']:
+    if var not in ['darkadapted', 'lightadapted', 'pam_darkadapted', 'pam_lightadapted']:
         fatal_error(f"Unsupported DataArray type: {var}")
 
     # Make an zeroed array of the same shape as the input DataArray
@@ -78,12 +78,12 @@ def yii(ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None,
         yii_masked = ps_da.astype('float').where(submask > 0, other=np.nan)
 
         # Dark-adapted datasets (Fv/Fm)
-        if var == 'darkadapted':
+        if var in ['darkadapted', 'pam_darkadapted']:
             # Calculate Fv/Fm
             yii_lbl = (yii_masked.sel(frame_label='Fm') - yii_masked.sel(frame_label='F0')) / yii_masked.sel(frame_label='Fm')
 
         # Light-adapted datasets (Fq'/Fm')
-        if var == 'lightadapted':
+        if var in ['lightadapted', 'pam_lightadapted']:
             # Calculate Fq'/Fm'
             yii_lbl = yii_masked.groupby('measurement', squeeze=False).map(_calc_yii)
 
