@@ -46,6 +46,12 @@ def read_cropreporter(filename):
     # Light-adapted measurements
     _process_psl_data(ps=ps, metadata=metadata_dict)
 
+    # Dark-adapted PAM measurements
+    _process_pmd_data(ps=ps, metadata=metadata_dict)
+
+    # Light-adapted PAM Pmeasurements
+    _process_pml_data(ps=ps, metadata=metadata_dict)
+
     # Chlorophyll fluorescence data
     _process_chl_data(ps=ps, metadata=metadata_dict)
 
@@ -151,6 +157,74 @@ def _process_psl_data(ps, metadata):
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSL-frames.png"),
                col='frame_label',
                col_wrap=int(np.ceil(ps.lightadapted.frame_label.size / 4)))
+
+
+def _process_pmd_data(ps, metadata):
+    """
+    Create an xarray DataArray for a PMD dataset.
+
+    Inputs:
+        ps       = PSII_data instance
+        metadata = INF file metadata dictionary
+
+    :param ps: plantcv.plantcv.classes.PSII_data
+    :param metadata: dict
+    """
+    bin_filepath = _dat_filepath(dataset="PMD", datapath=ps.datapath, filename=ps.filename)
+    if os.path.exists(bin_filepath):
+        img_cube, frame_labels, frame_nums = _read_dat_file(dataset="PMD", filename=bin_filepath,
+                                                            height=int(metadata["ImageRows"]),
+                                                            width=int(metadata["ImageCols"]))
+        frame_labels = ["Fdark", "F0", "Fm", "Fs"]
+        pmd = xr.DataArray(
+            data=img_cube[..., None],
+            dims=('x', 'y', 'frame_label', 'measurement'),
+            coords={'frame_label': frame_labels,
+                    'frame_num': ('frame_label', frame_nums),
+                    'measurement': ['t0']},
+            name='pam_darkadapted'
+        )
+        pmd.attrs["long_name"] = "pam dark-adapted measurements"
+        ps.add_data(pmd)
+
+        _debug(visual=ps.pam_darkadapted.squeeze('measurement', drop=True),
+               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PMD-frames.png"),
+               col='frame_label',
+               col_wrap=int(np.ceil(ps.pam_darkadapted.frame_label.size / 4)))
+
+
+def _process_pml_data(ps, metadata):
+    """
+    Create an xarray DataArray for a PML dataset.
+
+    Inputs:
+        ps       = PSII_data instance
+        metadata = INF file metadata dictionary
+
+    :param ps: plantcv.plantcv.classes.PSII_data
+    :param metadata: dict
+    """
+    bin_filepath = _dat_filepath(dataset="PML", datapath=ps.datapath, filename=ps.filename)
+    if os.path.exists(bin_filepath):
+        img_cube, frame_labels, frame_nums = _read_dat_file(dataset="PML", filename=bin_filepath,
+                                                            height=int(metadata["ImageRows"]),
+                                                            width=int(metadata["ImageCols"]))
+        frame_labels = ["Flight", "Fp", "Fmp", "Fs"]
+        pml = xr.DataArray(
+            data=img_cube[..., None],
+            dims=('x', 'y', 'frame_label', 'measurement'),
+            coords={'frame_label': frame_labels,
+                    'frame_num': ('frame_label', frame_nums),
+                    'measurement': ['t0']},
+            name='pam_lightadapted'
+        )
+        pml.attrs["long_name"] = "pam light-adapted measurements"
+        ps.add_data(pml)
+
+        _debug(visual=ps.pam_lightadapted.squeeze('measurement', drop=True),
+               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PML-frames.png"),
+               col='frame_label',
+               col_wrap=int(np.ceil(ps.pam_lightadapted.frame_label.size / 4)))    
 
 
 def _process_chl_data(ps, metadata):
