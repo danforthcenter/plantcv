@@ -45,30 +45,31 @@ def naive_bayes_classifier(rgb_img, pdf_file):
         channel = cols[1]
         if class_name not in pdfs:
             pdfs[class_name] = {}
-        pdfs[class_name][channel] = [float(i) for i in cols[2:]]
+        pdfs[class_name][channel] = np.array([float(i) for i in cols[2:]])
 
     # Split the input BGR image into component channels for BGR, HSV, and LAB colorspaces
     h, s, v = cv2.split(cv2.cvtColor(rgb_img, cv2.COLOR_BGR2HSV))
 
     # Calculate the dimensions of the input image
-    width, height, depth = np.shape(rgb_img)
+    width, height, _ = np.shape(rgb_img)
 
     # Initialize an empty ndarray for plant and background. These will be used to store the joint probabilities
     px_p = {}
-    for class_name in pdfs.keys():
-        px_p[class_name] = np.zeros([width, height])
 
-    # Loop over the image coordinates (each i, j pixel)
-    for i in range(0, width):
-        for j in range(0, height):
-            for class_name in pdfs.keys():
-                # Calculate the joint probability that this is in the class
-                px_p[class_name][i][j] = pdfs[class_name]["hue"][h[i][j]] * pdfs[class_name]["saturation"][s[i][j]] * \
-                    pdfs[class_name]["value"][v[i][j]]
+    hIdx = [h[i][j] for i in range(0, width) for j in range(0, height)]
+    sIdx = [s[i][j] for i in range(0, width) for j in range(0, height)]
+    vIdx = [v[i][j] for i in range(0, width) for j in range(0, height)]
+
+    # Calculate the joint probability that this is in the class
+    for class_name in pdfs:
+        arr = pdfs[class_name]["hue"][hIdx] * \
+            pdfs[class_name]["saturation"][sIdx] * \
+            pdfs[class_name]["value"][vIdx]
+        px_p[class_name] = arr.reshape(width, height)
 
     # Initialize empty masks
     masks = {}
-    for class_name in pdfs.keys():
+    for class_name in pdfs:
         masks[class_name] = np.zeros([width, height], dtype=np.uint8)
     # Set pixel intensities to 255 (white) for the mask where the class has the highest probability
     for class_name in masks:
