@@ -1057,12 +1057,13 @@ pages for more details on the input and output variable types.
 #### plantcv.threshold.saturation
 
 * pre v3.8: NA
-* post v3.8: bin_img = **plantcv.threshold.saturation**(*rgb_img, threshold=255, channel="any")
+* post v3.8: bin_img = **plantcv.threshold.saturation**(*rgb_img, threshold=255, channel="any"*)
 
-#### plantcv.threshold.texture_filter
+#### plantcv.threshold.texture
 
 * pre v3.0: NA
-* post v3.0: bin_img = **plantcv.threshold.texture_filter**(*gray_img, ksize, threshold, offset=3, texture_method='dissimilarity', borders='nearest', max_value=255*)
+* post v3.0: bin_img = **plantcv.threshold.texture**(*gray_img, ksize, threshold, offset=3, texture_method='dissimilarity', borders='nearest', max_value=255*)
+* post v4.0: bin_img = **plantcv.threshold.texture**(*gray_img, ksize, threshold, offset=3, texture_method='dissimilarity', borders='nearest'*)
 
 #### plantcv.threshold.triangle
 

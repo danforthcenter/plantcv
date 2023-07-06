@@ -46,7 +46,7 @@ def binary(gray_img, threshold, object_type="light"):
     params.device += 1
 
     # Threshold the image
-    bin_img = _call_threshold(gray_img, threshold, 255, threshold_method, "_binary_threshold_")
+    bin_img = _call_threshold(gray_img, threshold, threshold_method, "_binary_threshold_")
 
     return bin_img
 
@@ -93,7 +93,7 @@ def gaussian(gray_img, block_size, offset, object_type="light"):
 
     params.device += 1
 
-    bin_img = _call_adaptive_threshold(gray_img, block_size, offset, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+    bin_img = _call_adaptive_threshold(gray_img, block_size, offset, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
                                        threshold_method, "_gaussian_threshold_")
 
     return bin_img
@@ -140,7 +140,7 @@ def mean(gray_img, block_size, offset, object_type="light"):
 
     params.device += 1
 
-    bin_img = _call_adaptive_threshold(gray_img, block_size, offset, 255, cv2.ADAPTIVE_THRESH_MEAN_C,
+    bin_img = _call_adaptive_threshold(gray_img, block_size, offset, cv2.ADAPTIVE_THRESH_MEAN_C,
                                        threshold_method, "_mean_threshold_")
 
     return bin_img
@@ -175,7 +175,7 @@ def otsu(gray_img, object_type="light"):
     params.device += 1
 
     # Threshold the image
-    bin_img = _call_threshold(gray_img, 0, 255, threshold_method, "_otsu_threshold_")
+    bin_img = _call_threshold(gray_img, 0, threshold_method, "_otsu_threshold_")
 
     return bin_img
 
@@ -259,7 +259,7 @@ def triangle(gray_img, object_type="light", xstep=1):
     params.device += 1
 
     # Threshold the image
-    bin_img = _call_threshold(gray_img, autothreshval, 255, threshold_method, "_triangle_threshold_")
+    bin_img = _call_threshold(gray_img, autothreshval, threshold_method, "_triangle_threshold_")
 
     # Additional figures created by this method, if debug is on
     if params.debug is not None:
@@ -286,8 +286,7 @@ def triangle(gray_img, object_type="light", xstep=1):
     return bin_img
 
 
-def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity', borders='nearest',
-            max_value=255):
+def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity', borders='nearest'):
     """Creates a binary image from a grayscale image using skimage texture calculation for thresholding.
     This function is quite slow.
 
@@ -302,7 +301,6 @@ def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity'
                      scikit-image.
     borders        = How the array borders are handled, either 'reflect',
                      'constant', 'nearest', 'mirror', or 'wrap'
-    max_value      = Value to apply above threshold (usually 255 = white)
 
     Returns:
     bin_img        = Thresholded, binary image
@@ -313,7 +311,6 @@ def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity'
     :param offset: int
     :param texture_method: str
     :param borders: str
-    :param max_value: int
     :return bin_img: numpy.ndarray
     """
     # Function that calculates the texture of a kernel
@@ -479,9 +476,9 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
 
 
 # Internal method for calling the OpenCV threshold function to reduce code duplication
-def _call_threshold(gray_img, threshold, max_value, threshold_method, method_name):
+def _call_threshold(gray_img, threshold, threshold_method, method_name):
     # Threshold the image
-    ret, bin_img = cv2.threshold(gray_img, threshold, max_value, threshold_method)
+    _, bin_img = cv2.threshold(gray_img, threshold, 255, threshold_method)
 
     if bin_img.dtype != 'uint16':
         bin_img = np.uint8(bin_img)
@@ -494,7 +491,7 @@ def _call_threshold(gray_img, threshold, max_value, threshold_method, method_nam
 
 
 # Internal method for calling the OpenCV adaptiveThreshold function to reduce code duplication
-def _call_adaptive_threshold(gray_img, block_size, offset, max_value, adaptive_method, threshold_method, method_name):
+def _call_adaptive_threshold(gray_img, block_size, offset, adaptive_method, threshold_method, method_name):
 
     if block_size < 3:
         fatal_error("block_size must be >= 3")
@@ -505,7 +502,7 @@ def _call_adaptive_threshold(gray_img, block_size, offset, max_value, adaptive_m
         block_size = block_size + 1
 
     # Threshold the image
-    bin_img = cv2.adaptiveThreshold(gray_img, max_value, adaptive_method, threshold_method, block_size, offset)
+    bin_img = cv2.adaptiveThreshold(gray_img, 255, adaptive_method, threshold_method, block_size, offset)
 
     # Print or plot the binary image if debug is on
     _debug(visual=bin_img, filename=os.path.join(params.debug_outdir, str(params.device) + method_name + '.png'))

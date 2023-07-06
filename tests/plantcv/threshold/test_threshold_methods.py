@@ -176,8 +176,7 @@ def test_texture(threshold_test_data):
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
     # Subset input data
     gray_img = gray_img[150:200, 200:250]
-    binary_img = texture(gray_img, ksize=6, threshold=7, offset=3, texture_method='dissimilarity', borders='nearest',
-                         max_value=255)
+    binary_img = texture(gray_img, ksize=6, threshold=7, offset=3, texture_method='dissimilarity', borders='nearest')
     # Assert that the output image has the dimensions of the input image and is binary
     assert gray_img.shape == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
