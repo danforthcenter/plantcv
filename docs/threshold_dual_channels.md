@@ -4,7 +4,7 @@ Creates a binary image from an RGB image based on the pixels values in two chann
 The x and y channels define a 2D plane and the two input points define a straight line.
 Pixels in the plane above and below the straight line are assigned two different values.
 
-**plantcv.threshold.dual_channels**(*rgb_img, x_channel, y_channel, points, above=True, max_value=255*)
+**plantcv.threshold.dual_channels**(*rgb_img, x_channel, y_channel, points, above=True*)
 
 **returns** thresholded/binary image
 
@@ -15,8 +15,7 @@ Pixels in the plane above and below the straight line are assigned two different
     - y_channel - Channel to use for the vertical coordinate.
       Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'gray', and 'index'
     - points - List containing two points as tuples defining the segmenting straight line
-    - above - Whether the pixels above the line are given the value of 0 or max_value
-    - max_value - Value to apply above threshold (255 = white)
+    - above - Whether the pixels above the line are given the value of 0 or 255
 
 - **Context:**
     - Used to help differentiate plant and background
@@ -41,7 +40,7 @@ pcv.params.debug = "plot"
 pts = [(159, 128), (132, 110)]
 # Create binary image from a RGB image based on two color channels and a straight
 # line defined by two points
-mask = pcv.threshold.dual_channels(rgb_img=img, x_channel='b', y_channel='a', points=pts, above=True, max_value=255)
+mask = pcv.threshold.dual_channels(rgb_img=img, x_channel='b', y_channel='a', points=pts, above=True)
 
 ```
 
@@ -53,7 +52,7 @@ mask = pcv.threshold.dual_channels(rgb_img=img, x_channel='b', y_channel='a', po
 
 # Create binary image from a RGB image based on two color channels and a straight
 # line defined by two points
-mask = pcv.threshold.threshold_2_channels(rgb_img=img, x_channel='b', y_channel='a', points=pts, above=False, max_value=255)
+mask = pcv.threshold.threshold_2_channels(rgb_img=img, x_channel='b', y_channel='a', points=pts, above=False)
 ```
 
 **Thresholded image (inverse)**

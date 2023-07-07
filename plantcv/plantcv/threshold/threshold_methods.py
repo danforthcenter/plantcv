@@ -784,7 +784,7 @@ def _not_valid(*args):
     return fatal_error("channel not valid, use R, G, B, l, a, b, h, s, v, gray, or index")
 
 
-def dual_channels(rgb_img, x_channel, y_channel, points, above=True, max_value=255):
+def dual_channels(rgb_img, x_channel, y_channel, points, above=True):
     """Create a binary image from an RGB image based on the pixels values in two channels.
     The x and y channels define a 2D plane and the two input points define a straight line.
     Pixels in the plane above and below the straight line are assigned two different values.
@@ -796,7 +796,6 @@ def dual_channels(rgb_img, x_channel, y_channel, points, above=True, max_value=2
                 Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'gray', and 'index'
     points    = List containing two points as tuples defining the segmenting straight line
     above     = Whether the pixels above the line are given the value of 0 or max_value
-    max_value = Value to apply above threshold (usually 255 = white)
 
     Returns:
     bin_img      = Thresholded, binary image
@@ -805,7 +804,6 @@ def dual_channels(rgb_img, x_channel, y_channel, points, above=True, max_value=2
     :param y_channel: str
     :param points: list of two tuples
     :param above: bool
-    :param max_value: int
     :return bin_img: numpy.ndarray
     """
 
@@ -840,9 +838,6 @@ def dual_channels(rgb_img, x_channel, y_channel, points, above=True, max_value=2
         # Print warning statement
         warn("only the first two points are used in this function")
 
-    # avoid overflow when casting as uint8 if max_value > 255
-    max_value = min(max_value, 255)
-
     x0, y0 = points[0]
     x1, y1 = points[1]
 
@@ -851,6 +846,7 @@ def dual_channels(rgb_img, x_channel, y_channel, points, above=True, max_value=2
 
     y_line = m*img_x_ch + b
 
+    max_value = 255
     if above:
         bin_img = max_value*(img_y_ch > y_line)
     else:
