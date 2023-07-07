@@ -228,7 +228,7 @@ def test_dual_channels(y_ch, abv, expected):
     # last two points are ignored ut trigger the warning
     pts = [(0, 0), (255, 255), (0, 1), (2, 3)]
     x_ch = 'B'
-    mask = dual_channels(img, x_channel=x_ch, y_channel=y_ch, points=pts, above=abv, max_value=255)
+    mask = dual_channels(img, x_channel=x_ch, y_channel=y_ch, points=pts, above=abv)
     assert mask[0, 0] == expected
 
 
@@ -240,7 +240,7 @@ def test_dual_channels_bad_points():
     x_ch = 'B'
     y_ch = 'R'
     with pytest.raises(RuntimeError):
-        _ = dual_channels(img, x_channel=x_ch, y_channel=y_ch, points=pts, above=True, max_value=255)
+        _ = dual_channels(img, x_channel=x_ch, y_channel=y_ch, points=pts, above=True)
 
 
 def test_dual_channels_bad_channel():
@@ -249,4 +249,4 @@ def test_dual_channels_bad_channel():
     # only one point given
     pts = [(0, 0), (255, 255)]
     with pytest.raises(RuntimeError):
-        _ = dual_channels(img, x_channel='wrong_ch', y_channel='index', points=pts, above=True, max_value=255)
+        _ = dual_channels(img, x_channel='wrong_ch', y_channel='index', points=pts, above=True)
