@@ -81,6 +81,14 @@ def test_save_results_csv(test_data, tmpdir):
     assert results == test_results
 
 
+def test_save_results_invalid_outformat():
+    """Test for PlantCV."""
+    # Create output instance
+    outputs = Outputs()
+    with pytest.raises(ValueError):
+        outputs.save_results(filename="filename does not matter for this test", outformat="INVALIDOUTFORMAT")
+
+
 def test_clear_outputs():
     """Test for PlantCV."""
     # Create output instance

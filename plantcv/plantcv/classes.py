@@ -184,6 +184,8 @@ class Outputs:
                                 self.observations[sample][var]["label"]
                                 ]
                             csv_table.write(",".join(map(str, row)) + "\n")
+        else:
+            raise ValueError("outformat must be one of (case insensitive): ['json', 'csv']")
 
     def plot_dists(self, variable):
         """Plot a distribution of data.
