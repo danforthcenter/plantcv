@@ -684,6 +684,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.12: NA
 * post v3.12: **plantcv.outputs.save_results**(*filename, outformat="json"*)
+* post v4.0: **plantcv.outputs.save_results**(*filename, outformat="json", append=True*)
 
 #### plantcv.photosynthesis.analyze_fvfm
 

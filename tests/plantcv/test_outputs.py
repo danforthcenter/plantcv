@@ -35,11 +35,24 @@ def test_save_results_json_newfile(tmpdir):
     outputs = Outputs()
     outputs.add_observation(sample='default', variable='test', trait='test variable', method='test', scale='none',
                             datatype=str, value="test", label="none")
-    outputs.save_results(filename=outfile, outformat="json")
+    outputs.save_results(filename=outfile, outformat="json", append=False)
     with open(outfile, "r") as fp:
         results = json.load(fp)
         assert results["observations"]["default"]["test"]["value"] == "test"
 
+def test_save_results_json_newfile_append(tmpdir):
+    """Test for PlantCV."""
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("cache")
+    outfile = os.path.join(cache_dir, "results.json")
+    # Create output instance
+    outputs = Outputs()
+    outputs.add_observation(sample='default', variable='test', trait='test variable', method='test', scale='none',
+                            datatype=str, value="test", label="none")
+    outputs.save_results(filename=outfile, outformat="json", append=True)
+    with open(outfile, "r") as fp:
+        results = json.load(fp)
+        assert results["observations"]["default"]["test"]["value"] == "test"
 
 def test_save_results_json_existing_file(test_data, tmpdir):
     """Test for PlantCV."""
@@ -51,11 +64,34 @@ def test_save_results_json_existing_file(test_data, tmpdir):
     outputs = Outputs()
     outputs.add_observation(sample='default', variable='test', trait='test variable', method='test', scale='none',
                             datatype=str, value="test", label="none")
-    outputs.save_results(filename=outfile, outformat="json")
+    outputs.save_results(filename=outfile, outformat="json", append=False)
     with open(outfile, "r") as fp:
         results = json.load(fp)
         assert results["observations"]["default"]["test"]["value"] == "test"
 
+def test_save_results_json_existing_file_append(test_data, tmpdir):
+    """Test for PlantCV."""
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("cache")
+    outfile = os.path.join(cache_dir, os.path.basename(test_data.outputs_results_json))
+    copyfile(test_data.outputs_results_json, outfile)
+    # Create output instance
+    outputs = Outputs()
+    outputs.add_observation(sample='default', variable='test', trait='test variable', method='test', scale='none',
+                            datatype=str, value="test", label="none")
+    outputs.save_results(filename=outfile, outformat="json", append=True)
+
+    outputs2 = Outputs()
+    outputs2.add_observation(sample='default', variable='test', trait='test variable', method='test', scale='none',
+                            datatype=str, value="this data overwrites the original value for this", label="none")
+    outputs2.add_observation(sample='newdatas', variable='test', trait='test variable', method='test', scale='none',
+                            datatype=str, value="some data here", label="none")
+    outputs2.save_results(filename=outfile, outformat="json", append=True)
+
+    with open(outfile, "r") as fp:
+        results = json.load(fp)
+        assert results["observations"]["default"]["test"]["value"] == "this data overwrites the original value for this"
+        assert results["observations"]["newdatas"]["test"]["value"] == "some data here"
 
 def test_save_results_csv(test_data, tmpdir):
     """Test for PlantCV."""
@@ -69,11 +105,15 @@ def test_save_results_csv(test_data, tmpdir):
                             scale='none', datatype=bool, value=True, label="none")
     outputs.add_observation(sample='default', variable='list', trait='list variable', method='list',
                             scale='none', datatype=list, value=[1, 2, 3], label=[1, 2, 3])
-    outputs.add_observation(sample='default', variable='tuple', trait='tuple variable', method='tuple',
+    outputs.save_results(filename=outfile, outformat="csv", append=True)
+
+    outputs2 = Outputs()
+    outputs2.add_observation(sample='default', variable='tuple', trait='tuple variable', method='tuple',
                             scale='none', datatype=tuple, value=(1, 2), label=(1, 2))
-    outputs.add_observation(sample='default', variable='tuple_list', trait='list of tuples variable',
+    outputs2.add_observation(sample='default', variable='tuple_list', trait='list of tuples variable',
                             method='tuple_list', scale='none', datatype=list, value=[(1, 2), (3, 4)], label=[1, 2])
-    outputs.save_results(filename=outfile, outformat="csv")
+    outputs2.save_results(filename=outfile, outformat="csv", append=True)
+
     with open(outfile, "r") as fp:
         results = fp.read()
     with open(test_data.outputs_results_csv, "r") as fp:

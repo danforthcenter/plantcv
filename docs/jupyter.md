@@ -132,7 +132,7 @@ img, imgpath, imgname = pcv.readimage(filename=args.image)
 # Jupyter here
 
 # Print data that gets collected into the Outputs 
-pcv.outputs.save_results(filename=args.result, outformat="json")
+pcv.outputs.save_results(filename=args.result, outformat="json", append=True)
     
 ```
 
