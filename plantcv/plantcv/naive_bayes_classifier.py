@@ -56,9 +56,9 @@ def naive_bayes_classifier(rgb_img, pdf_file):
     # Initialize an empty ndarray for plant and background. These will be used to store the joint probabilities
     px_p = {}
 
-    hIdx = [h[i][j] for i in range(0, width) for j in range(0, height)]
-    sIdx = [s[i][j] for i in range(0, width) for j in range(0, height)]
-    vIdx = [v[i][j] for i in range(0, width) for j in range(0, height)]
+    hIdx = h.reshape(width * height).tolist()
+    sIdx = s.reshape(width * height).tolist()
+    vIdx = v.reshape(width * height).tolist()
 
     # Calculate the joint probability that this is in the class
     for class_name in pdfs:
