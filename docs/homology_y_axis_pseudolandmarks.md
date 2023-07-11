@@ -4,13 +4,12 @@ Divide plant object into twenty equidistant bins along the y-axis and assign pse
 actual (not scaled) position. Once this data is scaled this approach may provide some information regarding shape 
 independent of size.
 
-**plantcv.homology.y_axis_pseudolandmarks**(*img, obj, mask, label="default"*)
+**plantcv.homology.y_axis_pseudolandmarks**(*img, mask, label="default"*)
 
 **returns** landmarks_on_leftside (left), landmarks_on_right (right), landmarks_at_center_along_the_horizontal_axis (center_h)
 
 - **Parameters:**
     - img - A copy of the original image (RGB or grayscale) generated using np.copy
-    - obj - A contour of the plant object (this should be output from the object_composition.py fxn)
     - mask - This is a binary image. The object should be white and the background should be black.
     - label - Optional label parameter, modifies the variable name of observations recorded
 - **Context:**
@@ -32,7 +31,7 @@ pcv.params.debug = "plot"
 
 # Identify a set of land mark points
 # Results in set of point values that may indicate tip points
-left, right, center_h  = pcv.homology.y_axis_pseudolandmarks(img=img, obj=obj, mask=mask, label="default")
+left, right, center_h  = pcv.homology.y_axis_pseudolandmarks(img=img, mask=mask, label="default")
 
 # Access data stored out from y_axis_pseudolandmarks
 left_landmarks = pcv.outputs.observations['default']['left_lmk']['value']
@@ -43,4 +42,4 @@ left_landmarks = pcv.outputs.observations['default']['left_lmk']['value']
 
 ![Screenshot](img/documentation_images/y_axis_pseudolandmarks/yap_output.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/y_axis_pseudolandmarks.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/homology/y_axis_pseudolandmarks.py)
