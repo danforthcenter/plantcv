@@ -148,7 +148,7 @@ def test_triangle(debug, threshold_test_data, tmpdir):
     params.debug = debug
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
-    binary_img = triangle(gray_img=gray_img, max_value=255, object_type="light", xstep=10)
+    binary_img = triangle(gray_img=gray_img, object_type="light", xstep=10)
     # Assert that the output image has the dimensions of the input image and is binary
     assert gray_img.shape == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
@@ -157,7 +157,7 @@ def test_triangle_dark(threshold_test_data):
     """Test for PlantCV."""
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
-    binary_img = triangle(gray_img=gray_img, max_value=255, object_type="dark", xstep=10)
+    binary_img = triangle(gray_img=gray_img, object_type="dark", xstep=10)
     # Assert that the output image has the dimensions of the input image and is binary
     assert gray_img.shape == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
@@ -167,7 +167,7 @@ def test_triangle_incorrect_object_type(threshold_test_data):
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
     with pytest.raises(RuntimeError):
-        _ = triangle(gray_img=gray_img, max_value=255, object_type="lite", xstep=10)
+        _ = triangle(gray_img=gray_img, object_type="lite", xstep=10)
 
 
 def test_texture(threshold_test_data):
@@ -176,8 +176,7 @@ def test_texture(threshold_test_data):
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
     # Subset input data
     gray_img = gray_img[150:200, 200:250]
-    binary_img = texture(gray_img, ksize=6, threshold=7, offset=3, texture_method='dissimilarity', borders='nearest',
-                         max_value=255)
+    binary_img = texture(gray_img, ksize=6, threshold=7, offset=3, texture_method='dissimilarity', borders='nearest')
     # Assert that the output image has the dimensions of the input image and is binary
     assert gray_img.shape == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
@@ -229,7 +228,7 @@ def test_dual_channels(y_ch, abv, expected):
     # last two points are ignored ut trigger the warning
     pts = [(0, 0), (255, 255), (0, 1), (2, 3)]
     x_ch = 'B'
-    mask = dual_channels(img, x_channel=x_ch, y_channel=y_ch, points=pts, above=abv, max_value=255)
+    mask = dual_channels(img, x_channel=x_ch, y_channel=y_ch, points=pts, above=abv)
     assert mask[0, 0] == expected
 
 
@@ -241,7 +240,7 @@ def test_dual_channels_bad_points():
     x_ch = 'B'
     y_ch = 'R'
     with pytest.raises(RuntimeError):
-        _ = dual_channels(img, x_channel=x_ch, y_channel=y_ch, points=pts, above=True, max_value=255)
+        _ = dual_channels(img, x_channel=x_ch, y_channel=y_ch, points=pts, above=True)
 
 
 def test_dual_channels_bad_channel():
@@ -250,4 +249,4 @@ def test_dual_channels_bad_channel():
     # only one point given
     pts = [(0, 0), (255, 255)]
     with pytest.raises(RuntimeError):
-        _ = dual_channels(img, x_channel='wrong_ch', y_channel='index', points=pts, above=True, max_value=255)
+        _ = dual_channels(img, x_channel='wrong_ch', y_channel='index', points=pts, above=True)

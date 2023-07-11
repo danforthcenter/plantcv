@@ -868,19 +868,19 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, rotated_img = **plantcv.rotate**(*img, rotation_deg, crop, device, debug=None*)
 * post v3.0dev2: rotated_img = **plantcv.rotate**(*img, rotation_deg, crop*)
+* post v4.0: DEPRECATED see plantcv.transform.rotate
 
 #### plantcv.rotate_img
 
 * pre v3.0dev2: device, rotated_img = **plantcv.rotate_img**(*img, rotation_deg, device, debug=None*)
-* post v3.0dev2: Deprecated, see:
-    * rotated_img = **plantcv.rotate**(*img, rotation_deg, crop*)
+* post v3.0dev2: DEPRECATED see plantcv.transform.rotate
 
 #### plantcv.scale_features
 
 * pre v3.0dev2: device, rescaled, centroid_scaled, boundary_line_scaled = **plantcv.scale_features**(*obj, mask, points, boundary_line, device, debug=None*)
 * post v3.0dev2: rescaled, centroid_scaled, boundary_line_scaled = **plantcv.scale_features**(*obj, mask, points, boundary_line*)
 * post v3.2: rescaled, centroid_scaled, boundary_line_scaled = **plantcv.scale_features**(*obj, mask, points, line_position*)
-* post v4.0: DEPRECATED, seee: plantcv.homology.scale_features
+* post v4.0: DEPRECATED, see: plantcv.homology.scale_features
 
 #### plantcv.scharr_filter
 
@@ -1023,7 +1023,7 @@ pages for more details on the input and output variable types.
 #### plantcv.threshold.dual_channels
 
 * pre v4.0: NA
-* post v4.0: bin_img = **plantcv.threshold.dual_channels**(*rgb_img, x_channel, y_channel, points, above=True, max_value=255*)
+* post v4.0: bin_img = **plantcv.threshold.dual_channels**(*rgb_img, x_channel, y_channel, points, above=True*)
 
 #### plantcv.threshold.binary
 
@@ -1058,17 +1058,19 @@ pages for more details on the input and output variable types.
 #### plantcv.threshold.saturation
 
 * pre v3.8: NA
-* post v3.8: bin_img = **plantcv.threshold.saturation**(*rgb_img, threshold=255, channel="any")
+* post v3.8: bin_img = **plantcv.threshold.saturation**(*rgb_img, threshold=255, channel="any"*)
 
-#### plantcv.threshold.texture_filter
+#### plantcv.threshold.texture
 
 * pre v3.0: NA
-* post v3.0: bin_img = **plantcv.threshold.texture_filter**(*gray_img, ksize, threshold, offset=3, texture_method='dissimilarity', borders='nearest', max_value=255*)
+* post v3.0: bin_img = **plantcv.threshold.texture**(*gray_img, ksize, threshold, offset=3, texture_method='dissimilarity', borders='nearest', max_value=255*)
+* post v4.0: bin_img = **plantcv.threshold.texture**(*gray_img, ksize, threshold, offset=3, texture_method='dissimilarity', borders='nearest'*)
 
 #### plantcv.threshold.triangle
 
 * pre v3.0dev2: NA
 * post v3.0dev2: bin_img = **plantcv.threshold.triangle**(*gray_img, max_value, object_type="light", xstep=1*)
+* post v4.0: bin_img = **plantcv.threshold.triangle**(*gray_img, object_type="light", xstep=1*)
 
 #### plantcv.transform.affine_color_correction
 

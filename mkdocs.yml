@@ -141,7 +141,6 @@ nav:
         - 'Filter Objects by ROI': roi_objects.md
         - 'Filter a mask by ROI': roi_filter.md
         - 'Convert ROI to Mask': roi2mask.md
-      - 'Rotate': rotate2.md
       - 'Segment Image Series': segment_image_series.md
       - 'Shift Image': shift.md
       - 'Spatial Clustering': spatial_clustering.md
@@ -171,6 +170,7 @@ nav:
           - 'Perspective warp': transform_warp.md
           - 'Rescale Image Values': transform_rescale.md
           - 'Resize Images': transform_resize.md
+          - 'Rotate': rotate2.md
       - 'Transformation Helpers':
             - 'Calculate Moore-Penrose Inverse Matrix': mp_inverse.md
             - 'Create Color Correction Matrix': transformation_matrix.md

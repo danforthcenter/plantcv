@@ -1,7 +1,7 @@
 ## Rotate Hyperspectral Datacubes 
 
 This function rotates a hyperspectral datacube counterclockwise in increments of 90 degrees.  The input and output is a [`Spectral_data` class](Spectral_data.md) 
-instance created while reading in with [`pcv.readimage`](read_image.md) with `mode='envi'`. This function is similar to the [`pcv.rotate`](rotate2.md) functions
+instance created while reading in with [`pcv.readimage`](read_image.md) with `mode='envi'`. This function is similar to the [`pcv.transform.rotate`](rotate2.md) functions
 but is specifically suitable for HSI image analysis. 
 
 **plantcv.hyperspectral.rot90**(*spectral_data, k*)
