@@ -53,32 +53,31 @@ def naive_bayes_classifier(rgb_img, pdf_file):
     # Calculate the dimensions of the input image
     width, height, _ = np.shape(rgb_img)
 
-    # Initialize an empty ndarray for plant and background. These will be used to store the joint probabilities
-    px_p = {}
-
+    # Linearize the color channel arrays
     hIdx = h.reshape(width * height).tolist()
     sIdx = s.reshape(width * height).tolist()
     vIdx = v.reshape(width * height).tolist()
 
     # Calculate the joint probability that this is in the class
+    class_arrs = []
     for class_name in pdfs:
+        # Joint probability array
         arr = pdfs[class_name]["hue"][hIdx] * \
             pdfs[class_name]["saturation"][sIdx] * \
             pdfs[class_name]["value"][vIdx]
-        px_p[class_name] = arr.reshape(width, height)
+        # Append the joint probability array to the list of class arrays
+        class_arrs.append(arr.reshape(width, height))
 
-    # Initialize empty masks
+    # Stacked class arrays
+    stacked_arr = np.dstack(class_arrs)
+    # Create an array that labels which class has the highest probability
+    class_mask = np.argmax(stacked_arr, axis=2)
+
+    # Create the class masks
     masks = {}
-    for class_name in pdfs:
-        masks[class_name] = np.zeros([width, height], dtype=np.uint8)
-    # Set pixel intensities to 255 (white) for the mask where the class has the highest probability
-    for class_name in masks:
-        background_classes = []
-        for name in masks:
-            if class_name is not name:
-                background_classes.append(px_p[name])
-        background_class = np.maximum.reduce(background_classes)
-        masks[class_name][np.where(px_p[class_name] > background_class)] = 255
+    for i, class_name in enumerate(pdfs):
+        # Set pixel intensities to 255 (white) where the class has the highest probability
+        masks[class_name] = np.where(class_mask == i, 255, 0).astype(np.uint8)
 
     # Print or plot the mask if debug is not None
     for class_name, mask in masks.items():
