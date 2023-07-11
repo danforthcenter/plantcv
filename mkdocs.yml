@@ -116,7 +116,6 @@ nav:
         - 'Segment Tangent Angle': segment_tangent_angle.md
         - 'Skeletonize': skeletonize.md
       - 'Naive Bayes Classifier': naive_bayes_classifier.md
-      - 'Object Composition': object_composition.md
       - 'Objects Class': objects.md
       - 'Opening': opening.md
       - 'Output Mask': output_mask.md
