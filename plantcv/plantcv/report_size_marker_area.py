@@ -7,10 +7,9 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv import rgb2gray_hsv
 from plantcv.plantcv.threshold import binary as binary_threshold
 from plantcv.plantcv import roi_objects
-from plantcv.plantcv import object_composition
 from plantcv.plantcv import apply_mask
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _cv2_findcontours
+from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 from plantcv.plantcv import Objects
@@ -60,8 +59,8 @@ def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_c
     roi_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
     # Draw the filled ROI on the mask
     cv2.drawContours(roi_mask, roi.contours[0], -1, (255), -1)
-    marker_mask = []
-    marker_contour = []
+    # Marker mask
+    marker_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
 
     # If the marker type is "detect" then we will use the ROI to isolate marker contours from the input image
     if marker.upper() == 'DETECT':
@@ -83,8 +82,8 @@ def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_c
             # These become the marker contour and mask
             kept_contours = kept_obj.contours[0]
             kept_hierarchy = kept_obj.hierarchy[0]
-            marker_contour, marker_mask = object_composition(img=ref_img, contours=kept_contours,
-                                                             hierarchy=kept_hierarchy)
+            marker_contour = _object_composition(contours=kept_contours, hierarchy=kept_hierarchy)
+            cv2.drawContours(marker_mask, kept_contours, -1, (255), -1, hierarchy=kept_hierarchy)
         else:
             # Reset debug mode
             params.debug = debug
@@ -94,7 +93,8 @@ def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_c
         contours, hierarchy = _cv2_findcontours(bin_img=roi_mask)
         # If there are more than one contour detected, combine them into one
         # These become the marker contour and mask
-        marker_contour, marker_mask = object_composition(img=ref_img, contours=contours, hierarchy=hierarchy)
+        marker_contour = _object_composition(contours=contours, hierarchy=hierarchy)
+        cv2.drawContours(marker_mask, contours, -1, (255), -1, hierarchy=hierarchy)
     else:
         # Reset debug mode
         params.debug = debug
