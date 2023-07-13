@@ -8,7 +8,6 @@ from plantcv.plantcv.threshold import binary as binary_threshold
 from plantcv.plantcv.roi import filter
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
-from plantcv.plantcv import Objects
 
 
 def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_channel=None,
@@ -87,6 +86,7 @@ def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_c
             fatal_error('thresh_channel and thresh must be defined in detect mode')
     elif marker.upper() == "DEFINE":
         # Identify contours in the masked image
+        # Are we using a mask to make a new mask here?? lol 
         contours, hierarchy = _cv2_findcontours(bin_img=roi_mask)
         # If there are more than one contour detected, combine them into one
         # These become the marker contour and mask
