@@ -250,6 +250,7 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: output_path = **plantcv.cluster_contour_splitimg**(*rgb_img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None, filenames=None*)
 * post v3.3: output_path, output_imgs, output_masks = **plantcv.cluster_contour_splitimg**(*rgb_img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None, filenames=None*)
 * post v3.12 output_path, output_imgs, output_masks = **plantcv.cluster_contour_splitimg**(*img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None, filenames=None*)
+* post v4.0: Deprecated
 
 #### plantcv.cluster_contours
 
@@ -257,6 +258,7 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: grouped_contour_indexes, contours, roi_obj_hierarchy = **plantcv.cluster_contours**(*img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1*)
 * post v3.2: grouped_contour_indexes, contours, roi_obj_hierarchy = **plantcv.cluster_contours**(*img, roi_objects, roi_object_hierarchy, nrow=1, ncol=1, show_grid=False*)
 * post v3.12: grouped_contour_indexes, contours, roi_obj_hierarchy = **plantcv.cluster_contours**(*img, roi_objects, roi_object_hierarchy, nrow=1, ncol=1, show_grid=False, bounding=True*)
+* post v4.0: Deprecated
 
 #### plantcv.color_palette
 
@@ -309,6 +311,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, objects, hierarchy = **plantcv.find_objects**(*img, mask, device, debug=None*)
 * post v3.0dev2: objects, hierarchy = **plantcv.find_objects**(*img, mask*)
+* post v4.0: Deprecated
 
 #### plantcv.flip
 
@@ -545,6 +548,7 @@ pages for more details on the input and output variable types.
 * pre v3.10: see plantcv.fluor_fvfm
 * post v3.10: analysis_images = **plantcv.photosynthesis.analyze_fvfm**(*fdark, fmin, fmax, mask, bins=256*)
 * post v3.11: analysis_images = **plantcv.photosynthesis.analyze_fvfm**(*fdark, fmin, fmax, mask, bins=256, label="default"*)
+* post v4.0: Deprecated
 
 #### plantcv.photosynthesis.read_cropreporter
 
