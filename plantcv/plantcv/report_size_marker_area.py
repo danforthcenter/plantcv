@@ -68,10 +68,10 @@ def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_c
             marker_bin = binary_threshold(gray_img=marker_hsv, threshold=thresh, object_type=objcolor)
             # Identify contours in the masked image
             contours, hierarchy = _cv2_findcontours(bin_img=marker_bin)
-            obj = Objects([contours], [hierarchy])
+            #obj = Objects([contours], [hierarchy])
 
             # Filter marker contours using the input ROI
-            kept_obj, kept_mask, obj_area = _roi_filter(mask=marker_bin, obj=obj, roi=roi, roi_type="partial")
+            kept_obj, kept_mask, obj_area = _roi_filter(img=marker_bin, roi=roi, obj=contoursj, hierarchy=hierarchy, roi_type="partial")
             # If there are more than one contour detected, combine them into one
             # These become the marker contour and mask
             kept_contours = kept_obj.contours[0]
