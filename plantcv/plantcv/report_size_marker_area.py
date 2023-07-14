@@ -3,7 +3,7 @@
 import cv2
 import numpy as np
 import os
-from plantcv.plantcv import Outputs, params, outputs, fatal_error, apply_mask, rgb2gray_hsv
+from plantcv.plantcv import Objects, params, outputs, fatal_error, apply_mask, rgb2gray_hsv
 from plantcv.plantcv.threshold import binary as binary_threshold
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition, _roi_filter
