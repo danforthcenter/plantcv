@@ -87,6 +87,8 @@ def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_c
 
     # Calculate the moments of the defined marker region
     m = cv2.moments(marker_mask, binaryImage=True)
+    marker_contour, _ = _cv2_findcontours(bin_img=marker_mask)
+
     # Calculate the marker area
     marker_area = m['m00']
 
