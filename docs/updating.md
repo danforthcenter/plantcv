@@ -309,6 +309,7 @@ pages for more details on the input and output variable types.
 * pre v3.3: NA
 * post v3.3: filtered_img = **plantcv.closing**(*gray_img, kernel=None*)
 
+
 #### plantcv.cluster_contour_splitimg
 
 * pre v3.0dev2: device, output_path = **plantcv.cluster_contour_splitimg**(*device, img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None, filenames=None, debug=None*)
@@ -384,7 +385,8 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, objects, hierarchy = **plantcv.find_objects**(*img, mask, device, debug=None*)
 * post v3.0dev2: objects, hierarchy = **plantcv.find_objects**(*img, mask*)
-* post v4.0: objects = **plantcv.find_objects**(*img, mask*)
+* post v4.0: Deprecated
+
 
 #### plantcv.flip
 
