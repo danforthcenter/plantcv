@@ -79,12 +79,7 @@ def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_c
             params.debug = debug
             fatal_error('thresh_channel and thresh must be defined in detect mode')
     elif marker.upper() == "DEFINE":
-        # Identify contours in the masked image
-        contours, hierarchy = _cv2_findcontours(bin_img=roi_mask)
-        # If there are more than one contour detected, combine them into one
-        # These become the marker contour and mask
-        marker_contour = _object_composition(contours=contours, hierarchy=hierarchy)
-        cv2.drawContours(marker_mask, contours, -1, (255), -1, hierarchy=hierarchy)
+        marker_mask = roi_mask
     else:
         # Reset debug mode
         params.debug = debug
