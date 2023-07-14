@@ -16,8 +16,15 @@ dependencies:
   - nb_conda
   - opencv
   - statsmodels
+  - xarray>=2022.11.0
   - mkdocs
   - pytest
+  - pytest-cov
+  - flake8
+  - ipympl
+  - nodejs
+  - jupyterlab
+  - altair
 
 channels:
   - conda-forge

@@ -35,7 +35,7 @@ conda list plantcv
 ### Updating from the source code
 
 The general procedure for updating PlantCV if you are using the `main` branch
-cloned from the `danforthcenter/plantcv` repository is to update your local 
+cloned from the `danforthcenter/plantcv` repository is to update your local
 repository and reinstall the package.
 
 With GitHub Desktop you can [synchronize](https://docs.github.com/en/free-pro-team@latest/desktop/contributing-and-collaborating-using-github-desktop/syncing-your-branch)
@@ -51,7 +51,7 @@ automatically. Alternatively, you can run `python setup.py install` to reinstall
 
 The setuptools installation method was not available in PlantCV v1, so users
 put the `plantcv/lib` directory in their custom `PYTHONPATH`. In PlantCV v2, the
-plantcv library directory is no longer in the lib directory, now it is in the 
+plantcv library directory is no longer in the lib directory, now it is in the
 main repository folder (`plantcv/plantcv`). If you want to continue to have
 plantcv in your `PYTHONPATH` you will need to update by simply removing `lib`
 from the path. You can also remove the lib folder after pulling the new version.
@@ -60,7 +60,7 @@ Git will automatically remove the `*.py` files but because we do not track the
 cause confusion.
 
 For Linux/Unix, `PYTHONPATH` can be edited in `~/.bash_profile`, `~/.bashrc`,
-`~/.profile`, `~/.cshrc`, `~/.zshrc`, etc. For Windows, right-click on My 
+`~/.profile`, `~/.cshrc`, `~/.zshrc`, etc. For Windows, right-click on My
 Computer/This PC and select Properties > Advanced system settings >
 Environmental Variables... and edit the User variables entry for `PYTHONPATH`.
 
@@ -76,7 +76,7 @@ an issue on GitHub or contact us directly.
 
 In order to support the installation of optional add-on subpackages, we converted
 PlantCV to a [namespace package](https://packaging.python.org/guides/packaging-namespace-packages/).
-To achieve this new functionality, existing functions had to be moved into a 
+To achieve this new functionality, existing functions had to be moved into a
 subpackage to maintain easy importing. To maintain previous behavior, PlantCV
 analysis scripts simply need to have updated PlantCV import syntax. So if you were
 previously doing something like:
@@ -96,14 +96,14 @@ package API. The goal is to make each PlantCV function easier to use by reducing
 the number of inputs and outputs that need to be configured (without losing
 functionality) and by making input parameters more consistently named and clearly
 defined where input types matter (e.g. instead of just `img` it could be `rgb_img`,
-`gray_img`, or `bin_img` for RGB, grayscale, or binary image, respectively). 
+`gray_img`, or `bin_img` for RGB, grayscale, or binary image, respectively).
 
-In PlantCV v3.0dev2 onwards, all functions were redesigned to utilize a global 
-parameters class to inherit values for standard inputs like `debug` and `device` 
-so that these values will not need to be explicitly input or output to/from each 
+In PlantCV v3.0dev2 onwards, all functions were redesigned to utilize a global
+parameters class to inherit values for standard inputs like `debug` and `device`
+so that these values will not need to be explicitly input or output to/from each
 function. An instance of the class [`Params`](params.md) as `params` is created automatically
-when PlantCV is imported and it can be imported to set global defaults. For example, 
-to change debug from `None` to 'plot' or 'print' you can now just add one line to 
+when PlantCV is imported and it can be imported to set global defaults. For example,
+to change debug from `None` to 'plot' or 'print' you can now just add one line to
 the top of your script or notebook to change the behavior of all subsequent function
 calls:
 
@@ -138,6 +138,7 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = **plantcv.acute**(*obj, win, thresh, mask, device, debug=None*)
 * post v3.0dev2: homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = **plantcv.acute**(*obj, win, thresh, mask*)
 * post v3.2: homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = **plantcv.acute**(*obj, mask, win, thresh*)
+* post v4.0: DEPRECATED see plantcv.homology.acute
 
 #### plantcv.acute_vertex
 
@@ -145,6 +146,7 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: acute = **plantcv.acute_vertex**(*obj, win, thresh, sep, img*)
 * post v3.2: acute, analysis_image = **plantcv.acute_vertex**(*img, obj, win, thresh, sep*)
 * post v3.11: acute, analysis_image = **plantcv.acute_vertex**(**img, obj, win, thresh, sep, label="default"*)
+* post v4.0: DEPRECATED see plantcv.homology.acute
 
 #### plantcv.adaptive_threshold
 
@@ -166,6 +168,7 @@ pages for more details on the input and output variable types.
 * post v3.0: bound_header, bound_data, analysis_images = **plantcv.analyze_bound_horizontal**(*img, obj, mask, line_position*)
 * post v3.3: analysis_image = **plantcv.analyze_bound_horizontal**(*img, obj, mask, line_position*)
 * post v3.11: analysis_image = **plantcv.analyze_bound_horizontal**(*img, obj, mask, line_position, label="default"*)
+* post v4.0: DEPRECATED see plantcv.analyze.bound_horizontal
 
 
 #### plantcv.analyze_bound_vertical
@@ -175,7 +178,7 @@ pages for more details on the input and output variable types.
 * post v3.0.5: bound_header, bound_data, analysis_images = **plantcv.analyze_bound_vertical**(*img, obj, mask, line_position*)
 * post v3.3: analysis_image = **plantcv.analyze_bound_vertical**(*img, obj, mask, line_position*)
 * post v3.11: analysis_image = **plantcv.analyze_bound_vertical**(*img, obj, mask, line_position, label="default"*)
-
+* post v4.0: DEPRECATED see plantcv.analyze.bound_vertical
 
 #### plantcv.analyze_color
 
@@ -185,6 +188,7 @@ pages for more details on the input and output variable types.
 * post v3.3: analysis_image = **plantcv.analyze_color**(*rgb_img, mask, hist_plot_type=None*)
 * post v3.11: analysis_image = **plantcv.analyze_color**(*rgb_img, mask, hist_plot_type=None, label="default"*)
 * post v3.12: analysis_image = **plantcv.analyze_color**(*rgb_img, mask, hist_plot_type=None, colorspaces="all", label="default"*)
+* post v4.0: DEPRECATED see plantcv.analyze.color
 
 
 #### plantcv.analyze_nir_intensity
@@ -194,6 +198,7 @@ pages for more details on the input and output variable types.
 * post v3.0: hist_header, hist_data, nir_hist = **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False*)
 * post v3.3: nir_hist = **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False*)
 * post v3.11: nir_hist = **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False, label="default"*)
+* post v4.0: DEPRECATED: see plantcv.analyze.grayscale
 
 
 #### plantcv.analyze_object
@@ -203,6 +208,7 @@ pages for more details on the input and output variable types.
 * post v3.0: shape_header, shape_data, analysis_images = **plantcv.analyze_object**(*img, obj, mask*)
 * post v3.3: analysis_image = **plantcv.analyze_object**(*img, obj, mask*)
 * post v3.11: analysis_image = **plantcv.analyze_object**(*img, obj, mask, label="default"*)
+* post v4.0: DEPRECATED, see plantcv.analyze.size
 
 
 #### plantcv.analyze_thermal_values
@@ -210,18 +216,77 @@ pages for more details on the input and output variable types.
 * pre v3.5: NA
 * post v3.5: thermal_histogram = **plantcv.analyze_thermal_values**(*thermal_array, mask, histplot=False*)
 * post v3.11: thermal_histogram = **plantcv.analyze_thermal_values**(*thermal_array, mask, histplot=False, label="default"*)
+* post v4.0: DEPRECATED, see plantcv.analyze.thermal
+
+#### plantcv.analyze.bound_horizontal
+
+* pre v4.0: (see plantcv.analyze_bound_horizontal)
+* post v4.0: analysis_image = **plantcv.analyze.bound_horizontal**(*img, labeled_mask, line_position, n_labels=1, label="default"*)
+
+
+#### plantcv.analyze.bound_vertical
+
+* pre v4.0: (see plantcv.analyze_bound_vertical)
+* post v4.0: analysis_image = **plantcv.analyze.bound_vertical**(*img, labeled_mask, line_position, n_labels=1, label="default"*)
+
+
+#### plantcv.analyze.color
+
+* pre v4.0: (see plantcv.analyze_color)
+* post v4.0: histogram = **plantcv.analyze.color**(*rgb_img, labeled_mask, n_labels=1, colorspaces="hsv", label="default"*)
+
+
+#### plantcv.analyze.grayscale
+
+* pre v4.0: (see plantcv.analyze_nir_intensity)
+* post v4.0: histogram = **plantcv.analyze.grayscale**(*gray_img, labeled_mask, n_labels=1, bins=100, label="default"*)
+
+#### plantcv.analyze.npq
+
+* pre v4.0: NA
+* post v4.0: npq, npq_hist = **plantcv.analyze.npq**(*ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto", measurement_labels=None, label="default"*)
+
+#### plantcv.analyze.size
+
+* pre v4.0: (see plantcv.analyze_object)
+* post v4.0: analysis_image = **plantcv.analyze.size**(*img, labeled_mask, n_labels=1, label="default"*)
+
+
+#### plantcv.analyze.spectral_index
+
+* pre v4.0: (see plantcv.hyperspectral.analyze_index)
+* post v4.0: analysis_image = **plantcv.analyze.spectral_index**(*index_img, labeled_mask, n_labels=1, bins=100, min_bin=0, max_bin=1, label="default"*)
+
+
+#### plantcv.analyze.spectral_reflectance
+
+* pre v4.0: (see plantcv.hyperspectral.analyze_spectral)
+* post v4.0: analysis_image = **plantcv.analyze.spectral_reflectance**(*hsi, labeled_mask, n_labels=1, label="default"*)
+
+
+#### plantcv.analyze.thermal
+
+* pre v4.0: (see plantcv.analyze_thermal_values)
+* post v4.0: analysis_image = **plantcv.analyze.thermal**(*thermal_img, labeled_mask, n_labels=1, bins=100, label="default"*)
+
+#### plantcv.analyze.yii
+
+* pre v4.0: NA
+* post v4.0: yii, yii_hist = **plantcv.analyze.yii**(*ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label="default"*)
 
 #### plantcv.apply_mask
 
 * pre v3.0dev2: device, masked_img = **plantcv.apply_mask**(*img, mask, mask_color, device, debug=None*)
 * post v3.0dev2: masked_img = **plantcv.apply_mask**(*rgb_img, mask, mask_color*)
-* post v3.7: masked_img = **plantcv.apply_mask**(*img, mask, mask_color*) 
+* post v3.7: masked_img = **plantcv.apply_mask**(*img, mask, mask_color*)
 
 #### plantcv.auto_crop
 
 * pre v3.0dev2: device, cropped = **plantcv.auto_crop**(*device, img, objects, padding_x=0, padding_y=0, color='black', debug=None*)
 * post v3.0dev2: cropped = **plantcv.auto_crop**(*img, objects, padding_x=0, padding_y=0, color='black'*)
-* post v3.2: cropped = **plantcv.auto_crop**(*img, obj, padding_x=0, padding_y=0, color='black'*) 
+* post v3.2: cropped = **plantcv.auto_crop**(*img, obj, padding_x=0, padding_y=0, color='black'*)
+* post v4.0: cropped = **plantcv.auto_crop**(*img, mask, padding_x=0, padding_y=0, color='black'*)
+
 
 #### plantcv.background_subtraction
 
@@ -233,7 +298,7 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, bin_img = **plantcv.binary_threshold**(*img, threshold, maxValue, object_type, device, debug=None*)
 * post v3.0dev2: Deprecated, see:
     * bin_img = **plantcv.threshold.binary**(*gray_img, threshold, max_value, object_type="light"*)
-    
+
 #### plantcv.canny_edge_detect
 
 * pre v3.2: NA
@@ -244,13 +309,15 @@ pages for more details on the input and output variable types.
 * pre v3.3: NA
 * post v3.3: filtered_img = **plantcv.closing**(*gray_img, kernel=None*)
 
+
 #### plantcv.cluster_contour_splitimg
 
 * pre v3.0dev2: device, output_path = **plantcv.cluster_contour_splitimg**(*device, img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None, filenames=None, debug=None*)
 * post v3.0dev2: output_path = **plantcv.cluster_contour_splitimg**(*rgb_img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None, filenames=None*)
 * post v3.3: output_path, output_imgs, output_masks = **plantcv.cluster_contour_splitimg**(*rgb_img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None, filenames=None*)
 * post v3.12 output_path, output_imgs, output_masks = **plantcv.cluster_contour_splitimg**(*img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None, filenames=None*)
-* post v4.0: Deprecated
+* post v4.0: DEPRECATED 
+
 
 #### plantcv.cluster_contours
 
@@ -258,13 +325,20 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: grouped_contour_indexes, contours, roi_obj_hierarchy = **plantcv.cluster_contours**(*img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1*)
 * post v3.2: grouped_contour_indexes, contours, roi_obj_hierarchy = **plantcv.cluster_contours**(*img, roi_objects, roi_object_hierarchy, nrow=1, ncol=1, show_grid=False*)
 * post v3.12: grouped_contour_indexes, contours, roi_obj_hierarchy = **plantcv.cluster_contours**(*img, roi_objects, roi_object_hierarchy, nrow=1, ncol=1, show_grid=False, bounding=True*)
-* post v4.0: Deprecated
+* post v4.0: DEPRECATED see plantcv.roi.auto_grid
+
 
 #### plantcv.color_palette
 
 * pre v3.0: NA
 * post v3.0: colors = **plantcv.color_palette**(*num*)
 * post v3.9: colors = **plantcv.color_palette**(*num, saved=False*)
+
+#### plantcv.create_labels
+
+* pre v4.0: NA
+* post v4.0: labeled_masks, num_labels = **plantcv.create_labels**(*mask, rois=None, roi_type="partial"*)
+
 
 #### plantcv.crop_position_mask
 
@@ -313,6 +387,7 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: objects, hierarchy = **plantcv.find_objects**(*img, mask*)
 * post v4.0: Deprecated
 
+
 #### plantcv.flip
 
 * pre v3.0dev2: device, vh_img = **plantcv.flip**(*img, direction, device, debug=None*)
@@ -342,25 +417,82 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, img_eh = **plantcv.hist_equalization**(*img, device, debug=None*)
 * post v3.0dev2: img_eh = **plantcv.hist_equalization**(*gray_img*)
 
+#### plantcv.homology.acute
+
+* pre v4.0: NA, see plantcv.acute
+* post v4.0: homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = **plantcv.homology.acute**(*img, mask, win, threshold*)
+
+#### plantcv.homology.space
+
+* pre v4.0: NA
+* post v4.0: cur_plms = **plantcv.homology.space**(*cur_plms, include_bound_dist=False, include_centroid_dist=False, include_orient_angles=False*)
+
+#### plantcv.homology.starscape
+
+* pre v4.0: NA
+* post v4.0: final_df, eigenvals, loadings = **plantcv.homology.starscape**(*cur_plms, group_a, group_b, outfile_prefix*)
+
+#### plantcv.homology.constella
+
+* pre v4.0: NA
+* post v4.0: cur_plms, group_iter = **plantcv.homology.constella**(*cur_plms, pc_starscape, group_iter, outfile_prefix*)
+
+#### plantcv.homology.constellaqc
+
+* pre v4.0: NA
+* post v4.0: **plantcv.homology.constellaqc**(*denovo_groups, annotated_groups*)
+
+#### plantcv.homology.landmark_reference_pt_dist
+
+* pre v4.0: see plantcv.landmark_reference_pt_dist
+* post v4.0: **plantcv.homology.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r, label="default"*)
+
+#### plantcv.homology.x_axis_pseudolandmarks
+
+* pre v4.0: see plantcv.x_axis_pseudolandmarks
+* post v4.0: top, bottom, center_v = **plantcv.homology.x_axis_pseudolandmarks**(*img, mask, label="default"*)
+
+#### plantcv.homology.y_axis_pseudolandmarks
+
+* pre v4.0: see plantcv.y_axis_pseudolandmarks
+* post v4.0: left, right, center_h = **plantcv.homology.y_axis_pseudolandmarks**(*img, mask, label="default"*)
+
+#### plantcv.homology.scale_features
+
+* pre v4.0: see plantcv.scale_features
+* post v4.0: rescaled, centroid_scaled, boundary_line_scaled = **plantcv.homology.scale_features**(*mask, points, line_position*)
+
 #### plantcv.hyperspectral.analyze_index
 
 * pre v3.7: NA
 * post v3.7: **plantcv.hyperspectral.analyze_index**(*index_array, mask*)
 * post v3.8: index_histogram = **plantcv.hyperspectral.analyze_index**(*index_array, mask, histplot=False, bins=100, max_bin=0, min_bin=1*)
 * post v3.11: index_histogram = **plantcv.hyperspectral.analyze_index**(*index_array, mask, histplot=False, bins=100, max_bin=0, min_bin=1, label="default"*)
-
+* post v4.0: DEPRECATED, see plantcv.analyze.spectral_index
 
 #### plantcv.hyperspectral.analyze_spectral
 
 * pre v3.7: NA
 * post v3.7: spectral_histogram = **plantcv.hyperspectral.analyze_spectral**(*array, mask, histplot=True*)
 * post v3.11: spectral_histogram =**plantcv.hyperspectral.analyze_spectral**(*array, mask, histplot=True, label="default"*)
+* * post v4.0: Deprecated, see:
+    * analysis_image = **plantcv.analyze.spectral_reflectance**(*hsi, labeled_mask, n_labels=1, label="default"*)
 
 #### plantcv.hyperspectral.extract_index
 
 * pre v3.7: NA
 * post v3.7: index_array = **plantcv.hyperspectral.extract_index**(*array, index="NDVI", distance=20*)
 * post v3.8: DEPRECATED see plantcv.spectral_index
+
+#### plantcv.hyperspectral.rot90
+
+* pre v4.x: NA
+* post v4.x: rot_hsi = **plantcv.hyperspectral.rot90**(*spectral_data, k*)
+
+#### plantcv.hyperspectral.write_data
+
+* pre v4.0: NA
+* post v4.0: **plantcv.hyperspectral.write_data**(*filename, spectral_data*)
 
 #### plantcv.image_add
 
@@ -382,6 +514,16 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, img_inv = **plantcv.invert**(*img, device, debug=None*)
 * post v3.0dev2: img_inv = **plantcv.invert**(*gray_img*)
 
+#### plantcv.io.random_subset
+
+* pre v3.14.0: NA
+* post v3.14.0: sub_dataset = **plantcv.io.random_subset**(*dataset, num=100, seed=None*)
+
+#### plantcv.io.read_dataset
+
+* pre v3.14.0: NA
+* post v3.14.0:  image_dataset = **plantcv.io.read_dataset**(*source_path, pattern='', sort=True*)
+
 #### plantcv.landmark_reference_pt_dist
 
 * pre v3.0dev2: device, vert_ave_c, hori_ave_c, euc_ave_c, ang_ave_c, vert_ave_b, hori_ave_b, euc_ave_b, ang_ave_b = **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r, device, debug=None*)
@@ -389,6 +531,7 @@ pages for more details on the input and output variable types.
 * post v3.2: landmark_header, landmark_data = **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r*)
 * post v3.3: **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r*)
 * post v3.11: **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r, label="default"*)
+* post v4.0: DEPRECATED see plantcv.homology.landmark_reference_pt_dist
 
 
 #### plantcv.laplace_filter
@@ -443,20 +586,20 @@ pages for more details on the input and output variable types.
 #### plantcv.morphology.find_tips
 
 * pre v3.3: NA
-* post v3.3: tip_img = **plantcv.morphology.find_tips**(*skel_img, mask=None*) 
-* post v3.11: tip_img = **plantcv.morphology.find_tips**(*skel_img, mask=None, label="default"*) 
+* post v3.3: tip_img = **plantcv.morphology.find_tips**(*skel_img, mask=None*)
+* post v3.11: tip_img = **plantcv.morphology.find_tips**(*skel_img, mask=None, label="default"*)
 
 #### plantcv.morphology.prune
 
 * pre v3.3: NA
-* post v3.3: pruned_img = **plantcv.morphology.prune**(*skel_img, size*) 
-* post v3.4: pruned_skeleton, segmented_img, segment_objects = **plantcv.morphology.prune**(*skel_img, size=0, mask=None*) 
+* post v3.3: pruned_img = **plantcv.morphology.prune**(*skel_img, size*)
+* post v3.4: pruned_skeleton, segmented_img, segment_objects = **plantcv.morphology.prune**(*skel_img, size=0, mask=None*)
 
 #### plantcv.morphology.segment_angle
 
 * pre v3.3: NA
-* post v3.3: labeled_img = **plantcv.morphology.segment_angle**(*segmented_img, objects*) 
-* post v3.11: labeled_img = **plantcv.morphology.segment_angle**(*segmented_img, objects, label="default"*) 
+* post v3.3: labeled_img = **plantcv.morphology.segment_angle**(*segmented_img, objects*)
+* post v3.11: labeled_img = **plantcv.morphology.segment_angle**(*segmented_img, objects, label="default"*)
 
 #### plantcv.morphology.segment_curvature
 
@@ -467,15 +610,15 @@ pages for more details on the input and output variable types.
 #### plantcv.morphology.segment_euclidean_length
 
 * pre v3.3: NA
-* post v3.3: labeled_img = **plantcv.morphology.segment_euclidean_length**(*segmented_img, objects*) 
-* post v3.11: labeled_img = **plantcv.morphology.segment_euclidean_length**(*segmented_img, objects, label="default"*) 
+* post v3.3: labeled_img = **plantcv.morphology.segment_euclidean_length**(*segmented_img, objects*)
+* post v3.11: labeled_img = **plantcv.morphology.segment_euclidean_length**(*segmented_img, objects, label="default"*)
 
 #### plantcv.morphology.segment_id
 
 * pre v3.3: NA
-* post v3.3: segmented_img, labeled_img = **plantcv.morphology.segment_id**(*skel_img, objects, mask=None*) 
+* post v3.3: segmented_img, labeled_img = **plantcv.morphology.segment_id**(*skel_img, objects, mask=None*)
 
-#### plantcv.morphology.segment_path_length 
+#### plantcv.morphology.segment_path_length
 
 * pre v3.3: NA
 * post v3.3: labeled_img = **plantcv.morphology.segment_path_length**(*segmented_img, objects*)
@@ -484,7 +627,7 @@ pages for more details on the input and output variable types.
 #### plantcv.morphology.segment_skeleton
 
 * pre v3.3: NA
-* post v3.3: segmented_img, segment_objects = **plantcv.morphology.segment_skeleton**(*skel_img, mask=None*) 
+* post v3.3: segmented_img, segment_objects = **plantcv.morphology.segment_skeleton**(*skel_img, mask=None*)
 
 #### plantcv.morphology.segment_sort
 
@@ -500,7 +643,7 @@ pages for more details on the input and output variable types.
 #### plantcv.morphology.skeletontize
 
 * pre v3.3: NA
-* post v3.3: skeleton = **plantcv.morphology.skeletonize**(*mask*) 
+* post v3.3: skeleton = **plantcv.morphology.skeletonize**(*mask*)
 
 #### plantcv.naive_bayes_classifier
 
@@ -511,6 +654,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, group, mask = **plantcv.object_composition**(*img, contours, hierarchy, device, debug=None*)
 * post v3.0dev2: group, mask = **plantcv.object_composition**(*img, contours, hierarchy*)
+* post v4.0: DEPRECATED
 
 #### plantcv.opening
 
@@ -545,15 +689,23 @@ pages for more details on the input and output variable types.
 * post v3.12: **plantcv.outputs.save_results**(*filename, outformat="json"*)
 
 #### plantcv.photosynthesis.analyze_fvfm
+
 * pre v3.10: see plantcv.fluor_fvfm
 * post v3.10: analysis_images = **plantcv.photosynthesis.analyze_fvfm**(*fdark, fmin, fmax, mask, bins=256*)
 * post v3.11: analysis_images = **plantcv.photosynthesis.analyze_fvfm**(*fdark, fmin, fmax, mask, bins=256, label="default"*)
-* post v4.0: Deprecated
+* post v4.0: Deprecated, see:
+  * yii, hist_fig = **plantcv.analyze.yii**(*ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label="default"*)
 
 #### plantcv.photosynthesis.read_cropreporter
 
 * pre v3.10: NA
 * post v3.10: fdark, fmin, fmax = **plantcv.photosynthesis.read_cropreporter**(*filename*)
+* post v4.0: ps = **plantcv.photosynthesis.read_cropreporter**(*filename*)
+
+#### plantcv.photosynthesis.reassign_frame_labels
+
+* pre v4.0: NA
+* post v4.0: ps_da = **plantcv.photosynthesis.reassign_frame_labels(*ps_da, mask*)**
 
 #### plantcv.plot_hist
 
@@ -566,6 +718,11 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: **plantcv.plot_image**(*img, cmap=None*)
 * post v3.0dev2: **plantcv.plot_image**(*img, cmap=None*)
+
+#### plantcv.Points
+
+* pre v4.0: NA
+* post v4.0: marker = **plantcv.Points**(*img, figsize=(6,12)*)
 
 #### plantcv.print_image
 
@@ -598,6 +755,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, img1, bnk, contour, hierarchy = **plantcv.rectangle_mask**(*img, p1, p2, device, debug=None, color="black"*)
 * post v3.0dev2: img1, bnk, contour, hierarchy = **plantcv.rectangle_mask**(*img, p1, p2, color="black"*)
+* post v4.0: DEPRECATED
 
 #### plantcv.report_size_marker_area
 
@@ -606,11 +764,14 @@ pages for more details on the input and output variable types.
 * post v3.1: marker_header, marker_data, analysis_image = **plantcv.report_size_marker_area**(*img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None, thresh=None*)
 * post v3.3: analysis_image = **plantcv.report_size_marker_area**(*img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None, thresh=None*)
 * post v3.11: analysis_image = **plantcv.report_size_marker_area**(*img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None, thresh=None, label="default"*)
+* post v4.0: analysis_image = **plantcv.report_size_marker_area**(*img, roi, marker='define', objcolor='dark', thresh_channel=None, thresh=None, label="default"*)
 
 #### plantcv.resize
 
 * pre v3.0dev2: device, reimg = **plantcv.resize**(*img, resize_x, resize_y, device, debug=None*)
 * post v3.0dev2: reimg = **plantcv.resize**(*img, resize_x, resize_y*)
+* post v3.11: Deprecated, see:
+    * **pcv.transform.resize** and **pcv.transform.resize_factor**
 
 #### plantcv.rgb2gray
 
@@ -632,40 +793,63 @@ pages for more details on the input and output variable types.
 * pre v3.0dev1: NA
 * post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.circle**(*x, y, r, img*)
 * post v3.2: roi_contour, roi_hierarchy = **plantcv.roi.circle**(*img, x, y, r*)
+* post v4.0: roi = **plantcv.roi.circle**(*img, x, y, r*)
+
+#### plantcv.roi.custom
+
+* pre v3.0dev1: NA
+* post v3.14: roi_contour, roi_hierarchy = **plantcv.roi.custom**(*img, vertices*)
+* post v4.0: roi = **plantcv.roi.custom**(*img, vertices*)
 
 #### plantcv.roi.ellipse
 
 * pre v3.0dev1: NA
 * post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.ellipse**(*x, y, r1, r2, angle, img*)
 * post v3.2: roi_contour, roi_hierarchy = **plantcv.roi.ellipse**(*img, x, y, r1, r2, angle*)
+* post v4.0: roi = **plantcv.roi.ellipse**(*img, x, y, r1, r2, angle*)
+
+#### plantcv.roi.filter
+
+* pre v4.0: NA
+* post v4.0: filtered_mask = **pcv.roi.filter**(*mask, roi, roi_type='partial'*)
 
 #### plantcv.roi.from_binary_image
 
 * pre v3.0dev1: NA
 * post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.from_binary_image**(*bin_img, img*)
 * post v3.2: roi_contour, roi_hierarchy = **plantcv.roi.from_binary**(*img, bin_img*)
+* post v4.0: roi = **plantcv.roi.from_binary**(*img, bin_img*)
 
 #### plantcv.roi.rectangle
 
 * pre v3.0dev1: NA
 * post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.rectangle**(*x, y, h, w, img*)
 * post v3.2: roi_contour, roi_hierarchy = **plantcv.roi.rectangle**(*img, x, y, h, w*)
+* post v4.0: roi = **plantcv.roi.rectangle**(*img, x, y, h, w*)
 
 #### plantcv.roi.roi2mask
 
 * pre v3.8: NA
 * post v3.8: mask = **pcv.roi.roi2mask**(*img, contour*)
+* post v4.0: mask = **pcv.roi.roi2mask**(*img, roi*)
+
+#### plantcv.roi.auto_grid
+
+* pre v4.0: NA
+* post v4.0: roi_objects = **pcv.roi.auto_grid**(*mask, nrows, ncols, radius=None, img=None*)
 
 #### plantcv.roi.multi
 
 * pre v3.1: NA
 * post v3.1: roi_contours, roi_hierarchies = **plantcv.roi.multi**(*img, coord, radius, spacing=None, nrows=None, ncols=None*)
+* post v4.0: roi_objects = **plantcv.roi.multi**(*img, coord, radius=None, spacing=None, nrows=None, ncols=None*)
 
 #### plantcv.roi_objects
 
 * pre v3.0dev2: device, kept_cnt, hierarchy, mask, obj_area = **plantcv.roi_objects**(*img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, device, debug=None*)
 * post v3.0dev2: kept_cnt, hierarchy, mask, obj_area = **plantcv.roi_objects**(*img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_hierarchy*)
 * post v3.3: kept_cnt, hierarchy, mask, obj_area = **plantcv.roi_objects**(*img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy,roi_type='partial'*)
+* post v4.0: kept_cnt, mask, obj_area = **plantcv.roi_objects**(*img, roi, obj, roi_type='partial'*)
 
 #### plantcv.transform.rotate
 
@@ -686,18 +870,19 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, rotated_img = **plantcv.rotate**(*img, rotation_deg, crop, device, debug=None*)
 * post v3.0dev2: rotated_img = **plantcv.rotate**(*img, rotation_deg, crop*)
+* post v4.0: DEPRECATED see plantcv.transform.rotate
 
 #### plantcv.rotate_img
 
 * pre v3.0dev2: device, rotated_img = **plantcv.rotate_img**(*img, rotation_deg, device, debug=None*)
-* post v3.0dev2: Deprecated, see:
-    * rotated_img = **plantcv.rotate**(*img, rotation_deg, crop*)
+* post v3.0dev2: DEPRECATED see plantcv.transform.rotate
 
 #### plantcv.scale_features
 
 * pre v3.0dev2: device, rescaled, centroid_scaled, boundary_line_scaled = **plantcv.scale_features**(*obj, mask, points, boundary_line, device, debug=None*)
 * post v3.0dev2: rescaled, centroid_scaled, boundary_line_scaled = **plantcv.scale_features**(*obj, mask, points, boundary_line*)
 * post v3.2: rescaled, centroid_scaled, boundary_line_scaled = **plantcv.scale_features**(*obj, mask, points, line_position*)
+* post v4.0: DEPRECATED, see: plantcv.homology.scale_features
 
 #### plantcv.scharr_filter
 
@@ -708,6 +893,11 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, adjusted_img = **plantcv.shift_img**(*img, device, number, side="right", debug=None*)
 * post v3.0dev2: adjusted_img = **plantcv.shift_img**(*img, number, side="right"*)
+
+#### plantcv.segment_image_series
+
+* pre v4.0: NA
+* post v4.0: out_labels = **plantcv.segment_image_series**(*imgs_paths, masks_paths, rois, save_labels=True, ksize=3*)
 
 #### plantcv.sobel_filter
 
@@ -832,10 +1022,16 @@ pages for more details on the input and output variable types.
 * pre v3.9: NA
 * post v3.9: filtered_img = **plantcv.stdev_filter**(*img, kszie, borders="nearest"*)
 
+#### plantcv.threshold.dual_channels
+
+* pre v4.0: NA
+* post v4.0: bin_img = **plantcv.threshold.dual_channels**(*rgb_img, x_channel, y_channel, points, above=True*)
+
 #### plantcv.threshold.binary
 
 * pre v3.0dev2: NA
-* post v3.0dev2: bin_img = plantcv.threshold.binary**(*gray_img, threshold, max_value, object_type="light"*)
+* post v3.0dev2: bin_img = **plantcv.threshold.binary**(*gray_img, threshold, max_value, object_type="light"*)
+* post v4.0: bin_img = **plantcv.threshold.binary**(*gray_img, threshold, object_type="light"*)
 
 #### plantcv.threshold.custom_range
 
@@ -847,31 +1043,41 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: NA
 * post v3.0dev2: bin_img = **plantcv.threshold.gaussian**(*gray_img, max_value, object_type="light"*)
+* post v4.0: bin_img = **plantcv.threshold.gaussian**(*gray_img, block_size, offset, object_type="light"*)
 
 #### plantcv.threshold.mean
 
 * pre v3.0dev2: NA
 * post v3.0dev2: bin_img = **plantcv.threshold.mean**(*gray_img, max_value, object_type="light"*)
+* post v4.0: bin_img = **plantcv.threshold.mean**(*gray_img, block_size, offset, object_type="light"*)
 
 #### plantcv.threshold.otsu
 
 * pre v3.0dev2: NA
 * post v3.0dev2: bin_img = **plantcv.threshold.otsu**(*gray_img, max_value, object_type="light"*)
+* post v4.0: bin_img = **plantcv.threshold.otsu**(*gray_img, object_type="light"*)
 
 #### plantcv.threshold.saturation
 
 * pre v3.8: NA
-* post v3.8: bin_img = **plantcv.threshold.saturation**(*rgb_img, threshold=255, channel="any")
+* post v3.8: bin_img = **plantcv.threshold.saturation**(*rgb_img, threshold=255, channel="any"*)
 
-#### plantcv.threshold.texture_filter
+#### plantcv.threshold.texture
 
 * pre v3.0: NA
-* post v3.0: bin_img = **plantcv.threshold.texture_filter**(*gray_img, ksize, threshold, offset=3, texture_method='dissimilarity', borders='nearest', max_value=255*)
+* post v3.0: bin_img = **plantcv.threshold.texture**(*gray_img, ksize, threshold, offset=3, texture_method='dissimilarity', borders='nearest', max_value=255*)
+* post v4.0: bin_img = **plantcv.threshold.texture**(*gray_img, ksize, threshold, offset=3, texture_method='dissimilarity', borders='nearest'*)
 
 #### plantcv.threshold.triangle
 
 * pre v3.0dev2: NA
 * post v3.0dev2: bin_img = **plantcv.threshold.triangle**(*gray_img, max_value, object_type="light", xstep=1*)
+* post v4.0: bin_img = **plantcv.threshold.triangle**(*gray_img, object_type="light", xstep=1*)
+
+#### plantcv.transform.affine_color_correction
+
+* pre v4.0: NA
+* post v4.0: **plantcv.transform.affine_color_correction**(*rgb_img, source_matrix, target_matrix*)
 
 #### plantcv.transform.apply_transformation_matrix
 
@@ -921,6 +1127,17 @@ pages for more details on the input and output variable types.
 * pre v3.0dev1: NA
 * post v3.0dev2: matrix = **plantcv.transform.load_matrix**(*filename*)
 
+#### plantcv.transform.resize
+
+* pre v3.11: NA
+* post v3.11: resized_img = **plantcv.transform.resize**(*img, size, interpolation="auto"*)
+
+#### plantcv.transform.resize_factor
+
+* pre v3.11: NA
+* post v3.11: resized_img = **plantcv.transform.resize_factor**(*img, factors, interpolation="auto"*)
+
+
 #### plantcv.transform.nonuniform_illumination
 
 * pre v3.5: NA
@@ -936,11 +1153,21 @@ pages for more details on the input and output variable types.
 * pre v3.0dev1: NA
 * post v3.0dev2: **plantcv.transform.save_matrix**(*matrix, filename*)
 
+#### plantcv.transform.std_color_matrix
+
+* pre v4.0: NA
+* post v4.0: **plantcv.transform.std_color_matrix**(*pos=0*)
+
 #### plantcv.triangle_auto_threshold
 
 * pre v3.0dev2: device, bin_img = **plantcv.triangle_auto_threshold**(*device, img, maxvalue, object_type, xstep=1, debug=None*)
 * post v3.0dev2: Deprecated, see:
     * bin_img = **plantcv.threshold.triangle**(*gray_img, max_value, object_type="light", xstep=1*)
+
+#### plantcv.visualize.chlorophyll_fluorescence
+
+* pre v4.0: NA
+* post v4.0: chart = **plantcv.visualize.chlorophyll_fluorescence**(*ps_da, labeled_mask, n_labels=1, label="object"*)
 
 #### plantcv.visualize.colorize_label_img
 
@@ -981,11 +1208,22 @@ pages for more details on the input and output variable types.
 * post v3.2: pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, dpi=None, axes=True, colorbar=True*)
 * post v3.3: pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, axes=True, colorbar=True*)
 * post v3.12: pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, axes=True, colorbar=True, obj_padding="auto", title=None*)
+* post v4.0: pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, mask=None, cmap=None, background="image", min_value=0, max_value=255, axes=True, colorbar=True, title=None*)
 
 #### plantcv.visualize.obj_sizes
 
 * pre v3.13: NA
 * post v3.13: plotting_img = **pcv.visualize.obj_sizes**(*img, mask, num_objects=100*)
+
+#### plantcv.visualize.pixel_scatter_plot
+
+* pre v4.0: NA
+* post v4.0: fig, ax = **pcv.visualize.pixel_scatter_plot**(*paths_to_imgs, x_channel, y_channel*)
+
+#### plantcv.visualize.time_lapse_video
+
+* pre v4.0: NA
+* post v4.0: frame_size = **pcv.visualize.time_lapse_video**(*img_list, out_filename='./time_lapse_video.mp4', fps=29.97, display=True*)
 
 #### plantcv.watershed_segmentation
 
@@ -1013,6 +1251,8 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: top, bottom, center_v = **plantcv.x_axis_pseudolandmarks**(*obj, mask, img*)
 * post v3.2: top, bottom, center_v = **plantcv.x_axis_pseudolandmarks**(*img, obj, mask*)
 * post v3.11: top, bottom, center_v = **plantcv.x_axis_pseudolandmarks**(*img, obj, mask, label="default"*)
+* post v4.0: DEPRECATED, see: plantcv.homology.x_axis_pseudolandmarks
+
 
 #### plantcv.y_axis_pseudolandmarks
 
@@ -1020,3 +1260,4 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: left, right, center_h = **plantcv.y_axis_pseudolandmarks**(*obj, mask, img*)
 * post v3.2: left, right, center_h = **plantcv.y_axis_pseudolandmarks**(*img, obj, mask*)
 * post v3.11: left, right, center_h = **plantcv.y_axis_pseudolandmarks**(*img, obj, mask, label="default"*)
+* post v4.0: Deprecated, see: plantcv.homology.y_axis_pseudolandmarks

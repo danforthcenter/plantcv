@@ -18,10 +18,10 @@ Attributes are accessed as plantcv.params.*attribute*.
 
 **debug_outdir**: The directory to output debug images to when `plantcv.debug` = "print".
 
-**line_thickness**: The line thickness for plots created by [plantcv.analyze_object](analyze_shape.md), [plantcv.analyze_bound_horizontal](analyze_bound_horizontal.md).
-[plantcv.analyze_bound_vertical](analyze_bound_vertical.md), [plantcv.roi_objects](roi_objects.md), [plantcv.object_composition](object_composition.md),
-[plantcv.scale_features](scale_features.md), [plantcv.x_axis_pseudolandmarks](x_axis_pseudolandmarks.md), [plantcv.y_axis_pseudolandmarks](y_axis_pseudolandmarks.md),
-[plantcv.acute_vertex](acute_vertex.md), [plantcv.morphology.prune](prune.md), [plantcv.morphology.find_branch_pts](find_branch_pts.md), [plantcv.morphology.check_cycles](check_cycles.md),
+**line_thickness**: The line thickness for plots created by [plantcv.analyze.size](analyze_size.md), [plantcv.analyze.bound_horizontal](analyze_bound_horizontal2.md).
+[plantcv.analyze.bound_vertical](analyze_bound_vertical2.md), [plantcv.roi_objects](roi_objects.md),
+[plantcv.homology.scale_features](homology_scale_features.md), [plantcv.homology.x_axis_pseudolandmarks](homology_x_axis_pseudolandmarks.md), [plantcv.homology.y_axis_pseudolandmarks](homology_y_axis_pseudolandmarks.md),
+[plantcv.morphology.prune](prune.md), [plantcv.morphology.find_branch_pts](find_branch_pts.md), [plantcv.morphology.check_cycles](check_cycles.md),
  [plantcv.morphology.find_tips](find_tips.md), [plantcv.morphology.segment_skeleton](segment_skeleton.md), [plantcv.morphology.segment_tangent_angle](segment_tangent_angle.md),
  [plantcv.morphology.segment_id](segment_id.md), and every region of interest function. Default = 5. 
 
@@ -39,7 +39,7 @@ the morphology sub-package. Default = 2.
 
 **color_scale**: The name of a color scale (a Matplot lib colormap) used by [segment_angle](segment_angle.md), [segment_curvature](segment_curvature.md), 
 [segment_euclidean_length](segment_euclidean_length.md), [segment_insertion_angle](segment_insertion_angle.md), [segment_path_length](segment_pathlength.md), and [segment_skeleton](segment_skeleton.md), 
-[segment_tangent_angle](segment_tangent_angle.md) from the morphology sub-package, and [cluster_contours](cluster_contours.md), [spatial_clustering](spatial_clustering.md), and 
+[segment_tangent_angle](segment_tangent_angle.md) from the morphology sub-package, [spatial_clustering](spatial_clustering.md), and 
 [watershed_segmentation](watershed.md) from the base package. Default = "gist_rainbow". See the [Matplotlib](https://matplotlib.org/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py) website for available options.
 
 **color_sequence**: Set the sequence of colors from the `color_scale` created by the `color_palette` function to "sequential" or "random" order. Default = "sequential".

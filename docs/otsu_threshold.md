@@ -2,13 +2,12 @@
 
 Creates a binary image from a gray image based on the threshold values. 
 
-**plantcv.threshold.otsu**(*gray_img, max_value, object_type="light"*)
+**plantcv.threshold.otsu**(*gray_img, object_type="light"*)
 
 **returns** thresholded/binary image
 
 - **Parameters:**
     - gray_img - Grayscale image data
-    - max_value - Value to apply above threshold (255 = white)
     - object_type - "light" or "dark" (default: "light"). If object is lighter than the background then standard 
     thresholding is done. If object is darker than the background then inverse thresholding is done.
    
@@ -29,7 +28,7 @@ pcv.params.debug = "plot"
 
 # Create binary image from a gray image based on threshold values. 
 # Targeting dark objects in the image.
-threshold_dark = pcv.threshold.otsu(gray_img=gray_img, max_value=255, object_type='dark')
+threshold_dark = pcv.threshold.otsu(gray_img=gray_img, object_type='dark')
 
 ```
 
@@ -45,7 +44,7 @@ threshold_dark = pcv.threshold.otsu(gray_img=gray_img, max_value=255, object_typ
 
 # Create binary image from a gray image based on threshold values. 
 # Targeting light objects in the image.
-threshold_light = pcv.threshold.otsu(gray_img=gray_img, max_value=255, object_type='light')
+threshold_light = pcv.threshold.otsu(gray_img=gray_img, object_type='light')
 
 ```
 

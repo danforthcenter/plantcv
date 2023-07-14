@@ -7,15 +7,15 @@ A global PlantCV output class.
 An `Outputs` class has been added that automatically stores measurements and images collected by the following 
 functions:
 
-* `analyze_bound_horizontal`
-* `analyze_bound_vertical`
-* `analyze_color`
-* `analyze_nir_intensity`
-* `analyze_object`
-* `analyze_thermal_values` 
+* `analyze.bound_horizontal`
+* `analyze.bound_vertical`
+* `analyze.color`
+* `analyze.grayscale`
+* `analyze.size`
+* `analyze.thermal` 
 * `fluor_fvfm`
 * `hyperspectral.analyze_spectral`
-* `hyperspectral.analyze_index`
+* `analyze.spectral_index`
 * `report_size_marker_area`
 * `morphology.check_cycles`
 * `morphology.segment_angle`
@@ -85,10 +85,10 @@ from plantcv import plantcv as pcv
 ######## workflow steps here ########
 
 # Find shape properties, output shape image (optional)
-shape_img = pcv.analyze_object(img, obj, mask, label="default")
+shape_img = pcv.analyze.size(img=img, labeled_mask=mask, n_labels=1, label="default")
 
 # Look at object area data without writing to a file 
-plant_area = pcv.outputs.observations['default']['pixel_area']['value']
+plant_area = pcv.outputs.observations['default1']['pixel_area']['value']
 
 # Write shape data to results file
 pcv.outputs.save_results(filename=args.result, outformat="json")
@@ -98,8 +98,8 @@ pcv.outputs.clear()
 
 ######## More workflow steps here ########
 
-nir_imgs = pcv.analyze_nir_intensity(nir2, nir_combinedmask, 256, label="default")
-shape_img = pcv.analyze_object(nir2, nir_combined, nir_combinedmask, label="default")
+nir_hist = pcv.analyze.grayscale(gray_img=nir2, labeled_mask=nir_combinedmask, n_labels=1, bins=100, label="default")
+shape_img = pcv.analyze.size(img=nir2, labeled_mask=nir_combinedmask, n_labels=1, label="default")
 
 # Write the NIR and shape data to a file 
 pcv.outputs.save_results(filename=args.coresult, outformat="json")

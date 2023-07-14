@@ -5,7 +5,10 @@ import cv2
 import math
 import numpy as np
 from matplotlib import pyplot as plt
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv import rgb2gray
+from plantcv.plantcv import rgb2gray_hsv
+from plantcv.plantcv import rgb2gray_lab
+from plantcv.plantcv import fatal_error, warn
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 from skimage.feature import graycomatrix, graycoprops
@@ -13,13 +16,12 @@ from scipy.ndimage import generic_filter
 
 
 # Binary threshold
-def binary(gray_img, threshold, max_value, object_type="light"):
+def binary(gray_img, threshold, object_type="light"):
     """Creates a binary image from a grayscale image based on the threshold value.
 
     Inputs:
     gray_img     = Grayscale image data
     threshold    = Threshold value (0-255)
-    max_value    = value to apply above threshold (usually 255 = white)
     object_type  = "light" or "dark" (default: "light")
                    - If object is lighter than the background then standard thresholding is done
                    - If object is darker than the background then inverse thresholding is done
@@ -29,7 +31,6 @@ def binary(gray_img, threshold, max_value, object_type="light"):
 
     :param gray_img: numpy.ndarray
     :param threshold: int
-    :param max_value: int
     :param object_type: str
     :return bin_img: numpy.ndarray
     """
@@ -45,27 +46,39 @@ def binary(gray_img, threshold, max_value, object_type="light"):
     params.device += 1
 
     # Threshold the image
-    bin_img = _call_threshold(gray_img, threshold, max_value, threshold_method, "_binary_threshold_")
+    bin_img = _call_threshold(gray_img, threshold, threshold_method, "_binary_threshold_")
 
     return bin_img
 
 
 # Gaussian adaptive threshold
-def gaussian(gray_img, max_value, object_type="light"):
+def gaussian(gray_img, block_size, offset, object_type="light"):
     """Creates a binary image from a grayscale image based on the Gaussian adaptive threshold method.
+
+    Adaptive thresholds use a threshold value that varies across the image.
+    This local threshold depends on the local average, computed in a squared portion of the image of
+    block_size by block_size pixels, and on the offset relative to that local average.
+
+    In the Gaussian adaptive threshold, the local average is a weighed average of the pixel values
+    in the block, where the weights are a 2D Gaussian centered in the middle.
 
     Inputs:
     gray_img     = Grayscale image data
-    max_value    = value to apply above threshold (usually 255 = white)
+    block_size   = Size of the block of pixels used to compute the local average
+    offset       = Value substracted from the local average to compute the local threshold.
+                    A negative offset sets the local threshold above the local average.
     object_type  = "light" or "dark" (default: "light")
-                   - If object is lighter than the background then standard thresholding is done
-                   - If object is darker than the background then inverse thresholding is done
+                   - "light" (for objects brighter than the background) sets the pixels above
+                        the local threshold to 255 and the pixels below to 0.
+                   - "dark" (for objects darker than the background) sets the pixels below the
+                        local threshold to 255 and the pixels above to 0.
 
     Returns:
     bin_img      = Thresholded, binary image
 
     :param gray_img: numpy.ndarray
-    :param max_value: int
+    :param block_size: int
+    :param offset: float
     :param object_type: str
     :return bin_img: numpy.ndarray
     """
@@ -80,28 +93,39 @@ def gaussian(gray_img, max_value, object_type="light"):
 
     params.device += 1
 
-    bin_img = _call_adaptive_threshold(gray_img, max_value, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, threshold_method,
-                                       "_gaussian_threshold_")
+    bin_img = _call_adaptive_threshold(gray_img, block_size, offset, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                       threshold_method, "_gaussian_threshold_")
 
     return bin_img
 
 
 # Mean adaptive threshold
-def mean(gray_img, max_value, object_type="light"):
+def mean(gray_img, block_size, offset, object_type="light"):
     """Creates a binary image from a grayscale image based on the mean adaptive threshold method.
+
+    Adaptive thresholds use a threshold value that varies across the image.
+    This local threshold depends on the local average, computed in a squared portion of the image of
+    block_size by block_size pixels, and on the offset relative to that local average.
+
+    In the mean adaptive threshold, the local average is the average of the pixel values in the block.
 
     Inputs:
     gray_img     = Grayscale image data
-    max_value    = value to apply above threshold (usually 255 = white)
+    block_size   = Size of the block of pixels used to compute the local average
+    offset       = Value substracted from the local average to compute the local threshold.
+                    A negative offset sets the local threshold above the local average.
     object_type  = "light" or "dark" (default: "light")
-                   - If object is lighter than the background then standard thresholding is done
-                   - If object is darker than the background then inverse thresholding is done
+                   - "light" (for objects brighter than the background) sets the pixels above
+                        the local threshold to 255 and the pixels below to 0.
+                   - "dark" (for objects darker than the background) sets the pixels below the
+                        local threshold to 255 and the pixels above to 0.
 
     Returns:
     bin_img      = Thresholded, binary image
 
     :param gray_img: numpy.ndarray
-    :param max_value: int
+    :param block_size: int
+    :param offset: float
     :param object_type: str
     :return bin_img: numpy.ndarray
     """
@@ -116,19 +140,18 @@ def mean(gray_img, max_value, object_type="light"):
 
     params.device += 1
 
-    bin_img = _call_adaptive_threshold(gray_img, max_value, cv2.ADAPTIVE_THRESH_MEAN_C, threshold_method,
-                                       "_mean_threshold_")
+    bin_img = _call_adaptive_threshold(gray_img, block_size, offset, cv2.ADAPTIVE_THRESH_MEAN_C,
+                                       threshold_method, "_mean_threshold_")
 
     return bin_img
 
 
 # Otsu autothreshold
-def otsu(gray_img, max_value, object_type="light"):
+def otsu(gray_img, object_type="light"):
     """Creates a binary image from a grayscale image using Otsu's thresholding.
 
     Inputs:
     gray_img     = Grayscale image data
-    max_value    = value to apply above threshold (usually 255 = white)
     object_type  = "light" or "dark" (default: "light")
                    - If object is lighter than the background then standard thresholding is done
                    - If object is darker than the background then inverse thresholding is done
@@ -137,7 +160,6 @@ def otsu(gray_img, max_value, object_type="light"):
     bin_img      = Thresholded, binary image
 
     :param gray_img: numpy.ndarray
-    :param max_value: int
     :param object_type: str
     :return bin_img: numpy.ndarray
     """
@@ -153,18 +175,17 @@ def otsu(gray_img, max_value, object_type="light"):
     params.device += 1
 
     # Threshold the image
-    bin_img = _call_threshold(gray_img, 0, max_value, threshold_method, "_otsu_threshold_")
+    bin_img = _call_threshold(gray_img, 0, threshold_method, "_otsu_threshold_")
 
     return bin_img
 
 
 # Triangle autothreshold
-def triangle(gray_img, max_value, object_type="light", xstep=1):
+def triangle(gray_img, object_type="light", xstep=1):
     """Creates a binary image from a grayscale image using Zack et al.'s (1977) thresholding.
 
     Inputs:
     gray_img     = Grayscale image data
-    max_value    = value to apply above threshold (usually 255 = white)
     object_type  = "light" or "dark" (default: "light")
                    - If object is lighter than the background then standard thresholding is done
                    - If object is darker than the background then inverse thresholding is done
@@ -175,7 +196,6 @@ def triangle(gray_img, max_value, object_type="light", xstep=1):
     bin_img      = Thresholded, binary image
 
     :param gray_img: numpy.ndarray
-    :param max_value: int
     :param object_type: str
     :param xstep: int
     :return bin_img: numpy.ndarray
@@ -239,7 +259,7 @@ def triangle(gray_img, max_value, object_type="light", xstep=1):
     params.device += 1
 
     # Threshold the image
-    bin_img = _call_threshold(gray_img, autothreshval, max_value, threshold_method, "_triangle_threshold_")
+    bin_img = _call_threshold(gray_img, autothreshval, threshold_method, "_triangle_threshold_")
 
     # Additional figures created by this method, if debug is on
     if params.debug is not None:
@@ -266,8 +286,7 @@ def triangle(gray_img, max_value, object_type="light", xstep=1):
     return bin_img
 
 
-def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity', borders='nearest',
-            max_value=255):
+def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity', borders='nearest'):
     """Creates a binary image from a grayscale image using skimage texture calculation for thresholding.
     This function is quite slow.
 
@@ -282,7 +301,6 @@ def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity'
                      scikit-image.
     borders        = How the array borders are handled, either 'reflect',
                      'constant', 'nearest', 'mirror', or 'wrap'
-    max_value      = Value to apply above threshold (usually 255 = white)
 
     Returns:
     bin_img        = Thresholded, binary image
@@ -293,7 +311,6 @@ def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity'
     :param offset: int
     :param texture_method: str
     :param borders: str
-    :param max_value: int
     :return bin_img: numpy.ndarray
     """
     # Function that calculates the texture of a kernel
@@ -313,7 +330,7 @@ def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity'
     generic_filter(gray_img, calc_texture, size=ksize, output=output, mode=borders)
 
     # Threshold so higher texture measurements stand out
-    bin_img = binary(gray_img=output, threshold=threshold, max_value=max_value, object_type='light')
+    bin_img = binary(gray_img=output, threshold=threshold, object_type='light')
 
     _debug(visual=bin_img, filename=os.path.join(params.debug_outdir, str(params.device) + "_texture_mask.png"))
 
@@ -459,9 +476,9 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
 
 
 # Internal method for calling the OpenCV threshold function to reduce code duplication
-def _call_threshold(gray_img, threshold, max_value, threshold_method, method_name):
+def _call_threshold(gray_img, threshold, threshold_method, method_name):
     # Threshold the image
-    ret, bin_img = cv2.threshold(gray_img, threshold, max_value, threshold_method)
+    _, bin_img = cv2.threshold(gray_img, threshold, 255, threshold_method)
 
     if bin_img.dtype != 'uint16':
         bin_img = np.uint8(bin_img)
@@ -474,9 +491,18 @@ def _call_threshold(gray_img, threshold, max_value, threshold_method, method_nam
 
 
 # Internal method for calling the OpenCV adaptiveThreshold function to reduce code duplication
-def _call_adaptive_threshold(gray_img, max_value, adaptive_method, threshold_method, method_name):
+def _call_adaptive_threshold(gray_img, block_size, offset, adaptive_method, threshold_method, method_name):
+
+    if block_size < 3:
+        fatal_error("block_size must be >= 3")
+
+    # Force block_size to be odd number
+    block_size = int(block_size)
+    if (block_size % 2) != 1:
+        block_size = block_size + 1
+
     # Threshold the image
-    bin_img = cv2.adaptiveThreshold(gray_img, max_value, adaptive_method, threshold_method, 11, 2)
+    bin_img = cv2.adaptiveThreshold(gray_img, 255, adaptive_method, threshold_method, block_size, offset)
 
     # Print or plot the binary image if debug is on
     _debug(visual=bin_img, filename=os.path.join(params.debug_outdir, str(params.device) + method_name + '.png'))
@@ -723,3 +749,112 @@ def mask_bad(float_img, bad_type='native'):
     _debug(visual=mask, filename=os.path.join(params.debug_outdir, str(params.device) + "_bad_mask.png"))
 
     return mask
+
+
+# functions to get a given channel with parameters compatible
+# with rgb2gray_lab and rgb2gray_hsv to use in the dict
+def _get_R(rgb_img, _):
+    """ Get the red channel from a RGB image """
+    return rgb_img[:, :, 2]
+
+
+def _get_G(rgb_img, _):
+    """ Get the green channel from a RGB image """
+    return rgb_img[:, :, 1]
+
+
+def _get_B(rgb_img, _):
+    """ Get the blue channel from a RGB image """
+    return rgb_img[:, :, 0]
+
+
+def _get_gray(rgb_img, _):
+    """ Get the gray scale transformation of a RGB image """
+    return rgb2gray(rgb_img=rgb_img)
+
+
+def _get_index(rgb_img, _):
+    """ Get a vector with linear indices of the pixels in an image """
+    h, w, _ = rgb_img.shape
+    return np.arange(h*w).reshape(h, w)
+
+
+def _not_valid(*args):
+    """ Error for a non valid channel """
+    return fatal_error("channel not valid, use R, G, B, l, a, b, h, s, v, gray, or index")
+
+
+def dual_channels(rgb_img, x_channel, y_channel, points, above=True):
+    """Create a binary image from an RGB image based on the pixels values in two channels.
+    The x and y channels define a 2D plane and the two input points define a straight line.
+    Pixels in the plane above and below the straight line are assigned two different values.
+    Inputs:
+    rgb_img   = RGB image
+    ch_x      = Channel to use for the horizontal coordinate.
+                Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'gray', and 'index'
+    ch_y      = Channel to use for the vertical coordinate.
+                Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'gray', and 'index'
+    points    = List containing two points as tuples defining the segmenting straight line
+    above     = Whether the pixels above the line are given the value of 0 or max_value
+
+    Returns:
+    bin_img      = Thresholded, binary image
+    :param rgb_img: numpy.ndarray
+    :param x_channel: str
+    :param y_channel: str
+    :param points: list of two tuples
+    :param above: bool
+    :return bin_img: numpy.ndarray
+    """
+
+    # dictionary returns the function that gets the required image channel
+    channel_dict = {
+        'R': _get_R,
+        'G': _get_G,
+        'B': _get_B,
+        'l': rgb2gray_lab,
+        'a': rgb2gray_lab,
+        'b': rgb2gray_lab,
+        'gray': _get_gray,
+        'h': rgb2gray_hsv,
+        's': rgb2gray_hsv,
+        'v': rgb2gray_hsv,
+        'index': _get_index,
+    }
+
+    debug = params.debug
+    params.debug = None
+    # get channels
+    img_x_ch = channel_dict.get(x_channel, _not_valid)(rgb_img, x_channel)
+    img_x_ch = img_x_ch.astype(np.float64)
+    img_y_ch = channel_dict.get(y_channel, _not_valid)(rgb_img, y_channel)
+    img_y_ch = img_y_ch.astype(np.float64)
+    params.debug = debug
+
+    if len(points) < 2:
+        fatal_error('Two points are required')
+
+    if len(points) > 2:
+        # Print warning statement
+        warn("only the first two points are used in this function")
+
+    x0, y0 = points[0]
+    x1, y1 = points[1]
+
+    m = (y1-y0) / (x1-x0+1e-10)  # avoid division by 0
+    b = y0 - m*x0
+
+    y_line = m*img_x_ch + b
+
+    max_value = 255
+    if above:
+        bin_img = max_value*(img_y_ch > y_line)
+    else:
+        bin_img = max_value*(img_y_ch < y_line)
+
+    bin_img = bin_img.astype(np.uint8)
+
+    _debug(visual=bin_img, filename=os.path.join(params.debug_outdir,
+                                                 str(params.device) + '_' + x_channel + y_channel + '_2D_threshold_mask.png'))
+
+    return bin_img

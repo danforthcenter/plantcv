@@ -6,14 +6,14 @@
 An [Outputs](outputs.md) class has been added that automatically stores measurements collected by the following 
 functions:
 
-* `analyze_bound_horizontal`
-* `analyze_bound_vertical`
-* `analyze_color`
-* `analyze_nir_intensity`
-* `analyze_object`
-* `analyze_thermal_values`
+* `analyze.bound_horizontal`
+* `analyze.bound_vertical`
+* `analyze.color`
+* `analyze.grayscale`
+* `analyze.size`
+* `analyze.thermal`
 * `fluor_fvfm`
-* `hyperspectral.analyze_index`
+* `analyze.spectral_index`
 * `hyperspectral.analyze_spectral`
 * `morphology.check_cycles`
 * `morphology.segment_angle`

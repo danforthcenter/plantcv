@@ -1,6 +1,7 @@
 # Color Corrections Functions
 
 import os
+import math
 import cv2
 import numpy as np
 from plantcv.plantcv import params
@@ -8,6 +9,149 @@ from plantcv.plantcv import outputs
 from plantcv.plantcv.roi import circle
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv._debug import _debug
+
+
+def affine_color_correction(rgb_img, source_matrix, target_matrix):
+    """Correct the color of the input image based on the target color matrix using an affine transformation
+    in the RGB space. The vector containing the regression coefficients is calculated as the one that minimizes the
+    Euclidean distance between the transformed source color values and the target color values.
+
+    Inputs:
+    rgb_img         = an RGB image with color chips visualized
+    source_matrix   = array of RGB color values (intensity in the range [0-1]) from
+                      the image to be corrected where each row is one
+                      color reference and the columns are organized as index,R,G,B
+    target_matrix   = array of target RGB color values (intensity in the range [0-1])
+                      where each row is one color reference and the columns are
+                      organized as index,R,G,B
+
+    Outputs:
+    corrected_img   = color corrected image
+
+
+    :param rgb_img: numpy.ndarray
+    :return source_matrix: numpy.ndarray
+    :return target_matrix: numpy.ndarray
+    :return corrected_img: numpy.ndarray
+    """
+
+    # matrices must have the same number of color references
+    if source_matrix.shape != target_matrix.shape:
+        fatal_error("Missmatch between the color matrices' shapes")
+
+    h, w, c = rgb_img.shape
+
+    # number of references
+    n = source_matrix.shape[0]
+
+    # the column zero (index) of the matrices is not used in this model
+    # augment matrix of source values with a column of 1s for the constant part of
+    # the affine transformation
+    S = np.concatenate((source_matrix[:, 1:].copy(), np.ones((n, 1))), axis=1)
+
+    # make vectors of taget values for each color
+    T = target_matrix[:, 1:].copy()
+    tr = T[:, 0]
+    tg = T[:, 1]
+    tb = T[:, 2]
+
+    # calculate regression vector for each color as the pseudoinverse of the source
+    # values matrix multiplied by each color target vector
+    ar = np.matmul(np.linalg.pinv(S), tr)
+    ag = np.matmul(np.linalg.pinv(S), tg)
+    ab = np.matmul(np.linalg.pinv(S), tb)
+
+    img_rgb = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2RGB)
+    # reshape image as a 2D array where the rows are pixels and the colums are color channels
+    # and augment the channels with a column of 1s for the affine transformation
+    img_pix = np.concatenate((img_rgb.reshape(h*w, c).astype(np.float64)/255, np.ones((h*w, 1))), axis=1)
+
+    # calculate the corrected colors, eliminate values outside the range [0-1] and
+    # convert to [0-255] unit8
+    img_r_cc = (255*np.clip(np.matmul(img_pix, ar), 0, 1)).astype(np.uint8)
+    img_g_cc = (255*np.clip(np.matmul(img_pix, ag), 0, 1)).astype(np.uint8)
+    img_b_cc = (255*np.clip(np.matmul(img_pix, ab), 0, 1)).astype(np.uint8)
+
+    # reconstruct the RGB (actually BGR for openCV) image
+    corrected_img = np.stack((img_b_cc, img_g_cc, img_r_cc), axis=1).reshape(h, w, c)
+
+    # For debugging, create a horizontal view of the image before and after color correction
+    debug_img = np.hstack([rgb_img, corrected_img])
+    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_affine_corrected.png'))
+
+    return corrected_img
+
+
+def std_color_matrix(pos=0):
+    """Standard color values compatible with the x-rite ColorCheker Classic,
+    ColorChecker Mini, and ColorChecker Passport targets.
+    Source: https://en.wikipedia.org/wiki/ColorChecker
+
+    Inputs:
+    pos     = reference value indicating orientation of the color card. The reference
+                is based on the position of the white chip:
+
+                pos = 0: bottom-left corner
+                pos = 1: bottom-right corner
+                pos = 2: top-right corner
+                pos = 3: top-left corner
+
+    Outputs:
+    color_matrix    = matrix containing the standard red, green, and blue
+                        values for each color chip
+
+    :param pos: int
+    :return color_matrix: numpy.ndarray
+    """
+    # list of rgb values as indicated in the color card specs. They need to be
+    # aranged depending on the orientation of the color card of reference in the
+    # image to be corrected.
+    values_list = np.array([[115, 82, 68],  # dark skin
+                            [194, 150, 130],  # light skin
+                            [98, 122, 157],  # blue sky
+                            [87, 108, 67],  # foliage
+                            [133, 128, 177],  # blue flower
+                            [103, 189, 170],  # bluish green
+                            [214, 126, 44],  # orange
+                            [80, 91, 166],  # purplish blue
+                            [193, 90, 99],  # moderate red
+                            [94, 60, 108],  # purple
+                            [157, 188, 64],  # yellow green
+                            [224, 163, 46],  # orange yellow
+                            [56, 61, 150],  # blue
+                            [70, 148, 73],  # green
+                            [175, 54, 60],  # red
+                            [231, 199, 31],  # yellow
+                            [187, 86, 149],  # magenta
+                            [8, 133, 161],  # cyan
+                            [243, 243, 242],  # white (.05*)
+                            [200, 200, 200],  # neutral 8 (.23*)
+                            [160, 160, 160],  # neutral 6.5 (.44*)
+                            [122, 122, 121],  # neutral 5 (.7*)
+                            [85, 85, 85],  # neutral 3.5 (1.05*)
+                            [52, 52, 52]], dtype=np.float64)  # black (1.50*)
+
+    pos = math.floor(pos)
+    if (pos < 0) or (pos > 3):
+        fatal_error("white chip position reference 'pos' must be a value among {0, 1, 2, 3}")
+
+    N_chips = values_list.shape[0]
+
+    # array of indices from 1 to N chips in order to match the chip numbering
+    # in the color card specs. Later when used for indexing, we substract the 1.
+    idx = np.arange(N_chips)+1
+    # indices in the shape of the color card
+    cc_indices = idx.reshape((4, 6), order='C')
+    # rotate the indices depending on the specified orientation
+    cc_indices_rot = np.rot90(cc_indices, k=pos, axes=(0, 1))
+    # arange color values based on the indices
+    color_matrix_wo_chip_nb = values_list[(cc_indices_rot-1).reshape(-1), :]/255.
+
+    # add chip number compatible with other PlantCV functions
+    chip_nb = np.arange(10, 10*N_chips+1, 10)
+    color_matrix = np.concatenate((chip_nb.reshape(N_chips, 1), color_matrix_wo_chip_nb), axis=1)
+
+    return color_matrix
 
 
 def get_color_matrix(rgb_img, mask):
@@ -394,13 +538,13 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
     i = 1
     # Draw labeled chip boxes on the mask
     for chip in chips:
-        mask = cv2.drawContours(mask, chip[0], -1, (i * 10), -1)
+        mask = cv2.drawContours(mask, chip.contours[0], -1, (i * 10), -1)
         i += 1
     # Create a copy of the input image for plotting
     canvas = np.copy(rgb_img)
     # Draw chip ROIs on the canvas image
     for chip in chips:
-        cv2.drawContours(canvas, chip[0], -1, (255, 255, 0), params.line_thickness)
+        cv2.drawContours(canvas, chip.contours[0], -1, (255, 255, 0), params.line_thickness)
     _debug(visual=canvas, filename=os.path.join(params.debug_outdir, str(params.device) + '_color_card_mask_rois.png'))
     _debug(visual=mask, filename=os.path.join(params.debug_outdir, str(params.device) + '_color_card_mask.png'))
     return mask
