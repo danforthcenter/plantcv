@@ -99,7 +99,7 @@ likely be some 'noise' (non-target-object spots) in the image. Those can be fill
 *  To further isolate an object from surrounding background a region of interest can be used to select the region of 
 the image that contains the target object. To do this you first [detect all the objects](find_objects.md) in the image, 
 then define the [region of interest](roi_rectangle.md), then determine if the objects are  within, touching, or outside of 
-the region of interest with the [`roi_objects` function](roi_objects.md).
+the region of interest with the [`roi.filter` function](roi_filter.md).
 
 #####Connecting Objects or Splitting Objects
 
