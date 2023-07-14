@@ -5,9 +5,8 @@ import numpy as np
 import os
 from plantcv.plantcv import params, outputs, fatal_error, apply_mask, rgb2gray_hsv
 from plantcv.plantcv.threshold import binary as binary_threshold
-from plantcv.plantcv.roi import filter
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
+from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition, _roi_filter
 
 
 def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_channel=None,
@@ -68,18 +67,17 @@ def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_c
             # Threshold the HSV image
             marker_bin = binary_threshold(gray_img=marker_hsv, threshold=thresh, object_type=objcolor)
             # Identify contours in the masked image
-            ## contours, hierarchy = _cv2_findcontours(bin_img=marker_bin)
-            ## obj = Objects([contours], [hierarchy])
+            contours, hierarchy = _cv2_findcontours(bin_img=marker_bin)
+            obj = Objects([contours], [hierarchy])
 
             # Filter marker contours using the input ROI
-            marker_mask = filter(mask=marker_bin, roi=roi, roi_type="partial")
-            #kept_obj, kept_mask, obj_area = roi_objects(img=ref_img, obj=obj, roi=roi, roi_type="partial")
+            kept_obj, kept_mask, obj_area = _roi_filter(mask=marker_bin, obj=obj, roi=roi, roi_type="partial")
             # If there are more than one contour detected, combine them into one
             # These become the marker contour and mask
-            #kept_contours = kept_obj.contours[0]
-            #kept_hierarchy = kept_obj.hierarchy[0]
-            #marker_contour = _object_composition(contours=kept_contours, hierarchy=kept_hierarchy)
-            #cv2.drawContours(marker_mask, kept_contours, -1, (255), -1, hierarchy=kept_hierarchy)
+            kept_contours = kept_obj.contours[0]
+            kept_hierarchy = kept_obj.hierarchy[0]
+            marker_contour = _object_composition(contours=kept_contours, hierarchy=kept_hierarchy)
+            cv2.drawContours(marker_mask, kept_contours, -1, (255), -1, hierarchy=kept_hierarchy)
         else:
             # Reset debug mode
             params.debug = debug
