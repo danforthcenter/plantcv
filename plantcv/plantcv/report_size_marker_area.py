@@ -70,7 +70,8 @@ def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_c
             contours, hierarchy = _cv2_findcontours(bin_img=marker_bin)
 
             # Filter marker contours using the input ROI
-            kept_contours, kept_hierarchy, _ = _roi_filter(img=marker_bin, roi=roi, obj=contours, hierarchy=hierarchy, roi_type="partial")
+            kept_contours, kept_hierarchy, _ = _roi_filter(img=marker_bin, roi=roi, obj=contours,
+                                                           hierarchy=hierarchy, roi_type="partial")
             # If there are more than one contour detected, combine them into one
             marker_contour = _object_composition(contours=kept_contours, hierarchy=kept_hierarchy)
             cv2.drawContours(marker_mask, kept_contours, -1, (255), -1, hierarchy=kept_hierarchy)
