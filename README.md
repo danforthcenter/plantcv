@@ -1,4 +1,7 @@
 ![builds](https://github.com/danforthcenter/plantcv/workflows/builds/badge.svg)
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 [![codecov](https://codecov.io/gh/danforthcenter/plantcv/branch/main/graph/badge.svg)](https://codecov.io/gh/danforthcenter/plantcv)
 [![Documentation Status](http://readthedocs.org/projects/plantcv/badge/?version=latest)](http://plantcv.readthedocs.io/en/latest/?badge=latest)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=index.ipynb)
@@ -63,6 +66,20 @@ issues have already been filed.
 ## Contributors
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="http://gehan-lab.org"><img src="https://avatars.githubusercontent.com/u/6978303?v=4?s=100" width="100px;" alt="Malia Gehan"/><br /><sub><b>Malia Gehan</b></sub></a><br /><a href="#projectManagement-maliagehan" title="Project Management">📆</a> <a href="https://github.com/danforthcenter/plantcv/commits?author=maliagehan" title="Code">💻</a> <a href="https://github.com/danforthcenter/plantcv/commits?author=maliagehan" title="Documentation">📖</a> <a href="#fundingFinding-maliagehan" title="Funding Finding">🔍</a> <a href="#mentoring-maliagehan" title="Mentoring">🧑‍🏫</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
 
