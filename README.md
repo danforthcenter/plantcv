@@ -8,7 +8,9 @@
 ![Conda](https://img.shields.io/conda/v/conda-forge/plantcv)
 [![license](https://img.shields.io/github/license/danforthcenter/plantcv.svg)](https://github.com/danforthcenter/plantcv/blob/main/LICENSE)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](docs/CODE_OF_CONDUCT.md)
-[![All Contributors](https://img.shields.io/github/all-contributors/danforthcenter/plantcv?color=ee8449&style=flat-square)](#contributors)
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 # PlantCV: Plant phenotyping using computer vision
 
@@ -63,6 +65,20 @@ issues have already been filed.
 ## Contributors
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="http://gehan-lab.org"><img src="https://avatars.githubusercontent.com/u/6978303?v=4?s=100" width="100px;" alt="Malia Gehan"/><br /><sub><b>Malia Gehan</b></sub></a><br /><a href="#projectManagement-maliagehan" title="Project Management">📆</a> <a href="https://github.com/danforthcenter/plantcv/commits?author=maliagehan" title="Code">💻</a> <a href="https://github.com/danforthcenter/plantcv/commits?author=maliagehan" title="Documentation">📖</a> <a href="#fundingFinding-maliagehan" title="Funding Finding">🔍</a> <a href="#mentoring-maliagehan" title="Mentoring">🧑‍🏫</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
 
