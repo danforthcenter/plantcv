@@ -1,7 +1,4 @@
 ![builds](https://github.com/danforthcenter/plantcv/workflows/builds/badge.svg)
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
 [![codecov](https://codecov.io/gh/danforthcenter/plantcv/branch/main/graph/badge.svg)](https://codecov.io/gh/danforthcenter/plantcv)
 [![Documentation Status](http://readthedocs.org/projects/plantcv/badge/?version=latest)](http://plantcv.readthedocs.io/en/latest/?badge=latest)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=index.ipynb)
@@ -11,6 +8,9 @@
 ![Conda](https://img.shields.io/conda/v/conda-forge/plantcv)
 [![license](https://img.shields.io/github/license/danforthcenter/plantcv.svg)](https://github.com/danforthcenter/plantcv/blob/main/LICENSE)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](docs/CODE_OF_CONDUCT.md)
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 # PlantCV: Plant phenotyping using computer vision
 
