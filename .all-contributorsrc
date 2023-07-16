@@ -18,7 +18,12 @@
         "code",
         "doc",
         "fundingFinding",
-        "mentoring"
+        "mentoring",
+        "talk",
+        "tutorial",
+        "ideas",
+        "question",
+        "test"
       ]
     },
     {
