@@ -156,6 +156,18 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "jberry47",
+      "name": "Jeffrey Berry",
+      "avatar_url": "https://avatars.githubusercontent.com/u/20114985?v=4",
+      "profile": "https://github.com/jberry47",
+      "contributions": [
+        "code",
+        "doc",
+        "test",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
