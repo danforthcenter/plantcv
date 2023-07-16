@@ -419,6 +419,19 @@
         "doc",
         "test"
       ]
+    },
+    {
+      "login": "kmurphy61",
+      "name": "Katie Murphy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/58490237?v=4",
+      "profile": "https://www.danforthcenter.org/our-work/core-facilities/phenotyping/",
+      "contributions": [
+        "doc",
+        "tutorial",
+        "talk",
+        "ideas",
+        "promotion"
+      ]
     }
   ],
   "contributorsPerLine": 7,
