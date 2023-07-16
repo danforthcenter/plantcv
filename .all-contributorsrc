@@ -20,6 +20,18 @@
         "fundingFinding",
         "mentoring"
       ]
+    },
+    {
+      "login": "DannieSheng",
+      "name": "Hudanyun Sheng",
+      "avatar_url": "https://avatars.githubusercontent.com/u/28633120?v=4",
+      "profile": "https://github.com/DannieSheng",
+      "contributions": [
+        "code",
+        "doc",
+        "test",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
