@@ -20,6 +20,22 @@
         "fundingFinding",
         "mentoring"
       ]
+    },
+    {
+      "login": "HaleySchuhl",
+      "name": "Haley Schuhl",
+      "avatar_url": "https://avatars.githubusercontent.com/u/44006936?v=4",
+      "profile": "https://github.com/HaleySchuhl",
+      "contributions": [
+        "code",
+        "doc",
+        "maintenance",
+        "tutorial",
+        "test",
+        "talk",
+        "ideas",
+        "question"
+      ]
     }
   ],
   "contributorsPerLine": 7,
