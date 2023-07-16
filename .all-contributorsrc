@@ -168,6 +168,17 @@
         "test",
         "ideas"
       ]
+    },
+    {
+      "login": "calizarr",
+      "name": "Cesar Lizarraga",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3262069?v=4",
+      "profile": "http://calizarr.github.io/resume",
+      "contributions": [
+        "code",
+        "doc",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
