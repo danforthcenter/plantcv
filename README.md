@@ -9,7 +9,7 @@
 [![license](https://img.shields.io/github/license/danforthcenter/plantcv.svg)](https://github.com/danforthcenter/plantcv/blob/main/LICENSE)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](docs/CODE_OF_CONDUCT.md)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 # PlantCV: Plant phenotyping using computer vision
@@ -70,6 +70,7 @@ issues have already been filed.
 <table>
   <tbody>
     <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/DannieSheng"><img src="https://avatars.githubusercontent.com/u/28633120?v=4?s=100" width="100px;" alt="Hudanyun Sheng"/><br /><sub><b>Hudanyun Sheng</b></sub></a><br /><a href="https://github.com/danforthcenter/plantcv/commits?author=DannieSheng" title="Code">💻</a> <a href="https://github.com/danforthcenter/plantcv/commits?author=DannieSheng" title="Documentation">📖</a> <a href="https://github.com/danforthcenter/plantcv/commits?author=DannieSheng" title="Tests">⚠️</a> <a href="#ideas-DannieSheng" title="Ideas, Planning, & Feedback">🤔</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://gehan-lab.org"><img src="https://avatars.githubusercontent.com/u/6978303?v=4?s=100" width="100px;" alt="Malia Gehan"/><br /><sub><b>Malia Gehan</b></sub></a><br /><a href="#projectManagement-maliagehan" title="Project Management">📆</a> <a href="https://github.com/danforthcenter/plantcv/commits?author=maliagehan" title="Code">💻</a> <a href="https://github.com/danforthcenter/plantcv/commits?author=maliagehan" title="Documentation">📖</a> <a href="#fundingFinding-maliagehan" title="Funding Finding">🔍</a> <a href="#mentoring-maliagehan" title="Mentoring">🧑‍🏫</a></td>
     </tr>
   </tbody>
