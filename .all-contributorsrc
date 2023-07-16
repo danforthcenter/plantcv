@@ -36,6 +36,17 @@
         "ideas",
         "question"
       ]
+    },
+    {
+      "login": "bganglia",
+      "name": "bganglia",
+      "avatar_url": "https://avatars.githubusercontent.com/u/48276939?v=4",
+      "profile": "https://github.com/bganglia",
+      "contributions": [
+        "code",
+        "doc",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
