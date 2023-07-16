@@ -20,6 +20,18 @@
         "fundingFinding",
         "mentoring"
       ]
+    },
+    {
+      "login": "dschneiderch",
+      "name": "Dominik Schneider",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7461221?v=4",
+      "profile": "https://data-folks.masto.host/@dschneiderch",
+      "contributions": [
+        "code",
+        "doc",
+        "test",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
