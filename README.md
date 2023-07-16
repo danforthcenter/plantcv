@@ -9,7 +9,7 @@
 [![license](https://img.shields.io/github/license/danforthcenter/plantcv.svg)](https://github.com/danforthcenter/plantcv/blob/main/LICENSE)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](docs/CODE_OF_CONDUCT.md)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 # PlantCV: Plant phenotyping using computer vision
@@ -80,6 +80,7 @@ issues have already been filed.
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/bganglia"><img src="https://avatars.githubusercontent.com/u/48276939?v=4?s=100" width="100px;" alt="bganglia"/><br /><sub><b>bganglia</b></sub></a><br /><a href="https://github.com/danforthcenter/plantcv/commits?author=bganglia" title="Code">💻</a> <a href="https://github.com/danforthcenter/plantcv/commits?author=bganglia" title="Documentation">📖</a> <a href="https://github.com/danforthcenter/plantcv/commits?author=bganglia" title="Tests">⚠️</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/sdkenney42"><img src="https://avatars.githubusercontent.com/u/128510721?v=4?s=100" width="100px;" alt="sdkenney42"/><br /><sub><b>sdkenney42</b></sub></a><br /><a href="https://github.com/danforthcenter/plantcv/commits?author=sdkenney42" title="Documentation">📖</a></td>
     </tr>
   </tbody>
 </table>
