@@ -296,6 +296,16 @@
         "doc",
         "test"
       ]
+    },
+    {
+      "login": "Jake-Jasper",
+      "name": "Jake",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35571955?v=4",
+      "profile": "https://jakejasper.xyz",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
