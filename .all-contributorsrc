@@ -468,6 +468,24 @@
       "contributions": [
         "design"
       ]
+    },
+    {
+      "login": "nfahlgren",
+      "name": "Noah Fahlgren",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6233508?v=4",
+      "profile": "http://danforthcenter.org",
+      "contributions": [
+        "projectManagement",
+        "code",
+        "doc",
+        "test",
+        "fundingFinding",
+        "mentoring",
+        "talk",
+        "tutorial",
+        "ideas",
+        "question"
+      ]
     }
   ],
   "contributorsPerLine": 7,
