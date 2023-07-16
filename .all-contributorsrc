@@ -459,6 +459,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "kbgilbert",
+      "name": "kbgilbert",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13541110?v=4",
+      "profile": "https://github.com/kbgilbert",
+      "contributions": [
+        "design"
+      ]
     }
   ],
   "contributorsPerLine": 7,
