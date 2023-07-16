@@ -408,6 +408,17 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "jgerardhodge",
+      "name": "jgerardhodge",
+      "avatar_url": "https://avatars.githubusercontent.com/u/11335765?v=4",
+      "profile": "https://github.com/jgerardhodge",
+      "contributions": [
+        "code",
+        "doc",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
