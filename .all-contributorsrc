@@ -330,6 +330,15 @@
         "doc",
         "test"
       ]
+    },
+    {
+      "login": "cluebbert",
+      "name": "Collin Luebbert",
+      "avatar_url": "https://avatars.githubusercontent.com/u/47461392?v=4",
+      "profile": "https://github.com/cluebbert",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
