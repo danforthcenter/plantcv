@@ -306,6 +306,19 @@
         "code",
         "doc"
       ]
+    },
+    {
+      "login": "joshqsumner",
+      "name": "Josh Sumner",
+      "avatar_url": "https://avatars.githubusercontent.com/u/51797700?v=4",
+      "profile": "https://github.com/joshqsumner",
+      "contributions": [
+        "code",
+        "doc",
+        "test",
+        "tutorial",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
