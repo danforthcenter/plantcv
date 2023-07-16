@@ -357,6 +357,18 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "zeeuqsze",
+      "name": "zeeuqsze",
+      "avatar_url": "https://avatars.githubusercontent.com/u/107494588?v=4",
+      "profile": "https://github.com/zeeuqsze",
+      "contributions": [
+        "doc",
+        "tutorial",
+        "talk",
+        "mentoring"
+      ]
     }
   ],
   "contributorsPerLine": 7,
