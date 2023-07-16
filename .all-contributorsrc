@@ -369,6 +369,15 @@
         "talk",
         "mentoring"
       ]
+    },
+    {
+      "login": "fbarbe00",
+      "name": "Fabio Barbero",
+      "avatar_url": "https://avatars.githubusercontent.com/u/20724986?v=4",
+      "profile": "https://fabiobarbero.eu",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
