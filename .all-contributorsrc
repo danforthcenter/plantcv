@@ -90,6 +90,18 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "jdavidpeery",
+      "name": "David Peery",
+      "avatar_url": "https://avatars.githubusercontent.com/u/63679152?v=4",
+      "profile": "https://www.linkedin.com/in/david-peery-344882126/",
+      "contributions": [
+        "code",
+        "doc",
+        "test",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
