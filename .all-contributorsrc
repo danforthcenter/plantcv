@@ -217,6 +217,17 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "jwheeler5",
+      "name": "jwheeler5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/86489506?v=4",
+      "profile": "https://github.com/jwheeler5",
+      "contributions": [
+        "code",
+        "doc",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
