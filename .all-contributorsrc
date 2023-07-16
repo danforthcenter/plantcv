@@ -36,6 +36,15 @@
         "ideas",
         "question"
       ]
+    },
+    {
+      "login": "JoeDuenwald",
+      "name": "JoeDuenwald",
+      "avatar_url": "https://avatars.githubusercontent.com/u/101900627?v=4",
+      "profile": "https://github.com/JoeDuenwald",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
