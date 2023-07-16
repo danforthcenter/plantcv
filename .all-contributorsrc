@@ -441,6 +441,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "ygarrot",
+      "name": "Garrot Yoan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/33935239?v=4",
+      "profile": "https://github.com/ygarrot",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
