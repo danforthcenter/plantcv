@@ -274,6 +274,17 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "adrianethompson",
+      "name": "adrianethompson",
+      "avatar_url": "https://avatars.githubusercontent.com/u/85243018?v=4",
+      "profile": "https://github.com/adrianethompson",
+      "contributions": [
+        "code",
+        "doc",
+        "tutorial"
+      ]
     }
   ],
   "contributorsPerLine": 7,
