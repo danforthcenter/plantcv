@@ -319,6 +319,17 @@
         "tutorial",
         "ideas"
       ]
+    },
+    {
+      "login": "vektorious",
+      "name": "Alexander Kutschera",
+      "avatar_url": "https://avatars.githubusercontent.com/u/20026476?v=4",
+      "profile": "https://alexanderkutschera.com/",
+      "contributions": [
+        "code",
+        "doc",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
