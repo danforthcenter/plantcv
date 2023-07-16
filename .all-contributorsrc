@@ -265,6 +265,15 @@
         "doc",
         "test"
       ]
+    },
+    {
+      "login": "lchavez037",
+      "name": "lchavez037",
+      "avatar_url": "https://avatars.githubusercontent.com/u/18586794?v=4",
+      "profile": "https://github.com/lchavez037",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
