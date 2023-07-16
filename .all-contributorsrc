@@ -254,6 +254,17 @@
         "talk",
         "ideas"
       ]
+    },
+    {
+      "login": "ic",
+      "name": "Eric Platon",
+      "avatar_url": "https://avatars.githubusercontent.com/u/64160?v=4",
+      "profile": "https://github.com/ic",
+      "contributions": [
+        "code",
+        "doc",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
