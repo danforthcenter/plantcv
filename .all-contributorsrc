@@ -240,6 +240,20 @@
         "test",
         "ideas"
       ]
+    },
+    {
+      "login": "annacasto",
+      "name": "annacasto",
+      "avatar_url": "https://avatars.githubusercontent.com/u/61164490?v=4",
+      "profile": "https://github.com/annacasto",
+      "contributions": [
+        "code",
+        "doc",
+        "test",
+        "tutorial",
+        "talk",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
