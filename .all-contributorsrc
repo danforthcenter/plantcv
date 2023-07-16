@@ -285,6 +285,17 @@
         "doc",
         "tutorial"
       ]
+    },
+    {
+      "login": "SethPolydore",
+      "name": "SethPolydore",
+      "avatar_url": "https://avatars.githubusercontent.com/u/65034463?v=4",
+      "profile": "https://github.com/SethPolydore",
+      "contributions": [
+        "code",
+        "doc",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
