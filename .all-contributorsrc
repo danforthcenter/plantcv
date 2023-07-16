@@ -450,6 +450,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "stevenhwu",
+      "name": "Steven Wu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1005078?v=4",
+      "profile": "https://github.com/stevenhwu",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
