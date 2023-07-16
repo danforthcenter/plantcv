@@ -228,6 +228,18 @@
         "doc",
         "test"
       ]
+    },
+    {
+      "login": "AdamDimech",
+      "name": "Adam Dimech",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5926320?v=4",
+      "profile": "https://www.adonline.id.au/",
+      "contributions": [
+        "code",
+        "doc",
+        "test",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
