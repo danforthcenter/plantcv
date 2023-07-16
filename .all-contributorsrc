@@ -48,6 +48,20 @@
         "test",
         "ideas"
       ]
+    },
+    {
+      "login": "JorgeGtz",
+      "name": "Jorge Gutierrez",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26798565?v=4",
+      "profile": "https://sites.google.com/view/jorge-gutierrezor/home",
+      "contributions": [
+        "code",
+        "doc",
+        "test",
+        "talk",
+        "ideas",
+        "question"
+      ]
     }
   ],
   "contributorsPerLine": 7,
