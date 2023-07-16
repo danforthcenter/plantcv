@@ -199,6 +199,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "lacostag",
+      "name": "lacostag",
+      "avatar_url": "https://avatars.githubusercontent.com/u/72940710?v=4",
+      "profile": "https://github.com/lacostag",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
