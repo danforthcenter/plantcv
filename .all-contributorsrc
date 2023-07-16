@@ -387,6 +387,18 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Sanazjd",
+      "name": "Sanazjd",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40071989?v=4",
+      "profile": "https://github.com/Sanazjd",
+      "contributions": [
+        "code",
+        "doc",
+        "test",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
