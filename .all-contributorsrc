@@ -104,6 +104,15 @@
         "ideas",
         "question"
       ]
+    },
+    {
+      "login": "sdkenney42",
+      "name": "sdkenney42",
+      "avatar_url": "https://avatars.githubusercontent.com/u/128510721?v=4",
+      "profile": "https://github.com/sdkenney42",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
