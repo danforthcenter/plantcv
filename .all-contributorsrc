@@ -81,6 +81,17 @@
         "doc",
         "test"
       ]
+    },
+    {
+      "login": "jshoyer",
+      "name": "Steen Hoyer",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2046665?v=4",
+      "profile": "https://orcid.org/0000-0002-1338-8900",
+      "contributions": [
+        "code",
+        "doc",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
