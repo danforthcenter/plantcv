@@ -190,6 +190,15 @@
         "doc",
         "test"
       ]
+    },
+    {
+      "login": "scallen81",
+      "name": "scallen81",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21960021?v=4",
+      "profile": "https://github.com/scallen81",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
