@@ -49,7 +49,6 @@ from plantcv.plantcv.within_frame import within_frame
 from plantcv.plantcv.print_results import print_results
 from plantcv.plantcv.flip import flip
 from plantcv.plantcv.crop_position_mask import crop_position_mask
-from plantcv.plantcv.get_nir import get_nir
 from plantcv.plantcv.report_size_marker_area import report_size_marker_area
 from plantcv.plantcv.white_balance import white_balance
 from plantcv.plantcv.shift_img import shift_img
@@ -128,7 +127,6 @@ __all__ = [
     "print_results",
     "flip",
     "crop_position_mask",
-    "get_nir",
     "report_size_marker_area",
     "white_balance",
     "shift_img",
