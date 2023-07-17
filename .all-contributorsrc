@@ -502,6 +502,17 @@
         "doc",
         "test"
       ]
+    },
+    {
+      "login": "afinit",
+      "name": "Mark Wilson",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6353304?v=4",
+      "profile": "https://github.com/afinit",
+      "contributions": [
+        "code",
+        "doc",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
