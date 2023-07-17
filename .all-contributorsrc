@@ -491,6 +491,17 @@
         "ideas",
         "question"
       ]
+    },
+    {
+      "login": "wurDevTim",
+      "name": "wurDevTim",
+      "avatar_url": "https://avatars.githubusercontent.com/u/81219429?v=4",
+      "profile": "https://github.com/wurDevTim",
+      "contributions": [
+        "code",
+        "doc",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
