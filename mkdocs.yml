@@ -65,7 +65,6 @@ nav:
         - 'Scharr Filter': scharr_filter.md
       - 'Gaussian Blur': gaussian_blur.md
       - 'Get Kernel': get_kernel.md
-      - 'Get NIR Images': get_nir.md
       - 'Histogram Normalization': HistEqualization.md
       - 'Hyperspectral Data':
           - 'Analyze spectral': analyze_spectral.md

@@ -411,6 +411,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, nirpath = **plantcv.get_nir**(*path, filename, device, debug=None*)
 * post v3.0dev2: nirpath = **plantcv.get_nir**(*path, filename*)
+* post v4.0: DEPRECATED
 
 #### plantcv.hist_equalization
 
