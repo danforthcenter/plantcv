@@ -233,7 +233,7 @@ Binary mask after [filtering objects by the region of interest](../roi_objects.m
 ``` 
 
 **Figure 8.** Spectral histogram. 
-[Extract reflectance intensity data](../analyze_spectral.md) and store it out to the [Outputs class](../outputs.md). Also, plot the reflectance intensities in a histogram. 
+[Extract reflectance intensity data](../analyze_spectral_reflectance.md) and store it out to the [Outputs class](../outputs.md). Also, plot the reflectance intensities in a histogram. 
   
 ![Screenshot](../img/tutorial_images/hyperspectral/spectral_histogram.jpg)
 
