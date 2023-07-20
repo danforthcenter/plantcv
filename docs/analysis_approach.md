@@ -120,7 +120,7 @@ and [analyze.bound_vertical](analyze_bound_vertical2.md) functions.
 and [analyze.yii](analyze_yii.md) functions.
 *  Object classification (For example, classification of disease symptoms, identification of organ structures 
 [naive-bayesian multiclass mode](naive_bayes_multiclass.md)).
-*  Object hyperspectral parameters: see the [analyze spectral](analyze_spectral.md) and [analyze.spectral_index](analyze_spectral_index.md) functions.
+*  Object hyperspectral parameters: see the [analyze.spectral_reflectance](analyze_spectral_reflectance.md) and [analyze.spectral_index](analyze_spectral_index.md) functions.
 *  Morphological parameters: see the [morphology tutorial](tutorials/morphology_tutorial.md) for examples of characteristics such as stem height,
 leaf length, and leaf angle. 
 

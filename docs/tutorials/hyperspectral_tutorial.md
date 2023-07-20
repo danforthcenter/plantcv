@@ -222,18 +222,18 @@ Binary mask after [filtering objects by the region of interest](../roi_objects.m
 ```python
     # Extract reflectance intensity data and store it out to the Outputs class. 
     
-    # Inputs:
-    #   array        - Hyperspectral data instance  
-    #   mask         - Binary mask image data 
-    #   hist_plot    - If True plots histogram of reflectance intensity values
-    #   label        - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
+    # Inputs: 
+    # hsi          = Hyperspectral image data
+    # labeled_mask = Labeled mask of objects (32-bit).
+    # n_labels     = Total number expected individual objects (default = 1).
+    # label        = Optional label parameter, modifies the variable name of observations recorded (default = "default").
 
-    analysis_img = pcv.hyperspectral.analyze_spectral(array=spectral_array, mask=kept_mask, histplot=True, label="default")
+    analysis_img = pcv.analyze.spectral_reflectance(array=spectral_array, labeled_mask=kept_mask, n_labels=1, label="default")
                                                                
 ``` 
 
 **Figure 8.** Spectral histogram. 
-[Extract reflectance intensity data](../analyze_spectral.md) and store it out to the [Outputs class](../outputs.md). Also, plot the reflectance intensities in a histogram. 
+[Extract reflectance intensity data](../analyze_spectral_reflectance.md) and store it out to the [Outputs class](../outputs.md). Also, plot the reflectance intensities in a histogram. 
   
 ![Screenshot](../img/tutorial_images/hyperspectral/spectral_histogram.jpg)
 
@@ -241,11 +241,15 @@ Binary mask after [filtering objects by the region of interest](../roi_objects.m
     # Extract statistics about an index for the leaf region 
     
     # Inputs:
-    #   array        - Hyperspectral index data instance  
-    #   mask         - Binary mask image data 
-    #   label        - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
+    #   index_img    = Index image data (PlantCV Spectral_data object)
+    #   labeled_mask = Labeled mask of objects (32-bit).
+    #   n_labels     = Total number expected individual objects (default = 1).
+    #   bins         = Number of histogram bins (default = 100)
+    #   min_bin      = Minimum bin value (default = 0). "auto" will use the minimum value of the index image.
+    #   max_bin      = Maximum bin value (default = 1). "auto" will use the maximum value of the index image.
+    #   label        = optional label parameter, modifies the variable name of observations recorded (default = "default").
 
-    pcv.hyperspectral.analyze_index(array=index_array_gdvi, mask=kept_mask, label="default")
+    pcv.analyze.spectral_index(index_img=index_array_gdvi, labeled_mask=kept_mask)
                                                                
 ``` 
 
