@@ -75,10 +75,10 @@
     </div>
 </div>
 
-<!--NIR Tutorial-->
+<!--Grayscale Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/nir_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/nir_tutorial/nir_tutorial_card_img.jpg?raw=true" alt="NIR tutorial" width="600" height="auto">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-grayscale/tutorial_card_img.jpg?raw=true" alt="Grayscale tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Single plant NIR image workflow</h6>
@@ -87,7 +87,7 @@
         <span><strong>Tags</strong>: plant shoot, single plant, side-view, Near-infrared, shape analysis, NIR analysis</span>
     </div>
     <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/nir_tutorial/nir_tutorial.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
+        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-grayscale/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
     </div>
 </div>
 
