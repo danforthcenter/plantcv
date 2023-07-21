@@ -78,7 +78,7 @@
 <!--Grayscale Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/nir_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-tutorial-grayscale/tutorial_card_img.jpg?raw=true" alt="Grayscale tutorial" width="600" height="auto">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-grayscale/img/gray.png?raw=true" alt="Grayscale tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Single plant NIR image workflow</h6>
