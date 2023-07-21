@@ -77,14 +77,14 @@
 
 <!--Grayscale Tutorial-->
 <div class="card" style="display:block">
-    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/nir_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-tutorial-grayscale/blob/main/img/gray.png?raw=true" alt="Grayscale tutorial" width="600" height="auto">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/grayscale_tutorial');return false;">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-grayscale/blob/main/img/scaled_gray.png?raw=true" alt="Grayscale tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
-        <h6>Single plant NIR image workflow</h6>
+        <h6>Single plant Grayscale image workflow</h6>
     </div>
     <div class="card-tags">
-        <span><strong>Tags</strong>: plant shoot, single plant, side-view, Near-infrared, shape analysis, NIR analysis</span>
+        <span><strong>Tags</strong>: plant leaf, top view, single plant, grayscale, grayscale analysis, </span>
     </div>
     <div class="card-button">
         <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-grayscale/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
