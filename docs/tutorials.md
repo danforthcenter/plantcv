@@ -62,7 +62,7 @@
 <!--VIS-NIR Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/vis_nir_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-tutorial-vis-nir/vis_nir_tutorial_card_img.jpg?raw=true" alt="VIS-NIR tutorial" width="600" height="auto">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-vis-nir/blob/main/vis_nir_tutorial_card_img.jpg?raw=true" alt="VIS-NIR tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Single plant RGB dual RGB-NIR image workflow</h6>
