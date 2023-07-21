@@ -327,7 +327,7 @@
         <span><strong>Tags</strong>: plant shoot, single plant, top-view, RGB, watershed segmentation, leaf segmentation</span>
     </div>
     <div class="card-button">
-        <a href="https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-watershed/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
+        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-watershed/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
     </div>
 </div>
 
