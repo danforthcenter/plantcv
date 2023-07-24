@@ -207,7 +207,7 @@
 <!--Sorghum Morphology Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/sorghum_morphology_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-tutorial-morphology/blob/main/img/tutorial_card.png?raw=true" alt="Morphology tutorial" width="600" height="auto">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-morphology/blob/main/tutorial_card.png?raw=true" alt="Morphology tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Sorghum Shape and Morphology Analysis</h6>
