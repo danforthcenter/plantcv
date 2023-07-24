@@ -142,7 +142,7 @@
 <!--Naive Bayes Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/machine_learning_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-tutorial-machine-learning/blob/main/img/naive_bayes_tutorial_card.png?raw=true" alt="Naive Bayes tutorial" width="600" height="auto">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-machine-learning/blob/main/naive_bayes_tutorial_card.png?raw=true" alt="Naive Bayes tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Naive Bayes Tutorial</h6>
