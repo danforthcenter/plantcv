@@ -16,7 +16,7 @@ The object target can be specified as dark or light.
     - Used to help differentiate plant and background
 - **Example use:**
     - [Use In VIS Tutorial](tutorials/vis_tutorial.md)
-    - [Use In NIR Tutorial](tutorials/nir_tutorial.md)
+    - [Grayscale Image Tutorial](tutorials/grayscale_tutorial.md)
     - [Use In PSII Tutorial](tutorials/psII_tutorial.md)
     
 **Original image**
