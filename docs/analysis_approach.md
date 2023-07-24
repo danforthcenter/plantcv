@@ -42,7 +42,6 @@ to demonstrate how modules can be used. Keep in mind that modules can be linked 
 configurations to meet image processing goals so the tutorials simply examples of a few approaches:
 
 *  [VIS Image Workflow](tutorials/vis_tutorial.md)
-*  [NIR Image Workflow](tutorials/nir_tutorial.md)
 *  [PSII Workflow](tutorials/psII_tutorial.md)
 *  [VIS / NIR Dual Workflow](tutorials/vis_nir_tutorial.md)
 *  [Multi Plant Tutorial](tutorials/multi-plant_tutorial.md)
