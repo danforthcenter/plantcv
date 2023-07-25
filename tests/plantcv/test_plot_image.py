@@ -52,6 +52,6 @@ def test_plot_image_psiidata():
 
 def test_plantcv_plot_image_dataarray(test_data):
     """Test for PlantCV."""
-    plot_image(test_data.psii_cropreporter('darkadapted').squeeze('measurement', drop=True), col='frame_label')
+    plot_image(test_data.psii_cropreporter('ojip_dark').squeeze('measurement', drop=True), col='frame_label')
     # Assert that the image was plotted without error
     assert True

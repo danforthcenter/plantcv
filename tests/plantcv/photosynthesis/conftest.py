@@ -24,8 +24,8 @@ class PhotosynthesisTestData:
     @staticmethod
     def psii_walz(var):
         """Create and return synthetic psii dataarrays from walz"""
-        # create darkadapted
-        if var == 'darkadapted':
+        # create ojip_dark
+        if var == 'ojip_dark':
             i = 0
             fmin = np.ones((10, 10), dtype='uint8') * ((i+15)*2)
             fmax = np.ones((10, 10), dtype='uint8') * (200-i*15)
@@ -39,11 +39,11 @@ class PhotosynthesisTestData:
                 coords={'frame_label': indf,
                         'frame_num': ('frame_label', frame_nums),
                         'measurement': ['t0']},
-                name='darkadapted'
+                name='ojip_dark'
             )
 
         # create lightadapted
-        elif var == 'lightadapted':
+        elif var == 'ojip_light':
             da_list = []
             measurement = []
 
@@ -65,7 +65,7 @@ class PhotosynthesisTestData:
 
             prop_idx = pd.Index(measurement)
             ps_da = xr.concat(da_list, 'measurement')
-            ps_da.name = 'lightadapted'
+            ps_da.name = 'ojip_light'
             ps_da.coords['measurement'] = prop_idx
 
         return(ps_da)
@@ -90,10 +90,10 @@ class PhotosynthesisTestData:
         f3[5, 5] = 8
 
         # set specific labels for xarray for dark and light adapted
-        if var == 'darkadapted':
+        if var == 'ojip_dark':
             frame_labels = ['Fdark', 'F0', 'Fm', '3']
             measurements = ['t0']
-        elif var == 'lightadapted':
+        elif var == 'ojip_light':
             frame_labels = ['Fdark', 'Fp', '2', 'Fmp']
             measurements = ['t1']
 
