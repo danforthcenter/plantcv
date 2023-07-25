@@ -14,9 +14,9 @@ with labeled frames.
 - **Context:**
     - Reads in binary image files to be processed and does so using the metadata contained within a corresponding .INF
       file.
-    - Measurements from dark-adapted plant state are stored in the attribute `darkadapted`. Frames F0 and Fm are
+    - Measurements from dark-adapted plant state are stored in the attribute `ojip_dark`. Frames F0 and Fm are
       labeled according to the metadata in .INF. The default measurement label is 't0'.
-    - Measurements from light-adapted plant state are stored in the attribute `lightadapted`. Frames Fp and Fmp are
+    - Measurements from light-adapted plant state are stored in the attribute `ojip_light`. Frames Fp and Fmp are
       labeled according to the metadata in .INF. The default measurement label is 't1'.
     - Measurements from chlorophyll fluorescence are stored in the attribute `chlorophyll` and include a dark frame
       (Fdark) and chlorophyll fluorescence frame (Chl).
@@ -44,15 +44,15 @@ ps = pcv.photosynthesis.read_cropreporter(filename="PSII_HDR_020321_WT_TOP_1.INF
 ps
 
 # to see the frames you imported use xarray plot methods e.g.
-ps.darkadapted.plot(col='frame_label', col_wrap=4)
+ps.ojip_dark.plot(col='frame_label', col_wrap=4)
 
 ```
 
-**Dark-adapted fluorescence measurements**
+**OJIP Dark-adapted fluorescence measurements**
 
 ![Screenshot](img/documentation_images/photosynthesis_read_cropreporter/0_PSD-frames.png)
 
-**Light-adapted fluorescence measurements**
+**OJIP Light-adapted fluorescence measurements**
 
 ![Screenshot](img/documentation_images/photosynthesis_read_cropreporter/1_PSL-frames.png)
 
