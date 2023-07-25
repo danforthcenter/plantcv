@@ -93,15 +93,15 @@ def _process_psd_data(ps, metadata):
             coords={'frame_label': frame_labels,
                     'frame_num': ('frame_label', frame_nums),
                     'measurement': ['t0']},
-            name='darkadapted'
+            name='ojip_dark'
         )
-        psd.attrs["long_name"] = "dark-adapted measurements"
+        psd.attrs["long_name"] = "OJIP dark-adapted measurements"
         ps.add_data(psd)
 
-        _debug(visual=ps.darkadapted.squeeze('measurement', drop=True),
+        _debug(visual=ps.ojip_dark.squeeze('measurement', drop=True),
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSD-frames.png"),
                col='frame_label',
-               col_wrap=int(np.ceil(ps.darkadapted.frame_label.size / 4)))
+               col_wrap=int(np.ceil(ps.ojip_dark.frame_label.size / 4)))
 
 
 def _process_psl_data(ps, metadata):
@@ -142,15 +142,15 @@ def _process_psl_data(ps, metadata):
             coords={'frame_label': frame_labels,
                     'frame_num': ('frame_label', frame_nums),
                     'measurement': ['t1']},
-            name='lightadapted'
+            name='ojip_light'
         )
-        psl.attrs["long_name"] = "light-adapted measurements"
+        psl.attrs["long_name"] = "OJIP light-adapted measurements"
         ps.add_data(psl)
 
-        _debug(visual=ps.lightadapted.squeeze('measurement', drop=True),
+        _debug(visual=ps.ojip_light.squeeze('measurement', drop=True),
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSL-frames.png"),
                col='frame_label',
-               col_wrap=int(np.ceil(ps.lightadapted.frame_label.size / 4)))
+               col_wrap=int(np.ceil(ps.ojip_light.frame_label.size / 4)))
 
 
 def _process_chl_data(ps, metadata):
