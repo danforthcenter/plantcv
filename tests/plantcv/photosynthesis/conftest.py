@@ -24,7 +24,7 @@ class PhotosynthesisTestData:
     @staticmethod
     def psii_walz(var):
         """Create and return synthetic psii dataarrays from walz"""
-        # create darkadapted
+        # create ojip_dark
         if var == 'ojip_dark':
             i = 0
             fmin = np.ones((10, 10), dtype='uint8') * ((i+15)*2)

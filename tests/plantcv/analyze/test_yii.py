@@ -5,7 +5,7 @@ from plantcv.plantcv.analyze import yii as analyze_yii
 
 
 @pytest.mark.parametrize("prot,mlabels,exp", [
-    # test darkadapted control seq
+    # test ojip_dark control seq
     ["ojip_dark", None, 0.8],
     # test lightadapted control seq and measurement_labels arg
     ["ojip_light", ["Fq/Fm"], 0.8]])
@@ -22,7 +22,7 @@ def test_yii_cropreporter(prot, mlabels, exp, test_data):
 
 
 @pytest.mark.parametrize("prot,mlabels,exp", [
-    # test darkadapted control seq
+    # test ojip_dark control seq
     ["ojip_dark", ["Fv/Fm"], float(np.around((200 - 30) / 200, decimals=4))],
     # test lightadapted control seq and measurement_labels arg
     ["ojip_light", [f't{i*40}' for i in np.arange(1, 3)], float((185 - 32) / 185)]])
