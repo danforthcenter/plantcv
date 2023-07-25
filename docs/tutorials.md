@@ -254,7 +254,7 @@
 <!--Input-Output Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/input_output_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/input_output_tutorial/input_output_tutorial_card.jpg?raw=true" alt="Input-output tutorial" width="600" height="auto">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-input-output/blob/main/tutorial_card.jpg?raw=true" alt="Input-output tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Input-Output Tutorial</h6>
@@ -263,7 +263,7 @@
         <span><strong>Tags</strong>: open image, save image, save plot</span>
     </div>
     <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/input_output_tutorial/input_output.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
+        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-input-output/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
     </div>
 </div>
 
