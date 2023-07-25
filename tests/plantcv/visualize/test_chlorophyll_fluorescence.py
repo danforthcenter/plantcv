@@ -6,7 +6,7 @@ from altair.vegalite.v5.api import LayerChart
 
 def test_chlorophyll_fluorescence(test_data):
     """Test for PlantCV."""
-    da = test_data.psii_cropreporter('darkadapted')
+    da = test_data.psii_cropreporter('ojip_dark')
     mask = test_data.create_ps_mask()
     chart = chlorophyll_fluorescence(ps_da=da, labeled_mask=mask)
     assert isinstance(chart, LayerChart)
@@ -14,7 +14,7 @@ def test_chlorophyll_fluorescence(test_data):
 
 def test_chlorophyll_fluorescence_bad_var(test_data):
     """Test for PlantCV."""
-    da = test_data.psii_cropreporter('darkadapted')
+    da = test_data.psii_cropreporter('ojip_dark')
     da.name = 'bad'
     mask = test_data.create_ps_mask()
     with pytest.raises(RuntimeError):
