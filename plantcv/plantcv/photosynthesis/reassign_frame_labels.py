@@ -29,25 +29,25 @@ def reassign_frame_labels(ps_da, mask):
     params.device += 1
 
     try:
-        if ps_da.name != "lightadapted" and ps_da.name != "darkadapted":
-            fatal_error("You must provide a xarray DataArray with name lightadapted or darkadapted")
+        if ps_da.name != "ojip_light" and ps_da.name != "ojip_dark":
+            fatal_error("You must provide a xarray DataArray with name ojip_light or ojip_dark")
     except AttributeError:
         if isinstance(ps_da, PSII_data):
-            fatal_error("You need to provide the `darkadapted` or `lightadapted` dataarray")
+            fatal_error("You need to provide the `ojip_dark` or `ojip_light` dataarray")
         else:
-            fatal_error("You must provide a xarray DataArray with name lightadapted or darkadapted")
+            fatal_error("You must provide a xarray DataArray with name ojip_light or ojip_dark")
 
     if mask.shape != ps_da.shape[:2] or len(np.unique(mask)) > 2:
         fatal_error(f"Mask needs to be binary and have shape {ps_da.shape[:2]}")
 
     # Prime is empty for Fv/Fm (dark- and light-adapted) and p for Fq'/Fm'
     datasets = {
-        "lightadapted": {
+        "ojip_light": {
             "prime": "p",
             "label": "PSL",
             "F": "Fp"
         },
-        "darkadapted": {
+        "ojip_dark": {
             "prime": "",
             "label": "PSD",
             "F": "F0"
