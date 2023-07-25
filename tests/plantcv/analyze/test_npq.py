@@ -8,8 +8,8 @@ def test_npq_cropreporter(test_data):
     """Test for PlantCV."""
     # Clear results
     outputs.clear()
-    da_dark = test_data.psii_cropreporter('darkadapted')
-    da_light = test_data.psii_cropreporter('lightadapted')
+    da_dark = test_data.psii_cropreporter('ojip_dark')
+    da_light = test_data.psii_cropreporter('ojip_light')
     _ = analyze_npq(ps_da_light=da_light, ps_da_dark=da_dark, labeled_mask=test_data.create_ps_mask(),
                     auto_fm=False,
                     measurement_labels=["Fq/Fm"], label="prefix", min_bin="auto", max_bin="auto")
@@ -20,8 +20,8 @@ def test_npq_waltz(test_data):
     """Test for PlantCV."""
     # Clear results
     outputs.clear()
-    da_dark = test_data.psii_walz('darkadapted')
-    da_light = test_data.psii_walz('lightadapted')
+    da_dark = test_data.psii_walz('ojip_dark')
+    da_light = test_data.psii_walz('ojip_light')
     _ = analyze_npq(ps_da_light=da_light, ps_da_dark=da_dark, labeled_mask=test_data.create_ps_mask(), auto_fm=True,
                     measurement_labels=None, label="prefix", min_bin="auto", max_bin="auto")
     assert np.isclose(outputs.observations["prefix1"]["npq_median_t40"]["value"], float((200 / 185) - 1))
@@ -36,15 +36,15 @@ def test_npq_fatalerror(mlabels, tmask, test_data):
     """Test for PlantCV."""
     tmask[0, 0] = 255
     with pytest.raises(RuntimeError):
-        _ = analyze_npq(ps_da_dark=test_data.psii_cropreporter('darkadapted'),
-                        ps_da_light=test_data.psii_cropreporter('lightadapted'), labeled_mask=tmask,
+        _ = analyze_npq(ps_da_dark=test_data.psii_cropreporter('ojip_dark'),
+                        ps_da_light=test_data.psii_cropreporter('ojip_light'), labeled_mask=tmask,
                         measurement_labels=mlabels, label="default")
 
 
 def test_npq_bad_var(test_data):
     """Test for PlantCV."""
     with pytest.raises(RuntimeError):
-        _ = analyze_npq(ps_da_dark=test_data.psii_cropreporter('lightadapted'),
-                        ps_da_light=test_data.psii_cropreporter('darkadapted'),
+        _ = analyze_npq(ps_da_dark=test_data.psii_cropreporter('ojip_light'),
+                        ps_da_light=test_data.psii_cropreporter('ojip_dark'),
                         labeled_mask=test_data.create_ps_mask(),
                         measurement_labels=None, label="default")
