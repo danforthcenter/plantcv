@@ -5,10 +5,10 @@ from plantcv.plantcv.analyze import yii as analyze_yii
 
 
 @pytest.mark.parametrize("prot,mlabels,exp", [
-    # test darkadapted control seq
-    ["darkadapted", None, 0.8],
+    # test ojip_dark control seq
+    ["ojip_dark", None, 0.8],
     # test lightadapted control seq and measurement_labels arg
-    ["lightadapted", ["Fq/Fm"], 0.8]])
+    ["ojip_light", ["Fq/Fm"], 0.8]])
 def test_yii_cropreporter(prot, mlabels, exp, test_data):
     """Test for PlantCV."""
     # Clear results
@@ -22,10 +22,10 @@ def test_yii_cropreporter(prot, mlabels, exp, test_data):
 
 
 @pytest.mark.parametrize("prot,mlabels,exp", [
-    # test darkadapted control seq
-    ["darkadapted", ["Fv/Fm"], float(np.around((200 - 30) / 200, decimals=4))],
+    # test ojip_dark control seq
+    ["ojip_dark", ["Fv/Fm"], float(np.around((200 - 30) / 200, decimals=4))],
     # test lightadapted control seq and measurement_labels arg
-    ["lightadapted", [f't{i*40}' for i in np.arange(1, 3)], float((185 - 32) / 185)]])
+    ["ojip_light", [f't{i*40}' for i in np.arange(1, 3)], float((185 - 32) / 185)]])
 def test_yii_waltz(prot, mlabels, exp, test_data):
     """Test for PlantCV."""
     # Clear results
@@ -47,13 +47,13 @@ def test_yii_fatalerror(mlabels, tmask, test_data):
     """Test for PlantCV."""
     tmask[0, 0] = 255
     with pytest.raises(RuntimeError):
-        _ = analyze_yii(ps_da=test_data.psii_cropreporter('darkadapted'), labeled_mask=tmask,
+        _ = analyze_yii(ps_da=test_data.psii_cropreporter('ojip_dark'), labeled_mask=tmask,
                         measurement_labels=mlabels, label="default")
 
 
 def test_yii_bad_var(test_data):
     """Test for PlantCV."""
-    da = test_data.psii_cropreporter('darkadapted')
+    da = test_data.psii_cropreporter('ojip_dark')
     da.name = 'bad'
     with pytest.raises(RuntimeError):
         _ = analyze_yii(ps_da=da, labeled_mask=test_data.create_ps_mask(),
