@@ -46,7 +46,7 @@
 <!--VIS Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/vis_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/vis_tutorial/vis_tutorial_card_img.png?raw=true" alt="VIS tutorial" width="600" height="auto">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-v4-VIS-single-plant/blob/main/tutorial_card.png?raw=true" alt="VIS tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Single plant RGB image workflow</h6>
@@ -55,7 +55,7 @@
         <span><strong>Tags</strong>: plant shoot, single plant, side-view, RGB, shape analysis, color analysis, height analysis</span>
     </div>
     <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/vis_tutorial/vis_tutorial.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
+        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-v4-VIS-single-plant/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
     </div>
 </div>
 
