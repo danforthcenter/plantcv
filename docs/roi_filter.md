@@ -23,7 +23,6 @@ completely within the image.
 
 - **Example use:**
     - [Use In VIS Tutorial](tutorials/vis_tutorial.md)
-    - [Use In NIR Tutorial](tutorials/nir_tutorial.md)
     - [Use In PSII Tutorial](tutorials/psII_tutorial.md)
 
 **RGB image**
