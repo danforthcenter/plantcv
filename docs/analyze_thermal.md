@@ -15,6 +15,7 @@ This function calculates the temperature of each pixel and stores summary statis
 - **Context:**
     - Data about image temperature within a masked region. 
 - **Example use:**
+    - [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-thermal/HEAD?labpath=index.ipynb)
     - Below
 - **Output data stored:** Data ('max_temp', 'min_temp', 'mean_temp', 'median_temp', 'thermal_frequencies') automatically gets stored to the 
     [`Outputs` class](outputs.md) when this function is ran. 

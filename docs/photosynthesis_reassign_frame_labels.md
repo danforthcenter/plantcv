@@ -29,7 +29,7 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "plot"
 
-psd = pcv.photosynthesis.reassign_frame_labels(ps_da=ps.darkadapted, mask=mask)
+psd = pcv.photosynthesis.reassign_frame_labels(ps_da=ps.ojip_dark, mask=mask)
 
 ```
 
@@ -42,7 +42,7 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "plot"
 
-psl = pcv.photosynthesis.reassign_frame_labels(ps_da=ps.lightadapted, mask=mask)
+psl = pcv.photosynthesis.reassign_frame_labels(ps_da=ps.ojip_light, mask=mask)
 
 ```
 

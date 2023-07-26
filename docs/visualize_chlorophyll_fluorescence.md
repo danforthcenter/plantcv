@@ -10,7 +10,7 @@ to decide whether to use `auto_fm` in [pcv.analyze.yii](analyze_yii.md) and [pcv
 **returns** chlorophyll fluorescence induction curve chart
 
 - **Parameters:**
-    - ps_da - photosynthesis xarray DataArray ("lightadapted" or "darkadapted")
+    - ps_da - photosynthesis xarray DataArray ("ojip_light" or "ojip_dark")
     - labeled_mask - Labeled mask of objects (32-bit).
     - n_labels - Total number expected individual objects (default = 1).
     - label - optional label parameter, modifies the prefix of the group plotting label
@@ -30,7 +30,7 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "plot"
 
-chart = pcv.visualize.chlorophyll_fluorescence(ps_da=ps.darkadapted, labeled_mask=labeled_mask, n_labels=3, label="object")
+chart = pcv.visualize.chlorophyll_fluorescence(ps_da=ps.ojip_dark, labeled_mask=labeled_mask, n_labels=3, label="object")
 
 ```
 
