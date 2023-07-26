@@ -23,8 +23,9 @@ dependencies:
   - flake8
   - ipympl
   - nodejs
-  - jupyterlab
+  - jupyterlab<4
   - altair
+  - vl-convert-python
 
 channels:
   - conda-forge

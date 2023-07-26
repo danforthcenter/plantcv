@@ -20,7 +20,6 @@ If they are of different types, an error will occur.
     - Used to extract object from foreground image containing it and background image without it.
 	- E.g. A picture of an empty pot and the background and a picture of the plant, pot, and same background. Preferably taken from same location.
 - **Example use:**
-    - [NIR tutorial](tutorials/nir_tutorial.md)
     - See below.
 
 **Foreground Image**

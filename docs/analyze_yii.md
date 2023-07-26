@@ -8,7 +8,7 @@ The photosynthesis subpackage is dependent on a PSII_Data instance file structur
 **returns** YII DataArray, YII histograms
 
 - **Parameters:**
-    - ps_da - Photosynthesis xarray DataArray (either darkadapted or lightadapted). Can either have a pair of frames F0,Fm or pair(s) of Fp,Fmp.
+    - ps_da - Photosynthesis xarray DataArray (either ojip_dark or ojip_light). Can either have a pair of frames F0,Fm or pair(s) of Fp,Fmp.
     - labeled_mask - Labeled mask of objects (32-bit).
     - n_labels - Total number expected individual objects (default = 1).
     - auto_fm - Automatically calculate the frame with maximum fluorescence per label, otherwise use a fixed frame for all labels (default = False).
@@ -39,11 +39,11 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "plot"
 
-# photosynthesis read functions will read fluroescence data into predefined data format that includes at least attribute 'darkadapted'
+# photosynthesis read functions will read fluroescence data into predefined data format that includes at least attribute 'ojip_dark'
 ps = pcv.photosynthesis.read_cropreporter(filename="mydata.inf")
 
 # Analyze Fv/Fm    
-fvfm, fvfm_hist = pcv.analyze.yii(ps_da=ps.darkadapted, labeled_mask=kept_mask, label="plant")
+fvfm, fvfm_hist = pcv.analyze.yii(ps_da=ps.ojip_dark, labeled_mask=kept_mask, label="plant")
 
 # Access Fv/Fm median value
 fvfm_median = pcv.outputs.observations['plant1']['yii_median_t0']['value']
@@ -73,7 +73,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 # Analyze Fq'/Fm'    
-fqfm, fqfm_hist = pcv.analyze.yii(ps=ps.lightadapted, labeled_mask=kept_mask, label="plant")
+fqfm, fqfm_hist = pcv.analyze.yii(ps=ps.ojip_light, labeled_mask=kept_mask, label="plant")
 
 # Access Fq'/Fm' median value
 fqfm_median = pcv.outputs.observations['plant1']["yii_median_t1"]['value']
