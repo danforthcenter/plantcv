@@ -12,3 +12,4 @@ opencv-python
 xarray>=2022.11.0
 statsmodels
 altair
+vl-convert-python

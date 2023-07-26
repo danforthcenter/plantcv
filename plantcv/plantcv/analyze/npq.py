@@ -16,8 +16,8 @@ def npq(ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bi
     Calculate and analyze non-photochemical quenching estimates from fluorescence image data.
 
     Inputs:
-    ps_da_light        = Photosynthesis xarray DataArray that contains frame_label `Fmp` (lightadapted)
-    ps_da_dark         = Photosynthesis xarray DataArray that contains frame_label `Fm` (darkadapted)
+    ps_da_light        = Photosynthesis xarray DataArray that contains frame_label `Fmp` (ojip_light)
+    ps_da_dark         = Photosynthesis xarray DataArray that contains frame_label `Fm` (ojip_dark)
     labeled_mask       = Labeled mask of objects (32-bit).
     n_labels           = Total number expected individual objects (default = 1).
     auto_fm            = Automatically calculate the frame with maximum fluorescence per label, otherwise
@@ -49,8 +49,8 @@ def npq(ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bi
     if (measurement_labels is not None) and (len(measurement_labels) != ps_da_light.coords['measurement'].shape[0]):
         fatal_error('measurement_labels must be the same length as the number of measurements in `ps_da_light`')
 
-    if ps_da_light.name.lower() != 'lightadapted' or ps_da_dark.name.lower() != 'darkadapted':
-        fatal_error(f"ps_da_light and ps_da_dark must be DataArrays with names 'lightadapted' and 'darkadapted', "
+    if ps_da_light.name.lower() != 'ojip_light' or ps_da_dark.name.lower() != 'ojip_dark':
+        fatal_error(f"ps_da_light and ps_da_dark must be DataArrays with names 'ojip_light' and 'ojip_dark', "
                     f"respectively. Instead the inputs are: "
                     f"ps_da_light: {ps_da_light.name}, ps_da_dark: {ps_da_dark.name}"
                     )
