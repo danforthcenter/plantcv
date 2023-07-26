@@ -126,7 +126,7 @@
 <!--Hyperspectral Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/hyperspectral_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-tutorial-hyperspectral/blob/main/tutorial_card.png?raw=true" alt="Hyperspectral tutorial" width="600" height="auto">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-hyperspectral/blob/main/tutorial_card.jpg?raw=true" alt="Hyperspectral tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Hyperspectral image workflow</h6>
