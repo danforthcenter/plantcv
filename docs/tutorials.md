@@ -126,7 +126,7 @@
 <!--Hyperspectral Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/hyperspectral_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/hyperspectral_tutorial/hyperspectral_tutorial_card.jpg?raw=true" alt="Hyperspectral tutorial" width="600" height="auto">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-hyperspectral/blob/main/tutorial_card.png?raw=true" alt="Hyperspectral tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Hyperspectral image workflow</h6>
@@ -135,7 +135,7 @@
         <span><strong>Tags</strong>: plant shoot, single plant, side-view, hyperspectral, spectral index</span>
     </div>
     <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/hyperspectral_tutorial/hyperspectral_tutorial.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
+        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-hyperspectral/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
     </div>
 </div>
 
