@@ -133,11 +133,10 @@ We extract this specific index with the [pcv.spectral index.gdvi](../spectral_in
     # Inputs:
     #   gray_img    - Grayscale image data 
     #   threshold   - Threshold value (between 0-255)
-    #   max_value   - Value to apply above threshold (255 = white) 
     #   object_type - 'light' (default) or 'dark'. If the object is lighter than the 
     #                 background then standard threshold is done. If the object is 
     #                 darker than the background then inverse thresholding is done. 
-    gdvi_thresh = pcv.threshold.binary(gray_img=index_array_gdvi.array_data, threshold=150, max_value=255)
+    gdvi_thresh = pcv.threshold.binary(gray_img=index_array_gdvi.array_data, threshold=150)
     
 ```
 
@@ -322,7 +321,7 @@ def main():
     index_array_gdvi  = pcv.spectral_index.gdvi(hsi=spectral_array, distance=20)
                                                     
     # Threshold the grayscale image 
-    gdvi_thresh = pcv.threshold.binary(gray_img=index_array_gdvi.array_data, threshold=150, max_value=255)
+    gdvi_thresh = pcv.threshold.binary(gray_img=index_array_gdvi.array_data, threshold=150)
 
     # Define ROI 
     roi, roi_hierarchy= pcv.roi.rectangle(img=gdvi_thresh, x=500, y=500, h=300, w=300)
