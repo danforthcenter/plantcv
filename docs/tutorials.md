@@ -203,26 +203,11 @@
     </div>
 </div>
 
-<!--Morphology Tutorial-->
-<div class="card" style="display:block">
-    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/morphology_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/morphology_tutorial/morphology_tutorial_card.png?raw=true" alt="Morphology tutorial" width="600" height="auto">
-    </a>
-    <div class="card-title">
-        <h6>Morphology Tutorial</h6>
-    </div>
-    <div class="card-tags">
-        <span><strong>Tags</strong>: plant shoot, leaf/stem segmentation, leaf angle, leaf length</span>
-    </div>
-    <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/morphology_tutorial/morphology_tutorial.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
-    </div>
-</div>
 
 <!--Sorghum Morphology Tutorial-->
 <div class="card" style="display:block">
-    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/sorghum_morphology_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/new_side_view_morphology_tutorial/side_morphology_tutorial_card.png?raw=true" alt="Morphology tutorial" width="600" height="auto">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/morphology_tutorial');return false;">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-morphology/blob/main/tutorial_card.png?raw=true" alt="Morphology tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Sorghum Shape and Morphology Analysis</h6>
@@ -231,7 +216,7 @@
         <span><strong>Tags</strong>: plant shoot, single plant, side-view, RGB, shape analysis, leaf angle analysis, stem and branch segmentation, leaf length, leaf curvature, leaf tangent angle, sorghum</span>
     </div>
     <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/new_side_view_morphology_tutorial/morphology_analysis_side_view_workflow.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
+        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-morphology/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
     </div>
 </div>
 
