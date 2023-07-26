@@ -119,7 +119,7 @@
         <span><strong>Tags</strong>: plant shoot, multi-plant, top-view, thermal infrared, thermal analysis</span>
     </div>
     <div class="card-button">
-        <a href="https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-thermal/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
+        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-thermal/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
     </div>
 </div>
 
