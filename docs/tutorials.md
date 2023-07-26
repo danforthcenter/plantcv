@@ -142,7 +142,7 @@
 <!--Naive Bayes Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/machine_learning_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/naive_bayes_tutorial/naive_bayes_tutorial_card.png?raw=true" alt="Naive Bayes tutorial" width="600" height="auto">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-machine-learning/blob/main/naive_bayes_tutorial_card.png?raw=true" alt="Naive Bayes tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Naive Bayes Tutorial</h6>
@@ -151,7 +151,7 @@
         <span><strong>Tags</strong>: plant leaf, infection, classification, machine learning</span>
     </div>
     <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/naive_bayes_tutorial/machine_learning.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
+        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-machine-learning/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
     </div>
 </div>
 
