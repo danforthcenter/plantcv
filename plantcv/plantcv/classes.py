@@ -128,7 +128,7 @@ class Outputs:
         }
 
     # Method to save observations to a file
-    def save_results(self, filename, outformat="json"):
+    def save_results(self, filename, outformat="json", append=True):
         """Save results to a file.
 
         Keyword arguments/parameters:
@@ -142,48 +142,59 @@ class Outputs:
             if os.path.isfile(filename):
                 with open(filename, 'r') as f:
                     hierarchical_data = json.load(f)
-                    hierarchical_data["observations"] = self.observations
+                    if append:
+                        observations = hierarchical_data["observations"] | self.observations
+                    else:
+                        observations = self.observations
+
+                    hierarchical_data["observations"] = observations
             else:
                 hierarchical_data = {"metadata": {}, "observations": self.observations}
 
             with open(filename, mode='w') as f:
                 json.dump(hierarchical_data, f)
         elif outformat.upper() == "CSV":
+            if append and os.path.isfile(filename):
+                mode = "a"
+            else:
+                mode = "w"
             # Open output CSV file
-            csv_table = open(filename, "w")
-            # Write the header
-            csv_table.write(",".join(map(str, ["sample", "trait", "value", "label"])) + "\n")
-            # Iterate over data samples
-            for sample in self.observations:
-                # Iterate over traits for each sample
-                for var in self.observations[sample]:
-                    val = self.observations[sample][var]["value"]
-                    # If the data type is a list or tuple we need to unpack the data
-                    if isinstance(val, (list, tuple)):
-                        # Combine each value with its label
-                        for value, label in zip(self.observations[sample][var]["value"],
-                                                self.observations[sample][var]["label"]):
-                            # Skip list of tuple data types
-                            if not isinstance(value, tuple):
-                                # Save one row per value-label
-                                row = [sample, var, value, label]
-                                csv_table.write(",".join(map(str, row)) + "\n")
-                    # If the data type is Boolean, store as a numeric 1/0 instead of True/False
-                    elif isinstance(val, bool):
-                        row = [sample,
-                               var,
-                               int(self.observations[sample][var]["value"]),
-                               self.observations[sample][var]["label"]]
-                        csv_table.write(",".join(map(str, row)) + "\n")
-                    # For all other supported data types, save one row per trait
-                    # Assumes no unusual data types are present (possibly a bad assumption)
-                    else:
-                        row = [sample,
-                               var,
-                               self.observations[sample][var]["value"],
-                               self.observations[sample][var]["label"]
-                               ]
-                        csv_table.write(",".join(map(str, row)) + "\n")
+            with open(filename, mode) as csv_table:
+                # Write the header if not appending
+                if mode == "w":
+                    csv_table.write(",".join(map(str, ["sample", "trait", "value", "label"])) + "\n")
+
+                # Iterate over data samples
+                for sample in self.observations:
+                    # Iterate over traits for each sample
+                    for var in self.observations[sample]:
+                        val = self.observations[sample][var]["value"]
+                        # If the data type is a list or tuple we need to unpack the data
+                        if isinstance(val, (list, tuple)):
+                            # Combine each value with its label
+                            for value, label in zip(self.observations[sample][var]["value"],
+                                                    self.observations[sample][var]["label"]):
+                                # Skip list of tuple data types
+                                if not isinstance(value, tuple):
+                                    # Save one row per value-label
+                                    row = [sample, var, value, label]
+                                    csv_table.write(",".join(map(str, row)) + "\n")
+                        else:
+                            # If the data type is Boolean, store as a numeric 1/0 instead of True/False
+                            if isinstance(val, bool):
+                                outputValue = int(val)
+                            # For all other supported data types, save one row per trait
+                            # Assumes no unusual data types are present (possibly a bad assumption)
+                            else:
+                                outputValue = val
+
+                            row = [sample,
+                                   var,
+                                   outputValue,
+                                   self.observations[sample][var]["label"]]
+                            csv_table.write(",".join(map(str, row)) + "\n")
+        else:
+            raise ValueError("outformat must be one of (case insensitive): ['json', 'csv']")
 
     def plot_dists(self, variable):
         """Plot a distribution of data.

@@ -68,11 +68,14 @@ Methods are accessed as plantcv.outputs.*method*.
 
 * label:  The label for each value, which will be useful when the data is a frequency table (e.g. hues). 
 
-**save_results**(*filename, outformat="json"*): Save results to a file
+**save_results**(*filename, outformat="json", append=True*): Save results to a file
 
 * filename: Path and name of the output file
 
 * outformat: Output file format (default = "json"). Supports "json" and "csv" formats
+
+* append: When true, **save_results** will append to existing files. In a json file, this overwrites existing observations with the same label.
+In a csv file, this duplicates the same label. When this is false, **save_results** will overwrite existing files.
 
 **Example use:**
     - [Use In VIS/NIR Tutorial](tutorials/vis_nir_tutorial.md)
@@ -91,7 +94,7 @@ shape_img = pcv.analyze.size(img=img, labeled_mask=mask, n_labels=1, label="defa
 plant_area = pcv.outputs.observations['default1']['pixel_area']['value']
 
 # Write shape data to results file
-pcv.outputs.save_results(filename=args.result, outformat="json")
+pcv.outputs.save_results(filename=args.result, outformat="json", append=True)
 
 # Will will print out results again, so clear the outputs before running NIR analysis 
 pcv.outputs.clear()
@@ -102,7 +105,7 @@ nir_hist = pcv.analyze.grayscale(gray_img=nir2, labeled_mask=nir_combinedmask, n
 shape_img = pcv.analyze.size(img=nir2, labeled_mask=nir_combinedmask, n_labels=1, label="default")
 
 # Write the NIR and shape data to a file 
-pcv.outputs.save_results(filename=args.coresult, outformat="json")
+pcv.outputs.save_results(filename=args.coresult, outformat="json", append=True)
 
 ```
 
@@ -125,7 +128,7 @@ pcv.outputs.add_observation(sample='default', variable='percent_diseased',
                             value=percent_diseased, label='percent')
 
 # Write custom data to results file
-pcv.outputs.save_results(filename=args.result, outformat="json")
+pcv.outputs.save_results(filename=args.result, outformat="json", append=True)
 
 ```
 
