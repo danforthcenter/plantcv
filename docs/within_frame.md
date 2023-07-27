@@ -26,7 +26,7 @@ from plantcv import plantcv as pcv
 
 img, path, img_filename = pcv.readimage(filename="home/user/images/test-image.tif")
 gray_img = pcv.rgb2gray_lab(rgb_img=img, channel='a')
-mask = pcv.threshold.binary(gray_img=gray_img, threshold=36, max_value=255, object_type='light')
+mask = pcv.threshold.binary(gray_img=gray_img, threshold=36, object_type='light')
 in_bounds = pcv.within_frame(mask=mask)  #True or False?
 
 ```

@@ -309,6 +309,7 @@ pages for more details on the input and output variable types.
 * pre v3.3: NA
 * post v3.3: filtered_img = **plantcv.closing**(*gray_img, kernel=None*)
 
+
 #### plantcv.cluster_contour_splitimg
 
 * pre v3.0dev2: device, output_path = **plantcv.cluster_contour_splitimg**(*device, img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None, filenames=None, debug=None*)
@@ -384,7 +385,8 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, objects, hierarchy = **plantcv.find_objects**(*img, mask, device, debug=None*)
 * post v3.0dev2: objects, hierarchy = **plantcv.find_objects**(*img, mask*)
-* post v4.0: objects = **plantcv.find_objects**(*img, mask*)
+* post v4.0: Deprecated
+
 
 #### plantcv.flip
 
@@ -409,6 +411,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, nirpath = **plantcv.get_nir**(*path, filename, device, debug=None*)
 * post v3.0dev2: nirpath = **plantcv.get_nir**(*path, filename*)
+* post v4.0: DEPRECATED
 
 #### plantcv.hist_equalization
 
@@ -847,7 +850,8 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, kept_cnt, hierarchy, mask, obj_area = **plantcv.roi_objects**(*img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, device, debug=None*)
 * post v3.0dev2: kept_cnt, hierarchy, mask, obj_area = **plantcv.roi_objects**(*img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_hierarchy*)
 * post v3.3: kept_cnt, hierarchy, mask, obj_area = **plantcv.roi_objects**(*img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy,roi_type='partial'*)
-* post v4.0: kept_cnt, mask, obj_area = **plantcv.roi_objects**(*img, roi, obj, roi_type='partial'*)
+* post v4.0: Deprecated, see:
+    * filtered_mask = **pcv.roi.filter**(*mask, roi, roi_type='partial'*)
 
 #### plantcv.transform.rotate
 

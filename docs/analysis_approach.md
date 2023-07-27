@@ -42,7 +42,7 @@ to demonstrate how modules can be used. Keep in mind that modules can be linked 
 configurations to meet image processing goals so the tutorials simply examples of a few approaches:
 
 *  [VIS Image Workflow](tutorials/vis_tutorial.md)
-*  [NIR Image Workflow](tutorials/nir_tutorial.md)
+*  [Grayscale Image processing](tutorials/grayscale_tutorial.md)
 *  [PSII Workflow](tutorials/psII_tutorial.md)
 *  [VIS / NIR Dual Workflow](tutorials/vis_nir_tutorial.md)
 *  [Multi Plant Tutorial](tutorials/multi-plant_tutorial.md)
@@ -99,7 +99,7 @@ likely be some 'noise' (non-target-object spots) in the image. Those can be fill
 *  To further isolate an object from surrounding background a region of interest can be used to select the region of 
 the image that contains the target object. To do this you first [detect all the objects](find_objects.md) in the image, 
 then define the [region of interest](roi_rectangle.md), then determine if the objects are  within, touching, or outside of 
-the region of interest with the [`roi_objects` function](roi_objects.md).
+the region of interest with the [`roi.filter` function](roi_filter.md).
 
 #####Connecting Objects or Splitting Objects
 
@@ -120,7 +120,7 @@ and [analyze.bound_vertical](analyze_bound_vertical2.md) functions.
 and [analyze.yii](analyze_yii.md) functions.
 *  Object classification (For example, classification of disease symptoms, identification of organ structures 
 [naive-bayesian multiclass mode](naive_bayes_multiclass.md)).
-*  Object hyperspectral parameters: see the [analyze spectral](analyze_spectral.md) and [analyze.spectral_index](analyze_spectral_index.md) functions.
+*  Object hyperspectral parameters: see the [analyze.spectral_reflectance](analyze_spectral_reflectance.md) and [analyze.spectral_index](analyze_spectral_index.md) functions.
 *  Morphological parameters: see the [morphology tutorial](tutorials/morphology_tutorial.md) for examples of characteristics such as stem height,
 leaf length, and leaf angle. 
 

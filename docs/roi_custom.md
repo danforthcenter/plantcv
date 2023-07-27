@@ -10,7 +10,7 @@
 - **Context:**
     - Used to define a custom polygon-shaped region of interest. Polygons 
     can be as simple as a triangle or complex and will work with downstream 
-    steps such as [pcv.roi_objects](roi_objects.md). The `vertices` input 
+    steps such as [pcv.roi.filter](roi_filter.md). The `vertices` input 
     is a list of coordinates of the desired vertices where the desired vertices 
     are tuples inside square brackets. 
 
