@@ -182,15 +182,15 @@ def _process_pmd_data(ps, metadata):
             coords={'frame_label': frame_labels,
                     'frame_num': ('frame_label', frame_nums),
                     'measurement': ['t0']},
-            name='pam_darkadapted'
+            name='pam_dark'
         )
         pmd.attrs["long_name"] = "pam dark-adapted measurements"
         ps.add_data(pmd)
 
-        _debug(visual=ps.pam_darkadapted.squeeze('measurement', drop=True),
+        _debug(visual=ps.pam_dark.squeeze('measurement', drop=True),
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PMD-frames.png"),
                col='frame_label',
-               col_wrap=int(np.ceil(ps.pam_darkadapted.frame_label.size / 4)))
+               col_wrap=int(np.ceil(ps.pam_dark.frame_label.size / 4)))
 
 
 def _process_pml_data(ps, metadata):
@@ -216,15 +216,15 @@ def _process_pml_data(ps, metadata):
             coords={'frame_label': frame_labels,
                     'frame_num': ('frame_label', frame_nums),
                     'measurement': ['t0']},
-            name='pam_lightadapted'
+            name='pam_light'
         )
         pml.attrs["long_name"] = "pam light-adapted measurements"
         ps.add_data(pml)
 
-        _debug(visual=ps.pam_lightadapted.squeeze('measurement', drop=True),
+        _debug(visual=ps.pam_light.squeeze('measurement', drop=True),
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PML-frames.png"),
                col='frame_label',
-               col_wrap=int(np.ceil(ps.pam_lightadapted.frame_label.size / 4)))    
+               col_wrap=int(np.ceil(ps.pam_light.frame_label.size / 4)))
 
 
 def _process_chl_data(ps, metadata):

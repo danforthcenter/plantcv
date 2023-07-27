@@ -10,7 +10,7 @@ def test_read_cropreporter(photosynthesis_test_data, tmpdir):
     assert isinstance(ps, PSII_data) and ps.ojip_dark.shape == (966, 1296, 21, 1)
 
     # Check with different naming conventioned of phenovation
-    ps = read_cropreporter(filename=photosynthesis_test_data.cropreporter_v653_ojip)
+    ps = read_cropreporter(filename=photosynthesis_test_data.cropreporter_v653)
     assert isinstance(ps, PSII_data) and ps.ojip_dark.shape == (1500, 2048, 7, 1)
     # check labels
     true_labels = ['Fdark', 'F0', 'PSD2', 'PSD3', 'Fm', 'PSD5', 'PSD6']
