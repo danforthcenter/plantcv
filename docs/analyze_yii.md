@@ -8,7 +8,7 @@ The photosynthesis subpackage is dependent on a PSII_Data instance file structur
 **returns** YII DataArray, YII histograms
 
 - **Parameters:**
-    - ps_da - Photosynthesis xarray DataArray (either ojip_dark or ojip_light). Can either have a pair of frames F0,Fm or pair(s) of Fp,Fmp.
+    - ps_da - Photosynthesis xarray DataArray (either ojip_dark, ojip_light, pam_dark, or pam_light). Can either have a pair of frames F0,Fm or pair(s) of Fp, Fmp.
     - labeled_mask - Labeled mask of objects (32-bit).
     - n_labels - Total number expected individual objects (default = 1).
     - auto_fm - Automatically calculate the frame with maximum fluorescence per label, otherwise use a fixed frame for all labels (default = False).
