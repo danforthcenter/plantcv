@@ -65,10 +65,9 @@ nav:
         - 'Scharr Filter': scharr_filter.md
       - 'Gaussian Blur': gaussian_blur.md
       - 'Get Kernel': get_kernel.md
-      - 'Get NIR Images': get_nir.md
       - 'Histogram Normalization': HistEqualization.md
       - 'Hyperspectral Data':
-          - 'Analyze spectral': analyze_spectral.md
+          - 'Analyze Spectral Reflectance': analyze_spectral_reflectance.md
           - 'Calibrate': calibrate.md
           - 'Spectral Index': spectral_index.md
           - 'Extract wavelength': extract_wavelength.md
@@ -138,7 +137,6 @@ nav:
         - 'Create ROI from Binary Image': roi_from_binary_image.md
         - 'Create Multi ROIs': 'roi_multi.md'
         - 'Create Grid of ROIs Automatically': roi_auto_grid.md
-        - 'Filter Objects by ROI': roi_objects.md
         - 'Filter a mask by ROI': roi_filter.md
         - 'Convert ROI to Mask': roi2mask.md
       - 'Segment Image Series': segment_image_series.md
@@ -180,7 +178,6 @@ nav:
       - 'Visualization Methods':
           - 'Auto Threshold Methods': visualize_auto_threshold_methods.md
           - 'Chlorophyll Fluorescence': visualize_chlorophyll_fluorescence.md
-          - 'Clustered Contours': visualize_clustered_contours.md
           - 'Colorize Label Image': visualize_colorize_label_img.md
           - 'Colorize Masks': visualize_colorize_masks.md
           - 'Colorspaces': visualize_colorspace.md

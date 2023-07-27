@@ -3,16 +3,10 @@
 import cv2
 import numpy as np
 import os
-from plantcv.plantcv import fatal_error
-from plantcv.plantcv import rgb2gray_hsv
+from plantcv.plantcv import params, outputs, fatal_error, apply_mask, rgb2gray_hsv
 from plantcv.plantcv.threshold import binary as binary_threshold
-from plantcv.plantcv import roi_objects
-from plantcv.plantcv import apply_mask
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
-from plantcv.plantcv import params
-from plantcv.plantcv import outputs
-from plantcv.plantcv import Objects
+from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition, _roi_filter
 
 
 def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_channel=None,
@@ -74,14 +68,11 @@ def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_c
             marker_bin = binary_threshold(gray_img=marker_hsv, threshold=thresh, object_type=objcolor)
             # Identify contours in the masked image
             contours, hierarchy = _cv2_findcontours(bin_img=marker_bin)
-            obj = Objects([contours], [hierarchy])
 
             # Filter marker contours using the input ROI
-            kept_obj, kept_mask, obj_area = roi_objects(img=ref_img, obj=obj, roi=roi, roi_type="partial")
+            kept_contours, kept_hierarchy, _ = _roi_filter(img=marker_bin, roi=roi, obj=contours,
+                                                           hierarchy=hierarchy, roi_type="partial")
             # If there are more than one contour detected, combine them into one
-            # These become the marker contour and mask
-            kept_contours = kept_obj.contours[0]
-            kept_hierarchy = kept_obj.hierarchy[0]
             marker_contour = _object_composition(contours=kept_contours, hierarchy=kept_hierarchy)
             cv2.drawContours(marker_mask, kept_contours, -1, (255), -1, hierarchy=kept_hierarchy)
         else:
@@ -89,12 +80,7 @@ def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_c
             params.debug = debug
             fatal_error('thresh_channel and thresh must be defined in detect mode')
     elif marker.upper() == "DEFINE":
-        # Identify contours in the masked image
-        contours, hierarchy = _cv2_findcontours(bin_img=roi_mask)
-        # If there are more than one contour detected, combine them into one
-        # These become the marker contour and mask
-        marker_contour = _object_composition(contours=contours, hierarchy=hierarchy)
-        cv2.drawContours(marker_mask, contours, -1, (255), -1, hierarchy=hierarchy)
+        marker_mask = roi_mask
     else:
         # Reset debug mode
         params.debug = debug
@@ -102,6 +88,9 @@ def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_c
 
     # Calculate the moments of the defined marker region
     m = cv2.moments(marker_mask, binaryImage=True)
+    cnt, h = _cv2_findcontours(bin_img=marker_mask)
+    marker_contour = _object_composition(contours=cnt, hierarchy=h)
+
     # Calculate the marker area
     marker_area = m['m00']
 

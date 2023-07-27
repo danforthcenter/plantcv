@@ -279,8 +279,10 @@ class PSII_data:
     """PSII data class"""
 
     def __init__(self):
-        self.darkadapted = None
-        self.lightadapted = None
+        self.ojip_dark = None
+        self.ojip_light = None
+        self.pam_dark = None
+        self.pam_light = None
         self.spectral = None
         self.chlorophyll = None
         self.datapath = None

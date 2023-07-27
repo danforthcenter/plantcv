@@ -139,7 +139,7 @@ pcv.outputs.save_results(filename=args.result, outformat="json", append=True)
 There are examples of full Python scripts found at the bottom of each tutorial.
 
 *  [VIS Image Workflow](tutorials/vis_tutorial.md)
-*  [NIR Image Workflow](tutorials/nir_tutorial.md)
+*  [Grayscale Image Workflow](tutorials/grayscale_tutorial.md)
 *  [PSII Workflow](tutorials/psII_tutorial.md)
 *  [VIS / NIR Dual Workflow](tutorials/vis_nir_tutorial.md)
 *  [Multi Plant Tutorial](tutorials/multi-plant_tutorial.md)

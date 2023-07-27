@@ -46,7 +46,7 @@
 <!--VIS Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/vis_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/vis_tutorial/vis_tutorial_card_img.png?raw=true" alt="VIS tutorial" width="600" height="auto">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-v4-VIS-single-plant/blob/main/tutorial_card.png?raw=true" alt="VIS tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Single plant RGB image workflow</h6>
@@ -55,14 +55,14 @@
         <span><strong>Tags</strong>: plant shoot, single plant, side-view, RGB, shape analysis, color analysis, height analysis</span>
     </div>
     <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/vis_tutorial/vis_tutorial.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
+        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-v4-VIS-single-plant/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
     </div>
 </div>
 
 <!--VIS-NIR Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/vis_nir_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/vis_nir_tutorial/vis_nir_tutorial_card_img.jpg?raw=true" alt="VIS-NIR tutorial" width="600" height="auto">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-vis-nir/blob/main/vis_nir_tutorial_card_img.jpg?raw=true" alt="VIS-NIR tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Single plant RGB dual RGB-NIR image workflow</h6>
@@ -71,23 +71,23 @@
         <span><strong>Tags</strong>: plant shoot, single plant, side-view, RGB, Near-infrared, shape analysis, NIR analysis</span>
     </div>
     <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/vis_nir_tutorial/vis_nir_tutorial.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
+        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-vis-nir/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
     </div>
 </div>
 
-<!--NIR Tutorial-->
+<!--Grayscale Tutorial-->
 <div class="card" style="display:block">
-    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/nir_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/nir_tutorial/nir_tutorial_card_img.jpg?raw=true" alt="NIR tutorial" width="600" height="auto">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/grayscale_tutorial');return false;">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-grayscale/blob/main/img/scaled_gray.png?raw=true" alt="Grayscale tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
-        <h6>Single plant NIR image workflow</h6>
+        <h6>Single plant Grayscale image workflow</h6>
     </div>
     <div class="card-tags">
-        <span><strong>Tags</strong>: plant shoot, single plant, side-view, Near-infrared, shape analysis, NIR analysis</span>
+        <span><strong>Tags</strong>: plant leaf, top view, single plant, grayscale, grayscale analysis, </span>
     </div>
     <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/nir_tutorial/nir_tutorial.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
+        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-grayscale/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
     </div>
 </div>
 
@@ -110,7 +110,7 @@
 <!--Thermal Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/thermal_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/thermal_tutorial/thermal_tutorial_card.jpg?raw=true" alt="Thermal tutorial" width="600" height="auto">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-thermal/blob/main/tutorial_card.png?raw=true" alt="Thermal tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Thermal image workflow</h6>
@@ -119,14 +119,14 @@
         <span><strong>Tags</strong>: plant shoot, multi-plant, top-view, thermal infrared, thermal analysis</span>
     </div>
     <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/thermal_tutorial/thermal.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
+        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-thermal/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
     </div>
 </div>
 
 <!--Hyperspectral Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/hyperspectral_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/hyperspectral_tutorial/hyperspectral_tutorial_card.jpg?raw=true" alt="Hyperspectral tutorial" width="600" height="auto">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-hyperspectral/blob/main/tutorial_card.jpg?raw=true" alt="Hyperspectral tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Hyperspectral image workflow</h6>
@@ -135,14 +135,14 @@
         <span><strong>Tags</strong>: plant shoot, single plant, side-view, hyperspectral, spectral index</span>
     </div>
     <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/hyperspectral_tutorial/hyperspectral_tutorial.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
+        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-hyperspectral/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
     </div>
 </div>
 
 <!--Naive Bayes Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/machine_learning_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/naive_bayes_tutorial/naive_bayes_tutorial_card.png?raw=true" alt="Naive Bayes tutorial" width="600" height="auto">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-machine-learning/blob/main/naive_bayes_tutorial_card.png?raw=true" alt="Naive Bayes tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Naive Bayes Tutorial</h6>
@@ -151,14 +151,14 @@
         <span><strong>Tags</strong>: plant leaf, infection, classification, machine learning</span>
     </div>
     <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/naive_bayes_tutorial/machine_learning.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
+        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-machine-learning/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
     </div>
 </div>
 
 <!--Multi-plant tools Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/multi-plant_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/multi_plant_tutorial/multi_plant_tutorial_card.png?raw=true" alt="Multi-plant tutorial" width="600" height="auto">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-v4-multiobject/blob/main/tutorial_card.png?raw=true" alt="Multi-plant tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Tools for Multi-Plant Analysis</h6>
@@ -167,7 +167,7 @@
         <span><strong>Tags</strong>: plant shoot, multi-plant, RGB, shape analysis, brassica</span>
     </div>
     <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/multi_plant_tutorial/multi_plant_tutorial.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
+        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-grayscale/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
     </div>
 </div>
 
@@ -203,26 +203,11 @@
     </div>
 </div>
 
-<!--Morphology Tutorial-->
-<div class="card" style="display:block">
-    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/morphology_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/morphology_tutorial/morphology_tutorial_card.png?raw=true" alt="Morphology tutorial" width="600" height="auto">
-    </a>
-    <div class="card-title">
-        <h6>Morphology Tutorial</h6>
-    </div>
-    <div class="card-tags">
-        <span><strong>Tags</strong>: plant shoot, leaf/stem segmentation, leaf angle, leaf length</span>
-    </div>
-    <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/morphology_tutorial/morphology_tutorial.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
-    </div>
-</div>
 
 <!--Sorghum Morphology Tutorial-->
 <div class="card" style="display:block">
-    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/sorghum_morphology_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/new_side_view_morphology_tutorial/side_morphology_tutorial_card.png?raw=true" alt="Morphology tutorial" width="600" height="auto">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/morphology_tutorial');return false;">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-morphology/blob/main/tutorial_card.png?raw=true" alt="Morphology tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Sorghum Shape and Morphology Analysis</h6>
@@ -231,7 +216,7 @@
         <span><strong>Tags</strong>: plant shoot, single plant, side-view, RGB, shape analysis, leaf angle analysis, stem and branch segmentation, leaf length, leaf curvature, leaf tangent angle, sorghum</span>
     </div>
     <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/new_side_view_morphology_tutorial/morphology_analysis_side_view_workflow.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
+        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-morphology/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
     </div>
 </div>
 
@@ -254,7 +239,7 @@
 <!--Input-Output Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/input_output_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/input_output_tutorial/input_output_tutorial_card.jpg?raw=true" alt="Input-output tutorial" width="600" height="auto">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-input-output/blob/main/tutorial_card.jpg?raw=true" alt="Input-output tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Input-Output Tutorial</h6>
@@ -263,7 +248,7 @@
         <span><strong>Tags</strong>: open image, save image, save plot</span>
     </div>
     <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/input_output_tutorial/input_output.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
+        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-input-output/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
     </div>
 </div>
 
@@ -318,7 +303,7 @@
 <!--Watershed Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/watershed_segmentation_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/watershed_segmentation_tutorial/watershed_segmentation_tutorial_card.png?raw=true" alt="Watershed tutorial" width="600" height="auto">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-watershed/blob/main/tutorial_card.png?raw=true" alt="Watershed tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Watershed Segmentation Tutorial</h6>
@@ -327,7 +312,7 @@
         <span><strong>Tags</strong>: plant shoot, single plant, top-view, RGB, watershed segmentation, leaf segmentation</span>
     </div>
     <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/watershed_segmentation_tutorial/segmentation.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
+        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-watershed/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
     </div>
 </div>
 

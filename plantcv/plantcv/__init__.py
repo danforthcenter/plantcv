@@ -45,12 +45,10 @@ from plantcv.plantcv.logical_and import logical_and
 from plantcv.plantcv.logical_or import logical_or
 from plantcv.plantcv.logical_xor import logical_xor
 from plantcv.plantcv.find_objects import find_objects
-from plantcv.plantcv.roi_objects import roi_objects
 from plantcv.plantcv.within_frame import within_frame
 from plantcv.plantcv.print_results import print_results
 from plantcv.plantcv.flip import flip
 from plantcv.plantcv.crop_position_mask import crop_position_mask
-from plantcv.plantcv.get_nir import get_nir
 from plantcv.plantcv.report_size_marker_area import report_size_marker_area
 from plantcv.plantcv.white_balance import white_balance
 from plantcv.plantcv.shift_img import shift_img
@@ -125,12 +123,10 @@ __all__ = [
     "logical_or",
     "logical_xor",
     "find_objects",
-    "roi_objects",
     "within_frame",
     "print_results",
     "flip",
     "crop_position_mask",
-    "get_nir",
     "report_size_marker_area",
     "white_balance",
     "shift_img",

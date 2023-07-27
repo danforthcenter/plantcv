@@ -121,7 +121,7 @@ near-infrared (800nm) frames.
 
 `ps` is an instance of the `PSII_data` class in PlantCV. The class stores each available dataset as attributes. The
 class stores two dataset attributes (`datapath` and `filename`) and stores each of the datasets with the following
-variable names: `darkadapted`, `lightadapted`, `chlorophyll`, `spectral`. The darkadapted, lightadapted, and 
+variable names: `ojip_dark`, `ojip_light`, `chlorophyll`, `spectral`. The ojip_dark, ojip_light, and 
 chlorophyll datasets are stored as xarray DataArrays. The spectral dataset is stored as a PlantCV
 [Spectral_data](../Spectral_data.md) class instance.
 
@@ -137,12 +137,11 @@ using the [fill_holes](../fill_holes.md) function.
 
 # Inputs:
 #   gray_img        - Grayscale image data
-#   max_value       - Value to apply above threshold (255 = white)
 #   object_type     - 'light' (default) or 'dark'. If the object is lighter than the
 #                       background then standard threshold is done. If the object is
 #                       darker than the background then inverse thresholding is done.
 mask = pcv.threshold.otsu(gray_img=img_as_ubyte(ps.chlorophyll.sel(frame_label="Chl").data), 
-                          max_value=255, object_type="light")
+                          object_type="light")
 # Fill small objects
 
 # Inputs:
@@ -176,7 +175,7 @@ are set at a reasonable place or whether we want to adjust them in a later step.
 # Returns:
 # chart            = Plot of the chlorophyll fluorescence induction curve for each object
 
-dark_fig = pcv.visualize.chlorophyll_fluorescence(ps_da=ps.darkadapted, labeled_mask=mask)
+dark_fig = pcv.visualize.chlorophyll_fluorescence(ps_da=ps.ojip_dark, labeled_mask=mask)
 
 ```
 
@@ -203,7 +202,7 @@ curve.
 # Returns:
 # chart            = Plot of the chlorophyll fluorescence induction curve for each object
 
-light_fig = pcv.photosynthesis.reassign_frame_labels(ps_da=ps.lightadapted, labeled_mask=mask)
+light_fig = pcv.photosynthesis.reassign_frame_labels(ps_da=ps.ojip_light, labeled_mask=mask)
 
 ```
 
@@ -223,7 +222,7 @@ fluorescence for each masked region.
 # Analyze Fv/Fm
 
 # Inputs:
-# ps_da               = Photosynthesis xarray DataArray (either darkadapted or lightadapted)
+# ps_da               = Photosynthesis xarray DataArray (either ojip_dark or ojip_light)
 # labeled_mask        = Labeled mask of objects (32-bit).
 # n_labels            = Total number expected individual objects (default = 1).
 # auto_fm             = Automatically calculate the frame with maximum fluorescence per label, otherwise
@@ -235,7 +234,7 @@ fluorescence for each masked region.
 # yii_global          = DataArray of efficiency estimate values
 # yii_chart           = Histograms of efficiency estimate
 
-fvfm, fvfm_hist = pcv.analyze.yii(ps_da=ps.darkadapted, labeled_mask=mask, auto_fm=True,
+fvfm, fvfm_hist = pcv.analyze.yii(ps_da=ps.ojip_dark, labeled_mask=mask, auto_fm=True,
                                     measurement_labels=["Fv/Fm"], label="plant")
 
 ```
@@ -248,7 +247,7 @@ fvfm, fvfm_hist = pcv.analyze.yii(ps_da=ps.darkadapted, labeled_mask=mask, auto_
 # Analyze Fq'/Fm'
 
 # Inputs:
-# ps_da               = Photosynthesis xarray DataArray (either darkadapted or lightadapted)
+# ps_da               = Photosynthesis xarray DataArray (either ojip_dark or ojip_light)
 # labeled_mask        = Labeled mask of objects (32-bit).
 # n_labels            = Total number expected individual objects (default = 1).
 # auto_fm             = Automatically calculate the frame with maximum fluorescence per label, otherwise
@@ -260,7 +259,7 @@ fvfm, fvfm_hist = pcv.analyze.yii(ps_da=ps.darkadapted, labeled_mask=mask, auto_
 # yii_global          = DataArray of efficiency estimate values
 # yii_chart           = Histograms of efficiency estimate
 
-fqfm, fqfm_hist = pcv.analyze.yii(ps_da=ps.lightadapted, labeled_mask=mask, auto_fm=True,
+fqfm, fqfm_hist = pcv.analyze.yii(ps_da=ps.ojip_light, labeled_mask=mask, auto_fm=True,
                                     measurement_labels=["Fq'/Fm'"], label="plant")
 
 ```
@@ -277,8 +276,8 @@ Nonphotochemical quanching (NPQ) can be estimated using the [analyze.npq](../ana
 # Analyze NPQ
 
 # Inputs:
-# ps_da_light        = Photosynthesis xarray DataArray that contains frame_label `Fmp` (lightadapted)
-# ps_da_dark         = Photosynthesis xarray DataArray that contains frame_label `Fm` (darkadapted)
+# ps_da_light        = Photosynthesis xarray DataArray that contains frame_label `Fmp` (ojip_light)
+# ps_da_dark         = Photosynthesis xarray DataArray that contains frame_label `Fm` (ojip_dark)
 # labeled_mask       = Labeled mask of objects (32-bit).
 # n_labels           = Total number expected individual objects (default = 1).
 # auto_fm            = Automatically calculate the frame with maximum fluorescence per label, otherwise
@@ -292,7 +291,7 @@ Nonphotochemical quanching (NPQ) can be estimated using the [analyze.npq](../ana
 # npq_global         = DataArray of NPQ values
 # npq_chart          = Histograms of NPQ estimates
 
-npq, npq_hist = pcv.analyze.npq(ps_da_light=ps.lightadapted, ps_da_dark=ps.darkadapted, labeled_mask=mask,
+npq, npq_hist = pcv.analyze.npq(ps_da_light=ps.ojip_light, ps_da_dark=ps.ojip_dark, labeled_mask=mask,
                                 auto_fm=True, measurement_labels=["NPQ"], label="plant")
 
 ```
