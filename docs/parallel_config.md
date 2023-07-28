@@ -196,8 +196,9 @@ config.import_config(config_file="my_config.json")
 # Change configuration values directly in Python as needed. At a minimum you must specify input_dir, json, filename_metadata, workflow.
 config.input_dir = "./my_images"
 config.json = "output.json"
-config.filename_metadata = ["plantbarcode", "timestamp"]
+config.filename_metadata = ["barcode", "timestamp"]
 config.workflow = "my_workflow.py"
+config.imgformat = "jpg"
 
 # Check for errors
 config.validate_config()
