@@ -137,12 +137,11 @@ using the [fill_holes](../fill_holes.md) function.
 
 # Inputs:
 #   gray_img        - Grayscale image data
-#   max_value       - Value to apply above threshold (255 = white)
 #   object_type     - 'light' (default) or 'dark'. If the object is lighter than the
 #                       background then standard threshold is done. If the object is
 #                       darker than the background then inverse thresholding is done.
 mask = pcv.threshold.otsu(gray_img=img_as_ubyte(ps.chlorophyll.sel(frame_label="Chl").data), 
-                          max_value=255, object_type="light")
+                          object_type="light")
 # Fill small objects
 
 # Inputs:
