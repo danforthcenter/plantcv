@@ -5,7 +5,7 @@ python-dateutil
 scipy
 scikit-image>=0.19
 scikit-learn
-plotnine>=0.12.2
+plotnine
 dask
 dask-jobqueue
 opencv-python
