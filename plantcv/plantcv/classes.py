@@ -328,7 +328,8 @@ class Points(object):
             # remove the closest point to the user right clicked one
             self.points.pop(idx_remove)
             ax0plots = self.ax.lines
-            self.ax.lines.remove_callback(ax0plots[idx_remove])
+            #self.ax.lines.remove(ax0plots[idx_remove])
+            self.ax.lines.pop(idx_remove)
         self.fig.canvas.draw()
 
 
