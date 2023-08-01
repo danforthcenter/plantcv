@@ -13,7 +13,7 @@ def test_acute(win, homology_test_data):
     img = cv2.imread(homology_test_data.small_rgb_img)
     mask = cv2.imread(homology_test_data.small_bin_img, -1)
     homology_pts = acute(img=img, mask=mask, win=win, threshold=15)
-    assert all([i == j] for i, j in zip(np.shape(homology_pts), (29, 1, 2)))
+    assert len(homology_pts) == 6
 
 
 @pytest.mark.parametrize("obj,win,thresh", [[np.array(([[213, 190]], [[83, 61]], [[149, 246]])), 84, 192],
@@ -26,7 +26,7 @@ def test_acute_small_contours(obj, win, thresh, homology_test_data):
     mask = np.zeros(img.shape[:2], dtype=np.uint8)
     cv2.drawContours(mask, [obj], -1, 255, -1)
     homology_pts = acute(img=img, mask=mask, win=win, threshold=thresh)
-    assert all([i == j] for i, j in zip(np.shape(homology_pts), (29, 1, 2)))
+    assert len(homology_pts) == 6
 
 
 def test_acute_flipped_contour(homology_test_data):
@@ -39,4 +39,4 @@ def test_acute_flipped_contour(homology_test_data):
     cnt = np.flip(cnt)
     cv2.drawContours(mask, [cnt], -1, 255, -1)
     homology_pts = acute(img=img, mask=mask, win=5, threshold=15)
-    assert all([i == j] for i, j in zip(np.shape(homology_pts), (29, 1, 2)))
+    assert len(homology_pts) == 6
