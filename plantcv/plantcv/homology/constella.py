@@ -94,7 +94,7 @@ def constella(cur_plms, pc_starscape, group_iter, outfile_prefix):
     labelnames = []
 
     for li in range(0, len(plmnames)):
-        labelnames.append(''.join(plmnames[li] + ' (' + str(int(grpnames[li])) + ')'))
+        labelnames._append(''.join(plmnames[li] + ' (' + str(int(grpnames[li])) + ')'))
 
     if params.debug is not None:
         plt.figure()
