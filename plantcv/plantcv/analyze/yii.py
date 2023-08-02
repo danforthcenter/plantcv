@@ -135,14 +135,14 @@ def _create_histogram(yii_img, mlabel):
     obs         = PlantCV observations used to retrieve statistics
 
     Returns:
-    hist_fig  = Histogram of efficiency estimate
-    yii_img   = DataArray of efficiency estimate values
+    hist_df    = Histogram of efficiency estimate
+    yii_mode   = DataArray of efficiency estimate values
 
     :param yii_img: numpy.ndarray
     :param mlabel: str
     :param obs: dict
     :return hist_df: pandas.DataFrame
-    :return hist_fig: plotnine.ggplot.ggplot
+    :return yii_mode: float
     """
     # Calculate the histogram of Fv/Fm, Fv'/Fm', or Fq'/Fm' non-zero values
     yii_hist, yii_bins = np.histogram(yii_img[np.where(yii_img > 0)], 100, range=(0, 1))
