@@ -68,7 +68,7 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, titl
     hist_data      = return the frequency distribution data if True (default=False)
 
     Returns:
-    fig_hist       = histogram figure
+    chart          = histogram figure
     hist_df        = dataframe with histogram data, with columns "pixel intensity" and "proportion of pixels (%)"
 
     :param img: numpy.ndarray
@@ -78,7 +78,7 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, titl
     :param upper_bound: int
     :param title: str
     :param hist_data: bool
-    :return fig_hist: plotnine.ggplot.ggplot
+    :return chart: altair.vegalite.v5.api.Chart
     :return hist_df: pandas.core.frame.DataFrame
     """
     if not isinstance(img, np.ndarray):
@@ -136,13 +136,13 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, titl
     #             + geom_line())
 
     if title is not None:
-        fig_hist = fig_hist + labels.ggtitle(title)
+        chart = chart.properties(title=title)
     if len(img.shape) > 2 and img.shape[2] == 3:
-        fig_hist = fig_hist + scale_color_manual(['blue', 'green', 'red'])
+        chart = chart.scale(['blue', 'green', 'red'])
 
     # Plot or print the histogram
-    _debug(visual=fig_hist, filename=os.path.join(params.debug_outdir, str(params.device) + '_hist.png'))
+    _debug(visual=chart, filename=os.path.join(params.debug_outdir, str(params.device) + '_hist.png'))
 
     if hist_data is True:
-        return fig_hist, hist_df
-    return fig_hist
+        return chart, hist_df
+    return chart
