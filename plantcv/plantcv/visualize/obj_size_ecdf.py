@@ -7,23 +7,21 @@ from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours
 from statsmodels.distributions.empirical_distribution import ECDF
-from plotnine import ggplot, aes, geom_point, labels, scale_x_log10
+import altair as alt
 
 
-def obj_size_ecdf(mask, title=None):
+def obj_size_ecdf(mask):
     """
     Plot empirical cumulative distribution for object size based on binary mask.
 
     Inputs:
     mask  = binary mask
-    title = a custom title for the plot (default=None)
 
     Returns:
-    fig_ecdf = empirical cumulative distribution function plot
+    chart = empirical cumulative distribution function plot
 
     :param mask: numpy.ndarray
-    :param title: str
-    :return fig_ecdf: plotnine.ggplot.ggplot
+    :return chart: plotnine.ggplot.ggplot
     """
     objects, _ = _cv2_findcontours(bin_img=mask)
     areas = [cv2.contourArea(cnt) for cnt in objects]
@@ -34,13 +32,13 @@ def obj_size_ecdf(mask, title=None):
 
     ecdf_df = pd.DataFrame({'object area': ecdf.x[1:], 'cumulative probability': ecdf.y[1:]})
     # create ecdf plot and apply log-scale for x-axis (areas)
-    fig_ecdf = (ggplot(data=ecdf_df, mapping=aes(x='object area', y='cumulative probability'))
-                + geom_point(size=.1)
-                + scale_x_log10())
-    if title is not None:
-        fig_ecdf = fig_ecdf + labels.ggtitle(title)
+    chart = alt.Chart(ecdf_df).mark_circle(size=10).encode(
+        x=alt.X("object area:Q").scale(type='log'),
+        y="cumulative probability:Q",
+        tooltip=['object area', 'cumulative probability']
+    ).interactive()
 
     # Plot or print the ecdf
-    _debug(visual=fig_ecdf,
+    _debug(visual=chart,
            filename=os.path.join(params.debug_outdir, str(params.device) + '_area_ecdf.png'))
-    return fig_ecdf
+    return chart
