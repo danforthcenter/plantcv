@@ -146,8 +146,8 @@ def _create_histogram(npq_img, mlabel, obs, min_bin, max_bin):
     max_bin     = maximum bin value
 
     Returns:
-    hist_fig  = Histogram of efficiency estimate
-    npq_img   = DataArray of efficiency estimate values
+    hist_df   = Dataframe of histogram 
+    npq_mode  = which non-zero bin has the maximum Fv/Fm value
 
     :param npq_img: numpy.ndarray
     :param mlabel: str
@@ -155,7 +155,6 @@ def _create_histogram(npq_img, mlabel, obs, min_bin, max_bin):
     :param min_bin: int
     :param max_bin: int
     :return hist_df: pandas.DataFrame
-    :return hist_fig: plotnine.ggplot.ggplot
     :return npq_mode: float
     """
 
