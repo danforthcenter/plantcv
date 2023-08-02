@@ -8,7 +8,7 @@ from plantcv.plantcv import fatal_error, params
 from plantcv.plantcv.classes import PSII_data
 from plantcv.plantcv._show_dataarray import _show_dataarray
 from matplotlib import pyplot as plt
-from altair.vegalite.v5.api import FacetChart, LayerChart, Chart
+from altair.vegalite.v5.api import FacetChart, LayerChart
 
 
 def plot_image(img, cmap=None, **kwargs):
@@ -52,7 +52,7 @@ def plot_image(img, cmap=None, **kwargs):
         _show_dataarray(img, **kwargs)
 
     # Altair FacetChart
-    elif isinstance(img, (FacetChart, LayerChart, Chart)):
+    elif isinstance(img, (FacetChart, LayerChart)):
         img.display()
 
     elif isinstance(img, PSII_data):
