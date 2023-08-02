@@ -6,7 +6,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv._debug import _debug
 import pandas as pd
-from plotnine import ggplot, aes, geom_line, labels, scale_color_manual
+import altair as alt
 
 
 def _hist_gray(gray_img, bins, lower_bound, upper_bound, mask=None):
@@ -127,10 +127,13 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, titl
         hist_df = pd.DataFrame(
             {'pixel intensity': px_int, 'proportion of pixels (%)': prop, 'hist_count': hist_count,
              'color channel': channel})
-
-    fig_hist = (ggplot(data=hist_df,
-                       mapping=aes(x='pixel intensity', y='proportion of pixels (%)', color='color channel'))
-                + geom_line())
+    chart = alt.Chart(hist_df).mark_line().encode(
+        x="pixel intensity",
+        y="proportion of pixels (%)",
+        color=alt.datum(alt.repeat("color channel")))
+    # fig_hist = (ggplot(data=hist_df,
+    #                    mapping=aes(x='pixel intensity', y='proportion of pixels (%)', color='color channel'))
+    #             + geom_line())
 
     if title is not None:
         fig_hist = fig_hist + labels.ggtitle(title)
