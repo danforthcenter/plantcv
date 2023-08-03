@@ -55,7 +55,7 @@ def _hist_gray(gray_img, bins, lower_bound, upper_bound, mask=None):
     # return hist_data
 
 
-def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, title=None, hist_data=False):
+def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, hist_data=False):
     """Plot histograms of each input image channel
 
     Inputs:
@@ -64,7 +64,6 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, titl
     bins           = divide the data into n evenly spaced bins (default=100)
     lower_bound    = the lower bound of the bins (x-axis min value) (default=None)
     upper_bound    = the upper bound of the bins (x-axis max value) (default=None)
-    title          = a custom title for the plot (default=None)
     hist_data      = return the frequency distribution data if True (default=False)
 
     Returns:
@@ -76,7 +75,6 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, titl
     :param bins: int
     :param lower_bound: int
     :param upper_bound: int
-    :param title: str
     :param hist_data: bool
     :return chart: altair.vegalite.v5.api.Chart
     :return hist_df: pandas.core.frame.DataFrame
@@ -127,18 +125,18 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, titl
         hist_df = pd.DataFrame(
             {'pixel intensity': px_int, 'proportion of pixels (%)': prop, 'hist_count': hist_count,
              'color channel': channel})
-    chart = alt.Chart(hist_df).mark_line().encode(
+
+    # Create an altair chart
+    chart = alt.Chart(hist_df).mark_line(point=True).encode(
         x="pixel intensity",
         y="proportion of pixels (%)",
-        color=alt.datum(alt.repeat("color channel")))
-    # fig_hist = (ggplot(data=hist_df,
-    #                    mapping=aes(x='pixel intensity', y='proportion of pixels (%)', color='color channel'))
-    #             + geom_line())
+        color="color channel",
+        tooltip=['pixel intensity', 'proportion of pixels (%)']
+        ).interactive()
 
-    if title is not None:
-        chart = chart.properties(title=title)
     if len(img.shape) > 2 and img.shape[2] == 3:
-        chart = chart.scale(['blue', 'green', 'red'])
+        # Add a blue, green, red color scale if the image is RGB
+        chart = chart.configure_range(category=['blue', 'green', 'red'])
 
     # Plot or print the histogram
     _debug(visual=chart, filename=os.path.join(params.debug_outdir, str(params.device) + '_hist.png'))
