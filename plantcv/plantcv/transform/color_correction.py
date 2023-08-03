@@ -566,8 +566,7 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
     :param num_chips: int
     """
     # Imports
-    from plotnine import ggplot, geom_point, geom_smooth, theme_seaborn, facet_grid, geom_label, scale_x_continuous, \
-        scale_y_continuous, scale_color_manual, aes
+    import altair as alt
     import pandas as pd
 
     # Scale matrices to 0-255
@@ -610,13 +609,18 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
     dataset = dataset.astype({'color': str, 'chip': str, 'target': float, 'source': float})
 
     # Make the plot
-    p1 = ggplot(dataset, aes(x='target', y='source', color='color', label='chip')) + \
-        geom_point(show_legend=False, size=2) + \
-        geom_smooth(method='lm', size=.5, show_legend=False) + \
-        theme_seaborn() + facet_grid('.~color') + \
-        geom_label(angle=15, size=7, nudge_y=-.25, nudge_x=.5, show_legend=False) + \
-        scale_x_continuous(limits=(-5, 270)) + scale_y_continuous(limits=(-5, 275)) + \
-        scale_color_manual(values=['blue', 'green', 'red'])
+    p1 = alt.Chart(dataset).mark_line(point=True).encode(
+        x="target",
+        y="source",
+        color="color"
+        ).interactive()
+    # p1 = ggplot(dataset, aes(x='target', y='source', color='color', label='chip')) + \
+    #     geom_point(show_legend=False, size=2) + \
+    #     geom_smooth(method='lm', size=.5, show_legend=False) + \
+    #     theme_seaborn() + facet_grid('.~color') + \
+    #     geom_label(angle=15, size=7, nudge_y=-.25, nudge_x=.5, show_legend=False) + \
+    #     scale_x_continuous(limits=(-5, 270)) + scale_y_continuous(limits=(-5, 275)) + \
+    #     scale_color_manual(values=['blue', 'green', 'red'])
 
     _debug(visual=p1, filename=os.path.join(params.debug_outdir, 'color_quick_check.png'))
 
