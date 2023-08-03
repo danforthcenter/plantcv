@@ -1,4 +1,21 @@
-# How to contribute
+# Table of Contents for Contibution
+1. [Overview of Contribution](#overview)
+2. [Creating Issues](#creatingissues)
+3. [Contributing Text or Code](#textcode)
+    * [Set-Up Development Environment](#devenvironmment)
+    * [Clone the Source Code](#clone)
+    * [Install PlantCV dependencies](#install)
+    * [Create a Branch](#branch)
+    * [Work and Commit](#commit)
+    * [Testing and documenting your code](#testdoc)
+    * [Publish and Create Pull Request](#publish)
+4. [Guidelines for New Features](#newfeatures)
+    * [New Function Style Guide](#style)
+5. [Instructions for Adding A New Tutorial](#tutorial)
+    * [Create Your Tutorial Repository](#repo)
+    * [Add Your Tutorial to the Gallery Wall](#gallery)
+
+## Overview Of What To Contribute <a name="overview"></a>
 
 This document aims to give an overview of how to contribute to PlantCV.
 We encourage contributions in a variety of forms. There are
@@ -14,10 +31,11 @@ There are many ways to contribute:
 * Add unit tests
 * Revise existing code
 * Add or revise documentation
+* Add, update, or revise a use-case tutorial
 
 If you need any help, please contact us. 
 
-## Creating Issues
+## Creating Issues <a name="creatingissues"></a>
 
 - Make sure you have a GitHub account.
 - Search GitHub and Google to see if your issue has already been reported
@@ -27,21 +45,19 @@ If you need any help, please contact us.
 	- Make sure you fill in the earliest version that you know has the issue.
 	- Where applicable, provide the full workflow prior to the error and the image getting analyzed. 
 
-## Contributing Text or Code
-
-### Overview
+## Contributing Text Or Code <a name="textcode"></a>
 
 When you add a significant **new feature**, please create an issue
 first, to allow others to comment and give feedback. 
 
-When you have created a new feature or other changes to existing
+**Adding Or Changing Code** When you have created a new feature or other changes to existing
 code, create a 'pull request'.
 
-**Branching and Pull Requests**: All contributors to PlantCV code or documentation are required to use the 
+**Branching And Pull Requests**: All contributors to PlantCV code or documentation are required to use the 
 *feature branch workflow* (below) in order to allow pull
 requests, automated testing, and code review.
 
-### Setting up a development environment
+### Setting Up A Development Environment <a name="devenvironmment"></a>
 
 !!! note
     Before setting up a development environment, choose between one of two methods for working with the PlantCV
@@ -50,18 +66,18 @@ requests, automated testing, and code review.
     request to be added as a collaborator on the PlantCV repository so that you can work with it directly instead of
     having to manage a separate repository.
 
-#### Clone the source code from GitHub
+#### Clone The Source Code From GitHub <a name="clone"></a>
 
 After choosing a method above for accessing PlantCV source code, create a clone of the source code GitHub repository
 using one of the methods described in the 
 [GitHub cloning a repository guide](https://docs.github.com/en/free-pro-team@latest/github/creating-cloning-and-archiving-repositories/cloning-a-repository).
 
-#### Install PlantCV dependencies
+#### Install PlantCV Dependencies <a name="install"></a>
 
 We recommend using `conda` to set up a virtual environment for developing PlantCV. Instructions can be found in the
 [installation documentation](installation.md#installation-from-the-source-code).
 
-#### Create a branch to do your work
+#### Create A Branch To Do Your Work <a name="branch"></a>
 
 The PlantCV default branch is protected and does not allow direct modification. A better practice is to 
 [create a branch](https://docs.github.com/en/free-pro-team@latest/desktop/contributing-and-collaborating-using-github-desktop/managing-branches)
@@ -70,12 +86,12 @@ number. This makes it easier to find out the issue you are trying to solve and h
 the branch. Calling a branch my-work is confusing. Names of branch can not have a space, and should be replaced with 
 a hyphen.
 
-#### Work and commit
+#### Work And Commit <a name="commit"></a>
 
 Do your work and commit as you see fit to check your work into your branch. Descriptive commit messages and 
 descriptions are helpful for understanding the purpose of changes.
 
-#### Testing and documenting your code
+#### Testing And Documenting Your Code <a name="testdoc"></a>
 
 In addition to adding a new feature, test your code thoroughly:
 
@@ -112,7 +128,7 @@ mkdocs build --theme readthedocs --site-dir _site
 
 ```
 
-#### Publish your branch to GitHub and create a Pull Request
+#### Publish Your Branch To GitHub And Create A Pull Request <a name="publish"></a>
 
 [Publishing your branch](https://docs.github.com/en/free-pro-team@latest/desktop/contributing-and-collaborating-using-github-desktop/managing-branches#publishing-a-branch)
 to GitHub will make it available for creating a pull request between the updates and the default branch of PlantCV.
@@ -128,7 +144,7 @@ will automatically update when the branch is updated. Once tests pass, coverage 
 review is approved, the branch will be merged with the default branch and the updates are now part of the latest
 version of PlantCV!
 
-### Guidelines for adding new features
+### Guidelines For Adding New Features <a name="newfeatures"></a>
 
 In general, new contributions to PlantCV should benefit multiple users
 and extend the image processing or trait analysis power of PlantCV. 
@@ -147,7 +163,7 @@ We do hope that if you are contributing new methods to PlantCV, you are also con
 tests for your functions (described below), because you understand your code/functionality best. If you have questions 
 or need help don't hesitate to ask [here](https://github.com/danforthcenter/plantcv/issues).
 
-#### New function style guide
+#### New function Style Guide <a name="styleguide"></a>
 
 Include commenting whenever possible.
 
@@ -262,6 +278,46 @@ def new_function_calling_plantcv(img):
     return final_img
 
 ```
+
+### Instructions for Adding A New Tutorial <a name="tutorial"></a>
+
+We are always looking for new examples of how people are applying 
+PlantCV to their research. You can send us a Jupyter Notebook and any required sample data or
+you can directly contrubute your tutorial. These instructions also apply to updating existing tutorials
+that might break wth new versions of PlantCV.
+
+#### Create Your Tutorial Repository <a name="repo"></a>
+
+1. Create a new repository on GitHub (Please consider creating your repo within an instituional account rather than a personal account e.g. Danforth Center). The name should start with plantcv-tutorial.
+
+2. Clone the [tutorial template repository](https://github.com/danforthcenter/plantcv-tutorial-template)
+
+3. Copy the files and folders from the template repository to your tutorial repository
+
+4. Update the `README` and `index.ipynb` files with your tutorial content, including data (make sure you are updating or using the correct documentation branch, e.g. release-4.0)
+
+5. Add an image called `tutorial_card.png` to the repo, this will be used on the gallery webpage. The image should be approximately square and have a width of 200px.
+
+6. Follow the instructions to create a Binder button in the readme
+
+7. Commit the changes to your tutorial github repository
+
+9. Go to your repo online and test the 'Launch Binder' button for your repo
+
+#### Add Your Tutorial To the PlantCV Tutorial Gallery <a name="gallery"></a>
+
+1. In your PlantCV repo make a new branch (make sure your branch is based off the version you are working on e.g. release-4.0)
+
+2. Go to `/plantcv/docs/tutorials.md`, add a section for your new tutorial or update the binder links and link to your tutorial wall image
+
+3. Either go to `/plantcv/docs/tutorials/'yourtutorialname'` and update the binder links and nb viewer links for your tutorial or go to `/plantcv/docs/tutorials/`
+and add a doc with your tutorial name (use an exisiting tutorial as an example)
+
+4. While in your plantcv directory check the build of the documentation on the command line by the command: 
+ ```
+ mkdocs serve --theme readthedocs
+```
+5. If everything looks okay then commit changes and make a pull request (make sure that pull request is for the for version you are working on).
 
 ### Thanks
 
