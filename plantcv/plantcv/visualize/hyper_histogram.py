@@ -174,7 +174,7 @@ def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None
             hist_dataset['reflectance'] = hist_data['pixel intensity'].tolist()
         hist_dataset[wv] = hist_data['proportion of pixels (%)'].tolist()
 
-    # Make the histogram figure using plotnine
+    # Make the histogram figure using pandas and altair
     df_hist = pd.melt(hist_dataset, id_vars=['reflectance'], value_vars=wvlengths,
                       var_name='Wavelength (' + hsi.wavelength_units + ')', value_name='proportion of pixels (%)')
 
@@ -184,12 +184,7 @@ def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None
         color='Wavelength (' + hsi.wavelength_units + ')',
         tooltip=['reflectance', 'proportion of pixels (%)']
         ).interactive()
-    # fig_hist = (ggplot(df_hist, aes(x='reflectance', y='proportion of pixels (%)',
-    #                                 color='Wavelength (' + hsi.wavelength_units + ')'))
-    #             + geom_line()
-    #             + scale_color_manual(colors_hex, expand=(0, 0))
-    #             + theme_classic()
-    #             )
+
     if title is not None:
         fig_hist.properties(title=title)
 
