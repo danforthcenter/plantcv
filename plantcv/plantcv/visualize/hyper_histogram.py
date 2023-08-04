@@ -7,7 +7,7 @@ from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import fatal_error, params, color_palette
 from plantcv.plantcv.hyperspectral import _find_closest
 from plantcv.plantcv.visualize import histogram
-from plotnine import ggplot, aes, geom_line, scale_color_manual, theme_classic, labels
+import altair as alt
 import math
 
 
@@ -95,7 +95,7 @@ def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None
     :param upper_bound: None, int, float
     :param title: None, str
     :param wvlengths: list
-    :return fig_hist: plotnine.ggplot.ggplot
+    :return fig_hist: altair.vegalite.v5.api.Chart
     """
     # Always sort desired wavelengths
     wvlengths.sort()
@@ -178,14 +178,20 @@ def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None
     df_hist = pd.melt(hist_dataset, id_vars=['reflectance'], value_vars=wvlengths,
                       var_name='Wavelength (' + hsi.wavelength_units + ')', value_name='proportion of pixels (%)')
 
-    fig_hist = (ggplot(df_hist, aes(x='reflectance', y='proportion of pixels (%)',
-                                    color='Wavelength (' + hsi.wavelength_units + ')'))
-                + geom_line()
-                + scale_color_manual(colors_hex, expand=(0, 0))
-                + theme_classic()
-                )
+    fig_hist = alt.Chart(df_hist).mark_line(point=True).encode(
+        x="reflectance",
+        y="proportion of pixels (%)",
+        color='Wavelength (' + hsi.wavelength_units + ')',
+        tooltip=['reflectance', 'proportion of pixels (%)']
+        ).interactive()
+    # fig_hist = (ggplot(df_hist, aes(x='reflectance', y='proportion of pixels (%)',
+    #                                 color='Wavelength (' + hsi.wavelength_units + ')'))
+    #             + geom_line()
+    #             + scale_color_manual(colors_hex, expand=(0, 0))
+    #             + theme_classic()
+    #             )
     if title is not None:
-        fig_hist = fig_hist + labels.ggtitle(title)
+        fig_hist.properties(title=title)
 
     params.debug = debug
     _debug(fig_hist, filename=os.path.join(params.debug_outdir, str(params.device) + '_histogram.png'))
