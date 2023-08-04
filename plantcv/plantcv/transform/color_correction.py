@@ -609,7 +609,7 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
     dataset = dataset.astype({'color': str, 'chip': str, 'target': float, 'source': float})
 
     # Make the plot
-    p1 = alt.Chart(dataset).mark_line(point=True).encode(
+    p1 = alt.Chart(dataset).mark_point(point=True).encode(
         x="target",
         y="source",
         color="color"
