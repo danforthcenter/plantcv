@@ -36,11 +36,11 @@ pcv.params.debug = "plot"
 
 # Examine signal distribution within an image
 # prints out an image histogram of signal within image
-hist_figure1, hist_data1 = pcv.visualize.histogram(gray_img, mask=mask, bins=30, hist_data=True)
+hist_figure1, hist_data1 = pcv.visualize.histogram(gray_img, mask=mask, hist_data=True)
 
 # Alternatively, users can change the `bins`, `lower_bound`, `upper_bound` and `title`.
 hist_figure2, hist_data2 = pcv.visualize.histogram(img=gray_img, mask=mask, bins=30, 
-                                                   lower_bound=80, upper_bound=250,
+                                                   lower_bound=80, upper_bound=220,
                                                    title="Trimmed Histogram", hist_data=True)
 
 ```
@@ -68,6 +68,6 @@ pcv.params.debug = "plot"
 hist_figure, hist_data = pcv.visualize.histogram(img=rgb_img, mask=mask, hist_data=True)
 
 ```
-![Screenshot](img/documentation_images/histogram/RGB_histogram.png)
+![Screenshot](img/documentation_images/histogram/hist_fig_rgb.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/visualize/histogram.py)
