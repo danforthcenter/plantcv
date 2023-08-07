@@ -55,7 +55,7 @@ def _hist_gray(gray_img, bins, lower_bound, upper_bound, mask=None):
     # return hist_data
 
 
-def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, hist_data=False):
+def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, title=None, hist_data=False):
     """Plot histograms of each input image channel
 
     Inputs:
@@ -64,6 +64,7 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, hist
     bins           = divide the data into n evenly spaced bins (default=100)
     lower_bound    = the lower bound of the bins (x-axis min value) (default=None)
     upper_bound    = the upper bound of the bins (x-axis max value) (default=None)
+    title          = a custom title for the plot (default=None)
     hist_data      = return the frequency distribution data if True (default=False)
 
     Returns:
@@ -75,6 +76,7 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, hist
     :param bins: int
     :param lower_bound: int
     :param upper_bound: int
+    :param title: str
     :param hist_data: bool
     :return chart: altair.vegalite.v5.api.Chart
     :return hist_df: pandas.core.frame.DataFrame
@@ -133,6 +135,9 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, hist
         color="color channel",
         tooltip=['pixel intensity', 'proportion of pixels (%)']
         ).interactive()
+
+    if title is not None:
+        chart = chart.alt.Title(title)
 
     if len(img.shape) > 2 and img.shape[2] == 3:
         # Add a blue, green, red color scale if the image is RGB
