@@ -4,6 +4,7 @@ import os
 import math
 import cv2
 import numpy as np
+import altair as alt
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 from plantcv.plantcv.roi import circle
@@ -612,15 +613,9 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
     p1 = alt.Chart(dataset).mark_point(point=True).encode(
         x="target",
         y="source",
-        color="color"
+        color="color",
+        column=alt.Color("color").scale(range=["blue","green","red"])        
         ).interactive()
-    # p1 = ggplot(dataset, aes(x='target', y='source', color='color', label='chip')) + \
-    #     geom_point(show_legend=False, size=2) + \
-    #     geom_smooth(method='lm', size=.5, show_legend=False) + \
-    #     theme_seaborn() + facet_grid('.~color') + \
-    #     geom_label(angle=15, size=7, nudge_y=-.25, nudge_x=.5, show_legend=False) + \
-    #     scale_x_continuous(limits=(-5, 270)) + scale_y_continuous(limits=(-5, 275)) + \
-    #     scale_color_manual(values=['blue', 'green', 'red'])
 
     _debug(visual=p1, filename=os.path.join(params.debug_outdir, 'color_quick_check.png'))
 
