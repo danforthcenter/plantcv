@@ -26,5 +26,12 @@ from plantcv import plantcv as pcv
 pcv.transform.quick_color_check(source_matrix=s_matrix, target_matrix=t_matrix, num_chips=24)
 
 ```
+**Perfect Color Correlation**
+
+![Screenshot](img/documentation_images/quick_color_check/quick_color_plot.png)
+
+**Problematic**
+
+![Screenshot](img/documentation_images/quick_color_check/quick_color_plot2.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/transform/color_correction.py)
