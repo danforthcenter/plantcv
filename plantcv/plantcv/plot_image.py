@@ -3,7 +3,6 @@ import cv2
 import numpy
 import matplotlib
 from xarray.core.dataarray import DataArray
-from plotnine.ggplot import ggplot
 from plantcv.plantcv import fatal_error, params
 from plantcv.plantcv.classes import PSII_data
 from plantcv.plantcv._show_dataarray import _show_dataarray
@@ -43,10 +42,6 @@ def plot_image(img, cmap=None, **kwargs):
     elif isinstance(img, matplotlib.figure.Figure):
         fatal_error(
             "Error, matplotlib Figure not supported. Instead try running without plot_image.")
-
-    # Plot if the image is a plotnine ggplot image
-    elif isinstance(img, ggplot):
-        print(img)
 
     elif isinstance(img, DataArray):
         _show_dataarray(img, **kwargs)
