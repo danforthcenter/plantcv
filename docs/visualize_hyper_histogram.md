@@ -51,9 +51,7 @@ hist_figure3 = pcv.visualize.hyper_histogram(hsi=hsi, mask=mask, wvlengths=[380,
 # Showing the histogram for multiple wavelengths
 hist_figure4 = pcv.visualize.hyper_histogram(hsi=hsi, mask=mask, 
                                              wvlengths=[379, 409, 439, 469, 499, 529, 559, 568, 
-                                                        619, 649, 679, 709, 739, 769, 799, 
-                                                        829, 859, 889, 
-                                                        919, 949, 979, 987])
+                                                        829, 859, 889, 919, 949, 979, 987])
 
 ```
 
