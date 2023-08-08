@@ -136,7 +136,7 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, titl
         ).interactive()
 
     if title is not None:
-        chart = chart.alt.Title(title)
+        chart = chart.properties(title=title)
 
     if len(img.shape) > 2 and img.shape[2] == 3:
         # Add a blue, green, red color scale if the image is RGB
