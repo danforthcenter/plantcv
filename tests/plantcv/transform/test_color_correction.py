@@ -1,3 +1,4 @@
+"""Tests for the color_correction module."""
 import pytest
 import os
 import cv2
@@ -9,6 +10,7 @@ from plantcv.plantcv import outputs
 
 
 def test_affine_color_correction(transform_test_data):
+    """Test for Plantcv."""
     # apply affine color correction to an image and check that the chip colors
     # get closer to the standard values
     img = cv2.imread(transform_test_data.colorcard_img)
@@ -31,6 +33,7 @@ def test_affine_color_correction(transform_test_data):
 
 
 def test_affine_color_correction_bad_shape(transform_test_data):
+    """Test for PlantCV."""
     img = cv2.imread(transform_test_data.colorcard_img)
     t_matrix = std_color_matrix(pos=3)
     with pytest.raises(RuntimeError):
@@ -40,7 +43,7 @@ def test_affine_color_correction_bad_shape(transform_test_data):
 
 @pytest.mark.parametrize("pos", [0, 1, 2, 3])
 def test_std_color_matrix(pos):
-    """Test for PlantCV"""
+    """Test for PlantCV."""
     std_matrix = std_color_matrix(pos=pos)
 
     # indices for the color matrix where the white chip should be depending on
@@ -58,7 +61,7 @@ def test_std_color_matrix(pos):
 
 
 def test_std_color_matrix_bad_pos():
-    """Test for PlantCV"""
+    """Test for PlantCV."""
     with pytest.raises(RuntimeError):
         _ = std_color_matrix(pos=4.5)
 

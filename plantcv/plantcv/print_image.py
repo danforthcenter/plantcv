@@ -1,4 +1,4 @@
-# Print image to file
+"""Print image to file."""
 import cv2
 import numpy
 import matplotlib

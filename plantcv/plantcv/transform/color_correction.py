@@ -1,5 +1,4 @@
-# Color Corrections Functions
-
+"""Color Corrections Functions."""
 import os
 import math
 import cv2
@@ -13,7 +12,9 @@ from plantcv.plantcv._debug import _debug
 
 
 def affine_color_correction(rgb_img, source_matrix, target_matrix):
-    """Correct the color of the input image based on the target color matrix using an affine transformation
+    """Affine color correction of RGB image.
+    
+    Correct the color of the input image based on the target color matrix using an affine transformation
     in the RGB space. The vector containing the regression coefficients is calculated as the one that minimizes the
     Euclidean distance between the transformed source color values and the target color values.
 
@@ -35,7 +36,6 @@ def affine_color_correction(rgb_img, source_matrix, target_matrix):
     :return target_matrix: numpy.ndarray
     :return corrected_img: numpy.ndarray
     """
-
     # matrices must have the same number of color references
     if source_matrix.shape != target_matrix.shape:
         fatal_error("Missmatch between the color matrices' shapes")
@@ -84,7 +84,9 @@ def affine_color_correction(rgb_img, source_matrix, target_matrix):
 
 
 def std_color_matrix(pos=0):
-    """Standard color values compatible with the x-rite ColorCheker Classic,
+    """Create a standard color matrix.
+
+    Standard color values compatible with the x-rite ColorCheker Classic,
     ColorChecker Mini, and ColorChecker Passport targets.
     Source: https://en.wikipedia.org/wiki/ColorChecker
 
@@ -212,7 +214,7 @@ def get_color_matrix(rgb_img, mask):
 
 
 def get_matrix_m(target_matrix, source_matrix):
-    """Calculate Moore-Penrose inverse matrix for use in calculating transformation_matrix
+    """Calculate Moore-Penrose inverse matrix for use in calculating transformation_matrix.
 
     Inputs:
     target_matrix       = a 22x4 matrix containing the average red value, average green value, and average blue value
@@ -274,7 +276,7 @@ def get_matrix_m(target_matrix, source_matrix):
 
 
 def calc_transformation_matrix(matrix_m, matrix_b):
-    """Calculates transformation matrix (transformation_matrix).
+    """Calculate a transformation matrix (transformation_matrix).
 
     Inputs:
     matrix_m    = a 9x22 Moore-Penrose inverse matrix
@@ -399,7 +401,8 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
 
 
 def save_matrix(matrix, filename):
-    """Serializes a matrix as an numpy.ndarray object and save to a .npz file.
+    """Serialize a matrix as an numpy.ndarray object and save to a .npz file.
+
     Inputs:
     matrix      = a numpy.matrix
     filename    = name of file to which matrix will be saved. Must end in .npz
@@ -417,7 +420,8 @@ def save_matrix(matrix, filename):
 
 
 def load_matrix(filename):
-    """Deserializes from file an numpy.ndarray object as a matrix
+    """Deserializes from file an numpy.ndarray object as a matrix.
+
     Inputs:
     filename    = .npz file to which a numpy.matrix or numpy.ndarray is saved
 
@@ -435,7 +439,8 @@ def load_matrix(filename):
 
 
 def correct_color(target_img, target_mask, source_img, source_mask, output_directory):
-    """Takes a target_img with preferred color_space and converts source_img to that color_space.
+    """Take a target_img with preferred color_space and convert source_img to that color_space.
+
     Inputs:
     target_img          = an RGB image with color chips visualized
     source_img          = an RGB image with color chips visualized
@@ -487,7 +492,8 @@ def correct_color(target_img, target_mask, source_img, source_mask, output_direc
 
 
 def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=[]):
-    """Create a labeled mask for color card chips
+    """Create a labeled mask for color card chips.
+
     Inputs:
     rgb_img        = Input RGB image data containing a color card.
     radius         = Radius of color masks.
@@ -552,7 +558,9 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
 
 
 def quick_color_check(target_matrix, source_matrix, num_chips):
-    """Quickly plot target matrix values against source matrix values to determine
+    """Plot the color values of a target and source color card matrix.
+    
+    Quickly plot target matrix values against source matrix values to determine
     over saturated color chips or other issues.
 
     Inputs:
@@ -622,7 +630,7 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
 
 def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark',
                     record_chip_size="median", label="default"):
-    """Automatically detects a color card and output info to use in create_color_card_mask function
+    """Automatically detect a color card and output info to use in create_color_card_mask function.
 
     Algorithm written by Brandon Hurr. Updated and implemented into PlantCV by Haley Schuhl.
 

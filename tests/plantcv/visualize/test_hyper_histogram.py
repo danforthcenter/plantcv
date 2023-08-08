@@ -1,3 +1,4 @@
+"""Tests for pcv.visualize.hyper_histogram."""
 import pytest
 import numpy as np
 from plotnine import ggplot

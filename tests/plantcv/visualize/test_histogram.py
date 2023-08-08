@@ -1,3 +1,4 @@
+"""Tests for pcv.visualize.histogram."""
 import pytest
 import cv2
 import numpy as np

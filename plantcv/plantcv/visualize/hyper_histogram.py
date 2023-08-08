@@ -1,5 +1,4 @@
-# Help visualize histograms for hyperspectral images
-
+"""Help visualize histograms for hyperspectral images."""
 import os
 import numpy as np
 import pandas as pd

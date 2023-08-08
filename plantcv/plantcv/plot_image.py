@@ -1,4 +1,4 @@
-# Plot image to screen
+"""Plot image to screen."""
 import cv2
 import numpy
 import matplotlib
