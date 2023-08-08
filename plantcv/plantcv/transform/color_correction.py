@@ -12,7 +12,7 @@ from plantcv.plantcv._debug import _debug
 
 def affine_color_correction(rgb_img, source_matrix, target_matrix):
     """Affine color correction of RGB image.
-    
+
     Correct the color of the input image based on the target color matrix using an affine transformation
     in the RGB space. The vector containing the regression coefficients is calculated as the one that minimizes the
     Euclidean distance between the transformed source color values and the target color values.
@@ -558,7 +558,7 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
 
 def quick_color_check(target_matrix, source_matrix, num_chips):
     """Plot the color values of a target and source color card matrix.
-    
+
     Quickly plot target matrix values against source matrix values to determine
     over saturated color chips or other issues.
 
@@ -617,7 +617,7 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
         x="target",
         y="source",
         color="color",
-        column=alt.Color("color").scale(range=["blue", "green", "red"])        
+        column=alt.Color("color").scale(range=["blue", "green", "red"])
         ).interactive()
 
     _debug(visual=p1, filename=os.path.join(params.debug_outdir, 'color_quick_check.png'))
