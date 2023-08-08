@@ -178,11 +178,11 @@ def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None
     df_hist = pd.melt(hist_dataset, id_vars=['reflectance'], value_vars=wvlengths,
                       var_name='Wavelength (' + hsi.wavelength_units + ')', value_name='proportion of pixels (%)')
 
-    fig_hist = alt.Chart(df_hist).mark_line(point=True).encode(
+    fig_hist = alt.Chart(df_hist).mark_line().encode(
         x="reflectance",
         y="proportion of pixels (%)",
-        color=alt.Color('Wavelength (' + hsi.wavelength_units + ')').scale(scheme='turbo'),
-        tooltip=['reflectance', 'proportion of pixels (%)']
+        color=alt.Color('Wavelength (' + hsi.wavelength_units + ')').scale(scheme='turbo', reverse=True),
+        tooltip=['Wavelength (' + hsi.wavelength_units + ')']
         ).interactive()
 
     if title is not None:
