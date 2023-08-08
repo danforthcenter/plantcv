@@ -181,7 +181,7 @@ def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None
     fig_hist = alt.Chart(df_hist).mark_line(point=True).encode(
         x="reflectance",
         y="proportion of pixels (%)",
-        color=alt.Color('Wavelength (' + hsi.wavelength_units + ')').scale(scheme='spectral]'),
+        color=alt.Color('Wavelength (' + hsi.wavelength_units + ')').scale(scheme='spectral'),
         tooltip=['reflectance', 'proportion of pixels (%)']
         ).interactive()
 
