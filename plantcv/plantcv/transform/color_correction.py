@@ -4,10 +4,9 @@ import math
 import cv2
 import numpy as np
 import altair as alt
-from plantcv.plantcv import params
-from plantcv.plantcv import outputs
+import pandas as pd
+from plantcv.plantcv import params, outputs, fatal_error
 from plantcv.plantcv.roi import circle
-from plantcv.plantcv import fatal_error
 from plantcv.plantcv._debug import _debug
 
 
@@ -574,10 +573,6 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
     :param target_matrix: numpy.ndarray
     :param num_chips: int
     """
-    # Imports
-    import altair as alt
-    import pandas as pd
-
     # Scale matrices to 0-255
     target_matrix = 255*target_matrix
     source_matrix = 255*source_matrix
