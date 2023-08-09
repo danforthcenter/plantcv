@@ -1149,6 +1149,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0: NA
 * post v3.0: **plantcv.transform.quick_color_check**(*target_matrix, source_matrix, num_chips*)
+* post v4.0: chart = **plantcv.transform.quick_color_check**(*target_matrix, source_matrix, num_chips*)
 
 #### plantcv.transform.save_matrix
 
