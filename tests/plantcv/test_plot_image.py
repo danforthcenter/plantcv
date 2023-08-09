@@ -1,8 +1,7 @@
+"""Tests for pcv.plot_image."""
 import pytest
 import cv2
 from matplotlib import pyplot as plt
-import pandas as pd
-from plotnine import ggplot
 from plantcv.plantcv import PSII_data
 from plantcv.plantcv import plot_image
 
@@ -26,15 +25,6 @@ def test_plot_image_matplotlib():
     fig = plt.figure()
     with pytest.raises(RuntimeError):
         plot_image(fig)
-
-
-def test_plot_image_plotnine():
-    """Test for PlantCV."""
-    dataset = pd.DataFrame({'x': [1, 2, 3, 4], 'y': [1, 2, 3, 4]})
-    img = ggplot(data=dataset)
-    plot_image(img=img)
-    # Assert that the image was plotted without error
-    assert True
 
 
 def test_plot_image_bad_type():

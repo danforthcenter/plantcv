@@ -1,14 +1,13 @@
-# Plot image to screen
+"""Plot image to screen."""
 import cv2
 import numpy
 import matplotlib
 from xarray.core.dataarray import DataArray
-from plotnine.ggplot import ggplot
 from plantcv.plantcv import fatal_error, params
 from plantcv.plantcv.classes import PSII_data
 from plantcv.plantcv._show_dataarray import _show_dataarray
 from matplotlib import pyplot as plt
-from altair.vegalite.v5.api import FacetChart, LayerChart
+from altair.vegalite.v5.api import FacetChart, LayerChart, Chart
 
 
 def plot_image(img, cmap=None, **kwargs):
@@ -44,15 +43,11 @@ def plot_image(img, cmap=None, **kwargs):
         fatal_error(
             "Error, matplotlib Figure not supported. Instead try running without plot_image.")
 
-    # Plot if the image is a plotnine ggplot image
-    elif isinstance(img, ggplot):
-        print(img)
-
     elif isinstance(img, DataArray):
         _show_dataarray(img, **kwargs)
 
     # Altair FacetChart
-    elif isinstance(img, (FacetChart, LayerChart)):
+    elif isinstance(img, (FacetChart, LayerChart, Chart)):
         img.display()
 
     elif isinstance(img, PSII_data):

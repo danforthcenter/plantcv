@@ -1,3 +1,4 @@
+"""Tests for pcv.analyze.yii."""
 import pytest
 import numpy as np
 from plantcv.plantcv import outputs
