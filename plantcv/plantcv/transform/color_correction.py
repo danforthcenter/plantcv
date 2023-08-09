@@ -569,9 +569,13 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
                             of the target image
     num_chips          = number of color card chips included in the matrices (integer)
 
+    Returns:
+    p1                 = an altair plot of the target and source color values
+
     :param source_matrix: numpy.ndarray
     :param target_matrix: numpy.ndarray
     :param num_chips: int
+    :return p1: altair.vegalite.v5.api.Chart
     """
     # Scale matrices to 0-255
     target_matrix = 255*target_matrix
@@ -616,11 +620,13 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
     p1 = alt.Chart(dataset).mark_point(point=True).encode(
         x="target",
         y="source",
-        color="color",
-        column=alt.Color("color").scale(range=["blue", "green", "red"])
+        color=alt.Color("color").scale(range=["blue", "green", "red"]),
+        column="color"
         ).interactive()
 
     _debug(visual=p1, filename=os.path.join(params.debug_outdir, 'color_quick_check.png'))
+
+    return p1
 
 
 def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark',
