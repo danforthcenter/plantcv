@@ -1,8 +1,7 @@
-# Print image to file
+"""Print image to file."""
 import cv2
 import numpy
 import matplotlib
-from plotnine.ggplot import ggplot
 from xarray.core.dataarray import DataArray
 from plantcv.plantcv.classes import PSII_data
 from plantcv.plantcv import params
@@ -32,10 +31,6 @@ def print_image(img, filename, **kwargs):
     # Print matplotlib type images
     elif isinstance(img, matplotlib.figure.Figure):
         img.savefig(filename, dpi=params.dpi)
-
-    # Print ggplot type images
-    elif isinstance(img, ggplot):
-        img.save(filename, verbose=False)
 
     # Print altair type images
     elif isinstance(img, (FacetChart, LayerChart, Chart)):

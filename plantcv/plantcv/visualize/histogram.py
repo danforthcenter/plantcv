@@ -1,5 +1,4 @@
-# Plot histogram
-
+"""Visualize histograms from image data."""
 import os
 import numpy as np
 from plantcv.plantcv import params
@@ -56,7 +55,7 @@ def _hist_gray(gray_img, bins, lower_bound, upper_bound, mask=None):
 
 
 def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, title=None, hist_data=False):
-    """Plot histograms of each input image channel
+    """Plot histograms of each input image channel.
 
     Inputs:
     img            = an RGB or grayscale image to analyze
@@ -137,7 +136,7 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, titl
         ).interactive()
 
     if title is not None:
-        chart = chart.alt.Title(title)
+        chart = chart.properties(title=title)
 
     if len(img.shape) > 2 and img.shape[2] == 3:
         # Add a blue, green, red color scale if the image is RGB

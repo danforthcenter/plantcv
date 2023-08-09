@@ -1,3 +1,4 @@
+"""Tests for pcv.visualize.obj_size_ecdf."""
 import cv2
 from altair.vegalite.v5.api import Chart
 from plantcv.plantcv.visualize import obj_size_ecdf

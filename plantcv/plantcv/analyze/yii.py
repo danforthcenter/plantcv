@@ -1,4 +1,4 @@
-# Fluorescence Analysis (Fv/Fm parameter)
+"""Fluorescence Analysis (Fv/Fm parameter)."""
 
 import os
 import numpy as np
@@ -127,7 +127,7 @@ def yii(ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None,
 
 def _create_histogram(yii_img, mlabel):
     """
-    Compute histogram of YII
+    Compute histogram of YII.
 
     Inputs:
     yii_img     = numpy array of yii
@@ -164,9 +164,7 @@ def _create_histogram(yii_img, mlabel):
 
 
 def _add_observations(yii_da, measurements, measurement_labels, label):
-    """
-    Add observations for each labeled region
-    """
+    """Add observations for each labeled region."""
     # compute observations to store in Outputs, per labeled region
     yii_mean = yii_da.where(yii_da > 0).groupby('measurement').mean(['x', 'y']).values
     yii_median = yii_da.where(yii_da > 0).groupby('measurement').median(['x', 'y']).values
@@ -204,16 +202,12 @@ def _add_observations(yii_da, measurements, measurement_labels, label):
 
 
 def _calc_yii(da):
-    """
-    Helper function to apply the Fq'/Fm' calculation to the DataArray
-    """
+    """Apply the Fq'/Fm' calculation to the DataArray."""
     return (da.sel(frame_label='Fmp') - da.sel(frame_label='Fp')) / da.sel(frame_label='Fmp')
 
 
 def _ridgeline_plots(measurements, measurement_labels):
-    """
-    Create ridgeline plots of YII values
-    """
+    """Create ridgeline plots of YII values."""
     yii_chart = None
     for i, mlabel in enumerate(measurements):
         if measurement_labels is not None:

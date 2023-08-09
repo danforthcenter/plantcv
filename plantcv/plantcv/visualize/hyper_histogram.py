@@ -1,5 +1,4 @@
-# Help visualize histograms for hyperspectral images
-
+"""Help visualize histograms for hyperspectral images."""
 import os
 import numpy as np
 import pandas as pd
@@ -181,7 +180,7 @@ def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None
     fig_hist = alt.Chart(df_hist).mark_line(point=True).encode(
         x="reflectance",
         y="proportion of pixels (%)",
-        color=alt.Color('Wavelength (' + hsi.wavelength_units + ')').scale(scheme='turbo', reverse=True),
+        color=alt.Color('Wavelength (' + hsi.wavelength_units + ')').scale(scheme='turbo'),
         tooltip=['Wavelength (' + hsi.wavelength_units + ')']
         ).interactive()
 

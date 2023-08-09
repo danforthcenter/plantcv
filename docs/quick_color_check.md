@@ -17,7 +17,7 @@ masked in the color card.
     - num_chips     - the number of color card chips included in the matrices (integer)
     
 - **Context:**
-    - Use the [`get_color_matrix`]((get_color_matrix.md)
+    - Use the [`get_color_matrix`](get_color_matrix.md)
 
 ```python
 

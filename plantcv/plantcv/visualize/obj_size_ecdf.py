@@ -1,5 +1,4 @@
-# Plot Empirical Cumulative Distribution Function for Object Size
-
+"""Plot Empirical Cumulative Distribution Function for Object Size."""
 import os
 import cv2
 import pandas as pd

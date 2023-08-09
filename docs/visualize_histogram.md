@@ -1,7 +1,9 @@
 ## Plot Histogram
 
 This is a plotting method used to examine the distribution of signal within an image.
+
 **plantcv.visualize.histogram**(*img, mask=None, bins=None, lower_bound=None, upper_bound=None, title=None, hist_data=False*)
+
 **returns** fig_hist, hist_data
 
 - **Parameters:**
