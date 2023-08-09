@@ -7,7 +7,7 @@ masked in the color card.
 
 **plantcv.transform.quick_color_check**(*source_matrix, target_matrix, num_chips*)
 
-**returns** none
+**returns** Altair chart
 
 - **Parameters**
     - source_matrix - a 22x4 matrix containing the average red value, average green value, and
@@ -23,7 +23,9 @@ masked in the color card.
 
 from plantcv import plantcv as pcv
 
-pcv.transform.quick_color_check(source_matrix=s_matrix, target_matrix=t_matrix, num_chips=24)
+chart = pcv.transform.quick_color_check(source_matrix=s_matrix,
+                                        target_matrix=t_matrix,
+                                        num_chips=24)
 
 ```
 **Perfect Color Correlation**
