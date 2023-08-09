@@ -12,7 +12,6 @@ dependencies:
   - scikit-learn
   - dask
   - dask-jobqueue
-  - nb_conda
   - opencv
   - statsmodels
   - xarray>=2022.11.0
