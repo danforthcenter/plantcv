@@ -1,7 +1,8 @@
+"""Tests for pcv.visualize.histogram."""
 import pytest
 import cv2
 import numpy as np
-from plotnine import ggplot
+from altair.vegalite.v5.api import Chart
 from pandas.core.frame import DataFrame
 from plantcv.plantcv.visualize import histogram
 
@@ -13,7 +14,7 @@ def test_histogram(bins, lb, ub, title, visualize_test_data):
     img = cv2.imread(visualize_test_data.small_gray_img, -1)
     mask = cv2.imread(visualize_test_data.small_bin_img, -1)
     fig_hist, hist_df = histogram(img=img, mask=mask, bins=bins, lower_bound=lb, upper_bound=ub, title=title, hist_data=True)
-    assert all([isinstance(fig_hist, ggplot), isinstance(hist_df, DataFrame)])
+    assert all([isinstance(fig_hist, Chart), isinstance(hist_df, DataFrame)])
 
 
 def test_histogram_no_mask(visualize_test_data):
@@ -21,7 +22,7 @@ def test_histogram_no_mask(visualize_test_data):
     # Read test data
     img = cv2.imread(visualize_test_data.small_gray_img, -1)
     fig_hist = histogram(img=img, mask=None)
-    assert isinstance(fig_hist, ggplot)
+    assert isinstance(fig_hist, Chart)
 
 
 def test_histogram_rgb_img(visualize_test_data):
@@ -29,7 +30,7 @@ def test_histogram_rgb_img(visualize_test_data):
     # Test RGB input image
     img_rgb = cv2.imread(visualize_test_data.small_rgb_img)
     fig_hist = histogram(img=img_rgb)
-    assert isinstance(fig_hist, ggplot)
+    assert isinstance(fig_hist, Chart)
 
 
 def test_histogram_multispectral_img(visualize_test_data):
@@ -38,7 +39,7 @@ def test_histogram_multispectral_img(visualize_test_data):
     img_rgb = cv2.imread(visualize_test_data.small_rgb_img)
     img_multi = np.concatenate((img_rgb, img_rgb), axis=2)
     fig_hist = histogram(img=img_multi)
-    assert isinstance(fig_hist, ggplot)
+    assert isinstance(fig_hist, Chart)
 
 
 def test_histogram_no_img():

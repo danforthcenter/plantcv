@@ -1,5 +1,4 @@
-# Fluorescence Analysis (NPQ parameter)
-
+"""Fluorescence Analysis (NPQ parameter)."""
 import os
 import numpy as np
 import pandas as pd
@@ -123,8 +122,7 @@ def npq(ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bi
 
 
 def _calc_npq(fmp, fm):
-    """NPQ = Fm/Fmp - 1"""
-
+    """NPQ = Fm/Fmp - 1."""
     out_flt = np.ones(shape=fm.shape) * np.nan
     fmp = np.squeeze(fmp)
     div = np.divide(fm, fmp, out=out_flt,
@@ -136,7 +134,7 @@ def _calc_npq(fmp, fm):
 
 def _create_histogram(npq_img, mlabel, obs, min_bin, max_bin):
     """
-    Compute histogram of NPQ
+    Compute histogram of NPQ.
 
     Inputs:
     npq_img     = numpy array of npq
@@ -146,8 +144,8 @@ def _create_histogram(npq_img, mlabel, obs, min_bin, max_bin):
     max_bin     = maximum bin value
 
     Returns:
-    hist_fig  = Histogram of efficiency estimate
-    npq_img   = DataArray of efficiency estimate values
+    hist_df   = Dataframe of histogram
+    npq_mode  = which non-zero bin has the maximum Fv/Fm value
 
     :param npq_img: numpy.ndarray
     :param mlabel: str
@@ -155,10 +153,8 @@ def _create_histogram(npq_img, mlabel, obs, min_bin, max_bin):
     :param min_bin: int
     :param max_bin: int
     :return hist_df: pandas.DataFrame
-    :return hist_fig: plotnine.ggplot.ggplot
     :return npq_mode: float
     """
-
     # Calculate the histogram of NPQ non-zero values
     npq_hist, npq_bins = np.histogram(npq_img[np.where(npq_img > 0)], 100, range=(min_bin, max_bin))
     # npq_bins is a bins + 1 length list of bin endpoints, so we need to calculate bin midpoints so that
@@ -179,9 +175,7 @@ def _create_histogram(npq_img, mlabel, obs, min_bin, max_bin):
 
 
 def _add_observations(npq_da, measurements, measurement_labels, label, max_bin, min_bin):
-    """
-    Add observations for each labeled region
-    """
+    """Add observations for each labeled region."""
     # Auto calculate max_bin if set
     if isinstance(max_bin, str) and (max_bin.upper() == "AUTO"):
         max_bin = ceil(np.nanmax(npq_da))  # Auto bins will detect the max value to use for calculating labels/bins
@@ -226,9 +220,7 @@ def _add_observations(npq_da, measurements, measurement_labels, label, max_bin, 
 
 
 def _ridgeline_plots(measurements, measurement_labels):
-    """
-    Create ridgeline plots of NPQ values
-    """
+    """Create ridgeline plots of NPQ values."""
     npq_chart = None
     for i, mlabel in enumerate(measurements):
         if measurement_labels is not None:

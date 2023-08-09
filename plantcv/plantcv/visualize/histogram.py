@@ -1,12 +1,11 @@
-# Plot histogram
-
+"""Visualize histograms from image data."""
 import os
 import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv._debug import _debug
 import pandas as pd
-from plotnine import ggplot, aes, geom_line, labels, scale_color_manual
+import altair as alt
 
 
 def _hist_gray(gray_img, bins, lower_bound, upper_bound, mask=None):
@@ -56,7 +55,7 @@ def _hist_gray(gray_img, bins, lower_bound, upper_bound, mask=None):
 
 
 def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, title=None, hist_data=False):
-    """Plot histograms of each input image channel
+    """Plot histograms of each input image channel.
 
     Inputs:
     img            = an RGB or grayscale image to analyze
@@ -68,7 +67,7 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, titl
     hist_data      = return the frequency distribution data if True (default=False)
 
     Returns:
-    fig_hist       = histogram figure
+    chart          = histogram figure
     hist_df        = dataframe with histogram data, with columns "pixel intensity" and "proportion of pixels (%)"
 
     :param img: numpy.ndarray
@@ -78,7 +77,7 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, titl
     :param upper_bound: int
     :param title: str
     :param hist_data: bool
-    :return fig_hist: plotnine.ggplot.ggplot
+    :return chart: altair.vegalite.v5.api.Chart
     :return hist_df: pandas.core.frame.DataFrame
     """
     if not isinstance(img, np.ndarray):
@@ -128,18 +127,24 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, titl
             {'pixel intensity': px_int, 'proportion of pixels (%)': prop, 'hist_count': hist_count,
              'color channel': channel})
 
-    fig_hist = (ggplot(data=hist_df,
-                       mapping=aes(x='pixel intensity', y='proportion of pixels (%)', color='color channel'))
-                + geom_line())
+    # Create an altair chart
+    chart = alt.Chart(hist_df).mark_line(point=True).encode(
+        x="pixel intensity",
+        y="proportion of pixels (%)",
+        color="color channel",
+        tooltip=['pixel intensity', 'proportion of pixels (%)']
+        ).interactive()
 
     if title is not None:
-        fig_hist = fig_hist + labels.ggtitle(title)
+        chart = chart.properties(title=title)
+
     if len(img.shape) > 2 and img.shape[2] == 3:
-        fig_hist = fig_hist + scale_color_manual(['blue', 'green', 'red'])
+        # Add a blue, green, red color scale if the image is RGB
+        chart = chart.configure_range(category=['blue', 'green', 'red'])
 
     # Plot or print the histogram
-    _debug(visual=fig_hist, filename=os.path.join(params.debug_outdir, str(params.device) + '_hist.png'))
+    _debug(visual=chart, filename=os.path.join(params.debug_outdir, str(params.device) + '_hist.png'))
 
     if hist_data is True:
-        return fig_hist, hist_df
-    return fig_hist
+        return chart, hist_df
+    return chart
