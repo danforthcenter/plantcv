@@ -21,7 +21,7 @@ dependencies:
   - flake8
   - ipympl
   - nodejs
-  - jupyterlab<4
+  - jupyterlab
   - altair
   - vl-convert-python
 
