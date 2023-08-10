@@ -122,6 +122,9 @@ nav:
       - 'Photosynthesis Functions':
           - 'Read CropReporter Data': photosynthesis_read_cropreporter.md
           - 'Reassign Frame Labels': photosynthesis_reassign_frame_labels.md
+          - 'Analyze YII': analyze_yii.md
+          - 'Analyze NPQ': analyze_npq.md
+          - 'Chlorophyll Fluorescence': visualize_chlorophyll_fluorescence.md
       - 'Params (Debugging)': params.md
       - 'Print Image': print_image.md
       - 'Print Results': print_results.md
