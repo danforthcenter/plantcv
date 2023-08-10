@@ -13,7 +13,7 @@ def yii(ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None,
     Calculate and analyze PSII efficiency estimates from fluorescence image data.
 
     Inputs:
-    ps_da               = Photosynthesis xarray DataArray (either ojip_dark or ojip_light)
+    ps_da               = Photosynthesis xarray DataArray (either ojip_dark, ojip_light, pam_dark, or pam_light)
     labeled_mask        = Labeled mask of objects (32-bit).
     n_labels            = Total number expected individual objects (default = 1).
     auto_fm             = Automatically calculate the frame with maximum fluorescence per label, otherwise
