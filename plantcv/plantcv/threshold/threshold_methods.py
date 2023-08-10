@@ -1,5 +1,4 @@
-# Threshold functions
-
+"""Threshold functions."""
 import os
 import cv2
 import math
@@ -64,7 +63,7 @@ def gaussian(gray_img, ksize, offset, object_type="light"):
 
     Inputs:
     gray_img     = Grayscale image data
-    ksize   = Size of the block of pixels used to compute the local average
+    ksize        = Size of the block of pixels used to compute the local average
     offset       = Value substracted from the local average to compute the local threshold.
                     A negative offset sets the local threshold above the local average.
     object_type  = "light" or "dark" (default: "light")
@@ -111,7 +110,7 @@ def mean(gray_img, ksize, offset, object_type="light"):
 
     Inputs:
     gray_img     = Grayscale image data
-    ksize   = Size of the block of pixels used to compute the local average
+    ksize        = Size of the block of pixels used to compute the local average
     offset       = Value substracted from the local average to compute the local threshold.
                     A negative offset sets the local threshold above the local average.
     object_type  = "light" or "dark" (default: "light")
