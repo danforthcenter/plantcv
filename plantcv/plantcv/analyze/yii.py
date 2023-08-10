@@ -1,5 +1,4 @@
 """Fluorescence Analysis (Fv/Fm parameter)."""
-
 import os
 import numpy as np
 import pandas as pd
@@ -14,7 +13,7 @@ def yii(ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None,
     Calculate and analyze PSII efficiency estimates from fluorescence image data.
 
     Inputs:
-    ps_da               = Photosynthesis xarray DataArray (either ojip_dark or ojip_light)
+    ps_da               = Photosynthesis xarray DataArray (either ojip_dark, ojip_light, pam_dark, or pam_light)
     labeled_mask        = Labeled mask of objects (32-bit).
     n_labels            = Total number expected individual objects (default = 1).
     auto_fm             = Automatically calculate the frame with maximum fluorescence per label, otherwise
@@ -47,7 +46,7 @@ def yii(ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None,
     var = ps_da.name.lower()
 
     # Validate that var is a supported type
-    if var not in ['ojip_dark', 'ojip_light']:
+    if var not in ['ojip_dark', 'ojip_light', 'pam_dark', 'pam_light']:
         fatal_error(f"Unsupported DataArray type: {var}")
 
     # Make an zeroed array of the same shape as the input DataArray
@@ -78,12 +77,12 @@ def yii(ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None,
         yii_masked = ps_da.astype('float').where(submask > 0, other=np.nan)
 
         # Dark-adapted datasets (Fv/Fm)
-        if var == 'ojip_dark':
+        if var in ['ojip_dark', 'pam_dark']:
             # Calculate Fv/Fm
             yii_lbl = (yii_masked.sel(frame_label='Fm') - yii_masked.sel(frame_label='F0')) / yii_masked.sel(frame_label='Fm')
 
         # Light-adapted datasets (Fq'/Fm')
-        if var == 'ojip_light':
+        if var in ['ojip_light', 'pam_light']:
             # Calculate Fq'/Fm'
             yii_lbl = yii_masked.groupby('measurement', squeeze=False).map(_calc_yii)
 

@@ -14,9 +14,9 @@ with labeled frames.
 - **Context:**
     - Reads in binary image files to be processed and does so using the metadata contained within a corresponding .INF
       file.
-    - Measurements from dark-adapted plant state are stored in the attribute `ojip_dark`. Frames F0 and Fm are
+    - Measurements from dark-adapted plant state are stored in the attribute `ojip_dark` or `pam_dark`, depending on the measurement protocol. Frames F0 and Fm are
       labeled according to the metadata in .INF. The default measurement label is 't0'.
-    - Measurements from light-adapted plant state are stored in the attribute `ojip_light`. Frames Fp and Fmp are
+    - Measurements from light-adapted plant state are stored in the attribute `ojip_light` or `pam_light`, depending on the measurement protocol. Frames Fp and Fmp are
       labeled according to the metadata in .INF. The default measurement label is 't1'.
     - Measurements from chlorophyll fluorescence are stored in the attribute `chlorophyll` and include a dark frame
       (Fdark) and chlorophyll fluorescence frame (Chl).
