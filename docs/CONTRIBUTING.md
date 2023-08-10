@@ -103,18 +103,18 @@ the coverage the more likely we are to catch problematic pull requests). To incl
 tests (to make sure they aren't broken by future pull requests) we need a 'unit test' or set of 'unit tests' (if you 
 need more than one test to cover function options).
 
-Existing unit tests can be found in `tests/tests.py` as examples.
-The data to support unit tests can be found in the `tests/*data/` directories.
+Existing unit tests can be found in `tests/` as examples.
+The data to support unit tests can be found in the `tests/testdata/` directory.
 
-If you are updating existing code, make sure that the `test.py`
-script passes on the function you modified. Testing locally can be done with pytest:
+If you are updating existing code, make sure that the test(s) pass on the function you modified.
+Testing locally can be done with pytest:
 
 ```bash
-pytest tests/tests.py
+py.test --cov=plantcv
 
 # Or you can just run a subset of tests to save time
 # This will run all tests with "analyze" in the test name 
-pytest tests/tests.py -k analyze
+py.test --cov=plantcv -k analyze
 
 ```
 
@@ -124,7 +124,7 @@ be added to the `mkdocs.yml` file. You can test that your new documentation can 
 mkdocs from the root of your local plantcv repository.
 
 ```bash
-mkdocs build --theme readthedocs --site-dir _site
+mkdocs serve --theme readthedocs
 
 ```
 
