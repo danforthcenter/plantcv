@@ -25,6 +25,12 @@ nav:
   - 'Exporting Data': db-exporter.md
   - 'PlantCV Namespace':
     - 'PlantCV':
+      - 'Inputs and Outputs':
+        - 'Print Image': print_image.md
+        - 'Print Results': print_results.md
+        - 'Plot Image': plot_image.md
+        - 'Read Image': read_image.md
+        - 'Read Bayer Raw Image': read_bayer.md
       - 'Analysis Methods':
         - 'Analyze Color': analyze_color2.md
         - 'Analyze Grayscale': analyze_grayscale.md
