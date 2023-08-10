@@ -1,5 +1,4 @@
-# Crop
-
+"""Crop an image."""
 import os
 import cv2
 import numpy as np
