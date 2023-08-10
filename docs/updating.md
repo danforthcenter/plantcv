@@ -23,7 +23,7 @@ If conda does not update your PlantCV installation, you can try installing a spe
 ```bash
 conda install -n plantcv plantcv=3.6.2
 
-```
+``` 
 
 You can find the latest version available on [conda-forge](https://conda-forge.org/) with:
 
@@ -1045,13 +1045,13 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: NA
 * post v3.0dev2: bin_img = **plantcv.threshold.gaussian**(*gray_img, max_value, object_type="light"*)
-* post v4.0: bin_img = **plantcv.threshold.gaussian**(*gray_img, block_size, offset, object_type="light"*)
+* post v4.0: bin_img = **plantcv.threshold.gaussian**(*gray_img, ksize, offset, object_type="light"*)
 
 #### plantcv.threshold.mean
 
 * pre v3.0dev2: NA
 * post v3.0dev2: bin_img = **plantcv.threshold.mean**(*gray_img, max_value, object_type="light"*)
-* post v4.0: bin_img = **plantcv.threshold.mean**(*gray_img, block_size, offset, object_type="light"*)
+* post v4.0: bin_img = **plantcv.threshold.mean**(*gray_img, ksize, offset, object_type="light"*)
 
 #### plantcv.threshold.otsu
 
