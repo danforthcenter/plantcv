@@ -4,17 +4,17 @@ Creates a binary image from a grayscale image using the Gaussian adaptive thresh
 
 Adaptive thresholds use a threshold value that varies across the image.
 This local threshold depends on the local average, computed in a squared portion of the image of
-*block_size* by *block_size* pixels, and on the *offset* relative to that local average.
+*ksize* by *ksize* pixels, and on the *offset* relative to that local average.
 
 In the Gaussian adaptive threshold, the local average is a weighted average of the pixel values in the block, where the weights are a 2D Gaussian centered in the middle.
 
-**plantcv.threshold.gaussian**(*gray_img, block_size, offset, object_type="light"*)
+**plantcv.threshold.gaussian**(*gray_img, ksize, offset, object_type="light"*)
 
 **returns** thresholded/binary image
 
 - **Parameters:**
     - gray_img - Grayscale image data.
-    - block_size - Size of the block of pixels used to compute the local average.
+    - ksize - Size of the block of pixels used to compute the local average.
     - offset - Value substracted from the local average to compute the local threshold.
     A negative offset sets the local threshold above the local average.
     - object_type - "light" or "dark" (default: "light").
@@ -40,13 +40,13 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 # Adaptive threshold with different parameters
-bin_gauss1 = pcv.threshold.gaussian(gray_img=gray_img, block_size=250, offset=15,
+bin_gauss1 = pcv.threshold.gaussian(gray_img=gray_img, ksize=250, offset=15,
                                     object_type='dark')
 
-bin_gauss1 = pcv.threshold.gaussian(gray_img=gray_img, block_size=25, offset=5,
+bin_gauss1 = pcv.threshold.gaussian(gray_img=gray_img, ksize=25, offset=5,
                                     object_type='dark')
                                     
-bin_gauss1 = pcv.threshold.gaussian(gray_img=gray_img, block_size=2000, offset=15,
+bin_gauss1 = pcv.threshold.gaussian(gray_img=gray_img, ksize=2000, offset=15,
                                     object_type='dark')
 
 ```

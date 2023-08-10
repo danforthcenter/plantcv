@@ -1,6 +1,14 @@
 ## Updating PlantCV
 
-### PyPI
+### Table of Contents for Contibution
+1. [Updating with PyPi](#pypi)
+2. [Updating with Conda](#conda)
+3. [Updating from source](#source)
+4. [Updating to v4](#v4)
+    * [An example](#ex)
+5. [Changelog](#changelog)
+
+### PyPI <a name="pypi"></a>
 
 To update PlantCV, in a terminal type:
 
@@ -9,93 +17,58 @@ pip install --upgrade plantcv
 
 ```
 
-### Conda
+### Conda <a name="conda"></a>
 
 To update PlantCV, in a terminal type:
 
 ```bash
-conda upgrade -n plantcv plantcv
+conda update -n plantcv -c conda-forge plantcv
 
 ```
 
-If conda does not update your PlantCV installation, you can try installing a specific version. For example if you are on v3.6.1 and you would like to install v3.6.2 you can use:
+If conda does not update your PlantCV installation, you can try installing a specific version. For example if you are on v3.6.1 and you would like to install v4.0 you can use:
 
 ```bash
-conda install -n plantcv plantcv=3.6.2
+conda install -n plantcv -c conda-forge plantcv=4.0
 
-```
+``` 
 
-You can find the latest version available on [conda-forge](https://conda-forge.org/) with:
+You can find the version you have installed with:
 
 ```bash
 conda list plantcv
 
 ```
 
-### Updating from the source code
+### Updating from the source code  <a name="source"></a>
 
 The general procedure for updating PlantCV if you are using the `main` branch
 cloned from the `danforthcenter/plantcv` repository is to update your local
 repository and reinstall the package.
 
 With GitHub Desktop you can [synchronize](https://docs.github.com/en/free-pro-team@latest/desktop/contributing-and-collaborating-using-github-desktop/syncing-your-branch)
-to pull updates from GitHub. Or on the command line update using `git pull`.
+to pull updates from GitHub. Or on the command line update using `git pull` while
+on top of your cloned `plantcv` directory.
 
 If you are not sure that you have cloned the `danforthcenter/plantcv` repository
 and are on the `main` branch, here is how you can tell:
 
 If you installed PlantCV using the "editable" mode `pip install -e .` then your installation should be updated
-automatically. Alternatively, you can run `python setup.py install` to reinstall the package from the cloned repository.
+automatically. Alternatively, you can run `pip install -e .` to reinstall the package from the cloned repository.
 
-### Updating from v1 to v2
+### Updating to v4 <a name="v4"></a>
 
-The setuptools installation method was not available in PlantCV v1, so users
-put the `plantcv/lib` directory in their custom `PYTHONPATH`. In PlantCV v2, the
-plantcv library directory is no longer in the lib directory, now it is in the
-main repository folder (`plantcv/plantcv`). If you want to continue to have
-plantcv in your `PYTHONPATH` you will need to update by simply removing `lib`
-from the path. You can also remove the lib folder after pulling the new version.
-Git will automatically remove the `*.py` files but because we do not track the
-`*.pyc` files they will remain behind and can technically be imported, which can
-cause confusion.
-
-For Linux/Unix, `PYTHONPATH` can be edited in `~/.bash_profile`, `~/.bashrc`,
-`~/.profile`, `~/.cshrc`, `~/.zshrc`, etc. For Windows, right-click on My
-Computer/This PC and select Properties > Advanced system settings >
-Environmental Variables... and edit the User variables entry for `PYTHONPATH`.
-
-Also note that the method for parallelizing PlantCV has changed, please see the
-new [parallel processing documentation](pipeline_parallel.md) for more details.
-
-### Updating to v3
-
-In addition to new features a major goal ov PlantCV v3 is to make PlantCV functions
-a little bit easier to use. We hope you agree the changes detailed below succeed
+In addition to new features a major goal of PlantCV v4 is to make PlantCV functions
+a bit easier to use and combine into a custom workflow for batch processing.
+We hope you agree the changes detailed below succeed
 in that goal, but if you have any questions or concerns please feel free to open
 an issue on GitHub or contact us directly.
 
-In order to support the installation of optional add-on subpackages, we converted
-PlantCV to a [namespace package](https://packaging.python.org/guides/packaging-namespace-packages/).
-To achieve this new functionality, existing functions had to be moved into a
-subpackage to maintain easy importing. To maintain previous behavior, PlantCV
-analysis scripts simply need to have updated PlantCV import syntax. So if you were
-previously doing something like:
-
-```python
-import plantcv as pcv
-```
-
-You would now do this instead:
-
-```python
-from plantcv import plantcv as pcv
-```
-
-Another feature we will be rolling out for PlantCV v3 an update to the existing
+Another feature we have rolled out for PlantCV v4 is an update to the existing
 package API. The goal is to make each PlantCV function easier to use by reducing
 the number of inputs and outputs that need to be configured (without losing
-functionality) and by making input parameters more consistently named and clearly
-defined where input types matter (e.g. instead of just `img` it could be `rgb_img`,
+functionality). Part of these updates include making input parameters consistently
+named and clearly defined where input types matter (e.g. instead of just `img` it could be `rgb_img`,
 `gray_img`, or `bin_img` for RGB, grayscale, or binary image, respectively).
 
 In PlantCV v3.0dev2 onwards, all functions were redesigned to utilize a global
@@ -112,24 +85,90 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 ```
 
-Therefore, all function calls need to be updated to remove the `device` input and
-output variables and the `debug` input variable. For example:
+For more information, see the [Params](params.md) documentation. 
+
+### Workflow Updating (an example) <a name="ex"></a>
+
+Below is a simple example of a typical PlantCV v3 workflow of a single plant. 
 
 ```python
-from plantcv import plantcv as pcv
-pcv.params.debug = "plot"
+# Read in image data 
+img, path, filename = pcv.readimage(filename="rgb_img.png")
 
-img, img_path, img_filename = pcv.readimage("image.png")
+# Covert to grayscale colorspace 
+a = pcv.rgb2gray_lab(rgb_img=img, channel='a')
 
-gray_img = pcv.rgb2gray_hsv(img, "s")
+# Threshold/segment plant from background 
+bin_mask = pcv.threshold.binary(gray_img=a, threshold=100, max_value=255, object_type="light")
 
-bin_img = pcv.threshold.binary(gray_img, 100, 255)
+# Define objects & hierarchies (needed for OpenCV)
+id_objects, obj_hierarchy = pcv.find_objects(img=img, mask=bin_mask)
+
+# Define ROI 
+roi_contour, roi_hierarchy = pcv.roi.rectangle(img=img, x=100, y=100, h=100, w=100)
+
+# Filter binary image to make a clean mask based on ROI
+kept_objs, kept_h, kept_mask, obj_area = pcv.roi_objects(img=img,roi_contour=roi_contour,
+roi_hierarchy=roi_h,
+object_contour=id_objects,
+obj_hierarchy=obj_hierarchy,
+roi_type="partial")
+
+# Perform object composition (needed for OpenCV)
+plant_obj, mask = pcv.object_composition(img=img,
+contours=kept_objs, hierarchy=kept_h)        
+        
+# Finally extract shape traits from plant 
+shape_img = pcv.analyze_object(img=img, obj=plant_obj, mask=mask)
+
+# Save out data to file
+pcv.outputs.save_results(filename="results.txt", outformat="json")
+# In even older versions of PlantCV (pre v3.12) it would have been 
+# pcv.print_results(filename="results.txt")
 ```
 
-For more information, see the [Params](params.md) documentation.
+And below is how the same workflow steps look for a single plant workflow
+in PlantCV v4.0 and future releases. 
+
+```python
+# Read in image data (no change)
+img, path, filename = pcv.readimage(filename="rgb_img.png")
+
+# Covert to grayscale colorspace (no change)
+a = pcv.rgb2gray_lab(rgb_img=img, channel='a')
+
+# Threshold/segment plant from background (removed max_value)
+bin_mask = pcv.threshold.binary(gray_img=a, threshold=100, object_type="light")
+
+# Define ROI (reduced outputs)
+roi = pcv.roi.rectangle(img=img, x=100, y=100, h=100, w=100)
+
+# Filter binary image to make a clean mask based on ROI 
+# (no longer needs `pcv.find_objects` or `pcv.object_composition`)
+mask = pcv.roi.filter(mask=bin_img, roi=roi, roi_type="partial")
+
+# Extract shape traits from plant
+shape_img = pcv.analyze.size(img=img,labeled_mask=mask, n_labels=1)
+
+# Save out data to file
+pcv.outputs.save_results(filename="results.txt", outformat="json")
+```
+
+In the case of a single plant workflow, users will likely create their `labeled_mask`
+with the [`pcv.roi.filter`](roi_filter.md) function but multi-object workflows
+will want to use the [`pcv.create_labels`](create_labels.md) function. We've updated PlantCV
+analysis functions to work iteratively over multiple objects without needed to write a Python 
+`for` loop. See the [multi-plant tutorial](tutorials/multi-plant_tutorial.md) to see an 
+example workflow for datasets where there are more than one distinct object of interest
+per image (e.g. top down tray of plants). 
+
+Also note that the method for parallelizing PlantCV has changed, please see the
+new [parallel processing documentation](pipeline_parallel.md) for more details.
+
+### Changelog <a name="changelog"></a>
 
 Below is an overview of all updates that are required to convert a pre-v3.0dev2
-function call to a post-v3.0dev2 function call and all updates following the v3.0 release.
+function call to the most updated function call.
 See the individual function help
 pages for more details on the input and output variable types.
 
@@ -1045,13 +1084,13 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: NA
 * post v3.0dev2: bin_img = **plantcv.threshold.gaussian**(*gray_img, max_value, object_type="light"*)
-* post v4.0: bin_img = **plantcv.threshold.gaussian**(*gray_img, block_size, offset, object_type="light"*)
+* post v4.0: bin_img = **plantcv.threshold.gaussian**(*gray_img, ksize, offset, object_type="light"*)
 
 #### plantcv.threshold.mean
 
 * pre v3.0dev2: NA
 * post v3.0dev2: bin_img = **plantcv.threshold.mean**(*gray_img, max_value, object_type="light"*)
-* post v4.0: bin_img = **plantcv.threshold.mean**(*gray_img, block_size, offset, object_type="light"*)
+* post v4.0: bin_img = **plantcv.threshold.mean**(*gray_img, ksize, offset, object_type="light"*)
 
 #### plantcv.threshold.otsu
 
@@ -1149,6 +1188,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0: NA
 * post v3.0: **plantcv.transform.quick_color_check**(*target_matrix, source_matrix, num_chips*)
+* post v4.0: chart = **plantcv.transform.quick_color_check**(*target_matrix, source_matrix, num_chips*)
 
 #### plantcv.transform.save_matrix
 
