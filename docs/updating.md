@@ -22,18 +22,18 @@ pip install --upgrade plantcv
 To update PlantCV, in a terminal type:
 
 ```bash
-conda upgrade -n plantcv plantcv
+conda update -n plantcv -c conda-forge plantcv
 
 ```
 
 If conda does not update your PlantCV installation, you can try installing a specific version. For example if you are on v3.6.1 and you would like to install v4.0 you can use:
 
 ```bash
-conda install -n plantcv plantcv=4.0
+conda install -n plantcv -c conda-forge plantcv=4.0
 
 ```
 
-You can find the latest version available on [conda-forge](https://conda-forge.org/) with:
+You can find the version you have installed with:
 
 ```bash
 conda list plantcv
@@ -54,7 +54,7 @@ If you are not sure that you have cloned the `danforthcenter/plantcv` repository
 and are on the `main` branch, here is how you can tell:
 
 If you installed PlantCV using the "editable" mode `pip install -e .` then your installation should be updated
-automatically. Alternatively, you can run `python setup.py install` to reinstall the package from the cloned repository.
+automatically. Alternatively, you can run `pip install -e .` to reinstall the package from the cloned repository.
 
 ### Updating to v4 <a name="v4"></a>
 
