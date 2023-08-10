@@ -6,7 +6,7 @@
 3. [Updating from source](#source)
 4. [Updating to v4](#v4)
     * [An example](#ex)
-5. [Updates overview](#overview)
+5. [Changelog](#changelog)
 
 ### PyPI <a name="pypi"></a>
 
@@ -165,7 +165,7 @@ per image (e.g. top down tray of plants).
 Also note that the method for parallelizing PlantCV has changed, please see the
 new [parallel processing documentation](pipeline_parallel.md) for more details.
 
-### Updates Overview <a name="overview"></a>
+### Changelog <a name="changelog"></a>
 
 Below is an overview of all updates that are required to convert a pre-v3.0dev2
 function call to the most updated function call.
