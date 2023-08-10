@@ -18,10 +18,10 @@ conda upgrade -n plantcv plantcv
 
 ```
 
-If conda does not update your PlantCV installation, you can try installing a specific version. For example if you are on v3.6.1 and you would like to install v3.6.2 you can use:
+If conda does not update your PlantCV installation, you can try installing a specific version. For example if you are on v3.6.1 and you would like to install v4.0 you can use:
 
 ```bash
-conda install -n plantcv plantcv=3.6.2
+conda install -n plantcv plantcv=4.0
 
 ```
 
@@ -39,7 +39,8 @@ cloned from the `danforthcenter/plantcv` repository is to update your local
 repository and reinstall the package.
 
 With GitHub Desktop you can [synchronize](https://docs.github.com/en/free-pro-team@latest/desktop/contributing-and-collaborating-using-github-desktop/syncing-your-branch)
-to pull updates from GitHub. Or on the command line update using `git pull`.
+to pull updates from GitHub. Or on the command line update using `git pull` while
+on top of your cloned `plantcv` directory.
 
 If you are not sure that you have cloned the `danforthcenter/plantcv` repository
 and are on the `main` branch, here is how you can tell:
@@ -47,55 +48,19 @@ and are on the `main` branch, here is how you can tell:
 If you installed PlantCV using the "editable" mode `pip install -e .` then your installation should be updated
 automatically. Alternatively, you can run `python setup.py install` to reinstall the package from the cloned repository.
 
-### Updating from v1 to v2
+### Updating to v4
 
-The setuptools installation method was not available in PlantCV v1, so users
-put the `plantcv/lib` directory in their custom `PYTHONPATH`. In PlantCV v2, the
-plantcv library directory is no longer in the lib directory, now it is in the
-main repository folder (`plantcv/plantcv`). If you want to continue to have
-plantcv in your `PYTHONPATH` you will need to update by simply removing `lib`
-from the path. You can also remove the lib folder after pulling the new version.
-Git will automatically remove the `*.py` files but because we do not track the
-`*.pyc` files they will remain behind and can technically be imported, which can
-cause confusion.
-
-For Linux/Unix, `PYTHONPATH` can be edited in `~/.bash_profile`, `~/.bashrc`,
-`~/.profile`, `~/.cshrc`, `~/.zshrc`, etc. For Windows, right-click on My
-Computer/This PC and select Properties > Advanced system settings >
-Environmental Variables... and edit the User variables entry for `PYTHONPATH`.
-
-Also note that the method for parallelizing PlantCV has changed, please see the
-new [parallel processing documentation](pipeline_parallel.md) for more details.
-
-### Updating to v3
-
-In addition to new features a major goal ov PlantCV v3 is to make PlantCV functions
-a little bit easier to use. We hope you agree the changes detailed below succeed
+In addition to new features a major goal of PlantCV v4 is to make PlantCV functions
+a bit easier to use and combine into a custom workflow for batch processing.
+We hope you agree the changes detailed below succeed
 in that goal, but if you have any questions or concerns please feel free to open
 an issue on GitHub or contact us directly.
 
-In order to support the installation of optional add-on subpackages, we converted
-PlantCV to a [namespace package](https://packaging.python.org/guides/packaging-namespace-packages/).
-To achieve this new functionality, existing functions had to be moved into a
-subpackage to maintain easy importing. To maintain previous behavior, PlantCV
-analysis scripts simply need to have updated PlantCV import syntax. So if you were
-previously doing something like:
-
-```python
-import plantcv as pcv
-```
-
-You would now do this instead:
-
-```python
-from plantcv import plantcv as pcv
-```
-
-Another feature we will be rolling out for PlantCV v3 an update to the existing
+Another feature we have rolled out for PlantCV v4 is an update to the existing
 package API. The goal is to make each PlantCV function easier to use by reducing
 the number of inputs and outputs that need to be configured (without losing
-functionality) and by making input parameters more consistently named and clearly
-defined where input types matter (e.g. instead of just `img` it could be `rgb_img`,
+functionality). Part of these updates include making input parameters consistently
+named and clearly defined where input types matter (e.g. instead of just `img` it could be `rgb_img`,
 `gray_img`, or `bin_img` for RGB, grayscale, or binary image, respectively).
 
 In PlantCV v3.0dev2 onwards, all functions were redesigned to utilize a global
@@ -112,26 +77,15 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 ```
 
-Therefore, all function calls need to be updated to remove the `device` input and
-output variables and the `debug` input variable. For example:
-
-```python
-from plantcv import plantcv as pcv
-pcv.params.debug = "plot"
-
-img, img_path, img_filename = pcv.readimage("image.png")
-
-gray_img = pcv.rgb2gray_hsv(img, "s")
-
-bin_img = pcv.threshold.binary(gray_img, 100, 255)
-```
-
-For more information, see the [Params](params.md) documentation.
+For more information, see the [Params](params.md) documentation. 
 
 Below is an overview of all updates that are required to convert a pre-v3.0dev2
-function call to a post-v3.0dev2 function call and all updates following the v3.0 release.
+function call to the most updated function call.
 See the individual function help
 pages for more details on the input and output variable types.
+
+Also note that the method for parallelizing PlantCV has changed, please see the
+new [parallel processing documentation](pipeline_parallel.md) for more details.
 
 #### plantcv.acute
 
