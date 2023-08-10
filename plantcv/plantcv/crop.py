@@ -30,12 +30,16 @@ def crop(img, x, y, h, w):
     """
     # Check if the array data format
     if isinstance(img, Spectral_data):
+        # Copy the HSI array
         array = np.copy(img.array_data)
-        ref_img = img.pseudo_rgb
+        # Copy the pseudo_rgb image
+        ref_img = np.copy(img.pseudo_rgb)
+        # Crop the HSI data
         cropped_array = array[y:y + h, x:x + w, :]
-
+        # Calculate the array dimensions
         dims1 = cropped_array.shape
 
+        # Create a new Spectral_data object
         cropped = Spectral_data(
             array_data=cropped_array,
             min_wavelength=img.min_wavelength,
@@ -44,12 +48,12 @@ def crop(img, x, y, h, w):
             max_value=np.max(cropped_array),
             d_type=cropped_array.dtype,
             wavelength_dict=img.wavelength_dict,
-            samples=int(dims1[2]),
+            samples=int(dims1[1]),
             lines=int(dims1[0]),
             interleave=img.interleave,
             wavelength_units=img.wavelength_units,
             array_type=img.array_type,
-            pseudo_rgb=cropped_array,
+            pseudo_rgb=ref_img[y:y + h, x:x + w, :],
             default_bands=img.default_bands,
             filename=img.filename
         )
@@ -67,7 +71,7 @@ def crop(img, x, y, h, w):
     pt1 = (x, y)
     pt2 = (x + w - 1, y + h - 1)
 
-    ref_img = cv2.rectangle(img=ref_img, pt1=pt1, pt2=pt2, color=(255, 0, 0), thickness=params.line_thickness)
+    ref_img = cv2.rectangle(img=np.copy(ref_img), pt1=pt1, pt2=pt2, color=(255, 0, 0), thickness=params.line_thickness)
 
     _debug(visual=ref_img, filename=os.path.join(params.debug_outdir, str(params.device) + "_crop.png"))
 
