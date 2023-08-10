@@ -52,19 +52,19 @@ def binary(gray_img, threshold, object_type="light"):
 
 
 # Gaussian adaptive threshold
-def gaussian(gray_img, block_size, offset, object_type="light"):
+def gaussian(gray_img, ksize, offset, object_type="light"):
     """Creates a binary image from a grayscale image based on the Gaussian adaptive threshold method.
 
     Adaptive thresholds use a threshold value that varies across the image.
     This local threshold depends on the local average, computed in a squared portion of the image of
-    block_size by block_size pixels, and on the offset relative to that local average.
+    ksize by ksize pixels, and on the offset relative to that local average.
 
     In the Gaussian adaptive threshold, the local average is a weighed average of the pixel values
     in the block, where the weights are a 2D Gaussian centered in the middle.
 
     Inputs:
     gray_img     = Grayscale image data
-    block_size   = Size of the block of pixels used to compute the local average
+    ksize   = Size of the block of pixels used to compute the local average
     offset       = Value substracted from the local average to compute the local threshold.
                     A negative offset sets the local threshold above the local average.
     object_type  = "light" or "dark" (default: "light")
@@ -77,7 +77,7 @@ def gaussian(gray_img, block_size, offset, object_type="light"):
     bin_img      = Thresholded, binary image
 
     :param gray_img: numpy.ndarray
-    :param block_size: int
+    :param ksize: int
     :param offset: float
     :param object_type: str
     :return bin_img: numpy.ndarray
@@ -93,25 +93,25 @@ def gaussian(gray_img, block_size, offset, object_type="light"):
 
     params.device += 1
 
-    bin_img = _call_adaptive_threshold(gray_img, block_size, offset, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+    bin_img = _call_adaptive_threshold(gray_img, ksize, offset, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
                                        threshold_method, "_gaussian_threshold_")
 
     return bin_img
 
 
 # Mean adaptive threshold
-def mean(gray_img, block_size, offset, object_type="light"):
+def mean(gray_img, ksize, offset, object_type="light"):
     """Creates a binary image from a grayscale image based on the mean adaptive threshold method.
 
     Adaptive thresholds use a threshold value that varies across the image.
     This local threshold depends on the local average, computed in a squared portion of the image of
-    block_size by block_size pixels, and on the offset relative to that local average.
+    ksize by ksize pixels, and on the offset relative to that local average.
 
     In the mean adaptive threshold, the local average is the average of the pixel values in the block.
 
     Inputs:
     gray_img     = Grayscale image data
-    block_size   = Size of the block of pixels used to compute the local average
+    ksize   = Size of the block of pixels used to compute the local average
     offset       = Value substracted from the local average to compute the local threshold.
                     A negative offset sets the local threshold above the local average.
     object_type  = "light" or "dark" (default: "light")
@@ -124,7 +124,7 @@ def mean(gray_img, block_size, offset, object_type="light"):
     bin_img      = Thresholded, binary image
 
     :param gray_img: numpy.ndarray
-    :param block_size: int
+    :param ksize: int
     :param offset: float
     :param object_type: str
     :return bin_img: numpy.ndarray
@@ -140,7 +140,7 @@ def mean(gray_img, block_size, offset, object_type="light"):
 
     params.device += 1
 
-    bin_img = _call_adaptive_threshold(gray_img, block_size, offset, cv2.ADAPTIVE_THRESH_MEAN_C,
+    bin_img = _call_adaptive_threshold(gray_img, ksize, offset, cv2.ADAPTIVE_THRESH_MEAN_C,
                                        threshold_method, "_mean_threshold_")
 
     return bin_img
@@ -491,18 +491,18 @@ def _call_threshold(gray_img, threshold, threshold_method, method_name):
 
 
 # Internal method for calling the OpenCV adaptiveThreshold function to reduce code duplication
-def _call_adaptive_threshold(gray_img, block_size, offset, adaptive_method, threshold_method, method_name):
+def _call_adaptive_threshold(gray_img, ksize, offset, adaptive_method, threshold_method, method_name):
 
-    if block_size < 3:
-        fatal_error("block_size must be >= 3")
+    if ksize < 3:
+        fatal_error("ksize must be >= 3")
 
-    # Force block_size to be odd number
-    block_size = int(block_size)
-    if (block_size % 2) != 1:
-        block_size = block_size + 1
+    # Force ksize to be odd number
+    ksize = int(ksize)
+    if (ksize % 2) != 1:
+        ksize = ksize + 1
 
     # Threshold the image
-    bin_img = cv2.adaptiveThreshold(gray_img, 255, adaptive_method, threshold_method, block_size, offset)
+    bin_img = cv2.adaptiveThreshold(gray_img, 255, adaptive_method, threshold_method, ksize, offset)
 
     # Print or plot the binary image if debug is on
     _debug(visual=bin_img, filename=os.path.join(params.debug_outdir, str(params.device) + method_name + '.png'))
