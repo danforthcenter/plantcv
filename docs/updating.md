@@ -1,6 +1,14 @@
 ## Updating PlantCV
 
-### PyPI
+### Table of Contents for Contibution
+1. [Updating with PyPi](#pypi)
+2. [Updating with Conda](#conda)
+3. [Updating from source](#source)
+4. [Updating to v4](#v4)
+    * [An example](#ex)
+5. [Updates overview](#overview)
+
+### PyPI <a name="pypi"></a>
 
 To update PlantCV, in a terminal type:
 
@@ -9,7 +17,7 @@ pip install --upgrade plantcv
 
 ```
 
-### Conda
+### Conda <a name="conda"></a>
 
 To update PlantCV, in a terminal type:
 
@@ -32,7 +40,7 @@ conda list plantcv
 
 ```
 
-### Updating from the source code
+### Updating from the source code  <a name="source"></a>
 
 The general procedure for updating PlantCV if you are using the `main` branch
 cloned from the `danforthcenter/plantcv` repository is to update your local
@@ -48,7 +56,7 @@ and are on the `main` branch, here is how you can tell:
 If you installed PlantCV using the "editable" mode `pip install -e .` then your installation should be updated
 automatically. Alternatively, you can run `python setup.py install` to reinstall the package from the cloned repository.
 
-### Updating to v4
+### Updating to v4 <a name="v4"></a>
 
 In addition to new features a major goal of PlantCV v4 is to make PlantCV functions
 a bit easier to use and combine into a custom workflow for batch processing.
@@ -78,6 +86,8 @@ pcv.params.debug = "plot"
 ```
 
 For more information, see the [Params](params.md) documentation. 
+
+### Workflow Updating (an example) <a name="ex"></a>
 
 Below is a simple example of a typical PlantCV v3 workflow of a single plant. 
 
@@ -154,6 +164,8 @@ per image (e.g. top down tray of plants).
 
 Also note that the method for parallelizing PlantCV has changed, please see the
 new [parallel processing documentation](pipeline_parallel.md) for more details.
+
+### Updates Overview <a name="overview"></a>
 
 Below is an overview of all updates that are required to convert a pre-v3.0dev2
 function call to the most updated function call.
