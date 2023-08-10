@@ -79,13 +79,86 @@ pcv.params.debug = "plot"
 
 For more information, see the [Params](params.md) documentation. 
 
+Below is a simple example of a typical PlantCV v3 workflow of a single plant. 
+
+```python
+# Read in image data 
+img, path, filename = pcv.readimage(filename="rgb_img.png")
+
+# Covert to grayscale colorspace 
+a = pcv.rgb2gray_lab(rgb_img=img, channel='a')
+
+# Threshold/segment plant from background 
+bin_mask = pcv.threshold.binary(gray_img=a, threshold=100, max_value=255, object_type="light")
+
+# Define objects & hierarchies (needed for OpenCV)
+id_objects, obj_hierarchy = pcv.find_objects(img=img, mask=bin_mask)
+
+# Define ROI 
+roi_contour, roi_hierarchy = pcv.roi.rectangle(img=img, x=100, y=100, h=100, w=100)
+
+# Filter binary image to make a clean mask based on ROI
+kept_objs, kept_h, kept_mask, obj_area = pcv.roi_objects(img=img,roi_contour=roi_contour,
+roi_hierarchy=roi_h,
+object_contour=id_objects,
+obj_hierarchy=obj_hierarchy,
+roi_type="partial")
+
+# Perform object composition (needed for OpenCV)
+plant_obj, mask = pcv.object_composition(img=img,
+contours=kept_objs, hierarchy=kept_h)        
+        
+# Finally extract shape traits from plant 
+shape_img = pcv.analyze_object(img=img, obj=plant_obj, mask=mask)
+
+# Save out data to file
+pcv.outputs.save_results(filename="results.txt", outformat="json")
+# In even older versions of PlantCV (pre v3.12) it would have been 
+# pcv.print_results(filename="results.txt")
+```
+
+And below is how the same workflow steps look for a single plant workflow
+in PlantCV v4.0 and future releases. 
+
+```python
+# Read in image data (no change)
+img, path, filename = pcv.readimage(filename="rgb_img.png")
+
+# Covert to grayscale colorspace (no change)
+a = pcv.rgb2gray_lab(rgb_img=img, channel='a')
+
+# Threshold/segment plant from background (removed max_value)
+bin_mask = pcv.threshold.binary(gray_img=a, threshold=100, object_type="light")
+
+# Define ROI (reduced outputs)
+roi = pcv.roi.rectangle(img=img, x=100, y=100, h=100, w=100)
+
+# Filter binary image to make a clean mask based on ROI 
+# (no longer needs `pcv.find_objects` or `pcv.object_composition`)
+mask = pcv.roi.filter(mask=bin_img, roi=roi, roi_type="partial")
+
+# Extract shape traits from plant
+shape_img = pcv.analyze.size(img=img,labeled_mask=mask, n_labels=1)
+
+# Save out data to file
+pcv.outputs.save_results(filename="results.txt", outformat="json")
+```
+
+In the case of a single plant workflow, users will likely create their `labeled_mask`
+with the [`pcv.roi.filter`](roi_filter.md) function but multi-object workflows
+will want to use the [`pcv.create_labels`](create_labels.md) function. We've updated PlantCV
+analysis functions to work iteratively over multiple objects without needed to write a Python 
+`for` loop. See the [multi-plant tutorial](tutorials/multi-plant_tutorial.md) to see an 
+example workflow for datasets where there are more than one distinct object of interest
+per image (e.g. top down tray of plants). 
+
+Also note that the method for parallelizing PlantCV has changed, please see the
+new [parallel processing documentation](pipeline_parallel.md) for more details.
+
 Below is an overview of all updates that are required to convert a pre-v3.0dev2
 function call to the most updated function call.
 See the individual function help
 pages for more details on the input and output variable types.
-
-Also note that the method for parallelizing PlantCV has changed, please see the
-new [parallel processing documentation](pipeline_parallel.md) for more details.
 
 #### plantcv.acute
 
