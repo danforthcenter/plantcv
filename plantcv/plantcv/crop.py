@@ -5,7 +5,7 @@ import cv2
 import numpy as np
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
-from plantcv.plantcv import classes
+from plantcv.plantcv import Spectral_data
 
 
 def crop(img, x, y, h, w):
@@ -29,22 +29,30 @@ def crop(img, x, y, h, w):
     :return cropped: numpy.ndarray
     """
     # Check if the array data format
-
-    typeimg = str(type(img))
-
-    if 'plantcv.plantcv.classes.Spectral_data' in typeimg:
-        array = img.array_data
+    if isinstance(img, Spectral_data):
+        array = np.copy(img.array_data)
         ref_img = img.pseudo_rgb
         cropped_array = array[y:y + h, x:x + w, :]
 
         dims1 = cropped_array.shape
 
-        cropped = classes.Spectral_data(array_data=cropped_array, min_wavelength=img.min_wavelength,
-        max_wavelength=img.max_wavelength, min_value=np.min(cropped_array),
-        max_value=np.max(cropped_array), d_type=cropped_array.dtype,
-        wavelength_dict=img.wavelength_dict, samples=int(dims1[2]), lines=int(dims1[0]),
-        interleave=img.interleave, wavelength_units=img.wavelength_units,
-        array_type=img.array_type, pseudo_rgb=cropped_array, default_bands=img.default_bands, filename=img.filename)
+        cropped = Spectral_data(
+            array_data=cropped_array,
+            min_wavelength=img.min_wavelength,
+            max_wavelength=img.max_wavelength,
+            min_value=np.min(cropped_array),
+            max_value=np.max(cropped_array),
+            d_type=cropped_array.dtype,
+            wavelength_dict=img.wavelength_dict,
+            samples=int(dims1[2]),
+            lines=int(dims1[0]),
+            interleave=img.interleave,
+            wavelength_units=img.wavelength_units,
+            array_type=img.array_type,
+            pseudo_rgb=cropped_array,
+            default_bands=img.default_bands,
+            filename=img.filename
+        )
 
     else:
         if len(np.shape(img)) > 2 and np.shape(img)[-1] > 3:
