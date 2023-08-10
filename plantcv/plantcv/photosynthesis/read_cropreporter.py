@@ -1,5 +1,4 @@
-# Read in fluorescence images from a .DAT file
-
+"""Read in fluorescence images from a .DAT file."""
 import os
 import numpy as np
 import xarray as xr
