@@ -117,14 +117,14 @@
         <h6>Hyperspectral image workflow</h6>
     </div>
     <div class="card-tags">
-        <span><strong>Tags</strong>: plant shoot, single plant, side-view, hyperspectral, spectral index</span>
+        <span><strong>Tags</strong>: maize, corn, kernel, hyperspectral, spectral index</span>
     </div>
 </div>
 
 <!--Hyperspectral SMF Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/hyperspectral_smf_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-tutorial-hyperspectral-smf/blob/main/tutorial_card.jpg?raw=true" alt="Hyperspectral SMF tutorial" width="600" height="auto">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-hyperspectral-smf-detection/blob/main/tutorial_card.jpg?raw=true" alt="Hyperspectral SMF tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Hyperspectral SMF workflow</h6>

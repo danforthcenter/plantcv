@@ -27,7 +27,6 @@ nav:
     - 'PlantCV':
       - 'Inputs and Outputs':
         - 'Print Image': print_image.md
-        - 'Print Results': print_results.md
         - 'Plot Image': plot_image.md
         - 'Read Image': read_image.md
         - 'Read Bayer Raw Image': read_bayer.md
@@ -135,7 +134,6 @@ nav:
           - 'Visualize chlorophyll Fluorescence': visualize_chlorophyll_fluorescence.md
       - 'Params (Debugging)': params.md
       - 'Print Image': print_image.md
-      - 'Print Results': print_results.md
       - 'Plot Image': plot_image.md
       - 'Read Image': read_image.md
       - 'Read Bayer Raw Image': read_bayer.md
