@@ -16,7 +16,7 @@ def grayscale(gray_img, labeled_mask, n_labels=1, bins=100, label=None):
     n_labels     = Total number expected individual objects (default = 1).
     bins         = Number of histogram bins.
     label        = Optional label parameter, modifies the variable name of
-                       observations recorded (default = pcv.params.sample_label).
+                   observations recorded (default = pcv.params.sample_label).
 
     Returns:
     analysis_image = Grayscale histogram image
