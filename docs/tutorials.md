@@ -6,7 +6,7 @@
         border: 1px solid #000;
         float: left;
         width: 200px;
-        height: 350px;
+        height: 325px;
     }
     div.card:hover {
         border: 2px solid #000;
