@@ -10,7 +10,7 @@ This function analyzes the reflectance values across the wavelengths measured by
     - hsi           - A hyperspectral datacube object, an instance of the `Spectral_data` class (read in with [pcv.readimage](read_image.md) with `mode='envi'`)
     - labeled_mask  - Labeled mask of objects (32-bit).
     - n_labels      - Total number expected individual objects (default = 1).
-    - label         - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
+    - label         - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
 - **Example use:**
     - Below 
 - **Output data stored:** Data ('global_mean_reflectance', 'global_median_reflectance', 'global_spectral_std', 'wavelength_means', 'max_reflectance', 
@@ -26,9 +26,11 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 
 pcv.params.debug = "plot"
+# Optionally, set a sample label name
+pcv.params.sample_label = "spot"
 
 # Calculates reflectance values and saves the data as observations. Also provides a histogram of this data
-spectral_hist  = pcv.analyze.spectral_reflectance(hsi=spectral_data, labeled_mask=mask, n_labels=2, label="spot")
+spectral_hist  = pcv.analyze.spectral_reflectance(hsi=spectral_data, labeled_mask=mask, n_labels=2)
 
 ```
 
