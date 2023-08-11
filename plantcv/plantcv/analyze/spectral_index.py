@@ -44,7 +44,7 @@ def spectral_index(index_img, labeled_mask, n_labels=1, bins=100, min_bin=0, max
     return index_hist
 
 
-def _analyze_index(img, mask, bins=100, min_bin=0, max_bin=1, label="default"):
+def _analyze_index(img, mask, bins=100, min_bin=0, max_bin=1, label=None):
     """This extracts the hyperspectral index statistics and writes the values  as observations out to
        the Outputs class.
 

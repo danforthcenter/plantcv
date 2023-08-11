@@ -42,7 +42,7 @@ def bound_horizontal(img, labeled_mask, line_position, n_labels=1, label=None):
     return img
 
 
-def _analyze_bound_horizontal(img, mask, line_position, label="default"):
+def _analyze_bound_horizontal(img, mask, line_position, label):
     """
     User-input boundary line analysis for individual objects
 

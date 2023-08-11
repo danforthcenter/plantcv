@@ -42,7 +42,7 @@ def bound_vertical(img, labeled_mask, line_position, n_labels=1, label=None):
     return img
 
 
-def _analyze_bound_vertical(img, mask, line_position, label="default"):
+def _analyze_bound_vertical(img, mask, line_position, label):
     """
     User-input boundary line tool
 

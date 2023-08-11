@@ -39,7 +39,7 @@ def grayscale(gray_img, labeled_mask, n_labels=1, bins=100, label=None):
     return gray_chart
 
 
-def _analyze_grayscale(img, mask, bins=100, label="default"):
+def _analyze_grayscale(img, mask, bins=100, label=None):
     """Analyzes the grayscale values of a masked region of an image.
 
     Inputs:

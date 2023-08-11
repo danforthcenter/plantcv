@@ -42,7 +42,7 @@ def color(rgb_img, labeled_mask, n_labels=1, colorspaces="hsv", label=None):
     return hue_chart
 
 
-def _analyze_color(img, mask, colorspaces="hsv", label="default"):
+def _analyze_color(img, mask, colorspaces="hsv", label=None):
     """Analyze the color properties of an image object
     Inputs:
     img              = RGB image data

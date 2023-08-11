@@ -38,7 +38,7 @@ def thermal(thermal_img, labeled_mask, n_labels=1, bins=100, label=None):
     return temp_chart
 
 
-def _analyze_thermal(img, mask, bins=100, label="default"):
+def _analyze_thermal(img, mask, bins=100, label=None):
     """Extract the temperature values of an object in an image.
 
     Inputs:

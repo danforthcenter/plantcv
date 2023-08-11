@@ -34,7 +34,7 @@ def spectral_reflectance(hsi, labeled_mask, n_labels=1, label=None):
     return spectral_chart
 
 
-def _analyze_spectral(img, mask, label="default"):
+def _analyze_spectral(img, mask, label):
     """This extracts the hyperspectral reflectance values of each pixel.
 
     Inputs:
