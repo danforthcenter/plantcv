@@ -132,7 +132,7 @@
         <h6>Hyperspectral image workflow</h6>
     </div>
     <div class="card-tags">
-        <span><strong>Tags</strong>: plant shoot, single plant, side-view, hyperspectral, spectral index</span>
+        <span><strong>Tags</strong>: maize, corn, kernel, hyperspectral, spectral index</span>
     </div>
     <div class="card-button">
         <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-hyperspectral/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
