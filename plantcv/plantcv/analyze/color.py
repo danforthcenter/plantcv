@@ -1,3 +1,4 @@
+"""Analyzes the color properties of an image object and outputs data."""
 import os
 import cv2
 import numpy as np
