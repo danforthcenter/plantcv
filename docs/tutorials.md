@@ -54,9 +54,6 @@
     <div class="card-tags">
         <span><strong>Tags</strong>: plant shoot, single plant, side-view, RGB, shape analysis, color analysis, height analysis</span>
     </div>
-    <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-v4-VIS-single-plant/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
-    </div>
 </div>
 
 <!--VIS-NIR Tutorial-->
