@@ -11,7 +11,7 @@ This function calculates the temperature of each pixel and stores summary statis
     - labeled_mask - Labeled mask of objects (32-bit, output from [`pcv.create_labels`](create_labels.md) or [`pcv.roi.filter`](roi_filter.md)).
     - n_labels - Total number expected individual objects (default = 1).
     - bins     - Number of histogram bins (default = 100)
-    - label - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
+    - label - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
 - **Context:**
     - Data about image temperature within a masked region. 
 - **Example use:**
@@ -33,12 +33,14 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 
 pcv.params.debug = "plot"
+# Optionally, set a sample label name
+pcv.params.sample_label = "plant"
 
 # Caclulates the proportion of pixels that fall into a signal bin and writes the values to a file. Also provides a histogram of this data
-thermal_hist  = pcv.analyze.thermal(thermal_img=thermal_img, labeled_mask=mask, label="default")
+thermal_hist  = pcv.analyze.thermal(thermal_img=thermal_img, labeled_mask=mask)
 
 # Access data stored out from analyze.thermal
-temp_range = pcv.outputs.observations['default1']['max_temp']['value'] - pcv.outputs.observations['default1']['min_temp']['value']
+temp_range = pcv.outputs.observations['plant1']['max_temp']['value'] - pcv.outputs.observations['plant1']['min_temp']['value']
 
 ```
 
