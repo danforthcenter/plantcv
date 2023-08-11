@@ -43,6 +43,8 @@ class TestData:
         self.rgba_img = os.path.join(self.datadir, "owl_rgba_img.png")
         # ENVI hyperspectral data
         self.envi_bil_file = os.path.join(self.datadir, "darkReference")
+        # ENVI hyperspectral data
+        self.envi_sample_data = os.path.join(self.datadir,"corn-kernel-hyperspectral.raw")
         # Thermal image
         self.thermal_img = os.path.join(self.datadir, "FLIR2600.csv")
         # Thermal image data

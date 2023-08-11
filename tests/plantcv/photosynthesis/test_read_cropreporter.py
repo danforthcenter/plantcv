@@ -1,3 +1,4 @@
+"""Tests for plantcv.photosynthesis.read_cropreporter."""
 import os
 import shutil
 from plantcv.plantcv import PSII_data
@@ -10,7 +11,7 @@ def test_read_cropreporter(photosynthesis_test_data, tmpdir):
     assert isinstance(ps, PSII_data) and ps.ojip_dark.shape == (966, 1296, 21, 1)
 
     # Check with different naming conventioned of phenovation
-    ps = read_cropreporter(filename=photosynthesis_test_data.cropreporter_v653_ojip)
+    ps = read_cropreporter(filename=photosynthesis_test_data.cropreporter_v653)
     assert isinstance(ps, PSII_data) and ps.ojip_dark.shape == (1500, 2048, 7, 1)
     # check labels
     true_labels = ['Fdark', 'F0', 'PSD2', 'PSD3', 'Fm', 'PSD5', 'PSD6']
@@ -18,8 +19,8 @@ def test_read_cropreporter(photosynthesis_test_data, tmpdir):
 
     # Create dataset with only 3 frames
     cache_dir = os.path.join(tmpdir, "sub")
-    shutil.copytree(os.path.dirname(photosynthesis_test_data.cropreporter_v653_ojip), cache_dir)
-    inffilename = os.path.join(cache_dir, photosynthesis_test_data.cropreporter_v653_ojip.split(os.sep)[-1])
+    shutil.copytree(os.path.dirname(photosynthesis_test_data.cropreporter_v653), cache_dir)
+    inffilename = os.path.join(cache_dir, photosynthesis_test_data.cropreporter_v653.split(os.sep)[-1])
 
     # Modify the inf file
     metadata_dict = {}
@@ -41,6 +42,10 @@ def test_read_cropreporter(photosynthesis_test_data, tmpdir):
     assert all([a == b for a, b in zip(ps.ojip_dark.coords['frame_label'].to_dict()['data'], true_dark_labels)])
     true_light_labels = ['Flight', 'Fp', 'Fmp', 'PSL3', 'PSL4', 'PSL5', 'PSL6']
     assert all([a == b for a, b in zip(ps.ojip_light.coords['frame_label'].to_dict()['data'], true_light_labels)])
+    true_pam_dark_labels = ["Fdark", "F0", "Fm", "Fs"]
+    assert all([a == b for a, b in zip(ps.pam_dark.coords['frame_label'].to_dict()['data'], true_pam_dark_labels)])
+    true_pam_light_labels = ["Flight", "Fp", "Fmp", "Fs"]
+    assert all([a == b for a, b in zip(ps.pam_light.coords['frame_label'].to_dict()['data'], true_pam_light_labels)])
 
 
 def test_read_cropreporter_spc_only(photosynthesis_test_data, tmpdir):

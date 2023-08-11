@@ -1,5 +1,4 @@
-# Fluorescence Analysis (Fv/Fm parameter)
-
+"""Fluorescence Analysis (Fv/Fm parameter)."""
 import os
 import numpy as np
 import pandas as pd
@@ -14,7 +13,7 @@ def yii(ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None,
     Calculate and analyze PSII efficiency estimates from fluorescence image data.
 
     Inputs:
-    ps_da               = Photosynthesis xarray DataArray (either ojip_dark or ojip_light)
+    ps_da               = Photosynthesis xarray DataArray (either ojip_dark, ojip_light, pam_dark, or pam_light)
     labeled_mask        = Labeled mask of objects (32-bit).
     n_labels            = Total number expected individual objects (default = 1).
     auto_fm             = Automatically calculate the frame with maximum fluorescence per label, otherwise
@@ -47,7 +46,7 @@ def yii(ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None,
     var = ps_da.name.lower()
 
     # Validate that var is a supported type
-    if var not in ['ojip_dark', 'ojip_light']:
+    if var not in ['ojip_dark', 'ojip_light', 'pam_dark', 'pam_light']:
         fatal_error(f"Unsupported DataArray type: {var}")
 
     # Make an zeroed array of the same shape as the input DataArray
@@ -78,12 +77,12 @@ def yii(ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None,
         yii_masked = ps_da.astype('float').where(submask > 0, other=np.nan)
 
         # Dark-adapted datasets (Fv/Fm)
-        if var == 'ojip_dark':
+        if var in ['ojip_dark', 'pam_dark']:
             # Calculate Fv/Fm
             yii_lbl = (yii_masked.sel(frame_label='Fm') - yii_masked.sel(frame_label='F0')) / yii_masked.sel(frame_label='Fm')
 
         # Light-adapted datasets (Fq'/Fm')
-        if var == 'ojip_light':
+        if var in ['ojip_light', 'pam_light']:
             # Calculate Fq'/Fm'
             yii_lbl = yii_masked.groupby('measurement', squeeze=False).map(_calc_yii)
 
@@ -127,7 +126,7 @@ def yii(ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None,
 
 def _create_histogram(yii_img, mlabel):
     """
-    Compute histogram of YII
+    Compute histogram of YII.
 
     Inputs:
     yii_img     = numpy array of yii
@@ -135,14 +134,14 @@ def _create_histogram(yii_img, mlabel):
     obs         = PlantCV observations used to retrieve statistics
 
     Returns:
-    hist_fig  = Histogram of efficiency estimate
-    yii_img   = DataArray of efficiency estimate values
+    hist_df    = Histogram of efficiency estimate
+    yii_mode   = DataArray of efficiency estimate values
 
     :param yii_img: numpy.ndarray
     :param mlabel: str
     :param obs: dict
     :return hist_df: pandas.DataFrame
-    :return hist_fig: plotnine.ggplot.ggplot
+    :return yii_mode: float
     """
     # Calculate the histogram of Fv/Fm, Fv'/Fm', or Fq'/Fm' non-zero values
     yii_hist, yii_bins = np.histogram(yii_img[np.where(yii_img > 0)], 100, range=(0, 1))
@@ -164,9 +163,7 @@ def _create_histogram(yii_img, mlabel):
 
 
 def _add_observations(yii_da, measurements, measurement_labels, label):
-    """
-    Add observations for each labeled region
-    """
+    """Add observations for each labeled region."""
     # compute observations to store in Outputs, per labeled region
     yii_mean = yii_da.where(yii_da > 0).groupby('measurement').mean(['x', 'y']).values
     yii_median = yii_da.where(yii_da > 0).groupby('measurement').median(['x', 'y']).values
@@ -204,16 +201,12 @@ def _add_observations(yii_da, measurements, measurement_labels, label):
 
 
 def _calc_yii(da):
-    """
-    Helper function to apply the Fq'/Fm' calculation to the DataArray
-    """
+    """Apply the Fq'/Fm' calculation to the DataArray."""
     return (da.sel(frame_label='Fmp') - da.sel(frame_label='Fp')) / da.sel(frame_label='Fmp')
 
 
 def _ridgeline_plots(measurements, measurement_labels):
-    """
-    Create ridgeline plots of YII values
-    """
+    """Create ridgeline plots of YII values."""
     yii_chart = None
     for i, mlabel in enumerate(measurements):
         if measurement_labels is not None:
