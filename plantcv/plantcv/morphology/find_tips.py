@@ -1,5 +1,4 @@
-# Find tips from skeleton image
-
+"""Find tips from skeleton image."""
 import os
 import cv2
 import numpy as np
@@ -10,15 +9,15 @@ from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours
 
 
-def find_tips(skel_img, mask=None, label="default"):
+def find_tips(skel_img, mask=None, label=None):
     """Find tips in skeletonized image.
     The endpoints algorithm was inspired by Jean-Patrick Pommier: https://gist.github.com/jeanpat/5712699
 
     Inputs:
     skel_img    = Skeletonized image
     mask        = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
-    label        = optional label parameter, modifies the variable name of observations recorded
-
+    label       = Optional label parameter, modifies the variable name of
+                  observations recorded (default = pcv.params.sample_label).
     Returns:
     tip_img   = Image with just tips, rest 0
 
@@ -27,6 +26,10 @@ def find_tips(skel_img, mask=None, label="default"):
     :param label: str
     :return tip_img: numpy.ndarray
     """
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+
     # In a kernel: 1 values line up with 255s, -1s line up with 0s, and 0s correspond to dont care
     endpoint1 = np.array([[-1, -1, -1],
                           [-1, 1, -1],

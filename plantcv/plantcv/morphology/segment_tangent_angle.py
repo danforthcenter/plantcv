@@ -1,5 +1,4 @@
-# Find tangent angles in degrees of skeleton segments
-
+"""Find tangent angles in degrees of skeleton segments."""
 import os
 import cv2
 import numpy as np
@@ -30,7 +29,7 @@ def _slope_to_intesect_angle(m1, m2):
     return angle
 
 
-def segment_tangent_angle(segmented_img, objects, size, label="default"):
+def segment_tangent_angle(segmented_img, objects, size, label=None):
     """Find 'tangent' angles in degrees of skeleton segments.
     Use `size` pixels on either end of each segment to find a linear regression line, and calculate angle between the two
     lines drawn per segment.
@@ -39,7 +38,8 @@ def segment_tangent_angle(segmented_img, objects, size, label="default"):
     segmented_img  = Segmented image to plot slope lines and intersection angles on
     objects        = List of contours
     size           = Size of ends used to calculate "tangent" lines
-    label          = optional label parameter, modifies the variable name of observations recorded
+    label          = Optional label parameter, modifies the variable name of
+                     observations recorded (default = pcv.params.sample_label).
 
     Returns:
     labeled_img    = Segmented debugging image with angles labeled
@@ -50,6 +50,10 @@ def segment_tangent_angle(segmented_img, objects, size, label="default"):
     :param label: str
     :return labeled_img: numpy.ndarray
     """
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+
     # Store debug
     debug = params.debug
     params.debug = None
