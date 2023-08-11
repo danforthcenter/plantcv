@@ -1,3 +1,4 @@
+"""Analyze the vertical distribution of the plant relative to a horizontal reference line."""
 import os
 import cv2
 import numpy as np
