@@ -16,7 +16,7 @@ Find endpoints of a skeletonized image.
     
 - **Output data stored:** Data ('tips') 
     automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
-    All data stored in the Outputs class gets printed out while running [print_results](print_results.md) but
+    All data stored in the Outputs class gets printed out while running [pcv.outputs.save_results](outputs.md) but
     these data can always get accessed during a workflow. For more detail about data output see 
     [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
