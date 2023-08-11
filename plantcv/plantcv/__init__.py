@@ -46,7 +46,6 @@ from plantcv.plantcv.logical_or import logical_or
 from plantcv.plantcv.logical_xor import logical_xor
 from plantcv.plantcv.find_objects import find_objects
 from plantcv.plantcv.within_frame import within_frame
-from plantcv.plantcv.print_results import print_results
 from plantcv.plantcv.flip import flip
 from plantcv.plantcv.crop_position_mask import crop_position_mask
 from plantcv.plantcv.report_size_marker_area import report_size_marker_area
@@ -124,7 +123,6 @@ __all__ = [
     "logical_xor",
     "find_objects",
     "within_frame",
-    "print_results",
     "flip",
     "crop_position_mask",
     "report_size_marker_area",

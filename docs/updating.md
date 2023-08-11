@@ -773,6 +773,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.1: NA
 * post v3.1: **plantcv.print_results**(*filename*)
+* post v4.0: DEPRECATED, see plantcv.outputs.save_results
 
 #### plantcv.pseudocolor
 
