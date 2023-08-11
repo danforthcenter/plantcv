@@ -67,9 +67,6 @@
     <div class="card-tags">
         <span><strong>Tags</strong>: plant shoot, single plant, side-view, RGB, Near-infrared, shape analysis, NIR analysis</span>
     </div>
-    <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-vis-nir/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
-    </div>
 </div>
 
 <!--Grayscale Tutorial-->
@@ -82,9 +79,6 @@
     </div>
     <div class="card-tags">
         <span><strong>Tags</strong>: plant leaf, top view, single plant, grayscale, grayscale analysis, </span>
-    </div>
-    <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-grayscale/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
     </div>
 </div>
 
@@ -99,9 +93,6 @@
     <div class="card-tags">
         <span><strong>Tags</strong>: plant shoot, single plant, side-view, Chlorophyll fluorescence, Fv/Fm analysis</span>
     </div>
-    <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/photosynthesis_tutorial/psII_tutorial.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
-    </div>
 </div>
 
 <!--Thermal Tutorial-->
@@ -114,9 +105,6 @@
     </div>
     <div class="card-tags">
         <span><strong>Tags</strong>: plant shoot, multi-plant, top-view, thermal infrared, thermal analysis</span>
-    </div>
-    <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-thermal/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
     </div>
 </div>
 
@@ -131,9 +119,6 @@
     <div class="card-tags">
         <span><strong>Tags</strong>: plant shoot, single plant, side-view, hyperspectral, spectral index</span>
     </div>
-    <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-hyperspectral/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
-    </div>
 </div>
 
 <!--Hyperspectral SMF Tutorial-->
@@ -146,9 +131,6 @@
     </div>
     <div class="card-tags">
         <span><strong>Tags</strong>: Hyperspectral, Spectral Match Filter, Disease, Leaves, Machine Learning</span>
-    </div>
-    <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-hyperspectral-smf/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
     </div>
 </div>
 
@@ -163,9 +145,6 @@
     <div class="card-tags">
         <span><strong>Tags</strong>: plant leaf, infection, classification, machine learning</span>
     </div>
-    <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-machine-learning/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
-    </div>
 </div>
 
 <!--Multi-plant tools Tutorial-->
@@ -178,9 +157,6 @@
     </div>
     <div class="card-tags">
         <span><strong>Tags</strong>: plant shoot, multi-plant, RGB, shape analysis, brassica</span>
-    </div>
-    <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-grayscale/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
     </div>
 </div>
 
@@ -195,9 +171,6 @@
     <div class="card-tags">
         <span><strong>Tags</strong>: plant shoot, multi-plant, RGB, shape analysis, arabidopsis</span>
     </div>
-    <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/arabidopsis_multi_plant_tutorial/arabidopsis_multiplant_tutorial.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
-    </div>
 </div>
 
 <!--Seed Analysis Tutorial-->
@@ -210,9 +183,6 @@
     </div>
     <div class="card-tags">
         <span><strong>Tags</strong>: seed, seed analysis, shape analysis, color analysis, seed count, quinoa</span>
-    </div>
-    <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-seeds/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
     </div>
 </div>
 
@@ -228,9 +198,6 @@
     <div class="card-tags">
         <span><strong>Tags</strong>: plant shoot, single plant, side-view, RGB, shape analysis, leaf angle analysis, stem and branch segmentation, leaf length, leaf curvature, leaf tangent angle, sorghum</span>
     </div>
-    <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-morphology/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
-    </div>
 </div>
 
 <!--Color correction Tutorial-->
@@ -243,9 +210,6 @@
     </div>
     <div class="card-tags">
         <span><strong>Tags</strong>: color card, color correction</span>
-    </div>
-    <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/color_correction_tutorial/color_correct_tutorial.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
     </div>
 </div>
 
@@ -260,9 +224,6 @@
     <div class="card-tags">
         <span><strong>Tags</strong>: open image, save image, save plot</span>
     </div>
-    <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-input-output/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
-    </div>
 </div>
 
 <!--Threshold tools Tutorial-->
@@ -275,9 +236,6 @@
     </div>
     <div class="card-tags">
         <span><strong>Tags</strong>: plant shoot, single plant, side-view, RGB, threshold methods</span>
-    </div>
-    <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/threshold_tutorial/threshold.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
     </div>
 </div>
 
@@ -292,9 +250,6 @@
     <div class="card-tags">
         <span><strong>Tags</strong>: plant shoot, single plant, side-view, RGB, threshold methods, binary mask</span>
     </div>
-    <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/new_mask_tutorial/create_binary_mask_tutorial.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
-    </div>
 </div>
 
 <!--ROI Tutorial-->
@@ -307,9 +262,6 @@
     </div>
     <div class="card-tags">
         <span><strong>Tags</strong>: region of interest, ROI</span>
-    </div>
-    <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/roi_tutorial/roi_package.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
     </div>
 </div>
 
@@ -324,9 +276,6 @@
     <div class="card-tags">
         <span><strong>Tags</strong>: plant shoot, single plant, top-view, RGB, watershed segmentation, leaf segmentation</span>
     </div>
-    <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-watershed/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
-    </div>
 </div>
 
 <!--Homology Tutorial-->
@@ -339,9 +288,6 @@
     </div>
     <div class="card-tags">
         <span><strong>Tags</strong>: pseudo-landmarking, homology, morphometrics, setaria</span>
-    </div>
-    <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-homology-tutorials/HEAD?filepath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
     </div>
 </div>
 
