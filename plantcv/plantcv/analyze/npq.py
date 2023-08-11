@@ -10,7 +10,7 @@ from plantcv.plantcv.photosynthesis import reassign_frame_labels
 
 
 def npq(ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto",
-        measurement_labels=None, label="default"):
+        measurement_labels=None, label=None):
     """
     Calculate and analyze non-photochemical quenching estimates from fluorescence image data.
 
@@ -24,7 +24,8 @@ def npq(ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bi
     min_bin            = minimum bin value ("auto" or user input minimum value - must be an integer)
     max_bin            = maximum bin value ("auto" or user input maximum value - must be an integer)
     measurement_labels = labels for each measurement in ps_da_light, modifies the variable name of observations recorded
-    label              = optional label parameter, modifies the entity name of observations recorded
+    label              = Optional label parameter, modifies the variable name of
+                         observations recorded (default = pcv.params.sample_label).
 
     Returns:
     npq_global         = DataArray of NPQ values
@@ -42,6 +43,10 @@ def npq(ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bi
     :return npq_global: xarray.core.dataarray.DataArray
     :return npq_chart: altair.vegalite.v4.api.FacetChart
     """
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+
     if labeled_mask.shape != ps_da_light.shape[:2] or labeled_mask.shape != ps_da_dark.shape[:2]:
         fatal_error(f"Mask needs to have shape {ps_da_dark.shape[:2]}")
 

@@ -18,7 +18,7 @@ measurement_labels=None, label="default"*)
     - min_bin - minimum bin value ("auto" or user input minimum value - must be an integer). (default `min_bin=0`)
     - max_bin - maximum bin value ("auto" or user input maximum value - must be an integer). (default `max_bin="auto"`)
     - measurement_labels - list of label(s) for each measurement in `ps_da_light`, modifies the variable name of observations recorded
-    - label - Optional label parameter, modifies the entity name of observations recorded. (default `label="default"`)
+    - label - Optional label parameter, modifies the entity name of observations recorded. (default = `pcv.params.sample_label`)
 - **Context:**
     - Used to extract NPQ per identified plant pixel.
     - Generates histogram of NPQ values.
@@ -35,9 +35,11 @@ from plantcv import plantcv as pcv
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "plot"
+# Optionally, set a sample label name
+pcv.params.sample_label = "plant"
 
 # Analyze NPQ   
-npq, npq_hist = pcv.analyze.npq(ps_da_light=ps.ojip_light, ps_da_dark=ps.ojip_dark, labeled_mask=kept_mask, label="plant")
+npq, npq_hist = pcv.analyze.npq(ps_da_light=ps.ojip_light, ps_da_dark=ps.ojip_dark, labeled_mask=kept_mask)
 
 # Access the NPQ median value
 # the default measurement label for cropreporter data is t1
