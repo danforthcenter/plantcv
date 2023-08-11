@@ -13,7 +13,7 @@ best if the pot size/position of the plant remains relatively constant.
     - labeled_mask - Labeled mask of objects (32-bit).
     - line_position - position of boundary line (a value of 0 would draw the line through the top of the image)
     - n_labels - Total number expected individual objects (default = 1).
-    - label - Optional label parameter, modifies the variable name of observations recorded. (default = pcv.params.sample_label)
+    - label - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
 - **Context:**
     - Used to define a boundary line for the image, to find the height above and below as well as area above and below a
     boundary line.
