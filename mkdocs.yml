@@ -25,6 +25,12 @@ nav:
   - 'Exporting Data': db-exporter.md
   - 'PlantCV Namespace':
     - 'PlantCV':
+      - 'Inputs and Outputs':
+        - 'Print Image': print_image.md
+        - 'Print Results': print_results.md
+        - 'Plot Image': plot_image.md
+        - 'Read Image': read_image.md
+        - 'Read Bayer Raw Image': read_bayer.md
       - 'Analysis Methods':
         - 'Analyze Color': analyze_color2.md
         - 'Analyze Grayscale': analyze_grayscale.md
@@ -68,12 +74,14 @@ nav:
       - 'Histogram Normalization': HistEqualization.md
       - 'Hyperspectral Data':
           - 'Analyze Spectral Reflectance': analyze_spectral_reflectance.md
-          - 'Calibrate': calibrate.md
+          - 'Analyze Spectral Index': analyze_spectral_index.md
+          - 'Calibrate HSI': calibrate.md
+          - 'Crop HSI': crop.md
           - 'Spectral Index': spectral_index.md
           - 'Extract wavelength': extract_wavelength.md
-          - 'Rotate Hyperspectral Datacubes ': hyperspectral_rot90.md
+          - 'Rotate HSI': hyperspectral_rot90.md
           - 'Spectral data objects': Spectral_data.md
-          - 'Write data': write_data.md
+          - 'Write HSI data': write_data.md
       - 'Image Add': image_add.md
       - 'Image Subtract': image_subtract.md
       - 'Image Fusion': image_fusion.md
@@ -122,6 +130,9 @@ nav:
       - 'Photosynthesis Functions':
           - 'Read CropReporter Data': photosynthesis_read_cropreporter.md
           - 'Reassign Frame Labels': photosynthesis_reassign_frame_labels.md
+          - 'Analyze YII': analyze_yii.md
+          - 'Analyze NPQ': analyze_npq.md
+          - 'Visualize chlorophyll Fluorescence': visualize_chlorophyll_fluorescence.md
       - 'Params (Debugging)': params.md
       - 'Print Image': print_image.md
       - 'Print Results': print_results.md
