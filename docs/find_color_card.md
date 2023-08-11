@@ -2,7 +2,7 @@
 
 Automatically detects a color card's location and size. Useful in workflows where color card positioning isn't constant in all images.
 
-**plantcv.transform.find_color_card**(*rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark', record_chip_size='median', label="default"*)
+**plantcv.transform.find_color_card**(*rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark', record_chip_size='median', label=None*)
 
 **returns** df, start_coord, spacing
 
@@ -13,7 +13,7 @@ Automatically detects a color card's location and size. Useful in workflows wher
     - blurry           - Optional boolean, if True then image sharpening is applied (default blurry=False)
     - background       - Optional, type of image background, either 'dark' or 'light' (default background='dark')
     - record_chip_size - Optional, for choosing chip size measurement to be recorded, either "median" (default), "mean", or None
-    - label - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
+    - label - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
 - **Returns**
     - df            - Dataframe of all color card chips found.
     - start_coord   - Two-element tuple of the first chip mask starting x and y coordinate. Useful in [create a color card mask](#create-a-labeled-color-card-mask) function.
