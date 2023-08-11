@@ -15,7 +15,7 @@ This function calculates the spectral index statistics and writes the values as 
     - min_bin       - Optional, minimum bin label. Default of 0 will be used for the smallest bin label while calculating pixel frequency data unless otherwise defined. 
                       `min_bin="auto"` will set minimum bin to the smallest observed pixel value within the masked index provided.
     - max_bin       - Optional, maximum bin label. Default of 1 will be used for the maximum bin label unless otherwise defined. `max_bin="auto"` will set maximum bin to the largest observed pixel value within the masked index provided.
-    - label         - Optional label parameter, modifies the variable name of observations recorded 
+    - label         - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
 
 - **Context:**
     - Calculates data about mean, median, and standard deviation of an input index within a masked region. 
@@ -31,8 +31,15 @@ This function calculates the spectral index statistics and writes the values as 
 
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
+
+pcv.params.debug = "plot"
+# Optionally, set a sample label name
+pcv.params.sample_label = "plant"
+
 pcv.analyze.spectral_index(index_img=ndvi_index, labeled_mask=mask,
-                           min_bin=-1, max_bin=1, label="plant")
+                           min_bin=-1, max_bin=1)
 
 ```
 

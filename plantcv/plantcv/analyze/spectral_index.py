@@ -1,3 +1,4 @@
+"""Analyzes spectral index values of objects in an image."""
 import os
 import numpy as np
 from plantcv.plantcv import outputs, params
@@ -7,7 +8,7 @@ from plantcv.plantcv.visualize import histogram
 from plantcv.plantcv._helpers import _iterate_analysis
 
 
-def spectral_index(index_img, labeled_mask, n_labels=1, bins=100, min_bin=0, max_bin=1, label="default"):
+def spectral_index(index_img, labeled_mask, n_labels=1, bins=100, min_bin=0, max_bin=1, label=None):
     """Analyze spectral index values of objects in an image.
 
     Inputs:
@@ -17,7 +18,8 @@ def spectral_index(index_img, labeled_mask, n_labels=1, bins=100, min_bin=0, max
     bins         = Number of histogram bins (default = 100)
     min_bin      = Minimum bin value (default = 0). "auto" will use the minimum value of the index image.
     max_bin      = Maximum bin value (default = 1). "auto" will use the maximum value of the index image.
-    label        = optional label parameter, modifies the variable name of observations recorded (default = "default").
+    label        = Optional label parameter, modifies the variable name of
+                   observations recorded (default = pcv.params.sample_label).
 
     Returns:
     index_hist = Spectral index histogram plot
@@ -31,6 +33,10 @@ def spectral_index(index_img, labeled_mask, n_labels=1, bins=100, min_bin=0, max
     :param label: str
     :return index_hist: altair.vegalite.v5.api.FacetChart
     """
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+
     _ = _iterate_analysis(img=index_img, labeled_mask=labeled_mask, n_labels=n_labels, label=label, function=_analyze_index,
                           **{"bins": bins, "min_bin": min_bin, "max_bin": max_bin})
     index_hist = outputs.plot_dists(variable=f"index_frequencies_{index_img.array_type}")
