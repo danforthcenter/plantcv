@@ -17,7 +17,7 @@ def test_yii_cropreporter(prot, mlabels, exp, test_data):
     _ = analyze_yii(ps_da=test_data.psii_cropreporter(prot),
                     labeled_mask=test_data.create_ps_mask(),
                     n_labels=1, auto_fm=True,
-                    measurement_labels=mlabels, label="default")
+                    measurement_labels=mlabels)
     label = "t0" if mlabels is None else mlabels[0]
     assert np.isclose(outputs.observations["default1"][f"yii_median_{label}"]["value"], exp)
 

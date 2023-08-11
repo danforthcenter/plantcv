@@ -8,7 +8,7 @@ from plantcv.plantcv import params, outputs, fatal_error
 from plantcv.plantcv.photosynthesis import reassign_frame_labels
 
 
-def yii(ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label="default"):
+def yii(ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None):
     """
     Calculate and analyze PSII efficiency estimates from fluorescence image data.
 
@@ -34,6 +34,10 @@ def yii(ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None,
     :return yii_global: xarray.core.dataarray.DataArray
     :return yii_chart: altair.vegalite.v4.api.FacetChart
     """
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+
     # Validate that the input mask has the same 2D shape as the input DataArray
     if labeled_mask.shape != ps_da.shape[:2]:
         fatal_error(f"Mask needs to have shape {ps_da.shape[:2]}")
