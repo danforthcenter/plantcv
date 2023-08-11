@@ -1,5 +1,4 @@
-# User-Input Boundary Line
-
+"""Analyze the horizontal distribution of the plant relative to a vertical reference line."""
 import os
 import cv2
 import numpy as np
@@ -9,7 +8,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def bound_vertical(img, labeled_mask, line_position, n_labels=1, label="default"):
+def bound_vertical(img, labeled_mask, line_position, n_labels=1, label=None):
     """User-input boundary line analysis for individual objects.
 
     Inputs:
@@ -19,7 +18,7 @@ def bound_vertical(img, labeled_mask, line_position, n_labels=1, label="default"
     line_position = position of boundary line in pixels from top to bottom
                     (a value of 0 would draw the line through the top of the image)
     label         = Optional label parameter, modifies the variable name of
-                    observations recorded (default = "default").
+                    observations recorded (default = pcv.params.sample_label).
 
     Returns:
     analysis_image = Diagnostic image showing measurements.
@@ -31,6 +30,10 @@ def bound_vertical(img, labeled_mask, line_position, n_labels=1, label="default"
     :param label: str
     :return analysis_image: numpy.ndarray
     """
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+
     img = _iterate_analysis(img=img, labeled_mask=labeled_mask, n_labels=n_labels,
                             label=label, function=_analyze_bound_vertical,
                             **{"line_position": line_position})
