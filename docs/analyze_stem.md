@@ -10,7 +10,7 @@ plants or plant organs can have specific characteristics measured about the stem
 - **Parameters:**
     - rgb_img      - RGB image data for plotting.
     - stem_objects - List of stem segments (output from [segment_sort](segment_sort.md) function)
-    - label        - Optional label parameter, modifies the variable name of observations recorded 
+    - label        - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
 - **Context:**
     - Used to output stem morphological characteristics, including height, angle, and length.
 - **Example use:**
@@ -31,10 +31,12 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 
 pcv.params.debug = "plot"
+# Optionally, set a sample label name
+pcv.params.sample_label = "plant"
     
-stem_debug_img1 = pcv.morphology.analyze_stem(rgb_img=img1, stem_objects=stem_objects1, label="default")
+stem_debug_img1 = pcv.morphology.analyze_stem(rgb_img=img1, stem_objects=stem_objects1)
 # Access data stored out from analyze_stem
-stem_angle = pcv.outputs.observations['default']['stem_angle']['value']
+stem_angle = pcv.outputs.observations['plant']['stem_angle']['value']
 
 stem_debug_img2 = pcv.morphology.analyze_stem(rgb_img=img2, stem_objects=stem_objects2, label="rep1")
 stem_angle = pcv.outputs.observations['rep1']['stem_angle']['value']
