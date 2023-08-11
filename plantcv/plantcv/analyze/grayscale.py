@@ -1,3 +1,4 @@
+"""Analyzes the grayscale values of objects in an image."""
 import os
 import numpy as np
 from plantcv.plantcv._debug import _debug
