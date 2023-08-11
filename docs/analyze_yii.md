@@ -3,7 +3,7 @@
 Extract estimates of the efficiency (YII) of Photosystem II (PSII).
 The photosynthesis subpackage is dependent on a PSII_Data instance file structure as created by photosynthesis.read_* files.
 
-**plantcv.analyze.yii**(*ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label="default"*)
+**plantcv.analyze.yii**(*ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None*)
 
 **returns** YII DataArray, YII histograms
 

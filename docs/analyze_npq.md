@@ -5,7 +5,7 @@ Calculates (Fm/Fm') - 1 data from a masked region. The photosynthesis subpackage
 structure as created by photosynthesis.read_* files.
 
 **plantcv.analyze.npq**(*ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto",
-measurement_labels=None, label="default"*)
+measurement_labels=None, label=None*)
 
 **returns** NPQ DataArray and Histograms of NPQ values
 

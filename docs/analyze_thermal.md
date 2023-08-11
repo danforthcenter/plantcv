@@ -2,7 +2,7 @@
 
 This function calculates the temperature of each pixel and stores summary statistics and the distribution of temperature values.
 
-**plantcv.analyze.thermal**(*thermal_img, labeled_mask, n_labels=1, bins=100, label="default"*)
+**plantcv.analyze.thermal**(*thermal_img, labeled_mask, n_labels=1, bins=100, label=None*)
 
 **returns** temperature histogram
 

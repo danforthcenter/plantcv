@@ -3,7 +3,7 @@
 This function calculates the intensity of each pixel associated with the plant and writes 
 the values out to the [Outputs class](outputs.md). Can also return/plot/print out a histogram plot of pixel intensity.
 
-**plantcv.analyze.grayscale**(*gray_img, labeled_mask, n_labels=1, bins=100, label="default"*)
+**plantcv.analyze.grayscale**(*gray_img, labeled_mask, n_labels=1, bins=100, label=None*)
 
 **returns** Histogram image
 

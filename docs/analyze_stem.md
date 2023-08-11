@@ -3,7 +3,7 @@
 Primary, or stem, objects identified during workflows that examine the [morphology](tutorials/morphology_tutorial.md) of 
 plants or plant organs can have specific characteristics measured about the stem segments of a skeleton.
 
-**plantcv.morphology.analyze_stem**(*rgb_img, stem_objects, label="default"*)
+**plantcv.morphology.analyze_stem**(*rgb_img, stem_objects, label=None*)
 
 **returns** labeled_img
 

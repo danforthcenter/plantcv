@@ -4,7 +4,7 @@ Set boundary line with boundary tool, this allows the user to find the extent-x 
 to the right and to the left as well as the area to the right and to the left of the set boundary line. This tool functions 
 best if the pot size/position of the plant remains relatively constant.
  
-**plantcv.analyze_bound_vertical**(*img, labeled_mask, line_position, n_labels=1, label="default"*)
+**plantcv.analyze_bound_vertical**(*img, labeled_mask, line_position, n_labels=1, label=None*)
 
 **returns** image with boundary data
 

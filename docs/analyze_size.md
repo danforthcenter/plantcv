@@ -2,7 +2,7 @@
 
 Size and shape analysis outputs numeric properties for individual plants, seeds, leaves, etc.
  
-**plantcv.analyze.size**(*img, labeled_mask, n_labels=1, label="default"*)
+**plantcv.analyze.size**(*img, labeled_mask, n_labels=1, label=None*)
 
 **returns** analysis_image
 

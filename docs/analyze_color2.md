@@ -3,7 +3,7 @@
 Extract color data of objects and produce a histogram. Data can be extracted for RGB (Red, Green, Blue),
 HSV (Hue, Saturation, Value) and LAB (Lightness, Green-Magenta, Blue Yellow) channels.
 
-**plantcv.analyze.color**(*rgb_img, labeled_mask, n_labels=1, colorspaces="hsv", label="default"*)
+**plantcv.analyze.color**(*rgb_img, labeled_mask, n_labels=1, colorspaces="hsv", label=None*)
 
 **returns** Ridgeline plot of histograms of hue values   
 

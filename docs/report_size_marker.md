@@ -3,7 +3,7 @@
 Get and record the size of a size marker or set an area as a size marker.
 
 **plantcv.report_size_marker_area**(*img, roi, marker='define', objcolor='dark', thresh_channel=None,
-                            thresh=None, label="default"*)
+                            thresh=None, label=None*)
 
 **returns** analysis_image
 

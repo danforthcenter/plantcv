@@ -2,7 +2,7 @@
 
 This function analyzes the reflectance values across the wavelengths measured by the input multi/hyperspectral datacube.
 
-**plantcv.analyze.spectral_reflectance**(*hsi, labeled_mask, n_labels=1, label="default"*)
+**plantcv.analyze.spectral_reflectance**(*hsi, labeled_mask, n_labels=1, label=None*)
 
 **returns** reflectance plot
 

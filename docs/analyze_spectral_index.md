@@ -3,7 +3,7 @@
 This function calculates the spectral index statistics and writes the values as observations out to the 
 [Outputs class](outputs.md).
 
-**plantcv.analyze.spectral_index**(*index_img, labeled_mask, n_labels=1, bins=100, min_bin=0, max_bin=1, label="default"*)
+**plantcv.analyze.spectral_index**(*index_img, labeled_mask, n_labels=1, bins=100, min_bin=0, max_bin=1, label=None*)
 
 **returns** None
 
