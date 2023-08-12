@@ -42,7 +42,7 @@ class WorkflowConfig:
             "disk": "1GB",
             "log_directory": None,
             "local_directory": None,
-            "job_extra": None
+            "job_extra_directives": None
         }
         self.metadata_terms = {
                 # Camera settings
