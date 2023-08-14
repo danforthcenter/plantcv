@@ -2,7 +2,7 @@
 
 Propagate the labels of a segmented skeleton to fill the mask.
 
-**plantcv.morphology.fill_segments**(*mask, objects, stem_objects=None, label="default"*)
+**plantcv.morphology.fill_segments**(*mask, objects, stem_objects=None, label=None*)
 
 **returns** filled_mask
 
@@ -12,7 +12,7 @@ Propagate the labels of a segmented skeleton to fill the mask.
     [plantcv.morphology.segment_skeleton](segment_skeleton.md), or
     [plantcv.morphology.segment_sort](segment_sort.md)).
     - stem_objects - Optional input for stem objects that will be combined into a single object before filling the mask. 
-    - label        - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
+    - label        - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
 - **Context:**
     - Uses the watershed algorithm to fill the mask propagating the objects' labels.
 - **Output data stored:** Data ('segment_area') automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran without the `stem_objects` parameter.
@@ -34,14 +34,16 @@ from plantcv import plantcv as pcv
 # Set global debug behavior to None (default), "print" (to file),
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "plot"
+# Optionally, set a sample label name
+pcv.params.sample_label = "plant"
 
-filled_mask = pcv.morphology.fill_segments(mask=plant_mask, objects=obj, label="default")
+filled_mask = pcv.morphology.fill_segments(mask=plant_mask, objects=obj)
 
 # Convert labeled mask to a colorized image
 filled_image = pcv.visualize.colorize_label_img(label_img=filled_mask)
 
 # Access data stored out from fill_segments
-segments_area = pcv.outputs.observations['default']['segment_area']['value']
+segments_area = pcv.outputs.observations['plant']['segment_area']['value']
 
 ```
 

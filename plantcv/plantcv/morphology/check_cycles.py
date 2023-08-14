@@ -1,5 +1,4 @@
-# Check for cycles in a skeleton image
-
+"""Check for cycles in a skeleton image."""
 import os
 import cv2
 import numpy as np
@@ -12,12 +11,13 @@ from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours
 
 
-def check_cycles(skel_img, label="default"):
+def check_cycles(skel_img, label=None):
     """Check for cycles in a skeleton image.
 
     Inputs:
     skel_img     = Skeletonized image
-    label        = optional label parameter, modifies the variable name of observations recorded
+    label        = Optional label parameter, modifies the variable name of
+                   observations recorded (default = pcv.params.sample_label).
 
     Returns:
     cycle_img    = Image with cycles identified
@@ -26,6 +26,10 @@ def check_cycles(skel_img, label="default"):
     :param label: str
     :return cycle_img: numpy.ndarray
     """
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+
     # Create the mask needed for cv2.floodFill, must be larger than the image
     h, w = skel_img.shape[:2]
     mask = np.zeros((h + 2, w + 2), np.uint8)

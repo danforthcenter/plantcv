@@ -1,5 +1,4 @@
-# Analyzes an object and outputs numeric properties
-
+"""Analyzes an object and outputs numeric properties."""
 import cv2
 import numpy as np
 import os
@@ -10,7 +9,7 @@ from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition, _ro
 
 
 def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_channel=None,
-                            thresh=None, label="default"):
+                            thresh=None, label=None):
     """
     Detects a size marker in a specified region and reports its size and eccentricity
 
@@ -22,7 +21,8 @@ def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_c
     objcolor        = Object color is 'dark' or 'light' (is the marker darker or lighter than the background)
     thresh_channel  = 'h', 's', or 'v' for hue, saturation or value
     thresh          = Binary threshold value (integer)
-    label      = optional label parameter, modifies the variable name of observations recorded
+    label           = Optional label parameter, modifies the variable name of
+                      observations recorded (default = pcv.params.sample_label).
 
     Returns:
     analysis_images = List of output images
@@ -39,6 +39,9 @@ def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_c
     # Store debug
     debug = params.debug
     params.debug = None
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
 
     params.device += 1
     # Make a copy of the reference image

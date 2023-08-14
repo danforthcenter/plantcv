@@ -1,5 +1,4 @@
-# Function to scan for pseudolandmarks along the x-axis
-
+"""Function to scan for pseudolandmarks along the x-axis."""
 import cv2
 import os
 import numpy as np
@@ -9,14 +8,15 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def x_axis_pseudolandmarks(img, mask, label="default"):
+def x_axis_pseudolandmarks(img, mask, label=None):
     """
     Divide up object contour into 20 equidistance segments and generate landmarks for each
 
     Inputs:
     img          = RGB or grayscale image data for plotting
     mask         = a contour of the plant object
-    label        = optional label parameter, modifies the variable name of observations recorded
+    label        = Optional label parameter, modifies the variable name of
+                   observations recorded (default = pcv.params.sample_label).
 
     Returns:
     top      = List of landmark points within 'top' portion
@@ -30,6 +30,10 @@ def x_axis_pseudolandmarks(img, mask, label="default"):
     :return bottom: list
     :return center_v: list
     """
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+
     # Find contours
     cnt, cnt_str = _cv2_findcontours(bin_img=mask)
     # Consolidate contours

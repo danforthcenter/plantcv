@@ -174,7 +174,7 @@ environmental variable.
 **local_directory**: (str, optional, default = `None`): dask working directory location. Can be set to a path or 
 environmental variable.
 
-**job_extra**: (dict, optional, default = `None`): extra parameters sent to the scheduler. Specified as a dictionary 
+**job_extra_directives**: (dict, optional, default = `None`): extra parameters sent to the scheduler. Specified as a dictionary 
 of key-value pairs (e.g. `{"getenv": "true"}`).
 
 !!! note

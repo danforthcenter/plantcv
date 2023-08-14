@@ -3,14 +3,14 @@
 This function tests whether an object (defined as nonzero pixels in a mask) falls completely within the bounds of an 
 image, or if it touches the edge.
 
-**plantcv.within_frame**(*mask, border_width=1, label="default"*)
+**plantcv.within_frame**(*mask, border_width=1, label=None*)
 
 **returns** in_bounds
 
 - **Parameters:**
     - mask - a single channel image (i.e. binary or greyscale)
     - border_width - distance from border of image considered out of frame (default = 1)
-    - label - Optional label parameter, modifies the variable name of observations recorded
+    - label - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
 
 - **Context:**
     - This function could be used to test whether the plant has grown outside the field of view.

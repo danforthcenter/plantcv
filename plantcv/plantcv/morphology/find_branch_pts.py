@@ -1,5 +1,4 @@
-# Find branch points from skeleton image
-
+"""Find branch points from skeleton image."""
 import os
 import cv2
 import numpy as np
@@ -10,14 +9,15 @@ from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours
 
 
-def find_branch_pts(skel_img, mask=None, label="default"):
+def find_branch_pts(skel_img, mask=None, label=None):
     """Find branch points in a skeletonized image.
     The branching algorithm was inspired by Jean-Patrick Pommier: https://gist.github.com/jeanpat/5712699
 
     Inputs:
     skel_img    = Skeletonized image
     mask        = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
-    label        = optional label parameter, modifies the variable name of observations recorded
+    label        = Optional label parameter, modifies the variable name of
+                   observations recorded (default = pcv.params.sample_label).
 
     Returns:
     branch_pts_img = Image with just branch points, rest 0
@@ -27,6 +27,10 @@ def find_branch_pts(skel_img, mask=None, label="default"):
     :param label: str
     :return branch_pts_img: numpy.ndarray
     """
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+
     # In a kernel: 1 values line up with 255s, -1s line up with 0s, and 0s correspond to don't care
     # T like branch points
     t1 = np.array([[-1, 1, -1],

@@ -3,7 +3,7 @@
 Extract color data of objects and produce a histogram. Data can be extracted for RGB (Red, Green, Blue),
 HSV (Hue, Saturation, Value) and LAB (Lightness, Green-Magenta, Blue Yellow) channels.
 
-**plantcv.analyze.color**(*rgb_img, labeled_mask, n_labels=1, colorspaces="hsv", label="default"*)
+**plantcv.analyze.color**(*rgb_img, labeled_mask, n_labels=1, colorspaces="hsv", label=None*)
 
 **returns** Ridgeline plot of histograms of hue values   
 
@@ -12,7 +12,7 @@ HSV (Hue, Saturation, Value) and LAB (Lightness, Green-Magenta, Blue Yellow) cha
     - labeled_mask - Labeled mask of objects (32-bit, output from [`pcv.create_labels`](create_labels.md) or [`pcv.roi.filter`](roi_filter.md)).
     - n_labels - Total number expected individual objects (default = 1).
     - colorspaces - 'all', 'rgb', 'lab', or 'hsv'. This can limit the data saved out (default = 'hsv'). 
-    - label - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
+    - label - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
 - **Context:**
     - Used to extract color data from RGB, LAB, and HSV color channels.
     - Generates histogram of color channel data. 
@@ -35,10 +35,11 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 
 pcv.params.debug = "plot"
+# Optionally, set a sample label name
+pcv.params.sample_label = "plant"
 
 # Analyze Color
-    
-analysis_image = pcv.analyze.color(rgb_img=rgb_img, labeled_mask=mask, n_labels=1, colorspaces='hsv', label="plant")
+analysis_image = pcv.analyze.color(rgb_img=rgb_img, labeled_mask=mask, n_labels=1, colorspaces='hsv')
 
 # Access data stored out from analyze_color
 hue_circular_mean = pcv.outputs.observations['plant1']['hue_circular_mean']['value']

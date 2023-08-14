@@ -1,4 +1,4 @@
-# A function that analyzes the shape and size of objects and outputs data
+"""Analyzes the shape and size of objects and outputs data."""
 import os
 import cv2
 import numpy as np
@@ -8,14 +8,15 @@ from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 
 
-def size(img, labeled_mask, n_labels=1, label="default"):
+def size(img, labeled_mask, n_labels=1, label=None):
     """A function that analyzes the shape and size of objects and outputs data.
 
     Inputs:
     img          = RGB or grayscale image data for plotting
     labeled_mask = Labeled mask of objects (32-bit).
     n_labels     = Total number expected individual objects (default = 1).
-    label        = Optional label parameter, modifies the variable name of observations recorded (default = "default").
+    label        = Optional label parameter, modifies the variable name of
+                   observations recorded (default = pcv.params.sample_label).
 
     Returns:
     analysis_image = Diagnostic image showing measurements.
@@ -26,6 +27,10 @@ def size(img, labeled_mask, n_labels=1, label="default"):
     :param label: str
     :return analysis_image: numpy.ndarray
     """
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+
     img = _iterate_analysis(img=img, labeled_mask=labeled_mask, n_labels=n_labels, label=label, function=_analyze_size)
     # Debugging
     _debug(visual=img, filename=os.path.join(params.debug_outdir, str(params.device) + '_shapes.png'))

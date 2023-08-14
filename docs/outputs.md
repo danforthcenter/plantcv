@@ -81,28 +81,23 @@ Methods are accessed as plantcv.outputs.*method*.
 
 ```python
 from plantcv import plantcv as pcv
+# Set a global sample label (optional)
+pcv.params.sample_label = "plant"
 
 ######## workflow steps here ########
 
 # Find shape properties, output shape image (optional)
-shape_img = pcv.analyze.size(img=img, labeled_mask=mask, n_labels=1, label="default")
+shape_img = pcv.analyze.size(img=img, labeled_mask=mask, n_labels=1)
 
 # Look at object area data without writing to a file 
-plant_area = pcv.outputs.observations['default1']['pixel_area']['value']
-
-# Write shape data to results file
-pcv.outputs.save_results(filename=args.result, outformat="json")
-
-# Will will print out results again, so clear the outputs before running NIR analysis 
-pcv.outputs.clear()
+plant_area = pcv.outputs.observations['plant1']['pixel_area']['value']
 
 ######## More workflow steps here ########
 
-nir_hist = pcv.analyze.grayscale(gray_img=nir2, labeled_mask=nir_combinedmask, n_labels=1, bins=100, label="default")
-shape_img = pcv.analyze.size(img=nir2, labeled_mask=nir_combinedmask, n_labels=1, label="default")
+nir_hist = pcv.analyze.grayscale(gray_img=nir2, labeled_mask=nir_combinedmask, n_labels=1, bins=100)
 
 # Write the NIR and shape data to a file 
-pcv.outputs.save_results(filename=args.coresult, outformat="json")
+pcv.outputs.save_results(filename=args.result, outformat="json")
 
 ```
 

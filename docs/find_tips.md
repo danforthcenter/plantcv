@@ -2,14 +2,14 @@
 
 Find endpoints of a skeletonized image.
 
-**plantcv.morphology.find_tips**(*skel_img, mask=None, label="default"*)
+**plantcv.morphology.find_tips**(*skel_img, mask=None, label=None*)
 
 **returns** Binary mask of endpoints 
 
 - **Parameters:**
     - skel_img - Skeleton image (output from [plantcv.morphology.skeletonize](skeletonize.md))
     - mask     - Binary mask used for debugging (optional). If provided the debug image will be overlaid on the mask.
-    - label    - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
+    - label    - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
     
 - **Context:**
     - Identifies endpoints/tips in a skeleton image
@@ -31,6 +31,8 @@ from plantcv import plantcv as pcv
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "plot"
+# Optionally, set a sample label name
+pcv.params.sample_label = "plant"
 
 # Adjust line thickness with the global line thickness parameter (default = 5),
 # and provide binary mask of the plant for debugging. NOTE: the image returned

@@ -1,3 +1,4 @@
+"""Analyzes the color properties of objects in an image."""
 import os
 import cv2
 import numpy as np
@@ -10,7 +11,7 @@ from plantcv.plantcv.visualize import histogram
 from plantcv.plantcv._helpers import _iterate_analysis
 
 
-def color(rgb_img, labeled_mask, n_labels=1, colorspaces="hsv", label="default"):
+def color(rgb_img, labeled_mask, n_labels=1, colorspaces="hsv", label=None):
     """A function that analyzes the color of objects and outputs data.
 
     Inputs:
@@ -18,7 +19,8 @@ def color(rgb_img, labeled_mask, n_labels=1, colorspaces="hsv", label="default")
     labeled_mask     = Labeled mask of objects (32-bit).
     n_labels         = Total number expected individual objects (default = 1).
     colorspaces      = 'all', 'rgb', 'lab', or 'hsv' (default = 'hsv').
-    label            = optional label parameter, modifies the variable name of observations recorded.
+    label            = Optional label parameter, modifies the variable name of
+                       observations recorded (default = pcv.params.sample_label).
 
     Returns:
     analysis_image   = histogram output
@@ -29,6 +31,10 @@ def color(rgb_img, labeled_mask, n_labels=1, colorspaces="hsv", label="default")
     :param label: str
     :return analysis_images: list
     """
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+
     _ = _iterate_analysis(img=rgb_img, labeled_mask=labeled_mask, n_labels=n_labels, label=label, function=_analyze_color,
                           **{"colorspaces": colorspaces})
     hue_chart = outputs.plot_dists(variable="hue_frequencies")
@@ -36,7 +42,7 @@ def color(rgb_img, labeled_mask, n_labels=1, colorspaces="hsv", label="default")
     return hue_chart
 
 
-def _analyze_color(img, mask, colorspaces="hsv", label="default"):
+def _analyze_color(img, mask, colorspaces="hsv", label=None):
     """Analyze the color properties of an image object
     Inputs:
     img              = RGB image data

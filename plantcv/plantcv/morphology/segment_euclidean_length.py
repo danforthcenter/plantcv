@@ -1,5 +1,4 @@
-# Find euclidean lengths of skeleton segments
-
+"""Find euclidean lengths of skeleton segments."""
 import os
 import cv2
 import numpy as np
@@ -13,13 +12,14 @@ from plantcv.plantcv.morphology import find_tips
 from scipy.spatial.distance import euclidean
 
 
-def segment_euclidean_length(segmented_img, objects, label="default"):
+def segment_euclidean_length(segmented_img, objects, label=None):
     """Use segmented skeleton image to gather euclidean length measurements per segment.
 
     Inputs:
     segmented_img = Segmented image to plot lengths on
     objects       = List of contours
-    label         = optional label parameter, modifies the variable name of observations recorded
+    label         = Optional label parameter, modifies the variable name of
+                    observations recorded (default = pcv.params.sample_label).
 
     Returns:
     labeled_img      = Segmented debugging image with lengths labeled
@@ -29,6 +29,10 @@ def segment_euclidean_length(segmented_img, objects, label="default"):
     :param label: str
     :return labeled_img: numpy.ndarray
     """
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+
     x_list = []
     y_list = []
     segment_lengths = []

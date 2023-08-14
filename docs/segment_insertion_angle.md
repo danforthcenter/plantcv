@@ -2,7 +2,7 @@
 
 Measure leaf insertion angles. 
 
-**plantcv.morphology.segment_insertion_angle**(*skel_img, segmented_img, leaf_objects, stem_objects, size, label="default"*)
+**plantcv.morphology.segment_insertion_angle**(*skel_img, segmented_img, leaf_objects, stem_objects, size, label=None*)
 
 **returns** labeled image 
 
@@ -14,7 +14,7 @@ Measure leaf insertion angles.
     - leaf_objects - Leaf segment objects (output from [plantcv.morphology.segment_sort](segment_sort.md)).
     - stem_objects - Stem segment objects (output from [plantcv.morphology.segment_sort](segment_sort.md)).
     - size - Size of ends (number of pixels) used to calculate insertion point "tangent" lines
-    - label         - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
+    - label         - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
 - **Context:**
     - Find "tangent" angles to leaf insertion points in degrees of skeleton segments compared to the stem angle. 
       Use `size` pixels of the inner portion of each leaf to find a linear regression line, and calculate angle between insertion
@@ -34,6 +34,8 @@ from plantcv import plantcv as pcv
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "plot"
+# Optionally, set a sample label name
+pcv.params.sample_label = "plant"
 
 # Adjust line thickness with the global line thickness parameter (default = 5)
 pcv.params.line_thickness = 3 
@@ -42,10 +44,10 @@ labeled_img = pcv.morphology.segment_insertion_angle(skel_img=skeleton,
                                                      segmented_img=leaves_segment, 
                                                      leaf_objects=leaf_obj,
                                                      stem_objects=stem_objs,
-                                                     size=20, label="default")
+                                                     size=20)
 
 # Access data stored out from segment_insertion_angle
-segment_insertion_angles = pcv.outputs.observations['default']['segment_insertion_angle']['value']
+segment_insertion_angles = pcv.outputs.observations['plant']['segment_insertion_angle']['value']
 
 ```
 

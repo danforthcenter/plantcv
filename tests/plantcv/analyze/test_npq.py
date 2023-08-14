@@ -48,4 +48,4 @@ def test_npq_bad_var(test_data):
         _ = analyze_npq(ps_da_dark=test_data.psii_cropreporter('ojip_light'),
                         ps_da_light=test_data.psii_cropreporter('ojip_dark'),
                         labeled_mask=test_data.create_ps_mask(),
-                        measurement_labels=None, label="default")
+                        measurement_labels=None)

@@ -1,3 +1,4 @@
+"""Analyzes the temperature values of objects in an image."""
 import os
 import numpy as np
 from plantcv.plantcv import params, outputs
@@ -6,7 +7,7 @@ from plantcv.plantcv.visualize import histogram
 from plantcv.plantcv._helpers import _iterate_analysis
 
 
-def thermal(thermal_img, labeled_mask, n_labels=1, bins=100, label="default"):
+def thermal(thermal_img, labeled_mask, n_labels=1, bins=100, label=None):
     """Analyzes the temperature values of objects in an image.
 
     Inputs:
@@ -26,6 +27,10 @@ def thermal(thermal_img, labeled_mask, n_labels=1, bins=100, label="default"):
     :param label: str
     :return analysis_image: altair.vegalite.v5.api.FacetChart
     """
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+
     _ = _iterate_analysis(img=thermal_img, labeled_mask=labeled_mask, n_labels=n_labels, label=label,
                           function=_analyze_thermal,  **{"bins": bins})
     temp_chart = outputs.plot_dists(variable="thermal_frequencies")
@@ -33,7 +38,7 @@ def thermal(thermal_img, labeled_mask, n_labels=1, bins=100, label="default"):
     return temp_chart
 
 
-def _analyze_thermal(img, mask, bins=100, label="default"):
+def _analyze_thermal(img, mask, bins=100, label=None):
     """Extract the temperature values of an object in an image.
 
     Inputs:
