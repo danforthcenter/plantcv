@@ -1,17 +1,18 @@
-# Check if mask in within the frame
+"""Check if mask in within the frame."""
 
 import numpy as np
 from plantcv.plantcv import fatal_error
-from plantcv.plantcv import outputs
+from plantcv.plantcv import outputs, params
 
 
-def within_frame(mask, border_width=1, label="default"):
+def within_frame(mask, border_width=1, label=None):
     """
     This function tests whether the plant touches the edge of the image, i.e. it is completely in the field of view.
     Input:
     mask         = a binary image of 0 and nonzero values
     border_width = distance from border of image considered out of frame (default = 1)
-    label        = optional label parameter, modifies the variable name of observations recorded
+    label        = Optional label parameter, modifies the variable name of
+                   observations recorded (default = pcv.params.sample_label).
 
     Returns:
     in_bounds = a boolean (True or False) confirming that the object does not touch the edge of the image
@@ -21,6 +22,10 @@ def within_frame(mask, border_width=1, label="default"):
     :param label: str
     :return in_bounds: bool
     """
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+
     # Check if object is touching image boundaries (QC)
     if len(np.shape(mask)) > 2 or len(np.unique(mask)) > 2:
         fatal_error("Mask should be a binary image of 0 and nonzero values.")

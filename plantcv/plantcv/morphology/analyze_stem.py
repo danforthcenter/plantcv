@@ -1,5 +1,4 @@
-# Analyze stem characteristics
-
+"""Analyze stem characteristics."""
 import os
 import cv2
 import numpy as np
@@ -8,7 +7,7 @@ from plantcv.plantcv import outputs
 from plantcv.plantcv._debug import _debug
 
 
-def analyze_stem(rgb_img, stem_objects, label="default"):
+def analyze_stem(rgb_img, stem_objects, label=None):
     """Calculate angle of segments (in degrees) by fitting a linear regression line to segments.
 
     Inputs:
@@ -24,6 +23,10 @@ def analyze_stem(rgb_img, stem_objects, label="default"):
     :param label: str
     :return labeled_img: numpy.ndarray
     """
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+
     labeled_img = np.copy(rgb_img)
     img_x, img_y, _ = np.shape(labeled_img)
     grouped_stem = np.vstack(stem_objects)

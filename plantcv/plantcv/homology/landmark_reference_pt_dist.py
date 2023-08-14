@@ -1,5 +1,4 @@
-# Script to generate an image with metrics displayed on image
-
+"""Script to generate an image with metrics displayed on image."""
 import numpy as np
 import math
 import numbers
@@ -7,7 +6,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def landmark_reference_pt_dist(points_r, centroid_r, bline_r, label="default"):
+def landmark_reference_pt_dist(points_r, centroid_r, bline_r, label=None):
     """landmark_reference_pt_dist
 
     For each point in contour, get a point before (pre) and after (post) the point of interest.
@@ -17,13 +16,18 @@ def landmark_reference_pt_dist(points_r, centroid_r, bline_r, label="default"):
     points_r   = a set of rescaled points (basically the output of the acute_vertex fxn after the scale_features fxn)
     centroid_r = a tuple that contains the rescaled centroid coordinates
     bline_r    = a tuple that contains the rescaled boundary line - centroid coordinates
-    label      = optional label parameter, modifies the variable name of observations recorded
+    label      = Optional label parameter, modifies the variable name of
+                 observations recorded (default = pcv.params.sample_label).
 
     :param points_r: ndarray
     :param centroid_r: tuple
     :param bline_r: tuple
     :param label: str
     """
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+
     params.device += 1
     vert_dist_c = []
     hori_dist_c = []

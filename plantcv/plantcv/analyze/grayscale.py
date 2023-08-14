@@ -1,3 +1,4 @@
+"""Analyzes the grayscale values of objects in an image."""
 import os
 import numpy as np
 from plantcv.plantcv._debug import _debug
@@ -6,7 +7,7 @@ from plantcv.plantcv.visualize import histogram
 from plantcv.plantcv._helpers import _iterate_analysis
 
 
-def grayscale(gray_img, labeled_mask, n_labels=1, bins=100, label="default"):
+def grayscale(gray_img, labeled_mask, n_labels=1, bins=100, label=None):
     """Analyzes the grayscale values of a masked region of an image.
 
     Inputs:
@@ -14,7 +15,8 @@ def grayscale(gray_img, labeled_mask, n_labels=1, bins=100, label="default"):
     labeled_mask = Labeled mask of objects (32-bit).
     n_labels     = Total number expected individual objects (default = 1).
     bins         = Number of histogram bins.
-    label        = optional label parameter, modifies the variable name of observations recorded (default = "default")
+    label        = Optional label parameter, modifies the variable name of
+                   observations recorded (default = pcv.params.sample_label).
 
     Returns:
     analysis_image = Grayscale histogram image
@@ -26,6 +28,10 @@ def grayscale(gray_img, labeled_mask, n_labels=1, bins=100, label="default"):
     :param label: str
     :return analysis_image: altair.vegalite.v5.api.FacetChart
     """
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+
     _ = _iterate_analysis(img=gray_img, labeled_mask=labeled_mask, n_labels=n_labels, label=label, function=_analyze_grayscale,
                           **{"bins": bins})
     gray_chart = outputs.plot_dists(variable="gray_frequencies")
@@ -33,7 +39,7 @@ def grayscale(gray_img, labeled_mask, n_labels=1, bins=100, label="default"):
     return gray_chart
 
 
-def _analyze_grayscale(img, mask, bins=100, label="default"):
+def _analyze_grayscale(img, mask, bins=100, label=None):
     """Analyzes the grayscale values of a masked region of an image.
 
     Inputs:

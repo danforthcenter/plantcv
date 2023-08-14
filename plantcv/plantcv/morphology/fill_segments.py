@@ -1,5 +1,4 @@
-# Fill a mask using watershed and skeleton segments
-
+"""Fill a mask using watershed and skeleton segments."""
 import os
 import cv2
 import numpy as np
@@ -10,12 +9,15 @@ from plantcv.plantcv.visualize import colorize_label_img
 from plantcv.plantcv._debug import _debug
 
 
-def fill_segments(mask, objects, stem_objects=None, label="default"):
+def fill_segments(mask, objects, stem_objects=None, label=None):
     """Fills masked segments from contours.
 
     Inputs:
     mask         = Binary image, single channel, object = 1 and background = 0
     objects      = List of contours
+    stem_objects = Array of stem contours
+    label        = Optional label parameter, modifies the variable name of
+                   observations recorded (default = pcv.params.sample_label).
 
     Returns:
     filled_mask   = Labeled mask
@@ -26,6 +28,10 @@ def fill_segments(mask, objects, stem_objects=None, label="default"):
     :param label: str
     :return filled_mask: numpy.ndarray
     """
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+
     h, w = mask.shape
     markers = np.zeros((h, w), dtype=np.int32)
 

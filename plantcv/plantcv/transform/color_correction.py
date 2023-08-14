@@ -630,7 +630,7 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
 
 
 def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark',
-                    record_chip_size="median", label="default"):
+                    record_chip_size="median", label=None):
     """Automatically detect a color card and output info to use in create_color_card_mask function.
 
     Algorithm written by Brandon Hurr. Updated and implemented into PlantCV by Haley Schuhl.
@@ -641,11 +641,12 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
     threshvalue      = Thresholding value, optional (default 125)
     blurry           = Bool (default False) if True then image sharpening applied
     background       = Type of image background either 'dark' or 'light' (default 'dark'); if 'light' then histogram
-                        expansion applied to better detect edges, but histogram expansion will be hindered if there
-                        is a dark background
+                       expansion applied to better detect edges, but histogram expansion will be hindered if there
+                       is a dark background
     record_chip_size = Optional str for choosing chip size measurement to be recorded, either "median",
-                        "mean", or None
-    label            = optional label parameter, modifies the variable name of observations recorded (default 'default')
+                       "mean", or None
+    label            = Optional label parameter, modifies the variable name of
+                       observations recorded (default = pcv.params.sample_label).
 
     Returns:
     df             = Dataframe containing information about the filtered contours
@@ -667,6 +668,10 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
     import skimage
     import pandas as pd
     from scipy.spatial.distance import squareform, pdist
+
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
 
     # Get image attributes
     height, width, channels = rgb_img.shape

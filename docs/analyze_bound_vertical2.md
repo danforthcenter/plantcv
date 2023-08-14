@@ -4,7 +4,7 @@ Set boundary line with boundary tool, this allows the user to find the extent-x 
 to the right and to the left as well as the area to the right and to the left of the set boundary line. This tool functions 
 best if the pot size/position of the plant remains relatively constant.
  
-**plantcv.analyze_bound_vertical**(*img, labeled_mask, line_position, n_labels=1, label="default"*)
+**plantcv.analyze_bound_vertical**(*img, labeled_mask, line_position, n_labels=1, label=None*)
 
 **returns** image with boundary data
 
@@ -13,7 +13,7 @@ best if the pot size/position of the plant remains relatively constant.
     - labeled_mask - Labeled mask of objects (32-bit).
     - line_position - position of boundary line (a value of 0 would draw the line through the left of the image)
     - n_labels - Total number expected individual objects (default = 1).
-    - label - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
+    - label - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
 - **Context:**
     - Used to define a boundary line for the image, to find the width to the right and to the left as well as area to the
     right and to the left of a boundary line.
@@ -32,12 +32,14 @@ from plantcv import plantcv as pcv
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "plot"
+# Optionally, set a sample label name
+pcv.params.sample_label = "plant"
 
 # Set Boundary Line    
-boundary_image = pcv.analyze.bound_vertical(img=img, labeled_mask=bin_mask, line_position=1000, n_labels=1, label="default")
+boundary_image = pcv.analyze.bound_vertical(img=img, labeled_mask=bin_mask, line_position=1000, n_labels=1)
 
 # Access data stored out from analyze_bound_vertical
-area_right_reference = pcv.outputs.observations['default1']['area_right_reference']['value']
+area_right_reference = pcv.outputs.observations['plant1']['area_right_reference']['value']
 
 ```
 

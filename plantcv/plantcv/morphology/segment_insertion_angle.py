@@ -1,5 +1,4 @@
-# Find leaf insertion angles with stem
-
+"""Find leaf insertion angles with stem."""
 import os
 import cv2
 import numpy as np
@@ -17,7 +16,7 @@ from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours
 
 
-def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects, size, label="default"):
+def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects, size, label=None):
     """Find leaf insertion angles in degrees of skeleton segments.
     Fit a linear regression line to the stem. Use `size` pixels on  the portion of leaf next to the stem find a linear
     regression line, and calculate angle between the two lines per leaf object.
@@ -28,7 +27,8 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     leaf_objects     = List of leaf segments
     stem_objects     = List of stem segments
     size             = Size of inner leaf used to calculate slope lines
-    label            = optional label parameter, modifies the variable name of observations recorded
+    label            = Optional label parameter, modifies the variable name of
+                       observations recorded (default = pcv.params.sample_label).
 
     Returns:
     labeled_img      = Debugging image with angles labeled
@@ -41,6 +41,10 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     :param label: str
     :return labeled_img: numpy.ndarray
     """
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+
     # Store debug
     debug = params.debug
     params.debug = None
