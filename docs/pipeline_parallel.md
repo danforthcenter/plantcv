@@ -120,7 +120,7 @@ Sample image filename: `cam1_16-08-06-16:45_el1100s1_p19.jpg`
         "disk": "1GB",
         "log_directory": null,
         "local_directory": null,
-        "job_extra": null
+        "job_extra_directives": null
     },
     "metadata_terms": {
     ...
@@ -196,7 +196,7 @@ in a list to the `filename_metadata` parameter.
         "disk": "1GB",
         "log_directory": null,
         "local_directory": null,
-        "job_extra": null
+        "job_extra_directives": null
     },
     "metadata_terms": {
     ...
@@ -248,7 +248,7 @@ To identify each image within our workflow, we will name them based on the `imgt
         "disk": "1GB",
         "log_directory": null,
         "local_directory": null,
-        "job_extra": null
+        "job_extra_directives": null
     },
     "metadata_terms": {
     ...
