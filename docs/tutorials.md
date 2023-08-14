@@ -132,7 +132,7 @@
         <h6>Hyperspectral image workflow</h6>
     </div>
     <div class="card-tags">
-        <span><strong>Tags</strong>: plant shoot, single plant, side-view, hyperspectral, spectral index</span>
+        <span><strong>Tags</strong>: maize, corn, kernel, hyperspectral, spectral index</span>
     </div>
     <div class="card-button">
         <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-hyperspectral/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
@@ -142,7 +142,7 @@
 <!--Hyperspectral SMF Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/hyperspectral_smf_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-tutorial-hyperspectral-smf/blob/main/tutorial_card.jpg?raw=true" alt="Hyperspectral SMF tutorial" width="600" height="auto">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-hyperspectral-smf-detection/blob/main/tutorial_card.jpg?raw=true" alt="Hyperspectral SMF tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Hyperspectral SMF workflow</h6>
@@ -151,7 +151,7 @@
         <span><strong>Tags</strong>: Hyperspectral, Spectral Match Filter, Disease, Leaves, Machine Learning</span>
     </div>
     <div class="card-button">
-        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-hyperspectral-smf/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
+        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-hyperspectral-smf-detection/HEAD?labpath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
     </div>
 </div>
 
