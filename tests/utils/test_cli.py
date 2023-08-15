@@ -20,7 +20,7 @@ def test_run_json2csv(utils_test_data, tmpdir):
     import sys
     sys.argv = ["plantcv-utils", "json2csv",
                 "--json", utils_test_data.plantcv_results_file,
-                "--csv", os.path.join(str(tmp_dir), "exports.csv")]
+                "--csv", os.path.join(str(tmp_dir), "exports")]
     assert main() is None
 
 

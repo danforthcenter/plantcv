@@ -1,3 +1,4 @@
+"""Converter functions."""
 import os
 import json
 import itertools
@@ -5,7 +6,23 @@ import pandas as pd
 import numpy as np
 
 
-def json2csv(json_file, csv_file):
+def json2csv(json_file, csv_prefix):
+    """Convert a PlantCV JSON file to a CSV files.
+
+    Parameters
+    ----------
+    json_file : str
+        JSON file output by plantcv-run-workflow.
+    csv_prefix : str
+        CSV output files prefix.
+
+    Raises
+    ------
+    IOError
+        JSON file does not exist.
+    ValueError
+        JSON file is not in the expected format.
+    """
     if not os.path.exists(json_file):
         # If the file does not exist raise an error
         raise IOError(f"File does not exist: {json_file}")
@@ -35,8 +52,8 @@ def json2csv(json_file, csv_file):
                 multi_vars.append(key)
 
     # Output files
-    scalar_file = csv_file + "-single-value-traits.csv"
-    multi_file = csv_file + "-multi-value-traits.csv"
+    scalar_file = csv_prefix + "-single-value-traits.csv"
+    multi_file = csv_prefix + "-multi-value-traits.csv"
 
     # Create a CSV file of vector traits
     with open(multi_file, "w") as csv:

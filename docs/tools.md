@@ -56,14 +56,16 @@ usage: plantcv-utils json2csv [-h] -j JSON -c CSV
 optional arguments:
   -h, --help            Show this help message and exit
   -j JSON, --json JSON  Input PlantCV JSON filename.
-  -c CSV, --csv CSV     Output CSV filename.
+  -c CSV, --csv CSV     Output CSV file prefix.
 
 ```
 
 The input JSON file is generally created by running `plantcv-run-workflow`, although there are some advanced scenarios
 where it is created by running `plantcv.parallel.process_results` on a directory of JSON files. This 
 [hierarchical data structure](output_measurements.md) is convenient for flexible data processing but not for downstream
-analysis. The tool creates an output CSV file. The format of this table is one row per value/label (i.e. R long format). 
+analysis. The tool creates two output CSV files. The format of the `single-value-traits.csv` file is in wide format, with
+a column per trait (traits represented by single values). The format of the `multi-value-traits.csv` file is one row per
+value/label (i.e. long format).
 
 #### Tabulate Naive Bayes Classes
 
