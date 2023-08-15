@@ -2,6 +2,7 @@ import os
 import json
 import itertools
 import pandas as pd
+import numpy as np
 
 
 def json2csv(json_file, csv_file):
@@ -90,7 +91,10 @@ def _create_metadata_row(meta_vars, metadata):
     for var in meta_vars:
         val = "NA"
         if var in metadata:
-            val = "_".join(map(str, metadata[var]["value"]))
+            # Create a unique list if there are multiple values
+            u_list = np.unique(metadata[var]["value"]).tolist()
+            # If there are multiple values, join them with an underscore
+            val = "_".join(map(str, u_list))
         meta_row.append(val)
     return meta_row
 
