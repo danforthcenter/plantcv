@@ -85,13 +85,13 @@
 <!--Photosynthesis Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/psII_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/photosynthesis_tutorial/photosynthesis_tutorial_card.jpg?raw=true" alt="PSII tutorial" width="600" height="auto">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-photosynthesis/blob/main/tutorial_card.png?raw=true" alt="PSII tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Single plant PSII (Fv/Fm) workflow</h6>
     </div>
     <div class="card-tags">
-        <span><strong>Tags</strong>: plant shoot, single plant, side-view, Chlorophyll fluorescence, Fv/Fm analysis</span>
+        <span><strong>Tags</strong>: photosynthesis, Fv/Fm, NPQ, chlorophyll, chl</span>
     </div>
 </div>
 
