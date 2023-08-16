@@ -5,6 +5,8 @@ import itertools
 import pandas as pd
 import numpy as np
 
+def _last_index(*args):
+    return np.array(args[-1])[-1]
 
 def json2csv(json_file, csv_prefix):
     """Convert a PlantCV JSON file to a CSV files.
@@ -98,7 +100,7 @@ def json2csv(json_file, csv_prefix):
     # Create a pandas dataframe from the dictionary
     df = pd.DataFrame(scalar_data)
     # Pivot the dataframe to wide format
-    df = df.pivot(index=meta_vars + ["sample"], columns="trait", values="value")
+    df = df.pivot_table(index=meta_vars + ["sample"], columns=["trait", "label"], values="value", aggfunc = _last_index)
     # Save the dataframe to a CSV file
     df.to_csv(scalar_file)
 
