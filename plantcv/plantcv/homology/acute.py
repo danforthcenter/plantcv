@@ -36,7 +36,12 @@ def acute(img, mask, win, threshold):
     :param mask: numpy.ndarray
     :param win: int
     :param threshold: int
-    :return homolog_pts:
+    :return homolog_pts: numpy.ndarray
+    :return start_pts: numpy.ndarray
+    :return stop_pts: numpy.ndarray
+    :return ptvals: list
+    :return chain: lsit
+    :return verbose_out: list
     """
     # Find contours
     contours, hierarchy = _cv2_findcontours(bin_img=mask)
@@ -80,12 +85,6 @@ def acute(img, mask, win, threshold):
         p23 = np.sqrt((pt_a[0][0]-pt_b[0][0])*(pt_a[0][0]-pt_b[0][0])+(pt_a[0][1]-pt_b[0][1])*(pt_a[0][1]-pt_b[0][1]))
         dot = (p12*p12 + p13*p13 - p23*p23)/(2*p12*p13)
 
-        # Used a random number generator to test if either of these cases were possible but neither is possible
-        # if dot > 1:              # If float exceeds 1 prevent arcos error and force to equal 1
-        #     dot = 1
-        # elif dot < -1:           # If float exceeds -1 prevent arcos error and force to equal -1
-        #     dot = -1
-
         ang = math.degrees(math.acos(dot))
         # print(str(k)+'  '+str(dot)+'  '+str(ang))
         chain.append(ang)
@@ -95,10 +94,6 @@ def acute(img, mask, win, threshold):
     for c, link in enumerate(chain):     # Identify links in chain with acute angles
         if float(link) <= threshold:
             index.append(c)         # Append positions of acute links to index
-
-    # acute_pos = obj[index]            # Extract all island points blindly
-    #
-    # float(len(acute_pos)) / float(len(obj))  # Proportion of informative positions
 
     if len(index) != 0:
 
@@ -160,31 +155,6 @@ def acute(img, mask, win, threshold):
             else:
                 ptvals.append('NaN')        # If no values can be retrieved (small/collapsed contours)
                 vals = []
-
-            # Identify pixel coordinate to use as pseudolandmark for island
-            # if len(isle[x]) == 1:           # If landmark is a single point (store position)
-            #    if debug == True:
-            #        print('route A')
-            #    pt = isle[x][0]
-            #    max_dist.append([isle[x][0], '-', chain[isle[x][0]]])
-            #    # print pt
-            # elif len(isle[x]) == 2:         # If landmark is a pair of points (store more acute position)
-            #    if debug == True:
-            #        print('route B')
-            #    pt_a = chain[isle[x][0]]
-            #    pt_b = chain[isle[x][1]]
-            #    print(pt_a, pt_b)
-            #    if pt_a == pt_b:
-            #        pt = isle[x][0]             # Store point A if both are equally acute
-            #        max_dist.append([isle[x][0], '-', chain[isle[x][0]]])
-            #    elif pt_a < pt_b:
-            #        pt = isle[x][0]             # Store point A if more acute
-            #        max_dist.append([isle[x][0], '-', chain[isle[x][0]]])
-            #    elif pt_a > pt_b:
-            #        pt = isle[x][1]             # Store point B if more acute
-            #        max_dist.append([isle[x][1], '-', chain[isle[x][1]]])
-            #     print pt
-
             if len(island) >= 3:               # If landmark is multiple points (distance scan for position)
                 if params.debug is not None:
                     print('route C')
