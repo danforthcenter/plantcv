@@ -19,7 +19,7 @@ def options():
     # Create the json2csv subcommand
     json2csv_cmd = subparsers.add_parser("json2csv", help="Convert PlantCV output JSON files to CSV.")
     json2csv_cmd.add_argument("-j", "--json", help="Input PlantCV JSON filename.", required=True)
-    json2csv_cmd.add_argument("-c", "--csv", help="Output CSV filename.", required=True)
+    json2csv_cmd.add_argument("-c", "--csv", help="Output CSV file prefix.", required=True)
     json2csv_cmd.set_defaults(func=run_json2csv)
 
     # Create the tabulate_bayes_classes subcommand
@@ -52,7 +52,7 @@ def options():
 # Run the JSON to CSV converter
 ###########################################
 def run_json2csv(args):
-    plantcv.utils.json2csv(json_file=args.json, csv_file=args.csv)
+    plantcv.utils.json2csv(json_file=args.json, csv_prefix=args.csv)
 ###########################################
 
 
