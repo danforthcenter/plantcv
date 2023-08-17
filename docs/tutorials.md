@@ -163,7 +163,7 @@
 <!--Arabidopsis Multi-plant Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/arabidopsis_multi_plant_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-tutorial-arabidopsis-tray/blob/main/tutorial_card.png??raw=true" alt="Multi-plant tutorial" width="600" height="auto">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-arabidopsis-tray/blob/main/tutorial_card.png?raw=true" alt="Multi-plant tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Arabidopsis Multi-Plant Tutorial</h6>
