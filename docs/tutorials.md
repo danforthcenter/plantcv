@@ -255,7 +255,7 @@
 <!--ROI Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/roi_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/roi_tutorial/roi_tutorial_card.png?raw=true" alt="ROI tutorial" width="600" height="auto">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-roi/blob/main/tutorial_card.png?raw=true" alt="ROI tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Region of Interest Tutorial</h6>
