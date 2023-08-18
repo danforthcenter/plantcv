@@ -44,7 +44,6 @@ from plantcv.plantcv.invert import invert
 from plantcv.plantcv.logical_and import logical_and
 from plantcv.plantcv.logical_or import logical_or
 from plantcv.plantcv.logical_xor import logical_xor
-from plantcv.plantcv.find_objects import find_objects
 from plantcv.plantcv.within_frame import within_frame
 from plantcv.plantcv.flip import flip
 from plantcv.plantcv.crop_position_mask import crop_position_mask
@@ -121,7 +120,6 @@ __all__ = [
     "logical_and",
     "logical_or",
     "logical_xor",
-    "find_objects",
     "within_frame",
     "flip",
     "crop_position_mask",
