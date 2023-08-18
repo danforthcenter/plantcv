@@ -62,7 +62,6 @@ nav:
       - 'Erosion': erode.md
       - 'Fill Objects': fill.md
       - 'Fill Holes': fill_holes.md
-      - 'Find Objects': find_objects.md
       - 'Flip Image': flip.md
       - 'Filters':
         - 'Laplace Filter': laplace_filter.md
