@@ -203,7 +203,7 @@
 <!--Color correction Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/transform_color_correction_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/color_correction_tutorial/color_correction_tutorial_card.png?raw=true" alt="Color correction tutorial" width="600" height="auto">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-color-correction/blob/main/tutorial_card.png?raw=true" alt="Color correction tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Color Correction Tutorial</h6>
