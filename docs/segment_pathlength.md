@@ -2,7 +2,7 @@
 
 Measure the geodesic distance of segments. 
 
-**plantcv.morphology.segment_path_length**(*segmented_img, objects, label="default"*)
+**plantcv.morphology.segment_path_length**(*segmented_img, objects, label=None*)
 
 **returns** labeled_image  
 
@@ -12,7 +12,7 @@ Measure the geodesic distance of segments.
     - objects - Segment objects (output from either [plantcv.morphology.prune](prune.md),
     [plantcv.morphology.segment_skeleton](segment_skeleton.md), or
     [plantcv.morphology.segment_sort](segment_sort.md)).
-    - label         - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
+    - label         - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
 - **Context:**
     - Calculates the geodesic distance of each segment. Users can pass only 
     leaf objects (returned from [plantcv.morphology.segment_sort](segment_sort.md)) to only collect lengths of leaves only.
@@ -31,12 +31,13 @@ from plantcv import plantcv as pcv
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "plot"
+# Optionally, set a sample label name
+pcv.params.sample_label = "plant"
 
-labeled_img = pcv.morphology.segment_path_length(segmented_img=segmented_img, 
-                                                 objects=obj, label="default")
+labeled_img = pcv.morphology.segment_path_length(segmented_img=segmented_img, objects=obj)
 
 # Access data stored out from segment_path_length
-path_lengths = pcv.outputs.observations['default']['segment_path_length']['value']
+path_lengths = pcv.outputs.observations['plant']['segment_path_length']['value']
 
 ```
 

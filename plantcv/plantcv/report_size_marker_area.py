@@ -1,42 +1,34 @@
-# Analyzes an object and outputs numeric properties
-
+"""Analyzes an object and outputs numeric properties."""
 import cv2
 import numpy as np
 import os
-from plantcv.plantcv import fatal_error
-from plantcv.plantcv import rgb2gray_hsv
-from plantcv.plantcv import find_objects
+from plantcv.plantcv import params, outputs, fatal_error, apply_mask, rgb2gray_hsv
 from plantcv.plantcv.threshold import binary as binary_threshold
-from plantcv.plantcv import roi_objects
-from plantcv.plantcv import object_composition
-from plantcv.plantcv import apply_mask
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import params
-from plantcv.plantcv import outputs
+from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition, _roi_filter
 
 
-def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None,
-                            thresh=None, label="default"):
+def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_channel=None,
+                            thresh=None, label=None):
     """
     Detects a size marker in a specified region and reports its size and eccentricity
 
     Inputs:
     img             = An RGB or grayscale image to plot the marker object on
-    roi_contour     = A region of interest contour (e.g. output from pcv.roi.rectangle or other methods)
-    roi_hierarchy   = A region of interest contour hierarchy (e.g. output from pcv.roi.rectangle or other methods)
+    roi             = A region of interest (e.g. output from pcv.roi.rectangle or other methods)
     marker          = 'define' or 'detect'. If define it means you set an area, if detect it means you want to
                       detect within an area
     objcolor        = Object color is 'dark' or 'light' (is the marker darker or lighter than the background)
     thresh_channel  = 'h', 's', or 'v' for hue, saturation or value
     thresh          = Binary threshold value (integer)
-    label      = optional label parameter, modifies the variable name of observations recorded
+    label           = Optional label parameter, modifies the variable name of
+                      observations recorded (default = pcv.params.sample_label).
 
     Returns:
     analysis_images = List of output images
 
     :param img: numpy.ndarray
-    :param roi_contour: list
-    :param roi_hierarchy: numpy.ndarray
+    :param roi: plantcv.plantcv.classes.Objects
     :param marker: str
     :param objcolor: str
     :param thresh_channel: str
@@ -47,6 +39,9 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
     # Store debug
     debug = params.debug
     params.debug = None
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
 
     params.device += 1
     # Make a copy of the reference image
@@ -60,9 +55,9 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
     # Initialize a binary image
     roi_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
     # Draw the filled ROI on the mask
-    cv2.drawContours(roi_mask, roi_contour, -1, (255), -1)
-    marker_mask = []
-    marker_contour = []
+    cv2.drawContours(roi_mask, roi.contours[0], -1, (255), -1)
+    # Marker mask
+    marker_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
 
     # If the marker type is "detect" then we will use the ROI to isolate marker contours from the input image
     if marker.upper() == 'DETECT':
@@ -73,29 +68,22 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
             # Convert the masked image to hue, saturation, or value
             marker_hsv = rgb2gray_hsv(rgb_img=masked, channel=thresh_channel)
             # Threshold the HSV image
-            marker_bin = binary_threshold(gray_img=marker_hsv, threshold=thresh, max_value=255, object_type=objcolor)
+            marker_bin = binary_threshold(gray_img=marker_hsv, threshold=thresh, object_type=objcolor)
             # Identify contours in the masked image
-            contours, hierarchy = find_objects(img=ref_img, mask=marker_bin)
+            contours, hierarchy = _cv2_findcontours(bin_img=marker_bin)
+
             # Filter marker contours using the input ROI
-            kept_contours, kept_hierarchy, kept_mask, obj_area = roi_objects(img=ref_img, object_contour=contours,
-                                                                             obj_hierarchy=hierarchy,
-                                                                             roi_contour=roi_contour,
-                                                                             roi_hierarchy=roi_hierarchy,
-                                                                             roi_type="partial")
+            kept_contours, kept_hierarchy, _ = _roi_filter(img=marker_bin, roi=roi, obj=contours,
+                                                           hierarchy=hierarchy, roi_type="partial")
             # If there are more than one contour detected, combine them into one
-            # These become the marker contour and mask
-            marker_contour, marker_mask = object_composition(img=ref_img, contours=kept_contours,
-                                                             hierarchy=kept_hierarchy)
+            marker_contour = _object_composition(contours=kept_contours, hierarchy=kept_hierarchy)
+            cv2.drawContours(marker_mask, kept_contours, -1, (255), -1, hierarchy=kept_hierarchy)
         else:
             # Reset debug mode
             params.debug = debug
             fatal_error('thresh_channel and thresh must be defined in detect mode')
     elif marker.upper() == "DEFINE":
-        # Identify contours in the masked image
-        contours, hierarchy = find_objects(img=ref_img, mask=roi_mask)
-        # If there are more than one contour detected, combine them into one
-        # These become the marker contour and mask
-        marker_contour, marker_mask = object_composition(img=ref_img, contours=contours, hierarchy=hierarchy)
+        marker_mask = roi_mask
     else:
         # Reset debug mode
         params.debug = debug
@@ -103,6 +91,9 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
 
     # Calculate the moments of the defined marker region
     m = cv2.moments(marker_mask, binaryImage=True)
+    cnt, h = _cv2_findcontours(bin_img=marker_mask)
+    marker_contour = _object_composition(contours=cnt, hierarchy=h)
+
     # Calculate the marker area
     marker_area = m['m00']
 

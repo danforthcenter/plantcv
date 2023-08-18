@@ -1,15 +1,14 @@
-# Find tangent angles in degrees of skeleton segments
-
+"""Find tangent angles in degrees of skeleton segments."""
 import os
 import cv2
 import numpy as np
 import pandas as pd
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
-from plantcv.plantcv import find_objects
 from plantcv.plantcv import color_palette
 from plantcv.plantcv.morphology import _iterative_prune
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _cv2_findcontours
 
 
 def _slope_to_intesect_angle(m1, m2):
@@ -30,7 +29,7 @@ def _slope_to_intesect_angle(m1, m2):
     return angle
 
 
-def segment_tangent_angle(segmented_img, objects, size, label="default"):
+def segment_tangent_angle(segmented_img, objects, size, label=None):
     """Find 'tangent' angles in degrees of skeleton segments.
     Use `size` pixels on either end of each segment to find a linear regression line, and calculate angle between the two
     lines drawn per segment.
@@ -39,7 +38,8 @@ def segment_tangent_angle(segmented_img, objects, size, label="default"):
     segmented_img  = Segmented image to plot slope lines and intersection angles on
     objects        = List of contours
     size           = Size of ends used to calculate "tangent" lines
-    label          = optional label parameter, modifies the variable name of observations recorded
+    label          = Optional label parameter, modifies the variable name of
+                     observations recorded (default = pcv.params.sample_label).
 
     Returns:
     labeled_img    = Segmented debugging image with angles labeled
@@ -50,6 +50,10 @@ def segment_tangent_angle(segmented_img, objects, size, label="default"):
     :param label: str
     :return labeled_img: numpy.ndarray
     """
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+
     # Store debug
     debug = params.debug
     params.debug = None
@@ -68,7 +72,7 @@ def segment_tangent_angle(segmented_img, objects, size, label="default"):
         cv2.drawContours(labeled_img, objects, i, rand_color[i], params.line_thickness, lineType=8)
         pruned_segment = _iterative_prune(find_tangents, size)
         segment_ends = find_tangents - pruned_segment
-        segment_end_obj, segment_end_hierarchy = find_objects(segment_ends, segment_ends)
+        segment_end_obj, _ = _cv2_findcontours(bin_img=segment_ends)
         slopes = []
         for j, obj in enumerate(segment_end_obj):
             # Find bounds for regression lines to get drawn

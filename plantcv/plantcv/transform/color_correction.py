@@ -1,13 +1,159 @@
-# Color Corrections Functions
-
+"""Color Corrections Functions."""
 import os
+import math
 import cv2
 import numpy as np
-from plantcv.plantcv import params
-from plantcv.plantcv import outputs
+import altair as alt
+import pandas as pd
+from plantcv.plantcv import params, outputs, fatal_error
 from plantcv.plantcv.roi import circle
-from plantcv.plantcv import fatal_error
 from plantcv.plantcv._debug import _debug
+
+
+def affine_color_correction(rgb_img, source_matrix, target_matrix):
+    """Affine color correction of RGB image.
+
+    Correct the color of the input image based on the target color matrix using an affine transformation
+    in the RGB space. The vector containing the regression coefficients is calculated as the one that minimizes the
+    Euclidean distance between the transformed source color values and the target color values.
+
+    Inputs:
+    rgb_img         = an RGB image with color chips visualized
+    source_matrix   = array of RGB color values (intensity in the range [0-1]) from
+                      the image to be corrected where each row is one
+                      color reference and the columns are organized as index,R,G,B
+    target_matrix   = array of target RGB color values (intensity in the range [0-1])
+                      where each row is one color reference and the columns are
+                      organized as index,R,G,B
+
+    Outputs:
+    corrected_img   = color corrected image
+
+
+    :param rgb_img: numpy.ndarray
+    :return source_matrix: numpy.ndarray
+    :return target_matrix: numpy.ndarray
+    :return corrected_img: numpy.ndarray
+    """
+    # matrices must have the same number of color references
+    if source_matrix.shape != target_matrix.shape:
+        fatal_error("Missmatch between the color matrices' shapes")
+
+    h, w, c = rgb_img.shape
+
+    # number of references
+    n = source_matrix.shape[0]
+
+    # the column zero (index) of the matrices is not used in this model
+    # augment matrix of source values with a column of 1s for the constant part of
+    # the affine transformation
+    S = np.concatenate((source_matrix[:, 1:].copy(), np.ones((n, 1))), axis=1)
+
+    # make vectors of taget values for each color
+    T = target_matrix[:, 1:].copy()
+    tr = T[:, 0]
+    tg = T[:, 1]
+    tb = T[:, 2]
+
+    # calculate regression vector for each color as the pseudoinverse of the source
+    # values matrix multiplied by each color target vector
+    ar = np.matmul(np.linalg.pinv(S), tr)
+    ag = np.matmul(np.linalg.pinv(S), tg)
+    ab = np.matmul(np.linalg.pinv(S), tb)
+
+    img_rgb = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2RGB)
+    # reshape image as a 2D array where the rows are pixels and the colums are color channels
+    # and augment the channels with a column of 1s for the affine transformation
+    img_pix = np.concatenate((img_rgb.reshape(h*w, c).astype(np.float64)/255, np.ones((h*w, 1))), axis=1)
+
+    # calculate the corrected colors, eliminate values outside the range [0-1] and
+    # convert to [0-255] unit8
+    img_r_cc = (255*np.clip(np.matmul(img_pix, ar), 0, 1)).astype(np.uint8)
+    img_g_cc = (255*np.clip(np.matmul(img_pix, ag), 0, 1)).astype(np.uint8)
+    img_b_cc = (255*np.clip(np.matmul(img_pix, ab), 0, 1)).astype(np.uint8)
+
+    # reconstruct the RGB (actually BGR for openCV) image
+    corrected_img = np.stack((img_b_cc, img_g_cc, img_r_cc), axis=1).reshape(h, w, c)
+
+    # For debugging, create a horizontal view of the image before and after color correction
+    debug_img = np.hstack([rgb_img, corrected_img])
+    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_affine_corrected.png'))
+
+    return corrected_img
+
+
+def std_color_matrix(pos=0):
+    """Create a standard color matrix.
+
+    Standard color values compatible with the x-rite ColorCheker Classic,
+    ColorChecker Mini, and ColorChecker Passport targets.
+    Source: https://en.wikipedia.org/wiki/ColorChecker
+
+    Inputs:
+    pos     = reference value indicating orientation of the color card. The reference
+                is based on the position of the white chip:
+
+                pos = 0: bottom-left corner
+                pos = 1: bottom-right corner
+                pos = 2: top-right corner
+                pos = 3: top-left corner
+
+    Outputs:
+    color_matrix    = matrix containing the standard red, green, and blue
+                        values for each color chip
+
+    :param pos: int
+    :return color_matrix: numpy.ndarray
+    """
+    # list of rgb values as indicated in the color card specs. They need to be
+    # aranged depending on the orientation of the color card of reference in the
+    # image to be corrected.
+    values_list = np.array([[115, 82, 68],  # dark skin
+                            [194, 150, 130],  # light skin
+                            [98, 122, 157],  # blue sky
+                            [87, 108, 67],  # foliage
+                            [133, 128, 177],  # blue flower
+                            [103, 189, 170],  # bluish green
+                            [214, 126, 44],  # orange
+                            [80, 91, 166],  # purplish blue
+                            [193, 90, 99],  # moderate red
+                            [94, 60, 108],  # purple
+                            [157, 188, 64],  # yellow green
+                            [224, 163, 46],  # orange yellow
+                            [56, 61, 150],  # blue
+                            [70, 148, 73],  # green
+                            [175, 54, 60],  # red
+                            [231, 199, 31],  # yellow
+                            [187, 86, 149],  # magenta
+                            [8, 133, 161],  # cyan
+                            [243, 243, 242],  # white (.05*)
+                            [200, 200, 200],  # neutral 8 (.23*)
+                            [160, 160, 160],  # neutral 6.5 (.44*)
+                            [122, 122, 121],  # neutral 5 (.7*)
+                            [85, 85, 85],  # neutral 3.5 (1.05*)
+                            [52, 52, 52]], dtype=np.float64)  # black (1.50*)
+
+    pos = math.floor(pos)
+    if (pos < 0) or (pos > 3):
+        fatal_error("white chip position reference 'pos' must be a value among {0, 1, 2, 3}")
+
+    N_chips = values_list.shape[0]
+
+    # array of indices from 1 to N chips in order to match the chip numbering
+    # in the color card specs. Later when used for indexing, we substract the 1.
+    idx = np.arange(N_chips)+1
+    # indices in the shape of the color card
+    cc_indices = idx.reshape((4, 6), order='C')
+    # rotate the indices depending on the specified orientation
+    cc_indices_rot = np.rot90(cc_indices, k=pos, axes=(0, 1))
+    # arange color values based on the indices
+    color_matrix_wo_chip_nb = values_list[(cc_indices_rot-1).reshape(-1), :]/255.
+
+    # add chip number compatible with other PlantCV functions
+    chip_nb = np.arange(10, 10*N_chips+1, 10)
+    color_matrix = np.concatenate((chip_nb.reshape(N_chips, 1), color_matrix_wo_chip_nb), axis=1)
+
+    return color_matrix
 
 
 def get_color_matrix(rgb_img, mask):
@@ -67,7 +213,7 @@ def get_color_matrix(rgb_img, mask):
 
 
 def get_matrix_m(target_matrix, source_matrix):
-    """Calculate Moore-Penrose inverse matrix for use in calculating transformation_matrix
+    """Calculate Moore-Penrose inverse matrix for use in calculating transformation_matrix.
 
     Inputs:
     target_matrix       = a 22x4 matrix containing the average red value, average green value, and average blue value
@@ -129,7 +275,7 @@ def get_matrix_m(target_matrix, source_matrix):
 
 
 def calc_transformation_matrix(matrix_m, matrix_b):
-    """Calculates transformation matrix (transformation_matrix).
+    """Calculate a transformation matrix (transformation_matrix).
 
     Inputs:
     matrix_m    = a 9x22 Moore-Penrose inverse matrix
@@ -254,7 +400,8 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
 
 
 def save_matrix(matrix, filename):
-    """Serializes a matrix as an numpy.ndarray object and save to a .npz file.
+    """Serialize a matrix as an numpy.ndarray object and save to a .npz file.
+
     Inputs:
     matrix      = a numpy.matrix
     filename    = name of file to which matrix will be saved. Must end in .npz
@@ -272,7 +419,8 @@ def save_matrix(matrix, filename):
 
 
 def load_matrix(filename):
-    """Deserializes from file an numpy.ndarray object as a matrix
+    """Deserializes from file an numpy.ndarray object as a matrix.
+
     Inputs:
     filename    = .npz file to which a numpy.matrix or numpy.ndarray is saved
 
@@ -290,7 +438,8 @@ def load_matrix(filename):
 
 
 def correct_color(target_img, target_mask, source_img, source_mask, output_directory):
-    """Takes a target_img with preferred color_space and converts source_img to that color_space.
+    """Take a target_img with preferred color_space and convert source_img to that color_space.
+
     Inputs:
     target_img          = an RGB image with color chips visualized
     source_img          = an RGB image with color chips visualized
@@ -342,7 +491,8 @@ def correct_color(target_img, target_mask, source_img, source_mask, output_direc
 
 
 def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=[]):
-    """Create a labeled mask for color card chips
+    """Create a labeled mask for color card chips.
+
     Inputs:
     rgb_img        = Input RGB image data containing a color card.
     radius         = Radius of color masks.
@@ -394,20 +544,22 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
     i = 1
     # Draw labeled chip boxes on the mask
     for chip in chips:
-        mask = cv2.drawContours(mask, chip[0], -1, (i * 10), -1)
+        mask = cv2.drawContours(mask, chip.contours[0], -1, (i * 10), -1)
         i += 1
     # Create a copy of the input image for plotting
     canvas = np.copy(rgb_img)
     # Draw chip ROIs on the canvas image
     for chip in chips:
-        cv2.drawContours(canvas, chip[0], -1, (255, 255, 0), params.line_thickness)
+        cv2.drawContours(canvas, chip.contours[0], -1, (255, 255, 0), params.line_thickness)
     _debug(visual=canvas, filename=os.path.join(params.debug_outdir, str(params.device) + '_color_card_mask_rois.png'))
     _debug(visual=mask, filename=os.path.join(params.debug_outdir, str(params.device) + '_color_card_mask.png'))
     return mask
 
 
 def quick_color_check(target_matrix, source_matrix, num_chips):
-    """Quickly plot target matrix values against source matrix values to determine
+    """Plot the color values of a target and source color card matrix.
+
+    Quickly plot target matrix values against source matrix values to determine
     over saturated color chips or other issues.
 
     Inputs:
@@ -417,15 +569,14 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
                             of the target image
     num_chips          = number of color card chips included in the matrices (integer)
 
+    Returns:
+    p1                 = an altair plot of the target and source color values
+
     :param source_matrix: numpy.ndarray
     :param target_matrix: numpy.ndarray
     :param num_chips: int
+    :return p1: altair.vegalite.v5.api.Chart
     """
-    # Imports
-    from plotnine import ggplot, geom_point, geom_smooth, theme_seaborn, facet_grid, geom_label, scale_x_continuous, \
-        scale_y_continuous, scale_color_manual, aes
-    import pandas as pd
-
     # Scale matrices to 0-255
     target_matrix = 255*target_matrix
     source_matrix = 255*source_matrix
@@ -466,20 +617,21 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
     dataset = dataset.astype({'color': str, 'chip': str, 'target': float, 'source': float})
 
     # Make the plot
-    p1 = ggplot(dataset, aes(x='target', y='source', color='color', label='chip')) + \
-        geom_point(show_legend=False, size=2) + \
-        geom_smooth(method='lm', size=.5, show_legend=False) + \
-        theme_seaborn() + facet_grid('.~color') + \
-        geom_label(angle=15, size=7, nudge_y=-.25, nudge_x=.5, show_legend=False) + \
-        scale_x_continuous(limits=(-5, 270)) + scale_y_continuous(limits=(-5, 275)) + \
-        scale_color_manual(values=['blue', 'green', 'red'])
+    p1 = alt.Chart(dataset).mark_point(point=True).encode(
+        x="target",
+        y="source",
+        color=alt.Color("color").scale(range=["blue", "green", "red"]),
+        column="color"
+        ).interactive()
 
     _debug(visual=p1, filename=os.path.join(params.debug_outdir, 'color_quick_check.png'))
 
+    return p1
+
 
 def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark',
-                    record_chip_size="median", label="default"):
-    """Automatically detects a color card and output info to use in create_color_card_mask function
+                    record_chip_size="median", label=None):
+    """Automatically detect a color card and output info to use in create_color_card_mask function.
 
     Algorithm written by Brandon Hurr. Updated and implemented into PlantCV by Haley Schuhl.
 
@@ -489,11 +641,12 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
     threshvalue      = Thresholding value, optional (default 125)
     blurry           = Bool (default False) if True then image sharpening applied
     background       = Type of image background either 'dark' or 'light' (default 'dark'); if 'light' then histogram
-                        expansion applied to better detect edges, but histogram expansion will be hindered if there
-                        is a dark background
+                       expansion applied to better detect edges, but histogram expansion will be hindered if there
+                       is a dark background
     record_chip_size = Optional str for choosing chip size measurement to be recorded, either "median",
-                        "mean", or None
-    label            = optional label parameter, modifies the variable name of observations recorded (default 'default')
+                       "mean", or None
+    label            = Optional label parameter, modifies the variable name of
+                       observations recorded (default = pcv.params.sample_label).
 
     Returns:
     df             = Dataframe containing information about the filtered contours
@@ -515,6 +668,10 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
     import skimage
     import pandas as pd
     from scipy.spatial.distance import squareform, pdist
+
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
 
     # Get image attributes
     height, width, channels = rgb_img.shape

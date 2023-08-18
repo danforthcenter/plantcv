@@ -4,7 +4,7 @@ Creates a binary image from a grayscale image using [skimage](http://scikit-imag
 texture calculation for thresholding.
 
 
-**plantcv.threshold.texture**(*gray_img, ksize, threshold, offset=3, texture_method='dissimilarity', borders='nearest', max_value=255*)
+**plantcv.threshold.texture**(*gray_img, ksize, threshold, offset=3, texture_method='dissimilarity', borders='nearest'*)
 
 **returns** thresholded/binary image
 
@@ -17,7 +17,6 @@ texture calculation for thresholding.
                       ‘contrast’, ‘dissimilarity’ (default), ‘homogeneity’, ‘ASM’, ‘energy’,
                       or ‘correlation’. For equations of different features see [this link](http://scikit-image.org/docs/dev/api/skimage.feature.html#greycoprops)
     - borders - How the array borders are handled, either ‘reflect’, ‘constant’, ‘nearest’ (default), ‘mirror’, or ‘wrap’
-    - max_value - Value to apply above threshold (usually 255 = white)
 - **Context:**
     - Used to threshold based on texture
 - **Note:**
@@ -40,8 +39,7 @@ pcv.params.debug = "plot"
 
 # Create binary image from a gray image based on texture values.
 texture_img = pcv.threshold.texture(gray_img, ksize=6, threshold=7, offset=3, 
-                                    texture_method='dissimilarity', borders='nearest', 
-                                    max_value=255)
+                                    texture_method='dissimilarity', borders='nearest')
                                     
 ```
 

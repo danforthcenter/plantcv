@@ -3,14 +3,14 @@
 Primary, or stem, objects identified during workflows that examine the [morphology](tutorials/morphology_tutorial.md) of 
 plants or plant organs can have specific characteristics measured about the stem segments of a skeleton.
 
-**plantcv.morphology.analyze_stem**(*rgb_img, stem_objects, label="default"*)
+**plantcv.morphology.analyze_stem**(*rgb_img, stem_objects, label=None*)
 
 **returns** labeled_img
 
 - **Parameters:**
     - rgb_img      - RGB image data for plotting.
     - stem_objects - List of stem segments (output from [segment_sort](segment_sort.md) function)
-    - label        - Optional label parameter, modifies the variable name of observations recorded 
+    - label        - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
 - **Context:**
     - Used to output stem morphological characteristics, including height, angle, and length.
 - **Example use:**
@@ -19,7 +19,7 @@ plants or plant organs can have specific characteristics measured about the stem
 
 - **Output data stored:** Data ('stem_angle', 'stem_height', and 'stem_length') 
     automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
-    All data stored in the Outputs class gets printed out while running [print_results](print_results.md) but
+    All data stored in the Outputs class gets printed out while running [pcv.outputs.save_results](outputs.md) but
     these data can always get accessed during a workflow. For more detail about data output see 
     [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
     
@@ -31,10 +31,12 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 
 pcv.params.debug = "plot"
+# Optionally, set a sample label name
+pcv.params.sample_label = "plant"
     
-stem_debug_img1 = pcv.morphology.analyze_stem(rgb_img=img1, stem_objects=stem_objects1, label="default")
-# Access data stored out from analyze_object
-stem_angle = pcv.outputs.observations['default']['stem_angle']['value']
+stem_debug_img1 = pcv.morphology.analyze_stem(rgb_img=img1, stem_objects=stem_objects1)
+# Access data stored out from analyze_stem
+stem_angle = pcv.outputs.observations['plant']['stem_angle']['value']
 
 stem_debug_img2 = pcv.morphology.analyze_stem(rgb_img=img2, stem_objects=stem_objects2, label="rep1")
 stem_angle = pcv.outputs.observations['rep1']['stem_angle']['value']

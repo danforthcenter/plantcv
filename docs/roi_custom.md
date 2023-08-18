@@ -2,7 +2,7 @@
 
 **plantcv.roi.custom**(*img, vertices*)
 
-**returns** roi_contours, roi_hierarchies
+**returns** roi 
 
 - **Parameters:**
     - img            = Input image data.
@@ -10,7 +10,7 @@
 - **Context:**
     - Used to define a custom polygon-shaped region of interest. Polygons 
     can be as simple as a triangle or complex and will work with downstream 
-    steps such as [pcv.roi_objects](roi_objects.md). The `vertices` input 
+    steps such as [pcv.roi.filter](roi_filter.md). The `vertices` input 
     is a list of coordinates of the desired vertices where the desired vertices 
     are tuples inside square brackets. 
 
@@ -27,10 +27,9 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 # Make a custom polygon ROI
-roi_contour, roi_hierarchy = pcv.roi.custom(img=img, 
-                                            vertices=[[1190,490], [1470,830], 
-                                            [1565,1460], [1130,1620], 
-                                            [920,1430], [890,950]])
+roi = pcv.roi.custom(img=img, vertices=[[1190,490], [1470,830], 
+                                        [1565,1460], [1130,1620], 
+                                        [920,1430], [890,950]])
                                       
 ```
 

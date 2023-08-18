@@ -25,26 +25,36 @@ nav:
   - 'Exporting Data': db-exporter.md
   - 'PlantCV Namespace':
     - 'PlantCV':
-      - 'Analyze Color': analyze_color.md
-      - 'Analyze NIR': analyze_NIR_intensity.md
-      - 'Analyze Shape': analyze_shape.md
-      - 'Analyze Thermal': analyze_thermal_values.md
+      - 'Inputs and Outputs':
+        - 'Print Image': print_image.md
+        - 'Plot Image': plot_image.md
+        - 'Read Image': read_image.md
+        - 'Read Bayer Raw Image': read_bayer.md
+      - 'Analysis Methods':
+        - 'Analyze Color': analyze_color2.md
+        - 'Analyze Grayscale': analyze_grayscale.md
+        - 'Analyze Size and Shape': analyze_size.md
+        - 'Horizontal Boundary Tool': analyze_bound_horizontal2.md
+        - 'Vertical Boundary Tool': analyze_bound_vertical2.md
+        - 'Analyze Thermal': analyze_thermal.md
+        - 'Analyze Spectral Reflectance': analyze_spectral_reflectance.md
+        - 'Analyze Spectral Index': analyze_spectral_index.md
+        - 'Analyze YII': analyze_yii.md
+        - 'Analyze NPQ': analyze_npq.md
+      - 'Annotation Tools':
+          - 'Points': Points.md
       - 'Apply Mask': apply_mask.md
       - 'Auto Crop': auto_crop.md
       - 'Background Subtraction': background_subtraction.md
-      - 'Boundary Line Tools':
-        - 'Horizontal Boundary Tool': analyze_bound_horizontal.md
-        - 'Vertical Boundary Tool': analyze_bound_vertical.md
       - 'Canny Edge Detection': canny_edge_detect.md
       - 'Closing': closing.md
-      - 'Cluster Contours': cluster_contours.md
-      - 'Cluster Contours and Split Images': cluster_contours_splitimg.md
       - 'Color Palette': color_palette.md
       - 'Colorspace Conversion':
         - 'RGB to Gray': rgb2gray.md
         - 'RGB to CMYK': rgb2cmyk.md
         - 'RGB to LAB': rgb2lab.md
         - 'RGB to HSV': rgb2hsv.md
+      - 'Create Labels': create_labels.md
       - 'Crop': crop.md
       - 'Crop and Position Mask': crop_position_mask.md
       - 'Dilation': dilate.md
@@ -52,7 +62,6 @@ nav:
       - 'Erosion': erode.md
       - 'Fill Objects': fill.md
       - 'Fill Holes': fill_holes.md
-      - 'Find Objects': find_objects.md
       - 'Flip Image': flip.md
       - 'Filters':
         - 'Laplace Filter': laplace_filter.md
@@ -60,25 +69,34 @@ nav:
         - 'Scharr Filter': scharr_filter.md
       - 'Gaussian Blur': gaussian_blur.md
       - 'Get Kernel': get_kernel.md
-      - 'Get NIR Images': get_nir.md
       - 'Histogram Normalization': HistEqualization.md
       - 'Hyperspectral Data':
-          - 'Analyze index': analyze_index.md
-          - 'Analyze spectral': analyze_spectral.md
-          - 'Calibrate': calibrate.md
+          - 'Analyze Spectral Reflectance': analyze_spectral_reflectance.md
+          - 'Analyze Spectral Index': analyze_spectral_index.md
+          - 'Calibrate HSI': calibrate.md
+          - 'Crop HSI': crop.md
           - 'Spectral Index': spectral_index.md
           - 'Extract wavelength': extract_wavelength.md
+          - 'Rotate HSI': hyperspectral_rot90.md
           - 'Spectral data objects': Spectral_data.md
+          - 'Write HSI data': write_data.md
       - 'Image Add': image_add.md
       - 'Image Subtract': image_subtract.md
       - 'Image Fusion': image_fusion.md
       - 'Invert': invert.md
+      - 'I/O Functions':
+          - 'Random Subset': io_random_subset.md
+          - 'Read Dataset': io_read_dataset.md
       - 'Landmark Analysis':
-        - 'Acute Vertex': acute_vertex.md
-        - 'x-Axis Pseudolandmarks': x_axis_pseudolandmarks.md
-        - 'y-Axis Pseudolandmarks': y_axis_pseudolandmarks.md
-        - 'Scale Features': scale_features.md
-        - 'Landmark Reference Point Distribution': landmark_reference_pt_dist.md
+        - 'Acute': homology_acute.md
+        - 'Space': homology_space.md
+        - 'StarScape': homology_starscape.md
+        - 'Constella': homology_constella.md
+        - 'ConstellaQC': homology_constellaqc.md
+        - 'x-Axis Pseudolandmarks': homology_x_axis_pseudolandmarks.md
+        - 'y-Axis Pseudolandmarks': homology_y_axis_pseudolandmarks.md
+        - 'Scale Features': homology_scale_features.md
+        - 'Landmark Reference Point Distribution': homology_landmark_reference_pt_dist.md
       - 'Logical Operations':
         - 'Logical Operations-And': logical_and.md
         - 'Logical Operations-Or': logical_or.md
@@ -103,20 +121,21 @@ nav:
         - 'Segment Tangent Angle': segment_tangent_angle.md
         - 'Skeletonize': skeletonize.md
       - 'Naive Bayes Classifier': naive_bayes_classifier.md
-      - 'Object Composition': object_composition.md
+      - 'Objects Class': objects.md
       - 'Opening': opening.md
       - 'Output Mask': output_mask.md
       - 'Outputs Class': outputs.md
       - 'Photosynthesis Functions':
           - 'Read CropReporter Data': photosynthesis_read_cropreporter.md
-          - 'Analyze Fv/Fm': photosynthesis_analyze_fvfm.md
+          - 'Reassign Frame Labels': photosynthesis_reassign_frame_labels.md
+          - 'Analyze YII': analyze_yii.md
+          - 'Analyze NPQ': analyze_npq.md
+          - 'Visualize chlorophyll Fluorescence': visualize_chlorophyll_fluorescence.md
       - 'Params (Debugging)': params.md
       - 'Print Image': print_image.md
-      - 'Print Results': print_results.md
       - 'Plot Image': plot_image.md
       - 'Read Image': read_image.md
       - 'Read Bayer Raw Image': read_bayer.md
-      - 'Rectangle Mask': rectangle_mask.md
       - 'Report Size Marker': report_size_marker.md
       - 'Region of Interest Tools':
         - 'Create a Circular ROI': roi_circle.md
@@ -125,9 +144,10 @@ nav:
         - 'Create a Custom ROI': roi_custom.md
         - 'Create ROI from Binary Image': roi_from_binary_image.md
         - 'Create Multi ROIs': 'roi_multi.md'
-        - 'Filter Objects by ROI': roi_objects.md
+        - 'Create Grid of ROIs Automatically': roi_auto_grid.md
+        - 'Filter a mask by ROI': roi_filter.md
         - 'Convert ROI to Mask': roi2mask.md
-      - 'Rotate': rotate2.md
+      - 'Segment Image Series': segment_image_series.md
       - 'Shift Image': shift.md
       - 'Spatial Clustering': spatial_clustering.md
       - 'Spectral Index': spectral_index.md
@@ -140,27 +160,32 @@ nav:
         - 'Mean Adaptive Threshold': mean_threshold.md
         - 'Otsu Auto Threshold': otsu_threshold.md
         - 'Saturation Threshold': saturation_threshold.md
+        - 'Threshold Two Channels': threshold_dual_channels.md
         - 'Triangle Auto Threshold': triangle_threshold.md
         - 'Texture Threshold': texture_threshold.md
       - 'Transformation Methods':
           - 'Auto-Detect Color Card': find_color_card.md
           - 'Create Color Card Mask': create_color_card_mask.md
           - 'Convert Color Card to Matrix': get_color_matrix.md
-          - 'Calculate Moore-Penrose Inverse Matrix': mp_inverse.md
-          - 'Create Color Correction Matrix': transformation_matrix.md
-          - 'Apply Color Correction Matrix': apply_transformation_matrix.md
           - 'Color Correction Workflow': transform_correct_color.md
           - 'Quick Color Check': quick_color_check.md
-          - 'Load Matrix': load_matrix.md
-          - 'Save Matrix': save_matrix.md
+          - 'Affine Color Correction': transform_affine_color_correction.md
+          - 'Standard Color Matrix': std_color_matrix.md
           - 'Gamma Correction': transform_gamma_correct.md
           - 'Nonuniform Illumination Correction': nonuniform_illumination.md
           - 'Perspective warp': transform_warp.md
           - 'Rescale Image Values': transform_rescale.md
           - 'Resize Images': transform_resize.md
+          - 'Rotate': rotate2.md
+      - 'Transformation Helpers':
+            - 'Calculate Moore-Penrose Inverse Matrix': mp_inverse.md
+            - 'Create Color Correction Matrix': transformation_matrix.md
+            - 'Apply Color Correction Matrix': apply_transformation_matrix.md
+            - 'Load Matrix': load_matrix.md
+            - 'Save Matrix': save_matrix.md
       - 'Visualization Methods':
           - 'Auto Threshold Methods': visualize_auto_threshold_methods.md
-          - 'Clustered Contours': visualize_clustered_contours.md
+          - 'Chlorophyll Fluorescence': visualize_chlorophyll_fluorescence.md
           - 'Colorize Label Image': visualize_colorize_label_img.md
           - 'Colorize Masks': visualize_colorize_masks.md
           - 'Colorspaces': visualize_colorspace.md
@@ -169,7 +194,9 @@ nav:
           - 'Overlay Images': visualize_ovelay_two_imgs.md
           - 'Object Size ECDF': visualize_obj_size_ecdf.md
           - 'Object Sizes': visualize_obj_sizes.md
+          - 'Pixel Scatter Plot': 'visualize_pixel_scatter_vis.md'
           - 'Pseudocolor': visualize_pseudocolor.md
+          - 'Time Lapse Video': visualize_time_lapse_video.md
       - 'Watershed Segmentation': watershed.md
       - 'White balance': white_balance.md
       - 'Within Frame': within_frame.md
@@ -178,6 +205,7 @@ nav:
       - 'Naive Bayes Multiclass': naive_bayes_multiclass.md
     - 'Parallelization':
         - 'Configure Parallelization': parallel_config.md
+        - 'Workflow Inputs Management': parallel_workflow_inputs.md
         - 'Metadata Parser': parallel_metadata_parser.md
         - 'Job Builder': parallel_job_builder.md
         - 'Multiprocess': parallel_multiprocess.md

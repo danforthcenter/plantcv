@@ -3,6 +3,14 @@
 `WorkflowConfig` is a class that stores parallel workflow configuration parameters. Configurations can be saved/imported
 to run workflows in parallel.
 
+### Quick start
+
+Create a configuration file from a template:
+
+```bash
+plantcv-run-workflow --template my_config.txt
+```
+
 *class* **plantcv.parallel.WorkflowConfig**
 
 ### Class methods
@@ -61,12 +69,12 @@ Validate parameters/structure of configuration data.
 
 
 * **start_date**: (str, default = `None`): start date used to filter images. Images will be analyzed that are newer 
-  than the start date. In the case of `None` all images prior to `end_date` are processed. String format should match
-  `timestampformat`.
+  than or equal to the start date. In the case of `None` all images prior to `end_date` are processed. String format
+  should match `timestampformat`.
 
 
 * **end_date**: (str, default = `None`): end date used to filter images. Images will be analyzed that are older than 
-  the end date. In the case of `None` all images after `start_date` are processed. String format should match 
+  or equal to the end date. In the case of `None` all images after `start_date` are processed. String format should match 
   `timestampformat`.
 
 
@@ -82,7 +90,7 @@ Validate parameters/structure of configuration data.
   `{"imgtype": "VIS", "frame": ["0", "90"]"}`).
 
 
-* **timestampformat**: (str, default = '%Y-%m-%d %H:%M:%S.%f'): a date format code compatible with strptime C library. 
+* **timestampformat**: (str, default = '%Y-%m-%dT%H:%M:%S.%fZ'): a date format code compatible with strptime C library. 
   See [strptime docs](https://docs.python.org/3.7/library/datetime.html#strftime-and-strptime-behavior) for supported 
   codes.
 
@@ -90,12 +98,18 @@ Validate parameters/structure of configuration data.
 * **writeimg**: (bool, default = `False`): save analysis images to `img_outdir` if `True`.
 
 
-* **other_args**: (list, default = `[]`): list of other arguments required by the workflow (e.g.
-  `["--input1", "value1", "--input2", "value2"]`).
+* **other_args**: (dict, default = `{}`): dictionary of other argument keywords and values required by the workflow (e.g.
+  `{"input1": "value1", "input2": "value2"}`).
 
 
-* **coprocess** (str, default = `None`): coprocess the specified imgtype with the imgtype specified in metadata_filters
-  (e.g. coprocess NIR images with VIS).
+* **groupby** (list, default = `["filepath"]`): a list of one or more metadata terms used to create unique groups of images
+for downstream analysis. The default, `filepath` will create groups of single images (i.e. one input image per workflow). An
+example of a multi-image group could be to pair VIS and NIR images (e.g. `["timestamp", "camera", "rotation"]`). Supported
+metadata terms are listed [here](pipeline_parallel.md).
+
+* **group_name** (str, default = `"imgtype"`): either a metadata term used to create a unique name for each image in an
+image group (created by `groupby`), or `"auto"` to generate a numbered image sequence `image1, image2, ...`. The resulting
+names are used to access individual image filepaths in a workflow.
 
 * **cleanup**: (bool, default =`True`): remove temporary job directory if `True`.
 
@@ -160,7 +174,7 @@ environmental variable.
 **local_directory**: (str, optional, default = `None`): dask working directory location. Can be set to a path or 
 environmental variable.
 
-**job_extra**: (dict, optional, default = `None`): extra parameters sent to the scheduler. Specified as a dictionary 
+**job_extra_directives**: (dict, optional, default = `None`): extra parameters sent to the scheduler. Specified as a dictionary 
 of key-value pairs (e.g. `{"getenv": "true"}`).
 
 !!! note
@@ -195,17 +209,17 @@ config.save_config(config_file="my_config.json")
 You may also edit your configuration file directly in a text editor, just remember that JSON syntax applies. 
 See [Workflow Parallization tutorial for examples](pipeline_parallel.md)
 
-To run `plantcv-workflow.py` with a config file you can use the following:
+To run `plantcv-run-workflow` with a config file you can use the following:
 
 ```shell
-python plantcv-workflow.py --config my_config.json
+plantcv-run-workflow --config my_config.json
 ```
 
-Remember that `python` and `plantcv-workflow.py` need to be in your PATH, for example with Conda environment. On 
-Windows you will need to specify the whole path to `plantcv-workflow.py`.
+Remember that `python` and `plantcv-run-workflow` need to be in your PATH, for example with Conda environment. On 
+Windows you will need to specify the whole path to `plantcv-run-workflow`.
 
 ```shell
-python %CONDA_PREFIX%/Scripts/plantcv-workflow.py --config my_config.json
+python %CONDA_PREFIX%/Scripts/plantcv-run-workflow --config my_config.json
 ```
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/parallel/__init__.py)

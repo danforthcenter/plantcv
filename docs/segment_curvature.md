@@ -2,7 +2,7 @@
 
 Measure the curvature of segments.   
 
-**plantcv.morphology.segment_curvature**(*segmented_img, objects, label="default"*)
+**plantcv.morphology.segment_curvature**(*segmented_img, objects, label=None*)
 
 **returns** labeled image 
 
@@ -12,7 +12,7 @@ Measure the curvature of segments.
     - objects - Segment objects (output from either [plantcv.morphology.prune](prune.md),
     [plantcv.morphology.segment_skeleton](segment_skeleton.md), or
     [plantcv.morphology.segment_sort](segment_sort.md)).
-    - label         - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
+    - label         - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
 - **Context:**
     - Calculates curvature of segments by taking the ratio of the geodesic distance ([plantcv.morphology.segment_path_length](segment_pathlength.md))
     over the euclidean distance [plantcv.morphology.segment_euclidean_length](segment_euclidean_length.md)). Measurement of two-dimensional tortuosity.

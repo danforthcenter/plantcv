@@ -4,11 +4,10 @@ We have added a function to help identify problems with color chips. One frequen
 be better off excluded from analysis . A quick way to examine this is by plotting the source matrix value against the target matrix value for all color chips
 masked in the color card.
 
-To see an example of how to check for problematic color chips see [here](tutorials/transform_color_correction_tutorial.md#checking-the-color-card-chips).
 
 **plantcv.transform.quick_color_check**(*source_matrix, target_matrix, num_chips*)
 
-**returns** none
+**returns** Altair chart
 
 - **Parameters**
     - source_matrix - a 22x4 matrix containing the average red value, average green value, and
@@ -17,16 +16,24 @@ To see an example of how to check for problematic color chips see [here](tutoria
                              average blue value for each color chip of the target image
     - num_chips     - the number of color card chips included in the matrices (integer)
     
-- **Example use:**
-    - [Color Correction Tutorial](tutorials/transform_color_correction_tutorial.md)
-    
+- **Context:**
+    - Use the [`get_color_matrix`](get_color_matrix.md)
 
 ```python
 
 from plantcv import plantcv as pcv
 
-pcv.transform.quick_color_check(source_matrix=s_matrix, target_matrix=t_matrix, num_chips=24)
+chart = pcv.transform.quick_color_check(source_matrix=s_matrix,
+                                        target_matrix=t_matrix,
+                                        num_chips=24)
 
 ```
+**Perfect Color Correlation**
+
+![Screenshot](img/documentation_images/quick_color_check/quick_color_plot.png)
+
+**Problematic**
+
+![Screenshot](img/documentation_images/quick_color_check/quick_color_plot2.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/transform/color_correction.py)

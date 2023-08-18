@@ -31,7 +31,7 @@ from plantcv import plantcv as pcv
 
 pcv.params.debug='plot'
 
-blended_im = pcv.overlay_two_imgs(img1=img1, img2=img2, alpha=0.5)
+blended_im = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2, alpha=0.5)
 
 ```
 

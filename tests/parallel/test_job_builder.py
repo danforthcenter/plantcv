@@ -11,7 +11,7 @@ def test_job_builder_single_image(parallel_test_data, tmpdir):
     config.input_dir = parallel_test_data.snapshot_imgdir
     config.json = "output.json"
     config.tmp_dir = tmp_dir
-    config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
+    config.filename_metadata = ["imgtype", "camera", "rotation", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = parallel_test_data.workflow_script
     config.img_outdir = tmp_dir
     config.metadata_filters = {"imgtype": "VIS", "camera": "SV"}
@@ -19,17 +19,16 @@ def test_job_builder_single_image(parallel_test_data, tmpdir):
     config.end_date = "2014-10-23 00:00:00.0"
     config.timestampformat = '%Y-%m-%d %H:%M:%S.%f'
     config.imgformat = "jpg"
-    config.other_args = ["--other", "on"]
+    config.other_args = {"other": "on"}
     config.writeimg = True
 
-    jobs = job_builder(meta=parallel_test_data.metadata_snapshot_vis, config=config)
+    jobs = job_builder(meta=parallel_test_data.metadata_snapshot_vis(), config=config)
 
-    image_name = list(parallel_test_data.metadata_snapshot_vis.keys())[0]
-    result_file = os.path.join(tmp_dir, image_name + '.txt')
+    image_path = parallel_test_data.image_path
+    result_file = os.path.join(tmp_dir, os.path.splitext(os.path.basename(image_path))[0] + '.json')
 
-    expected = ['python', parallel_test_data.workflow_script, '--image',
-                parallel_test_data.metadata_snapshot_vis[image_name]['path'], '--outdir',
-                tmp_dir, '--result', result_file, '--writeimg', '--other', 'on']
+    expected = ['python', parallel_test_data.workflow_script, '--outdir', tmp_dir, '--result', result_file, "--names", "vis",
+                '--writeimg', '--other', 'on', image_path]
 
     assert all([i == j] for i, j in zip(jobs[0], expected))
 
@@ -43,7 +42,40 @@ def test_job_builder_coprocess(parallel_test_data, tmpdir):
     config.input_dir = parallel_test_data.snapshot_imgdir
     config.json = "output.json"
     config.tmp_dir = tmp_dir
-    config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
+    config.filename_metadata = ["imgtype", "camera", "rotation", "zoom", "lifter", "gain", "exposure", "id"]
+    config.workflow = parallel_test_data.workflow_script
+    config.img_outdir = tmp_dir
+    config.metadata_filters = {"camera": "SV"}
+    config.start_date = "2014-10-21 00:00:00.0"
+    config.end_date = "2014-10-23 00:00:00.0"
+    config.timestampformat = '%Y-%m-%d %H:%M:%S.%f'
+    config.imgformat = "jpg"
+    config.other_args = {"other": "on"}
+    config.writeimg = True
+    config.groupby = ["camera", "rotation"]
+
+    jobs = job_builder(meta=parallel_test_data.metadata_snapshot_coprocess(), config=config)
+
+    image_path = parallel_test_data.image_path
+    nir_path = parallel_test_data.nir_path
+    result_file = os.path.join(tmp_dir, os.path.splitext(os.path.basename(image_path))[0] + '.json')
+
+    expected = ['python', parallel_test_data.workflow_script, '--outdir', tmp_dir, '--result', result_file, "--names",
+                "vis,nir", '--writeimg', '--other', 'on', image_path, nir_path]
+
+    assert all([i == j] for i, j in zip(jobs[0], expected))
+
+
+def test_job_builder_auto_name(parallel_test_data, tmpdir):
+    """Test for PlantCV."""
+    # Create tmp directory
+    tmp_dir = tmpdir.mkdir("cache")
+    # Create config instance
+    config = WorkflowConfig()
+    config.input_dir = parallel_test_data.snapshot_imgdir
+    config.json = "output.json"
+    config.tmp_dir = tmp_dir
+    config.filename_metadata = ["imgtype", "camera", "rotation", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = parallel_test_data.workflow_script
     config.img_outdir = tmp_dir
     config.metadata_filters = {"imgtype": "VIS", "camera": "SV"}
@@ -51,20 +83,16 @@ def test_job_builder_coprocess(parallel_test_data, tmpdir):
     config.end_date = "2014-10-23 00:00:00.0"
     config.timestampformat = '%Y-%m-%d %H:%M:%S.%f'
     config.imgformat = "jpg"
-    config.other_args = ["--other", "on"]
+    config.other_args = {"other": "on"}
     config.writeimg = True
-    config.coprocess = "NIR"
+    config.group_name = "auto"
 
-    jobs = job_builder(meta=parallel_test_data.metadata_snapshot_coprocess, config=config)
+    jobs = job_builder(meta=parallel_test_data.metadata_snapshot_vis(), config=config)
 
-    img_names = list(parallel_test_data.metadata_snapshot_coprocess.keys())
-    vis_name = img_names[0]
-    vis_path = parallel_test_data.metadata_snapshot_coprocess[vis_name]['path']
-    result_file = os.path.join(tmp_dir, vis_name + '.txt')
-    nir_name = img_names[1]
-    coresult_file = os.path.join(tmp_dir, nir_name + '.txt')
+    image_path = parallel_test_data.image_path
+    result_file = os.path.join(tmp_dir, os.path.splitext(os.path.basename(image_path))[0] + '.json')
 
-    expected = ['python', parallel_test_data.workflow_script, '--image', vis_path, '--outdir', tmp_dir, '--result',
-                result_file, '--coresult', coresult_file, '--writeimg', '--other', 'on']
+    expected = ['python', parallel_test_data.workflow_script, '--outdir', tmp_dir, '--result', result_file, "--names",
+                "image1", '--writeimg', '--other', 'on', image_path]
 
     assert all([i == j] for i, j in zip(jobs[0], expected))

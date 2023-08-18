@@ -2,13 +2,13 @@
 
 Crops image to an object and allows user to specify image padding (if desired)
 
-**plantcv.auto_crop**(*img, obj, padding_x=0, padding_y=0, color='black'*)
+**plantcv.auto_crop**(*img, mask, padding_x=0, padding_y=0, color='black'*)
 
 **returns** image after cropping
 
 - **Parameters:**
     - img - RGB or grayscale image data
-    - obj - contour of target object 
+    - mask - Binary mask image data
     - padding_x - integer or tuple to add padding the x direction (default padding_x=0)
     - padding_y - integer or tuple to add padding the y direction (default padding_y=0)
     - color - either 'black' (default), 'white', or 'image'
@@ -29,9 +29,9 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 # Crop image
-crop_img = pcv.auto_crop(img=rgb_img, obj=id_objects, padding_x=20, padding_y=20, color='black')
+crop_img = pcv.auto_crop(img=rgb_img, mask=bin_mask, padding_x=20, padding_y=20, color='black')
 
-crop_img2 = pcv.auto_crop(img=rgb_img, obj=id_objects, padding_x=20, padding_y=20, color='image')
+crop_img2 = pcv.auto_crop(img=rgb_img, mask=bin_mask, padding_x=20, padding_y=20, color='image')
 
 ```
 

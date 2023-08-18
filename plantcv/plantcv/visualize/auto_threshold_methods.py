@@ -7,9 +7,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv.transform import resize_factor
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv.threshold import mean
 from plantcv.plantcv.threshold import otsu
-from plantcv.plantcv.threshold import gaussian
 from plantcv.plantcv.threshold import triangle
 
 
@@ -41,7 +39,7 @@ def auto_threshold_methods(gray_img, grid_img=True, object_type="light"):
     params.debug = None
 
     # Initialize threshold method names, mask list, final images
-    method_names = ["Gaussian", "Mean", "Otsu", "Triangle"]
+    method_names = ["Otsu", "Triangle"]
     all_methods = []
     labeled_imgs = []
 
@@ -50,10 +48,8 @@ def auto_threshold_methods(gray_img, grid_img=True, object_type="light"):
     x = int(np.shape(gray_img)[1] / 8)
 
     # Create mask imgs from each thresholding method
-    all_methods.append(gaussian(gray_img=gray_img, max_value=255, object_type=object_type))
-    all_methods.append(mean(gray_img=gray_img, max_value=255, object_type=object_type))
-    all_methods.append(otsu(gray_img=gray_img, max_value=255, object_type=object_type))
-    all_methods.append(triangle(gray_img=gray_img, max_value=255, object_type=object_type, xstep=1))
+    all_methods.append(otsu(gray_img=gray_img, object_type=object_type))
+    all_methods.append(triangle(gray_img=gray_img, object_type=object_type, xstep=1))
 
     # Plot labels of each colorspace on the corresponding img
     for i, method in enumerate(all_methods):
@@ -73,9 +69,7 @@ def auto_threshold_methods(gray_img, grid_img=True, object_type="light"):
         debug = params.debug
         params.debug = None
         # Compile images together into one
-        top_row = np.hstack([labeled_imgs[0], labeled_imgs[1]])
-        bot_row = np.hstack([labeled_imgs[2], labeled_imgs[3]])
-        plotting_img = np.vstack([top_row, bot_row])
+        plotting_img = np.hstack([labeled_imgs[0], labeled_imgs[1]])
         labeled_imgs.append(plotting_img)
         plotting_img = resize_factor(plotting_img, factors=(0.5, 0.5))
         # Reset debug mode

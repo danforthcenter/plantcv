@@ -1,5 +1,4 @@
-# Find geodesic lengths of skeleton segments
-
+"""Find geodesic lengths of skeleton segments."""
 import os
 import cv2
 from plantcv.plantcv import params
@@ -7,13 +6,14 @@ from plantcv.plantcv import outputs
 from plantcv.plantcv._debug import _debug
 
 
-def segment_path_length(segmented_img, objects, label="default"):
+def segment_path_length(segmented_img, objects, label=None):
     """Use segments to calculate geodesic distance per segment.
 
     Inputs:
     segmented_img = Segmented image to plot lengths on
     objects       = List of contours
-    label         = optional label parameter, modifies the variable name of observations recorded
+    label         = Optional label parameter, modifies the variable name of
+                    observations recorded (default = pcv.params.sample_label).
 
     Returns:
     labeled_img        = Segmented debugging image with lengths labeled
@@ -23,6 +23,10 @@ def segment_path_length(segmented_img, objects, label="default"):
     :param label: str
     :return labeled_img: numpy.ndarray
     """
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+
     label_coord_x = []
     label_coord_y = []
     segment_lengths = []
