@@ -16,4 +16,4 @@
 <iframe src="https://nbviewer.jupyter.org/github/danforthcenter/plantcv-tutorial-roi/blob/main/notebooks/roi-circle-tutorial.ipynb" width="100%" height="1500px"></iframe>
 
 ## Custom Polygon Region of Interest <a name="custom"></a>
-<iframe src="https://nbviewer.jupyter.org/github/danforthcenter/plantcv-tutorial-roi/blob/main/notebooks/roi-custom-tutorial.ipynb" width="100%" height="1500px"></iframe>
+<iframe src="https://nbviewer.jupyter.org/github/danforthcenter/plantcv-tutorial-roi/blob/main/notebooks/custom-roi-tutorial.ipynb" width="100%" height="1500px"></iframe>
