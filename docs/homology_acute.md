@@ -17,6 +17,9 @@ useful in parsing homolog_pts in downstream analyses
 
 chain       = raw angle scores for entire contour, used to visualize landmark clusters
 
+verbose     = supplemental file which stores coordinates, distance from
+landmark cluster edges, and angle score for entire contour.  Used in troubleshooting.
+
 - **Parameters:**
     - img - The original image, used for plotting purposes
     - mask - Binary mask used to generate contour array (necessary for ptvals)

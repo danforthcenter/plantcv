@@ -203,7 +203,7 @@
 <!--Color correction Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/transform_color_correction_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/color_correction_tutorial/color_correction_tutorial_card.png?raw=true" alt="Color correction tutorial" width="600" height="auto">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-color-correction/blob/main/tutorial_card.png?raw=true" alt="Color correction tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Color Correction Tutorial</h6>
@@ -226,36 +226,23 @@
     </div>
 </div>
 
-<!--Threshold tools Tutorial-->
+<!--Segmentation Tutorials-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/threshold_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/threshold_tutorial/threshold_tutorial_card.png?raw=true" alt="Thresholding tutorial" width="600" height="auto">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-threshold/blob/main/tutorial_card.png?raw=true" alt="Segmentation tutorials" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Thresholding Tutorial</h6>
     </div>
     <div class="card-tags">
-        <span><strong>Tags</strong>: plant shoot, single plant, side-view, RGB, threshold methods</span>
-    </div>
-</div>
-
-<!--Updated Threshold Tools Tutorial-->
-<div class="card" style="display:block">
-    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/threshold_tools_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/new_mask_tutorial/mask_tutorial_card.jpg?raw=true" alt="Thresholding tools tutorial" width="600" height="auto">
-    </a>
-    <div class="card-title">
-        <h6>Tools for Thresholding Plant Data</h6>
-    </div>
-    <div class="card-tags">
-        <span><strong>Tags</strong>: plant shoot, single plant, side-view, RGB, threshold methods, binary mask</span>
+        <span><strong>Tags</strong>: plant shoot, single plant, side-view, RGB, threshold methods, seed, background subtraction, naive bayes, machine learning, segmentation</span>
     </div>
 </div>
 
 <!--ROI Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/roi_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/roi_tutorial/roi_tutorial_card.png?raw=true" alt="ROI tutorial" width="600" height="auto">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-roi/blob/main/tutorial_card.png?raw=true" alt="ROI tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Region of Interest Tutorial</h6>
