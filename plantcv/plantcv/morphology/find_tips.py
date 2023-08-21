@@ -1,24 +1,23 @@
-# Find tips from skeleton image
-
+"""Find tips from skeleton image."""
 import os
 import cv2
 import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import dilate
 from plantcv.plantcv import outputs
-from plantcv.plantcv import find_objects
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _cv2_findcontours
 
 
-def find_tips(skel_img, mask=None, label="default"):
+def find_tips(skel_img, mask=None, label=None):
     """Find tips in skeletonized image.
     The endpoints algorithm was inspired by Jean-Patrick Pommier: https://gist.github.com/jeanpat/5712699
 
     Inputs:
     skel_img    = Skeletonized image
     mask        = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
-    label        = optional label parameter, modifies the variable name of observations recorded
-
+    label       = Optional label parameter, modifies the variable name of
+                  observations recorded (default = pcv.params.sample_label).
     Returns:
     tip_img   = Image with just tips, rest 0
 
@@ -27,6 +26,10 @@ def find_tips(skel_img, mask=None, label="default"):
     :param label: str
     :return tip_img: numpy.ndarray
     """
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+
     # In a kernel: 1 values line up with 255s, -1s line up with 0s, and 0s correspond to dont care
     endpoint1 = np.array([[-1, -1, -1],
                           [-1, 1, -1],
@@ -51,7 +54,7 @@ def find_tips(skel_img, mask=None, label="default"):
     # Store debug
     debug = params.debug
     params.debug = None
-    tip_objects, _ = find_objects(tip_img, tip_img)
+    tip_objects, _ = _cv2_findcontours(bin_img=tip_img)
 
     if mask is None:
         # Make debugging image
@@ -62,7 +65,7 @@ def find_tips(skel_img, mask=None, label="default"):
         # Make debugging image on mask
         mask_copy = mask.copy()
         tip_plot = cv2.cvtColor(mask_copy, cv2.COLOR_GRAY2RGB)
-        skel_obj, skel_hier = find_objects(skel_img, skel_img)
+        skel_obj, skel_hier = _cv2_findcontours(bin_img=skel_img)
         cv2.drawContours(tip_plot, skel_obj, -1, (150, 150, 150), params.line_thickness,
                          lineType=8, hierarchy=skel_hier)
 

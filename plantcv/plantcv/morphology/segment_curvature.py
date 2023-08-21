@@ -1,26 +1,26 @@
-# Find curvature measure of skeleton segments
-
+"""Find curvature measure of skeleton segments."""
 import os
 import cv2
 import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
-from plantcv.plantcv import find_objects
 from plantcv.plantcv import color_palette
 from plantcv.plantcv.morphology import find_tips
 from plantcv.plantcv.morphology import segment_path_length
 from plantcv.plantcv.morphology import segment_euclidean_length
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _cv2_findcontours
 
 
-def segment_curvature(segmented_img, objects, label="default"):
+def segment_curvature(segmented_img, objects, label=None):
     """Calculate segment curvature as defined by the ratio between geodesic and euclidean distance.
     Measurement of two-dimensional tortuosity.
 
     Inputs:
     segmented_img     = Segmented image to plot lengths on
     objects           = List of contours
-    label          = optional label parameter, modifies the variable name of observations recorded
+    label             = Optional label parameter, modifies the variable name of
+                        observations recorded (default = pcv.params.sample_label).
 
     Returns:
     labeled_img        = Segmented debugging image with curvature labeled
@@ -30,6 +30,10 @@ def segment_curvature(segmented_img, objects, label="default"):
     :param label: str
     :return labeled_img: numpy.ndarray
     """
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+
     label_coord_x = []
     label_coord_y = []
     labeled_img = segmented_img.copy()
@@ -55,7 +59,7 @@ def segment_curvature(segmented_img, objects, label="default"):
         finding_tips_img = np.zeros(segmented_img.shape[:2], np.uint8)
         cv2.drawContours(finding_tips_img, objects, i, (255, 255, 255), 1, lineType=8)
         segment_tips = find_tips(finding_tips_img)
-        tip_objects, tip_hierarchies = find_objects(segment_tips, segment_tips)
+        tip_objects, tip_hierarchies = _cv2_findcontours(bin_img=segment_tips)
         points = []
 
         for t in tip_objects:

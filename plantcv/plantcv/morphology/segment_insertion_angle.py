@@ -1,5 +1,4 @@
-# Find leaf insertion angles with stem
-
+"""Find leaf insertion angles with stem."""
 import os
 import cv2
 import numpy as np
@@ -9,15 +8,15 @@ from plantcv.plantcv import closing
 from plantcv.plantcv import outputs
 from plantcv.plantcv import logical_and
 from plantcv.plantcv import fatal_error
-from plantcv.plantcv import find_objects
 from plantcv.plantcv import color_palette
 from plantcv.plantcv.morphology import _iterative_prune
 from plantcv.plantcv.morphology import find_tips
 from plantcv.plantcv.morphology.segment_tangent_angle import _slope_to_intesect_angle
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _cv2_findcontours
 
 
-def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects, size, label="default"):
+def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects, size, label=None):
     """Find leaf insertion angles in degrees of skeleton segments.
     Fit a linear regression line to the stem. Use `size` pixels on  the portion of leaf next to the stem find a linear
     regression line, and calculate angle between the two lines per leaf object.
@@ -28,7 +27,8 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     leaf_objects     = List of leaf segments
     stem_objects     = List of stem segments
     size             = Size of inner leaf used to calculate slope lines
-    label            = optional label parameter, modifies the variable name of observations recorded
+    label            = Optional label parameter, modifies the variable name of
+                       observations recorded (default = pcv.params.sample_label).
 
     Returns:
     labeled_img      = Debugging image with angles labeled
@@ -41,6 +41,10 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     :param label: str
     :return labeled_img: numpy.ndarray
     """
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+
     # Store debug
     debug = params.debug
     params.debug = None
@@ -60,7 +64,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     # Create a list of tip tuples to use for sorting
     tips = find_tips(skel_img)
     tips = dilate(tips, 3, 1)
-    tip_objects, tip_hierarchies = find_objects(tips, tips)
+    tip_objects, _ = _cv2_findcontours(bin_img=tips)
     tip_tuples = []
     for i, cnt in enumerate(tip_objects):
         tip_tuples.append((cnt[0][0][0], cnt[0][0][1]))
@@ -75,7 +79,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
 
         # Segment ends are the portions pruned off
         segment_ends = find_segment_tangents - pruned_segment
-        segment_end_obj, segment_end_hierarchy = find_objects(segment_ends, segment_ends)
+        segment_end_obj, segment_end_hierarchy = _cv2_findcontours(bin_img=segment_ends)
 
         if not len(segment_end_obj) == 2:
             print("Size too large, contour with ID#", i, "got pruned away completely.")
@@ -112,7 +116,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     stem_img = np.zeros(segmented_img.shape[:2], np.uint8)
     cv2.drawContours(stem_img, stem_objects, -1, 255, 2, lineType=8)
     stem_img = closing(stem_img)
-    combined_stem, combined_stem_hier = find_objects(stem_img, stem_img)
+    combined_stem, _ = _cv2_findcontours(bin_img=stem_img)
 
     # Make sure stem objects are a single contour
     loop_count = 0
@@ -120,7 +124,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
         loop_count += 1
         stem_img = dilate(stem_img, 2, 1)
         stem_img = closing(stem_img)
-        combined_stem, combined_stem_hier = find_objects(stem_img, stem_img)
+        combined_stem, _ = _cv2_findcontours(bin_img=stem_img)
     if len(combined_stem) > 1:
         # Reset debug mode
         params.debug = debug

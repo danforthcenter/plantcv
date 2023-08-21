@@ -42,7 +42,7 @@ to demonstrate how modules can be used. Keep in mind that modules can be linked 
 configurations to meet image processing goals so the tutorials simply examples of a few approaches:
 
 *  [VIS Image Workflow](tutorials/vis_tutorial.md)
-*  [NIR Image Workflow](tutorials/nir_tutorial.md)
+*  [Grayscale Image processing](tutorials/grayscale_tutorial.md)
 *  [PSII Workflow](tutorials/psII_tutorial.md)
 *  [VIS / NIR Dual Workflow](tutorials/vis_nir_tutorial.md)
 *  [Multi Plant Tutorial](tutorials/multi-plant_tutorial.md)
@@ -97,16 +97,13 @@ likely be some 'noise' (non-target-object spots) in the image. Those can be fill
 #####Region of Interest
 
 *  To further isolate an object from surrounding background a region of interest can be used to select the region of 
-the image that contains the target object. To do this you first [detect all the objects](find_objects.md) in the image, 
-then define the [region of interest](roi_rectangle.md), then determine if the objects are  within, touching, or outside of 
-the region of interest with the [`roi_objects` function](roi_objects.md).
+the image that contains the target object. To do this you first define the [region of interest](roi_rectangle.md), then filter 
+the objects that are  within, touching, or outside of the region of interest with the [`roi.filter` function](roi_filter.md).
 
 #####Connecting Objects or Splitting Objects
 
 *  Once the target object or objects are segmented you then need to decide if it is desirable to connect or split the 
 objects.
-*  Even if there is a single plant in an image it may be detected as multiple objects, in which case it may need to be
-joined or composed together using the [object composition function](object_composition.md).
 *  If there are multiple plants in an object and you would like to analyze them individually (get shape parameters for 
 each plant for example) then there are functions in PlantCV to split the image apart so there is a single target object 
 in each sub-image. For more information on this process see the [Multi Plant Tutorial](tutorials/multi-plant_tutorial.md). 
@@ -115,13 +112,14 @@ in each sub-image. For more information on this process see the [Multi Plant Tut
     
 These are the general categories of object analysis that are available in PlantCV  
 
-*  Object shape parameters: see the [analyze shape](analyze_shape.md) and [analyze bound](analyze_bound_horizontal.md) functions.
-*  Object color or other signal intensity values: see the [analyze color](analyze_color.md), 
-[analyze NIR](analyze_NIR_intensity.md), [analyze thermal](analyze_thermal_values.md),
-and [analyze FvFm](photosynthesis_analyze_fvfm.md) functions.
+*  Object shape parameters: see the [analyze.size](analyze_size.md), [analyze.bound_horizontal](analyze_bound_horizontal2.md),
+and [analyze.bound_vertical](analyze_bound_vertical2.md) functions.
+*  Object color or other signal intensity values: see the [analyze.color](analyze_color2.md), 
+[analyze.grayscale](analyze_grayscale.md), [analyze.thermal](analyze_thermal.md),
+and [analyze.yii](analyze_yii.md) functions.
 *  Object classification (For example, classification of disease symptoms, identification of organ structures 
 [naive-bayesian multiclass mode](naive_bayes_multiclass.md)).
-*  Object hyperspectral parameters: see the [analyze spectral](analyze_spectral.md) and [analyze index](analyze_index.md) functions.
+*  Object hyperspectral parameters: see the [analyze.spectral_reflectance](analyze_spectral_reflectance.md) and [analyze.spectral_index](analyze_spectral_index.md) functions.
 *  Morphological parameters: see the [morphology tutorial](tutorials/morphology_tutorial.md) for examples of characteristics such as stem height,
 leaf length, and leaf angle. 
 

@@ -513,6 +513,17 @@
         "doc",
         "test"
       ]
+    },
+    {
+      "login": "dhiraj-ms",
+      "name": "Dhiraj Srivastava",
+      "avatar_url": "https://avatars.githubusercontent.com/u/39856917?v=4",
+      "profile": "https://github.com/dhiraj-ms",
+      "contributions": [
+        "code",
+        "doc",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
