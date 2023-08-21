@@ -226,16 +226,16 @@
     </div>
 </div>
 
-<!--Threshold tools Tutorial-->
+<!--Segmentation Tutorials-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/threshold_tutorial');return false;">
-        <img src="https://github.com/danforthcenter/plantcv-tutorial-threshold/blob/main/tutorial_card.png?raw=true" alt="Thresholding tutorial" width="600" height="auto">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-threshold/blob/main/tutorial_card.png?raw=true" alt="Segmentation tutorials" width="600" height="auto">
     </a>
     <div class="card-title">
         <h6>Thresholding Tutorial</h6>
     </div>
     <div class="card-tags">
-        <span><strong>Tags</strong>: plant shoot, single plant, side-view, RGB, threshold methods, seed, background subtraction, naive bayes, machine learning</span>
+        <span><strong>Tags</strong>: plant shoot, single plant, side-view, RGB, threshold methods, seed, background subtraction, naive bayes, machine learning, segmentation</span>
     </div>
 </div>
 
