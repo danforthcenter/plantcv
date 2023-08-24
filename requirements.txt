@@ -1,5 +1,5 @@
 matplotlib>=1.5,<3.6
-numpy>=1.11,<1.23
+numpy>=1.11
 pandas<2
 python-dateutil
 scipy
