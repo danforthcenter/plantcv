@@ -130,10 +130,9 @@ def _calc_npq(fmp, fm):
     """NPQ = Fm/Fmp - 1."""
     out_flt = np.ones(shape=fm.shape) * np.nan
     fmp = np.squeeze(fmp)
-    div = np.divide(fm, fmp, out=out_flt,
-                    where=np.logical_and(fm > 0, np.logical_and(fmp > 0, fm > fmp)))
-    sub = np.subtract(div, 1, out=out_flt.copy(),
-                      where=div >= 1)
+    where_arr = np.logical_and(fm > 0, np.logical_and(fmp > 0, fm > fmp))
+    div = np.divide(fm, fmp, out=out_flt, where=where_arr.to_numpy())
+    sub = np.subtract(div, 1, out=out_flt.copy(), where=div.to_numpy() >= 1)
     return sub
 
 
