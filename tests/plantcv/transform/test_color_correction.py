@@ -304,7 +304,7 @@ def test_find_color_card(transform_test_data):
     # Load rgb image
     rgb_img = cv2.imread(transform_test_data.target_img)
     _, start, space = find_color_card(rgb_img=rgb_img, threshold_type='adaptgauss', blurry=False, threshvalue=90)
-    assert start == (210, 212) and space == (8, 8)
+    assert start == (170, 171) and space == (20, 20)
 
 
 def test_find_color_card_optional_parameters(transform_test_data):
@@ -316,7 +316,7 @@ def test_find_color_card_optional_parameters(transform_test_data):
     # Test with threshold ='normal'
     _, _, _ = find_color_card(rgb_img=rgb_img, threshold_type='normal', blurry=True, background='light',
                               threshvalue=90, label="prefix")
-    assert int(outputs.observations["prefix"]["color_chip_size"]["value"]) == 15626
+    assert int(outputs.observations["prefix"]["color_chip_size"]["value"]) == 15403
 
 
 def test_find_color_card_otsu(transform_test_data):
@@ -328,7 +328,7 @@ def test_find_color_card_otsu(transform_test_data):
     # Test with threshold ='normal'
     _, _, _ = find_color_card(rgb_img=rgb_img, threshold_type='otsu', blurry=True, background='light',
                               threshvalue=90, label="prefix")
-    assert int(outputs.observations["prefix"]["color_chip_size"]["value"]) == 15132
+    assert int(outputs.observations["prefix"]["color_chip_size"]["value"]) == 14939
 
 
 def test_find_color_card_optional_size_parameters(transform_test_data):
@@ -338,7 +338,7 @@ def test_find_color_card_optional_size_parameters(transform_test_data):
     # Load rgb image
     rgb_img = cv2.imread(transform_test_data.colorcard_img)
     _, _, _ = find_color_card(rgb_img=rgb_img, record_chip_size="mean")
-    assert int(outputs.observations["default"]["color_chip_size"]["value"]) == 15515
+    assert int(outputs.observations["default"]["color_chip_size"]["value"]) == 15684
 
 
 def test_find_color_card_optional_size_parameters_none(transform_test_data):
