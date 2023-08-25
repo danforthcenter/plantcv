@@ -63,7 +63,7 @@ def chlorophyll_fluorescence(ps_da, labeled_mask, n_labels=1, label="object"):
         mask_copy = np.where(mask_copy == 255, 1, 0).astype(np.uint8)
     for i in range(1, n_labels + 1):
         # Create a boolean submask for each label
-        submask = np.where(mask_copy == i, True, False).astype(np.bool)
+        submask = np.where(mask_copy == i, True, False).astype(bool)
 
         # Get plant mean for each frame based on mask
         fluor_values = ps_da.where(submask[..., None, None]).mean(['x', 'y', 'measurement']).values
