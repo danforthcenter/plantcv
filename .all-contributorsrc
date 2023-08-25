@@ -524,6 +524,15 @@
         "doc",
         "test"
       ]
+    },
+    {
+      "login": "maldil",
+      "name": "Malinda",
+      "avatar_url": "https://avatars.githubusercontent.com/u/20140049?v=4",
+      "profile": "https://github.com/maldil",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
