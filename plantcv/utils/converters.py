@@ -100,6 +100,8 @@ def json2csv(json_file, csv_prefix):
     # Pivot the dataframe to wide format
     # If duplicate indices exist, use the last set of observations are kept
     df = df.pivot_table(index=meta_vars + ["sample"], columns=["trait", "label"], values="value", aggfunc=_last_index)
+    # Collapse hierarchical column headers
+    df.columns = [f"{c[0]}_{c[1]}" for c in df.columns]
     # Save the dataframe to a CSV file
     df.to_csv(scalar_file)
 
