@@ -304,7 +304,7 @@ def test_find_color_card(transform_test_data):
     # Load rgb image
     rgb_img = cv2.imread(transform_test_data.target_img)
     _ = find_color_card(rgb_img=rgb_img, threshold_type='adaptgauss', blurry=False, threshvalue=90)
-    assert int(outputs.observations["default"]["color_chip_size"]["value"] / 10) == 2
+    assert int(outputs.observations["default"]["color_chip_size"]["value"] / 100) == 2
 
 
 def test_find_color_card_optional_parameters(transform_test_data):
