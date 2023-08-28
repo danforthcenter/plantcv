@@ -7,6 +7,7 @@ from sklearn.mixture import GaussianMixture
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours
 from plantcv.plantcv._helpers import _roi_filter
+from plantcv.plantcv.visualize import overlay_two_imgs
 from plantcv.plantcv import fatal_error, warn, params, Objects
 
 
@@ -301,6 +302,71 @@ def _grid_roi(img, nrows, ncols, coord=None, radius=None, spacing=None):
             rc, rh = cv2.findContours(circle_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[-2:]
             roi_objects.append(rc, rh)
     return roi_objects, overlap_img, all_roi_img
+
+
+def _plot_grid_roi(mask, start, grid_dim, plot_dim, spacing, img):
+    """
+    Define and create multiple rectangular ROIs on a single binary mask
+    Inputs
+    mask          = A binary mask.
+    start         = Starting coordinate e.g. `start=(150,250)`
+    grid_dim      = (Number of columns, Number of rows) in ROI layout.
+    plot_dim      = (Width, Height) of the rectangles to bound each individual plot 
+    spacing       = (x, y) spacing between plot bounds (how wide are the rows?)
+    img           = (Optional) Image from which the binary mask was created for plotting.
+
+    Returns:
+    roi_objects   = a dataclass with roi objects and hierarchies
+    :param mask: numpy.ndarray
+    :param start: tuple
+    :param grid_dim: tuple
+    :param plot_dim: tuple
+    :param spacing: tuple
+    :param img: numpy.ndarray
+    :return roi_objects: plantcv.plantcv.classes.Objects
+    """
+    # Get the height and width of the reference image
+    height, width = np.shape(mask)[:2]
+    overlap_img = np.zeros((height, width))
+    # Initialize a binary image of the circle that will contain all ROI
+    all_roi_img = np.zeros((height, width), dtype=np.uint8)
+    roi_objects = Objects()
+    ncols = grid_dim[0]
+    nrows = grid_dim[1]
+    # Loop over each row
+    for i in range(0, nrows):
+        # The upper left corner is the y starting coordinate + the ROI offset * the vertical spacing
+        y = start[1] + i * (spacing[1] + plot_dim[1])
+        # Loop over each column
+        for j in range(0, ncols):
+            # Initialize a binary image for each circle
+            bin_img = np.zeros((height, width), dtype=np.uint8)
+            # The upper left corner is the x starting coordinate + the ROI offset * the
+            # horizontal spacing between chips
+            x = start[0] + j * (spacing[0] + plot_dim[0])
+            second_coord = (x + plot_dim[0], y+plot_dim[1])
+            # Draw the circle on the binary images
+            # Keep track of all roi
+            all_roi_img = cv2.rectangle(all_roi_img, (x, y), second_coord, 255, -1)
+            # Keep track of each roi individually to check overlapping
+            rect_img = cv2.rectangle(bin_img, (x, y), second_coord, 255, -1)
+            #pcv.plot_image(rect_img)
+            overlap_img = overlap_img + rect_img
+            # Make a list of contours and hierarchies
+            rc, rh = cv2.findContours(rect_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[-2:]
+            roi_objects.append(rc, rh)
+    if img is not None:        
+        blended_im = overlay_two_imgs(img1=img, img2=all_roi_img, alpha=0.7)
+        
+    else:
+        blended_im = overlay_two_imgs(img1=mask, img2=all_roi_img, alpha=0.7)
+
+    roi_contour1, _ = _cv2_findcontours(bin_img=all_roi_img)
+    _draw_roi(img=blended_im, roi_contour=roi_contour1)
+    
+    return roi_objects, overlap_img, all_roi_img
+
+
 
 
 def auto_grid(mask, nrows, ncols, radius=None, img=None):
