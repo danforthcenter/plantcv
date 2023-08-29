@@ -7,7 +7,6 @@ from sklearn.mixture import GaussianMixture
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours
 from plantcv.plantcv._helpers import _roi_filter
-from plantcv.plantcv.visualize import overlay_two_imgs
 from plantcv.plantcv import fatal_error, warn, params, Objects
 
 
@@ -325,6 +324,8 @@ def _plot_grid_roi(mask, start, grid_dim, plot_dim, spacing, img):
     :param img: numpy.ndarray
     :return roi_objects: plantcv.plantcv.classes.Objects
     """
+    from plantcv.plantcv.visualize import overlay_two_imgs
+
     # Get the height and width of the reference image
     height, width = np.shape(mask)[:2]
     overlap_img = np.zeros((height, width))
@@ -363,7 +364,7 @@ def _plot_grid_roi(mask, start, grid_dim, plot_dim, spacing, img):
 
     roi_contour1, _ = _cv2_findcontours(bin_img=all_roi_img)
     _draw_roi(img=blended_im, roi_contour=roi_contour1)
-    
+
     return roi_objects, overlap_img, all_roi_img
 
 
