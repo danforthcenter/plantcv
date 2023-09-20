@@ -13,7 +13,8 @@ The closer the value to 0 the closer the shape is to a circle.
     - ecc_thresh - Eccentricity threshold below which a region is detected
 - **Context:**
     - Used to isolate disc-shaped objects of interest in a binary image. The output mask can be used for further analysis
-    and the coordinates can be used for object counting along with the class `plantcv.annotate.ClickCount`.
+    and the coordinates can be used for further annotation by importing them into the annotation classes
+    [ClickCount](annotate_click_count.md) and [Points](annotate_points.md).
 - **Example use:**
     - Below
 
