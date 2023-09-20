@@ -6,6 +6,7 @@ from plantcv.plantcv.annotate import ClickCount
 
 
 def test_plantcv_visualize_click_count(tmpdir):
+    """Test for PlantCV."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("cache")
     # generate fake testing image
