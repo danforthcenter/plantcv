@@ -25,7 +25,6 @@ def detect_discs(bin_img, ecc_thresh=0):
     :return discs_mask: numpy.ndarray
     :return discs_coor: list
     """
-
     # label connected regions
     labeled_img = label(bin_img)
     # measure regions
