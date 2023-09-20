@@ -12,17 +12,17 @@ The closer the value to 0 the closer the shape is to a circle.
     - bin_img - Binary image containing the connected regions to consider
     - ecc_thresh - Eccentricity threshold below which a region is detected
 - **Context:**
-    - Used to isolate disc-shaped objects of interest in a binary image. The output mask can be used for further analysis and the coordinates can be used for object counting along with the class `plantcv.visualize.ClickCount`.
+    - Used to isolate disc-shaped objects of interest in a binary image. The output mask can be used for further analysis
+    and the coordinates can be used for object counting along with the class `plantcv.annotate.ClickCount`.
 - **Example use:**
     - Below
 
 **Original image**
 
-![ori_im](img/documentation_images/visualize_click_count/count_img.jpg)
+![ori_img](img/documentation_images/annotate_click_count/count_img.jpg)
 
 **Mask generated using binary threshold in the blue channel**
-Note: For more on binary thresholding see the the [Use VIS Tutorial](vis_tutorial.md).
-![bin_im](img/documentation_images/detect_discs/discs_pre_scaled.png)
+![bin_img](img/documentation_images/annotate_detect_discs/discs_pre_scaled.png)
 
 ```python
 
@@ -43,9 +43,9 @@ discs_mask, discs_coor = pcv.annotate.detect_discs(bin_img=binary_img, ecc_thres
 ```
 
 **Mask of detected objects with eccentricity threshold of 0.9**
-![count_im](img/documentation_images/visualize_click_count/count_mask.png)
+![count_img](img/documentation_images/annotate_click_count/count_mask.png)
 
 **Mask of detected objects with eccentricity threshold of 0.5**
-![count_im](img/documentation_images/detect_discs/discs_mask_scaled.png)
+![count_img](img/documentation_images/annotate_detect_discs/discs_mask_scaled.png)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/detect_discs.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/annotate/detect_discs.py)
