@@ -42,7 +42,10 @@ nav:
         - 'Analyze YII': analyze_yii.md
         - 'Analyze NPQ': analyze_npq.md
       - 'Annotation Tools':
-          - 'Points': Points.md
+          - 'ClickCount': annotate_click_count.md
+          - 'Detect Discs': annotate_detect_discs.md
+          - 'Get Centroids': annotate_get_centroids.md
+          - 'Points': annotate_points.md
       - 'Apply Mask': apply_mask.md
       - 'Auto Crop': auto_crop.md
       - 'Background Subtraction': background_subtraction.md
