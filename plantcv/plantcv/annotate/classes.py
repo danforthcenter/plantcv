@@ -24,7 +24,7 @@ def _find_closest_pt(pt, pts):
     return idx, pts[idx]
 
 
-class Points(object):
+class Points:
     """Point annotation/collection class to use in Jupyter notebooks. It allows the user to
     interactively click to collect coordinates from an image. Left click collects the point and
     right click removes the closest collected point
@@ -63,7 +63,7 @@ class Points(object):
         self.fig.canvas.draw()
 
 
-class ClickCount(object):
+class ClickCount:
     def __init__(self, img, figsize=(12, 6)):
         print("If you have coordinates to import, the label represent for total count should be 'total'!")
         self.img = img
