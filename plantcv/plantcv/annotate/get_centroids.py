@@ -3,7 +3,7 @@ import numpy as np
 
 
 def get_centroids(bin_img):
-    """ Get the coordinates (row,column) of the centroid of each connected
+    """Get the coordinates (row,column) of the centroid of each connected
     region in a binary image.
 
     Inputs:

@@ -47,8 +47,7 @@ class Points:
         self.fig.canvas.mpl_connect('button_press_event', self.onclick)
 
     def onclick(self, event):
-        """ Handle mouse click events
-        """
+        """Handle mouse click events."""
         self.events.append(event)
         if event.button == 1:
 
@@ -80,7 +79,7 @@ class ClickCount:
         self.p_not_current = None
 
     def import_coords(self, coords, label="total"):
-        """ Import center coordinates of already detected objects
+        """Import center coordinates of already detected objects
         Inputs:
         coords = list of center coordinates of already detected objects.
         label = class label for imported coordinates, by default label="total".
@@ -156,6 +155,7 @@ class ClickCount:
                 self.ax.plot(x, y, marker='x', c=color)
 
     def onclick(self, event):
+        """Handle mouse click events."""
         self.events.append(event)
         if event.button == 1:
             self.ax.plot(event.xdata, event.ydata, marker='x', c=self.color)
