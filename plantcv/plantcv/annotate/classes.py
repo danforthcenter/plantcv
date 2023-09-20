@@ -31,13 +31,11 @@ class Points:
     """
 
     def __init__(self, img, figsize=(12, 6)):
-        """
-        Initialization
+        """Initialization
         :param img: image data
         :param figsize: desired figure size, (12,6) by default
         :attribute points: list of points as (x,y) coordinates tuples
         """
-
         self.fig, self.ax = plt.subplots(1, 1, figsize=figsize)
         self.ax.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
 
