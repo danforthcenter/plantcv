@@ -143,7 +143,7 @@ class ClickCount:
         self.p_not_current = 0
         # if view_all is True, show all already marked markers
         if view_all:
-            for k in self.points.keys():
+            for k in self.points:
                 for (x, y) in self.points[k]:
                     self.ax.plot(x, y, marker='x', c=self.colors[k])
                     if self.label not in self.points or len(self.points[self.label]) == 0:
