@@ -1,6 +1,6 @@
 import cv2
 import matplotlib
-from plantcv.plantcv import Points
+from plantcv.plantcv.annotate import Points
 
 
 def test_points_interactive(annotate_test_data):

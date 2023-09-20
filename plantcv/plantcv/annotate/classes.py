@@ -1,4 +1,66 @@
-# Define ClickCount class for annotation/interactive tools 
+import cv2
+import json
+import numpy as np
+from math import floor
+import matplotlib.pyplot as plt
+from scipy.spatial import distance
+
+
+# Class helpers
+def _find_closest_pt(pt, pts):
+    """Find the closest (Euclidean) point to a given point from a list of points.
+
+    :param pt: (tuple) coordinates of a point
+    :param pts: (a list of tuples) coordinates of a list of points
+    :return: index of the closest point and the coordinates of that point
+    """
+    if pt in pts:
+        idx = pts.index(pt)
+        return idx, pt
+
+    dists = distance.cdist([pt], pts, 'euclidean')
+    idx = np.argmin(dists)
+    return idx, pts[idx]
+
+
+class Points(object):
+    """Point annotation/collection class to use in Jupyter notebooks. It allows the user to
+    interactively click to collect coordinates from an image. Left click collects the point and
+    right click removes the closest collected point
+    """
+
+    def __init__(self, img, figsize=(12, 6)):
+        """
+        Initialization
+        :param img: image data
+        :param figsize: desired figure size, (12,6) by default
+        :attribute points: list of points as (x,y) coordinates tuples
+        """
+
+        self.fig, self.ax = plt.subplots(1, 1, figsize=figsize)
+        self.ax.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+
+        self.points = []
+        self.events = []
+
+        self.fig.canvas.mpl_connect('button_press_event', self.onclick)
+
+    def onclick(self, event):
+        """ Handle mouse click events
+        """
+        self.events.append(event)
+        if event.button == 1:
+
+            self.ax.plot(event.xdata, event.ydata, 'x', c='red')
+            self.points.append((floor(event.xdata), floor(event.ydata)))
+
+        else:
+            idx_remove, _ = _find_closest_pt((event.xdata, event.ydata), self.points)
+            # remove the closest point to the user right clicked one
+            self.points.pop(idx_remove)
+            self.ax.lines[idx_remove].remove()
+        self.fig.canvas.draw()
+
 
 class ClickCount(object):
     def __init__(self, img, figsize=(12, 6)):
@@ -104,7 +166,6 @@ class ClickCount(object):
             idx_remove, _ = _find_closest_pt((event.xdata, event.ydata), self.points[self.label])
             self.points[self.label].pop(idx_remove)
             idx_remove = idx_remove + self.p_not_current
-            ax0plots = self.ax.lines
-            self.ax.lines.remove(ax0plots[idx_remove])
+            self.ax.lines[idx_remove].remove()
             self.count[self.label] -= 1
         self.fig.canvas.draw()
