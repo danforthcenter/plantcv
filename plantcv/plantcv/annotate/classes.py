@@ -4,6 +4,7 @@ import numpy as np
 from math import floor
 import matplotlib.pyplot as plt
 from scipy.spatial import distance
+from plantcv.plantcv import warn
 
 
 # Class helpers
@@ -96,7 +97,7 @@ class ClickCount(object):
             self.count[label] = len(self.points[label])
 
         else:
-            print(f"Warning: {label} already included and counted, nothing is imported!")
+            warn(f"{label} already included and counted, nothing is imported!")
 
     def save_coords(self, coord_file):
         """Save collected coordinates to a file.
@@ -123,8 +124,8 @@ class ClickCount(object):
         :return:
         """
         if label not in self.points and color in self.colors.values():
-                print("Warning: The color assigned to the new class label is already used, "
-                      "if proceeding, items from different classes will not be distinguishable in plots!")
+            warn("The color assigned to the new class label is already used, if proceeding, "
+                 "items from different classes will not be distinguishable in plots!")
 
         self.label = label
         self.color = color
@@ -135,8 +136,6 @@ class ClickCount(object):
             self.count[label] = 0
         self.colors[label] = color
 
-        print("Warning: this tool is under development and is expected to have updates frequently, "
-              "please check the documentation page to make sure you are using the correct version!")
         self.fig, self.ax = plt.subplots(1, 1, figsize=self.figsize)
 
         self.events = []
