@@ -1,3 +1,4 @@
+"""Detect dics."""
 import os
 import numpy as np
 from skimage.measure import label, regionprops
