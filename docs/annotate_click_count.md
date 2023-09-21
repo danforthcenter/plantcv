@@ -106,4 +106,4 @@ counter.view(label="c1", color="r", view_all=True)
 
 ![c1_mask](img/documentation_images/annotate_click_count/with_clickc1.png)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/annotate/classes.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/annotate/classes.py)
