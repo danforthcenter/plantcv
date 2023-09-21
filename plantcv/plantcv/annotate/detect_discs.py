@@ -25,6 +25,7 @@ def detect_discs(bin_img, ecc_thresh=0):
     :return discs_mask: numpy.ndarray
     :return discs_coor: list
     """
+    params.device += 1
     # label connected regions
     labeled_img = label(bin_img)
     # measure regions
@@ -43,10 +44,6 @@ def detect_discs(bin_img, ecc_thresh=0):
             discs_mask = discs_mask + (labeled_img == i+1)
             discs_mask = 255*discs_mask
 
-    _debug(visual=discs_mask, filename=os.path.join(params.debug_outdir,
-                                                    str(params.device) +
-                                                    "_discs_mask" +
-                                                    str(int(ecc_thresh*10)) +
-                                                    ".png"))
+    _debug(visual=discs_mask, filename=os.path.join(params.debug_outdir, f"{params.device}_discs_mask_{ecc_thresh*10}.png"))
 
     return discs_mask, discs_coor
