@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from plantcv.plantcv import params
 
 
 def get_centroids(bin_img):
@@ -16,9 +17,9 @@ def get_centroids(bin_img):
     :param bin_img: numpy.ndarray
     :return coor: list
     """
+    params.device += 1
     # find contours in the binary image
-    contours = cv2.findContours(bin_img.astype(np.uint8), cv2.RETR_TREE,
-                                cv2.CHAIN_APPROX_SIMPLE)[-2]
+    contours = cv2.findContours(bin_img.astype(np.uint8), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[-2]
     coor = []
     for c in contours:
         # calculate moments for each contour
