@@ -1,3 +1,4 @@
+"""Get centroids."""
 import cv2
 import numpy as np
 from plantcv.plantcv import params
