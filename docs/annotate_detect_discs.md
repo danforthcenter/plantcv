@@ -49,4 +49,4 @@ discs_mask, discs_coor = pcv.annotate.detect_discs(bin_img=binary_img, ecc_thres
 **Mask of detected objects with eccentricity threshold of 0.5**
 ![count_img](img/documentation_images/annotate_detect_discs/discs_mask_scaled.png)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/annotate/detect_discs.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/annotate/detect_discs.py)
