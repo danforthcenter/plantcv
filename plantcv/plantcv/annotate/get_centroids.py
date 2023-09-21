@@ -4,8 +4,7 @@ from plantcv.plantcv import params
 
 
 def get_centroids(bin_img):
-    """Get the coordinates (row,column) of the centroid of each connected
-    region in a binary image.
+    """Get the coordinates (row,column) of the centroid of each connected region in a binary image.
 
     Inputs:
     bin_img       = Binary image containing the connected regions to consider
