@@ -314,13 +314,23 @@ pages for more details on the input and output variable types.
 
 #### plantcv.annotate.detect_discs
 
-* pre v4.0: NA
-* post v4.0: discs_mask, discs_coor = **plantcv.annotate.detect_discs**(*bin_img, ecc_thresh=0*)
+* pre v4.1: NA
+* post v4.1: discs_mask, discs_coor = **plantcv.annotate.detect_discs**(*bin_img, ecc_thresh=0*)
 
 #### plantcv.annotate.get_centroids
 
-* pre v4.0: NA
-* post v4.0: coordinates = **plantcv.annotate.get_centroids**(*bin_img*)
+* pre v4.1: NA
+* post v4.1: coordinates = **plantcv.annotate.get_centroids**(*bin_img*)
+
+#### plantcv.annotate.ClickCount
+
+* pre v4.1: NA
+* post v4.1: counter = **plantcv.annotate.ClickCount**(*img, figsize=(6,12)*)
+
+#### plantcv.annotate.Points
+
+* pre v4.1: NA
+* post v4.1: marker = **plantcv.annotate.Points**(*img, figsize=(6,12)*)
 
 #### plantcv.apply_mask
 
@@ -780,6 +790,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: NA
 * post v4.0: marker = **plantcv.Points**(*img, figsize=(6,12)*)
+* post v4.1: DEPRECATED, see plantcv.annotate.Points
 
 #### plantcv.print_image
 
