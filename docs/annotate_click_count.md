@@ -80,6 +80,11 @@ Handles mouse click events.
 %matplotlib widget
 
 from plantcv import plantcv as pcv
+
+# Set global debug behavior to None (default), "print" (to file),
+# or "plot"
+pcv.params.debug = "plot"
+
 # initialization
 counter = pcv.annotate.ClickCount(img)
 # import coordinates (if available)
