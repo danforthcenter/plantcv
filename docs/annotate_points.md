@@ -1,18 +1,27 @@
 ## Interactive Point Annotation Tool
 
-Using [Jupyter Notebooks](jupyter.md) it is possible to interactively click to collect coordinates from an image, which can be used in various downstream applications. Left click on the image to collect a point. Right click removes the
+Using [Jupyter Notebooks](jupyter.md) it is possible to interactively click to collect coordinates from an image,
+which can be used in various downstream applications. Left click on the image to collect a point. Right click removes the
 closest collected point.
 
-**plantcv.Points**(*img, figsize=(12, 6)*)
+*class* **plantcv.annotate.Points**(*img, figsize=(12, 6)*)
 
-**returns** interactive image class
+- img - Image data
+- figsize - Interactive plot figure size (default = (12,6))
 
-- **Parameters:**
-    - img - Image data
-    - figsize - Interactive plot figure size (default = (12,6))
+### Attributes
+**points**: a dictionary of coordinates for every class.
 
-- **Attributes:**
-    - points - Coordinates (x,y) of the collected points as a list of tuples
+**fig**: matplotlib figure.
+
+**ax**: matplotlib axis.
+
+**events**: a list of events.
+
+### Methods
+**onclick(*event*)**
+
+Handles mouse click events.
 
 - **Context:**
     - Used to define a list of coordinates of interest.
@@ -23,10 +32,16 @@ closest collected point.
 
 
 ```python
+%matplotlib widget
+
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file),
+# or "plot"
+pcv.params.debug = "plot"
+
 # Create an instance of the Points class
-marker = pcv.Points(img=img, figsize=(12,6))
+marker = pcv.annotate.Points(img=img, figsize=(12,6))
 
 # Click on the plotted image to collect coordinates
 
@@ -44,4 +59,4 @@ roi1 = pcv.roi.custom(img=img, vertices=marker.points)
 ![Screenshot](img/documentation_images/annotate_Points/custom_roi.jpg)
 
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/classes.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/annotate/classes.py)
