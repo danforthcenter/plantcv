@@ -38,13 +38,12 @@ def detect_discs(bin_img, ecc_thresh=0):
     discs_mask = np.zeros(labeled_img.shape, dtype=np.uint8)
     # Store the list of coordinates (row,col) for the objects that pass the
     discs_coor = []
-    for i, obj in enumerate(obj_measures):
+    for obj in obj_measures:
         if obj.eccentricity < ecc_thresh:
             # Convert coord values to int
             coords = tuple(map(int, obj.centroid))
             discs_coor.append(coords)
-            discs_mask = discs_mask + (labeled_img == i+1)
-            discs_mask = 255*discs_mask
+            discs_mask += np.where(labeled_img == obj.label, 255, 0).astype(np.uint8)
 
     _debug(visual=discs_mask, filename=os.path.join(params.debug_outdir, f"{params.device}_discs_mask_{ecc_thresh*10}.png"))
 
