@@ -6,7 +6,7 @@ import numpy as np
 from altair.vegalite.v5.api import Chart
 from plantcv.plantcv.transform import (get_color_matrix, get_matrix_m, calc_transformation_matrix, apply_transformation_matrix,
                                        save_matrix, load_matrix, correct_color, create_color_card_mask, quick_color_check,
-                                       find_color_card, std_color_matrix, affine_color_correction)
+                                       find_color_card, detect_color_card, std_color_matrix, affine_color_correction)
 from plantcv.plantcv import outputs
 
 
@@ -383,3 +383,17 @@ def test_find_color_card_none_found(transform_test_data):
     rgb_img = cv2.imread(transform_test_data.target_img)
     with pytest.raises(RuntimeError):
         _, _, _ = find_color_card(rgb_img=rgb_img, threshold_type="otsu")
+
+# def test_detect_color_card_none_found(transform_test_data):
+#     """Test for PlantCV."""
+#     # Load rgb image
+#     rgb_img = cv2.imread(transform_test_data.target_img)
+#     with pytest.raises(RuntimeError):
+#         _ = detect_color_card(rgb_img=rgb_img)
+
+def test_detect_color_card(transform_test_data):
+    """Test for PlantCV."""
+    # Load rgb image
+    rgb_img = cv2.imread(transform_test_data.target_img)
+    with pytest.raises(RuntimeError):
+        _ = detect_color_card(rgb_img=rgb_img)
