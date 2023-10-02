@@ -930,3 +930,71 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
                                 datatype=float, value=chip_width, label=str(record_chip_size))
 
     return df, start_coord, spacing
+
+
+def detect_color_card(rgb_img, label=None):
+    """Automatically detect a color card.
+
+    Algorithm written by mtwatso2-eng (github). Updated and implemented into PlantCV by Haley Schuhl.
+
+        Inputs:
+        
+    rgb_img          = Input RGB image data containing a color card.
+    label            = Optional label parameter, modifies the variable name of
+                       observations recorded (default = pcv.params.sample_label).
+
+    Returns:
+    targetMask       = Labeled mask of chips
+
+    :param rgb_img: numpy.ndarray
+    :param label: str
+    :return targetMask: numpy.ndarray
+    """
+    nrows = 6
+    ncols = 4 # hard code since we don't currently support other color card types? 
+    imgray = cv2.cvtColor(rgb_img,cv2.COLOR_BGR2GRAY)
+    thresh = cv2.adaptiveThreshold(imgray,255,cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY,127,2)
+    contours, hierarchy = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+    filteredContours = [contour for contour in contours if _isSquare(contour)]
+    targetSquareArea = np.median([cv2.contourArea(filteredContour) for filteredContour in filteredContours])
+    filteredContours = [contour for contour in filteredContours if (0.8 < (cv2.contourArea(contour) / targetSquareArea) < 1.2)]
+
+    if len(filteredContours) == 0:
+        fatal_error('No color card found under current parameters') 
+
+    targetMask = np.zeros(imgray.shape)
+    rect = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filteredContours])
+    rect = cv2.minAreaRect(rect)
+    corners = np.int0(cv2.boxPoints(rect))
+    whiteIndex = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0],:], (255,255,255))) for corner in corners])
+    
+    corners = corners[np.argsort([math.dist(corner, corners[whiteIndex]) for corner in corners])[[0,1,3,2]]]
+    increment = 100 # increment amount is arbitrary since cell distances will be rescaled during perspective transform
+    centers = [[int(0 + i * increment), int(0 + j * increment)] for j in range(nrows) for i in range(ncols)]
+
+    newRect = cv2.minAreaRect(np.array(centers))
+    boxPoints = cv2.boxPoints(newRect).astype("float32")
+    M = cv2.getPerspectiveTransform(boxPoints, corners.astype("float32"))
+    newCenters = cv2.transform(np.array([centers]), M)[0][:,0:2]
+    thisSequence = np.array([i for i in range(nrows * ncols)])
+    
+    debug_img = np.copy(rgb_img)
+    debug_img2 = np.copy(rgb_img)
+
+    for i in range(len(newCenters)):
+        cv2.circle(targetMask, newCenters[i], 20, int(thisSequence[i] + 1) * 10, -1)
+        #                                      ^ roi circle size 
+        cv2.circle(debug_img, newCenters[i], 20, (255,255,0), -1)
+        cv2.circle(debug_img2, newCenters[i], 20, (255,255,0), -1)
+        cv2.putText(debug_img2, text=str(i), org=newCenters[i], fontScale=params.text_size, color=(0,0,0), 
+                    fontFace=cv2.FONT_HERSHEY_SIMPLEX, thickness=params.text_thickness)
+        
+    # Save out chip size for pixel to cm standardization 
+    outputs.add_observation(sample=label, variable='color_chip_size', trait='size of color card chips identified',
+                                method='plantcv.plantcv.transform.find_color_card', scale='none',
+                                datatype=float, value=targetSquareArea, label="median")
+        
+    # Debugging
+    _debug(visual=debug_img2, filename=os.path.join(params.debug_outdir, str(params.device) + '_color_card.png'))
+
+    return targetMask
