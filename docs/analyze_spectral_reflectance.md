@@ -10,7 +10,7 @@ This function analyzes the reflectance values across the wavelengths measured by
     - hsi           - A hyperspectral datacube object, an instance of the `Spectral_data` class (read in with [pcv.readimage](read_image.md) with `mode='envi'`)
     - labeled_mask  - Labeled mask of objects (32-bit).
     - n_labels      - Total number expected individual objects (default = 1).
-    - label         - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
+    - label - Optional label parameter, modifies the variable name of observations recorded. Can be a prefix or list (default = pcv.params.sample_label).
 - **Example use:**
     - Below 
 - **Output data stored:** Data ('global_mean_reflectance', 'global_median_reflectance', 'global_spectral_std', 'wavelength_means', 'max_reflectance', 

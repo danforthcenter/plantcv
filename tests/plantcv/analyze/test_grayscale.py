@@ -13,7 +13,7 @@ def test_grayscale(test_data):
     mask = cv2.imread(test_data.small_bin_img, -1)
 
     _ = analyze_grayscale(gray_img=img, labeled_mask=mask, n_labels=1, bins=256)
-    assert int(outputs.observations['default1']['gray_median']['value']) == 117
+    assert int(outputs.observations['default_1']['gray_median']['value']) == 117
 
 
 def test_grayscale_16bit(test_data):
@@ -25,4 +25,4 @@ def test_grayscale_16bit(test_data):
     mask = cv2.imread(test_data.small_bin_img, -1)
 
     _ = analyze_grayscale(gray_img=np.uint16(img), labeled_mask=mask, n_labels=1, bins=256)
-    assert int(outputs.observations['default1']['gray_median']['value']) == 117
+    assert int(outputs.observations['default_1']['gray_median']['value']) == 117

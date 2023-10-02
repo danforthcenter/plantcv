@@ -12,7 +12,7 @@ the values out to the [Outputs class](outputs.md). Can also return/plot/print ou
     - labeled_mask - Labeled mask of objects (32-bit).
     - n_labels - Total number expected individual objects (default = 1).
     - bins     - Number of histogram bins (default = 100)
-    - label - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
+    - label - Optional label parameter, modifies the variable name of observations recorded. Can be a prefix or list (default = pcv.params.sample_label).
 - **Context:**
     - Grayscale pixel values within a masked area of an image. 
 - **Example use:**
@@ -42,7 +42,7 @@ pcv.params.sample_label = "plant"
 analysis_image  = pcv.analyze.grayscale(gray_img=gray_img, labeled_mask=mask, n_labels=1, bins=100)
 
 # Access data stored out from analyze.grayscale
-nir_frequencies = pcv.outputs.observations['plant1']['gray_frequencies']['value']
+nir_frequencies = pcv.outputs.observations['plant_1']['gray_frequencies']['value']
 
 ```
 

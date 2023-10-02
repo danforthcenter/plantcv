@@ -19,7 +19,7 @@ def test_yii_cropreporter(prot, mlabels, exp, test_data):
                     n_labels=1, auto_fm=True,
                     measurement_labels=mlabels)
     label = "t0" if mlabels is None else mlabels[0]
-    assert np.isclose(outputs.observations["default1"][f"yii_median_{label}"]["value"], exp)
+    assert np.isclose(outputs.observations["default_1"][f"yii_median_{label}"]["value"], exp)
 
 
 @pytest.mark.parametrize("prot,mlabels,exp", [
@@ -36,7 +36,7 @@ def test_yii_waltz(prot, mlabels, exp, test_data):
                     n_labels=1, auto_fm=False,
                     measurement_labels=mlabels, label="default")
     label = "t0" if mlabels is None else mlabels[0]
-    assert np.isclose(outputs.observations["default1"][f"yii_median_{label}"]["value"], exp)
+    assert np.isclose(outputs.observations["default_1"][f"yii_median_{label}"]["value"], exp)
 
 
 @pytest.mark.parametrize("mlabels, tmask",
@@ -59,3 +59,11 @@ def test_yii_bad_var(test_data):
     with pytest.raises(RuntimeError):
         _ = analyze_yii(ps_da=da, labeled_mask=test_data.create_ps_mask(),
                         measurement_labels=None, label="default")
+
+
+def test_yii_wrong_num_labels(test_data):
+    """Test for PlantCV."""
+    with pytest.raises(RuntimeError):
+        _ = analyze_yii(ps_da=test_data.psii_cropreporter('ojip_dark'),
+                        labeled_mask=test_data.create_ps_mask(),
+                        measurement_labels=None, label=["prefix", "prefix"])

@@ -14,7 +14,7 @@ def test_npq_cropreporter(test_data):
     _ = analyze_npq(ps_da_light=da_light, ps_da_dark=da_dark, labeled_mask=test_data.create_ps_mask(),
                     auto_fm=False,
                     measurement_labels=["Fq/Fm"], label="prefix", min_bin="auto", max_bin="auto")
-    assert np.isclose(outputs.observations["prefix1"]["npq_median_Fq/Fm"]["value"], 0.25)
+    assert np.isclose(outputs.observations["prefix_1"]["npq_median_Fq/Fm"]["value"], 0.25)
 
 
 def test_npq_waltz(test_data):
@@ -25,7 +25,7 @@ def test_npq_waltz(test_data):
     da_light = test_data.psii_walz('ojip_light')
     _ = analyze_npq(ps_da_light=da_light, ps_da_dark=da_dark, labeled_mask=test_data.create_ps_mask(), auto_fm=True,
                     measurement_labels=None, label="prefix", min_bin="auto", max_bin="auto")
-    assert np.isclose(outputs.observations["prefix1"]["npq_median_t40"]["value"], float((200 / 185) - 1))
+    assert np.isclose(outputs.observations["prefix_1"]["npq_median_t40"]["value"], float((200 / 185) - 1))
 
 
 @pytest.mark.parametrize("mlabels, tmask",
@@ -49,3 +49,12 @@ def test_npq_bad_var(test_data):
                         ps_da_light=test_data.psii_cropreporter('ojip_dark'),
                         labeled_mask=test_data.create_ps_mask(),
                         measurement_labels=None)
+
+
+def test_npq_wrong_num_labels(test_data):
+    """Test for PlantCV."""
+    with pytest.raises(RuntimeError):
+        _ = analyze_npq(ps_da_dark=test_data.psii_cropreporter('ojip_dark'),
+                        ps_da_light=test_data.psii_cropreporter('ojip_light'),
+                        labeled_mask=test_data.create_ps_mask(),
+                        measurement_labels=None, label=["prefix", "prefix"])
