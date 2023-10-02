@@ -278,6 +278,19 @@
     </div>
 </div>
 
+<!--Germination Tutorial-->
+<div class="card" style="display:block">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/germination-tutorial');return false;">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-germination/blob/main/tutorial_card.png?raw=true" alt="Germination tutorial" width="600" height="auto">
+    </a>
+    <div class="card-title">
+        <h6>Germination Tutorial</h6>
+    </div>
+    <div class="card-tags">
+        <span><strong>Tags</strong>: Germination, top-view, Camelina, raspberry-pi, RGB, shape analysis, multi-plant</span>
+    </div>
+</div>
+
 <script type="text/javascript">
     function getTags() {
         var tag_list = [];
