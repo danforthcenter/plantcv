@@ -49,7 +49,7 @@ ps = pcv.photosynthesis.read_cropreporter(filename="mydata.inf")
 fvfm, fvfm_hist = pcv.analyze.yii(ps_da=ps.ojip_dark, labeled_mask=kept_mask)
 
 # Access Fv/Fm median value
-fvfm_median = pcv.outputs.observations['plant1']['yii_median_t0']['value']
+fvfm_median = pcv.outputs.observations['plant_1']['yii_median_t0']['value']
 
 # Pseudocolor the Fv/Fm image
 fvfm_cmap = pcv.visualize.pseudocolor(gray_img=fvfm, mask=kept_mask, min_value=0, max_value=1, title="Fv/Fm")

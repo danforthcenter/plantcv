@@ -40,7 +40,7 @@ pcv.params.sample_label = "plant"
 thermal_hist  = pcv.analyze.thermal(thermal_img=thermal_img, labeled_mask=mask)
 
 # Access data stored out from analyze.thermal
-temp_range = pcv.outputs.observations['plant_1']['max_temp']['value'] - pcv.outputs.observations['plant1']['min_temp']['value']
+temp_range = pcv.outputs.observations['plant_1']['max_temp']['value'] - pcv.outputs.observations['plant_1']['min_temp']['value']
 
 ```
 
