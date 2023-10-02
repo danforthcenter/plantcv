@@ -7,7 +7,7 @@ Needs a mask file which specifies area which is object is white, and background 
 
 **plantcv.watershed_segmentation**(*rgb_img, mask, distance=10, label=None*)
 
-**returns** analysis_image
+**returns** labeled_mask
 
 - **Parameters:**
     - rgb_img - RGB image data
@@ -32,10 +32,10 @@ from plantcv import plantcv as pcv
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "plot"
 # Optionally, set a sample label name
-pcv.params.sample_label = "plant"
+pcv.params.sample_label = "leaf"
 
 # Segment image with watershed function
-analysis_image = pcv.watershed_segmentation(rgb_img=crop_img, mask=bin_mask, distance=10)
+labeled_mask = pcv.watershed_segmentation(rgb_img=crop_img, mask=bin_mask, distance=10)
 
 ```
 
