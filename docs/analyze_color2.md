@@ -12,7 +12,7 @@ HSV (Hue, Saturation, Value) and LAB (Lightness, Green-Magenta, Blue Yellow) cha
     - labeled_mask - Labeled mask of objects (32-bit, output from [`pcv.create_labels`](create_labels.md) or [`pcv.roi.filter`](roi_filter.md)).
     - n_labels - Total number expected individual objects (default = 1).
     - colorspaces - 'all', 'rgb', 'lab', or 'hsv'. This can limit the data saved out (default = 'hsv'). 
-    - label - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
+    - label - Optional label parameter, modifies the variable name of observations recorded. Can be a prefix or list (default = pcv.params.sample_label).
 - **Context:**
     - Used to extract color data from RGB, LAB, and HSV color channels.
     - Generates histogram of color channel data. 
@@ -42,7 +42,7 @@ pcv.params.sample_label = "plant"
 analysis_image = pcv.analyze.color(rgb_img=rgb_img, labeled_mask=mask, n_labels=1, colorspaces='hsv')
 
 # Access data stored out from analyze_color
-hue_circular_mean = pcv.outputs.observations['plant1']['hue_circular_mean']['value']
+hue_circular_mean = pcv.outputs.observations['plant_1']['hue_circular_mean']['value']
 
 ```
 

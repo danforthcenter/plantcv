@@ -13,7 +13,7 @@ def test_spectral_index(test_data):
     mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8)
     _ = spectral_index(index_img=index_array, labeled_mask=mask_img)
 
-    assert outputs.observations['default1']['mean_index_savi']['value'] > 0
+    assert outputs.observations['default_1']['mean_index_savi']['value'] > 0
 
 
 def test_spectral_index_set_range(test_data):
@@ -23,7 +23,7 @@ def test_spectral_index_set_range(test_data):
     index_array = test_data.load_hsi(test_data.savi_file)
     mask = np.ones(np.shape(index_array.array_data), dtype=np.uint8)
     _ = spectral_index(index_img=index_array, labeled_mask=mask, min_bin=0, max_bin=1)
-    assert outputs.observations['default1']['mean_index_savi']['value'] > 0
+    assert outputs.observations['default_1']['mean_index_savi']['value'] > 0
 
 
 def test_spectral_index_auto_range(test_data):
@@ -33,7 +33,7 @@ def test_spectral_index_auto_range(test_data):
     index_array = test_data.load_hsi(test_data.savi_file)
     mask = np.ones(np.shape(index_array.array_data), dtype=np.uint8)
     _ = spectral_index(index_img=index_array, labeled_mask=mask, min_bin="auto", max_bin="auto")
-    assert outputs.observations['default1']['mean_index_savi']['value'] > 0
+    assert outputs.observations['default_1']['mean_index_savi']['value'] > 0
 
 
 def test_spectral_index_outside_range_warning(test_data):
