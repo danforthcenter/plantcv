@@ -21,7 +21,7 @@ Automatically detects a color card and creates a mask.
 
 from plantcv import plantcv as pcv
 rgb_img, path, filename = pcv.readimage("target_img.png")
-df, start, space = pcv.transform.detect_color_card(rgb_img=rgb_img)
+cc_mask = pcv.transform.detect_color_card(rgb_img=rgb_img)
 
 avg_chip_size = pcv.outputs.observations['prefix']['median_color_chip_size']['value']
 
