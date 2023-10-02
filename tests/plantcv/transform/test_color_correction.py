@@ -384,14 +384,15 @@ def test_find_color_card_none_found(transform_test_data):
     with pytest.raises(RuntimeError):
         _, _, _ = find_color_card(rgb_img=rgb_img, threshold_type="otsu")
 
-# def test_detect_color_card_none_found(transform_test_data):
-#     """Test for PlantCV."""
-#     # Load rgb image
-#     rgb_img = cv2.imread(transform_test_data.target_img)
-#     with pytest.raises(RuntimeError):
-#         _ = detect_color_card(rgb_img=rgb_img)
-
 def test_detect_color_card(transform_test_data):
+    """Test for PlantCV."""
+    # Load rgb image
+    rgb_img = cv2.imread(transform_test_data.colorcard_img)
+    _ = detect_color_card(rgb_img=rgb_img) 
+    assert outputs.observations["default"]["median_color_chip_size"]["value"] is not None
+        
+
+def test_detect_color_card_none_found(transform_test_data):
     """Test for PlantCV."""
     # Load rgb image
     rgb_img = cv2.imread(transform_test_data.target_img)
