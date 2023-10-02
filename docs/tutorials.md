@@ -280,7 +280,7 @@
 
 <!--Germination Tutorial-->
 <div class="card" style="display:block">
-    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/germination-tutorial');return false;">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/Germination-tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-tutorial-germination/blob/main/tutorial_card.png?raw=true" alt="Germination tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
