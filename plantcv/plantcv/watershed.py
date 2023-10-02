@@ -68,10 +68,8 @@ def watershed_segmentation(rgb_img, mask, distance=10, label=None):
 
     # Reset debug mode
     params.debug = debug
-    _debug(visual=labels,
-           filename=os.path.join(params.debug_outdir, str(params.device) + '_watershed__labels_img.png'))
-    _debug(visual=joined,
-           filename=os.path.join(params.debug_outdir, str(params.device) + '_watershed_img.png'))
+    _debug(visual=labels, filename=os.path.join(params.debug_outdir, f"{params.device}_watershed__labels_img.png"))
+    _debug(visual=joined, filename=os.path.join(params.debug_outdir, f"{params.device}_watershed_img.png"))
 
     outputs.add_observation(sample=label, variable='estimated_object_count', trait='estimated object count',
                             method='plantcv.plantcv.watershed', scale='none', datatype=int,
