@@ -653,8 +653,9 @@ def find_color_card(rgb_img, label=None):
     :param label: str
     :return targetMask: numpy.ndarray
     """
+    nrows = 6
+    ncols = 4 # hard code since we don't currently support other color card types? 
     imgray = cv2.cvtColor(rgb_img,cv2.COLOR_BGR2GRAY)
-    # ret,thresh = cv2.threshold(imgray, int(np.mean([np.median(thisImage), np.median(thisImage)])),255,cv2.THRESH_BINARY)
     thresh = cv2.adaptiveThreshold(imgray,255,cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY,127,2)
     contours, hierarchy = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
     filteredContours = [contour for contour in contours if _isSquare(contour)]
@@ -668,7 +669,6 @@ def find_color_card(rgb_img, label=None):
     rect = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filteredContours])
     rect = cv2.minAreaRect(rect)
     corners = np.int0(cv2.boxPoints(rect))
-    #cyanIndex = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0],:], (255,255,0))) for corner in corners])
     whiteIndex = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0],:], (255,255,255))) for corner in corners])
     
     corners = corners[np.argsort([math.dist(corner, corners[whiteIndex]) for corner in corners])[[0,1,3,2]]]
