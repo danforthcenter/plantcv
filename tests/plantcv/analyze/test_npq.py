@@ -49,3 +49,12 @@ def test_npq_bad_var(test_data):
                         ps_da_light=test_data.psii_cropreporter('ojip_dark'),
                         labeled_mask=test_data.create_ps_mask(),
                         measurement_labels=None)
+
+
+def test_npq_wrong_num_labels(test_data):
+    """Test for PlantCV."""
+    with pytest.raises(RuntimeError):
+        _ = analyze_npq(ps_da_dark=test_data.psii_cropreporter('ojip_dark'),
+                        ps_da_light=test_data.psii_cropreporter('ojip_light'),
+                        labeled_mask=test_data.create_ps_mask(),
+                        measurement_labels=None, label=["prefix", "prefix"])

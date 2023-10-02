@@ -51,6 +51,9 @@ def npq(ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bi
     # If label is a string, make a list of labels
     if isinstance(label, str):
         labels = [label] * n_labels
+    # If the length of the labels list is not equal to the number of labels, raise an error
+    if len(labels) != n_labels:
+        fatal_error(f"Number of labels ({len(labels)}) does not match number of objects ({n_labels})")
 
     if labeled_mask.shape != ps_da_light.shape[:2] or labeled_mask.shape != ps_da_dark.shape[:2]:
         fatal_error(f"Mask needs to have shape {ps_da_dark.shape[:2]}")

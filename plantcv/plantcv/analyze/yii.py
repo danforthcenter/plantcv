@@ -42,6 +42,9 @@ def yii(ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None,
     # If label is a string, make a list of labels
     if isinstance(label, str):
         labels = [label] * n_labels
+    # If the length of the labels list is not equal to the number of labels, raise an error
+    if len(labels) != n_labels:
+        fatal_error(f"Number of labels ({len(labels)}) does not match number of objects ({n_labels})")
 
     # Validate that the input mask has the same 2D shape as the input DataArray
     if labeled_mask.shape != ps_da.shape[:2]:

@@ -59,3 +59,11 @@ def test_yii_bad_var(test_data):
     with pytest.raises(RuntimeError):
         _ = analyze_yii(ps_da=da, labeled_mask=test_data.create_ps_mask(),
                         measurement_labels=None, label="default")
+
+
+def test_yii_wrong_num_labels(test_data):
+    """Test for PlantCV."""
+    with pytest.raises(RuntimeError):
+        _ = analyze_yii(ps_da=test_data.psii_cropreporter('ojip_dark'),
+                        labeled_mask=test_data.create_ps_mask(),
+                        measurement_labels=None, label=["prefix", "prefix"])
