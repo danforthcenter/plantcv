@@ -175,7 +175,7 @@ def _iterate_analysis(img, labeled_mask, n_labels, label, function, **kwargs):
         mask_copy = np.where(mask_copy == 255, 1, 0).astype(np.uint8)
     for i in range(1, n_labels + 1):
         submask = np.where(mask_copy == i, 255, 0).astype(np.uint8)
-        img = function(img=img, mask=submask, label=f"{labels[i - 1]}{i}", **kwargs)
+        img = function(img=img, mask=submask, label=f"{labels[i - 1]}_{i}", **kwargs)
     return img
 
 
