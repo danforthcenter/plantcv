@@ -932,6 +932,20 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
     return df, start_coord, spacing
 
 
+def _isSquare(contour):
+    """ Determine if a contour is square or not 
+
+        Inputs:
+    contour          = cv2 contour
+
+        Outputs:
+    bool             = True or False 
+    """
+    return (cv2.contourArea(contour) > 1000 and
+            max(cv2.minAreaRect(contour)[1]) / min(cv2.minAreaRect(contour)[1]) < 1.2 and 
+            (cv2.contourArea(contour) / np.prod(cv2.minAreaRect(contour)[1])) > 0.8)
+
+
 def detect_color_card(rgb_img, label=None):
     """Automatically detect a color card.
 
@@ -990,7 +1004,7 @@ def detect_color_card(rgb_img, label=None):
                     fontFace=cv2.FONT_HERSHEY_SIMPLEX, thickness=params.text_thickness)
         
     # Save out chip size for pixel to cm standardization 
-    outputs.add_observation(sample=label, variable='color_chip_size', trait='size of color card chips identified',
+    outputs.add_observation(sample=label, variable='median_color_chip_size', trait='size of color card chips identified',
                                 method='plantcv.plantcv.transform.find_color_card', scale='none',
                                 datatype=float, value=targetSquareArea, label="median")
         
