@@ -10,7 +10,7 @@ Size and shape analysis outputs numeric properties for individual plants, seeds,
     - img - RGB or grayscale image data for plotting.
     - labeled_mask - Labeled mask of objects (32-bit, output from [`pcv.create_labels`](create_labels.md) or [`pcv.roi.filter`](roi_filter.md)).
     - n_labels - Total number expected individual objects (default = 1).
-    - label - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
+    - label - Optional label parameter, modifies the variable name of observations recorded. Can be a prefix or list (default = pcv.params.sample_label).
 - **Context:**
     - Used to output size and shape characteristics of individual objects (labeled regions). 
 - **Example use:**
@@ -44,7 +44,7 @@ shape_image = pcv.analyze.size(img=img, labeled_mask=mask, n_labels=1)
 pcv.print_image(shape_image, '/home/malia/setaria_shape_img.png')
 
 # Access data stored out from analyze.size
-plant_solidity = pcv.outputs.observations['plant1']['solidity']['value']
+plant_solidity = pcv.outputs.observations['plant_1']['solidity']['value']
 
 ```
 
