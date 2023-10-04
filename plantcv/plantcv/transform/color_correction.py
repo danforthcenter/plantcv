@@ -933,16 +933,16 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
 
 
 def _isSquare(contour):
-    """ Determine if a contour is square or not 
+    """ Determine if a contour is square or not
 
         Inputs:
     contour          = cv2 contour
 
         Outputs:
-    bool             = True or False 
+    bool             = True or False
     """
     return (cv2.contourArea(contour) > 1000 and
-            max(cv2.minAreaRect(contour)[1]) / min(cv2.minAreaRect(contour)[1]) < 1.2 and 
+            max(cv2.minAreaRect(contour)[1]) / min(cv2.minAreaRect(contour)[1]) < 1.2 and
             (cv2.contourArea(contour) / np.prod(cv2.minAreaRect(contour)[1])) > 0.8)
 
 
@@ -965,7 +965,7 @@ def detect_color_card(rgb_img, label=None):
     :return labeled_mask: numpy.ndarray
     """
     nrows = 6
-    ncols = 4 # hard code since we don't currently support other color card types? 
+    ncols = 4  #  hard code since we don't currently support other color cards
     imgray = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
     thresh = cv2.adaptiveThreshold(imgray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 127, 2)
     contours, _ = cv2.findContours(thresh,cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -974,7 +974,7 @@ def detect_color_card(rgb_img, label=None):
     filteredContours = [contour for contour in filteredContours if (0.8 < (cv2.contourArea(contour) / targetSquareArea) < 1.2)]
 
     if len(filteredContours) == 0:
-        fatal_error('No color card found') 
+        fatal_error('No color card found')
 
     labeled_mask = np.zeros(imgray.shape)
     rect = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filteredContours])
@@ -983,7 +983,7 @@ def detect_color_card(rgb_img, label=None):
     whiteIndex = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0],:], (255,255,255))) for corner in corners])
     
     corners = corners[np.argsort([math.dist(corner, corners[whiteIndex]) for corner in corners])[[0, 1, 3, 2]]]
-    increment = 100 # increment amount is arbitrary, cell distances rescaled during perspective transform
+    increment = 100  #  increment amount is arbitrary, cell distances rescaled during perspective transform
     centers = [[int(0 + i * increment), int(0 + j * increment)] for j in range(nrows) for i in range(ncols)]
 
     newRect = cv2.minAreaRect(np.array(centers))
@@ -997,10 +997,10 @@ def detect_color_card(rgb_img, label=None):
     for i in enumerate(newCenters):
         cv2.circle(labeled_mask, newCenters[i], 20, int(thisSequence[i] + 1) * 10, -1)
         cv2.circle(debug_img, newCenters[i], 20, (255, 255, 0), -1)
-        cv2.putText(debug_img, text=str(i), org=newCenters[i], fontScale=params.text_size, color=(0, 0, 0), 
+        cv2.putText(debug_img, text=str(i), org=newCenters[i], fontScale=params.text_size, color=(0, 0, 0),
                     fontFace=cv2.FONT_HERSHEY_SIMPLEX, thickness=params.text_thickness)
         
-    # Save out chip size for pixel to cm standardization 
+    # Save out chip size for pixel to cm standardization
     outputs.add_observation(sample=label, variable='median_color_chip_size', trait='size of color card chips identified',
                             method='plantcv.plantcv.transform.detect_color_card', scale='none',
                             datatype=float, value=targetSquareArea, label="median")
