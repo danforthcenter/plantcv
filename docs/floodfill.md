@@ -2,7 +2,7 @@
 
 Fills based on a starting point with a user specified value
 
-**plantcv.floodfill**(*bin_img, point, value*)
+**plantcv.floodfill**(*bin_img, point, value=0*)
 
 **returns** filled_image
 

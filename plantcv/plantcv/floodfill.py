@@ -8,7 +8,7 @@ from plantcv.plantcv import params
 from skimage.segmentation import flood_fill
 
 
-def floodfill(bin_img, point, value):
+def floodfill(bin_img, point, value=0):
     """
     Flood fills holes in a binary mask
 
