@@ -34,7 +34,7 @@ def floodfill(bin_img, points, value=0):
 
     # Flood fill holes
     points1 = list(map(lambda sub: (sub[1], sub[0]), points))
-    
+     
     for x in points1:
         bool_img = flood_fill(bool_img, x, value)
 
