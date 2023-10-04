@@ -20,6 +20,8 @@ def floodfill(bin_img, point, value ):
     filled_img = image with objects filled
 
     :param bin_img: numpy.ndarray
+    :param point: tuple
+    :param value: float
     :return filled_img: numpy.ndarray
     """
     # Make sure the image is binary
