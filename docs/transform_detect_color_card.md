@@ -10,7 +10,7 @@ Automatically detects a color card and creates a mask.
     - rgb_img          - Input RGB image data containing a color card.
     - label - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
 - **Returns**
-    - labeled_mask     - Labeled color card mask (useful in `pcv.transform.get_color_matrix` and `pcv.transform.affine_color_correction`)
+    - labeled_mask     - Labeled color card mask (useful downstream of this step in `pcv.transform.get_color_matrix` and `pcv.transform.correct_color`)
 
 **Important Note:** This function isn't entirely robust. There are a few important assumptions that must be met in order to automatically detect color cards:
 
