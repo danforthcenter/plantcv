@@ -966,9 +966,9 @@ def detect_color_card(rgb_img, label=None):
     """
     nrows = 6
     ncols = 4 # hard code since we don't currently support other color card types? 
-    imgray = cv2.cvtColor(rgb_img,cv2.COLOR_BGR2GRAY)
-    thresh = cv2.adaptiveThreshold(imgray,255,cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY,127,2)
-    contours, _ = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+    imgray = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
+    thresh = cv2.adaptiveThreshold(imgray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 127, 2)
+    contours, _ = cv2.findContours(thresh,cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     filteredContours = [contour for contour in contours if _isSquare(contour)]
     targetSquareArea = np.median([cv2.contourArea(filteredContour) for filteredContour in filteredContours])
     filteredContours = [contour for contour in filteredContours if (0.8 < (cv2.contourArea(contour) / targetSquareArea) < 1.2)]
@@ -982,8 +982,8 @@ def detect_color_card(rgb_img, label=None):
     corners = np.intp(cv2.boxPoints(rect))
     whiteIndex = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0],:], (255,255,255))) for corner in corners])
     
-    corners = corners[np.argsort([math.dist(corner, corners[whiteIndex]) for corner in corners])[[0,1,3,2]]]
-    increment = 100 # increment amount is arbitrary since cell distances will be rescaled during perspective transform
+    corners = corners[np.argsort([math.dist(corner, corners[whiteIndex]) for corner in corners])[[0, 1, 3, 2]]]
+    increment = 100 # increment amount is arbitrary, cell distances rescaled during perspective transform
     centers = [[int(0 + i * increment), int(0 + j * increment)] for j in range(nrows) for i in range(ncols)]
 
     newRect = cv2.minAreaRect(np.array(centers))
@@ -996,14 +996,14 @@ def detect_color_card(rgb_img, label=None):
 
     for i in enumerate(newCenters):
         cv2.circle(labeled_mask, newCenters[i], 20, int(thisSequence[i] + 1) * 10, -1)
-        cv2.circle(debug_img, newCenters[i], 20, (255,255,0), -1)
-        cv2.putText(debug_img, text=str(i), org=newCenters[i], fontScale=params.text_size, color=(0,0,0), 
+        cv2.circle(debug_img, newCenters[i], 20, (255, 255, 0), -1)
+        cv2.putText(debug_img, text=str(i), org=newCenters[i], fontScale=params.text_size, color=(0, 0, 0), 
                     fontFace=cv2.FONT_HERSHEY_SIMPLEX, thickness=params.text_thickness)
         
     # Save out chip size for pixel to cm standardization 
     outputs.add_observation(sample=label, variable='median_color_chip_size', trait='size of color card chips identified',
-                                method='plantcv.plantcv.transform.detect_color_card', scale='none',
-                                datatype=float, value=targetSquareArea, label="median")
+                            method='plantcv.plantcv.transform.detect_color_card', scale='none',
+                            datatype=float, value=targetSquareArea, label="median")
         
     # Debugging
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_color_card.png'))
