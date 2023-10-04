@@ -990,12 +990,12 @@ def detect_color_card(rgb_img, label=None):
     boxPoints = cv2.boxPoints(newRect).astype("float32")
     M = cv2.getPerspectiveTransform(boxPoints, corners.astype("float32"))
     newCenters = cv2.transform(np.array([centers]), M)[0][:,0:2]
-    thisSequence = np.array(list(range(nrows * ncols)))
+    thisSequence = np.array([i for i in range(nrows * ncols)])
     
     debug_img = np.copy(rgb_img)
 
     for i in enumerate(newCenters):
-        cv2.circle(labeled_mask, newCenters[i], 20, int(thisSequence[i] + 1) * 10, -1)
+        cv2.circle(labeled_mask, newCenters[i], 20, (int(thisSequence[i]) + 1) * 10, -1)
         cv2.circle(debug_img, newCenters[i], 20, (255, 255, 0), -1)
         cv2.putText(debug_img, text=str(i), org=newCenters[i], fontScale=params.text_size, color=(0, 0, 0),
                     fontFace=cv2.FONT_HERSHEY_SIMPLEX, thickness=params.text_thickness)
