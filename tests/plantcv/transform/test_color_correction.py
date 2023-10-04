@@ -388,8 +388,8 @@ def test_detect_color_card(transform_test_data):
     """Test for PlantCV."""
     # Load rgb image
     rgb_img = cv2.imread(transform_test_data.colorcard_img)
-    _ = detect_color_card(rgb_img=rgb_img) 
-    assert outputs.observations["default"]["median_color_chip_size"]["value"] is not None
+    labeled_mask = detect_color_card(rgb_img=rgb_img) 
+    assert np.unique(labeled_mask) == 24
         
 
 def test_detect_color_card_none_found(transform_test_data):
