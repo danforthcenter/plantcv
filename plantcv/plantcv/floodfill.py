@@ -8,13 +8,13 @@ from plantcv.plantcv import params
 from skimage.segmentation import flood_fill
 
 
-def floodfill(bin_img, point, value=0):
+def floodfill(bin_img, points, value=0):
     """
     Flood fills holes in a binary mask
 
     Inputs:
     bin_img = Binary image data
-    point = seed point to start flood fill e.g. ((y,x))
+    point = list of seed point to start flood fill e.g. ([(x,y)])
     value  = value from 0-255
 
     Returns:
@@ -33,7 +33,10 @@ def floodfill(bin_img, point, value=0):
     bool_img = bin_img.astype(bool)
 
     # Flood fill holes
-    bool_img = flood_fill(bool_img, point, value)
+    points1 = list(map(lambda sub: (sub[1], sub[0]), points))
+    
+    for x in points1:
+        bool_img = flood_fill(bool_img, x, value)
 
     # Cast boolean image to binary and make a copy of the binary image for returning
     filled_img = np.copy(bool_img.astype(np.uint8) * 255)

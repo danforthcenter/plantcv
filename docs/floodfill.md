@@ -2,13 +2,13 @@
 
 Fills based on a starting point with a user specified value
 
-**plantcv.floodfill**(*bin_img, point, value=0*)
+**plantcv.floodfill**(*bin_img, points, value=0*)
 
 **returns** filled_image
 
 - **Parameters:**
     - bin_img - Binary image data or Gray image
-    - point - seed point to start flood fill (e.g. `point=(y,x)`) 
+    - points - list of seed points to start flood fill (e.g. `points=[(x,y)]`) 
     - value - value from 0-255 
   - **Context:**
     - Used to fill in object 
@@ -25,7 +25,7 @@ pcv.params.debug = "plot"
 
 # Apply flood filll  to a binary image 
 
-fill_image = pcv.floodfill(bin_img=binary_img, point =(137,31), value=0)
+fill_image = pcv.floodfill(bin_img=binary_img, points =[(31,137)], value=0)
 
 ```
 
