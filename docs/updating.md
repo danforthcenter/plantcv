@@ -431,6 +431,11 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, vh_img = **plantcv.flip**(*img, direction, device, debug=None*)
 * post v3.0dev2: vh_img = **plantcv.flip**(*img, direction*)
 
+#### plantcv.flood_fill
+
+* pre v4.1: NA
+* post v4.1: filled_image = **plantcv.flood_fill**(*bin_img, point, value=0*)
+
 #### plantcv.fluor_fvfm
 
 * pre v3.0dev2: device, hist_header, hist_data = **plantcv.fluor_fvfm**(*fdark, fmin, fmax, mask, device, filename, bins=1000, debug=None*)
