@@ -1,4 +1,3 @@
-from ctypes import pointer
 import pytest
 import cv2
 import numpy as np
