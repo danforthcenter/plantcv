@@ -8,7 +8,7 @@ Fills based on a starting point with a user specified value
 
 - **Parameters:**
     - bin_img - Binary image data or Gray image
-    - point - seed point to start flood fill e.g. ((y,x))
+    - point - seed point to start flood fill (e.g. `point=(y,x)`) 
     - value - value from 0-255 
   - **Context:**
     - Used to fill in object 
@@ -25,7 +25,7 @@ pcv.params.debug = "plot"
 
 # Apply flood filll  to a binary image 
 
-fill_image = pcv.floodfill(bin_img=binary_img, point =(137,31) ,value = 0)
+fill_image = pcv.floodfill(bin_img=binary_img, point =(137,31), value=0)
 
 ```
 
