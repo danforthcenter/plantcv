@@ -14,7 +14,7 @@ The photosynthesis subpackage is dependent on a PSII_Data instance file structur
     - n_labels - Total number expected individual objects (default = 1).
     - auto_fm - Automatically calculate the frame with maximum fluorescence per label, otherwise use a fixed frame for all labels (default = False).
     - measurement_labels - list of label(s) for each measurement, modifies the default variable names of observations. must have same length as number of measurements in ps_da
-    - label - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
+    - label - Optional label parameter, modifies the variable name of observations recorded. Can be a prefix or list (default = pcv.params.sample_label).
 - **Context:**
     - Used to extract Fv/Fm, Fv'/Fm' or Fq'/Fm' per identified plant pixel.
     - Generates histograms of Fv/Fm, Fv'/Fm' or Fq'/Fm' data.
@@ -49,7 +49,7 @@ ps = pcv.photosynthesis.read_cropreporter(filename="mydata.inf")
 fvfm, fvfm_hist = pcv.analyze.yii(ps_da=ps.ojip_dark, labeled_mask=kept_mask)
 
 # Access Fv/Fm median value
-fvfm_median = pcv.outputs.observations['plant1']['yii_median_t0']['value']
+fvfm_median = pcv.outputs.observations['plant_1']['yii_median_t0']['value']
 
 # Pseudocolor the Fv/Fm image
 fvfm_cmap = pcv.visualize.pseudocolor(gray_img=fvfm, mask=kept_mask, min_value=0, max_value=1, title="Fv/Fm")
@@ -81,7 +81,7 @@ pcv.params.sample_label = "plant"
 fqfm, fqfm_hist = pcv.analyze.yii(ps=ps.ojip_light, labeled_mask=kept_mask)
 
 # Access Fq'/Fm' median value
-fqfm_median = pcv.outputs.observations['plant1']["yii_median_t1"]['value']
+fqfm_median = pcv.outputs.observations['plant_1']["yii_median_t1"]['value']
 
 fqfm_cmap = pcv.visualize.pseudocolor(gray_img=fqfm, mask=kept_mask, min_value=0, max_value=1, title="Fq'/Fm'")
 

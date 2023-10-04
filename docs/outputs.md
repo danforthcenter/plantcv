@@ -90,7 +90,7 @@ pcv.params.sample_label = "plant"
 shape_img = pcv.analyze.size(img=img, labeled_mask=mask, n_labels=1)
 
 # Look at object area data without writing to a file 
-plant_area = pcv.outputs.observations['plant1']['pixel_area']['value']
+plant_area = pcv.outputs.observations['plant_1']['pixel_area']['value']
 
 ######## More workflow steps here ########
 

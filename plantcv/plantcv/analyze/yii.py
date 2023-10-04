@@ -34,9 +34,8 @@ def yii(ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None,
     :return yii_global: xarray.core.dataarray.DataArray
     :return yii_chart: altair.vegalite.v4.api.FacetChart
     """
-    # Set lable to params.sample_label if None
-    if label is None:
-        label = params.sample_label
+    # Set labels
+    labels = _set_labels(label, n_labels)
 
     # Validate that the input mask has the same 2D shape as the input DataArray
     if labeled_mask.shape != ps_da.shape[:2]:
@@ -98,7 +97,7 @@ def yii(ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None,
         yii_global = yii_global + yii_lbl
 
         # Record observations for each labeled region
-        _add_observations(yii_da=yii_lbl, measurements=ps_da.measurement.values, label=f"{label}{i}",
+        _add_observations(yii_da=yii_lbl, measurements=ps_da.measurement.values, label=f"{labels[i - 1]}_{i}",
                           measurement_labels=measurement_labels)
 
     # Convert the labeled mask to a binary mask
@@ -126,6 +125,22 @@ def yii(ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None,
            vmin=0, vmax=1)
 
     return yii_global.squeeze(), yii_chart
+
+
+def _set_labels(label, n_labels):
+    """Create list of labels."""
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+    # Set labels to label
+    labels = label
+    # If label is a string, make a list of labels
+    if isinstance(label, str):
+        labels = [label] * n_labels
+    # If the length of the labels list is not equal to the number of labels, raise an error
+    if len(labels) != n_labels:
+        fatal_error(f"Number of labels ({len(labels)}) does not match number of objects ({n_labels})")
+    return labels
 
 
 def _create_histogram(yii_img, mlabel):

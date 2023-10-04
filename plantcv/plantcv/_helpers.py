@@ -162,12 +162,20 @@ def _iterate_analysis(img, labeled_mask, n_labels, label, function, **kwargs):
     :param function: function
     :param kwargs: dict
     """
+    # Set labels to label
+    labels = label
+    # If label is a string, make a list of labels
+    if isinstance(label, str):
+        labels = [label] * n_labels
+    # If the length of the labels list is not equal to the number of labels, raise an error
+    if len(labels) != n_labels:
+        fatal_error(f"Number of labels ({len(labels)}) does not match number of objects ({n_labels})")
     mask_copy = np.copy(labeled_mask)
     if len(np.unique(mask_copy)) == 2 and np.max(mask_copy) == 255:
         mask_copy = np.where(mask_copy == 255, 1, 0).astype(np.uint8)
     for i in range(1, n_labels + 1):
         submask = np.where(mask_copy == i, 255, 0).astype(np.uint8)
-        img = function(img=img, mask=submask, label=f"{label}{i}", **kwargs)
+        img = function(img=img, mask=submask, label=f"{labels[i - 1]}_{i}", **kwargs)
     return img
 
 
