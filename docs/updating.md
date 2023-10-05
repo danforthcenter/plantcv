@@ -434,7 +434,7 @@ pages for more details on the input and output variable types.
 #### plantcv.flood_fill
 
 * pre v4.1: NA
-* post v4.1: filled_image = **plantcv.flood_fill**(*bin_img, point, value=0*)
+* post v4.1: filled_image = **plantcv.flood_fill**(*bin_img, points, value=0*)
 
 #### plantcv.fluor_fvfm
 
