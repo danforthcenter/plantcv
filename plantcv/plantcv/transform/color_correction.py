@@ -968,7 +968,7 @@ def detect_color_card(rgb_img, label=None):
     ncols = 4  #  hard code since we don't currently support other color cards
     imgray = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
     thresh = cv2.adaptiveThreshold(imgray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 127, 2)
-    contours, _ = cv2.findContours(thresh,cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     filtered_contours = [contour for contour in contours if _isSquare(contour)]
     target_square_area = np.median([cv2.contourArea(filteredContour) for filteredContour in filtered_contours])
     filtered_contours = [contour for contour in filtered_contours if (0.8 < (cv2.contourArea(contour) / target_square_area) < 1.2)]
@@ -980,7 +980,7 @@ def detect_color_card(rgb_img, label=None):
     rect = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
     rect = cv2.minAreaRect(rect)
     corners = np.intp(cv2.boxPoints(rect))
-    white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0],:], (255,255,255))) for corner in corners])
+    white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0], :], (255, 255, 255))) for corner in corners])
     
     corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])[[0, 1, 3, 2]]]
     increment = 100  #  increment amount is arbitrary, cell distances rescaled during perspective transform
@@ -989,7 +989,7 @@ def detect_color_card(rgb_img, label=None):
     new_rect = cv2.minAreaRect(np.array(centers))
     box_points = cv2.boxPoints(new_rect).astype("float32")
     m_transform = cv2.getPerspectiveTransform(box_points, corners.astype("float32"))
-    new_centers = cv2.transform(np.array([centers]), m_transform)[0][:,0:2]
+    new_centers = cv2.transform(np.array([centers]), m_transform)[0][:, 0:2]
     this_sequence = np.array(list(range(nrows * ncols)))
     
     debug_img = np.copy(rgb_img)
