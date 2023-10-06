@@ -987,8 +987,8 @@ def detect_color_card(rgb_img, label=None):
     centers = [[int(0 + i * increment), int(0 + j * increment)] for j in range(nrows) for i in range(ncols)]
 
     new_rect = cv2.minAreaRect(np.array(centers))
-    box_points = cv2._p(new_rect).astype("float32")
-    m_transform = cv2.getPerspectiveTransform(_p, corners.astype("float32"))
+    box_points = cv2.boxPoints(new_rect).astype("float32")
+    m_transform = cv2.getPerspectiveTransform(box_points, corners.astype("float32"))
     new_centers = cv2.transform(np.array([centers]), m_transform)[0][:,0:2]
     this_sequence = np.array(list(range(nrows * ncols)))
     
