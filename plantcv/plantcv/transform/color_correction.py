@@ -969,41 +969,41 @@ def detect_color_card(rgb_img, label=None):
     imgray = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
     thresh = cv2.adaptiveThreshold(imgray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 127, 2)
     contours, _ = cv2.findContours(thresh,cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    filteredContours = [contour for contour in contours if _isSquare(contour)]
-    targetSquareArea = np.median([cv2.contourArea(filteredContour) for filteredContour in filteredContours])
-    filteredContours = [contour for contour in filteredContours if (0.8 < (cv2.contourArea(contour) / targetSquareArea) < 1.2)]
+    filtered_contours = [contour for contour in contours if _isSquare(contour)]
+    target_square_area = np.median([cv2.contourArea(filteredContour) for filteredContour in filtered_contours])
+    filtered_contours = [contour for contour in filtered_contours if (0.8 < (cv2.contourArea(contour) / target_square_area) < 1.2)]
 
-    if len(filteredContours) == 0:
+    if len(filtered_contours) == 0:
         fatal_error('No color card found')
 
     labeled_mask = np.zeros(imgray.shape)
-    rect = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filteredContours])
+    rect = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
     rect = cv2.minAreaRect(rect)
-    corners = np.intp(cv2.boxPoints(rect))
-    whiteIndex = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0],:], (255,255,255))) for corner in corners])
+    corners = np.intp(cv2._p(rect))
+    white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0],:], (255,255,255))) for corner in corners])
     
-    corners = corners[np.argsort([math.dist(corner, corners[whiteIndex]) for corner in corners])[[0, 1, 3, 2]]]
+    corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])[[0, 1, 3, 2]]]
     increment = 100  #  increment amount is arbitrary, cell distances rescaled during perspective transform
     centers = [[int(0 + i * increment), int(0 + j * increment)] for j in range(nrows) for i in range(ncols)]
 
-    newRect = cv2.minAreaRect(np.array(centers))
-    boxPoints = cv2.boxPoints(newRect).astype("float32")
-    M = cv2.getPerspectiveTransform(boxPoints, corners.astype("float32"))
-    newCenters = cv2.transform(np.array([centers]), M)[0][:,0:2]
-    thisSequence = np.array(list(range(nrows * ncols)))
+    new_rect = cv2.minAreaRect(np.array(centers))
+    box_points = cv2._p(new_rect).astype("float32")
+    m_transform = cv2.getPerspectiveTransform(_p, corners.astype("float32"))
+    new_centers = cv2.transform(np.array([centers]), m_transform)[0][:,0:2]
+    this_sequence = np.array(list(range(nrows * ncols)))
     
     debug_img = np.copy(rgb_img)
 
-    for i, pt in enumerate(newCenters):
-        cv2.circle(labeled_mask, newCenters[i], 20, (int(thisSequence[i]) + 1) * 10, -1)
-        cv2.circle(debug_img, newCenters[i], 20, (255, 255, 0), -1)
+    for i, pt in enumerate(new_centers):
+        cv2.circle(labeled_mask, new_centers[i], 20, (int(this_sequence[i]) + 1) * 10, -1)
+        cv2.circle(debug_img, new_centers[i], 20, (255, 255, 0), -1)
         cv2.putText(debug_img, text=str(i), org=pt, fontScale=params.text_size, color=(0, 0, 0),
                     fontFace=cv2.FONT_HERSHEY_SIMPLEX, thickness=params.text_thickness)
         
     # Save out chip size for pixel to cm standardization
     outputs.add_observation(sample=label, variable='median_color_chip_size', trait='size of color card chips identified',
                             method='plantcv.plantcv.transform.detect_color_card', scale='none',
-                            datatype=float, value=targetSquareArea, label="median")
+                            datatype=float, value=target_square_area, label="median")
         
     # Debugging
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_color_card.png'))
