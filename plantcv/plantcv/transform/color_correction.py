@@ -990,7 +990,7 @@ def detect_color_card(rgb_img, label=None):
     corners = np.intp(cv2.boxPoints(rect))
     # Determine which corner most likely contains the white chip 
     white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0], :], (255, 255, 255))) for corner in corners])
-    
+
     corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])[[0, 1, 3, 2]]]
      # Increment amount is arbitrary, cell distances rescaled during perspective transform
     increment = 100 
@@ -1001,7 +1001,7 @@ def detect_color_card(rgb_img, label=None):
     m_transform = cv2.getPerspectiveTransform(box_points, corners.astype("float32"))
     new_centers = cv2.transform(np.array([centers]), m_transform)[0][:, 0:2]
     this_sequence = np.array(list(range(nrows * ncols)))
-    
+
     debug_img = np.copy(rgb_img)
 
     for i, pt in enumerate(new_centers):
@@ -1009,12 +1009,12 @@ def detect_color_card(rgb_img, label=None):
         cv2.circle(debug_img, new_centers[i], 20, (255, 255, 0), -1)
         cv2.putText(debug_img, text=str(i), org=pt, fontScale=params.text_size, color=(0, 0, 0),
                     fontFace=cv2.FONT_HERSHEY_SIMPLEX, thickness=params.text_thickness)
-        
+
     # Save out chip size for pixel to cm standardization
     outputs.add_observation(sample=label, variable='median_color_chip_size', trait='size of color card chips identified',
                             method='plantcv.plantcv.transform.detect_color_card', scale='none',
                             datatype=float, value=target_square_area, label="median")
-        
+
     # Debugging
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_color_card.png'))
 
