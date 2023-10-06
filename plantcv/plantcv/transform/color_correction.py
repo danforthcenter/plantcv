@@ -979,7 +979,7 @@ def detect_color_card(rgb_img, label=None):
     labeled_mask = np.zeros(imgray.shape)
     rect = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
     rect = cv2.minAreaRect(rect)
-    corners = np.intp(cv2._p(rect))
+    corners = np.intp(cv2.boxPoints(rect))
     white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0],:], (255,255,255))) for corner in corners])
     
     corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])[[0, 1, 3, 2]]]
