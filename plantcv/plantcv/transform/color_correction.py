@@ -933,7 +933,7 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
 
 
 def _isSquare(contour):
-    """ Determine if a contour is square or not
+    """Determine if a contour is square or not
 
         Inputs:
     contour          = cv2 contour
@@ -952,7 +952,6 @@ def detect_color_card(rgb_img, label=None):
     Algorithm written by mtwatso2-eng (github). Updated and implemented into PlantCV by Haley Schuhl.
 
         Inputs:
-        
     rgb_img          = Input RGB image data containing a color card.
     label            = Optional label parameter, modifies the variable name of
                        observations recorded (default = pcv.params.sample_label).
@@ -966,9 +965,9 @@ def detect_color_card(rgb_img, label=None):
     """
     #  hard code since we don't currently support other color cards
     nrows = 6
-    ncols = 4  
+    ncols = 4
 
-    # Convert to grayscale, threshold, and findContours 
+    # Convert to grayscale, threshold, and findContours
     imgray = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
     thresh = cv2.adaptiveThreshold(imgray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 127, 2)
     contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -976,24 +975,24 @@ def detect_color_card(rgb_img, label=None):
     # Filter contours based on size and shape
     filtered_contours = [contour for contour in contours if _isSquare(contour)]
     target_square_area = np.median([cv2.contourArea(filteredContour) for filteredContour in filtered_contours])
-    filtered_contours = [contour for contour in filtered_contours if 
+    filtered_contours = [contour for contour in filtered_contours if
                          (0.8 < (cv2.contourArea(contour) / target_square_area) < 1.2)]
 
     # Throw a fatal error if no color card found
     if len(filtered_contours) == 0:
         fatal_error('No color card found')
 
-    # Create blank img for drawing the labeled color card mask 
+    # Create blank img for drawing the labeled color card mask
     labeled_mask = np.zeros(imgray.shape)
     rect = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
     rect = cv2.minAreaRect(rect)
-    corners = np.intp(cv2.boxPoints(rect))
-    # Determine which corner most likely contains the white chip 
+    corners = np.array(np.intp(cv2.boxPoints(rect)))
+    # Determine which corner most likely contains the white chip
     white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0], :], (255, 255, 255))) for corner in corners])
 
     corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])[[0, 1, 3, 2]]]
-     # Increment amount is arbitrary, cell distances rescaled during perspective transform
-    increment = 100 
+    # Increment amount is arbitrary, cell distances rescaled during perspective transform
+    increment = 100
     centers = [[int(0 + i * increment), int(0 + j * increment)] for j in range(nrows) for i in range(ncols)]
 
     new_rect = cv2.minAreaRect(np.array(centers))
