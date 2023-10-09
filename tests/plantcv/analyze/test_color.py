@@ -13,7 +13,7 @@ def test_color(colorspace, test_data):
     img = cv2.imread(test_data.small_rgb_img)
     mask = cv2.imread(test_data.small_bin_img, -1)
     _ = analyze_color(rgb_img=img, labeled_mask=mask, n_labels=1, colorspaces=colorspace)
-    assert outputs.observations['default1']['hue_median']['value'] == 80.0
+    assert outputs.observations['default_1']['hue_median']['value'] == 80.0
 
 
 def test_color_bad_imgtype(test_data):

@@ -1,5 +1,6 @@
 import pytest
 import os
+import pandas as pd
 from plantcv.plantcv import params
 from plantcv.plantcv.homology import constella
 
@@ -40,9 +41,9 @@ def test_constella_redundant_plm(homology_test_data):
     cur_plms.group = None
     starscape_df = homology_test_data.read_df(homology_test_data.plms_starscape)
     # Append duplicate plms
-    cur_plms = cur_plms.append(cur_plms.iloc[0])
+    cur_plms = pd.concat([cur_plms, cur_plms.iloc[0].to_frame().T], ignore_index=True)
     cur_plms = cur_plms.reset_index(drop=True)
-    starscape_df = starscape_df.append(starscape_df.iloc[0])
+    starscape_df = pd.concat([starscape_df, starscape_df.iloc[0].to_frame().T], ignore_index=True)
     starscape_df = starscape_df.reset_index(drop=True)
     cur_plms, _ = constella(cur_plms=cur_plms, pc_starscape=starscape_df, group_iter=1, outfile_prefix="constella")
     assert max(cur_plms.group) == 11
