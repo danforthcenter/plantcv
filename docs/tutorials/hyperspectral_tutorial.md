@@ -1,6 +1,6 @@
 ## Tutorial: Hypespectral Workflow
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-grayscale/HEAD?labpath=index.ipynb)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-hyperspectral/HEAD?labpath=index.ipynb)
 <a target="_blank" href="https://colab.research.google.com/github/danforthcenter/plantcv-tutorial-hyperspectral">
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
 </a>
