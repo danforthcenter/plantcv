@@ -13,7 +13,7 @@ best if the pot size/position of the plant remains relatively constant.
     - labeled_mask - Labeled mask of objects (32-bit).
     - line_position - position of boundary line (a value of 0 would draw the line through the top of the image)
     - n_labels - Total number expected individual objects (default = 1).
-    - label - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
+    - label - Optional label parameter, modifies the variable name of observations recorded. Can be a prefix or list (default = pcv.params.sample_label).
 - **Context:**
     - Used to define a boundary line for the image, to find the height above and below as well as area above and below a
     boundary line.
@@ -39,7 +39,7 @@ pcv.params.sample_label = "plant"
 boundary_image = pcv.analyze.bound_horizontal(img=img, labeled_mask=bin_mask, line_position=300, n_labels=1)
 
 # Access data stored out from analyze_bound_horizontal
-percent_area_below_reference = pcv.outputs.observations['plant1']['percent_area_below_reference']['value']
+percent_area_below_reference = pcv.outputs.observations['plant_1']['percent_area_below_reference']['value']
 
 ```
 
