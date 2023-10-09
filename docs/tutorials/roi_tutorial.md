@@ -1,6 +1,10 @@
 ## Tutorial: Region of Interest Tutorial
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-roi/HEAD?labpath=table_of_contents.ipynb) Check out our interactive ROI tutorials! 
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-tutorial-roi/HEAD?labpath=index.ipynb)
+<a target="_blank" href="https://colab.research.google.com/github/danforthcenter/plantcv-tutorial-roi">
+  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a>
+[![Static Badge](https://img.shields.io/badge/Open%20on%20GitHub-black?style=flat&logo=github)](https://github.com/danforthcenter/plantcv-tutorial-roi)
 
 ## Table of Contents for ROI tutorials
 1. [Rectangle ROI](#rectangle)
