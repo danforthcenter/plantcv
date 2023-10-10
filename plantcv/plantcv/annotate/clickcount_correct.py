@@ -105,7 +105,7 @@ def clickcount_correct(bin_img, bin_img_recover, counter, coor):
     params.debug = None
 
     labelnames = _clickcount_labels(counter)
-      
+
     completed_mask = np.copy(bin_img)
 
     totalcoor = []
@@ -125,7 +125,7 @@ def clickcount_correct(bin_img, bin_img_recover, counter, coor):
         for i, (x, y) in enumerate(counter.points[names]):
             x = int(x)
             y = int(y)
-            #corrected coordinates
+            # corrected coordinates
             counter.points[names][i] = (x, y)
             # if the coordinates point to 0 in the binary image, recover the grain and coordinates of center
             if completed_mask[y, x] == 1 or completed_mask[y, x] == 0:
