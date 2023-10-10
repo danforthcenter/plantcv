@@ -4,7 +4,7 @@ Correct ClickCount Object Mask
 
 **plantcv.annotate.clickcount_correct**(*bin_img*, *bin_img_recover*, *counter*, *coor*)
 
-**returns** recovered image
+**returns** recovered image, corrected ClickCount object
 
 - **Parameters:**
     - bin_img - binary image, image with selected objects (e.g. output of detect_discs)
@@ -12,7 +12,7 @@ Correct ClickCount Object Mask
     - counter - ClickCount class object with points interactively corrected by the user
     - coor - list of coordinates of 'auto' detected points (coordinate output of detect_discs)
 - **Context:**
-    - Correct the number of objects in a binary image with information from the ClickCount class object (both remove and recover objects)
+    - Correct the number of objects in a binary image with information from the ClickCount class object (both remove and recover objects). Also returns a corrected ClickCount object with coordinates at the center of each object (rather than click location)
 - **Example use: *  *
     - Use in pollen germination detection
 
@@ -39,7 +39,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 # Apply binary 'white' mask over an image. 
-recovered_img = pcv.annotate.clickcount_correct(bin_img=pollen_all_mask, bin_img_recover= pollen_detectdisc_mask, counter=counter, coor=coor)
+recovered_img, counter1 = pcv.annotate.clickcount_correct(bin_img=pollen_all_mask, bin_img_recover= pollen_detectdisc_mask, counter=counter, coor=coor)
 
 ```
 

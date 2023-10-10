@@ -67,17 +67,17 @@ def _recover_circ(bin_img, c):
         
         # register that a change in direction has occurred to terminate when
         # is has happened in both directions
-        if np.sign(dir_x_hist) != dir_x:
+        if np.sign(dir_x_hist) != dir_x or dir_x==0:
             chg_dir_x = True
             
-        if np.sign(dir_y_hist) != dir_y:
+        if np.sign(dir_y_hist) != dir_y or dir_y==0:
             chg_dir_y = True
         
         # if there is no step to take, terminate loop
-        if (dir_x==0) and (dir_y==0):
-            chg_dir_x = True
-            
-            chg_dir_y = True
+        #if (dir_x==0) and (dir_y==0):
+        #    chg_dir_x = True
+        #    
+        #    chg_dir_y = True
         
         c[1] += stepx.astype(np.int32)
         c[0] += stepy.astype(np.int32)
@@ -138,8 +138,9 @@ def clickcount_correct(bin_img, bin_img_recover, counter, coor):
             # if the coordinates point to 0 in the binary image, recover the grain and coordinates of center
             if completed_mask[y,x] == 1 or completed_mask[y,x]==0:
                 print(f"Recovering grain at coordinates: x = {x}, y = {y}")
-                masked_circ, [y,x] = _recover_circ(bin_img_recover, [y,x])
+                masked_circ, [a,b] = _recover_circ(bin_img_recover, [y,x])
                 completed_mask = completed_mask + masked_circ
+                counter.points[names][i] = (b,a)
     
     completed_mask1 = 1*((completed_mask + 1*(completed_mask==255)) != 0).astype(np.uint8)
     
@@ -147,4 +148,4 @@ def clickcount_correct(bin_img, bin_img_recover, counter, coor):
 
     _debug(visual=completed_mask1, filename=os.path.join(params.debug_outdir, f"{params.device}_clickcount-corrected.png"))
      
-    return completed_mask
+    return completed_mask, counter
