@@ -34,13 +34,13 @@ def _recover_circ(bin_img, c):
     chg_dir_x = False
     chg_dir_y = False
     
-    while (chg_dir_x and chg_dir_y) == False:
+    while (chg_dir_x and chg_dir_y) is False:
         # image of concentric circles centered in c
         circ = np.sqrt((X-c[1])**2+(Y-c[0])**2)
         
         # growing radius until it reaches black pixels 
         inside = True
-        while inside == True:
+        while inside is True:
             circ_mask = 1*(circ < r)
             circ_mask_area = np.sum(circ_mask)
             masked_circ = bin_img*circ_mask
@@ -54,7 +54,6 @@ def _recover_circ(bin_img, c):
         # moving center towards the center of mass 
         Cx = np.mean(X[masked_circ==1])
         Cy = np.mean(Y[masked_circ==1])
-        #dist = np.sqrt( (Cx-c[1])**2 + (Cy-c[0])**2 )
         
         dir_x = np.sign(Cx - c[1])
         dir_y = np.sign(Cy - c[0])
@@ -73,12 +72,6 @@ def _recover_circ(bin_img, c):
         if np.sign(dir_y_hist) != dir_y or dir_y==0:
             chg_dir_y = True
         
-        # if there is no step to take, terminate loop
-        #if (dir_x==0) and (dir_y==0):
-        #    chg_dir_x = True
-        #    
-        #    chg_dir_y = True
-        
         c[1] += stepx.astype(np.int32)
         c[0] += stepy.astype(np.int32)
     
@@ -89,7 +82,7 @@ def _recover_circ(bin_img, c):
     return masked_circ, c
 
 def _clickcount_labels(counter):
-    labels = [key for key in counter.count]
+    labels = list(counter.count)
     
     return labels
 
