@@ -13,10 +13,10 @@ def _clickcount_labels(counter):
     return labels
 
 
-def clickcount_label(mask, grayimg, counter,imagename):
-    # img - RGB, grayscale, binary, or hyperspectral image
-    # counter - napari output
-    # newnames - list of newnames
+def clickcount_label(gray_img, counter,imgname='default'):
+    # gray_img - gray image with objects labeled (e.g.watershed output)
+    # counter - ClickCount object
+    # imagename - imagename or sample identification to add to output information
     
     debug = params.debug
     params.debug = None
@@ -28,7 +28,7 @@ def clickcount_label(mask, grayimg, counter,imagename):
     for i,x in enumerate(labelnames):
         dict_class_labels[x] = i+1
     
-    shape=np.shape(mask)
+    shape=np.shape(gray_img)
     class_label = np.zeros((shape[0],shape[1]), dtype=np.uint8)
 
     class_number=[]
@@ -40,11 +40,11 @@ def clickcount_label(mask, grayimg, counter,imagename):
         for (y,x) in counter.points[cl]:
             x = int(x)
             y = int(y)
-            seg_label = grayimg[x,y]
+            seg_label = gray_img[x,y]
             if seg_label != 0:
                 class_number.append(seg_label)
                 class_name.append(cl)
-                class_label[grayimg==seg_label] = seg_label
+                class_label[gray_img==seg_label] = seg_label
     
     # Get corrected name
     
@@ -75,8 +75,8 @@ def clickcount_label(mask, grayimg, counter,imagename):
 
     for i,value in enumerate(corrected_number):
         if value!=0:
-            corrected_label[grayimg==value] = i+1
-            corrected_class[grayimg==value] = class_dict[corrected_name[i]]
+            corrected_label[gray_img==value] = i+1
+            corrected_class[gray_img==value] = class_dict[corrected_name[i]]
             corrected_name[i]= str(i+1)+"_"+corrected_name[i]
     
     num=len(corrected_name)
@@ -93,7 +93,7 @@ def clickcount_label(mask, grayimg, counter,imagename):
     for i,x in enumerate(count_class_dict.keys()):
         variable=x
         value=count_class_dict[x]
-        outputs.add_observation(sample=imagename, variable= variable, 
+        outputs.add_observation(sample=imgname, variable= variable, 
                         trait='count of category',
                         method='count', scale='count', datatype=int,
                         value= value, label=variable)

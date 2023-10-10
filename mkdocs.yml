@@ -43,6 +43,8 @@ nav:
         - 'Analyze NPQ': analyze_npq.md
       - 'Annotation Tools':
           - 'ClickCount': annotate_click_count.md
+          - 'Correct ClickCount': annotate_clickcount_correct.md
+          - 'Label ClickCount': annotate_clickcount_label.md
           - 'Detect Discs': annotate_detect_discs.md
           - 'Get Centroids': annotate_get_centroids.md
           - 'Points': annotate_points.md
