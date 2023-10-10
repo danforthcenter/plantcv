@@ -10,7 +10,7 @@ from plantcv.plantcv import outputs
 def _clickcount_labels(counter):
     """Get the label names"""
     labels = list(counter.count)
-    
+
     return labels
 
 
@@ -62,7 +62,7 @@ def clickcount_label(gray_img, counter, imgname='default'):
             corrected_number.append(x)
             y = str(class_name[i])
             corrected_name.append(y)
-   
+
     classes = np.unique(corrected_name)
     class_dict = {}
     count_class_dict = {}
