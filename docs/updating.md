@@ -327,6 +327,16 @@ pages for more details on the input and output variable types.
 * pre v4.1: NA
 * post v4.1: counter = **plantcv.annotate.ClickCount**(*img, figsize=(6,12)*)
 
+#### plantcv.annotate.clickcount_correct
+
+* pre v4.1: NA
+* post v4.1: corrected = **plantcv.annotate.clickcount_correct**(*bin_img*, *bin_img_recover*, *counter*, *coor*)
+
+#### plantcv.annotate.clickcount_label
+
+* pre v4.1: NA
+* post v4.1: labeled, label_name, num = **plantcv.annotate.clickcount_label**(*gray_img*, *counter*, *imgname='default'*)
+
 #### plantcv.annotate.Points
 
 * pre v4.1: NA

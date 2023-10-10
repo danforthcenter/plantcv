@@ -104,9 +104,10 @@ def _remove_points(autolist,confirmedlist):
     return removecoor
 
 def clickcount_correct(bin_img, bin_img_recover, counter, coor):
-    # bin_img - binary image
-    # counter - counter output
-    # coor - coordinates of 'auto' detected points
+    # bin_img - binary image, image with selected objects
+    # bin_img_recover - binary image, image with all potential objects
+    # counter - ClickCount object
+    # coor - coordinates of 'auto' detected points (coordinate output of detect_discs)
 
     debug = params.debug
     params.debug = None

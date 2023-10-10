@@ -156,6 +156,7 @@ Functions that automatically store data to the [`Outputs` class](outputs.md) are
 [analyze.thermal](analyze_thermal.md),
 [analyze.yii](analyze_yii.md), 
 [analyze.npq](analyze_npq.md),
+[annotate.clickcount_label](annotate_clickcount_label.md),
 [homology.landmark_reference_pt_dist](homology_landmark_reference_pt_dist.md),
 [homology.x_axis_pseudolandmarks](homology_x_axis_pseudolandmarks.md), 
 [homology.y_axis_pseudolandmarks](homology_y_axis_pseudolandmarks.md),

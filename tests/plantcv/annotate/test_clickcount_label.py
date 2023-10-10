@@ -24,7 +24,7 @@ def test_clickcount_label(annotate_test_data):
 
     imagesname = "test"
 
-    class_label,class_list,num = clickcount_label(recovered, watershed,counter, imagesname)
+    class_label,class_list,num = clickcount_label(watershed,counter, imagesname)
 
     assert num == 15
 
