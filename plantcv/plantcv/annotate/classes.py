@@ -158,7 +158,7 @@ class ClickCount:
         self.events.append(event)
         if event.button == 1:
             self.ax.plot(event.xdata, event.ydata, marker='x', c=self.color)
-            self.points[self.label].append((event.xdata, event.ydata))
+            self.points[self.label].append((floor(event.xdata), floor(event.ydata)))
             self.count[self.label] += 1
         else:
             idx_remove, _ = _find_closest_pt((event.xdata, event.ydata), self.points[self.label])
