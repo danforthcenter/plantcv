@@ -5,4 +5,4 @@ from plantcv.plantcv.annotate.clickcount_correct import clickcount_correct
 from plantcv.plantcv.annotate.clickcount_label import clickcount_label
 
 # add new functions to end of lists
-__all__ = ["detect_discs", "get_centroids", "Points", "ClickCount","clickcount_correct","clickcount_label"]
+__all__ = ["detect_discs", "get_centroids", "Points", "ClickCount", "clickcount_correct", "clickcount_label"]
