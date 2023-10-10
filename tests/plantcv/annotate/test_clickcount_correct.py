@@ -1,7 +1,5 @@
-#import os
 import cv2
 import numpy as np
-import matplotlib
 from plantcv.plantcv.annotate import ClickCount
 from plantcv.plantcv.annotate import clickcount_correct
 

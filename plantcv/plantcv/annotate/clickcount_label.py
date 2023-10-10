@@ -82,12 +82,12 @@ def clickcount_label(gray_img, counter,imgname='default'):
     num=len(corrected_name)
 
     vis_labeled=colorize_label_img(corrected_label)
-    cis_class=colorize_label_img(corrected_class)
+    vis_class=colorize_label_img(corrected_class)
 
     params.debug = debug
     _debug(visual=vis_labeled,
            filename=os.path.join(params.debug_outdir, str(params.device) + '_corrected__labels_img.png'))
-    _debug(visual=cis_class,
+    _debug(visual=vis_class,
            filename=os.path.join(params.debug_outdir, str(params.device) + '_corrected_class.png'))
     
     for i,x in enumerate(count_class_dict.keys()):

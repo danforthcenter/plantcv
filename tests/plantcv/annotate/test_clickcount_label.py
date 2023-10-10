@@ -1,7 +1,6 @@
 #import os
 import cv2
 import numpy as np
-import matplotlib
 from plantcv.plantcv.annotate import ClickCount
 from plantcv.plantcv.annotate import clickcount_label
 
@@ -10,7 +9,6 @@ def test_clickcount_label(annotate_test_data):
     """Test for PlantCV."""
     # Read in test data
     img= cv2.imread(annotate_test_data.pollen, -1)
-    recovered = cv2.imread(annotate_test_data.pollen_recovered, -1)
     watershed = cv2.imread(annotate_test_data.pollen_watershed, -1)
     
     totalpoints1=[(158, 531), (361, 112), (500, 418), (269.25303806488864, 385.69839981447126), 
@@ -24,7 +22,7 @@ def test_clickcount_label(annotate_test_data):
 
     imagesname = "test"
 
-    class_label,class_list,num = clickcount_label(watershed,counter, imagesname)
+    _,_,num = clickcount_label(watershed,counter, imagesname)
 
     assert num == 14
 

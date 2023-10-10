@@ -68,9 +68,6 @@ def watershed_segmentation(rgb_img, mask, distance=10, label=None):
 
     # Reset debug mode
     params.debug = debug
-    #_debug(visual=dist_transform,
-    #       filename=os.path.join(params.debug_outdir, str(params.device) + '_watershed_dist_img.png'),
-    #       cmap='gray')
     _debug(visual=labels,
            filename=os.path.join(params.debug_outdir, str(params.device) + '_watershed__labels_img.png'))
     _debug(visual=joined,
