@@ -7,4 +7,5 @@ from plantcv.plantcv.annotate.clickcount_file_import import clickcount_file_impo
 
 
 # add new functions to end of lists
-__all__ = ["detect_discs", "get_centroids", "Points", "ClickCount", "clickcount_correct", "clickcount_label","clickcount_file_import"]
+__all__ = ["detect_discs", "get_centroids", "Points", "ClickCount", "clickcount_correct", 
+           "clickcount_label", "clickcount_file_import"]
