@@ -70,14 +70,14 @@ class Outputs:
         self.measurements = {}
         self.images = []
         self.observations = {}
-        self.metadata = {} 
+        self.metadata = {}
 
         # Add a method to clear measurements
     def clear(self):
         self.measurements = {}
         self.images = []
         self.observations = {}
-        self.metadata = {} 
+        self.metadata = {}
 
     # Method to add observation to outputs
     def add_observation(self, sample, variable, trait, method, scale, datatype, value, label):
