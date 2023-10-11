@@ -130,6 +130,57 @@ class Outputs:
             "label": label
         }
 
+    # Method to add observation to outputs
+    def add_metadata(self, variable, trait, method, scale, datatype, value, label):
+        """
+        Keyword arguments/parameters:
+        variable     = A local unique identifier of a variable, e.g. a short name,
+                       that is a key linking the definitions of variables with observations.
+        trait        = A name of the trait mapped to an external ontology; if there is no exact mapping, an informative
+                       description of the trait (docs/output_measurements.md/#summary-of-output-metadata).
+        method       = A name of the measurement method mapped to an external ontology; if there is no exact mapping, an
+                       informative description of the measurement procedure
+        scale        = Units of the measurement or scale in which the observations are expressed; if possible, standard
+                       units and scales should be used and mapped to existing ontologies; in the case of non-standard
+                       scale a full explanation should be given
+        datatype     = The type of data to be stored, e.g. 'int', 'float', 'str', 'list', 'bool', etc.
+        value        = The data itself
+        label        = The label for each value (most useful when the data is a frequency table as in hue,
+                       or other tables)
+
+        :param variable: str
+        :param trait: str
+        :param method: str
+        :param scale: str
+        :param datatype: type
+        :param value:
+        :param label:
+        """
+        # Create an empty dictionary for the sample if it does not exist
+        if sample not in self.observations:
+            self.observations[sample] = {}
+
+        # Supported data types
+        supported_dtype = ["int", "float", "str", "list", "bool", "tuple", "dict", "NoneType", "numpy.float64"]
+        # Supported class types
+        class_list = [f"<class '{cls}'>" for cls in supported_dtype]
+
+        # Send an error message if datatype is not supported by json
+        if str(type(value)) not in class_list:
+            # String list of supported types
+            type_list = ', '.join(map(str, supported_dtype))
+            fatal_error(f"The Data type {type(value)} is not compatible with JSON! Please use only these: {type_list}!")
+
+        # Save the observation for the sample and variable
+        self.observations[sample][variable] = {
+            "trait": trait,
+            "method": method,
+            "scale": scale,
+            "datatype": str(datatype),
+            "value": value,
+            "label": label
+        }
+
     # Method to save observations to a file
     def save_results(self, filename, outformat="json"):
         """Save results to a file.
