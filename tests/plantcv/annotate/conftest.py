@@ -21,6 +21,7 @@ class AnnotateTestData:
         self.pollen_discs = os.path.join(self.datadir, "pollen_detectdisc_mask.png")
         self.pollen_watershed = os.path.join(self.datadir, "pollen_watershed.png")
         self.pollen_recovered = os.path.join(self.datadir, "pollen_recovered.png")
+        self.pollen_coords = os.path.join(self.datadir, "clickcount_file_import.coords")
 
 
 @pytest.fixture(scope="session")
