@@ -43,6 +43,7 @@ nav:
         - 'Analyze NPQ': analyze_npq.md
       - 'Annotation Tools':
           - 'ClickCount': annotate_click_count.md
+          - 'File Import Coordinates': annotate_clickcount_file_import.md
           - 'Correct ClickCount': annotate_clickcount_correct.md
           - 'Label ClickCount': annotate_clickcount_label.md
           - 'Detect Discs': annotate_detect_discs.md
