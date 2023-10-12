@@ -29,7 +29,7 @@ img, filename, filepath = pcv.readimage(filename="plant_image.png")
 roi = pcv.roi.custom(img=img, vertices=[[1190,490], [1470,830], [920,1430], [890,950]])
 
 # Convert the ROI contour into a binary mask
-mask = pcv.roi.roi2mask(img=img, contour=roi)
+mask = pcv.roi.roi2mask(img=img, roi=roi)
 
 ```
 
