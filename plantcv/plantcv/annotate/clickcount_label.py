@@ -71,8 +71,8 @@ def clickcount_label(gray_img, counter, imgname='default'):
         class_dict[x] = i+1
         count_class_dict[x] = corrected_name.count(x)
 
-    corrected_label = np.zeros((shape[0], shape[1]), dtype=np.uint8)
-    corrected_class = np.zeros((shape[0], shape[1]), dtype=np.uint8)
+    corrected_label = np.zeros((shape[0], shape[1]))
+    corrected_class = np.zeros((shape[0], shape[1]))
 
     for i, value in enumerate(corrected_number):
         if value != 0:
