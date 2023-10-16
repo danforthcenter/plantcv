@@ -981,6 +981,21 @@ def detect_color_card(rgb_img, label=None):
     # Throw a fatal error if no color card found
     if len(filtered_contours) == 0:
         fatal_error('No color card found')
+    
+    # Initialize chip shape lists 
+    mindex, marea, mwidth, mheight = [], [], [], [] 
+    # Loop over our contours and size data about them
+    for index, c in enumerate(filtered_contours):
+        marea.append(cv2.contourArea(filtered_contours[index]))
+        _, wh, _ = cv2.minAreaRect(c)  # Rotated rectangle
+        mwidth.append(wh[0])
+        mheight.append(wh[1])
+        mindex.append(index)
+    # Create dataframe for easy summary stats 
+    df = pd.DataFrame({'index': mindex,'width': mwidth, 'height': mheight, 'area': marea})
+    chip_size = df.loc[:, "area"].median()
+    chip_height = df.loc[:, "height"].median()
+    chip_width = df.loc[:, "width"].median()
 
     # Create blank img for drawing the labeled color card mask
     labeled_mask = np.zeros(imgray.shape)
@@ -1011,8 +1026,14 @@ def detect_color_card(rgb_img, label=None):
 
     # Save out chip size for pixel to cm standardization
     outputs.add_observation(sample=label, variable='median_color_chip_size', trait='size of color card chips identified',
-                            method='plantcv.plantcv.transform.detect_color_card', scale='none',
-                            datatype=float, value=target_square_area, label="median")
+                            method='plantcv.plantcv.transform.detect_color_card', scale='square pixels',
+                            datatype=float, value=chip_size, label="median")
+    outputs.add_observation(sample=label, variable='median_color_chip_width', trait='median width of color card chips identified',
+                            method='plantcv.plantcv.transform.detect_color_card', scale='pixels',
+                            datatype=float, value=chip_width, label="width")
+    outputs.add_observation(sample=label, variable='median_color_chip_height', trait='median height of color card chips identified',
+                            method='plantcv.plantcv.transform.detect_color_card', scale='pixels',
+                            datatype=float, value=chip_height, label="height")
 
     # Debugging
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_color_card.png'))
