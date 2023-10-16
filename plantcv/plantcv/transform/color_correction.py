@@ -997,14 +997,11 @@ def detect_color_card(rgb_img, label=None):
     chip_height = df.loc[:, "height"].median()
     chip_width = df.loc[:, "width"].median()
 
-    # Create blank img for drawing the labeled color card mask
-    labeled_mask = np.zeros(imgray.shape)
     rect = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
     rect = cv2.minAreaRect(rect)
     corners = np.array(np.intp(cv2.boxPoints(rect)))
     # Determine which corner most likely contains the white chip
     white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0], :], (255, 255, 255))) for corner in corners])
-
     corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])[[0, 1, 3, 2]]]
     # Increment amount is arbitrary, cell distances rescaled during perspective transform
     increment = 100
@@ -1015,7 +1012,9 @@ def detect_color_card(rgb_img, label=None):
     m_transform = cv2.getPerspectiveTransform(box_points, corners.astype("float32"))
     new_centers = cv2.transform(np.array([centers]), m_transform)[0][:, 0:2]
     this_sequence = np.array(list(range(nrows * ncols)))
-
+    
+    # Create blank img for drawing the labeled color card mask
+    labeled_mask = np.zeros(imgray.shape)
     debug_img = np.copy(rgb_img)
 
     for i, pt in enumerate(new_centers):
