@@ -14,14 +14,14 @@ def floodfill(bin_img, points, value=0):
 
     Inputs:
     bin_img = Binary image data
-    point = list of seed point to start flood fill e.g. ([(x,y)])
-    value  = value from 0-255
+    points = list of seed points to start flood fill e.g. ([(x,y)])
+    value  = value from 0-255 (default value=0)
 
     Returns:
     filled_img = image with objects filled
 
     :param bin_img: numpy.ndarray
-    :param point: tuple
+    :param points: list
     :param value: float
     :return filled_img: numpy.ndarray
     """
