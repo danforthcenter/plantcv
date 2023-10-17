@@ -142,16 +142,13 @@ class Outputs:
         value       = The data itself
 
 
-        :param variable: str
-        :param trait: str
-        :param method: str
-        :param scale: str
+        :param label: str
         :param datatype: type
-        :param value:
+        :param value: 
         """
         # Create an empty dictionary for the sample if it does not exist
-        if variable not in self.metadata:
-            self.observations[variable] = {}
+        if label not in self.metadata:
+            self.metadata[label] = {}
 
         # Supported data types
         supported_dtype = ["int", "float", "str", "list", "bool", "tuple", "dict", "NoneType", "numpy.float64"]
@@ -165,10 +162,7 @@ class Outputs:
             fatal_error(f"The Data type {type(value)} is not compatible. Please use only these: {type_list}!")
 
         # Save the observation for the sample and variable
-        self.metadata[sample][variable] = {
-            "trait": trait,
-            "method": method,
-            "scale": scale,
+        self.metadata[label] = {
             "datatype": str(datatype),
             "value": value,
             "label": label
