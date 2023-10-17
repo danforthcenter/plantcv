@@ -981,7 +981,7 @@ def detect_color_card(rgb_img, label=None):
     # Throw a fatal error if no color card found
     if len(filtered_contours) == 0:
         fatal_error('No color card found')
-    
+
     # Initialize chip shape lists
     mindex, marea, mwidth, mheight = [], [], [], []
     # Loop over our contours and size data about them
@@ -991,7 +991,7 @@ def detect_color_card(rgb_img, label=None):
         mwidth.append(wh[0])
         mheight.append(wh[1])
         mindex.append(index)
-    # Create dataframe for easy summary stats 
+    # Create dataframe for easy summary stats
     df = pd.DataFrame({'index': mindex, 'width': mwidth, 'height': mheight, 'area': marea})
     chip_size = df.loc[:, "area"].median()
     chip_height = df.loc[:, "height"].median()
@@ -1012,7 +1012,7 @@ def detect_color_card(rgb_img, label=None):
     m_transform = cv2.getPerspectiveTransform(box_points, corners.astype("float32"))
     new_centers = cv2.transform(np.array([centers]), m_transform)[0][:, 0:2]
     this_sequence = np.array(list(range(nrows * ncols)))
-    
+
     # Create blank img for drawing the labeled color card mask
     labeled_mask = np.zeros(imgray.shape)
     debug_img = np.copy(rgb_img)
