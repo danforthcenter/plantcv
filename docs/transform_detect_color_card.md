@@ -12,7 +12,7 @@ Automatically detects a color card and creates a mask.
 - **Returns**
     - labeled_mask     - Labeled color card mask (useful downstream of this step in `pcv.transform.get_color_matrix` and `pcv.transform.correct_color`)
 
-**Important Note:** This function isn't entirely robust. There are a few important assumptions that must be met in order to automatically detect color cards:
+**Important Notes:** Color chip size can only be used reasonably as a scaling factor (converting pixels to a known real world scale like cms) only when the color card is on a consistent plane relative to the subject AND the color card is parallel to the camera. This function isn't entirely robust. There are a few important assumptions that must be met in order to automatically detect color cards:
 
 - There is only one color card in the image.
 - Color card should be 4x6 (like an X-Rite ColorChecker Passport Photo). 
