@@ -1155,8 +1155,8 @@ pages for more details on the input and output variable types.
 
 #### plantcv.transform.detect_color_card
 
-* pre v4.1: NA
-* post v4.1: labeled_mask = **plantcv.transform.detect_color_card**(*rgb_img,label=None*)
+* pre v4.0.1: NA
+* post v4.0.1: labeled_mask = **plantcv.transform.detect_color_card**(*rgb_img, label=None*)
 
 #### plantcv.transform.find_color_card
 
