@@ -416,7 +416,6 @@ def custom(img, vertices):
     # Draw the ROIs if requested
     _draw_roi(img=img, roi_contour=roi_contour)
 
-    
     return roi
 
 
