@@ -400,6 +400,12 @@ def custom(img, vertices):
         :param vertices: list
         :return roi: plantcv.plantcv.classes.Objects
     """
+    # Check that the ROI doesn't go off the screen
+    for i in vertices:
+        (x, y) = i
+        if x < 0 or x > width or y < 0 or y > height:
+            fatal_error("An ROI extends outside of the image!")
+
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
 
@@ -410,12 +416,7 @@ def custom(img, vertices):
     # Draw the ROIs if requested
     _draw_roi(img=img, roi_contour=roi_contour)
 
-    # Check that the ROI doesn't go off the screen
-    for i in vertices:
-        (x, y) = i
-        if x < 0 or x > width or y < 0 or y > height:
-            fatal_error("An ROI extends outside of the image!")
-
+    
     return roi
 
 
