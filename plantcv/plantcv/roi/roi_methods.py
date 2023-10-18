@@ -400,14 +400,14 @@ def custom(img, vertices):
         :param vertices: list
         :return roi: plantcv.plantcv.classes.Objects
     """
+    # Get the height and width of the reference image
+    height, width = np.shape(img)[:2]
+
     # Check that the ROI doesn't go off the screen
     for i in vertices:
         (x, y) = i
         if x < 0 or x > width or y < 0 or y > height:
             fatal_error("An ROI extends outside of the image!")
-
-    # Get the height and width of the reference image
-    height, width = np.shape(img)[:2]
 
     roi_contour = [np.array(vertices, dtype=np.int32)]
     roi_hierarchy = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
