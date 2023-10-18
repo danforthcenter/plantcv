@@ -250,8 +250,8 @@ def _rois_from_coordinates(img, coord=None, radius=None):
     for i in range(0, len(coord)):
         # Initialize a binary image for each circle
         bin_img = np.zeros((height, width), dtype=np.uint8)
-        y = coord[i][1]
-        x = coord[i][0]
+        y = int(coord[i][1])
+        x = int(coord[i][0])
         # Draw the circle on the binary image
         # Keep track of all roi
         all_roi_img = cv2.circle(all_roi_img, (x, y), radius, 255, -1)
