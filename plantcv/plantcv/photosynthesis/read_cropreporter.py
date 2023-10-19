@@ -279,14 +279,14 @@ def _process_spc_data(ps, metadata):
                                         height=int(metadata["ImageRows"]),
                                         width=int(metadata["ImageCols"]))
         img_cubes.append(rgb_cube)
-        wavelengths += [670, 500, 460]
+        wavelengths += [640, 550, 475]
         rgb = img_as_ubyte(rgb_cube[:, :, [2, 1, 0]])
     if os.path.exists(spc_filepath):
         spc_cube, _, _ = _read_dat_file(dataset="SPC", filename=spc_filepath,
                                         height=int(metadata["ImageRows"]),
                                         width=int(metadata["ImageCols"]))
         img_cubes.append(spc_cube)
-        wavelengths += [550, 700, 800]
+        wavelengths += [540, 710, 770]
         if rgb is None:
             rgb = img_as_ubyte(spc_cube)
 
