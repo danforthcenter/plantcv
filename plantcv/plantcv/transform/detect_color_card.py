@@ -1,4 +1,7 @@
-"""Automatically detect color cards."""
+"""Automatically detect color cards.
+
+Algorithm written by mtwatso2-eng (github). Updated and implemented into PlantCV by Haley Schuhl.
+"""
 import os
 import cv2
 import math
@@ -25,19 +28,17 @@ def _is_square(contour):
 def detect_color_card(rgb_img, label=None):
     """Automatically detect a color card.
 
-    Algorithm written by mtwatso2-eng (github). Updated and implemented into PlantCV by Haley Schuhl.
+    Parameters
+    ----------
+    rgb_img : numpy.ndarray
+        Input RGB image data containing a color card.
+    label : str, optional
+        modifies the variable name of observations recorded (default = pcv.params.sample_label).
 
-        Inputs:
-    rgb_img          = Input RGB image data containing a color card.
-    label            = Optional label parameter, modifies the variable name of
-                       observations recorded (default = pcv.params.sample_label).
-
-    Returns:
-    labeled_mask       = Labeled mask of chips
-
-    :param rgb_img: numpy.ndarray
-    :param label: str
-    :return labeled_mask: numpy.ndarray
+    Returns
+    -------
+    numpy.ndarray
+        Labeled mask of chips.
     """
     # Hard code since we don't currently support other color cards
     nrows = 6
