@@ -44,6 +44,10 @@ def detect_color_card(rgb_img, label=None):
     numpy.ndarray
         Labeled mask of chips.
     """
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+
     # Hard code since we don't currently support other color cards
     nrows = 6
     ncols = 4
