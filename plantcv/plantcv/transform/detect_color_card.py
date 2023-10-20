@@ -12,13 +12,17 @@ from plantcv.plantcv._debug import _debug
 
 
 def _is_square(contour):
-    """Determine if a contour is square or not
+    """Determine if a contour is square or not.
 
-        Inputs:
-    contour          = cv2 contour
+    Parameters
+    ----------
+    contour : list
+        OpenCV contour.
 
-        Outputs:
-    bool             = True or False
+    Returns
+    -------
+    bool
+        True if the contour is square, False otherwise.
     """
     return (cv2.contourArea(contour) > 1000 and
             max(cv2.minAreaRect(contour)[1]) / min(cv2.minAreaRect(contour)[1]) < 1.2 and
