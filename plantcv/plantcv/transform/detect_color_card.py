@@ -50,7 +50,7 @@ def detect_color_card(rgb_img, label=None):
 
     # Filter contours based on size and shape
     filtered_contours = [contour for contour in contours if _is_square(contour)]
-    target_square_area = np.median([cv2.contourArea(filteredContour) for filteredContour in filtered_contours])
+    target_square_area = np.median([cv2.contourArea(cnt) for cnt in filtered_contours])
     filtered_contours = [contour for contour in filtered_contours if
                          (0.8 < (cv2.contourArea(contour) / target_square_area) < 1.2)]
 
