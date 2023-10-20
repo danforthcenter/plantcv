@@ -104,14 +104,13 @@ def detect_color_card(rgb_img, label=None):
     m_transform = cv2.getPerspectiveTransform(box_points, corners.astype("float32"))
     # Transform the chip centers using the perspective transform matrix
     new_centers = cv2.transform(np.array([centers]), m_transform)[0][:, 0:2]
-    this_sequence = np.array(list(range(nrows * ncols)))
 
     # Create blank img for drawing the labeled color card mask
     labeled_mask = np.zeros(imgray.shape)
     debug_img = np.copy(rgb_img)
 
     for i, pt in enumerate(new_centers):
-        cv2.circle(labeled_mask, new_centers[i], 20, (int(this_sequence[i]) + 1) * 10, -1)
+        cv2.circle(labeled_mask, new_centers[i], 20, (i + 1) * 10, -1)
         cv2.circle(debug_img, new_centers[i], 20, (255, 255, 0), -1)
         cv2.putText(debug_img, text=str(i), org=pt, fontScale=params.text_size, color=(0, 0, 0),
                     fontFace=cv2.FONT_HERSHEY_SIMPLEX, thickness=params.text_thickness)
