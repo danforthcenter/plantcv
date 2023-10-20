@@ -25,7 +25,7 @@ def _is_square(contour):
         True if the contour is square, False otherwise.
     """
     return (cv2.contourArea(contour) > 1000 and
-            max(cv2.minAreaRect(contour)[1]) / min(cv2.minAreaRect(contour)[1]) < 1.2 and
+            max(cv2.minAreaRect(contour)[1]) / min(cv2.minAreaRect(contour)[1]) < 1.27 and
             (cv2.contourArea(contour) / np.prod(cv2.minAreaRect(contour)[1])) > 0.8)
 
 
