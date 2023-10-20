@@ -128,6 +128,6 @@ def detect_color_card(rgb_img, label=None):
                             datatype=float, value=chip_height, label="height")
 
     # Debugging
-    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_color_card.png'))
+    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
 
     return labeled_mask
