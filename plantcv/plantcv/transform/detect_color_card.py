@@ -57,9 +57,11 @@ def detect_color_card(rgb_img, label=None):
     thresh = cv2.adaptiveThreshold(imgray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 127, 2)
     contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-    # Filter contours based on size and shape
+    # Filter contours, keep only square-shaped ones
     filtered_contours = [contour for contour in contours if _is_square(contour)]
+    # Calculate median area of square contours
     target_square_area = np.median([cv2.contourArea(cnt) for cnt in filtered_contours])
+    # Filter contours again, keep only those within 20% of median area
     filtered_contours = [contour for contour in filtered_contours if
                          (0.8 < (cv2.contourArea(contour) / target_square_area) < 1.2)]
 
@@ -82,8 +84,10 @@ def detect_color_card(rgb_img, label=None):
     chip_height = df.loc[:, "height"].median()
     chip_width = df.loc[:, "width"].median()
 
+    # Concatenate all contours into one array and find the minimum area rectangle
     rect = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
     rect = cv2.minAreaRect(rect)
+    # Get the corners of the rectangle
     corners = np.array(np.intp(cv2.boxPoints(rect)))
     # Determine which corner most likely contains the white chip
     white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0], :], (255, 255, 255))) for corner in corners])
@@ -92,9 +96,13 @@ def detect_color_card(rgb_img, label=None):
     increment = 100
     centers = [[int(0 + i * increment), int(0 + j * increment)] for j in range(nrows) for i in range(ncols)]
 
+    # Find the minimum area rectangle of the chip centers
     new_rect = cv2.minAreaRect(np.array(centers))
+    # Get the corners of the rectangle
     box_points = cv2.boxPoints(new_rect).astype("float32")
+    # Calculate the perspective transform matrix from the minimum area rectangle
     m_transform = cv2.getPerspectiveTransform(box_points, corners.astype("float32"))
+    # Transform the chip centers using the perspective transform matrix
     new_centers = cv2.transform(np.array([centers]), m_transform)[0][:, 0:2]
     this_sequence = np.array(list(range(nrows * ncols)))
 
