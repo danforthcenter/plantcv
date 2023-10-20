@@ -109,6 +109,7 @@ def detect_color_card(rgb_img, label=None):
     labeled_mask = np.zeros(imgray.shape)
     debug_img = np.copy(rgb_img)
 
+    # Loop over the new chip centers and draw them on the RGB image and labeled mask
     for i, pt in enumerate(new_centers):
         cv2.circle(labeled_mask, new_centers[i], 20, (i + 1) * 10, -1)
         cv2.circle(debug_img, new_centers[i], 20, (255, 255, 0), -1)
