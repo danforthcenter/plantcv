@@ -37,4 +37,4 @@ avg_chip_size = pcv.outputs.observations['prefix']['median_color_chip_size']['va
 -  `threshold_type` (default `threshold_type` = 1 for Gaussian adaptive threshold, update to 0 for [mean adaptive threshold](https://docs.opencv.org/4.x/d7/d1b/group__imgproc__misc.html#enum-members)
 - `threshold_value` (default `threshold_value` = 51, we suggest you try 127 if using `threshold_type` = 0))
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/transform/color_correction.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/transform/detect_color_card.py)
