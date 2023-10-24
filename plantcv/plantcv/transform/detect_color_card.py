@@ -6,7 +6,6 @@ import os
 import cv2
 import math
 import numpy as np
-import pandas as pd
 from plantcv.plantcv import params, outputs, fatal_error
 from plantcv.plantcv._debug import _debug
 
@@ -84,19 +83,18 @@ def detect_color_card(rgb_img, label=None, **kwargs):
         fatal_error('No color card found')
 
     # Initialize chip shape lists
-    mindex, marea, mwidth, mheight = [], [], [], []
+    marea, mwidth, mheight = [], [], []
     # Loop over our contours and size data about them
     for index, c in enumerate(filtered_contours):
         marea.append(cv2.contourArea(filtered_contours[index]))
         _, wh, _ = cv2.minAreaRect(c)  # Rotated rectangle
         mwidth.append(wh[0])
         mheight.append(wh[1])
-        mindex.append(index)
+
     # Create dataframe for easy summary stats
-    df = pd.DataFrame({'index': mindex, 'width': mwidth, 'height': mheight, 'area': marea})
-    chip_size = df.loc[:, "area"].median()
-    chip_height = df.loc[:, "height"].median()
-    chip_width = df.loc[:, "width"].median()
+    chip_size = np.median(marea)
+    chip_height = np.median(mheight)
+    chip_width = np.median(mwidth)
 
     # Concatenate all contours into one array and find the minimum area rectangle
     rect = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
