@@ -2,14 +2,17 @@
 
 Automatically detects a color card and creates a mask. 
 
-**plantcv.transform.detect_color_card**(*rgb_img, label=None, **kwargs*)
+**plantcv.transform.detect_color_card**(*rgb_img, label=None, \*\*kwargs*)
 
 **returns** labeled_mask
 
 - **Parameters**
     - rgb_img          - Input RGB image data containing a color card.
     - label            - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
-    - **kwargs         - Optional key word arguments. 
+    - **kwargs         - Other keyword arguments passed to `cv2.adaptiveThreshold` and `cv2.circle`.
+        - adaptive_method - Adaptive threhold method. 0 (mean) or 1 (Gaussian) (default = 1).
+        - block_size      - Size of a pixel neighborhood that is used to calculate a threshold value (default = 51). We suggest using 127 if using `adaptive_method=0`.
+        - radius         - Radius of circle to make the color card labeled mask (default = 20).
 - **Returns**
     - labeled_mask     - Labeled color card mask (useful downstream of this step in `pcv.transform.get_color_matrix` and `pcv.transform.correct_color`)
 
@@ -31,10 +34,5 @@ avg_chip_size = pcv.outputs.observations['prefix']['median_color_chip_size']['va
 **Image automatically detected and masked**
 
 ![Screenshot](img/documentation_images/correct_color_imgs/detect_color_card.png)
-
-**Additional Key-word Arguments** 
-- `radius` (default `radius` = 20)
--  `threshold_type` (default `threshold_type` = 1 for Gaussian adaptive threshold, update to 0 for [mean adaptive threshold](https://docs.opencv.org/4.x/d7/d1b/group__imgproc__misc.html#enum-members)
-- `threshold_value` (default `threshold_value` = 51, we suggest you try 127 if using `threshold_type` = 0))
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/transform/detect_color_card.py)

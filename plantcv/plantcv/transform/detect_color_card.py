@@ -38,6 +38,13 @@ def detect_color_card(rgb_img, label=None, **kwargs):
         Input RGB image data containing a color card.
     label : str, optional
         modifies the variable name of observations recorded (default = pcv.params.sample_label).
+    **kwargs
+        Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle.
+
+        Valid keyword arguments:
+        adaptive_method: 0 (mean) or 1 (Gaussian) (default = 1)
+        block_size: int (default = 51)
+        radius: int (default = 20)
 
     Returns
     -------
@@ -48,9 +55,10 @@ def detect_color_card(rgb_img, label=None, **kwargs):
     if label is None:
         label = params.sample_label
 
-    radius = kwargs.get("radius", 20)
-    threshold_type = kwargs.get("threshold_type", 1)
-    threshold_value = kwargs.get("threshold_value", 51)
+    # Get keyword arguments and set defaults if not set
+    radius = kwargs.get("radius", 20)  # Radius of circles to draw on the color chips
+    adaptive_method = kwargs.get("adaptive_method", 1)  # cv2.adaptiveThreshold method
+    block_size = kwargs.get("block_size", 51)  # cv2.adaptiveThreshold block size
 
     # Hard code since we don't currently support other color cards
     nrows = 6
@@ -59,8 +67,8 @@ def detect_color_card(rgb_img, label=None, **kwargs):
     # Convert to grayscale, threshold, and findContours
     imgray = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
     gaussian = cv2.GaussianBlur(imgray, (11, 11), 0)
-    thresh = cv2.adaptiveThreshold(gaussian, 255, threshold_type,
-                                   cv2.THRESH_BINARY_INV, threshold_value, 2)
+    thresh = cv2.adaptiveThreshold(gaussian, 255, adaptive_method,
+                                   cv2.THRESH_BINARY_INV, block_size, 2)
     contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     # Filter contours, keep only square-shaped ones
