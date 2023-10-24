@@ -47,7 +47,7 @@ def detect_color_card(rgb_img, label=None, **kwargs):
     # Set lable to params.sample_label if None
     if label is None:
         label = params.sample_label
-    
+
     radius = kwargs.get("radius", 20)
     threshold_type = kwargs.get("threshold_type", 1)
     threshold_value = kwargs.get("threshold_value", 51)
