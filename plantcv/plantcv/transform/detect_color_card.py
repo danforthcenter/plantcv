@@ -54,7 +54,9 @@ def detect_color_card(rgb_img, label=None):
 
     # Convert to grayscale, threshold, and findContours
     imgray = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
-    thresh = cv2.adaptiveThreshold(imgray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 127, 2)
+    gaussian = cv2.GaussianBlur(imgray, (11, 11), 0)
+    thresh = cv2.adaptiveThreshold(gaussian, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                   cv2.THRESH_BINARY_INV, 51, 2)
     contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     # Filter contours, keep only square-shaped ones
