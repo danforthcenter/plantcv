@@ -117,8 +117,8 @@ def detect_color_card(rgb_img, label=None, **kwargs):
 
     # Loop over the new chip centers and draw them on the RGB image and labeled mask
     for i, pt in enumerate(new_centers):
-        cv2.circle(labeled_mask, new_centers[i], 15, (i + 1) * 10, -1)
-        cv2.circle(debug_img, new_centers[i], 15, (255, 255, 0), -1)
+        cv2.circle(labeled_mask, new_centers[i], radius, (i + 1) * 10, -1)
+        cv2.circle(debug_img, new_centers[i], radius, (255, 255, 0), -1)
         cv2.putText(debug_img, text=str(i), org=pt, fontScale=params.text_size, color=(0, 0, 0),
                     fontFace=cv2.FONT_HERSHEY_SIMPLEX, thickness=params.text_thickness)
 
