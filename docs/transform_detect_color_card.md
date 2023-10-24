@@ -27,7 +27,7 @@ from plantcv import plantcv as pcv
 rgb_img, path, filename = pcv.readimage("target_img.png")
 cc_mask = pcv.transform.detect_color_card(rgb_img=rgb_img)
 
-avg_chip_size = pcv.outputs.observations['prefix']['median_color_chip_size']['value']
+avg_chip_size = pcv.outputs.observations['default']['median_color_chip_size']['value']
 
 ```
 
