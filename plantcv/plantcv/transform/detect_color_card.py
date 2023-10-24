@@ -29,7 +29,7 @@ def _is_square(contour):
             (cv2.contourArea(contour) / np.prod(cv2.minAreaRect(contour)[1])) > 0.8)
 
 
-def detect_color_card(rgb_img, label=None):
+def detect_color_card(rgb_img, label=None, **kwargs):
     """Automatically detect a color card.
 
     Parameters
@@ -47,6 +47,10 @@ def detect_color_card(rgb_img, label=None):
     # Set lable to params.sample_label if None
     if label is None:
         label = params.sample_label
+    
+    radius = kwargs.get("radius", 20)
+    threshold_type = kwargs.get("threshold_type", 1)
+    threshold_value = kwargs.get("threshold_value", 51)
 
     # Hard code since we don't currently support other color cards
     nrows = 6
@@ -55,8 +59,8 @@ def detect_color_card(rgb_img, label=None):
     # Convert to grayscale, threshold, and findContours
     imgray = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
     gaussian = cv2.GaussianBlur(imgray, (11, 11), 0)
-    thresh = cv2.adaptiveThreshold(gaussian, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-                                   cv2.THRESH_BINARY_INV, 51, 2)
+    thresh = cv2.adaptiveThreshold(gaussian, 255, threshold_type,
+                                   cv2.THRESH_BINARY_INV, threshold_value, 2)
     contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     # Filter contours, keep only square-shaped ones
@@ -113,8 +117,8 @@ def detect_color_card(rgb_img, label=None):
 
     # Loop over the new chip centers and draw them on the RGB image and labeled mask
     for i, pt in enumerate(new_centers):
-        cv2.circle(labeled_mask, new_centers[i], 20, (i + 1) * 10, -1)
-        cv2.circle(debug_img, new_centers[i], 20, (255, 255, 0), -1)
+        cv2.circle(labeled_mask, new_centers[i], 15, (i + 1) * 10, -1)
+        cv2.circle(debug_img, new_centers[i], 15, (255, 255, 0), -1)
         cv2.putText(debug_img, text=str(i), org=pt, fontScale=params.text_size, color=(0, 0, 0),
                     fontFace=cv2.FONT_HERSHEY_SIMPLEX, thickness=params.text_thickness)
 
