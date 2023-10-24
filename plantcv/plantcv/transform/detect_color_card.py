@@ -85,9 +85,9 @@ def detect_color_card(rgb_img, label=None, **kwargs):
     # Initialize chip shape lists
     marea, mwidth, mheight = [], [], []
     # Loop over our contours and size data about them
-    for index, c in enumerate(filtered_contours):
-        marea.append(cv2.contourArea(filtered_contours[index]))
-        _, wh, _ = cv2.minAreaRect(c)  # Rotated rectangle
+    for cnt in filtered_contours:
+        marea.append(cv2.contourArea(cnt))
+        _, wh, _ = cv2.minAreaRect(cnt)  # Rotated rectangle
         mwidth.append(wh[0])
         mheight.append(wh[1])
 
