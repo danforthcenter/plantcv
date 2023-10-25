@@ -99,4 +99,4 @@ def clickcount_label(gray_img, counter, imgname='default'):
                                 method='count', scale='count', datatype=int,
                                 value=value, label=variable)
 
-    return corrected_label, corrected_name, num
+    return corrected_label, corrected_class, corrected_name, num

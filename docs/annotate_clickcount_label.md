@@ -4,7 +4,7 @@ Label ClickCount Objects After They have Been Segmented
 
 **plantcv.annotate.clickcount_label**(*gray_img*, *counter*, *imgname='default'*)
 
-**returns** labeled image, ordered list of names, number of objects
+**returns** labeled object image, labeled class image, ordered list of names, number of objects
 
 - **Parameters:**
     - gray_img - gray image with objects uniquely labeled (output of watershed for example)
@@ -36,7 +36,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 # Apply binary 'white' mask over an image. 
-recovered_img = pcv.annotate.clickcount_label(gray_img=pollen_watershed, counter=counter, imgname="pollen_heat")
+obj_label, class_label, class_list, num = pcv.annotate.clickcount_label(gray_img=pollen_watershed, counter=counter, imgname="pollen_heat")
 
 count = pcv.outputs.observations['pollen_heat']['total']
 
