@@ -136,7 +136,7 @@ class Outputs:
     def add_metadata(self, label, datatype, value):
         """
         Keyword arguments/parameters:
-        label       = A name of the measurement method mapped to an external ontology; if there is no exact mapping, an
+        label       = A humaan readable name of the measurement method mapped to an external ontology; if there is no exact mapping, an
                        informative description of the measurement procedure
         datatype    = The type of data to be stored, e.g. 'int', 'float', 'str', 'list', 'bool', etc.
         value       = The data itself
@@ -184,16 +184,30 @@ class Outputs:
                 with open(filename, 'r') as f:
                     hierarchical_data = json.load(f)
                     hierarchical_data["observations"] = self.observations
+                    existing_metadata = hierarchical_data["metadata"] 
+                    for term in self.metadata:
+                        if term in existing_metadata:
+                            hierarchical_data["metadata"][term + "1"] = self.metadata[term] 
+
+                        else: 
+                            hierarchical_data["metadata"][term] = self.metadata[term]
+
             else:
-                hierarchical_data = {"metadata": {}, "observations": self.observations}
+                hierarchical_data = {"metadata": self.metadata, "observations": self.observations}
 
             with open(filename, mode='w') as f:
                 json.dump(hierarchical_data, f)
         elif outformat.upper() == "CSV":
             # Open output CSV file
             csv_table = open(filename, "w")
+            metadata_key_list = [(self.metatdata.keys())] 
+            metadata_val_list = [(self.metatdata.value())] 
             # Write the header
             csv_table.write(",".join(map(str, ["sample", "trait", "value", "label"])) + "\n")
+            for term in metadata_key_list: 
+                # add column 
+
+
             # Iterate over data samples
             for sample in self.observations:
                 # Iterate over traits for each sample
