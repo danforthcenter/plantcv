@@ -53,7 +53,7 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
         label = params.sample_label
 
     # Get image attributes
-    height, width, channels = rgb_img.shape
+    height, width, _ = rgb_img.shape
     total_pix = float(height * width)
 
     # Minimum and maximum square size based upon 12 MP image
@@ -90,11 +90,11 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
     if threshold_type.upper() == "OTSU":
         # Blur slightly so defects on card squares and background patterns are less likely to be picked up
         gaussian = cv2.GaussianBlur(gray_img, (5, 5), 0)
-        ret, threshold = cv2.threshold(gaussian, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        _, threshold = cv2.threshold(gaussian, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
     elif threshold_type.upper() == "NORMAL":
         # Blur slightly so defects on card squares and background patterns are less likely to be picked up
         gaussian = cv2.GaussianBlur(gray_img, (5, 5), 0)
-        ret, threshold = cv2.threshold(gaussian, threshvalue, 255, cv2.THRESH_BINARY)
+        _, threshold = cv2.threshold(gaussian, threshvalue, 255, cv2.THRESH_BINARY)
     elif threshold_type.upper() == "ADAPTGAUSS":
         # Blur slightly so defects on card squares and background patterns are less likely to be picked up
         gaussian = cv2.GaussianBlur(gray_img, (11, 11), 0)
@@ -158,7 +158,7 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
         if marea[index] != 0 and min_area < marea[index] < max_area:
             peri = cv2.arcLength(c, True)
             approx = cv2.approxPolyDP(c, 0.1 * peri, True)
-            center, wh, angle = cv2.minAreaRect(c)  # Rotated rectangle
+            _, wh, _ = cv2.minAreaRect(c)  # Rotated rectangle
             mwidth.append(wh[0])
             mheight.append(wh[1])
             # In different versions of OpenCV, width and height can be listed in a different order
