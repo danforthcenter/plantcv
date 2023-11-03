@@ -363,11 +363,11 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
     :return roi_objects: plantcv.plantcv.classes.Objects
     """
     # Grid of ROIs
-    if (type(coord) == tuple) and ((nrows and ncols) is not None) and (type(spacing) == tuple):
+    if (isinstance(coord, tuple)) and ((nrows and ncols) is not None) and (isinstance(spacing, tuple)):
         roi_objects, overlap_img, all_roi_img = _grid_roi(img, nrows, ncols, coord,
                                                           radius, spacing)
         # User specified ROI centers
-    elif (type(coord) == list) and ((nrows and ncols) is None) and (spacing is None):
+    elif (isinstance(coord, list)) and ((nrows and ncols) is None) and (spacing is None):
         roi_objects, overlap_img, all_roi_img = _rois_from_coordinates(img=img, coord=coord, radius=radius)
     else:
         fatal_error("Function can either make a grid of ROIs (user must provide nrows, ncols, spacing, and coord) "
