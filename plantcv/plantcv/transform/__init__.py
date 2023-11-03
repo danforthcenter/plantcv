@@ -7,7 +7,7 @@ from plantcv.plantcv.transform.color_correction import load_matrix
 from plantcv.plantcv.transform.color_correction import correct_color
 from plantcv.plantcv.transform.color_correction import create_color_card_mask
 from plantcv.plantcv.transform.color_correction import quick_color_check
-from plantcv.plantcv.transform.color_correction import find_color_card
+from plantcv.plantcv.transform.find_color_card import find_color_card
 from plantcv.plantcv.transform.color_correction import std_color_matrix
 from plantcv.plantcv.transform.color_correction import affine_color_correction
 from plantcv.plantcv.transform.detect_color_card import detect_color_card
