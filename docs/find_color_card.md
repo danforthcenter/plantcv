@@ -1,5 +1,9 @@
 ## Automatically Find a Color Card
 
+!!! warning
+    This function is deprecated and will be removed in PlantCV v5.0. Please use
+    [detect_color_card](transform_detect_color_card.md) instead.
+
 Automatically detects a color card's location and size. Useful in workflows where color card positioning isn't constant in all images.
 
 **plantcv.transform.find_color_card**(*rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark', record_chip_size='median', label=None*)
@@ -19,12 +23,14 @@ Automatically detects a color card's location and size. Useful in workflows wher
     - start_coord   - Two-element tuple of the first chip mask starting x and y coordinate. Useful in [create a color card mask](#create-a-labeled-color-card-mask) function.
     - spacing       - Two-element tuple of the horizontal and vertical spacing between chip masks. Useful in [create a color card mask](#create-a-labeled-color-card-mask) function.
 
-**Important Note:** This function isn't entirely robust. There are a few important assumptions that must be met in order to automatically detect color cards:
+!!! note
+    This function isn't entirely robust. There are a few important assumptions that must be met in order to automatically
+    detect color cards:
 
-- There is only one color card in the image.
-- Color card should be 4x6 (like an X-Rite ColorChecker Passport Photo). Spacing calculations are based on 4x6 color cards. Although starting coordinates will be
+    - There is only one color card in the image.
+    - Color card should be 4x6 (like an X-Rite ColorChecker Passport Photo). Spacing calculations are based on 4x6 color cards. Although starting coordinates will be
     robust for most color cards, unless an entire row or entire column of chips is missing. Missing chips may also skew spacing and can also skew starting coordinates.
-- Color card isn't tilted. The card can be vertical OR horizontal but if it is tilted there will errors in calculating spacing.
+    - Color card isn't tilted. The card can be vertical OR horizontal but if it is tilted there will errors in calculating spacing.
 
 ```python
 

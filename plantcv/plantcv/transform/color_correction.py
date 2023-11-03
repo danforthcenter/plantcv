@@ -5,7 +5,7 @@ import cv2
 import numpy as np
 import altair as alt
 import pandas as pd
-from plantcv.plantcv import params, outputs, fatal_error
+from plantcv.plantcv import params, outputs, fatal_error, deprecation_warning
 from plantcv.plantcv.roi import circle
 from plantcv.plantcv._debug import _debug
 
@@ -664,6 +664,10 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
     :return start_coord: tuple
     :return spacing: tuple
     """
+    deprecation_warning(
+        "This function is deprecated and will be removed in PlantCV v5.0. "
+        "Please use plantcv.transform.detect_color_card instead."
+        )
     # Imports
     import skimage
     import pandas as pd
