@@ -227,7 +227,7 @@ class Outputs:
                         row = [sample,
                                var,
                                int(self.observations[sample][var]["value"]),
-                               self.observations[sample][var]["label"]]
+                               self.observations[sample][var]["label"], metadata_val_list]
                         csv_table.write(",".join(map(str, row)) + "\n")
                     # For all other supported data types, save one row per trait
                     # Assumes no unusual data types are present (possibly a bad assumption)
