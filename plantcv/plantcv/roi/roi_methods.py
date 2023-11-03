@@ -250,8 +250,8 @@ def _rois_from_coordinates(img, coord=None, radius=None):
     for i in range(0, len(coord)):
         # Initialize a binary image for each circle
         bin_img = np.zeros((height, width), dtype=np.uint8)
-        y = coord[i][1]
-        x = coord[i][0]
+        y = int(coord[i][1])
+        x = int(coord[i][0])
         # Draw the circle on the binary image
         # Keep track of all roi
         all_roi_img = cv2.circle(all_roi_img, (x, y), radius, 255, -1)
@@ -363,11 +363,11 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
     :return roi_objects: plantcv.plantcv.classes.Objects
     """
     # Grid of ROIs
-    if (type(coord) == tuple) and ((nrows and ncols) is not None) and (type(spacing) == tuple):
+    if (isinstance(coord, tuple)) and ((nrows and ncols) is not None) and (isinstance(spacing, tuple)):
         roi_objects, overlap_img, all_roi_img = _grid_roi(img, nrows, ncols, coord,
                                                           radius, spacing)
         # User specified ROI centers
-    elif (type(coord) == list) and ((nrows and ncols) is None) and (spacing is None):
+    elif (isinstance(coord, list)) and ((nrows and ncols) is None) and (spacing is None):
         roi_objects, overlap_img, all_roi_img = _rois_from_coordinates(img=img, coord=coord, radius=radius)
     else:
         fatal_error("Function can either make a grid of ROIs (user must provide nrows, ncols, spacing, and coord) "
@@ -403,18 +403,18 @@ def custom(img, vertices):
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
 
+    # Check that the ROI doesn't go off the screen
+    for i in vertices:
+        (x, y) = i
+        if x < 0 or x > width or y < 0 or y > height:
+            fatal_error("An ROI extends outside of the image!")
+
     roi_contour = [np.array(vertices, dtype=np.int32)]
     roi_hierarchy = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
 
     # Draw the ROIs if requested
     _draw_roi(img=img, roi_contour=roi_contour)
-
-    # Check that the ROI doesn't go off the screen
-    for i in vertices:
-        (x, y) = i
-        if x < 0 or x > width or y < 0 or y > height:
-            fatal_error("An ROI extends outside of the image!")
 
     return roi
 
