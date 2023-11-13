@@ -84,7 +84,7 @@ def _analyze_bound_vertical(img, mask, line_position, label):
         rec_point1 = (0, 0)
         rec_point2 = (x_coor, y_coor - 2)
         cv2.rectangle(background, rec_point1, rec_point2, (255), -1)
-        right_contour, right_hierarchy = _cv2_findcontours(bin_img=background)
+        right_contour, _ = _cv2_findcontours(bin_img=background)
 
         # Find contours
         cnt, cnt_str = _cv2_findcontours(bin_img=mask)
