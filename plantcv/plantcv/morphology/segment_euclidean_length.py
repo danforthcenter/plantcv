@@ -44,7 +44,7 @@ def segment_euclidean_length(segmented_img, objects, label=None):
     debug = params.debug
     params.debug = None
 
-    for i, cnt in enumerate(objects):
+    for i, _ in enumerate(objects):
         # Store coordinates for labels
         x_list.append(objects[i][0][0][0])
         y_list.append(objects[i][0][0][1])
