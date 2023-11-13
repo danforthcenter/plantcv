@@ -24,11 +24,8 @@ def _iterative_prune(skel_img, size):
     debug = params.debug
     params.debug = None
 
-    # Check to see if the skeleton has multiple objects
-    objects, _ = _cv2_findcontours(bin_img=pruned_img)
-
     # Iteratively remove endpoints (tips) from a skeleton
-    for i in range(0, size):
+    for _ in range(0, size):
         endpoints = find_tips(pruned_img)
         pruned_img = image_subtract(pruned_img, endpoints)
 
