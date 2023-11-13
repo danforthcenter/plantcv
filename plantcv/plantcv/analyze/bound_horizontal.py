@@ -74,7 +74,7 @@ def _analyze_bound_horizontal(img, mask, line_position, label):
     if np.count_nonzero(mask) != 0:
         # Draw line horizontal line through bottom of image, that is adjusted to user input height
         ori_img = _grayscale_to_rgb(ori_img)
-        iy, ix, iz = np.shape(ori_img)
+        iy, ix, _ = np.shape(ori_img)
         size = (iy, ix)
         size1 = (iy, ix, 3)
         background = np.zeros(size, dtype=np.uint8)
@@ -85,7 +85,7 @@ def _analyze_bound_horizontal(img, mask, line_position, label):
         rec_point1 = (1, rec_corner)
         rec_point2 = (x_coor - 2, y_coor - 2)
         cv2.rectangle(background, rec_point1, rec_point2, (255), 1)
-        below_contour, below_hierarchy = _cv2_findcontours(bin_img=background)
+        below_contour, _ = _cv2_findcontours(bin_img=background)
 
         # Find contours
         cnt, cnt_str = _cv2_findcontours(bin_img=mask)
@@ -93,7 +93,7 @@ def _analyze_bound_horizontal(img, mask, line_position, label):
         # Consolidate contours
         obj = _object_composition(contours=cnt, hierarchy=cnt_str)
 
-        x, y, width, height = cv2.boundingRect(obj)
+        _, y, _, height = cv2.boundingRect(obj)
 
         if y_coor - y <= 0:
             height_above_bound = 0
@@ -113,7 +113,7 @@ def _analyze_bound_horizontal(img, mask, line_position, label):
         obj_points = np.vstack((mask_nonzeroy, mask_nonzerox))
         obj_points1 = np.transpose(obj_points)
 
-        for i, c in enumerate(obj_points1):
+        for _, c in enumerate(obj_points1):
             xy = tuple([int(ci) for ci in c])
             pptest = cv2.pointPolygonTest(below_contour[0], xy, measureDist=False)
             if pptest == 1:
