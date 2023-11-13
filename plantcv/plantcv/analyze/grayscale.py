@@ -83,7 +83,7 @@ def _analyze_grayscale(img, mask, bins=100, label=None):
 
         # Calculate histogram
         _, hist_data = histogram(img, mask=mask, bins=bins, lower_bound=0, upper_bound=maxval, title=None,
-                                        hist_data=True)
+                                 hist_data=True)
 
         bin_labels, hist_gray = hist_data["pixel intensity"].tolist(), hist_data['hist_count'].tolist()
 
