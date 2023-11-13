@@ -3,7 +3,7 @@
 import numpy as np
 from scipy.spatial import distance
 
-## INTERACTIVE ROI TOOLS ##
+# INTERACTIVE ROI TOOLS #
 
 
 def _find_closest_pt(pt, pts):
