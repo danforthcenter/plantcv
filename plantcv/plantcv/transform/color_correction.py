@@ -471,17 +471,17 @@ def correct_color(target_img, target_mask, source_img, source_mask, output_direc
         os.mkdir(output_directory)
 
     # get color matrices for target and source images
-    target_headers, target_matrix = get_color_matrix(target_img, target_mask)
-    source_headers, source_matrix = get_color_matrix(source_img, source_mask)
+    _, target_matrix = get_color_matrix(target_img, target_mask)
+    _, source_matrix = get_color_matrix(source_img, source_mask)
 
     # save target and source matrices
     save_matrix(target_matrix, os.path.join(output_directory, "target_matrix.npz"))
     save_matrix(source_matrix, os.path.join(output_directory, "source_matrix.npz"))
 
     # get matrix_m
-    matrix_a, matrix_m, matrix_b = get_matrix_m(target_matrix=target_matrix, source_matrix=source_matrix)
+    _, matrix_m, matrix_b = get_matrix_m(target_matrix=target_matrix, source_matrix=source_matrix)
     # calculate transformation_matrix and save
-    deviance, transformation_matrix = calc_transformation_matrix(matrix_m, matrix_b)
+    _, transformation_matrix = calc_transformation_matrix(matrix_m, matrix_b)
     save_matrix(transformation_matrix, os.path.join(output_directory, "transformation_matrix.npz"))
 
     # apply transformation
