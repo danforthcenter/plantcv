@@ -706,7 +706,7 @@ def saturation(rgb_img, threshold=255, channel="any"):
 
 
 def mask_bad(float_img, bad_type='native'):
-    """ Create a mask with desired "bad" pixels of the input floaat image marked.
+    """Create a mask with desired "bad" pixels of the input floaat image marked.
     Inputs:
     float_img = image represented by an nd-array (data type: float). Most probably, it is the result of some
                 calculation based on the original image. So the datatype is float, and it is possible to have some
