@@ -779,7 +779,7 @@ def _get_index(rgb_img, _):
 
 
 def _not_valid(*args):
-    """ Error for a non valid channel """
+    """Error for a non valid channel"""
     return fatal_error("channel not valid, use R, G, B, l, a, b, h, s, v, gray, or index")
 
 
