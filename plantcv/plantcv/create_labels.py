@@ -47,10 +47,10 @@ def create_labels(mask, rois=None, roi_type="partial"):
         labeled_mask = np.zeros(mask.shape[:2], dtype=np.int32)
         num_labels = len(rois.contours)
         for i, roi in enumerate(rois):
-            kept_cnt, kept_hierarchy, mask = _roi_filter(img=mask, roi=roi,
-                                                         obj=contours,
-                                                         hierarchy=hierarchy,
-                                                         roi_type=roi_type)
+            kept_cnt, _, mask = _roi_filter(img=mask, roi=roi,
+                                            obj=contours,
+                                            hierarchy=hierarchy,
+                                            roi_type=roi_type)
 
             # Pixel intensity of (i+1) such that the first object has value
             cv2.drawContours(labeled_mask, kept_cnt, -1, (i+1), -1)
