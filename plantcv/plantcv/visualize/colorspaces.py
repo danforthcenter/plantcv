@@ -48,7 +48,7 @@ def colorspaces(rgb_img, original_img=True):
     for i in range(3, 6):
         channel = colorspace_names[i]
         all_colorspaces.append(rgb2gray_lab(rgb_img=rgb_img, channel=channel))
-    for i in range(6,10):
+    for i in range(6, 10):
         channel = colorspace_names[i]
         all_colorspaces.append(rgb2gray_cmyk(rgb_img=rgb_img, channel=channel))
 
@@ -60,7 +60,7 @@ def colorspaces(rgb_img, original_img=True):
                               fontScale=params.text_size, color=(255, 0, 255), thickness=params.text_thickness)
         labeled_imgs.append(labeled)
 
-    # Resize and stack CMYK gray imgs to be able to vertically stack 
+    # Resize and stack CMYK gray imgs to be able to vertically stack
     cmky_labeled_img = np.hstack([resize_factor(labeled_imgs[6], factors=(3/4, 3/4)),
                                  resize_factor(labeled_imgs[7], factors=(3/4, 3/4)),
                                  resize_factor(labeled_imgs[8], factors=(3/4, 3/4)),
