@@ -228,7 +228,7 @@ def _longest_axis(height, width, hull, cmx, cmy):
     else:
         cv2.line(background1, (width, caliper_mid_y), (0, caliper_mid_y), (255), params.line_thickness)
 
-    ret1, line_binary = cv2.threshold(background1, 0, 255, cv2.THRESH_BINARY)
+    _, line_binary = cv2.threshold(background1, 0, 255, cv2.THRESH_BINARY)
 
     cv2.drawContours(background2, [hull], -1, (255), -1)
     ret2, hullp_binary = cv2.threshold(background2, 0, 255, cv2.THRESH_BINARY)
