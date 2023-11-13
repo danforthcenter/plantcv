@@ -43,7 +43,7 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
         x = x - 1
 
     if len(np.shape(img)) == 3:
-        ix, iy, iz = np.shape(img)
+        ix, iy, _ = np.shape(img)
         ori_img = np.copy(img)
     else:
         ix, iy = np.shape(img)
@@ -205,7 +205,7 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
     _debug(visual=newmask, filename=os.path.join(params.debug_outdir, str(params.device) + "_newmask.png"), cmap='gray')
 
     objects, hierarchy = _cv2_findcontours(bin_img=newmask)
-    for i, cnt in enumerate(objects):
+    for i, _ in enumerate(objects):
         cv2.drawContours(ori_img, objects, i, (255, 102, 255), -1, lineType=8, hierarchy=hierarchy)
     _debug(visual=ori_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_mask_overlay.png'))
 
