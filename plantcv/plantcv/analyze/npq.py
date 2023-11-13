@@ -151,7 +151,7 @@ def _calc_npq(fmp, fm):
     return sub
 
 
-def _create_histogram(npq_img, mlabel, obs, min_bin, max_bin):
+def _create_histogram(npq_img, mlabel, _, min_bin, max_bin):
     """
     Compute histogram of NPQ.
 
