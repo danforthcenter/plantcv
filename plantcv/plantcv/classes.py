@@ -4,9 +4,9 @@ import cv2
 import json
 import numpy as np
 from plantcv.plantcv import fatal_error
+from plantcv.plantcv.annotate.points import _find_closest_pt
 import matplotlib.pyplot as plt
 from math import floor
-from plantcv.plantcv.annotate.points import _find_closest_pt
 import altair as alt
 import pandas as pd
 
