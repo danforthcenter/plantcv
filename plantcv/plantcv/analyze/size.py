@@ -189,8 +189,8 @@ def _longest_axis(height, width, hull, cmx, cmy):
     # Longest Axis: line through center of mass and point on the convex hull that is furthest away
     cv2.circle(background, (int(cmx), int(cmy)), 4, (255, 255, 255), -1)
     center_p = cv2.cvtColor(background, cv2.COLOR_BGR2GRAY)
-    ret, centerp_binary = cv2.threshold(center_p, 0, 255, cv2.THRESH_BINARY)
-    centerpoint, cpoint_h = _cv2_findcontours(bin_img=centerp_binary)
+    _, centerp_binary = cv2.threshold(center_p, 0, 255, cv2.THRESH_BINARY)
+    centerpoint, _ = _cv2_findcontours(bin_img=centerp_binary)
 
     dist = []
     vhull = np.vstack(hull)
@@ -231,7 +231,7 @@ def _longest_axis(height, width, hull, cmx, cmy):
     _, line_binary = cv2.threshold(background1, 0, 255, cv2.THRESH_BINARY)
 
     cv2.drawContours(background2, [hull], -1, (255), -1)
-    ret2, hullp_binary = cv2.threshold(background2, 0, 255, cv2.THRESH_BINARY)
+    _, hullp_binary = cv2.threshold(background2, 0, 255, cv2.THRESH_BINARY)
 
     caliper = cv2.multiply(line_binary, hullp_binary)
 
