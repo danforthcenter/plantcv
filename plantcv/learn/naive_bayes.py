@@ -30,7 +30,7 @@ def naive_bayes(imgdir, maskdir, outfile, mkplots=False):
 
     # Walk through the image directory
     print("Reading images...")
-    for (dirpath, dirnames, filenames) in os.walk(imgdir):
+    for (dirpath, _, filenames) in os.walk(imgdir):
         for filename in filenames:
             # Is this an image type we can work with?
             if filename[-3:] in ['png', 'jpg', 'jpeg']:
