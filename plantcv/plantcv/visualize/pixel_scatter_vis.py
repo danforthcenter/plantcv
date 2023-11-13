@@ -30,7 +30,7 @@ def _get_B(rgb_img, _):
 
 
 def _get_gray(rgb_img, _):
-    """ Get the gray scale transformation of a RGB image """
+    """Get the gray scale transformation of a RGB image"""
     return pcv.rgb2gray(rgb_img=rgb_img)
 
 def _get_index(rgb_img, _):
