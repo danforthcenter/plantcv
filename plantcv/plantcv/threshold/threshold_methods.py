@@ -729,7 +729,6 @@ def mask_bad(float_img, bad_type='native'):
 
     # neither nan nor inf exists in the image, print out a message and the mask would just be all zero
     if len(idx_nan) == 0 and len(idx_inf) == 0:
-        mask = mask
         print('Neither nan nor inf appears in the current image.')
     # at least one of the "bad" exists
     # desired bad to mark is "native"
