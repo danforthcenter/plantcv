@@ -295,7 +295,7 @@ class PSII_data:
         self.__dict__[protocol.name] = protocol
 
 
-class Points(object):
+class Points:
     """Point annotation/collection class to use in Jupyter notebooks. It allows the user to
     interactively click to collect coordinates from an image. Left click collects the point and
     right click removes the closest collected point
