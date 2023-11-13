@@ -7,7 +7,7 @@ from scipy.spatial import distance
 
 
 def _find_closest_pt(pt, pts):
-    """ Given coordinates of a point and a list of coordinates of a bunch of points, find the point that has the
+    """Given coordinates of a point and a list of coordinates of a bunch of points, find the point that has the
     smallest Euclidean to the given point
 
     :param pt: (tuple) coordinates of a point
