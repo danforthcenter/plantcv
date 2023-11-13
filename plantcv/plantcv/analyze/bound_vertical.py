@@ -92,7 +92,7 @@ def _analyze_bound_vertical(img, mask, line_position, label):
         # Consolidate contours
         obj = _object_composition(contours=cnt, hierarchy=cnt_str)
 
-        x, y, width, _ = cv2.boundingRect(obj)
+        x, _, width, _ = cv2.boundingRect(obj)
 
         if x_coor - x <= 0:
             width_left_bound = 0
