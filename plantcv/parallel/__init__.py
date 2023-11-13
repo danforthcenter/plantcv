@@ -199,7 +199,7 @@ class WorkflowConfig:
                 checks.append(False)
         if self.end_date is not None:
             try:
-                timestamp = datetime.datetime.strptime(
+                _ = datetime.datetime.strptime(
                     self.end_date, self.timestampformat)
             except ValueError as e:
                 print(str(
