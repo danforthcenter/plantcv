@@ -12,8 +12,7 @@ from plantcv.plantcv import fatal_error, warn, params, Objects
 
 # Create an ROI from a binary mask
 def from_binary_image(img, bin_img):
-    """
-    Create an ROI from a binary image
+    """Create an ROI from a binary image
 
     Inputs:
     img           = An RGB or grayscale image to plot the ROI on.
@@ -40,8 +39,7 @@ def from_binary_image(img, bin_img):
 
 # Create a rectangular ROI
 def rectangle(img, x, y, h, w):
-    """
-    Create a rectangular ROI.
+    """Create a rectangular ROI.
 
     Inputs:
     img           = An RGB or grayscale image to plot the ROI on in debug mode.
@@ -86,8 +84,7 @@ def rectangle(img, x, y, h, w):
 
 # Create a circular ROI
 def circle(img, x, y, r):
-    """
-    Create a circular ROI.
+    """Create a circular ROI.
 
     Inputs:
     img           = An RGB or grayscale image to plot the ROI on in debug mode.
@@ -128,8 +125,7 @@ def circle(img, x, y, r):
 
 # Create an elliptical ROI
 def ellipse(img, x, y, r1, r2, angle):
-    """
-    Create an elliptical ROI.
+    """Create an elliptical ROI.
 
     Inputs:
     img           = An RGB or grayscale image to plot the ROI on in debug mode.
@@ -175,8 +171,7 @@ def ellipse(img, x, y, r1, r2, angle):
 
 # Draw the ROI on a reference image
 def _draw_roi(img, roi_contour):
-    """
-    Draw an ROI
+    """Draw an ROI
     :param img: numpy.ndarray
     :param roi_contour: list
     """
@@ -304,8 +299,7 @@ def _grid_roi(img, nrows, ncols, coord=None, radius=None, spacing=None):
 
 
 def auto_grid(mask, nrows, ncols, radius=None, img=None):
-    """
-    Detect and create multiple circular ROIs on a single binary mask
+    """Detect and create multiple circular ROIs on a single binary mask
     Inputs
     mask          = A binary mask.
     nrows         = Number of rows in ROI layout.
@@ -341,8 +335,7 @@ def auto_grid(mask, nrows, ncols, radius=None, img=None):
 
 
 def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
-    """
-    Create multiple circular ROIs on a single image
+    """Create multiple circular ROIs on a single image
     Inputs
     img           = Input image data.
     coord         = Two-element tuple of the center of the top left object (x,y) or a list of tuples identifying
@@ -386,8 +379,7 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
 
 
 def custom(img, vertices):
-    """
-    Create an custom polygon ROI.
+    """Create an custom polygon ROI.
 
         Inputs:
         img           = An RGB or grayscale image to plot the ROI on in debug mode.
@@ -421,8 +413,7 @@ def custom(img, vertices):
 
 # Filter a mask based on a region of interest
 def filter(mask, roi, roi_type="partial"):
-    """
-    Filter a mask using a region of interest. Connected regions of non-zero pixels outside the ROI turn to zero
+    """Filter a mask using a region of interest. Connected regions of non-zero pixels outside the ROI turn to zero
 
     Inputs:
     mask           = binary image data to be filtered

@@ -79,8 +79,7 @@ class Outputs:
 
     # Method to add observation to outputs
     def add_observation(self, sample, variable, trait, method, scale, datatype, value, label):
-        """
-        Keyword arguments/parameters:
+        """Keyword arguments/parameters:
         sample       = Sample name. Used to distinguish between multiple samples
         variable     = A local unique identifier of a variable, e.g. a short name,
                        that is a key linking the definitions of variables with observations.
@@ -288,8 +287,7 @@ class PSII_data:
         return "PSII variables defined:\n" + '\n'.join(mvars)
 
     def add_data(self, protocol):
-        """
-        Input:
+        """Input:
             protocol: xr.DataArray with name equivalent to initialized attributes
         """
         self.__dict__[protocol.name] = protocol
@@ -318,8 +316,7 @@ class Points(object):
         self.fig.canvas.mpl_connect('button_press_event', self.onclick)
 
     def onclick(self, event):
-        """ Handle mouse click events
-        """
+        """ Handle mouse click events"""
         self.events.append(event)
         if event.button == 1:
 

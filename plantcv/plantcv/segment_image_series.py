@@ -37,7 +37,6 @@ def segment_image_series(imgs_paths, masks_paths, rois, save_labels=True, ksize=
     :param ksize:       int
     :return out_labels: numpy.ndarray
     """
-
     debug = params.debug
     params.debug = None
     params.color_sequence = 'random'
