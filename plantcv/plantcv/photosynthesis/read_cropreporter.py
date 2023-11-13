@@ -302,7 +302,7 @@ def _process_spc_data(ps, metadata):
         ind = np.argsort(wavelengths)
         wavelengths = wavelengths[ind]
 
-        wavelength_dict = "dict()"
+        wavelength_dict = {}
         for (idx, wv) in enumerate(wavelengths):
             wavelength_dict[wv] = float(idx)
 
