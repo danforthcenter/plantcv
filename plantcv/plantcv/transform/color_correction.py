@@ -593,7 +593,7 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
     red = []
     blue = []
     green = []
-    for i in range(num_chips):
+    for _ in range(num_chips):
         red.append('red')
         blue.append('blue')
         green.append('green')
