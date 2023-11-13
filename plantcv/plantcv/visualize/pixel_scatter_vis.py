@@ -30,8 +30,9 @@ def _get_B(rgb_img, _):
 
 
 def _get_gray(rgb_img, _):
-    """ Get the gray scale transformation of a RGB image """
+    """Get the gray scale transformation of a RGB image"""
     return pcv.rgb2gray(rgb_img=rgb_img)
+
 
 def _get_index(rgb_img, _):
     """ Get a vector with linear indices of the pixels in an image """
@@ -40,7 +41,7 @@ def _get_index(rgb_img, _):
 
 
 def _not_valid(*args):
-    """ Error for a non valid channel """
+    """Error for a non valid channel"""
     return fatal_error("channel not valid, use R, G, B, l, a, b, h, s, v, gray, or index")
 
 
@@ -110,9 +111,9 @@ def pixel_scatter_plot(paths_to_imgs, x_channel, y_channel):
         sub_img_y_ch = channel_dict.get(y_channel, _not_valid)(sub_img, y_channel)
 
         ax.scatter(sub_img_x_ch.reshape(-1),
-                    sub_img_y_ch.reshape(-1),
-                    alpha=0.05, s=MAX_MARKER_SIZE/N,
-                    edgecolors=None, facecolors=fcolors)
+                   sub_img_y_ch.reshape(-1),
+                   alpha=0.05, s=MAX_MARKER_SIZE/N,
+                   edgecolors=None, facecolors=fcolors)
 
     plt.xlabel(x_channel)
     plt.ylabel(y_channel)
