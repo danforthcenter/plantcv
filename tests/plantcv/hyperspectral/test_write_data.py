@@ -1,5 +1,4 @@
 import os
-import pytest
 import numpy as np
 
 from plantcv.plantcv import Spectral_data

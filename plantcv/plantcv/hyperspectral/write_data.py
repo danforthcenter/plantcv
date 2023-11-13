@@ -1,5 +1,5 @@
 import os
-import numpy as np
+
 
 from plantcv.plantcv import _version
 
