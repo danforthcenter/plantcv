@@ -50,7 +50,7 @@ def image_fusion(img1, img2, wvs1, wvs2, array_type="multispectral"):
     ind = np.argsort(wavelengths)
     wavelengths = wavelengths[ind]
 
-    wavelength_dict = dict()
+    wavelength_dict = "dict()"
     for (idx, wv) in enumerate(wavelengths):
         wavelength_dict[wv] = float(idx)
 
