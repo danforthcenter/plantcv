@@ -510,7 +510,7 @@ def _call_adaptive_threshold(gray_img, ksize, offset, adaptive_method, threshold
 
 
 # Internal method for detecting peaks for the triangle autothreshold method
-def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', _, valley=False, show=False, ax=None):
+def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, valley=False, show=False, ax=None):
     """Marcos Duarte, https://github.com/demotu/BMC; version 1.0.4; license MIT
 
     Detect peaks in data based on their amplitude and other features.
