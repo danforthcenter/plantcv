@@ -28,7 +28,7 @@ def process_results(job_dir, json_file):
                 fatal_error("Invalid JSON file")
 
     # Walk through the image processing job directory and process data from each file
-    for (dirpath, dirnames, filenames) in os.walk(job_dir):
+    for (dirpath, _, filenames) in os.walk(job_dir):
         for filename in filenames:
             # Make sure file is a text or json file
             if 'text/plain' in mimetypes.guess_type(filename) or 'application/json' in mimetypes.guess_type(filename):
