@@ -763,7 +763,7 @@ def _get_G(rgb_img, _):
 
 
 def _get_B(rgb_img, _):
-    """ Get the blue channel from a RGB image """
+    """Get the blue channel from a RGB image"""
     return rgb_img[:, :, 0]
 
 
