@@ -381,16 +381,16 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
 def custom(img, vertices):
     """Create an custom polygon ROI.
 
-        Inputs:
-        img           = An RGB or grayscale image to plot the ROI on in debug mode.
-        vertices      = List of vertices of the desired polygon ROI
+    Inputs:
+    img = An RGB or grayscale image to plot the ROI on in debug mode.
+    vertices = List of vertices of the desired polygon ROI
 
-        Outputs:
-        roi           = a dataclass with the roi object and hierarchy
+    Outputs:
+    roi = a dataclass with the roi object and hierarchy
 
-        :param img: numpy.ndarray
-        :param vertices: list
-        :return roi: plantcv.plantcv.classes.Objects
+    :param img: numpy.ndarray
+    :param vertices: list
+    :return roi: plantcv.plantcv.classes.Objects
     """
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]

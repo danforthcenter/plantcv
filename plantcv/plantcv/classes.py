@@ -288,7 +288,7 @@ class PSII_data:
 
     def add_data(self, protocol):
         """Input:
-            protocol: xr.DataArray with name equivalent to initialized attributes
+        protocol: xr.DataArray with name equivalent to initialized attributes
         """
         self.__dict__[protocol.name] = protocol
 
