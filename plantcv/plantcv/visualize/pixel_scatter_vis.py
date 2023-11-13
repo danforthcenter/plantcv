@@ -15,7 +15,7 @@ IMG_WIDTH = 128
 # functions to get a given channel with parameters compatible
 # with rgb2gray_lab and rgb2gray_hsv to use in the dict
 def _get_R(rgb_img, _):
-    """ Get the red channel from a RGB image """
+    """Get the red channel from a RGB image"""
     return rgb_img[:,:,2]
 
 
