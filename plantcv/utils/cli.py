@@ -8,8 +8,7 @@ import plantcv.utils
 # Parse command-line arguments
 ###########################################
 def options():
-    """Parse command line options.
-    """
+    """Parse command line options."""
     # Create an argument parser
     parser = argparse.ArgumentParser(description="A collection of utilities for PlantCV.",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
