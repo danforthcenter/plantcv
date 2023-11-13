@@ -28,7 +28,7 @@ def analyze_stem(rgb_img, stem_objects, label=None):
         label = params.sample_label
 
     labeled_img = np.copy(rgb_img)
-    img_x, img_y, _ = np.shape(labeled_img)
+    img_x, _, _ = np.shape(labeled_img)
     grouped_stem = np.vstack(stem_objects)
 
     # Find vertical height of the stem by measuring bounding box
