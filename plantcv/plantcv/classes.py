@@ -318,8 +318,7 @@ class Points(object):
         self.fig.canvas.mpl_connect('button_press_event', self.onclick)
 
     def onclick(self, event):
-        """ Handle mouse click events
-        """
+        """Handle mouse click events"""
         self.events.append(event)
         if event.button == 1:
 
