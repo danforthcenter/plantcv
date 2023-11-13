@@ -110,9 +110,9 @@ def pixel_scatter_plot(paths_to_imgs, x_channel, y_channel):
         sub_img_y_ch = channel_dict.get(y_channel, _not_valid)(sub_img, y_channel)
 
         ax.scatter(sub_img_x_ch.reshape(-1),
-                    sub_img_y_ch.reshape(-1),
-                    alpha=0.05, s=MAX_MARKER_SIZE/N,
-                    edgecolors=None, facecolors=fcolors)
+                   sub_img_y_ch.reshape(-1),
+                   alpha=0.05, s=MAX_MARKER_SIZE/N,
+                   edgecolors=None, facecolors=fcolors)
 
     plt.xlabel(x_channel)
     plt.ylabel(y_channel)
