@@ -72,8 +72,7 @@ def run_sample_images(args):
 # Run the main program
 ###########################################
 def main():
-    """Main program.
-    """
+    """Main program."""
     # Parse command-line options and run the selected method
     options()
 ###########################################
