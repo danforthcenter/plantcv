@@ -6,7 +6,6 @@ import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv.transform import resize
-# import warnings
 from plantcv.plantcv import warn
 
 
@@ -28,7 +27,6 @@ def time_lapse_video(img_list, out_filename='./time_lapse_video.mp4', fps=29.97,
     :param display: boolean
     :return frame_size: tuple
     """
-    # debug = params.debug
     params.debug = None
 
     if len(img_list) <= 0:
