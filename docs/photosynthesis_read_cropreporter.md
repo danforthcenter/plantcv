@@ -21,8 +21,8 @@ with labeled frames.
     - Measurements from chlorophyll fluorescence are stored in the attribute `chlorophyll` and include a dark frame
       (Fdark) and chlorophyll fluorescence frame (Chl).
     - Spectral measurements are stored as a PlantCV [Spectral_data](Spectral_data.md) object in the attribute
-      `spectral`. Frames are stored by reflectance wavelength and can include: blue (460nm), green (500nm), red (670nm),
-      green2 (550nm), far-red (700nm), and near-infrared (800nm).
+      `spectral`. Frames are stored by reflectance wavelength and can include: blue (475nm), green (550nm), red (640nm),
+      green2 (540nm), far-red (710nm), and near-infrared (770nm).
 - **Example use:**
     - [Use In PSII Tutorial](tutorials/psII_tutorial.md)
 

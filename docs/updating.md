@@ -431,6 +431,11 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, vh_img = **plantcv.flip**(*img, direction, device, debug=None*)
 * post v3.0dev2: vh_img = **plantcv.flip**(*img, direction*)
 
+#### plantcv.flood_fill
+
+* pre v4.1: NA
+* post v4.1: filled_image = **plantcv.flood_fill**(*bin_img, points, value=0*)
+
 #### plantcv.fluor_fvfm
 
 * pre v3.0dev2: device, hist_header, hist_data = **plantcv.fluor_fvfm**(*fdark, fmin, fmax, mask, device, filename, bins=1000, debug=None*)
@@ -1147,6 +1152,11 @@ pages for more details on the input and output variable types.
 
 * pre v3.0: NA
 * post v3.0: mask = **pcv.transform.create_color_card_mask**(*rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=[]*)
+
+#### plantcv.transform.detect_color_card
+
+* pre v4.0.1: NA
+* post v4.0.1: labeled_mask = **plantcv.transform.detect_color_card**(*rgb_img, label=None, **kwargs*)
 
 #### plantcv.transform.find_color_card
 

@@ -19,6 +19,8 @@ class TestData:
         self.snapshot_dir = os.path.join(self.datadir, "snapshot_dir")
         # RGB image
         self.small_rgb_img = os.path.join(self.datadir, "setaria_small_plant_rgb.png")
+        # Binary mask for fill
+        self.small_bin_fill = os.path.join(self.datadir,"floodfill.png")
         # Binary mask for RGB image
         self.small_bin_img = os.path.join(self.datadir, "setaria_small_plant_mask.png")
         # Gray image

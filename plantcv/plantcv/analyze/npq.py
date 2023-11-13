@@ -43,9 +43,8 @@ def npq(ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bi
     :return npq_global: xarray.core.dataarray.DataArray
     :return npq_chart: altair.vegalite.v4.api.FacetChart
     """
-    # Set lable to params.sample_label if None
-    if label is None:
-        label = params.sample_label
+    # Set labels
+    labels = _set_labels(label, n_labels)
 
     if labeled_mask.shape != ps_da_light.shape[:2] or labeled_mask.shape != ps_da_dark.shape[:2]:
         fatal_error(f"Mask needs to have shape {ps_da_dark.shape[:2]}")
@@ -95,7 +94,7 @@ def npq(ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bi
 
         # Record observations for each labeled region
         _add_observations(npq_da=npq_lbl, measurements=ps_da_light.measurement.values,
-                          measurement_labels=measurement_labels, label=f"{label}{i}",
+                          measurement_labels=measurement_labels, label=f"{labels[i - 1]}_{i}",
                           max_bin=max_bin, min_bin=min_bin)
 
     # Convert the labeled mask to a binary mask
@@ -124,6 +123,22 @@ def npq(ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bi
     # this only returns the last histogram..... xarray does not seem to support panels of histograms
     # but does support matplotlib subplots....
     return npq_global.squeeze(), npq_chart
+
+
+def _set_labels(label, n_labels):
+    """Create list of labels."""
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+    # Set labels to label
+    labels = label
+    # If label is a string, make a list of labels
+    if isinstance(label, str):
+        labels = [label] * n_labels
+    # If the length of the labels list is not equal to the number of labels, raise an error
+    if len(labels) != n_labels:
+        fatal_error(f"Number of labels ({len(labels)}) does not match number of objects ({n_labels})")
+    return labels
 
 
 def _calc_npq(fmp, fm):
