@@ -88,7 +88,7 @@ def pixel_scatter_plot(paths_to_imgs, x_channel, y_channel):
     params.debug = None
 
     N = len(paths_to_imgs)
- 
+
     fig, ax = plt.subplots()
     # load and plot the set of images sequentially
     for p in paths_to_imgs:
