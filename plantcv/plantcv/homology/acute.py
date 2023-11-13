@@ -9,8 +9,7 @@ from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
 
 
 def acute(img, mask, win, threshold):
-    """
-    Identify landmark positions within a contour for morphometric analysis
+    """Identify landmark positions within a contour for morphometric analysis
 
     Inputs:
     img         = Original image used for plotting purposes
