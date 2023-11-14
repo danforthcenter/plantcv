@@ -43,10 +43,8 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
 
     # get the sizes of the images
     # subtract 1 from x and y since python counts start from 0
-    if y != 0:
-        y = y - 1
-    if x != 0:
-        x = x - 1
+    y = y - 1 if y != 0 else y
+    x = x - 1 if x != 0 else x
 
     # Convert grayscale images to color
     ori_img = _grayscale_to_rgb(img)
