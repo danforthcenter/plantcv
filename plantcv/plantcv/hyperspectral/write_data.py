@@ -1,6 +1,5 @@
+"""Write hyperspectral image data to a file."""
 import os
-import numpy as np
-
 from plantcv.plantcv import _version
 
 __version__ = _version.get_versions()['version']
@@ -45,4 +44,4 @@ def write_data(filename, spectral_data):
 
     # create raw binary file containing the hyperspectral array values
     with open(filename+'.raw', mode='w+b') as f:
-        f.write(spectral_data.array_data.transpose(0,2,1).tobytes(order='C'))
+        f.write(spectral_data.array_data.transpose(0, 2, 1).tobytes(order='C'))
