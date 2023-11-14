@@ -15,32 +15,33 @@ IMG_WIDTH = 128
 # functions to get a given channel with parameters compatible
 # with rgb2gray_lab and rgb2gray_hsv to use in the dict
 def _get_R(rgb_img, _):
-    """ Get the red channel from a RGB image """
-    return rgb_img[:,:,2]
+    """Get the red channel from a RGB image."""
+    return rgb_img[:, :, 2]
 
 
 def _get_G(rgb_img, _):
-    """ Get the green channel from a RGB image """
-    return rgb_img[:,:,1]
+    """Get the green channel from a RGB image."""
+    return rgb_img[:, :, 1]
 
 
 def _get_B(rgb_img, _):
-    """ Get the blue channel from a RGB image """
-    return rgb_img[:,:,0]
+    """Get the blue channel from a RGB image."""
+    return rgb_img[:, :, 0]
 
 
 def _get_gray(rgb_img, _):
-    """ Get the gray scale transformation of a RGB image """
+    """Get the gray scale transformation of a RGB image."""
     return pcv.rgb2gray(rgb_img=rgb_img)
 
+
 def _get_index(rgb_img, _):
-    """ Get a vector with linear indices of the pixels in an image """
-    h,w,_ = rgb_img.shape
+    """Get a vector with linear indices of the pixels in an image."""
+    h, w, _ = rgb_img.shape
     return np.arange(h*w)
 
 
 def _not_valid(*args):
-    """ Error for a non valid channel """
+    """Error for a non valid channel."""
     return fatal_error("channel not valid, use R, G, B, l, a, b, h, s, v, gray, or index")
 
 
@@ -103,7 +104,7 @@ def pixel_scatter_plot(paths_to_imgs, x_channel, y_channel):
 
         # organize the channels as RGB to use as facecolor for the markers
         sub_img_rgb = cv.cvtColor(sub_img, cv.COLOR_BGR2RGB)
-        fcolors = sub_img_rgb.reshape(img_height*IMG_WIDTH,c)/255
+        fcolors = sub_img_rgb.reshape(img_height*IMG_WIDTH, c)/255
 
         # get channels
         sub_img_x_ch = channel_dict.get(x_channel, _not_valid)(sub_img, x_channel)
