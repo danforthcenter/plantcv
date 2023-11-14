@@ -35,6 +35,12 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
     if x < 0 or y < 0:
         fatal_error("x and y cannot be negative numbers or non-integers")
 
+    if v_pos.upper() not in ["TOP", "BOTTOM"]:
+        fatal_error(f'{v_pos} is not valid, must be "top" or "bottom"!')
+
+    if h_pos.upper() not in ["LEFT", "RIGHT"]:
+        fatal_error(f'{h_pos} is not valid, must be "left" or "right"!')
+
     # get the sizes of the images
     # subtract 1 from x and y since python counts start from 0
     if y != 0:
@@ -46,7 +52,7 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
     ori_img = _grayscale_to_rgb(img)
 
     # Image shape
-    ix, iy = np.shape(ori_img)[0:2]
+    ix, iy = np.shape(img)[0:2]
 
     # Convert mask to grayscale if needed and get its shape
     if len(np.shape(mask)) == 3:
@@ -132,9 +138,6 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
                filename=os.path.join(params.debug_outdir, str(params.device) + "_push-bottom.png"),
                cmap='gray')
 
-    else:
-        fatal_error(str(v_pos) + ' is not valid, must be "top" or "bottom"!')
-
     if h_pos.upper() == "LEFT":
 
         mx, my = np.shape(maskv)
@@ -195,9 +198,6 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
         _debug(visual=maskv,
                filename=os.path.join(params.debug_outdir, str(params.device) + "_push-right.png"),
                cmap='gray')
-
-    else:
-        fatal_error(str(h_pos) + ' is not valid, must be "left" or "right"!')
 
     newmask = np.array(maskv)
     _debug(visual=newmask, filename=os.path.join(params.debug_outdir, str(params.device) + "_newmask.png"), cmap='gray')
