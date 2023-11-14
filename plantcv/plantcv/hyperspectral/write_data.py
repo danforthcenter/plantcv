@@ -5,6 +5,7 @@ from plantcv.plantcv import _version
 
 __version__ = _version.get_versions()['version']
 
+
 def write_data(filename, spectral_data):
     """Write hyperspectral image data to a file.
     Inputs:
@@ -16,7 +17,6 @@ def write_data(filename, spectral_data):
     :param filename: str
     :param spectral_data: __main__.Spectral_data
     """
-
     filename = os.path.splitext(filename)[0]
 
     # create header

@@ -51,8 +51,6 @@ def test_plantcv_segment_image_series(tmpdir):
         imgs_paths.append(img_path)
         masks_paths.append(mask_path)
 
-    # pcv.params.color_sequence = 'random'
-
     roi_objects = multi(img=img, coord=(OBJ1_COORDS[0], OBJ1_COORDS[1]),
                         radius=OBJ_SIZE-2, spacing=SPACING, nrows=2, ncols=2)
     rois, _ = roi_objects.contours, roi_objects.hierarchy
