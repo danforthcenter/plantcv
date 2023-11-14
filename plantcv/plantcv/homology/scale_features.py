@@ -39,7 +39,7 @@ def scale_features(mask, points, line_position):
     # Compose contours into a single object
     obj = _object_composition(contours=cnt, hierarchy=cnt_str)
 
-    iy, _ = np.shape(mask)
+    iy = np.shape(mask)[0]
     x, y, width, height = cv2.boundingRect(obj)
     m = cv2.moments(mask, binaryImage=True)
     cmx, cmy = (m['m10'] / m['m00'], m['m01'] / m['m00'])
