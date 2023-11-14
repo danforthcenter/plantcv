@@ -215,8 +215,7 @@ class Outputs:
                     if isinstance(val, (list, tuple)):
                         # Combine each value with its label
                         for value, label in zip(self.observations[sample][var]["value"],
-                                                self.observations[sample][var]["label"],
-                                                metadata_val_list):
+                                                self.observations[sample][var]["label"]):
                             # Skip list of tuple data types
                             if not isinstance(value, tuple):
                                 # Save one row per value-label
