@@ -706,7 +706,7 @@ def saturation(rgb_img, threshold=255, channel="any"):
 
 
 def mask_bad(float_img, bad_type='native'):
-    """ Create a mask with desired "bad" pixels of the input floaat image marked.
+    """Create a mask with desired "bad" pixels of the input floaat image marked.
     Inputs:
     float_img = image represented by an nd-array (data type: float). Most probably, it is the result of some
                 calculation based on the original image. So the datatype is float, and it is possible to have some
@@ -729,7 +729,6 @@ def mask_bad(float_img, bad_type='native'):
 
     # neither nan nor inf exists in the image, print out a message and the mask would just be all zero
     if len(idx_nan) == 0 and len(idx_inf) == 0:
-        mask = mask
         print('Neither nan nor inf appears in the current image.')
     # at least one of the "bad" exists
     # desired bad to mark is "native"
@@ -742,7 +741,6 @@ def mask_bad(float_img, bad_type='native'):
         mask[idx_inf, idy_inf] = 255
     # "bad" exists but not the user desired bad type, return the all-zero mask
     else:
-        mask = mask
         print('{} does not appear in the current image.'.format(bad_type.lower()))
 
     _debug(visual=mask, filename=os.path.join(params.debug_outdir, str(params.device) + "_bad_mask.png"))
@@ -753,33 +751,33 @@ def mask_bad(float_img, bad_type='native'):
 # functions to get a given channel with parameters compatible
 # with rgb2gray_lab and rgb2gray_hsv to use in the dict
 def _get_R(rgb_img, _):
-    """ Get the red channel from a RGB image """
+    """Get the red channel from a RGB image"""
     return rgb_img[:, :, 2]
 
 
 def _get_G(rgb_img, _):
-    """ Get the green channel from a RGB image """
+    """Get the green channel from a RGB image"""
     return rgb_img[:, :, 1]
 
 
 def _get_B(rgb_img, _):
-    """ Get the blue channel from a RGB image """
+    """Get the blue channel from a RGB image"""
     return rgb_img[:, :, 0]
 
 
 def _get_gray(rgb_img, _):
-    """ Get the gray scale transformation of a RGB image """
+    """Get the gray scale transformation of a RGB image"""
     return rgb2gray(rgb_img=rgb_img)
 
 
 def _get_index(rgb_img, _):
-    """ Get a vector with linear indices of the pixels in an image """
+    """Get a vector with linear indices of the pixels in an image """
     h, w, _ = rgb_img.shape
     return np.arange(h*w).reshape(h, w)
 
 
 def _not_valid(*args):
-    """ Error for a non valid channel """
+    """Error for a non valid channel"""
     return fatal_error("channel not valid, use R, G, B, l, a, b, h, s, v, gray, or index")
 
 
@@ -805,7 +803,6 @@ def dual_channels(rgb_img, x_channel, y_channel, points, above=True):
     :param above: bool
     :return bin_img: numpy.ndarray
     """
-
     # dictionary returns the function that gets the required image channel
     channel_dict = {
         'R': _get_R,
