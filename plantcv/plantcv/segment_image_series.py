@@ -15,7 +15,7 @@ from plantcv.plantcv._debug import _debug
 
 
 def segment_image_series(imgs_paths, masks_paths, rois, save_labels=True, ksize=3):
-    """ Segments the objects in a time series of images using watershed segmentation.
+    """Segments the objects in a time series of images using watershed segmentation.
     The objects (labels) are given by a list of rois (region of interest) and the labels
     are propagated sequentially in the time dimension using blocks of ksize.
 
@@ -37,7 +37,6 @@ def segment_image_series(imgs_paths, masks_paths, rois, save_labels=True, ksize=
     :param ksize:       int
     :return out_labels: numpy.ndarray
     """
-
     debug = params.debug
     params.debug = None
     params.color_sequence = 'random'
