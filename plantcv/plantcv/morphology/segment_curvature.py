@@ -50,10 +50,10 @@ def segment_curvature(segmented_img, objects, label=None):
     # Create a color scale, use a previously stored scale if available
     rand_color = color_palette(num=len(objects), saved=True)
 
-    for i, _ in enumerate(objects):
+    for i, obj in objects:
         # Store coordinates for labels
-        label_coord_x.append(objects[i][0][0][0])
-        label_coord_y.append(objects[i][0][0][1])
+        label_coord_x.append(obj[0][0][0])
+        label_coord_y.append(obj[0][0][1])
 
         # Draw segments one by one to group segment tips together
         finding_tips_img = np.zeros(segmented_img.shape[:2], np.uint8)
