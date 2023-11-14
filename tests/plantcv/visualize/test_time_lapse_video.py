@@ -18,8 +18,6 @@ def test_plantcv_visualize_time_lapse_video_passes(display, tmpdir):
         cv2.imwrite(img_i_path, temp_img)
         list_im.append(img_i_path)
 
-    # list_im = [os.path.join(tmpdir, img) for img in os.listdir(tmpdir) if img.endswith('.png')]
-
     vid_name = os.path.join(tmpdir, 'test_time_lapse_video.mp4')
     _ = time_lapse_video(img_list=list_im, out_filename=vid_name, fps=29.97, display=display)
     assert os.path.exists(vid_name)
