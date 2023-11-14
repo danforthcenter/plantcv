@@ -223,8 +223,7 @@ def _add_observations(npq_da, measurements, measurement_labels, label, max_bin, 
                                 method='plantcv.plantcv.analyze.npq', scale='none', datatype=float,
                                 value=float(npq_max[i]), label='none')
 
-        hist_df, npq_mode = _create_histogram(npq_da.isel({'measurement': i}).values, mlabel,
-                                              outputs.observations[label], min_bin, max_bin)
+        hist_df, npq_mode = _create_histogram(npq_da.isel({'measurement': i}).values, mlabel, min_bin, max_bin)
 
         # mode value
         outputs.add_observation(sample=label, variable=f"npq_mode_{mlabel}", trait="mode npq value",
