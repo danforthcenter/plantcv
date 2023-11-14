@@ -22,6 +22,8 @@ def rgb2gray_cmyk(rgb_img, channel):
     :param channel: str
     :return channel: numpy.ndarray
     """
+    # Set NumPy to ignore divide by zero errors
+    _ = np.seterr(divide='ignore', invalid='ignore')
     # The allowable channel inputs are c, m , y or k
     names = {"c": "cyan", "m": "magenta", "y": "yellow", "k": "black"}
     channel = channel.lower()
