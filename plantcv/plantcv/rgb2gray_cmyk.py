@@ -1,4 +1,4 @@
-# RGB -> CMYK -> Gray
+"""Convert RGB to CMYK colorspace and return the specified subchannel as a grayscale image."""
 
 import cv2
 import os
