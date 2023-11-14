@@ -1,4 +1,3 @@
-import pytest
 from plantcv.plantcv import deprecation_warning
 
 

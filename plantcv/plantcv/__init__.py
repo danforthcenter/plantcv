@@ -1,4 +1,3 @@
-import matplotlib
 from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.classes import Params
 from plantcv.plantcv.classes import Outputs

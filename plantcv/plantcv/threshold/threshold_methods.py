@@ -510,7 +510,7 @@ def _call_adaptive_threshold(gray_img, ksize, offset, adaptive_method, threshold
 
 
 # Internal method for detecting peaks for the triangle autothreshold method
-def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, valley=False, show=False, ax=None):
+def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', valley=False, show=False, ax=None):
     """Marcos Duarte, https://github.com/demotu/BMC; version 1.0.4; license MIT
 
     Detect peaks in data based on their amplitude and other features.
@@ -531,8 +531,6 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
         for a flat peak, keep only the rising edge ('rising'), only the
         falling edge ('falling'), both edges ('both'), or don't detect a
         flat peak (None).
-    kpsh : bool, optional (default = False)
-        keep peaks with same height even if they are closer than `mpd`.
     valley : bool, optional (default = False)
         if True (1), detect valleys (local minima) instead of peaks.
     show : bool, optional (default = False)
@@ -729,7 +727,6 @@ def mask_bad(float_img, bad_type='native'):
 
     # neither nan nor inf exists in the image, print out a message and the mask would just be all zero
     if len(idx_nan) == 0 and len(idx_inf) == 0:
-        mask = mask
         print('Neither nan nor inf appears in the current image.')
     # at least one of the "bad" exists
     # desired bad to mark is "native"
@@ -742,7 +739,6 @@ def mask_bad(float_img, bad_type='native'):
         mask[idx_inf, idy_inf] = 255
     # "bad" exists but not the user desired bad type, return the all-zero mask
     else:
-        mask = mask
         print('{} does not appear in the current image.'.format(bad_type.lower()))
 
     _debug(visual=mask, filename=os.path.join(params.debug_outdir, str(params.device) + "_bad_mask.png"))
@@ -773,7 +769,7 @@ def _get_gray(rgb_img, _):
 
 
 def _get_index(rgb_img, _):
-    """ Get a vector with linear indices of the pixels in an image """
+    """Get a vector with linear indices of the pixels in an image """
     h, w, _ = rgb_img.shape
     return np.arange(h*w).reshape(h, w)
 
@@ -805,7 +801,6 @@ def dual_channels(rgb_img, x_channel, y_channel, points, above=True):
     :param above: bool
     :return bin_img: numpy.ndarray
     """
-
     # dictionary returns the function that gets the required image channel
     channel_dict = {
         'R': _get_R,

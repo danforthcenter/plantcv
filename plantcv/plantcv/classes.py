@@ -4,9 +4,9 @@ import cv2
 import json
 import numpy as np
 from plantcv.plantcv import fatal_error
+from plantcv.plantcv.annotate.points import _find_closest_pt
 import matplotlib.pyplot as plt
 from math import floor
-from plantcv.plantcv.annotate.points import _find_closest_pt
 import altair as alt
 import pandas as pd
 
@@ -79,8 +79,7 @@ class Outputs:
 
     # Method to add observation to outputs
     def add_observation(self, sample, variable, trait, method, scale, datatype, value, label):
-        """
-        Keyword arguments/parameters:
+        """Keyword arguments/parameters:
         sample       = Sample name. Used to distinguish between multiple samples
         variable     = A local unique identifier of a variable, e.g. a short name,
                        that is a key linking the definitions of variables with observations.
@@ -288,14 +287,13 @@ class PSII_data:
         return "PSII variables defined:\n" + '\n'.join(mvars)
 
     def add_data(self, protocol):
-        """
-        Input:
-            protocol: xr.DataArray with name equivalent to initialized attributes
+        """Input:
+        protocol: xr.DataArray with name equivalent to initialized attributes
         """
         self.__dict__[protocol.name] = protocol
 
 
-class Points(object):
+class Points:
     """Point annotation/collection class to use in Jupyter notebooks. It allows the user to
     interactively click to collect coordinates from an image. Left click collects the point and
     right click removes the closest collected point
@@ -335,6 +333,7 @@ class Points(object):
 
 class Objects:
     """Class for managing image contours/objects and their hierarchical relationships."""
+
     def __init__(self, contours: list = None, hierarchy: list = None):
         self.contours = contours
         self.hierarchy = hierarchy
