@@ -50,7 +50,7 @@ def segment_curvature(segmented_img, objects, label=None):
     # Create a color scale, use a previously stored scale if available
     rand_color = color_palette(num=len(objects), saved=True)
 
-    for i, obj in objects:
+    for i, obj in enumerate(objects):
         # Store coordinates for labels
         label_coord_x.append(obj[0][0][0])
         label_coord_y.append(obj[0][0][1])
