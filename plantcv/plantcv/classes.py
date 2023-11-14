@@ -135,15 +135,14 @@ class Outputs:
     def add_metadata(self, label, datatype, value):
         """
         Keyword arguments/parameters:
-        label       = A humaan readable name of the measurement method mapped to an external ontology; if there is no exact mapping, an
-                       informative description of the measurement procedure
+        label       = A human readable name of the measurement method mapped to an external ontology
         datatype    = The type of data to be stored, e.g. 'int', 'float', 'str', 'list', 'bool', etc.
         value       = The data itself
 
 
         :param label: str
         :param datatype: type
-        :param value: 
+        :param value:
         """
         # Create an empty dictionary for the sample if it does not exist
         if label not in self.metadata:
@@ -183,29 +182,29 @@ class Outputs:
                 with open(filename, 'r') as f:
                     hierarchical_data = json.load(f)
                     hierarchical_data["observations"] = self.observations
-                    existing_metadata = hierarchical_data["metadata"] 
+                    existing_metadata = hierarchical_data["metadata"]
                     for term in self.metadata:
                         if term in existing_metadata:
-                            hierarchical_data["metadata"][term + "1"] = self.metadata[term] 
-
+                            hierarchical_data["metadata"][term + "1"] = self.metadata[term]
                         else: 
                             hierarchical_data["metadata"][term] = self.metadata[term]
-
             else:
                 hierarchical_data = {"metadata": self.metadata, "observations": self.observations}
-
             with open(filename, mode='w') as f:
                 json.dump(hierarchical_data, f)
+
         elif outformat.upper() == "CSV":
             # Open output CSV file
             csv_table = open(filename, "w")
             # Gather any additional metadata
-            metadata_key_list = [i for i in self.metadata.keys()] 
-            metadata_val_list = [i for i in self.metadata.values()] 
+            metadata_key_list = []
+            for key in self.metadata:
+                metadata_key_list.append(key)
+            #metadata_key_list = [i for i in self.metadata.keys()]
+            metadata_val_list = [i for i in self.metadata.values()]
             # Write the header
             header = ["sample", "trait", "value", "label"] + metadata_key_list
             csv_table.write(",".join(map(str, header)) + "\n")
-
             # Iterate over data samples
             for sample in self.observations:
                 # Iterate over traits for each sample
