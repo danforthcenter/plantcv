@@ -44,10 +44,10 @@ def segment_euclidean_length(segmented_img, objects, label=None):
     debug = params.debug
     params.debug = None
 
-    for i, _ in enumerate(objects):
+    for i, obj in enumerate(objects):
         # Store coordinates for labels
-        x_list.append(objects[i][0][0][0])
-        y_list.append(objects[i][0][0][1])
+        x_list.append(obj[0][0][0])
+        y_list.append(obj[0][0][1])
 
         # Draw segments one by one to group segment tips together
         finding_tips_img = np.zeros(segmented_img.shape[:2], np.uint8)
