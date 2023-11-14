@@ -32,12 +32,12 @@ def segment_path_length(segmented_img, objects, label=None):
     segment_lengths = []
     labeled_img = segmented_img.copy()
 
-    for i, _ in enumerate(objects):
+    for obj in objects:
         # Calculate geodesic distance, divide by two since cv2 seems to be taking the perimeter of the contour
-        segment_lengths.append(float(cv2.arcLength(objects[i], False) / 2))
+        segment_lengths.append(float(cv2.arcLength(obj, False) / 2))
         # Store coordinates for labels
-        label_coord_x.append(objects[i][0][0][0])
-        label_coord_y.append(objects[i][0][0][1])
+        label_coord_x.append(obj[0][0][0])
+        label_coord_y.append(obj[0][0][1])
 
     segment_ids = []
     # Put labels of length
