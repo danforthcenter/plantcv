@@ -590,13 +590,9 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
     sb = source_matrix[:num_chips, 3:4]
 
     # Create columns of color labels
-    red = []
-    blue = []
-    green = []
-    for _ in range(num_chips):
-        red.append('red')
-        blue.append('blue')
-        green.append('green')
+    red = ["red"] * num_chips
+    blue = ["blue"] * num_chips
+    green = ["green"] * num_chips
 
     # Make a column of chip numbers
     chip = np.arange(0, num_chips).reshape((num_chips, 1))
