@@ -186,7 +186,7 @@ class Outputs:
                     for term in self.metadata:
                         if term in existing_metadata:
                             hierarchical_data["metadata"][term + "1"] = self.metadata[term]
-                        else: 
+                        else:
                             hierarchical_data["metadata"][term] = self.metadata[term]
             else:
                 hierarchical_data = {"metadata": self.metadata, "observations": self.observations}
@@ -200,7 +200,6 @@ class Outputs:
             metadata_key_list = []
             for key in self.metadata:
                 metadata_key_list.append(key)
-            #metadata_key_list = [i for i in self.metadata.keys()]
             metadata_val_list = [i for i in self.metadata.values()]
             # Write the header
             header = ["sample", "trait", "value", "label"] + metadata_key_list
