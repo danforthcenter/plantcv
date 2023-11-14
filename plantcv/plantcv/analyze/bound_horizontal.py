@@ -113,7 +113,7 @@ def _analyze_bound_horizontal(img, mask, line_position, label):
         obj_points = np.vstack((mask_nonzeroy, mask_nonzerox))
         obj_points1 = np.transpose(obj_points)
 
-        for _, c in enumerate(obj_points1):
+        for c in obj_points1:
             xy = tuple([int(ci) for ci in c])
             pptest = cv2.pointPolygonTest(below_contour[0], xy, measureDist=False)
             if pptest == 1:
