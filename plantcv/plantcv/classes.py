@@ -203,8 +203,8 @@ class Outputs:
             metadata_key_list = [i for i in self.metadata.keys()] 
             metadata_val_list = [i for i in self.metadata.values()] 
             # Write the header
-            header = ["sample", "trait", "value", "label"]
-            csv_table.write(",".join(map(str, header, metadata_key_list)) + "\n")
+            header = ["sample", "trait", "value", "label"] + metadata_key_list
+            csv_table.write(",".join(map(str, header)) + "\n")
 
             # Iterate over data samples
             for sample in self.observations:
