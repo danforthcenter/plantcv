@@ -95,7 +95,6 @@ setuptools.setup(
     setup_requires=["pytest-runner"],
     tests_require=['pytest'],
     cmdclass=versioneer.get_cmdclass(),
-    # scripts=["plantcv-train.py", "plantcv-utils.py", "plantcv-workflow.py"]
 
     # If there are data files included in your packages that need to be
     # installed, specify them here.  If using Python 2.6 or less, then these

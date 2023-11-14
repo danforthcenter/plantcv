@@ -55,12 +55,10 @@ def space(cur_plms, include_bound_dist=False, include_centroid_dist=False, inclu
     rise = (
                    (new_plms.loc[:, ['SS_y']].values + new_plms.loc[:, ['TS_y']].values) / 2
            ) - new_plms.loc[:, ['plm_y']].values
-    # print('delta_y=',rise,'   delta_x=',run)
     # slope=rise/run
 
     centroid_run = (new_plms.loc[:, ['plm_x']].values - centroid[0])
     centroid_rise = (new_plms.loc[:, ['plm_y']].values - centroid[1])
-    # print('cent_delta_y=',centroid_rise,'   cent_delta_x=',centroid_run)
     # centroid_slope=centroid_rise/centroid_run
 
     orientation = []
