@@ -89,11 +89,11 @@ def test_save_results_csv_add_metadata(test_data, tmpdir):
     outputs.add_observation(sample='default', variable='string', trait='string variable', method='string', scale='none',
                             datatype=str, value="string", label="none")
     outputs.add_metadata(label="add_date", datatype="str", value="Nov-14-2023")
-    
     outputs.save_results(filename=outfile, outformat="csv")
     with open(outfile, "r") as fp:
         results = fp.read()
-    assert len(results) == 9
+    x = slice(0,5)
+    assert results[x] == "sample,trait,value,label,add_date"
 
 
 def test_clear_outputs():
