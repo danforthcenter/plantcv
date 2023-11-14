@@ -251,7 +251,7 @@ def get_matrix_m(target_matrix, source_matrix):
                     combined_matrix[row_count][5] = source_matrix[i][2]
                     combined_matrix[row_count][6] = source_matrix[i][3]
                     row_count += 1
-        t_cc, t_r, t_g, t_b, s_r, s_g, s_b = np.split(combined_matrix, 7, 1)
+        _, t_r, t_g, t_b, s_r, s_g, s_b = np.split(combined_matrix, 7, 1)
     t_r2 = np.square(t_r)
     t_r3 = np.power(t_r, 3)
     t_g2 = np.square(t_g)
