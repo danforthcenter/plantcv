@@ -4,9 +4,9 @@ import cv2
 import json
 import numpy as np
 from plantcv.plantcv import fatal_error
+from plantcv.plantcv.annotate.points import _find_closest_pt
 import matplotlib.pyplot as plt
 from math import floor
-from plantcv.plantcv.annotate.points import _find_closest_pt
 import altair as alt
 import pandas as pd
 
@@ -79,8 +79,7 @@ class Outputs:
 
     # Method to add observation to outputs
     def add_observation(self, sample, variable, trait, method, scale, datatype, value, label):
-        """
-        Keyword arguments/parameters:
+        """Keyword arguments/parameters:
         sample       = Sample name. Used to distinguish between multiple samples
         variable     = A local unique identifier of a variable, e.g. a short name,
                        that is a key linking the definitions of variables with observations.
@@ -288,9 +287,8 @@ class PSII_data:
         return "PSII variables defined:\n" + '\n'.join(mvars)
 
     def add_data(self, protocol):
-        """
-        Input:
-            protocol: xr.DataArray with name equivalent to initialized attributes
+        """Input:
+        protocol: xr.DataArray with name equivalent to initialized attributes
         """
         self.__dict__[protocol.name] = protocol
 
@@ -318,8 +316,7 @@ class Points(object):
         self.fig.canvas.mpl_connect('button_press_event', self.onclick)
 
     def onclick(self, event):
-        """ Handle mouse click events
-        """
+        """Handle mouse click events"""
         self.events.append(event)
         if event.button == 1:
 

@@ -17,7 +17,6 @@ def write_data(filename, spectral_data):
     :param filename: str
     :param spectral_data: __main__.Spectral_data
     """
-
     filename = os.path.splitext(filename)[0]
 
     # create header

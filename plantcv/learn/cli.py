@@ -80,8 +80,7 @@ def run_naive_bayes_multiclass(args):
 # Run the main program
 ###########################################
 def main():
-    """Main program.
-    """
+    """Main program."""
     # Parse command-line options and run training method
     options()
 ###########################################

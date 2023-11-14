@@ -12,7 +12,7 @@ from plantcv.plantcv._helpers import _cv2_findcontours
 
 
 def _slope_to_intesect_angle(m1, m2):
-    """ Calculate intersections angle (in degrees) from the slope of two lines
+    """Calculate intersections angle (in degrees) from the slope of two lines
 
     Inputs:
     m1    = Slope of line 1
