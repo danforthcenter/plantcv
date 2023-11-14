@@ -200,8 +200,8 @@ class Outputs:
             # Open output CSV file
             csv_table = open(filename, "w")
             # Gather any additional metadata
-            metadata_key_list = [(self.metatdata.keys())] 
-            metadata_val_list = [(self.metatdata.value())] 
+            metadata_key_list = [(self.metadata.keys())] 
+            metadata_val_list = [(self.metadata.value())] 
             # Write the header
             header = ["sample", "trait", "value", "label"]
             csv_table.write(",".join(map(str, header, metadata_key_list)) + "\n")
@@ -215,11 +215,12 @@ class Outputs:
                     if isinstance(val, (list, tuple)):
                         # Combine each value with its label
                         for value, label in zip(self.observations[sample][var]["value"],
-                                                self.observations[sample][var]["label"]):
+                                                self.observations[sample][var]["label"],
+                                                metadata_val_list):
                             # Skip list of tuple data types
                             if not isinstance(value, tuple):
                                 # Save one row per value-label
-                                row = [sample, var, value, label]
+                                row = [sample, var, value, label, metadata_val_list]
                                 csv_table.write(",".join(map(str, row)) + "\n")
                     # If the data type is Boolean, store as a numeric 1/0 instead of True/False
                     elif isinstance(val, bool):
@@ -234,7 +235,8 @@ class Outputs:
                         row = [sample,
                                var,
                                self.observations[sample][var]["value"],
-                               self.observations[sample][var]["label"]
+                               self.observations[sample][var]["label"],
+                               metadata_val_list
                                ]
                         csv_table.write(",".join(map(str, row)) + "\n")
 
