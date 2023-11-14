@@ -61,16 +61,13 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
     if mx >= ix:
         r = mx - ix
         r1 = int(np.rint(r / 2.0))
-        r2 = r1
-        if r % 2 != 0:
-            r2 = r1 - 1
+        r2 = r1 if r % 2 == 0 else r1 - 1
         mask = mask[r1:mx - r2, 0:my]
     if my >= iy:
         r = my - iy
         r1 = int(np.rint(r / 2.0))
         r2 = r1
-        if r % 2 != 0:
-            r2 = r1 - 1
+        r2 = r1 if r % 2 == 0 else r1 - 1
         mask = mask[0:mx, r1:my - r2]
 
     # New mask shape
