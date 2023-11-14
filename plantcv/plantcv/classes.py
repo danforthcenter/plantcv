@@ -199,11 +199,11 @@ class Outputs:
         elif outformat.upper() == "CSV":
             # Open output CSV file
             csv_table = open(filename, "w")
+            # Gather any additional metadata
             metadata_key_list = [(self.metatdata.keys())] 
             metadata_val_list = [(self.metatdata.value())] 
             # Write the header
-            header = [sample, var, value, label]
-
+            header = ["sample", "trait", "value", "label"]
             csv_table.write(",".join(map(str, header, metadata_key_list)) + "\n")
 
             # Iterate over data samples
