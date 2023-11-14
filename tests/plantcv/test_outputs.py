@@ -92,7 +92,7 @@ def test_save_results_csv_add_metadata(test_data, tmpdir):
     outputs.save_results(filename=outfile, outformat="csv")
     with open(outfile, "r") as fp:
         results = fp.read()
-    x = slice(0,5)
+    x = slice(0,34)
     assert results[x] == "sample,trait,value,label,add_date"
 
 
