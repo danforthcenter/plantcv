@@ -86,7 +86,7 @@ def acute(img, mask, win, threshold):
         dot = (p12*p12 + p13*p13 - p23*p23)/(2*p12*p13)
 
         ang = math.degrees(math.acos(dot))
-        # print(str(k)+'  '+str(dot)+'  '+str(ang))
+
         chain.append(ang)
 
     index = []                      # Index chain to find clusters below angle threshold
