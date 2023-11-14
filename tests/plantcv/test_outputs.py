@@ -80,6 +80,21 @@ def test_save_results_csv(test_data, tmpdir):
         test_results = fp.read()
     assert results == test_results
 
+def test_save_results_csv_add_metadata(test_data, tmpdir):
+    """Test for PlantCV."""
+    # Create a test tmp directory
+    outfile = tmpdir.mkdir("cache").join("results.csv")
+    # Create output instance
+    outputs = Outputs()
+    outputs.add_observation(sample='default', variable='string', trait='string variable', method='string', scale='none',
+                            datatype=str, value="string", label="none")
+    outputs.add_metadata(label="add_date", datatype="str", value="Nov-14-2023")
+    
+    outputs.save_results(filename=outfile, outformat="csv")
+    with open(outfile, "r") as fp:
+        results = fp.read()
+    assert len(results) == 9
+
 
 def test_clear_outputs():
     """Test for PlantCV."""
