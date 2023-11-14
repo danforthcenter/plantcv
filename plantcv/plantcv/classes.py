@@ -333,6 +333,7 @@ class Points:
 
 class Objects:
     """Class for managing image contours/objects and their hierarchical relationships."""
+
     def __init__(self, contours: list = None, hierarchy: list = None):
         self.contours = contours
         self.hierarchy = hierarchy
