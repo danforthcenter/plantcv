@@ -5,7 +5,7 @@ import numpy as np
 import math
 import os
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _cv2_findcontours
+from plantcv.plantcv._helpers import _cv2_findcontours, _grayscale_to_rgb
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 
@@ -42,18 +42,16 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
     if x != 0:
         x = x - 1
 
-    if len(np.shape(img)) == 3:
-        ix, iy, _ = np.shape(img)
-        ori_img = np.copy(img)
-    else:
-        ix, iy = np.shape(img)
-        ori_img = np.dstack((img, img, img))
+    # Convert grayscale images to color
+    ori_img = _grayscale_to_rgb(img)
 
+    # Image shape
+    ix, iy = np.shape(ori_img)[0:2]
+
+    # Convert mask to grayscale if needed and get its shape
     if len(np.shape(mask)) == 3:
-        mx, my, mz = np.shape(mask)
         mask = mask[0]
-    else:
-        mx, my = np.shape(mask)
+    mx, my = np.shape(mask)
 
     # resize the images so they are equal in size and centered
     if mx >= ix:
