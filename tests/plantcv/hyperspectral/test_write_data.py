@@ -1,9 +1,9 @@
 import os
 import numpy as np
-
 from plantcv.plantcv import Spectral_data
 from plantcv.plantcv.hyperspectral import read_data
 from plantcv.plantcv.hyperspectral import write_data
+
 
 def test_write_data_default(tmpdir):
     """Test for PlantCV."""
@@ -27,21 +27,20 @@ def test_write_data_default(tmpdir):
 
     # Create spectral data object
     rand_spectral_array = Spectral_data(array_data=rand_array,
-                                max_wavelength=rand_wavelengths[-1],
-                                min_wavelength=rand_wavelengths[0],
-                                max_value=float(np.amax(rand_array)),
-                                min_value=float(np.amin(rand_array)),
-                                d_type=rand_array.dtype,
-                                wavelength_dict=wavelength_dict,
-                                samples=samples,
-                                lines=lines,
-                                interleave='bil',
-                                wavelength_units='nm',
-                                array_type="datacube",
-                                pseudo_rgb=None,
-                                filename='random_hyperspectral_test',
-                                default_bands=[0,1,2])
-
+                                        max_wavelength=rand_wavelengths[-1],
+                                        min_wavelength=rand_wavelengths[0],
+                                        max_value=float(np.amax(rand_array)),
+                                        min_value=float(np.amin(rand_array)),
+                                        d_type=rand_array.dtype,
+                                        wavelength_dict=wavelength_dict,
+                                        samples=samples,
+                                        lines=lines,
+                                        interleave='bil',
+                                        wavelength_units='nm',
+                                        array_type="datacube",
+                                        pseudo_rgb=None,
+                                        filename='random_hyperspectral_test',
+                                        default_bands=[0, 1, 2])
 
     filename = os.path.join(cache_dir, 'plantcv_hyperspectral_write_data.raw')
     write_data(filename=filename, spectral_data=rand_spectral_array)
