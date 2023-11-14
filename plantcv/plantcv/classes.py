@@ -200,8 +200,8 @@ class Outputs:
             # Open output CSV file
             csv_table = open(filename, "w")
             # Gather any additional metadata
-            metadata_key_list = [(self.metadata.keys())] 
-            metadata_val_list = [(self.metadata.values())] 
+            metadata_key_list = [i for i in self.metadata.keys()] 
+            metadata_val_list = [i for i in self.metadata.values()] 
             # Write the header
             header = ["sample", "trait", "value", "label"]
             csv_table.write(",".join(map(str, header, metadata_key_list)) + "\n")
