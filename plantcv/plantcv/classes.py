@@ -220,14 +220,14 @@ class Outputs:
                             # Skip list of tuple data types
                             if not isinstance(value, tuple):
                                 # Save one row per value-label
-                                row = [sample, var, value, label, metadata_val_list]
+                                row = [sample, var, value, label] + metadata_val_list
                                 csv_table.write(",".join(map(str, row)) + "\n")
                     # If the data type is Boolean, store as a numeric 1/0 instead of True/False
                     elif isinstance(val, bool):
                         row = [sample,
                                var,
                                int(self.observations[sample][var]["value"]),
-                               self.observations[sample][var]["label"], metadata_val_list]
+                               self.observations[sample][var]["label"]] + metadata_val_list
                         csv_table.write(",".join(map(str, row)) + "\n")
                     # For all other supported data types, save one row per trait
                     # Assumes no unusual data types are present (possibly a bad assumption)
@@ -235,9 +235,8 @@ class Outputs:
                         row = [sample,
                                var,
                                self.observations[sample][var]["value"],
-                               self.observations[sample][var]["label"],
-                               metadata_val_list
-                               ]
+                               self.observations[sample][var]["label"]
+                               ] + metadata_val_list
                         csv_table.write(",".join(map(str, row)) + "\n")
 
     def plot_dists(self, variable):
