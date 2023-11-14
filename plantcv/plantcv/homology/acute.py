@@ -9,8 +9,7 @@ from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
 
 
 def acute(img, mask, win, threshold):
-    """
-    Identify landmark positions within a contour for morphometric analysis
+    """Identify landmark positions within a contour for morphometric analysis
 
     Inputs:
     img         = Original image used for plotting purposes
@@ -147,7 +146,7 @@ def acute(img, mask, win, threshold):
                 for r in range(h):
                     # Identify pixels in local window internal to the island hull
                     pos = cv2.pointPolygonTest(obj[island], (pix_x+c, pix_y+r), 0)
-                    if 0 < pos:
+                    if pos > 0:
                         vals.append(mask[pix_y+r][pix_x+c])  # Store pixel value if internal
             if len(vals) > 0:
                 ptvals.append(sum(vals)/len(vals))
