@@ -68,6 +68,28 @@ Methods are accessed as plantcv.outputs.*method*.
 
 * label:  The label for each value, which will be useful when the data is a frequency table (e.g. hues). 
 
+**add_metadata**(*label, datatype, value*): Add metadata about the image or other information
+
+* lebel: A human readable name of the measurement method mapped to an external ontology
+
+* datatype: The type of data to be stored. In JSON, values must be one of the following data types:
+    - a string
+    - a number
+    - an array
+    - a boolean
+    - null
+    - a JSON object
+    
+    They are equilvalent to python data types of the following:
+    - 'str'
+    - 'int' or 'float'
+    - 'list' or 'tuple'
+    - 'bool'
+    - 'NoneType'
+    - 'dict'
+
+* value: The data itself. Make sure the data type of value matches the data type stated in "datatype". 
+
 **save_results**(*filename, outformat="json"*): Save results to a file
 
 * filename: Path and name of the output file
@@ -118,6 +140,9 @@ pcv.outputs.add_observation(sample='default', variable='percent_diseased',
                             trait='percent of plant detected to be diseased',
                             method='ratio of pixels', scale='percent', datatype=float,
                             value=percent_diseased, label='percent')
+
+# Add metadata 
+pcv.outputs.add_metadata(label="genotype", datatype="str", value="wildtype")
 
 # Write custom data to results file
 pcv.outputs.save_results(filename=args.result, outformat="json")
