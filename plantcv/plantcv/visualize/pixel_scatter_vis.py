@@ -94,7 +94,7 @@ def pixel_scatter_plot(paths_to_imgs, x_channel, y_channel):
     # load and plot the set of images sequentially
     for p in paths_to_imgs:
         img, _, _ = pcv.readimage(filename=p, mode="native")
-        h, w, c = img.shape
+        h, _, c = img.shape
 
         # resizing to predetermined width to reduce the number of pixels
         ratio = h/IMG_WIDTH

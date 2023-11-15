@@ -28,11 +28,11 @@ def analyze_stem(rgb_img, stem_objects, label=None):
         label = params.sample_label
 
     labeled_img = np.copy(rgb_img)
-    img_x, img_y, _ = np.shape(labeled_img)
+    img_x = np.shape(labeled_img)[0]
     grouped_stem = np.vstack(stem_objects)
 
     # Find vertical height of the stem by measuring bounding box
-    stem_x, stem_y, width, height = cv2.boundingRect(grouped_stem)
+    stem_x, stem_y, _, height = cv2.boundingRect(grouped_stem)
 
     # Calculate stem angle
     [vx, vy, x, y] = cv2.fitLine(grouped_stem, cv2.DIST_L2, 0, 0.01, 0.01)

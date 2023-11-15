@@ -102,8 +102,8 @@ def _analyze_index(img, mask, bins=100, min_bin=0, max_bin=1, label=None):
              f"{str(maxval)}]. Adjust min_bin and max_bin in order to avoid cutting off data being collected.")
 
     # Calculate histogram
-    hist_fig, hist_data = histogram(img.array_data, mask=mask, bins=bins, lower_bound=b, upper_bound=maxval,
-                                    hist_data=True)
+    _, hist_data = histogram(img.array_data, mask=mask, bins=bins, lower_bound=b, upper_bound=maxval,
+                             hist_data=True)
     bin_labels, hist_percent = hist_data["pixel intensity"].tolist(), hist_data["proportion of pixels (%)"].tolist()
 
     # Restore user debug setting

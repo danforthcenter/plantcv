@@ -5,7 +5,7 @@ import numpy as np
 import math
 import os
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _cv2_findcontours
+from plantcv.plantcv._helpers import _cv2_findcontours, _grayscale_to_rgb
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 
@@ -35,44 +35,39 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
     if x < 0 or y < 0:
         fatal_error("x and y cannot be negative numbers or non-integers")
 
+    if v_pos.upper() not in ["TOP", "BOTTOM"]:
+        fatal_error(f'{v_pos} is not valid, must be "top" or "bottom"!')
+
+    if h_pos.upper() not in ["LEFT", "RIGHT"]:
+        fatal_error(f'{h_pos} is not valid, must be "left" or "right"!')
+
     # get the sizes of the images
     # subtract 1 from x and y since python counts start from 0
-    if y != 0:
-        y = y - 1
-    if x != 0:
-        x = x - 1
+    y = y - 1 if y != 0 else y
+    x = x - 1 if x != 0 else x
 
-    if len(np.shape(img)) == 3:
-        ix, iy, iz = np.shape(img)
-        ori_img = np.copy(img)
-    else:
-        ix, iy = np.shape(img)
-        ori_img = np.dstack((img, img, img))
+    # Convert grayscale images to color
+    ori_img = _grayscale_to_rgb(img)
 
+    # Image shape
+    ix, iy = np.shape(img)[0:2]
+
+    # Convert mask to grayscale if needed and get its shape
     if len(np.shape(mask)) == 3:
-        mx, my, mz = np.shape(mask)
         mask = mask[0]
-    else:
-        mx, my = np.shape(mask)
+    mx, my = np.shape(mask)
 
     # resize the images so they are equal in size and centered
     if mx >= ix:
         r = mx - ix
-        if r % 2 == 0:
-            r1 = int(np.rint(r / 2.0))
-            r2 = r1
-        else:
-            r1 = int(np.rint(r / 2.0))
-            r2 = r1 - 1
+        r1 = int(np.rint(r / 2.0))
+        r2 = r1 if r % 2 == 0 else r1 - 1
         mask = mask[r1:mx - r2, 0:my]
     if my >= iy:
         r = my - iy
-        if r % 2 == 0:
-            r1 = int(np.rint(r / 2.0))
-            r2 = r1
-        else:
-            r1 = int(np.rint(r / 2.0))
-            r2 = r1 - 1
+        r1 = int(np.rint(r / 2.0))
+        r2 = r1
+        r2 = r1 if r % 2 == 0 else r1 - 1
         mask = mask[0:mx, r1:my - r2]
 
     # New mask shape
@@ -133,9 +128,6 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
         _debug(visual=maskv,
                filename=os.path.join(params.debug_outdir, str(params.device) + "_push-bottom.png"),
                cmap='gray')
-
-    else:
-        fatal_error(str(v_pos) + ' is not valid, must be "top" or "bottom"!')
 
     if h_pos.upper() == "LEFT":
 
@@ -198,14 +190,11 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
                filename=os.path.join(params.debug_outdir, str(params.device) + "_push-right.png"),
                cmap='gray')
 
-    else:
-        fatal_error(str(h_pos) + ' is not valid, must be "left" or "right"!')
-
     newmask = np.array(maskv)
     _debug(visual=newmask, filename=os.path.join(params.debug_outdir, str(params.device) + "_newmask.png"), cmap='gray')
 
     objects, hierarchy = _cv2_findcontours(bin_img=newmask)
-    for i, cnt in enumerate(objects):
+    for i, _ in enumerate(objects):
         cv2.drawContours(ori_img, objects, i, (255, 102, 255), -1, lineType=8, hierarchy=hierarchy)
     _debug(visual=ori_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_mask_overlay.png'))
 

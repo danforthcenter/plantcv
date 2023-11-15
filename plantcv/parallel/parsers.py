@@ -401,7 +401,7 @@ def _read_filenames(config):
     else:
         # If subdirectories are included, recursively walk through the path
         fns = []
-        for root, dirs, files in os.walk(config.input_dir):
+        for root, _, files in os.walk(config.input_dir):
             for file in files:
                 if file.endswith(config.imgformat):
                     # Keep the files that end with the image extension
