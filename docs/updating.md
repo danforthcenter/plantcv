@@ -734,7 +734,7 @@ pages for more details on the input and output variable types.
 #### plantcv.outputs.add_metadata
 
 * pre v4.1: NA
-* post v4.1: **plantcv.outputs.add_observation**(*label, datatype, value*)
+* post v4.1: **plantcv.outputs.add_metadata**(*label, datatype, value*)
 
 #### plantcv.outputs.clear
 
