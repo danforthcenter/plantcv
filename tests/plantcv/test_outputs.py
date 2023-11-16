@@ -103,7 +103,7 @@ def test_add_metadata_invalid_type():
     # Create output instance
     outputs = Outputs()
     with pytest.raises(RuntimeError):
-        outputs.add_metadata(label="bad_bool", datatype="boo", value="False")
+        outputs.add_metadata(label="bad_dtype", datatype="str", value=np.array([2]))
 
 def test_clear_outputs():
     """Test for PlantCV."""
