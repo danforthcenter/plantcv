@@ -98,6 +98,12 @@ def test_save_results_csv_add_metadata(test_data, tmpdir):
     x = slice(0,33)
     assert results[x] == "sample,trait,value,label,add_date"
 
+def test_add_metadata_invalid_type():
+    """Test for PlantCV."""
+    # Create output instance
+    outputs = Outputs()
+    with pytest.raises(RuntimeError):
+        outputs.add_metadata(label="bad_bool", datatype="boo", value="False")
 
 def test_clear_outputs():
     """Test for PlantCV."""
