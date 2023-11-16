@@ -53,6 +53,7 @@ def test_save_results_json_existing_file(test_data, tmpdir):
     outputs.add_observation(sample='default', variable='test', trait='test variable', method='test', scale='none',
                             datatype=str, value="test", label="none")
     outputs.add_metadata(label="add_date", datatype="str", value="Nov-14-2023")
+    outputs.add_metadata(label="camera", datatype="str", value="TV")
     outputs.save_results(filename=outfile, outformat="json")
     with open(outfile, "r") as fp:
         results = json.load(fp)
