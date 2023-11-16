@@ -29,7 +29,7 @@ def job_builder(meta, config):
     print(f"Task list includes {n_jobs} workflows", file=sys.stderr)
 
     # Each grouping has a tuple of grouped metadata values and a dataframe of image metadata
-    for grp, grp_df in meta:
+    for _, grp_df in meta:
         # Create a JSON template for each group
         img_meta = {"metadata": deepcopy(config.metadata_terms), "observations": {}}
 

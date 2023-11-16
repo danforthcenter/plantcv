@@ -196,7 +196,7 @@ def _object_composition(contours, hierarchy):
     """
     stack = np.zeros((len(contours), 1))
 
-    for c, cnt in enumerate(contours):
+    for c, _ in enumerate(contours):
         if hierarchy[0][c][2] == -1 and hierarchy[0][c][3] > -1:
             stack[c] = 0
         else:

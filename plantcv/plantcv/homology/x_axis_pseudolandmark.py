@@ -42,7 +42,7 @@ def x_axis_pseudolandmarks(img, mask, label=None):
     # Lets get some landmarks scanning along the x-axis
     if not np.any(obj):
         return ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA')
-    x, y, width, height = cv2.boundingRect(obj)
+    x, y, width, _ = cv2.boundingRect(obj)
     extent = width
 
     # Outputs
@@ -175,7 +175,7 @@ def x_axis_pseudolandmarks(img, mask, label=None):
 
     elif extent < 21:
         # If the width of the object is less than 20 pixels just make the object a 20 pixel rectangle
-        x, y, width, height = cv2.boundingRect(obj)
+        x, y, width, _ = cv2.boundingRect(obj)
         x_coords = list(range(x, x + 20))
         u_points = [y] * 20
         top = list(zip(x_coords, u_points))

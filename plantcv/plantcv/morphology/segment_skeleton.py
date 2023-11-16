@@ -53,7 +53,7 @@ def segment_skeleton(skel_img, mask=None):
         segmented_img = mask.copy()
 
     segmented_img = cv2.cvtColor(segmented_img, cv2.COLOR_GRAY2RGB)
-    for i, cnt in enumerate(segment_objects):
+    for i, _ in enumerate(segment_objects):
         cv2.drawContours(segmented_img, segment_objects, i, rand_color[i], params.line_thickness, lineType=8)
 
     _debug(visual=segmented_img, filename=os.path.join(params.debug_outdir, f"{params.device}_segmented.png"))

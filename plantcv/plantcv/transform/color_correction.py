@@ -235,8 +235,8 @@ def get_matrix_m(target_matrix, source_matrix):
     """
     # if the number of chips in source_img match the number of chips in target_matrix
     if np.shape(target_matrix) == np.shape(source_matrix):
-        t_cc, t_r, t_g, t_b = np.split(target_matrix, 4, 1)
-        s_cc, s_r, s_g, s_b = np.split(source_matrix, 4, 1)
+        _, t_r, t_g, t_b = np.split(target_matrix, 4, 1)
+        _, s_r, s_g, s_b = np.split(source_matrix, 4, 1)
     else:
         combined_matrix = np.zeros((np.ma.size(source_matrix, 0), 7))
         row_count = 0
@@ -251,7 +251,7 @@ def get_matrix_m(target_matrix, source_matrix):
                     combined_matrix[row_count][5] = source_matrix[i][2]
                     combined_matrix[row_count][6] = source_matrix[i][3]
                     row_count += 1
-        t_cc, t_r, t_g, t_b, s_r, s_g, s_b = np.split(combined_matrix, 7, 1)
+        _, t_r, t_g, t_b, s_r, s_g, s_b = np.split(combined_matrix, 7, 1)
     t_r2 = np.square(t_r)
     t_r3 = np.power(t_r, 3)
     t_g2 = np.square(t_g)
@@ -353,7 +353,7 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
         fatal_error("Source_img is not an RGB image.")
 
     # split transformation_matrix
-    red, green, blue, red2, green2, blue2, red3, green3, blue3 = np.split(transformation_matrix, 9, 1)
+    red, green, blue, _, _, _, _, _, _ = np.split(transformation_matrix, 9, 1)
 
     source_dtype = source_img.dtype
     # normalization value as max number if the type is unsigned int
@@ -471,17 +471,17 @@ def correct_color(target_img, target_mask, source_img, source_mask, output_direc
         os.mkdir(output_directory)
 
     # get color matrices for target and source images
-    target_headers, target_matrix = get_color_matrix(target_img, target_mask)
-    source_headers, source_matrix = get_color_matrix(source_img, source_mask)
+    _, target_matrix = get_color_matrix(target_img, target_mask)
+    _, source_matrix = get_color_matrix(source_img, source_mask)
 
     # save target and source matrices
     save_matrix(target_matrix, os.path.join(output_directory, "target_matrix.npz"))
     save_matrix(source_matrix, os.path.join(output_directory, "source_matrix.npz"))
 
     # get matrix_m
-    matrix_a, matrix_m, matrix_b = get_matrix_m(target_matrix=target_matrix, source_matrix=source_matrix)
+    _, matrix_m, matrix_b = get_matrix_m(target_matrix=target_matrix, source_matrix=source_matrix)
     # calculate transformation_matrix and save
-    deviance, transformation_matrix = calc_transformation_matrix(matrix_m, matrix_b)
+    _, transformation_matrix = calc_transformation_matrix(matrix_m, matrix_b)
     save_matrix(transformation_matrix, os.path.join(output_directory, "transformation_matrix.npz"))
 
     # apply transformation
@@ -590,13 +590,9 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
     sb = source_matrix[:num_chips, 3:4]
 
     # Create columns of color labels
-    red = []
-    blue = []
-    green = []
-    for i in range(num_chips):
-        red.append('red')
-        blue.append('blue')
-        green.append('green')
+    red = ["red"] * num_chips
+    blue = ["blue"] * num_chips
+    green = ["green"] * num_chips
 
     # Make a column of chip numbers
     chip = np.arange(0, num_chips).reshape((num_chips, 1))

@@ -192,14 +192,14 @@ class WorkflowConfig:
         # Validate start_date and end_date formats
         if self.start_date is not None:
             try:
-                timestamp = datetime.datetime.strptime(
+                _ = datetime.datetime.strptime(
                     self.start_date, self.timestampformat)
             except ValueError as e:
                 print(str(e) + '\n  --> Please specify the start_date according to the timestampformat  <--\n')
                 checks.append(False)
         if self.end_date is not None:
             try:
-                timestamp = datetime.datetime.strptime(
+                _ = datetime.datetime.strptime(
                     self.end_date, self.timestampformat)
             except ValueError as e:
                 print(str(
