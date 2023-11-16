@@ -200,7 +200,7 @@ class Outputs:
             metadata_key_list = []
             for key in self.metadata:
                 metadata_key_list.append(key)
-            metadata_val_list = list(self.metadata.values()) 
+            metadata_val_list = list(self.metadata.values())
             # Write the header
             header = ["sample", "trait", "value", "label"] + metadata_key_list
             csv_table.write(",".join(map(str, header)) + "\n")
