@@ -7,13 +7,13 @@ Correct ClickCount Object Mask
 **returns** recovered image, corrected ClickCount object
 
 - **Parameters:**
-    - bin_img - binary image, image with selected objects (e.g. output of detect_discs)
+    - bin_img - binary image, image with selected objects (e.g. mask output of [`pcv.annotate.detect_discs`](annotate_detect_discs.md))
     - bin_img_recover - binary image, image with all potential objects (binary image to recover objects from)  
     - counter - ClickCount class object with points interactively corrected by the user
-    - coor - list of coordinates of 'auto' detected points (coordinate output of detect_discs)
+    - coor - list of coordinates of 'auto' detected points (e.g. coordinate output of `pcv.annotate.detect_discs`)
 - **Context:**
-    - Correct the number of objects in a binary image with information from the ClickCount class object (both remove and recover objects). Also returns a corrected ClickCount object with coordinates at the center of each object (rather than click location)
-- **Example use: *  *
+    - Make corrections to the number of objects in a binary image with information from the ClickCount class object (both remove and recover objects). Also returns a corrected ClickCount object with coordinates at the center of each object (rather than click location).
+- **Example use:**
     - Use in pollen germination detection
 
 **Original RGB image**
