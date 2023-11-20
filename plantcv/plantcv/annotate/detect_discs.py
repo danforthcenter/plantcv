@@ -1,4 +1,4 @@
-"""Detect dics."""
+# Detect dics based on object eccentricity
 import os
 import numpy as np
 from skimage.measure import label, regionprops
