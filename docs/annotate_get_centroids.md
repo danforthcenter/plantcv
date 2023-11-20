@@ -5,7 +5,7 @@ in a binary image.
 
 **plantcv.annotate.get_centroids**(*bin_img*)
 
-**returns** coordinates of centroids
+**returns** list containing coordinates of centroids
 
 - **Parameters:**
     - bin_img - Binary image containing the connected regions to consider
