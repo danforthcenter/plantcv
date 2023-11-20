@@ -1,7 +1,9 @@
-"""Get centroids."""
+# Get centroids.
+
 import cv2
 import numpy as np
 from plantcv.plantcv import params
+from plantcv.plantcv._helpers import _cv2_findcontours
 
 
 def get_centroids(bin_img):
@@ -9,7 +11,6 @@ def get_centroids(bin_img):
 
     Inputs:
     bin_img       = Binary image containing the connected regions to consider
-
 
     Returns:
     coor  = List of coordinates (row,column) of the centroids of the regions
@@ -19,7 +20,7 @@ def get_centroids(bin_img):
     """
     params.device += 1
     # find contours in the binary image
-    contours = cv2.findContours(bin_img.astype(np.uint8), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[-2]
+    contours, _ = _cv2_findcontours(bin_img.astype(np.uint8))
     coor = []
     for c in contours:
         # calculate moments for each contour
