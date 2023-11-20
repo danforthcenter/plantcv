@@ -371,14 +371,17 @@ class Objects:
         raise StopIteration
 
     def append(self, contour, h):
+        """Method to append objects to existing list."""
         self.contours.append(contour)
         self.hierarchy.append(h)
 
     def save(self, filename):
+        """Method to save objects to a file."""
         np.savez(filename, contours=self.contours, hierarchy=self.hierarchy)
 
     @staticmethod
     def load(filename):
+        """Method to load objects from a file."""
         file = np.load(filename)
         obj = Objects(file['contours'].tolist(), file['hierarchy'])
         return obj
