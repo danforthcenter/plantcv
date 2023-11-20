@@ -30,8 +30,8 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 # Apply get centroids to the binary image
-coordinates = pcv.annotate.get_centroids(bin_img=binary_img)
-print(coordinates)
+coords = pcv.annotate.get_centroids(bin_img=binary_img)
+print(coords)
 # [[1902, 600], [1839, 1363], [1837, 383], [1669, 1977], [1631, 1889], [1590, 1372], [1550, 1525],
 # [1538, 1633], [1522, 1131], [1494, 2396], [1482, 1917], [1446, 1808], [1425, 726], [1418, 2392],
 # [1389, 198], [1358, 1712], [1288, 522], [1289, 406], [1279, 368], [1262, 1376], [1244, 1795],

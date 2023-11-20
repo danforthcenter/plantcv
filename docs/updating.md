@@ -335,7 +335,7 @@ pages for more details on the input and output variable types.
 #### plantcv.annotate.get_centroids
 
 * pre v4.1: NA
-* post v4.1: coordinates = **plantcv.annotate.get_centroids**(*bin_img*)
+* post v4.1: coords = **plantcv.annotate.get_centroids**(*bin_img*)
 
 #### plantcv.annotate.Points
 
