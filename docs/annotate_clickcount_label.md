@@ -2,14 +2,14 @@
 
 Label ClickCount Objects after they have been segmented 
 
-**plantcv.annotate.clickcount_label**(*gray_img*, *counter*, *imgname='default'*)
+**plantcv.annotate.clickcount_label**(*gray_img*, *counter*, *label='default'*)
 
 **returns** labeled object image, labeled class image, ordered list of names, number of objects
 
 - **Parameters:**
     - gray_img - gray image with objects uniquely labeled (output of watershed for example)
     - counter - ClickCount class object with points interactively corrected by the user
-    - imgname - option to put in imgname, defaults to 'default' if not included
+    - label - option to put in list of labels, defaults to 'default' if not included
 - **Context:**
     - Labels each object with a class id (e.g. germinated, and/or total) that matches classes from ClickCount, returns a list of names for input into analyze steps, and also renumbers objects to equal the total number of objects
 - **Example use:**
@@ -36,7 +36,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 # Apply binary 'white' mask over an image. 
-obj_label, class_label, class_list, num = pcv.annotate.clickcount_label(gray_img=pollen_watershed, counter=counter, imgname="pollen_heat")
+obj_label, class_label, class_list, num = pcv.annotate.clickcount_label(gray_img=pollen_watershed, counter=counter, label="pollen_heat")
 
 count = pcv.outputs.observations['pollen_heat']['total']
 

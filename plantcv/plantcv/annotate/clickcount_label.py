@@ -14,14 +14,15 @@ def _clickcount_labels(counter):
     return labels
 
 
-def clickcount_label(gray_img, counter, imgname='default'):
+def clickcount_label(gray_img, counter, label='default'):
     """
-    Labels ClickCount Output with Categories (imgname)
+    Saves out ClickCount labeled category count to Outputs 
     
     Inputs:
     gray_img = gray image with objects labeled (e.g.watershed output)
-    counter = ClickCount object
-    imagename = imagename or sample identification to add to output information
+    counter = ClickCount object instance 
+    label = label parameter, modifies the variable name of
+    observations recorded (defaults to label="default") 
 
     Outputs:
     corrected_label = labeled object image
@@ -31,7 +32,7 @@ def clickcount_label(gray_img, counter, imgname='default'):
 
     :param gray_img: ndarray
     :param counter = plantcv.plantcv.classes.ClickCount
-    :imagename = str
+    :label = str, list
     :return corrected_label = ndarray
     :return corrected_class = ndarray
     :return corrected_name = list
@@ -110,7 +111,7 @@ def clickcount_label(gray_img, counter, imgname='default'):
     for i, x in enumerate(count_class_dict.keys()):
         variable = x
         value = count_class_dict[x]
-        outputs.add_observation(sample=imgname, variable=variable,
+        outputs.add_observation(sample=label, variable=variable,
                                 trait='count of category',
                                 method='count', scale='count', datatype=int,
                                 value=value, label=variable)

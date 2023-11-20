@@ -325,7 +325,7 @@ pages for more details on the input and output variable types.
 #### plantcv.annotate.clickcount_label
 
 * pre v4.1: NA
-* post v4.1: labeled, label_name, num = **plantcv.annotate.clickcount_label**(*gray_img*, *counter*, *imgname='default'*)
+* post v4.1: labeled, label_name, num = **plantcv.annotate.clickcount_label**(*gray_img*, *counter*, *label='default'*)
 
 #### plantcv.annotate.detect_discs
 
