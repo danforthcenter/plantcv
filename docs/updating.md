@@ -330,7 +330,7 @@ pages for more details on the input and output variable types.
 #### plantcv.annotate.detect_discs
 
 * pre v4.1: NA
-* post v4.1: discs_mask, discs_coor = **plantcv.annotate.detect_discs**(*bin_img, ecc_thresh=0*)
+* post v4.1: discs_mask, coords = **plantcv.annotate.detect_discs**(*bin_img, ecc_thresh=0*)
 
 #### plantcv.annotate.get_centroids
 

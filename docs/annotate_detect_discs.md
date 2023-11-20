@@ -35,11 +35,11 @@ pcv.params.debug = "plot"
 
 # Apply detect discs to the binary image with an
 # eccentricity threshold of 0.9
-discs_mask_9, discs_coor_9 = pcv.annotate.detect_discs(bin_img=binary_img, ecc_thresh=0.9)
+discs_mask_9, coords_9 = pcv.annotate.detect_discs(bin_img=binary_img, ecc_thresh=0.9)
 
 # Apply detect discs to the binary image with an
 # eccentricity threshold of 0.5
-discs_mask_5, discs_coor_5 = pcv.annotate.detect_discs(bin_img=binary_img, ecc_thresh=0.5)
+discs_mask_5, coords_5 = pcv.annotate.detect_discs(bin_img=binary_img, ecc_thresh=0.5)
 
 ```
 

@@ -19,13 +19,13 @@ def detect_discs(bin_img, ecc_thresh=0):
 
     Returns:
     discs_mask  = Binary image that contains only the detected discs
-    discs_coor  = List of coordinates (as row,column) of the centroids of the
+    coords      = List of coordinates (as row,column) of the centroids of the
                   detected discs
 
     :param bin_img: numpy.ndarray
     :param ecc_thresh: float
     :return discs_mask: numpy.ndarray
-    :return discs_coor: list
+    :return coords: list
     """
     params.device += 1
     # label connected regions
@@ -37,14 +37,14 @@ def detect_discs(bin_img, ecc_thresh=0):
     # A value closer to 0 keeps only the most circular objects
     discs_mask = np.zeros(labeled_img.shape, dtype=np.uint8)
     # Store the list of coordinates (row,col) for the objects that pass the
-    discs_coor = []
+    disc_coords = []
     for obj in obj_measures:
         if obj.eccentricity < ecc_thresh:
             # Convert coord values to int
             coords = tuple(map(int, obj.centroid))
-            discs_coor.append(coords)
+            disc_coords.append(coords)
             discs_mask += np.where(labeled_img == obj.label, 255, 0).astype(np.uint8)
 
     _debug(visual=discs_mask, filename=os.path.join(params.debug_outdir, f"{params.device}_discs_mask_{ecc_thresh*10}.png"))
 
-    return discs_mask, discs_coor
+    return discs_mask, disc_coords
