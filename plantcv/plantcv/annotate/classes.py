@@ -140,7 +140,7 @@ class ClickCount:
         self.fig.canvas.mpl_connect('button_press_event', self.onclick)
 
         self.ax.imshow(cv2.cvtColor(self.img, cv2.COLOR_BGR2RGB))
-        self.ax.set_title("Please left click on missing pollens\n Right click on those you want to remove")
+        self.ax.set_title("Please left click on missing objects\n Right click on those you want to remove")
         self.p_not_current = 0
         # if view_all is True, show all already marked markers
         if view_all:
