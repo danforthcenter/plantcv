@@ -95,11 +95,23 @@ def _remove_points(autolist, confirmedlist):
 
 
 def clickcount_correct(bin_img, bin_img_recover, counter, coor):
-    """function correct ClickCount object by removing or recovering points"""
-    # bin_img - binary image, image with selected objects
-    # bin_img_recover - binary image, image with all potential objects
-    # counter - ClickCount object
-    # coor - coordinates of 'auto' detected points (coordinate output of detect_discs)
+    """
+    function correct ClickCount object by removing or recovering points
+    
+    Inputs:
+    bin_img = binary image, image with selected objects
+    bin_img_recover = binary image, image with all potential objects
+    counter = ClickCount object
+    coor = coordinates of 'auto' detected points (coordinate output of detect_discs)
+
+
+    :param bin_img: ndarray
+    :param bin_img_recover = ndarray
+    :param counter = plantcv.plantcv.classes.ClickCount
+    :param coor = list
+    :return completed_mask: ndarray
+    :return counter: plantcv.plantcv.classes.ClickCount
+    """
 
     debug = params.debug
     params.debug = None
