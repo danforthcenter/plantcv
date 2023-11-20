@@ -1,10 +1,21 @@
-"""ClickCount File Import"""
+# ClickCount File Import
+
 import json
 from plantcv.plantcv.annotate.classes import ClickCount
 
 
 def clickcount_file_import(img, coord_file):
-    """function to import ClickCount Coor file to ClickCount object"""
+    """
+    Function to import ClickCount coordinate file to ClickCount object
+    
+    Inputs:
+    img = img file to initialize ClickCount class
+    coor_file = file of coordinates and classes
+
+    :param bin_img: ndarray
+    :param bin_img_recover = ndarray
+    :return counter: plantcv.plantcv.classes.ClickCount
+    """
     # img - img file to initialize ClickCount class
     # coor_file - file of coordinates and classes
     coords = open(coord_file, "r")
