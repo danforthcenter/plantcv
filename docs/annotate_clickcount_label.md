@@ -1,6 +1,6 @@
 ## Label ClickCount Objects
 
-Label ClickCount Objects After They have Been Segmented 
+Label ClickCount Objects after they have been segmented 
 
 **plantcv.annotate.clickcount_label**(*gray_img*, *counter*, *imgname='default'*)
 
@@ -12,8 +12,8 @@ Label ClickCount Objects After They have Been Segmented
     - imgname - option to put in imgname, defaults to 'default' if not included
 - **Context:**
     - Labels each object with a class id (e.g. germinated, and/or total) that matches classes from ClickCount, returns a list of names for input into analyze steps, and also renumbers objects to equal the total number of objects
-- **Example use: *  *
-    - Use in pollen germination detection
+- **Example use:**
+    - Use in pollen germination detection example below
 - **Output data stored:** Data ('count') for each ClickCount category automatically gets stored to the [`Outputs` class](outputs.md) when this function is
 run. These data can be accessed during a workflow (example below). For more detail about data output see
 [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
