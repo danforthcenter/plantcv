@@ -1,45 +1,56 @@
 ## Import Coordinates to ClickCount Object 
 
-Import coordinates from file to ClickCount Object
+Import coordinates from file to a new instance of a [ClickCount Object](annotate_clickcount_file_import.md). 
 
 **plantcv.annotate.clickcount_file_import**(*img*, *file*)
 
-**returns** ClickCount Object
+**returns** ClickCount Object instance
 
 - **Parameters:**
     - img - img for ClickCount object class initialization
     - file - path to a coordinates file  
 - **Context:**
-    - Loads coordinates from file to ClickCount object class
-- **Example use: *  *
-    - Use in pollen germination detection
-
-**Original RGB image**
-
-![Screenshot](img/documentation_images/annotate_clickcount_correct/crop_pollen.png)
+    - Loads coordinates from file, probably created with the [`.save_coords`](annotate_click_count.md#methods) method to ClickCount object class
+- **Example use:**
+    - [Interactive tutorial](tutorials/interactive_ClickCount_tutorial.md)
+    - Abbreviated example below
 
 ```python
 
+# Import packages
 from plantcv import plantcv as pcv
+import os
 
+# Define workflow inputs
+args = WorkflowInputs(images=["rgb_image.jpg",
+                      names="image1",
+                      result="results.json",
+                      outdir=".",
+                      writeimg=True,
+                      debug="plot")
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = args.debug
+img, path, fname = pcv.readimage(filename=args.image1)
 
-pcv.params.debug = "plot"
+# Initialization
+counter = pcv.annotate.ClickCount(img)
 
-#step to save out ClickCount coordinates
+# Click on the plotted image to collect coordinates
+
+# Save out ClickCount coordinates
 counter.save_coords(os.path.join(args.outdir,str(args.result) + '.coords'))
 
-#step to import coordinates to ClickCount object
+# Import coordinates to ClickCount object
 file = os.path.join(args.outdir,str(args.result)+".coords") 
-counter=pcv.annotate.clickcount_file_import(img, file)
+counter = pcv.annotate.clickcount_file_import(img=img, file=file)
 
-# view "total" class
+# View "total" class
 counter.view(label="total", color="r", view_all=False)
 
 print(f"There are {counter.count['total']} selected objects")
 
-#view "germinated" class
+# View "germinated" class
 counter.view(label="germinated", color="b", view_all=False)
 
 print(f"There are {counter.count['germinated']} selected objects")
