@@ -15,10 +15,28 @@ def _clickcount_labels(counter):
 
 
 def clickcount_label(gray_img, counter, imgname='default'):
-    """Labels ClickCount Output with Categories"""
-    # gray_img - gray image with objects labeled (e.g.watershed output)
-    # counter - ClickCount object
-    # imagename - imagename or sample identification to add to output information
+    """
+    Labels ClickCount Output with Categories (imgname)
+    
+    Inputs:
+    gray_img = gray image with objects labeled (e.g.watershed output)
+    counter = ClickCount object
+    imagename = imagename or sample identification to add to output information
+
+    Outputs:
+    corrected_label = labeled object image
+    corrected_class = labeled class image
+    corrected_name = ordered list of names
+    num = number of objects 
+
+    :param gray_img: ndarray
+    :param counter = plantcv.plantcv.classes.ClickCount
+    :imagename = str
+    :return corrected_label = ndarray
+    :return corrected_class = ndarray
+    :return corrected_name = list
+    :return num: int
+    """
 
     debug = params.debug
     params.debug = None
@@ -37,7 +55,6 @@ def clickcount_label(gray_img, counter, imgname='default'):
     class_name = []
 
     # Only keep watersed results that overlap with a clickpoint and do not ==0
-
     for cl in list(dict_class_labels.keys()):
         for (y, x) in counter.points[cl]:
             x = int(x)
@@ -49,7 +66,6 @@ def clickcount_label(gray_img, counter, imgname='default'):
                 class_label[gray_img == seg_label] = seg_label
 
     # Get corrected name
-
     corrected_number = []
     corrected_name = []
 
