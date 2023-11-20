@@ -1,6 +1,6 @@
 ## Click and count objects 
 
-`ClickCount` is a class that allows user interactive to count objects in images.
+`ClickCount` is a class that allows users to interactively count objects and other annotation tasks.
 
 *class* **plantcv.annotate.ClickCount**(*img*, *figsize*=(12, 6))
 
@@ -61,7 +61,6 @@ Save the collected coordinates to a JSON file.
 
 Handles mouse click events.
 
-
 - **Example use:**
     - Below
 - **Note**: used in Jupyter notebook.
@@ -87,8 +86,10 @@ pcv.params.debug = "plot"
 
 # initialization
 counter = pcv.annotate.ClickCount(img)
+# define coordinate list 
+coords = [(158, 531), (265, 427), (361, 112), (500, 418)] 
 # import coordinates (if available)
-counter.import_coords(coords, label="total")
+counter.import_coords(coords=coords, label="total")
 # view "total" class
 counter.view(label="total", color="c", view_all=True)
 # view "c1" class
