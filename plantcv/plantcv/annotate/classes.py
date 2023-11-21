@@ -6,10 +6,9 @@ import numpy as np
 from math import floor
 import matplotlib.pyplot as plt
 from scipy.spatial import distance
-from plantcv.plantcv import warn, params
+from plantcv.plantcv import warn, params, outputs
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv.visualize import colorize_label_img 
-
 
 
 # Class helpers
@@ -337,7 +336,7 @@ class ClickCount:
 
         return completed_mask, self
 
-    def label(self, gray_img, label='default'):
+    def create_labels(self, gray_img, label='default'):
         """
         Saves out ClickCount labeled category count to Outputs 
         
