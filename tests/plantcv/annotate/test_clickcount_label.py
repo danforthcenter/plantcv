@@ -1,6 +1,5 @@
 import cv2
 from plantcv.plantcv.annotate import ClickCount
-from plantcv.plantcv.annotate import clickcount_label
 
 
 def test_clickcount_label(annotate_test_data):
@@ -20,7 +19,7 @@ def test_clickcount_label(annotate_test_data):
 
     imagesname = "test"
 
-    _, _, _, num = clickcount_label(watershed, counter, imagesname)
+    _, _, _, num = counter.label(watershed, imagesname)
 
     assert num == 14
 
