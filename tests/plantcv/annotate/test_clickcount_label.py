@@ -19,7 +19,7 @@ def test_clickcount_label(annotate_test_data):
 
     imagesname = "test"
 
-    _, _, _, num = counter.label(watershed, imagesname)
+    _, _, _, num = counter.label(watershed, imagesname, "default")
 
     assert num == 14
 
