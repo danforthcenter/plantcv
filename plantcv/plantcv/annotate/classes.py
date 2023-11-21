@@ -5,7 +5,7 @@ import numpy as np
 from math import floor
 import matplotlib.pyplot as plt
 from scipy.spatial import distance
-from plantcv.plantcv import warn, floodfill, _debug
+from plantcv.plantcv import warn, floodfill, _debug, params, visualize.colorize_label_img 
 
 
 
@@ -93,13 +93,11 @@ def _recover_circ(bin_img, c):
 
     return masked_circ, c
 
-
 def _clickcount_labels(self):
     """Function to get label names"""
     labels = list(self.count)
 
     return labels
-
 
 def _remove_points(autolist, confirmedlist):
     """Function to remove points if interactively removed by user"""
@@ -279,60 +277,161 @@ class ClickCount:
         self.fig.canvas.draw()
 
     def correct(self, bin_img, bin_img_recover, coords):
-    """
-    Method to correct ClickCount object instance by removing or recovering points
-    
-    Inputs:
-    bin_img = binary image, image with selected objects
-    bin_img_recover = binary image, image with all potential objects
-    coords = coordinates of 'auto' detected points (coordinate output of detect_discs)
+        """
+        Method to correct ClickCount object instance by removing or recovering points
+        
+        Inputs:
+        bin_img = binary image, image with selected objects
+        bin_img_recover = binary image, image with all potential objects
+        coords = coordinates of 'auto' detected points (coordinate output of detect_discs)
 
-    :param bin_img: ndarray
-    :param bin_img_recover = ndarray
-    :param coords = list
-    :return completed_mask: ndarray
-    :return self: plantcv.plantcv.classes.ClickCount
-    """
+        :param bin_img: ndarray
+        :param bin_img_recover = ndarray
+        :param coords = list
+        :return completed_mask: ndarray
+        :return self: plantcv.plantcv.classes.ClickCount
+        """
 
-    debug = params.debug
-    params.debug = None
+        debug = params.debug
+        params.debug = None
 
-    labelnames = _clickcount_labels(self)
+        labelnames = _clickcount_labels(self)
 
-    completed_mask = np.copy(bin_img)
+        completed_mask = np.copy(bin_img)
 
-    totalcoor = []
+        totalcoor = []
 
-    for names in labelnames:
-        for i, (x, y) in enumerate(self.points[names]):
-            x = int(x)
-            y = int(y)
-            totalcoor.append((y, x))
+        for names in labelnames:
+            for i, (x, y) in enumerate(self.points[names]):
+                x = int(x)
+                y = int(y)
+                totalcoor.append((y, x))
 
-    removecoor = _remove_points(coords, totalcoor)
-    removecoor = list(map(lambda sub: (sub[1], sub[0]), removecoor))
-    completed_mask = floodfill(completed_mask, removecoor, 0)
+        removecoor = _remove_points(coords, totalcoor)
+        removecoor = list(map(lambda sub: (sub[1], sub[0]), removecoor))
+        completed_mask = floodfill(completed_mask, removecoor, 0)
 
-    # points in class used for recovering and labeling
-    for names in labelnames:
-        for i, (x, y) in enumerate(self.points[names]):
-            x = int(x)
-            y = int(y)
-            # corrected coordinates
-            self.points[names][i] = (x, y)
-            # if the coordinates point to 0 in the binary image, recover the grain and coordinates of center
-            if completed_mask[y, x] == 1 or completed_mask[y, x] == 0:
-                print(f"Recovering grain at coordinates: x = {x}, y = {y}")
-                masked_circ, [a, b] = _recover_circ(bin_img_recover, [y, x])
-                completed_mask = completed_mask + masked_circ
-                self.points[names][i] = (b, a)
+        # points in class used for recovering and labeling
+        for names in labelnames:
+            for i, (x, y) in enumerate(self.points[names]):
+                x = int(x)
+                y = int(y)
+                # corrected coordinates
+                self.points[names][i] = (x, y)
+                # if the coordinates point to 0 in the binary image, recover the grain and coordinates of center
+                if completed_mask[y, x] == 1 or completed_mask[y, x] == 0:
+                    print(f"Recovering grain at coordinates: x = {x}, y = {y}")
+                    masked_circ, [a, b] = _recover_circ(bin_img_recover, [y, x])
+                    completed_mask = completed_mask + masked_circ
+                    self.points[names][i] = (b, a)
 
-    completed_mask1 = 1*((completed_mask + 1*(completed_mask == 255)) != 0).astype(np.uint8)
+        completed_mask1 = 1*((completed_mask + 1*(completed_mask == 255)) != 0).astype(np.uint8)
 
-    params.debug = debug
+        params.debug = debug
 
-    _debug(visual=completed_mask1, filename=os.path.join(params.debug_outdir, f"{params.device}_clickcount-corrected.png"))
+        _debug(visual=completed_mask1, filename=os.path.join(params.debug_outdir, f"{params.device}_clickcount-corrected.png"))
 
-    return completed_mask, self
+        return completed_mask, self
 
+    def label(self, gray_img, label='default'):
+        """
+        Saves out ClickCount labeled category count to Outputs 
+        
+        Inputs:
+        gray_img = gray image with objects labeled (e.g.watershed output)
+        label = label parameter, modifies the variable name of
+        observations recorded (defaults to label="default") 
+
+        Outputs:
+        corrected_label = labeled object image
+        corrected_class = labeled class image
+        corrected_name = ordered list of names
+        num = number of objects 
+
+        :param gray_img: ndarray
+        :label = str, list
+        :return corrected_label = ndarray
+        :return corrected_class = ndarray
+        :return corrected_name = list
+        :return num: int
+        """
+
+        debug = params.debug
+        params.debug = None
+
+        labelnames = _clickcount_labels(self)
+
+        dict_class_labels = {}
+
+        for i, x in enumerate(labelnames):
+            dict_class_labels[x] = i+1
+
+        shape = np.shape(gray_img)
+        class_label = np.zeros((shape[0], shape[1]), dtype=np.uint8)
+
+        class_number = []
+        class_name = []
+
+        # Only keep watersed results that overlap with a clickpoint and do not ==0
+        for cl in list(dict_class_labels.keys()):
+            for (y, x) in self.points[cl]:
+                x = int(x)
+                y = int(y)
+                seg_label = gray_img[x, y]
+                if seg_label != 0:
+                    class_number.append(seg_label)
+                    class_name.append(cl)
+                    class_label[gray_img == seg_label] = seg_label
+
+        # Get corrected name
+        corrected_number = []
+        corrected_name = []
+
+        for i, x in enumerate(class_number):
+            if x in corrected_number:
+                ind = (corrected_number.index(x))
+                y = corrected_name[ind]+"_"+str(class_name[i])
+                corrected_name[ind] = y
+            else:
+                corrected_number.append(x)
+                y = str(class_name[i])
+                corrected_name.append(y)
+
+        classes = np.unique(corrected_name)
+        class_dict = {}
+        count_class_dict = {}
+
+        for i, x in enumerate(classes):
+            class_dict[x] = i+1
+            count_class_dict[x] = corrected_name.count(x)
+
+        corrected_label = np.zeros((shape[0], shape[1]))
+        corrected_class = np.zeros((shape[0], shape[1]))
+
+        for i, value in enumerate(corrected_number):
+            if value != 0:
+                corrected_label[gray_img == value] = i+1
+                corrected_class[gray_img == value] = class_dict[corrected_name[i]]
+                corrected_name[i] = str(i+1)+"_"+corrected_name[i]
+
+        num = len(corrected_name)
+
+        vis_labeled = colorize_label_img(corrected_label)
+        vis_class = colorize_label_img(corrected_class)
+
+        params.debug = debug
+        _debug(visual=vis_labeled,
+            filename=os.path.join(params.debug_outdir, str(params.device) + '_corrected__labels_img.png'))
+        _debug(visual=vis_class,
+            filename=os.path.join(params.debug_outdir, str(params.device) + '_corrected_class.png'))
+
+        for i, x in enumerate(count_class_dict.keys()):
+            variable = x
+            value = count_class_dict[x]
+            outputs.add_observation(sample=label, variable=variable,
+                                    trait='count of category',
+                                    method='count', scale='count', datatype=int,
+                                    value=value, label=variable)
+
+        return corrected_label, corrected_class, corrected_name, num
 
