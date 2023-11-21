@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 from plantcv.plantcv.annotate import ClickCount
-from plantcv.plantcv.annotate import clickcount_correct
 
 
 def test_plantcv_click_count_correct(annotate_test_data):
