@@ -1,11 +1,12 @@
 """Annotation classes."""
 import cv2
+import os
 import json
 import numpy as np
 from math import floor
 import matplotlib.pyplot as plt
 from scipy.spatial import distance
-from plantcv.plantcv import warn, floodfill, _debug, params
+from plantcv.plantcv import warn, _debug, params
 from plantcv.plantcv.visualize import colorize_label_img 
 
 
@@ -292,6 +293,7 @@ class ClickCount:
         :return completed_mask: ndarray
         :return self: plantcv.plantcv.classes.ClickCount
         """
+        from plantcv.plantcv import floodfill
 
         debug = params.debug
         params.debug = None
