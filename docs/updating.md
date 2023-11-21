@@ -218,6 +218,7 @@ pages for more details on the input and output variable types.
 * post v3.11: analysis_image = **plantcv.analyze_bound_vertical**(*img, obj, mask, line_position, label="default"*)
 * post v4.0: DEPRECATED see plantcv.analyze.bound_vertical
 
+
 #### plantcv.analyze_color
 
 * pre v3.0dev2: device, hist_header, hist_data, analysis_images = **plantcv.analyze_color**(*img, imgname, mask, bins, device, debug=None, hist_plot_type=None, pseudo_channel='v', pseudo_bkg='img', resolution=300, filename=False*)
@@ -260,7 +261,6 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: (see plantcv.analyze_bound_horizontal)
 * post v4.0: analysis_image = **plantcv.analyze.bound_horizontal**(*img, labeled_mask, line_position, n_labels=1, label=None*)
-
 
 #### plantcv.analyze.bound_vertical
 
@@ -317,15 +317,41 @@ pages for more details on the input and output variable types.
 * pre v4.1: NA
 * post v4.1: counter = **plantcv.annotate.ClickCount**(*img, figsize=(6,12)*)
 
-#### plantcv.annotate.clickcount_correct
+#### plantcv.annotate.clickcount.correct
 
 * pre v4.1: NA
-* post v4.1: corrected, counter = **plantcv.annotate.clickcount_correct**(*bin_img*, *bin_img_recover*, *counter*, *coords*)
+* post v4.1: corrected = **plantcv.annotate.clickcount.correct**(*bin_img*, *bin_img_recover*, *coords*)
 
-#### plantcv.annotate.clickcount_label
+
+#### plantcv.annotate.clickcount.create_labels
 
 * pre v4.1: NA
-* post v4.1: labeled, label_name, num = **plantcv.annotate.clickcount_label**(*gray_img*, *counter*, *label='default'*)
+* post v4.1: corrected_label, corrected_class, corrected_name, num = **plantcv.annotate.clickcount.create_labels**(*gray_img, label='default'*)
+
+
+#### plantcv.annotate.clickcount.file_import
+
+* pre v4.1: NA
+* post v4.1: **plantcv.annotate.clickcount.file_import**(*filename*)
+
+
+#### plantcv.annotate.clickcount.import_coords
+
+* pre v4.1: NA
+* post v4.1: **plantcv.annotate.clickcount.import_coords**(*coords, label="total"*)
+
+
+#### plantcv.annotate.clickcount.save_coords
+
+* pre v4.1: NA
+* post v4.1: **plantcv.annotate.clickcount.save_coords**(*filename*)
+
+
+#### plantcv.annotate.clickcount.view
+
+* pre v4.1: NA
+* post v4.1: **plantcv.annotate.clickcount.view**(*label="total", color="c", view_all=False*)
+
 
 #### plantcv.annotate.detect_discs
 
