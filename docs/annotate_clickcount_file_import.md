@@ -1,14 +1,14 @@
 ## Import Coordinates to ClickCount Object 
 
-Import coordinates from file to a new instance of a [ClickCount Object](annotate_clickcount_file_import.md). 
+Import coordinates from file to a new object instance of a [ClickCount class](annotate_click_count.md). 
 
-**plantcv.annotate.clickcount_file_import**(*img*, *file*)
+**plantcv.annotate.clickcount_file_import**(*img*, *filename*)
 
 **returns** ClickCount Object instance
 
 - **Parameters:**
     - img - img for ClickCount object class initialization
-    - file - path to a coordinates file  
+    - filename - path to a coordinates file  
 - **Context:**
     - Loads coordinates from file, probably created with the [`.save_coords`](annotate_click_count.md#methods) method to ClickCount object class
 - **Example use:**
@@ -43,7 +43,7 @@ counter.save_coords(os.path.join(args.outdir,str(args.result) + '.coords'))
 
 # Import coordinates to ClickCount object
 file = os.path.join(args.outdir,str(args.result)+".coords") 
-counter = pcv.annotate.clickcount_file_import(img=img, file=file)
+counter = pcv.annotate.clickcount_file_import(img=img, filename=file)
 
 # View "total" class
 counter.view(label="total", color="r", view_all=False)
