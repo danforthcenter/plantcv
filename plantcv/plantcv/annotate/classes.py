@@ -5,7 +5,7 @@ import numpy as np
 from math import floor
 import matplotlib.pyplot as plt
 from scipy.spatial import distance
-from plantcv.plantcv import warn, floodfill, _debug, params, 
+from plantcv.plantcv import warn, floodfill, _debug, params
 from plantcv.plantcv.visualize import colorize_label_img 
 
 
