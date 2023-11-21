@@ -185,6 +185,28 @@ class ClickCount:
         else:
             warn(f"{label} already included and counted, nothing is imported!")
 
+    def file_import(self, filename):
+        """
+        Method to import ClickCount coordinate file to ClickCount object
+        
+        Inputs:
+        filename = filename of stored coordinates and classes
+
+        :param filename: ndarray
+        :return: 
+        """
+        # img - img file to initialize ClickCount class
+        # coor_file - file of coordinates and classes
+        coords = open(filename, "r")
+        coords = json.load(coords)
+
+        keys = list(coords.keys())
+
+        for key in keys:
+            keycoor = coords[key]
+            keycoor = list(map(lambda sub: (sub[1], sub[0]), keycoor))
+            self.import_coords(keycoor, label=key)
+
     def save_coords(self, coord_file):
         """Save collected coordinates to a file.
         Input variables:
