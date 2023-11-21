@@ -320,7 +320,7 @@ pages for more details on the input and output variable types.
 #### plantcv.annotate.clickcount_correct
 
 * pre v4.1: NA
-* post v4.1: corrected, counter = **plantcv.annotate.clickcount_correct**(*bin_img*, *bin_img_recover*, *counter*, *coor*)
+* post v4.1: corrected, counter = **plantcv.annotate.clickcount_correct**(*bin_img*, *bin_img_recover*, *counter*, *coords*)
 
 #### plantcv.annotate.clickcount_label
 

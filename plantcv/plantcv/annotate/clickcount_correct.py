@@ -1,4 +1,5 @@
-"""Correct ClickCount."""
+# Correct ClickCount 
+
 import os
 import numpy as np
 from plantcv.plantcv.floodfill import floodfill
@@ -94,7 +95,7 @@ def _remove_points(autolist, confirmedlist):
     return removecoor
 
 
-def clickcount_correct(bin_img, bin_img_recover, counter, coor):
+def clickcount_correct(bin_img, bin_img_recover, counter, coords):
     """
     function correct ClickCount object by removing or recovering points
     
@@ -102,13 +103,13 @@ def clickcount_correct(bin_img, bin_img_recover, counter, coor):
     bin_img = binary image, image with selected objects
     bin_img_recover = binary image, image with all potential objects
     counter = ClickCount object
-    coor = coordinates of 'auto' detected points (coordinate output of detect_discs)
+    coords = coordinates of 'auto' detected points (coordinate output of detect_discs)
 
 
     :param bin_img: ndarray
     :param bin_img_recover = ndarray
     :param counter = plantcv.plantcv.classes.ClickCount
-    :param coor = list
+    :param coords = list
     :return completed_mask: ndarray
     :return counter: plantcv.plantcv.classes.ClickCount
     """
@@ -128,7 +129,7 @@ def clickcount_correct(bin_img, bin_img_recover, counter, coor):
             y = int(y)
             totalcoor.append((y, x))
 
-    removecoor = _remove_points(coor, totalcoor)
+    removecoor = _remove_points(coords, totalcoor)
     removecoor = list(map(lambda sub: (sub[1], sub[0]), removecoor))
     completed_mask = floodfill(completed_mask, removecoor, 0)
 
