@@ -91,7 +91,7 @@ Label ClickCount Objects after they have been segmented
 **returns** labeled object image, labeled class image, ordered list of names, number of objects
 
 - **Parameters:**
-    - gray_img - gray image with objects uniquely labeled (e.g. output of [pcv.watershed](watershed.md))
+    - gray_img - gray image with objects uniquely labeled (e.g. output of [pcv.watershed_segmentation](watershed.md))
     - label - option to put in list of labels, defaults to 'default' if not included
 - **Context:**
     - Labels each object with a class id (e.g. germinated, and/or total) that matches classes from ClickCount, returns a list of names for input into analyze steps, and also renumbers objects to equal the total number of objects
