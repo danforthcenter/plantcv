@@ -61,8 +61,22 @@ Save the collected coordinates to a JSON file.
 
 Handles mouse click events.
 
+**correct**(*bin_img*, *bin_img_recover*, *coords*)
+
+Make corrections to annotations 
+
+**returns** recovered image
+
+- **Parameters:**
+    - bin_img - binary image, image with selected objects (e.g. mask output of [`pcv.annotate.detect_discs`](annotate_detect_discs.md))
+    - bin_img_recover - binary image, image with all potential objects (binary image to recover objects from)  
+    - coords - list of coordinates of 'auto' detected points (e.g. coordinate output of `pcv.annotate.detect_discs`)
+- **Context:**
+    - Make corrections to the number of objects in a binary image with information from the ClickCount class object instance (both remove and recover objects). Also corrects the ClickCount object instance with coordinates at the center of each object (rather than click location).
+
 - **Example use:**
     - Below
+    
 - **Note**: used in Jupyter notebook.
 
 **Input image**
