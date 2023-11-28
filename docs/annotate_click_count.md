@@ -83,6 +83,22 @@ Import coordinates from file to a ClickCount object instance
 - **Context:**
     - Loads coordinates from a file (probably created with the `.save_coords` method) to ClickCount object instance
 
+
+**create_labels**(*gray_img*, *label='default'*)
+
+Label ClickCount Objects after they have been segmented 
+
+**returns** labeled object image, labeled class image, ordered list of names, number of objects
+
+- **Parameters:**
+    - gray_img - gray image with objects uniquely labeled (e.g. output of [pcv.watershed](watershed.md))
+    - label - option to put in list of labels, defaults to 'default' if not included
+- **Context:**
+    - Labels each object with a class id (e.g. germinated, and/or total) that matches classes from ClickCount, returns a list of names for input into analyze steps, and also renumbers objects to equal the total number of objects
+- **Output data stored:** Data ('count') for each ClickCount category automatically gets stored to the [`Outputs` class](outputs.md) when this function is
+run. These data can be accessed during a workflow (example below). For more detail about data output see
+[Summary of Output Observations](output_measurements.md#summary-of-output-observations)
+
 - **Example use:**
     - Below
 
