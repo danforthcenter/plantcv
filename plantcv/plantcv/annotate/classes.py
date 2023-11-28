@@ -207,14 +207,14 @@ class ClickCount:
             keycoor = list(map(lambda sub: (sub[1], sub[0]), keycoor))
             self.import_coords(keycoor, label=key)
 
-    def save_coords(self, coord_file):
+    def save_coords(self, filename):
         """Save collected coordinates to a file.
         Input variables:
-        coord_file = Name of the file to save collected coordinate
-        :param coord_file: str
+        filename = Name of the file to save collected coordinate
+        :param filename: str
         """
         # Open the file for writing
-        with open(coord_file, "w") as fp:
+        with open(filename, "w") as fp:
             # Save the data in JSON format with indentation
             json.dump(obj=self.points, fp=fp, indent=4)
 
