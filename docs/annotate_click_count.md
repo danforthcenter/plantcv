@@ -50,12 +50,12 @@ View marked image, and update markers if needed.
     - color - desired color to show the class. By default `color="c"`.
     - view_all - a flag indicating whether to show markers for all classes or not. 
   
-**save_coords(*coord_file*)**
+**save_coords(*filename*)**
 
 Save the collected coordinates to a JSON file.
 
 - Parameters:
-    - coord_file - (json) file name to save the coordinates of collected points. 
+    - filename - (json) file name to save the coordinates of collected points. 
 
 **onclick(*event*)**
 
