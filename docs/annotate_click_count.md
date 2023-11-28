@@ -74,9 +74,18 @@ Make corrections to annotations
 - **Context:**
     - Make corrections to the number of objects in a binary image with information from the ClickCount class object instance (both remove and recover objects). Also corrects the ClickCount object instance with coordinates at the center of each object (rather than click location).
 
+**file_import**(*filename*)
+
+Import coordinates from file to a ClickCount object instance
+
+- **Parameters:**
+    - filename - path to a coordinates file  
+- **Context:**
+    - Loads coordinates from a file (probably created with the `.save_coords` method) to ClickCount object instance
+
 - **Example use:**
     - Below
-    
+
 - **Note**: used in Jupyter notebook.
 
 **Input image**
