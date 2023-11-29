@@ -117,24 +117,57 @@ run. These data can be accessed during a workflow (example below). For more deta
 # include the line of code below to allow interactive activities
 %matplotlib widget
 
+# Import packages
 from plantcv import plantcv as pcv
+import os
 
-# Set global debug behavior to None (default), "print" (to file),
-# or "plot"
-pcv.params.debug = "plot"
+# Define workflow inputs
+args = WorkflowInputs(images=["rgb_pollen_image.jpg",
+                      names="image1",
+                      result="imgID_results.json",
+                      outdir=".",
+                      writeimg=True,
+                      debug="plot")
+# Set global debug behavior to "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = args.debug
 
-# initialization
+# Read image
+img, path, fname = pcv.readimage(filename=args.image1)
+
+# Discard objects that are not circular
+discs, coor = pcv.annotate.detect_discs(img_l_post, ecc_thresh=0.5)
+
+# ClickCount Initialization
 counter = pcv.annotate.ClickCount(img)
-# define coordinate list 
-coords = [(158, 531), (265, 427), (361, 112), (500, 418)] 
-# import coordinates (if available)
-counter.import_coords(coords=coords, label="total")
-# view "total" class
-counter.view(label="total", color="c", view_all=True)
-# view "c1" class
-counter.view(label="c1", color="r", view_all=True)
+
+# Click on the plotted image to annotate ***** 
+counter.view(label="total", color="r", view_all=False)
+
+# Save out ClickCount coordinates file
+counter.save_coords(os.path.join(args.outdir, str(args.result) + '.coords'))
+
+# # Optionally, import coordinates to ClickCount object 
+# # (pick up where you left off)
+# file = os.path.join(args.outdir, str(args.result) + ".coords") 
+# counter.file_import(img=img, filename=file)
+# # View "total" class
+# counter.view(label="total", color="r", view_all=False)
+
+print(f"There are {counter.count['total']} selected objects")
+
+# Launch interactive tool to select objects with a different class
+counter.view(label="germinated", color="b", view_all=False)
+
+print(f"There are {counter.count['germinated']} selected objects")
+
+# Associate a unique label to each grain for segmentation, 
+# recover the missing grains, and create a complete mask
+
+completed_mask, counter = counter.correct(bin_img=discs, bin_img_recover=img_l_post, coords=coor)
+
 
 ```
+
 
 **View markers for `total` class**
 
