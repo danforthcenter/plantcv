@@ -89,7 +89,7 @@ Label ClickCount Objects after they have been segmented
     - gray_img - gray image with objects uniquely labeled (e.g. output of [pcv.watershed_segmentation](watershed.md))
     - label - option to put in list of labels, defaults to 'default' if not included
 - **Context:**
-    - Labels each object with a class id (e.g. germinated, and/or total) that matches classes from ClickCount, returns a list of names for input into analyze steps, and also renumbers objects to equal the total number of objects
+    - Labels each object with a class ID (e.g. germinated, and/or total) that matches classes from ClickCount, returns a list of names for input into analyze steps, renumbers objects to equal the total number of objects, and stores coordinates to `Outputs`. 
 - **Output data stored:** Data ('count') for each ClickCount category automatically gets stored to the [`Outputs` class](outputs.md) when this function is
 run. These data can be accessed during a workflow (example below). For more detail about data output see
 [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
@@ -129,24 +129,28 @@ pcv.params.debug = args.debug
 # Read image
 img, path, fname = pcv.readimage(filename=args.image1)
 
+# Segmentation, this might include many clean up functions 
+gray = pcv.rgb2gray_lab(img, channel='l')
+mask = pcv.threshold.mean(gray_img=gray, ksize=201, offset=20, object_type='dark')
+
 # Discard objects that are not circular
-discs, coor = pcv.annotate.detect_discs(img_l_post, ecc_thresh=0.5)
+discs, coords = pcv.annotate.detect_discs(img_l_post, ecc_thresh=0.5)
 
 # ClickCount Initialization
 counter = pcv.annotate.ClickCount(img)
 
-# Click on the plotted image to annotate ***** 
+# Click on the plotted image to annotate  
 counter.view(label="total", color="r", view_all=False)
 
 # Save out ClickCount coordinates file
 counter.save_coords(os.path.join(args.outdir, str(args.result) + '.coords'))
 
-# # Optionally, import coordinates to ClickCount object 
-# # (pick up where you left off)
-# file = os.path.join(args.outdir, str(args.result) + ".coords") 
-# counter.file_import(img=img, filename=file)
-# # View "total" class
-# counter.view(label="total", color="r", view_all=False)
+# OPTIONALLY, import coordinates to ClickCount object 
+# (e.g. pick up where you left off)
+file = os.path.join(args.outdir, str(args.result) + ".coords") 
+counter.file_import(img=img, filename=file)
+# View "total" class
+counter.view(label="total", color="r", view_all=False)
 
 print(f"There are {counter.count['total']} selected objects")
 
@@ -159,9 +163,19 @@ print(f"There are {counter.count['germinated']} selected objects")
 # recover the missing grains, and create a complete mask
 completed_mask = counter.correct(bin_img=discs, bin_img_recover=img_l_post, coords=coor)
 
+# Watershed egmentation to separate touching grains
+seg = pcv.watershed_segmentation(rgb_img=img, mask=completed_mask, distance=1)
 
+# Assign a single label to each grain & store to outputs 
+class_label, class_count_dict, class_list, num = counter.create_labels(gray_img=seg, label="total")
+
+# Optional, run additional trait analysis 
+shape_img = pcv.analyze.size(img=img, labeled_mask=class_label, n_labels=num, label=class_list)
+
+# Save the results with "long" format. If using analyze.color this might get too long.
+pcv.outputs.save_results(filename=os.path.join(args.outdir, args.result + ".csv"), outformat="csv")
+pcv.outputs.clear()
 ```
-
 
 **View markers for `total` class**
 
