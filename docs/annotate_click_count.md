@@ -33,6 +33,15 @@
 **p_not_current**: a list of matplotlib patches that are not current label.
 
 ### Methods
+**view(*label*="total", *color*="c", *view_all*=False)**
+
+View marked image, and update markers/annotations if needed.
+
+- Parameters:
+    - label - class label to show on the marked image. By default `label="total`.
+    - color - desired color to show the class. By default `color="c"`.
+    - view_all - a flag indicating whether to show markers for all classes or not. 
+
 **import_coords(*coords*, *label*="total")**
 
 Import coordinates from a list of coordinates.
@@ -41,25 +50,21 @@ Import coordinates from a list of coordinates.
     - coords - a list of available coordintes.
     - label - class label for imported coordinates. By default `label="total`.
 
-**view(*label*="total", *color*="c", *view_all*=False)**
+**file_import**(*filename*)
 
-View marked image, and update markers if needed.
+Import coordinates from file to a ClickCount object instance
 
-- Parameters:
-    - label - class label to show on the marked image. By default `label="total`.
-    - color - desired color to show the class. By default `color="c"`.
-    - view_all - a flag indicating whether to show markers for all classes or not. 
-  
+- **Parameters:**
+    - filename - path to a coordinates file  
+- **Context:**
+    - Loads coordinates from a file (probably created with the `.save_coords` method) to ClickCount object instance
+
 **save_coords(*filename*)**
 
 Save the collected coordinates to a JSON file.
 
 - Parameters:
     - filename - (json) file name to save the coordinates of collected points. 
-
-**onclick(*event*)**
-
-Handles mouse click events.
 
 **correct**(*bin_img*, *bin_img_recover*, *coords*)
 
@@ -73,16 +78,6 @@ Make corrections to annotations
     - coords - list of coordinates of 'auto' detected points (e.g. coordinate output of `pcv.annotate.detect_discs`)
 - **Context:**
     - Make corrections to the number of objects in a binary image with information from the ClickCount class object instance (both remove and recover objects). Also corrects the ClickCount object instance with coordinates at the center of each object (rather than click location).
-
-**file_import**(*filename*)
-
-Import coordinates from file to a ClickCount object instance
-
-- **Parameters:**
-    - filename - path to a coordinates file  
-- **Context:**
-    - Loads coordinates from a file (probably created with the `.save_coords` method) to ClickCount object instance
-
 
 **create_labels**(*gray_img*, *label='default'*)
 
@@ -162,8 +157,7 @@ print(f"There are {counter.count['germinated']} selected objects")
 
 # Associate a unique label to each grain for segmentation, 
 # recover the missing grains, and create a complete mask
-
-completed_mask, counter = counter.correct(bin_img=discs, bin_img_recover=img_l_post, coords=coor)
+completed_mask = counter.correct(bin_img=discs, bin_img_recover=img_l_post, coords=coor)
 
 
 ```
