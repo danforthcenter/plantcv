@@ -21,7 +21,7 @@ def test_plantcv_click_count_correct(annotate_test_data):
     counter.import_coords(totalpoints1, label="total")
     counter.import_coords(germinated1, label="germinated")
 
-    corrected_mask, _ = counter.correct(discs, allmask, coor)
+    corrected_mask = counter.correct(discs, allmask, coor)
 
     assert np.count_nonzero(discs)< np.count_nonzero(corrected_mask) 
     assert np.count_nonzero(corrected_mask) < np.count_nonzero(allmask)
