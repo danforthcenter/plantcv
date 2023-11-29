@@ -291,7 +291,6 @@ class ClickCount:
         :param bin_img_recover = ndarray
         :param coords = list
         :return completed_mask: ndarray
-        :return self: plantcv.plantcv.classes.ClickCount
         """
         from plantcv.plantcv import floodfill
 
@@ -334,7 +333,7 @@ class ClickCount:
 
         _debug(visual=completed_mask1, filename=os.path.join(params.debug_outdir, f"{params.device}_clickcount-corrected.png"))
 
-        return completed_mask, self
+        return completed_mask
 
     def create_labels(self, gray_img, label='default'):
         """
