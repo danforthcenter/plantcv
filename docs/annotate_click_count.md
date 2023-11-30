@@ -32,7 +32,9 @@
 
 **p_not_current**: a list of matplotlib patches that are not current label.
 
+---
 ### Methods
+---
 **view(*label*="total", *color*="c", *view_all*=False)**
 
 View marked image, and update markers/annotations if needed.
@@ -41,7 +43,7 @@ View marked image, and update markers/annotations if needed.
     - label - class label to show on the marked image. By default `label="total`.
     - color - desired color to show the class. By default `color="c"`.
     - view_all - a flag indicating whether to show markers for all classes or not. 
-
+---
 **import_coords(*coords*, *label*="total")**
 
 Import coordinates from a list of coordinates.
@@ -49,7 +51,7 @@ Import coordinates from a list of coordinates.
 - Parameters:
     - coords - a list of available coordintes.
     - label - class label for imported coordinates. By default `label="total`.
-
+---
 **file_import**(*filename*)
 
 Import coordinates from file to a ClickCount object instance
@@ -58,14 +60,14 @@ Import coordinates from file to a ClickCount object instance
     - filename - path to a coordinates file  
 - **Context:**
     - Loads coordinates from a file (probably created with the `.save_coords` method) to ClickCount object instance
-
+---
 **save_coords(*filename*)**
 
 Save the collected coordinates to a JSON file.
 
 - Parameters:
     - filename - (json) file name to save the coordinates of collected points. 
-
+---
 **correct**(*bin_img*, *bin_img_recover*, *coords*)
 
 Make corrections to annotations 
@@ -78,7 +80,7 @@ Make corrections to annotations
     - coords - list of coordinates of 'auto' detected points (e.g. coordinate output of `pcv.annotate.detect_discs`)
 - **Context:**
     - Make corrections to the number of objects in a binary image with information from the ClickCount class object instance (both remove and recover objects). Also corrects the ClickCount object instance with coordinates at the center of each object (rather than click location).
-
+---
 **create_labels**(*gray_img*, *label='default'*)
 
 Label ClickCount Objects after they have been segmented 
@@ -93,12 +95,9 @@ Label ClickCount Objects after they have been segmented
 - **Output data stored:** Data ('count') for each ClickCount category automatically gets stored to the [`Outputs` class](outputs.md) when this function is
 run. These data can be accessed during a workflow (example below). For more detail about data output see
 [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
-
-- **Example use:**
-    - Below
-
+---
+### Pollen Annotation Example
 - **Note**: used in Jupyter notebook.
-
 ```python
 # Include the line of code below to allow interactive activities
 %matplotlib widget
