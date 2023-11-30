@@ -167,7 +167,7 @@ print(f"There are {counter.count['germinated']} selected objects")
 
 # Associate a unique label to each grain for segmentation, 
 # recover the missing grains, and create a complete mask
-completed_mask = counter.correct(bin_img=discs, bin_img_recover=mask, coords=coor)
+completed_mask = counter.correct(bin_img=discs, bin_img_recover=mask, coords=coords)
 ```
 
 **Recovered (after `.correct`) Objects Image**
