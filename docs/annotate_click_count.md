@@ -99,17 +99,8 @@ run. These data can be accessed during a workflow (example below). For more deta
 
 - **Note**: used in Jupyter notebook.
 
-**Input image**
-
-![ori_img](img/documentation_images/annotate_click_count/count_img.jpg)
-
-**Mask of automated detected objects**
-
-![count_img](img/documentation_images/annotate_click_count/count_mask.png)
-
-
 ```python
-# include the line of code below to allow interactive activities
+# Include the line of code below to allow interactive activities
 %matplotlib widget
 
 # Import packages
@@ -128,20 +119,36 @@ pcv.params.debug = args.debug
 
 # Read image
 img, path, fname = pcv.readimage(filename=args.image1)
+```
+**Original RGB image**
 
+![Screenshot](img/documentation_images/annotate_clickcount_label/crop_pollen.png)
+
+```python
 # Segmentation, this might include many clean up functions 
 gray = pcv.rgb2gray_lab(img, channel='l')
 mask = pcv.threshold.mean(gray_img=gray, ksize=201, offset=20, object_type='dark')
 
 # Discard objects that are not circular
 discs, coords = pcv.annotate.detect_discs(img_l_post, ecc_thresh=0.5)
+```
 
+**Detect Disc mask output**
+
+![Screenshot](img/documentation_images/annotate_clickcount_correct/pollen_detectdisc_mask.png)
+
+```python
 # ClickCount Initialization
 counter = pcv.annotate.ClickCount(img)
 
 # Click on the plotted image to annotate  
 counter.view(label="total", color="r", view_all=False)
+```
+**View and Update ClickCount Coordinates**
 
+![screen-gif](img/documentation_images/annotate_click_count/clickcount_view.gif)
+
+```python 
 # Save out ClickCount coordinates file
 counter.save_coords(os.path.join(args.outdir, str(args.result) + '.coords'))
 
@@ -162,13 +169,31 @@ print(f"There are {counter.count['germinated']} selected objects")
 # Associate a unique label to each grain for segmentation, 
 # recover the missing grains, and create a complete mask
 completed_mask = counter.correct(bin_img=discs, bin_img_recover=img_l_post, coords=coor)
+```
 
+**Recovered (after `.correct`) Objects Image**
+
+![Screenshot](img/documentation_images/annotate_clickcount_correct/Figure-4.png)
+
+```python 
 # Watershed egmentation to separate touching grains
 seg = pcv.watershed_segmentation(rgb_img=img, mask=completed_mask, distance=1)
+```
 
+**Output of Watershed Segementation**
+
+![Screenshot](img/documentation_images/annotate_clickcount_label/Figure6.png)
+
+```python
 # Assign a single label to each grain & store to outputs 
 class_label, class_count_dict, class_list, num = counter.create_labels(gray_img=seg, label="total")
+```
+**Labeled Objects Image**
 
+![Screenshot](img/documentation_images/annotate_clickcount_label/Figure7.png)
+![Screenshot](img/documentation_images/annotate_clickcount_label/Figure8.png)
+
+```python
 # Optional, run additional trait analysis 
 shape_img = pcv.analyze.size(img=img, labeled_mask=class_label, n_labels=num, label=class_list)
 
@@ -177,14 +202,8 @@ pcv.outputs.save_results(filename=os.path.join(args.outdir, args.result + ".csv"
 pcv.outputs.clear()
 ```
 
-**View markers for `total` class**
+**Size Analysis debug image**
 
-![total_mask](img/documentation_images/annotate_click_count/with_totalmask.png)
-
-(When interactivity is enabled, you can left click to add markers for the class, or right click to remove markers)
-
-**View markers for `c1` class**
-
-![c1_mask](img/documentation_images/annotate_click_count/with_clickc1.png)
+![Screenshot](img/documentation_images/annotate_click_count/pollen_shape_annotations.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/annotate/classes.py)
