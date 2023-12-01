@@ -15,6 +15,8 @@ Automatically detects a color card and creates a labeled mask.
         - radius         - Radius of circle to make the color card labeled mask (default = 20).
 - **Returns**
     - labeled_mask     - Labeled color card mask (useful downstream of this step in `pcv.transform.get_color_matrix` and `pcv.transform.correct_color`)
+- **Example use:**
+    - [Color Correction Tutorial](tutorials/transform_color_correction_tutorial.md)
 
 !!! note
     Color chip size can only be used reasonably as a scaling factor (converting pixels to a known real world scale like cms)
