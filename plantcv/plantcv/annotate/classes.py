@@ -365,6 +365,7 @@ class ClickCount:
 
         dict_class_labels = {}
 
+        # creating dictionary with label: replicate ID number 
         for i, x in enumerate(labelnames):
             dict_class_labels[x] = i+1
 
@@ -379,7 +380,7 @@ class ClickCount:
             for (y, x) in self.points[cl]:
                 x = int(x)
                 y = int(y)
-                seg_label = gray_img[x, y]
+                seg_label = gray_img[x, y] # grab intensity value from watershed labeled mask 
                 if seg_label != 0:
                     class_number.append(seg_label)
                     class_name.append(cl)
