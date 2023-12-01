@@ -15,7 +15,8 @@ Euclidean distance between the transformed source color values and the target co
     - rgb_img       - an RGB image with color chips visualized
     - source_matrix - array of RGB color values (intensity in the range [0-1]) from the image to be corrected where each row is one color reference and the columns are organized as index,R,G,B
     - target_matrix - array of target RGB color values (intensity in the range [0-1]) where each row is one color reference and the columns are organized as index,R,G,B
-
+- **Example use:**
+    - [Color Correction Tutorial](tutorials/transform_color_correction_tutorial.md)
 
 **Reference Images**
 
