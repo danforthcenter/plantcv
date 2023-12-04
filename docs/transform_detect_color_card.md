@@ -33,6 +33,8 @@ rgb_img, path, filename = pcv.readimage("target_img.png")
 cc_mask = pcv.transform.detect_color_card(rgb_img=rgb_img)
 
 avg_chip_size = pcv.outputs.observations['default']['median_color_chip_size']['value']
+avg_chip_w = pcv.outputs.observations['default']['median_color_chip_width']['value']
+avg_chip_h = pcv.outputs.observations['default']['median_color_chip_height']['value']
 
 ```
 
