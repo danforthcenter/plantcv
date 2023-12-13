@@ -157,7 +157,7 @@ def _view(self, label="default", color="c", view_all=False):
             self.ax.plot(x, y, marker='x', c=color)
 
 class Click:
-    def __init__(self, img, bin_img = None, bin_img_recover = None, figsize=(12, 6)):
+    def __init__(self, img, label="default", bin_img=None, bin_img_recover=None, figsize=(12, 6)):
         #print("If you have coordinates to import, the label represent for total count should be 'total'!")
         self.img = img
         self.bin_img = None # optional binary mask, necesssary for the .correct method
@@ -168,7 +168,7 @@ class Click:
         self.count = {}  # a dictionary that saves the counts of different classes (labels)
         self.figsize = figsize
         self.events = []
-        self.label = None  # current label
+        self.label = label  # current label
         self.sample_labels = [] # list of all sample labels, one to one with points collected 
         self.color = None  # current color
         self.view_all = None  # a flag indicating whether or not view all labels
@@ -176,7 +176,7 @@ class Click:
         self.ax = None
         self.p_not_current = None
 
-        _view(self, label="default", color="c", view_all=True)
+        _view(self, label=label, color="r", view_all=True)
 
     def import_coords(self, coords, label="total"):
         """Import center coordinates of already detected objects
@@ -237,15 +237,15 @@ class Click:
             # Save the data in JSON format with indentation
             json.dump(obj=self.points, fp=fp, indent=4)
 
-    def save_counts(self):
+    def save_counts(self, label):
         """Save collected coordinates to Outputs.observations""" 
         for i, x in enumerate(self.count.keys()):
             variable = x
             value = self.count[x]
-            outputs.add_observation(sample=self.label, variable=variable,
+            outputs.add_observation(sample=label, variable=variable,
                                     trait='count of category',
                                     method='count', scale='count', datatype=int,
-                                    value=value, label=variable)
+                                    value=value, label='none')
 
     def onclick(self, event):
         """Handle mouse click events."""
@@ -433,44 +433,46 @@ class Click:
         params.debug = None
 
         labelnames = _clickcount_labels(self)
-        gray_img, _ = create_labels(mask=self.mask)
-
-        dict_class_labels = {}
-
-        # creating dictionary with label: replicate ID number 
-        for i, x in enumerate(labelnames):
-            dict_class_labels[x] = i+1
-
-        shape = np.shape(gray_img)
-        class_label = np.zeros((shape[0], shape[1]), dtype=np.uint8)
-
-        class_number = []
-        class_name = []
-
-        # Only keep watersed results that overlap with a clickpoint and do not ==0
-        for cl in list(dict_class_labels.keys()):
-            for (y, x) in self.points[cl]:
-                x = int(x)
-                y = int(y)
-                seg_label = gray_img[x, y] # grab intensity value/object from watershed labeled mask 
-                if seg_label != 0:
-                    class_number.append(seg_label)
-                    class_name.append(cl)
-                    class_label[gray_img == seg_label] = seg_label
-
-        # Get corrected name
-        corrected_number = []
-        corrected_name = []
-
-        for i, x in enumerate(class_number):
-            if x in corrected_number:
-                ind = (corrected_number.index(x))
-                y = corrected_name[ind]+"_"+str(class_name[i])
-                corrected_name[ind] = y
-            else:
-                corrected_number.append(x)
-                y = str(class_name[i])
-                corrected_name.append(y)
-        # overwrite sample labels with corrected name list 
-        self.sample_labels = corrected_name
+        if self.bin_img_current is not None: 
+            gray_img, _ = create_labels(mask=self.bin_img_current)
+    
+            dict_class_labels = {}
+    
+            # creating dictionary with label: replicate ID number 
+            for i, x in enumerate(labelnames):
+                dict_class_labels[x] = i+1
+    
+            shape = np.shape(gray_img)
+            class_label = np.zeros((shape[0], shape[1]), dtype=np.uint8)
+    
+            class_number = []
+            class_name = []
+    
+            # Only keep watersed results that overlap with a clickpoint and do not ==0
+            for cl in list(dict_class_labels.keys()):
+                for (y, x) in self.points[cl]:
+                    x = int(x)
+                    y = int(y)
+                    seg_label = gray_img[x, y] # grab intensity value/object from watershed labeled mask 
+                    if seg_label != 0:
+                        class_number.append(seg_label)
+                        class_name.append(cl)
+                        class_label[gray_img == seg_label] = seg_label
+    
+            # Get corrected name
+            corrected_number = []
+            corrected_name = []
+    
+            for i, x in enumerate(class_number):
+                if x in corrected_number:
+                    ind = (corrected_number.index(x))
+                    y = corrected_name[ind]+"_"+str(class_name[i])
+                    corrected_name[ind] = y
+                else:
+                    corrected_number.append(x)
+                    y = str(class_name[i])
+                    corrected_name.append(y)
+            # overwrite sample labels with corrected name list 
+            self.sample_labels = corrected_name
+        params.debug = debug
         
