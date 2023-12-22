@@ -110,16 +110,8 @@ class Outputs:
         if sample not in self.observations:
             self.observations[sample] = {}
 
-        # Supported data types
-        supported_dtype = ["int", "float", "str", "list", "bool", "tuple", "dict", "NoneType", "numpy.float64"]
-        # Supported class types
-        class_list = [f"<class '{cls}'>" for cls in supported_dtype]
-
-        # Send an error message if datatype is not supported by json
-        if str(type(value)) not in class_list:
-            # String list of supported types
-            type_list = ', '.join(map(str, supported_dtype))
-            fatal_error(f"The Data type {type(value)} is not compatible with JSON! Please use only these: {type_list}!")
+        # Validate that the data type is supported by JSON
+        _ = _validate_data_type(value)
 
         # Save the observation for the sample and variable
         self.observations[sample][variable] = {
@@ -148,16 +140,8 @@ class Outputs:
         if label not in self.metadata:
             self.metadata[label] = {}
 
-        # Supported data types
-        supported_dtype = ["int", "float", "str", "list", "bool", "tuple", "dict", "NoneType", "numpy.float64"]
-        # Supported class types
-        class_list = [f"<class '{cls}'>" for cls in supported_dtype]
-
-        # Send an error message if datatype is not supported by json
-        if str(type(value)) not in class_list:
-            # String list of supported types
-            type_list = ', '.join(map(str, supported_dtype))
-            fatal_error(f"The Data type {type(value)} is not compatible. Please use only these: {type_list}!")
+        # Validate that the data type is supported by JSON
+        _ = _validate_data_type(value)
 
         # Save the observation for the sample and variable
         self.metadata[label] = {
@@ -280,6 +264,38 @@ class Outputs:
             grid=False
         )
         return chart
+
+
+def _validate_data_type(data):
+    """Validate that the data type is supported by JSON.
+
+    Parameters
+    ----------
+    data : any
+        Data to be validated.
+
+    Returns
+    -------
+    bool
+        True if the data type is supported by JSON.
+
+    Raises
+    ------
+    ValueError
+        If the data type is not supported by JSON.
+    """
+    # Supported data types
+    supported_dtype = ["int", "float", "str", "list", "bool", "tuple", "dict", "NoneType", "numpy.float64"]
+    # Supported class types
+    class_list = [f"<class '{cls}'>" for cls in supported_dtype]
+
+    # Send an error message if datatype is not supported by json
+    if str(type(data)) not in class_list:
+        # String list of supported types
+        type_list = ', '.join(map(str, supported_dtype))
+        fatal_error(f"The Data type {type(data)} is not compatible with JSON! Please use only these: {type_list}!")
+
+    return True
 
 
 class Spectral_data:
