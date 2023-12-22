@@ -83,6 +83,7 @@ def test_save_results_csv(test_data, tmpdir):
         test_results = fp.read()
     assert results == test_results
 
+
 def test_save_results_csv_add_metadata(test_data, tmpdir):
     """Test for PlantCV."""
     # Create a test tmp directory
@@ -98,12 +99,14 @@ def test_save_results_csv_add_metadata(test_data, tmpdir):
     x = slice(0,33)
     assert results[x] == "sample,trait,value,label,add_date"
 
+
 def test_add_metadata_invalid_type():
     """Test for PlantCV."""
     # Create output instance
     outputs = Outputs()
     with pytest.raises(RuntimeError):
         outputs.add_metadata(label="bad_dtype", datatype="str", value=np.array([2]))
+
 
 def test_clear_outputs():
     """Test for PlantCV."""
