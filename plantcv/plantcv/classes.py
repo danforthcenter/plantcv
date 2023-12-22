@@ -124,30 +124,30 @@ class Outputs:
         }
 
     # Method to add metadata instance to outputs
-    def add_metadata(self, label, datatype, value):
-        """
-        Keyword arguments/parameters:
-        label       = A human readable name of the measurement method mapped to an external ontology
-        datatype    = The type of data to be stored, e.g. 'int', 'float', 'str', 'list', 'bool', etc.
-        value       = The data itself
+    def add_metadata(self, term, datatype, value):
+        """Add a metadata term and value to outputs.
 
-
-        :param label: str
-        :param datatype: type
-        :param value:
+        Parameters
+        ----------
+        term : str
+            Metadata term/name.
+        datatype : type
+            The type of data to be stored, e.g. 'int', 'float', 'str', 'list', 'bool', etc.
+        value : any
+            The data itself.
         """
         # Create an empty dictionary for the sample if it does not exist
-        if label not in self.metadata:
-            self.metadata[label] = {}
+        if term not in self.metadata:
+            self.metadata[term] = {}
 
         # Validate that the data type is supported by JSON
         _ = _validate_data_type(value)
 
         # Save the observation for the sample and variable
-        self.metadata[label] = {
+        self.metadata[term] = {
             "datatype": str(datatype),
             "value": value,
-            "label": label
+            "label": term
         }
 
     # Method to save observations to a file

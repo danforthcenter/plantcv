@@ -35,7 +35,7 @@ def test_save_results_json_newfile(tmpdir):
     outputs = Outputs()
     outputs.add_observation(sample='default', variable='test', trait='test variable', method='test', scale='none',
                             datatype=str, value="test", label="none")
-    outputs.add_metadata(label="add_date", datatype="str", value="Nov-14-2023")
+    outputs.add_metadata(term="add_date", datatype="str", value="Nov-14-2023")
     outputs.save_results(filename=outfile, outformat="json")
     with open(outfile, "r") as fp:
         results = json.load(fp)
@@ -52,8 +52,8 @@ def test_save_results_json_existing_file(test_data, tmpdir):
     outputs = Outputs()
     outputs.add_observation(sample='default', variable='test', trait='test variable', method='test', scale='none',
                             datatype=str, value="test", label="none")
-    outputs.add_metadata(label="add_date", datatype="str", value="Nov-14-2023")
-    outputs.add_metadata(label="camera", datatype="str", value="TV")
+    outputs.add_metadata(term="add_date", datatype="str", value="Nov-14-2023")
+    outputs.add_metadata(term="camera", datatype="str", value="TV")
     outputs.save_results(filename=outfile, outformat="json")
     with open(outfile, "r") as fp:
         results = json.load(fp)
@@ -92,7 +92,7 @@ def test_save_results_csv_add_metadata(test_data, tmpdir):
     outputs = Outputs()
     outputs.add_observation(sample='default', variable='string', trait='string variable', method='string', scale='none',
                             datatype=str, value="string", label="none")
-    outputs.add_metadata(label="add_date", datatype="str", value="Nov-14-2023")
+    outputs.add_metadata(term="add_date", datatype="str", value="Nov-14-2023")
     outputs.save_results(filename=outfile, outformat="csv")
     with open(outfile, "r") as fp:
         results = fp.read()
@@ -105,7 +105,7 @@ def test_add_metadata_invalid_type():
     # Create output instance
     outputs = Outputs()
     with pytest.raises(RuntimeError):
-        outputs.add_metadata(label="bad_dtype", datatype="str", value=np.array([2]))
+        outputs.add_metadata(term="bad_dtype", datatype="str", value=np.array([2]))
 
 
 def test_clear_outputs():
