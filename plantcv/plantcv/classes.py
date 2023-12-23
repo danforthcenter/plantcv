@@ -167,10 +167,10 @@ class Outputs:
                     hierarchical_data["observations"] = self.observations
                     existing_metadata = hierarchical_data["metadata"]
                     for term in self.metadata:
+                        save_term = term
                         if term in existing_metadata:
-                            hierarchical_data["metadata"][term + "1"] = self.metadata[term]
-                        else:
-                            hierarchical_data["metadata"][term] = self.metadata[term]
+                            save_term = f"{term}_1"
+                        hierarchical_data["metadata"][save_term] = self.metadata[term]
             else:
                 hierarchical_data = {"metadata": self.metadata, "observations": self.observations}
             with open(filename, mode='w') as f:
