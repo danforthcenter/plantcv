@@ -181,7 +181,7 @@ class Outputs:
             csv_table = open(filename, "w")
             # Gather any additional metadata
             metadata_key_list = list(self.metadata.keys())
-            metadata_val_list = list(self.metadata.values())
+            metadata_val_list = [val["value"] for val in self.metadata.values()]
             # Write the header
             header = metadata_key_list + ["sample", "trait", "value", "label"]
             csv_table.write(",".join(map(str, header)) + "\n")
