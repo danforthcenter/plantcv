@@ -208,11 +208,8 @@ class Outputs:
                     # For all other supported data types, save one row per trait
                     # Assumes no unusual data types are present (possibly a bad assumption)
                     else:
-                        row = [sample,
-                               var,
-                               self.observations[sample][var]["value"],
-                               self.observations[sample][var]["label"]
-                               ] + metadata_val_list
+                        row = metadata_val_list + [sample, var, self.observations[sample][var]["value"],
+                                                   self.observations[sample][var]["label"]]
                         csv_table.write(",".join(map(str, row)) + "\n")
 
     def plot_dists(self, variable):
