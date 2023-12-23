@@ -48,45 +48,17 @@ Methods are accessed as plantcv.outputs.*method*.
 
 * scale: Units of the measurement or a scale in which the observations are expressed; if possible, standard units and scales should be used and mapped to existing ontologies; in case of a non-standard scale a full explanation should be given.
 
-* datatype: The type of data to be stored. In JSON, values must be one of the following data types:
-    - a string
-    - a number
-    - an array
-    - a boolean
-    - null
-    - a JSON object
-    
-    They are equilvalent to python data types of the following:
-    - 'str'
-    - 'int' or 'float'
-    - 'list' or 'tuple'
-    - 'bool'
-    - 'NoneType'
-    - 'dict'
+* datatype: The type of data to be stored. See note below for supported data types.
 
 * value: The data itself. Make sure the data type of value matches the data type stated in "datatype". 
 
 * label:  The label for each value, which will be useful when the data is a frequency table (e.g. hues). 
 
-**add_metadata**(*label, datatype, value*): Add metadata about the image or other information
+**add_metadata**(*term, datatype, value*): Add metadata about the image or other information
 
-* lebel: A human readable name of the measurement method mapped to an external ontology
+* term: Metadata term/name
 
-* datatype: The type of data to be stored. In JSON, values must be one of the following data types:
-    - a string
-    - a number
-    - an array
-    - a boolean
-    - null
-    - a JSON object
-    
-    They are equilvalent to python data types of the following:
-    - 'str'
-    - 'int' or 'float'
-    - 'list' or 'tuple'
-    - 'bool'
-    - 'NoneType'
-    - 'dict'
+* datatype: The type of data to be stored. See note below for supported data types.
 
 * value: The data itself. Make sure the data type of value matches the data type stated in "datatype". 
 
@@ -95,6 +67,9 @@ Methods are accessed as plantcv.outputs.*method*.
 * filename: Path and name of the output file
 
 * outformat: Output file format (default = "json"). Supports "json" and "csv" formats
+
+!!!note
+    Supported data types for JSON output are: int, float, str, list, bool, tuple, dict, NoneType, numpy.float64.
 
 **Example use:**
     - [Use In VIS/NIR Tutorial](tutorials/vis_nir_tutorial.md)
@@ -142,7 +117,7 @@ pcv.outputs.add_observation(sample='default', variable='percent_diseased',
                             value=percent_diseased, label='percent')
 
 # Add metadata 
-pcv.outputs.add_metadata(label="genotype", datatype="str", value="wildtype")
+pcv.outputs.add_metadata(term="genotype", datatype=str, value="wildtype")
 
 # Write custom data to results file
 pcv.outputs.save_results(filename=args.result, outformat="json")
