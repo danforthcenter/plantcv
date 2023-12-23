@@ -97,7 +97,7 @@ def test_save_results_csv_add_metadata(tmpdir):
     with open(outfile, "r") as fp:
         results = fp.read()
     x = slice(0, 33)
-    assert results[x] == "sample,trait,value,label,add_date"
+    assert results[x] == "add_date,sample,trait,value,label"
 
 
 def test_add_metadata_invalid_type():

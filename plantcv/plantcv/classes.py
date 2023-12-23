@@ -183,7 +183,7 @@ class Outputs:
             metadata_key_list = list(self.metadata.keys())
             metadata_val_list = list(self.metadata.values())
             # Write the header
-            header = ["sample", "trait", "value", "label"] + metadata_key_list
+            header = metadata_key_list + ["sample", "trait", "value", "label"]
             csv_table.write(",".join(map(str, header)) + "\n")
             # Iterate over data samples
             for sample in self.observations:
@@ -198,14 +198,12 @@ class Outputs:
                             # Skip list of tuple data types
                             if not isinstance(value, tuple):
                                 # Save one row per value-label
-                                row = [sample, var, value, label] + metadata_val_list
+                                row = metadata_val_list + [sample, var, value, label]
                                 csv_table.write(",".join(map(str, row)) + "\n")
                     # If the data type is Boolean, store as a numeric 1/0 instead of True/False
                     elif isinstance(val, bool):
-                        row = [sample,
-                               var,
-                               int(self.observations[sample][var]["value"]),
-                               self.observations[sample][var]["label"]] + metadata_val_list
+                        row = metadata_val_list + [sample, var, int(self.observations[sample][var]["value"]),
+                                                   self.observations[sample][var]["label"]]
                         csv_table.write(",".join(map(str, row)) + "\n")
                     # For all other supported data types, save one row per trait
                     # Assumes no unusual data types are present (possibly a bad assumption)
