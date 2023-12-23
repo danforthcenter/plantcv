@@ -84,7 +84,7 @@ def test_save_results_csv(test_data, tmpdir):
     assert results == test_results
 
 
-def test_save_results_csv_add_metadata(test_data, tmpdir):
+def test_save_results_csv_add_metadata(tmpdir):
     """Test for PlantCV."""
     # Create a test tmp directory
     outfile = tmpdir.mkdir("cache").join("results.csv")
