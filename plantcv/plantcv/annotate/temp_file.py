@@ -226,7 +226,7 @@ class Click:
 
         #_view(self, label=self.label, color="c", view_all=True)
 
-    def save_coords(self, filename):
+    def print_coords(self, filename):
         """Save collected coordinates to a file.
         Input variables:
         filename = Name of the file to save collected coordinate
@@ -237,14 +237,28 @@ class Click:
             # Save the data in JSON format with indentation
             json.dump(obj=self.points, fp=fp, indent=4)
 
-    def save_counts(self, label):
+    def save_counts(self, label=None):
         """Save collected coordinates to Outputs.observations""" 
+        if label is None:
+            label = params.sample_label
         for i, x in enumerate(self.count.keys()):
             variable = x
             value = self.count[x]
-            outputs.add_observation(sample=label, variable=variable,
+            outputs.add_observation(sample=label, variable=str(variable) + "_count",
                                     trait='count of category',
                                     method='count', scale='count', datatype=int,
+                                    value=value, label='none')
+
+    def save_coords(self, label=None):
+        """Save collected coordinates to Outputs.observations""" 
+        if label is None:
+            label = params.sample_label
+        for i, x in enumerate(self.count.keys()):
+            variable = x
+            value = self.points[x]
+            outputs.add_observation(sample=label, variable=str(variable) + "_coords",
+                                    trait='collected coordinates',
+                                    method='annotation', scale='count', datatype=list,
                                     value=value, label='none')
 
     def onclick(self, event):
