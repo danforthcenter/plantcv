@@ -731,6 +731,11 @@ pages for more details on the input and output variable types.
 * post v3.3: **plantcv.outputs.add_observation**(*variable, trait, method, scale, datatype, value, label*)
 * post v3.11: **plantcv.outputs.add_observation**(*sample, variable, trait, method, scale, datatype, value, label*)
 
+#### plantcv.outputs.add_metadata
+
+* pre v4.1: NA
+* post v4.1: **plantcv.outputs.add_metadata**(*term, datatype, value*)
+
 #### plantcv.outputs.clear
 
 * pre v3.2: NA
