@@ -8,8 +8,7 @@ import plantcv.utils
 # Parse command-line arguments
 ###########################################
 def options():
-    """Parse command line options.
-    """
+    """Parse command line options."""
     # Create an argument parser
     parser = argparse.ArgumentParser(description="A collection of utilities for PlantCV.",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -73,8 +72,7 @@ def run_sample_images(args):
 # Run the main program
 ###########################################
 def main():
-    """Main program.
-    """
+    """Main program."""
     # Parse command-line options and run the selected method
     options()
 ###########################################

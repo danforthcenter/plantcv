@@ -50,16 +50,16 @@ def segment_curvature(segmented_img, objects, label=None):
     # Create a color scale, use a previously stored scale if available
     rand_color = color_palette(num=len(objects), saved=True)
 
-    for i, cnt in enumerate(objects):
+    for i, obj in enumerate(objects):
         # Store coordinates for labels
-        label_coord_x.append(objects[i][0][0][0])
-        label_coord_y.append(objects[i][0][0][1])
+        label_coord_x.append(obj[0][0][0])
+        label_coord_y.append(obj[0][0][1])
 
         # Draw segments one by one to group segment tips together
         finding_tips_img = np.zeros(segmented_img.shape[:2], np.uint8)
         cv2.drawContours(finding_tips_img, objects, i, (255, 255, 255), 1, lineType=8)
         segment_tips = find_tips(finding_tips_img)
-        tip_objects, tip_hierarchies = _cv2_findcontours(bin_img=segment_tips)
+        tip_objects, _ = _cv2_findcontours(bin_img=segment_tips)
         points = []
 
         for t in tip_objects:
@@ -75,7 +75,7 @@ def segment_curvature(segmented_img, objects, label=None):
     # Reset debug mode
     params.debug = debug
 
-    for i, cnt in enumerate(objects):
+    for i, _ in enumerate(objects):
         # Calculate geodesic distance
         text = "{:.3f}".format(curvature_measure[i])
         w = label_coord_x[i]

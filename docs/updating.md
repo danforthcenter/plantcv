@@ -434,7 +434,7 @@ pages for more details on the input and output variable types.
 #### plantcv.flood_fill
 
 * pre v4.1: NA
-* post v4.1: filled_image = **plantcv.flood_fill**(*bin_img, point, value=0*)
+* post v4.1: filled_image = **plantcv.flood_fill**(*bin_img, points, value=0*)
 
 #### plantcv.fluor_fvfm
 
@@ -730,6 +730,11 @@ pages for more details on the input and output variable types.
 * pre v3.3: NA
 * post v3.3: **plantcv.outputs.add_observation**(*variable, trait, method, scale, datatype, value, label*)
 * post v3.11: **plantcv.outputs.add_observation**(*sample, variable, trait, method, scale, datatype, value, label*)
+
+#### plantcv.outputs.add_metadata
+
+* pre v4.1: NA
+* post v4.1: **plantcv.outputs.add_metadata**(*term, datatype, value*)
 
 #### plantcv.outputs.clear
 
@@ -1152,6 +1157,11 @@ pages for more details on the input and output variable types.
 
 * pre v3.0: NA
 * post v3.0: mask = **pcv.transform.create_color_card_mask**(*rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=[]*)
+
+#### plantcv.transform.detect_color_card
+
+* pre v4.0.1: NA
+* post v4.0.1: labeled_mask = **plantcv.transform.detect_color_card**(*rgb_img, label=None, **kwargs*)
 
 #### plantcv.transform.find_color_card
 

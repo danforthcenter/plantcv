@@ -42,9 +42,6 @@ def prune(skel_img, size=0, mask=None):
 
     pruned_img = skel_img.copy()
 
-    # Check to see if the skeleton has multiple objects
-    skel_objects, _ = _cv2_findcontours(bin_img=skel_img)
-
     _, objects = segment_skeleton(skel_img)
     kept_segments = []
     removed_segments = []
@@ -53,7 +50,7 @@ def prune(skel_img, size=0, mask=None):
         # If size>0 then check for segments that are smaller than size pixels long
 
         # Sort through segments since we don't want to remove primary segments
-        secondary_objects, primary_objects = segment_sort(skel_img, objects)
+        secondary_objects, _ = segment_sort(skel_img, objects)
 
         # Keep segments longer than specified size
         for i in range(0, len(secondary_objects)):

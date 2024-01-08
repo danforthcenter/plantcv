@@ -4,9 +4,9 @@ import cv2
 import json
 import numpy as np
 from plantcv.plantcv import fatal_error
+from plantcv.plantcv.annotate.points import _find_closest_pt
 import matplotlib.pyplot as plt
 from math import floor
-from plantcv.plantcv.annotate.points import _find_closest_pt
 import altair as alt
 import pandas as pd
 
@@ -70,17 +70,18 @@ class Outputs:
         self.measurements = {}
         self.images = []
         self.observations = {}
+        self.metadata = {}
 
         # Add a method to clear measurements
     def clear(self):
         self.measurements = {}
         self.images = []
         self.observations = {}
+        self.metadata = {}
 
     # Method to add observation to outputs
     def add_observation(self, sample, variable, trait, method, scale, datatype, value, label):
-        """
-        Keyword arguments/parameters:
+        """Keyword arguments/parameters:
         sample       = Sample name. Used to distinguish between multiple samples
         variable     = A local unique identifier of a variable, e.g. a short name,
                        that is a key linking the definitions of variables with observations.
@@ -109,16 +110,8 @@ class Outputs:
         if sample not in self.observations:
             self.observations[sample] = {}
 
-        # Supported data types
-        supported_dtype = ["int", "float", "str", "list", "bool", "tuple", "dict", "NoneType", "numpy.float64"]
-        # Supported class types
-        class_list = [f"<class '{cls}'>" for cls in supported_dtype]
-
-        # Send an error message if datatype is not supported by json
-        if str(type(value)) not in class_list:
-            # String list of supported types
-            type_list = ', '.join(map(str, supported_dtype))
-            fatal_error(f"The Data type {type(value)} is not compatible with JSON! Please use only these: {type_list}!")
+        # Validate that the data type is supported by JSON
+        _ = _validate_data_type(value)
 
         # Save the observation for the sample and variable
         self.observations[sample][variable] = {
@@ -128,6 +121,32 @@ class Outputs:
             "datatype": str(datatype),
             "value": value,
             "label": label
+        }
+
+    # Method to add metadata instance to outputs
+    def add_metadata(self, term, datatype, value):
+        """Add a metadata term and value to outputs.
+
+        Parameters
+        ----------
+        term : str
+            Metadata term/name.
+        datatype : type
+            The type of data to be stored, e.g. 'int', 'float', 'str', 'list', 'bool', etc.
+        value : any
+            The data itself.
+        """
+        # Create an empty dictionary for the sample if it does not exist
+        if term not in self.metadata:
+            self.metadata[term] = {}
+
+        # Validate that the data type is supported by JSON
+        _ = _validate_data_type(value)
+
+        # Save the observation for the sample and variable
+        self.metadata[term] = {
+            "datatype": str(datatype),
+            "value": value
         }
 
     # Method to save observations to a file
@@ -146,16 +165,26 @@ class Outputs:
                 with open(filename, 'r') as f:
                     hierarchical_data = json.load(f)
                     hierarchical_data["observations"] = self.observations
+                    existing_metadata = hierarchical_data["metadata"]
+                    for term in self.metadata:
+                        save_term = term
+                        if term in existing_metadata:
+                            save_term = f"{term}_1"
+                        hierarchical_data["metadata"][save_term] = self.metadata[term]
             else:
-                hierarchical_data = {"metadata": {}, "observations": self.observations}
-
+                hierarchical_data = {"metadata": self.metadata, "observations": self.observations}
             with open(filename, mode='w') as f:
                 json.dump(hierarchical_data, f)
+
         elif outformat.upper() == "CSV":
             # Open output CSV file
             csv_table = open(filename, "w")
+            # Gather any additional metadata
+            metadata_key_list = list(self.metadata.keys())
+            metadata_val_list = [val["value"] for val in self.metadata.values()]
             # Write the header
-            csv_table.write(",".join(map(str, ["sample", "trait", "value", "label"])) + "\n")
+            header = metadata_key_list + ["sample", "trait", "value", "label"]
+            csv_table.write(",".join(map(str, header)) + "\n")
             # Iterate over data samples
             for sample in self.observations:
                 # Iterate over traits for each sample
@@ -169,23 +198,18 @@ class Outputs:
                             # Skip list of tuple data types
                             if not isinstance(value, tuple):
                                 # Save one row per value-label
-                                row = [sample, var, value, label]
+                                row = metadata_val_list + [sample, var, value, label]
                                 csv_table.write(",".join(map(str, row)) + "\n")
                     # If the data type is Boolean, store as a numeric 1/0 instead of True/False
                     elif isinstance(val, bool):
-                        row = [sample,
-                               var,
-                               int(self.observations[sample][var]["value"]),
-                               self.observations[sample][var]["label"]]
+                        row = metadata_val_list + [sample, var, int(self.observations[sample][var]["value"]),
+                                                   self.observations[sample][var]["label"]]
                         csv_table.write(",".join(map(str, row)) + "\n")
                     # For all other supported data types, save one row per trait
                     # Assumes no unusual data types are present (possibly a bad assumption)
                     else:
-                        row = [sample,
-                               var,
-                               self.observations[sample][var]["value"],
-                               self.observations[sample][var]["label"]
-                               ]
+                        row = metadata_val_list + [sample, var, self.observations[sample][var]["value"],
+                                                   self.observations[sample][var]["label"]]
                         csv_table.write(",".join(map(str, row)) + "\n")
 
     def plot_dists(self, variable):
@@ -232,6 +256,38 @@ class Outputs:
             grid=False
         )
         return chart
+
+
+def _validate_data_type(data):
+    """Validate that the data type is supported by JSON.
+
+    Parameters
+    ----------
+    data : any
+        Data to be validated.
+
+    Returns
+    -------
+    bool
+        True if the data type is supported by JSON.
+
+    Raises
+    ------
+    ValueError
+        If the data type is not supported by JSON.
+    """
+    # Supported data types
+    supported_dtype = ["int", "float", "str", "list", "bool", "tuple", "dict", "NoneType", "numpy.float64"]
+    # Supported class types
+    class_list = [f"<class '{cls}'>" for cls in supported_dtype]
+
+    # Send an error message if datatype is not supported by json
+    if str(type(data)) not in class_list:
+        # String list of supported types
+        type_list = ', '.join(map(str, supported_dtype))
+        fatal_error(f"The Data type {type(data)} is not compatible with JSON! Please use only these: {type_list}!")
+
+    return True
 
 
 class Spectral_data:
@@ -288,14 +344,13 @@ class PSII_data:
         return "PSII variables defined:\n" + '\n'.join(mvars)
 
     def add_data(self, protocol):
-        """
-        Input:
-            protocol: xr.DataArray with name equivalent to initialized attributes
+        """Input:
+        protocol: xr.DataArray with name equivalent to initialized attributes
         """
         self.__dict__[protocol.name] = protocol
 
 
-class Points(object):
+class Points:
     """Point annotation/collection class to use in Jupyter notebooks. It allows the user to
     interactively click to collect coordinates from an image. Left click collects the point and
     right click removes the closest collected point
@@ -318,8 +373,7 @@ class Points(object):
         self.fig.canvas.mpl_connect('button_press_event', self.onclick)
 
     def onclick(self, event):
-        """ Handle mouse click events
-        """
+        """Handle mouse click events"""
         self.events.append(event)
         if event.button == 1:
 
@@ -336,6 +390,7 @@ class Points(object):
 
 class Objects:
     """Class for managing image contours/objects and their hierarchical relationships."""
+
     def __init__(self, contours: list = None, hierarchy: list = None):
         self.contours = contours
         self.hierarchy = hierarchy

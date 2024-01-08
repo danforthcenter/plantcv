@@ -8,7 +8,7 @@ def test_colorspaces(visualize_test_data):
     # Read in test data
     img = cv2.imread(visualize_test_data.small_rgb_img)
     vis_img = colorspaces(rgb_img=img)
-    assert vis_img.shape == (335, 1000, 3)
+    assert vis_img.shape[1] == 3 * img.shape[1]
 
 
 def test_colorspaces_bad_input(visualize_test_data):

@@ -12,8 +12,7 @@ from plantcv.plantcv import fatal_error, warn, params, Objects
 
 # Create an ROI from a binary mask
 def from_binary_image(img, bin_img):
-    """
-    Create an ROI from a binary image
+    """Create an ROI from a binary image
 
     Inputs:
     img           = An RGB or grayscale image to plot the ROI on.
@@ -40,8 +39,7 @@ def from_binary_image(img, bin_img):
 
 # Create a rectangular ROI
 def rectangle(img, x, y, h, w):
-    """
-    Create a rectangular ROI.
+    """Create a rectangular ROI.
 
     Inputs:
     img           = An RGB or grayscale image to plot the ROI on in debug mode.
@@ -86,8 +84,7 @@ def rectangle(img, x, y, h, w):
 
 # Create a circular ROI
 def circle(img, x, y, r):
-    """
-    Create a circular ROI.
+    """Create a circular ROI.
 
     Inputs:
     img           = An RGB or grayscale image to plot the ROI on in debug mode.
@@ -128,8 +125,7 @@ def circle(img, x, y, r):
 
 # Create an elliptical ROI
 def ellipse(img, x, y, r1, r2, angle):
-    """
-    Create an elliptical ROI.
+    """Create an elliptical ROI.
 
     Inputs:
     img           = An RGB or grayscale image to plot the ROI on in debug mode.
@@ -175,8 +171,7 @@ def ellipse(img, x, y, r1, r2, angle):
 
 # Draw the ROI on a reference image
 def _draw_roi(img, roi_contour):
-    """
-    Draw an ROI
+    """Draw an ROI
     :param img: numpy.ndarray
     :param roi_contour: list
     """
@@ -250,8 +245,8 @@ def _rois_from_coordinates(img, coord=None, radius=None):
     for i in range(0, len(coord)):
         # Initialize a binary image for each circle
         bin_img = np.zeros((height, width), dtype=np.uint8)
-        y = coord[i][1]
-        x = coord[i][0]
+        y = int(coord[i][1])
+        x = int(coord[i][0])
         # Draw the circle on the binary image
         # Keep track of all roi
         all_roi_img = cv2.circle(all_roi_img, (x, y), radius, 255, -1)
@@ -304,8 +299,7 @@ def _grid_roi(img, nrows, ncols, coord=None, radius=None, spacing=None):
 
 
 def auto_grid(mask, nrows, ncols, radius=None, img=None):
-    """
-    Detect and create multiple circular ROIs on a single binary mask
+    """Detect and create multiple circular ROIs on a single binary mask
     Inputs
     mask          = A binary mask.
     nrows         = Number of rows in ROI layout.
@@ -341,8 +335,7 @@ def auto_grid(mask, nrows, ncols, radius=None, img=None):
 
 
 def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
-    """
-    Create multiple circular ROIs on a single image
+    """Create multiple circular ROIs on a single image
     Inputs
     img           = Input image data.
     coord         = Two-element tuple of the center of the top left object (x,y) or a list of tuples identifying
@@ -363,11 +356,11 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
     :return roi_objects: plantcv.plantcv.classes.Objects
     """
     # Grid of ROIs
-    if (type(coord) == tuple) and ((nrows and ncols) is not None) and (type(spacing) == tuple):
+    if (isinstance(coord, tuple)) and ((nrows and ncols) is not None) and (isinstance(spacing, tuple)):
         roi_objects, overlap_img, all_roi_img = _grid_roi(img, nrows, ncols, coord,
                                                           radius, spacing)
         # User specified ROI centers
-    elif (type(coord) == list) and ((nrows and ncols) is None) and (spacing is None):
+    elif (isinstance(coord, list)) and ((nrows and ncols) is None) and (spacing is None):
         roi_objects, overlap_img, all_roi_img = _rois_from_coordinates(img=img, coord=coord, radius=radius)
     else:
         fatal_error("Function can either make a grid of ROIs (user must provide nrows, ncols, spacing, and coord) "
@@ -386,22 +379,27 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
 
 
 def custom(img, vertices):
-    """
-    Create an custom polygon ROI.
+    """Create an custom polygon ROI.
 
-        Inputs:
-        img           = An RGB or grayscale image to plot the ROI on in debug mode.
-        vertices      = List of vertices of the desired polygon ROI
+    Inputs:
+    img = An RGB or grayscale image to plot the ROI on in debug mode.
+    vertices = List of vertices of the desired polygon ROI
 
-        Outputs:
-        roi           = a dataclass with the roi object and hierarchy
+    Outputs:
+    roi = a dataclass with the roi object and hierarchy
 
-        :param img: numpy.ndarray
-        :param vertices: list
-        :return roi: plantcv.plantcv.classes.Objects
+    :param img: numpy.ndarray
+    :param vertices: list
+    :return roi: plantcv.plantcv.classes.Objects
     """
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
+
+    # Check that the ROI doesn't go off the screen
+    for i in vertices:
+        (x, y) = i
+        if x < 0 or x > width or y < 0 or y > height:
+            fatal_error("An ROI extends outside of the image!")
 
     roi_contour = [np.array(vertices, dtype=np.int32)]
     roi_hierarchy = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
@@ -410,19 +408,12 @@ def custom(img, vertices):
     # Draw the ROIs if requested
     _draw_roi(img=img, roi_contour=roi_contour)
 
-    # Check that the ROI doesn't go off the screen
-    for i in vertices:
-        (x, y) = i
-        if x < 0 or x > width or y < 0 or y > height:
-            fatal_error("An ROI extends outside of the image!")
-
     return roi
 
 
 # Filter a mask based on a region of interest
 def filter(mask, roi, roi_type="partial"):
-    """
-    Filter a mask using a region of interest. Connected regions of non-zero pixels outside the ROI turn to zero
+    """Filter a mask using a region of interest. Connected regions of non-zero pixels outside the ROI turn to zero
 
     Inputs:
     mask           = binary image data to be filtered

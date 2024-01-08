@@ -3,7 +3,6 @@
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
-from mpl_toolkits import mplot3d
 import pandas as pd
 import numpy as np
 from plantcv.plantcv import params
