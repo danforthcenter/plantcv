@@ -15,6 +15,8 @@ Automatically detects a color card and creates a labeled mask.
         - radius         - Radius of circle to make the color card labeled mask (default = 20).
 - **Returns**
     - labeled_mask     - Labeled color card mask (useful downstream of this step in `pcv.transform.get_color_matrix` and `pcv.transform.correct_color`)
+- **Example use:**
+    - [Color Correction Tutorial](tutorials/transform_color_correction_tutorial.md)
 
 !!! note
     Color chip size can only be used reasonably as a scaling factor (converting pixels to a known real world scale like cms)
@@ -31,6 +33,8 @@ rgb_img, path, filename = pcv.readimage("target_img.png")
 cc_mask = pcv.transform.detect_color_card(rgb_img=rgb_img)
 
 avg_chip_size = pcv.outputs.observations['default']['median_color_chip_size']['value']
+avg_chip_w = pcv.outputs.observations['default']['median_color_chip_width']['value']
+avg_chip_h = pcv.outputs.observations['default']['median_color_chip_height']['value']
 
 ```
 

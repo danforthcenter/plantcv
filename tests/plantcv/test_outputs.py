@@ -35,6 +35,7 @@ def test_save_results_json_newfile(tmpdir):
     outputs = Outputs()
     outputs.add_observation(sample='default', variable='test', trait='test variable', method='test', scale='none',
                             datatype=str, value="test", label="none")
+    outputs.add_metadata(term="add_date", datatype="str", value="Nov-14-2023")
     outputs.save_results(filename=outfile, outformat="json")
     with open(outfile, "r") as fp:
         results = json.load(fp)
@@ -51,6 +52,8 @@ def test_save_results_json_existing_file(test_data, tmpdir):
     outputs = Outputs()
     outputs.add_observation(sample='default', variable='test', trait='test variable', method='test', scale='none',
                             datatype=str, value="test", label="none")
+    outputs.add_metadata(term="add_date", datatype="str", value="Nov-14-2023")
+    outputs.add_metadata(term="camera", datatype="str", value="TV")
     outputs.save_results(filename=outfile, outformat="json")
     with open(outfile, "r") as fp:
         results = json.load(fp)
@@ -79,6 +82,30 @@ def test_save_results_csv(test_data, tmpdir):
     with open(test_data.outputs_results_csv, "r") as fp:
         test_results = fp.read()
     assert results == test_results
+
+
+def test_save_results_csv_add_metadata(tmpdir):
+    """Test for PlantCV."""
+    # Create a test tmp directory
+    outfile = tmpdir.mkdir("cache").join("results.csv")
+    # Create output instance
+    outputs = Outputs()
+    outputs.add_observation(sample='default', variable='string', trait='string variable', method='string', scale='none',
+                            datatype=str, value="string", label="none")
+    outputs.add_metadata(term="add_date", datatype="str", value="Nov-14-2023")
+    outputs.save_results(filename=outfile, outformat="csv")
+    with open(outfile, "r") as fp:
+        results = fp.read()
+    x = slice(0, 33)
+    assert results[x] == "add_date,sample,trait,value,label"
+
+
+def test_add_metadata_invalid_type():
+    """Test for PlantCV."""
+    # Create output instance
+    outputs = Outputs()
+    with pytest.raises(RuntimeError):
+        outputs.add_metadata(term="bad_dtype", datatype="str", value=np.array([2]))
 
 
 def test_clear_outputs():
