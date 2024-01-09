@@ -167,6 +167,7 @@ nav:
       - 'Transformation Methods':
           - 'Auto-Detect Color Card': transform_detect_color_card.md
           - 'Auto-Detect Color Card (old)': find_color_card.md
+          - 'Checkerboard Camera Calibration': transform_camera_calibration.md
           - 'Create Color Card Mask': create_color_card_mask.md
           - 'Convert Color Card to Matrix': get_color_matrix.md
           - 'Color Correction Workflow': transform_correct_color.md
