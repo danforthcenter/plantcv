@@ -7,7 +7,7 @@ from plantcv.plantcv._debug import _debug
 
 
 def detect_discs(bin_img, ecc_thresh=0):
-    """Detect disc-shaped regions in a binary image based on eccentricity.
+    """Detect/filter disc-shaped regions in a binary image based on eccentricity.
 
     A value of eccentricity between 0 and 1 corresponds to an ellipse.
     The closer the value to 0 the closer the shape is to a circle.
@@ -19,32 +19,24 @@ def detect_discs(bin_img, ecc_thresh=0):
 
     Returns:
     discs_mask  = Binary image that contains only the detected discs
-    coords      = List of coordinates (as row,column) of the centroids of the
-                  detected discs
 
     :param bin_img: numpy.ndarray
     :param ecc_thresh: float
     :return discs_mask: numpy.ndarray
-    :return coords: list
     """
     params.device += 1
     # label connected regions
     labeled_img = label(bin_img)
-    # measure regions
+    # measure region properties
     obj_measures = regionprops(labeled_img)
-
-    # Check the eccentricity of each region.
-    # A value closer to 0 keeps only the most circular objects
+    # blank mask to draw discs onto
     discs_mask = np.zeros(labeled_img.shape, dtype=np.uint8)
-    # Store the list of coordinates (row,col) for the objects that pass the
-    disc_coords = []
+    # Store the list of coordinates (row,col) for the objects that pass 
     for obj in obj_measures:
         if obj.eccentricity < ecc_thresh:
             # Convert coord values to int
-            coords = tuple(map(int, obj.centroid))
-            disc_coords.append(coords)
             discs_mask += np.where(labeled_img == obj.label, 255, 0).astype(np.uint8)
 
     _debug(visual=discs_mask, filename=os.path.join(params.debug_outdir, f"{params.device}_discs_mask_{ecc_thresh*10}.png"))
 
-    return discs_mask, disc_coords
+    return discs_mask
