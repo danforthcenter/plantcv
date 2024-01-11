@@ -6,15 +6,13 @@ The closer the value to 0 the closer the shape is to a circle.
 
 **plantcv.annotate.detect_discs**(*bin_img, ecc_thresh=0*)
 
-**returns** mask, list containing coordinates of centroids
+**returns** mask
 
 - **Parameters:**
     - bin_img - Binary image containing the connected regions to consider
     - ecc_thresh - Eccentricity threshold below which a region is detected
 - **Context:**
-    - Used to isolate disc-shaped objects of interest in a binary image. The output mask can be used for further analysis
-    and the coordinates can be used for further annotation by importing them into the annotation classes
-    [ClickCount](annotate_click_count.md) and [Points](annotate_points.md).
+    - Used to isolate disc-shaped objects of interest in a binary image. The output mask can be used for further analysis.
 - **Example use:**
     - Below
 
@@ -35,11 +33,11 @@ pcv.params.debug = "plot"
 
 # Apply detect discs to the binary image with an
 # eccentricity threshold of 0.9
-discs_mask_9, coords_9 = pcv.annotate.detect_discs(bin_img=binary_img, ecc_thresh=0.9)
+discs_mask_9 = pcv.annotate.detect_discs(bin_img=binary_img, ecc_thresh=0.9)
 
 # Apply detect discs to the binary image with an
 # eccentricity threshold of 0.5
-discs_mask_5, coords_5 = pcv.annotate.detect_discs(bin_img=binary_img, ecc_thresh=0.5)
+discs_mask_5 = pcv.annotate.detect_discs(bin_img=binary_img, ecc_thresh=0.5)
 
 ```
 
