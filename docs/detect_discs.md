@@ -4,7 +4,7 @@ Detects disc-shaped regions in a binary image based on eccentricity.
 A value of eccentricity between 0 and 1 corresponds to an ellipse.
 The closer the value to 0 the closer the shape is to a circle.
 
-**plantcv.annotate.detect_discs**(*bin_img, ecc_thresh=0*)
+**plantcv.detect_discs**(*bin_img, ecc_thresh=0*)
 
 **returns** mask
 
@@ -33,11 +33,11 @@ pcv.params.debug = "plot"
 
 # Apply detect discs to the binary image with an
 # eccentricity threshold of 0.9
-discs_mask_9 = pcv.annotate.detect_discs(bin_img=binary_img, ecc_thresh=0.9)
+discs_mask_9 = pcv.detect_discs(bin_img=binary_img, ecc_thresh=0.9)
 
 # Apply detect discs to the binary image with an
 # eccentricity threshold of 0.5
-discs_mask_5 = pcv.annotate.detect_discs(bin_img=binary_img, ecc_thresh=0.5)
+discs_mask_5 = pcv.detect_discs(bin_img=binary_img, ecc_thresh=0.5)
 
 ```
 
@@ -45,6 +45,6 @@ discs_mask_5 = pcv.annotate.detect_discs(bin_img=binary_img, ecc_thresh=0.5)
 ![count_img](img/documentation_images/annotate_click_count/count_mask.png)
 
 **Mask of detected objects with eccentricity threshold of 0.5**
-![count_img](img/documentation_images/annotate_detect_discs/discs_mask_scaled.png)
+![count_img](img/documentation_images/detect_discs/discs_mask_scaled.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/annotate/detect_discs.py)
