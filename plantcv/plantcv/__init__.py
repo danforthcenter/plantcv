@@ -74,6 +74,7 @@ from plantcv.plantcv.segment_image_series import segment_image_series
 from plantcv.plantcv.create_labels import create_labels
 from plantcv.plantcv.floodfill import floodfill
 from plantcv.plantcv import analyze
+from plantcv.plantcv import detect_discs
 # add new functions to end of lists
 
 # Auto versioning
@@ -150,6 +151,5 @@ __all__ = [
     "create_labels",
     "analyze",
     "floodfill",
-    "detect_discs",
-    "get_centroids"
+    "detect_discs"
 ]
