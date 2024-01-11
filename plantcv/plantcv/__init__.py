@@ -74,7 +74,7 @@ from plantcv.plantcv.segment_image_series import segment_image_series
 from plantcv.plantcv.create_labels import create_labels
 from plantcv.plantcv.floodfill import floodfill
 from plantcv.plantcv import analyze
-from plantcv.plantcv import detect_discs
+from plantcv.plantcv.detect_discs import detect_discs
 # add new functions to end of lists
 
 # Auto versioning
