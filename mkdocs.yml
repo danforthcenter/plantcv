@@ -46,7 +46,6 @@ nav:
           - 'File Import Coordinates': annotate_clickcount_file_import.md
           - 'Correct ClickCount': annotate_clickcount_correct.md
           - 'Label ClickCount': annotate_clickcount_label.md
-          - 'Detect Discs': annotate_detect_discs.md
           - 'Get Centroids': annotate_get_centroids.md
           - 'Points': annotate_points.md
       - 'Apply Mask': apply_mask.md
@@ -63,6 +62,7 @@ nav:
       - 'Create Labels': create_labels.md
       - 'Crop': crop.md
       - 'Crop and Position Mask': crop_position_mask.md
+      - 'Detect Discs': detect_discs.md
       - 'Dilation': dilate.md
       - 'Distance Transform': distance_transform.md
       - 'Erosion': erode.md
