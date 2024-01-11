@@ -353,11 +353,6 @@ pages for more details on the input and output variable types.
 * post v4.1: **plantcv.annotate.clickcount.view**(*label="total", color="c", view_all=False*)
 
 
-#### plantcv.annotate.detect_discs
-
-* pre v4.1: NA
-* post v4.1: discs_mask, coords = **plantcv.annotate.detect_discs**(*bin_img, ecc_thresh=0*)
-
 #### plantcv.annotate.get_centroids
 
 * pre v4.1: NA
@@ -439,6 +434,7 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, newmask = **plantcv.crop_position_mask**(*img, mask, device, x, y, v_pos="top", h_pos="right", debug=None*)
 * post v3.0dev2: newmask = **plantcv.crop_position_mask**(*img, mask, x, y, v_pos="top", h_pos="right"*)
 
+
 #### plantcv.define_roi
 
 * pre v3.0dev2: device, contour, hierarchy = **plantcv.define_roi**(*img, shape, device, roi=None, roi_input='default', debug=None, adjust=False, x_adj=0, y_adj=0, w_adj=0, h_adj=0*)
@@ -447,6 +443,13 @@ pages for more details on the input and output variable types.
     * roi_contour, roi_hierarchy = **plantcv.roi.ellipse**(*img, x, y, r1, r2, angle*)
     * roi_contour, roi_hierarchy = **plantcv.roi.from_binary_image**(*img, bin_img*)
     * roi_contour, roi_hierarchy = **plantcv.roi.rectangle**(*img, x, y, h, w*)
+
+
+#### plantcv.detect_discs
+
+* pre v4.1: NA
+* post v4.1: discs_mask = **plantcv.detect_discs**(*bin_img, ecc_thresh=0*)
+
 
 #### plantcv.dilate
 
