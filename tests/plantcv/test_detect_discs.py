@@ -8,6 +8,6 @@ def test_detect_discs(test_data):
     # Read in test data
     mask = cv2.imread(test_data.small_bin_img, -1)
 
-    filtered_mask = detect_discs(bin_img=mask, ecc_thresh=0.8)
+    filtered_mask = detect_discs(bin_img=mask, ecc_thresh=0.9)
 
     assert np.sum(mask) > np.sum(filtered_mask)
