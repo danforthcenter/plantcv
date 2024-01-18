@@ -10,4 +10,4 @@ def test_detect_discs(test_data):
 
     filtered_mask = detect_discs(bin_img=mask, ecc_thresh=0.8)
 
-    assert  np.sum(mask) > np.sum(filtered_mask) 
+    assert np.sum(mask) > np.sum(filtered_mask)
