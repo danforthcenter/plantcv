@@ -57,6 +57,7 @@ nav:
       - 'Create Labels': create_labels.md
       - 'Crop': crop.md
       - 'Crop and Position Mask': crop_position_mask.md
+      - 'Detect Discs': detect_discs.md 
       - 'Dilation': dilate.md
       - 'Distance Transform': distance_transform.md
       - 'Erosion': erode.md
