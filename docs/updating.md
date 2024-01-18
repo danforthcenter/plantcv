@@ -392,6 +392,11 @@ pages for more details on the input and output variable types.
     * roi_contour, roi_hierarchy = **plantcv.roi.from_binary_image**(*img, bin_img*)
     * roi_contour, roi_hierarchy = **plantcv.roi.rectangle**(*img, x, y, h, w*)
 
+#### plantcv.detect_discs 
+
+* pre v4.3:  NA 
+* post v4.3: filterec_mask = **plantcv.detect_discs**(*bin_img, ecc_thresh=0*)
+
 #### plantcv.dilate
 
 * pre v3.0dev2: device, dil_img = **plantcv.dilate**(*img, kernel, i, device, debug=None*)
