@@ -31,7 +31,7 @@ def detect_discs(bin_img, ecc_thresh=0):
     obj_measures = regionprops(labeled_img)
     # blank mask to draw discs onto
     discs_mask = np.zeros(labeled_img.shape, dtype=np.uint8)
-    # Store the list of coordinates (row,col) for the objects that pass 
+    # Store the list of coordinates (row,col) for the objects that pass
     for obj in obj_measures:
         if obj.eccentricity < ecc_thresh:
             # Convert coord values to int
