@@ -18,7 +18,7 @@ the values out to the [Outputs class](outputs.md). Can also return/plot/print ou
 - **Example use:**
     * [Grayscale Image Tutorial](tutorials/grayscale_tutorial.md)
 
-- **Output data stored:** Data ('gray_frequencies', 'gray_mean', 'gray_median', 'nir_stdev') automatically gets stored to
+- **Output data stored:** Data ('gray_frequencies', 'gray_mean', 'gray_median', 'gray_stdev') automatically gets stored to
 the [`Outputs` class](outputs.md) when this function is ran. These data can always get accessed during a workflow (example
 below). For more detail about data output see [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 

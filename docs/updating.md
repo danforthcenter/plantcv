@@ -218,6 +218,7 @@ pages for more details on the input and output variable types.
 * post v3.11: analysis_image = **plantcv.analyze_bound_vertical**(*img, obj, mask, line_position, label="default"*)
 * post v4.0: DEPRECATED see plantcv.analyze.bound_vertical
 
+
 #### plantcv.analyze_color
 
 * pre v3.0dev2: device, hist_header, hist_data, analysis_images = **plantcv.analyze_color**(*img, imgname, mask, bins, device, debug=None, hist_plot_type=None, pseudo_channel='v', pseudo_bkg='img', resolution=300, filename=False*)
@@ -260,7 +261,6 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: (see plantcv.analyze_bound_horizontal)
 * post v4.0: analysis_image = **plantcv.analyze.bound_horizontal**(*img, labeled_mask, line_position, n_labels=1, label=None*)
-
 
 #### plantcv.analyze.bound_vertical
 
@@ -311,6 +311,57 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: NA
 * post v4.0: yii, yii_hist = **plantcv.analyze.yii**(*ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None*)
+
+#### plantcv.annotate.ClickCount
+
+* pre v4.1: NA
+* post v4.1: counter = **plantcv.annotate.ClickCount**(*img, figsize=(6,12)*)
+
+#### plantcv.annotate.clickcount.correct
+
+* pre v4.1: NA
+* post v4.1: corrected = **plantcv.annotate.clickcount.correct**(*bin_img*, *bin_img_recover*, *coords*)
+
+
+#### plantcv.annotate.clickcount.create_labels
+
+* pre v4.1: NA
+* post v4.1: corrected_label, corrected_class, corrected_name, num = **plantcv.annotate.clickcount.create_labels**(*gray_img, label='default'*)
+
+
+#### plantcv.annotate.clickcount.file_import
+
+* pre v4.1: NA
+* post v4.1: **plantcv.annotate.clickcount.file_import**(*filename*)
+
+
+#### plantcv.annotate.clickcount.import_coords
+
+* pre v4.1: NA
+* post v4.1: **plantcv.annotate.clickcount.import_coords**(*coords, label="total"*)
+
+
+#### plantcv.annotate.clickcount.save_coords
+
+* pre v4.1: NA
+* post v4.1: **plantcv.annotate.clickcount.save_coords**(*filename*)
+
+
+#### plantcv.annotate.clickcount.view
+
+* pre v4.1: NA
+* post v4.1: **plantcv.annotate.clickcount.view**(*label="total", color="c", view_all=False*)
+
+
+#### plantcv.annotate.get_centroids
+
+* pre v4.1: NA
+* post v4.1: coords = **plantcv.annotate.get_centroids**(*bin_img*)
+
+#### plantcv.annotate.Points
+
+* pre v4.1: NA
+* post v4.1: marker = **plantcv.annotate.Points**(*img, figsize=(6,12)*)
 
 #### plantcv.apply_mask
 
@@ -383,6 +434,7 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, newmask = **plantcv.crop_position_mask**(*img, mask, device, x, y, v_pos="top", h_pos="right", debug=None*)
 * post v3.0dev2: newmask = **plantcv.crop_position_mask**(*img, mask, x, y, v_pos="top", h_pos="right"*)
 
+
 #### plantcv.define_roi
 
 * pre v3.0dev2: device, contour, hierarchy = **plantcv.define_roi**(*img, shape, device, roi=None, roi_input='default', debug=None, adjust=False, x_adj=0, y_adj=0, w_adj=0, h_adj=0*)
@@ -391,6 +443,13 @@ pages for more details on the input and output variable types.
     * roi_contour, roi_hierarchy = **plantcv.roi.ellipse**(*img, x, y, r1, r2, angle*)
     * roi_contour, roi_hierarchy = **plantcv.roi.from_binary_image**(*img, bin_img*)
     * roi_contour, roi_hierarchy = **plantcv.roi.rectangle**(*img, x, y, h, w*)
+
+
+#### plantcv.detect_discs
+
+* pre v4.1: NA
+* post v4.1: discs_mask = **plantcv.detect_discs**(*bin_img, ecc_thresh=0*)
+
 
 #### plantcv.dilate
 
@@ -780,6 +839,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: NA
 * post v4.0: marker = **plantcv.Points**(*img, figsize=(6,12)*)
+* post v4.1: DEPRECATED, see plantcv.annotate.Points
 
 #### plantcv.print_image
 

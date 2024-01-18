@@ -1,6 +1,5 @@
 # PlantCV classes
 import os
-import cv2
 import json
 import numpy as np
 from plantcv.plantcv import fatal_error
@@ -11,6 +10,7 @@ import altair as alt
 import pandas as pd
 
 
+# Class definitions
 class Params:
     """PlantCV parameters class."""
 
@@ -350,47 +350,8 @@ class PSII_data:
         self.__dict__[protocol.name] = protocol
 
 
-class Points:
-    """Point annotation/collection class to use in Jupyter notebooks. It allows the user to
-    interactively click to collect coordinates from an image. Left click collects the point and
-    right click removes the closest collected point
-    """
-
-    def __init__(self, img, figsize=(12, 6)):
-        """
-        Initialization
-        :param img: image data
-        :param figsize: desired figure size, (12,6) by default
-        :attribute points: list of points as (x,y) coordinates tuples
-        """
-
-        self.fig, self.ax = plt.subplots(1, 1, figsize=figsize)
-        self.ax.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-
-        self.points = []
-        self.events = []
-
-        self.fig.canvas.mpl_connect('button_press_event', self.onclick)
-
-    def onclick(self, event):
-        """Handle mouse click events"""
-        self.events.append(event)
-        if event.button == 1:
-
-            self.ax.plot(event.xdata, event.ydata, 'x', c='red')
-            self.points.append((floor(event.xdata), floor(event.ydata)))
-
-        else:
-            idx_remove, _ = _find_closest_pt((event.xdata, event.ydata), self.points)
-            # remove the closest point to the user right clicked one
-            self.points.pop(idx_remove)
-            self.ax.lines[idx_remove].remove()
-        self.fig.canvas.draw()
-
-
 class Objects:
     """Class for managing image contours/objects and their hierarchical relationships."""
-
     def __init__(self, contours: list = None, hierarchy: list = None):
         self.contours = contours
         self.hierarchy = hierarchy
@@ -406,18 +367,20 @@ class Objects:
         if self.n < len(self.contours):
             self.n += 1
             return Objects(contours=[self.contours[self.n-1]], hierarchy=[self.hierarchy[self.n-1]])
-        else:
-            raise StopIteration
+        raise StopIteration
 
     def append(self, contour, h):
+        """Method to append objects to existing list."""
         self.contours.append(contour)
         self.hierarchy.append(h)
 
     def save(self, filename):
+        """Method to save objects to a file."""
         np.savez(filename, contours=self.contours, hierarchy=self.hierarchy)
 
     @staticmethod
     def load(filename):
+        """Method to load objects from a file."""
         file = np.load(filename)
         obj = Objects(file['contours'].tolist(), file['hierarchy'])
         return obj

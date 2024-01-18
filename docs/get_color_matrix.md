@@ -8,7 +8,7 @@ Computes the average *R*, *G*, *B* values for each region in the RGB image denot
 
 - **Parameters**
     - rgb_img - RGB image with color chips visualized
-    - mask    - a gray-scale img with unique values for each segmented space, representing unique, discrete color chips.
+    - mask    - a gray-scale img with unique values for each segmented space, representing unique, discrete color chips. Likely created with [`pcv.transform.detect_color_card`](transform_detect_color_card.md). 
 
 - **Returns**
     - color_matrix - a *n* x 4 matrix containing the average red value, average green value, and average blue value for each color chip.

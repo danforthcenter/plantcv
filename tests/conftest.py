@@ -81,6 +81,7 @@ class TestData:
         # Clustered contours names file with too many labels
         self.cluster_names_too_many = os.path.join(self.datadir, "cluster_names_too_many.txt")
 
+
     @staticmethod
     def load_hsi(pkl_file):
         """Load PlantCV Spectral_data pickled object."""

@@ -13,6 +13,15 @@ class AnnotateTestData:
         self.datadir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "testdata")
         # RGB image
         self.small_rgb_img = os.path.join(self.datadir, "setaria_small_plant_rgb.png")
+        # Disc image mask
+        self.discs_mask = os.path.join(self.datadir, "discs_binary.png")
+        # Clickcount_correct image masks
+        self.pollen = os.path.join(self.datadir, "crop_pollen.png")
+        self.pollen_all = os.path.join(self.datadir, "pollen_all_mask.png")
+        self.pollen_discs = os.path.join(self.datadir, "pollen_detectdisc_mask.png")
+        self.pollen_watershed = os.path.join(self.datadir, "pollen_watershed.png")
+        self.pollen_recovered = os.path.join(self.datadir, "pollen_recovered.png")
+        self.pollen_coords = os.path.join(self.datadir, "clickcount_file_import.coords")
 
 
 @pytest.fixture(scope="session")
