@@ -2,7 +2,6 @@
 
 import cv2
 import numpy as np
-from plantcv.plantcv import params
 from plantcv.plantcv._helpers import _cv2_findcontours
 
 
@@ -18,7 +17,6 @@ def get_centroids(bin_img):
     :param bin_img: numpy.ndarray
     :return coords: list
     """
-    params.device += 1
     # find contours in the binary image
     contours, _ = _cv2_findcontours(bin_img.astype(np.uint8))
     coords = []
