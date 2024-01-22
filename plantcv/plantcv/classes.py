@@ -202,13 +202,13 @@ class Outputs:
                                     csv_table.write(",".join(map(str, row)) + "\n")
                         # If the data type is Boolean, store as a numeric 1/0 instead of True/False
                         elif isinstance(val, bool):
-                            row = metadata_val_list + [sample, var, int(self.observations[sample][var]["value"]), 
+                            row = metadata_val_list + [sample, var, int(self.observations[sample][var]["value"]),
                                                        self.observations[sample][var]["label"]]
                             csv_table.write(",".join(map(str, row)) + "\n")
                         # For all other supported data types, save one row per trait
                         # Assumes no unusual data types are present (possibly a bad assumption)
                         else:
-                            row = metadata_val_list + [sample, var, self.observations[sample][var]["value"], 
+                            row = metadata_val_list + [sample, var, self.observations[sample][var]["value"],
                                                        self.observations[sample][var]["label"]]
                             csv_table.write(",".join(map(str, row)) + "\n")
 
