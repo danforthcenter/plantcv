@@ -406,8 +406,7 @@ class Objects:
         if self.n < len(self.contours):
             self.n += 1
             return Objects(contours=[self.contours[self.n-1]], hierarchy=[self.hierarchy[self.n-1]])
-        else:
-            raise StopIteration
+        raise StopIteration
 
     def append(self, contour, h):
         self.contours.append(contour)
