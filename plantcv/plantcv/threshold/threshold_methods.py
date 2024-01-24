@@ -648,7 +648,7 @@ def _plot(x, mph, mpd, threshold, edge, valley, ax, ind):
         label = 'valley' if valley else 'peak'
         label = label + 's' if ind.size > 1 else label
         ax.plot(ind, x[ind], '+', mfc=None, mec='r', mew=2, ms=8,
-                label='%d %s' % (ind.size, label))
+                label=f'{ind.size} {label}'
         ax.legend(loc='best', framealpha=.5, numpoints=1)
     ax.set_xlim(-.02 * x.size, x.size * 1.02 - 1)
     ymin, ymax = x[np.isfinite(x)].min(), x[np.isfinite(x)].max()
@@ -657,8 +657,7 @@ def _plot(x, mph, mpd, threshold, edge, valley, ax, ind):
     ax.set_xlabel('Data #', fontsize=14)
     ax.set_ylabel('Amplitude', fontsize=14)
     mode = 'Valley detection' if valley else 'Peak detection'
-    ax.set_title("%s (mph=%s, mpd=%d, threshold=%s, edge='%s')"
-                 % (mode, str(mph), mpd, str(threshold), edge))
+    ax.set_title(f"mode ({mph=}, {mpd=}, {threshold=}, {edge=})")
     plt.show()
 
 
@@ -739,7 +738,7 @@ def mask_bad(float_img, bad_type='native'):
         mask[idx_inf, idy_inf] = 255
     # "bad" exists but not the user desired bad type, return the all-zero mask
     else:
-        print('{} does not appear in the current image.'.format(bad_type.lower()))
+        print(f'{format(bad_type.lower())} does not appear in the current image.'
 
     _debug(visual=mask, filename=os.path.join(params.debug_outdir, str(params.device) + "_bad_mask.png"))
 
