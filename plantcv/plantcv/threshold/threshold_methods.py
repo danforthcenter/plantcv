@@ -265,7 +265,7 @@ def triangle(gray_img, object_type="light", xstep=1):
         if params.debug == 'print':
             _, ax = plt.subplots()
             ax.plot(hist)
-            ax.set(title='Threshold value = {t}'.format(t=autothreshval))
+            ax.set(title=f"Threshold value = {autothreshval}")
             ax.axis([0, 256, 0, max(hist)])
             ax.grid(True)
             fig_name_hist = os.path.join(params.debug_outdir,
@@ -275,7 +275,7 @@ def triangle(gray_img, object_type="light", xstep=1):
             # close pyplot plotting window
             plt.clf()
         elif params.debug == 'plot':
-            print('Threshold value = {t}'.format(t=autothreshval))
+            print(f"Threshold value = {autothreshval}")
             _, ax = plt.subplots()
             ax.plot(hist)
             ax.axis([0, 256, 0, max(hist)])
