@@ -1,4 +1,3 @@
-import pytest
 import numpy as np
 import cv2
 from plantcv.plantcv import spectral_index

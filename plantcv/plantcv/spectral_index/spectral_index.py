@@ -5,7 +5,7 @@ import numpy as np
 import cv2
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv import warn
 from plantcv.plantcv import Spectral_data
 from plantcv.plantcv.transform import rescale
 from plantcv.plantcv.hyperspectral import _find_closest
