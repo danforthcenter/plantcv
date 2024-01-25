@@ -174,7 +174,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
         # Label slope lines
         w = label_coord_x[i]
         h = label_coord_y[i]
-        text = "{:.2f}".format(intersection_angles[i])
+        text = f"{intersection_angles[i]:0,.2f}"
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
         segment_ids.append(i)

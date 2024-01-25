@@ -71,7 +71,7 @@ def segment_angle(segmented_img, objects, label=None):
         # Label slope lines
         w = label_coord_x[i]
         h = label_coord_y[i]
-        text = "{:.2f}".format(segment_angles[i])
+        text = f"{segment_angles[i]:0,.2f}"
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
         segment_ids.append(i)

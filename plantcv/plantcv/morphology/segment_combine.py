@@ -68,7 +68,7 @@ def segment_combine(segment_list, objects, mask):
     for i, cnt in enumerate(all_objects):
         w = label_coord_x[i]
         h = label_coord_y[i]
-        text = "ID:{}".format(i)
+        text = f"ID:{i}"
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=params.text_size, color=rand_color[i], thickness=2)
 
