@@ -92,7 +92,7 @@ def run_command(commands, args, cwd=None, verbose=False, hide_stderr=False,
             return None, None
     else:
         if verbose:
-            print(f"unable to find command, tried {(commands,)}"
+            print(f"unable to find command, tried {(commands,)}")
         return None, None
     stdout = process.communicate()[0].strip().decode()
     if process.returncode != 0:

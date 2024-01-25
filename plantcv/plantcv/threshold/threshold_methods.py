@@ -648,7 +648,7 @@ def _plot(x, mph, mpd, threshold, edge, valley, ax, ind):
         label = 'valley' if valley else 'peak'
         label = label + 's' if ind.size > 1 else label
         ax.plot(ind, x[ind], '+', mfc=None, mec='r', mew=2, ms=8,
-                label=f'{ind.size} {label}'
+                label=f'{ind.size} {label}')
         ax.legend(loc='best', framealpha=.5, numpoints=1)
     ax.set_xlim(-.02 * x.size, x.size * 1.02 - 1)
     ymin, ymax = x[np.isfinite(x)].min(), x[np.isfinite(x)].max()
