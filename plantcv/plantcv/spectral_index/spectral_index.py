@@ -5,7 +5,7 @@ import numpy as np
 import cv2
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv import warn
 from plantcv.plantcv import Spectral_data
 from plantcv.plantcv.transform import rescale
 from plantcv.plantcv.hyperspectral import _find_closest
@@ -38,7 +38,8 @@ def ndvi(hsi, distance=20):
         # Naturally ranges from -1 to 1
         index_array_raw = (r800 - r670) / (r800 + r670)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="NDVI")
-    fatal_error("Available wavelengths are not suitable for calculating NDVI. Try increasing distance.")
+    warn("Available wavelengths are not suitable for calculating NDVI. Try increasing distance.")
+    return None
 
 
 def gdvi(hsi, distance=20):
@@ -67,7 +68,8 @@ def gdvi(hsi, distance=20):
         # Naturally ranges from -1 to 1
         index_array_raw = r800 - r550
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="GDVI")
-    fatal_error("Available wavelengths are not suitable for calculating GDVI. Try increasing distance.")
+    warn("Available wavelengths are not suitable for calculating GDVI. Try increasing distance.")
+    return None
 
 
 def savi(hsi, distance=20):
@@ -96,7 +98,8 @@ def savi(hsi, distance=20):
         # Naturally ranges from -1.2 to 1.2
         index_array_raw = (1.5 * (r800 - r680)) / (r800 + r680 + 0.5)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="SAVI")
-    fatal_error("Available wavelengths are not suitable for calculating SAVI. Try increasing distance.")
+    warn("Available wavelengths are not suitable for calculating SAVI. Try increasing distance.")
+    return None
 
 
 def pri(hsi, distance=20):
@@ -125,7 +128,8 @@ def pri(hsi, distance=20):
         r531 = (hsi.array_data[:, :, r531_index])
         index_array_raw = (r531 - r570) / (r531 + r570)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PRI")
-    fatal_error("Available wavelengths are not suitable for calculating PRI. Try increasing distance.")
+    warn("Available wavelengths are not suitable for calculating PRI. Try increasing distance.")
+    return None
 
 
 def ari(hsi, distance=20):
@@ -153,7 +157,8 @@ def ari(hsi, distance=20):
         r700 = (hsi.array_data[:, :, r700_index])
         index_array_raw = (1 / r550) - (1 / r700)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="ARI")
-    fatal_error("Available wavelengths are not suitable for calculating ARI. Try increasing distance.")
+    warn("Available wavelengths are not suitable for calculating ARI. Try increasing distance.")
+    return None
 
 
 def ci_rededge(hsi, distance=20):
@@ -182,7 +187,8 @@ def ci_rededge(hsi, distance=20):
         # Naturally ranges from -1 to inf
         index_array_raw = (r800 / r700) - 1
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="CI_REDEDGE")
-    fatal_error("Available wavelengths are not suitable for calculating CI_REDEDGE. Try increasing distance.")
+    warn("Available wavelengths are not suitable for calculating CI_REDEDGE. Try increasing distance.")
+    return None
 
 
 def cri550(hsi, distance=20):
@@ -211,7 +217,8 @@ def cri550(hsi, distance=20):
         # Naturally ranges from -inf to inf
         index_array_raw = (1 / r510) - (1 / r550)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="CRI510")
-    fatal_error("Available wavelengths are not suitable for calculating CRI510. Try increasing distance.")
+    warn("Available wavelengths are not suitable for calculating CRI510. Try increasing distance.")
+    return None
 
 
 def cri700(hsi, distance=20):
@@ -240,7 +247,8 @@ def cri700(hsi, distance=20):
         # Naturally ranges from -inf to inf
         index_array_raw = (1 / r510) - (1 / r700)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="CRI700")
-    fatal_error("Available wavelengths are not suitable for calculating CRI700. Try increasing distance.")
+    warn("Available wavelengths are not suitable for calculating CRI700. Try increasing distance.")
+    return None
 
 
 def egi(rgb_img):
@@ -307,7 +315,8 @@ def evi(hsi, distance=20):
         # Naturally ranges from -inf to inf
         index_array_raw = (2.5 * (r800 - r670)) / (1 + r800 + (6 * r670) - (7.5 * r480))
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="EVI")
-    fatal_error("Available wavelengths are not suitable for calculating EVI. Try increasing distance.")
+    warn("Available wavelengths are not suitable for calculating EVI. Try increasing distance.")
+    return None
 
 
 def mari(hsi, distance=20):
@@ -338,7 +347,8 @@ def mari(hsi, distance=20):
         # Naturally ranges from -inf to inf
         index_array_raw = ((1 / r550) - (1 / r700)) * r800
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="MARI")
-    fatal_error("Available wavelengths are not suitable for calculating MARI. Try increasing distance.")
+    warn("Available wavelengths are not suitable for calculating MARI. Try increasing distance.")
+    return None
 
 
 def mcari(hsi, distance=20):
@@ -369,7 +379,8 @@ def mcari(hsi, distance=20):
         # Naturally ranges from -inf to inf
         index_array_raw = ((r700 - r670) - 0.2 * (r700 - r550)) * (r700 / r670)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="MCARI")
-    fatal_error("Available wavelengths are not suitable for calculating MCARI. Try increasing distance.")
+    warn("Available wavelengths are not suitable for calculating MCARI. Try increasing distance.")
+    return None
 
 
 def mtci(hsi, distance=20):
@@ -400,7 +411,8 @@ def mtci(hsi, distance=20):
         # Naturally ranges from -inf to inf
         index_array_raw = (r753 - r708) / (r708 - r681)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="MTCI")
-    fatal_error("Available wavelengths are not suitable for calculating MTCI. Try increasing distance.")
+    warn("Available wavelengths are not suitable for calculating MTCI. Try increasing distance.")
+    return None
 
 
 def ndre(hsi, distance=20):
@@ -429,7 +441,8 @@ def ndre(hsi, distance=20):
         # Naturally ranges from -1 to 1
         index_array_raw = (r790 - r720) / (r790 + r720)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="NDRE")
-    fatal_error("Available wavelengths are not suitable for calculating NDRE. Try increasing distance.")
+    warn("Available wavelengths are not suitable for calculating NDRE. Try increasing distance.")
+    return None
 
 
 def psnd_chla(hsi, distance=20):
@@ -458,7 +471,8 @@ def psnd_chla(hsi, distance=20):
         # Naturally ranges from -1 to 1
         index_array_raw = (r800 - r680) / (r800 + r680)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSND_CHLA")
-    fatal_error("Available wavelengths are not suitable for calculating PSND_CHLA. Try increasing distance.")
+    warn("Available wavelengths are not suitable for calculating PSND_CHLA. Try increasing distance.")
+    return None
 
 
 def psnd_chlb(hsi, distance=20):
@@ -487,7 +501,8 @@ def psnd_chlb(hsi, distance=20):
         # Naturally ranges from -1 to 1
         index_array_raw = (r800 - r635) / (r800 + r635)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSND_CHLB")
-    fatal_error("Available wavelengths are not suitable for calculating PSND_CHLB. Try increasing distance.")
+    warn("Available wavelengths are not suitable for calculating PSND_CHLB. Try increasing distance.")
+    return None
 
 
 def psnd_car(hsi, distance=20):
@@ -516,7 +531,8 @@ def psnd_car(hsi, distance=20):
         # Naturally ranges from -1 to 1
         index_array_raw = (r800 - r470) / (r800 + r470)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSND_CAR")
-    fatal_error("Available wavelengths are not suitable for calculating PSND_CAR. Try increasing distance.")
+    warn("Available wavelengths are not suitable for calculating PSND_CAR. Try increasing distance.")
+    return None
 
 
 def psri(hsi, distance=20):
@@ -547,7 +563,8 @@ def psri(hsi, distance=20):
         # Naturally ranges from -inf to inf
         index_array_raw = (r678 - r500) / r750
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSRI")
-    fatal_error("Available wavelengths are not suitable for calculating PSRI. Try increasing distance.")
+    warn("Available wavelengths are not suitable for calculating PSRI. Try increasing distance.")
+    return None
 
 
 def pssr_chla(hsi, distance=20):
@@ -576,7 +593,8 @@ def pssr_chla(hsi, distance=20):
         # Naturally ranges from 0 to inf
         index_array_raw = r800 / r680
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSSR_CHLA")
-    fatal_error("Available wavelengths are not suitable for calculating PSSR_CHLA. Try increasing distance.")
+    warn("Available wavelengths are not suitable for calculating PSSR_CHLA. Try increasing distance.")
+    return None
 
 
 def pssr_chlb(hsi, distance=20):
@@ -605,7 +623,8 @@ def pssr_chlb(hsi, distance=20):
         # Naturally ranges from 0 to inf
         index_array_raw = r800 / r635
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSSR_CHLB")
-    fatal_error("Available wavelengths are not suitable for calculating PSSR_CHLB. Try increasing distance.")
+    warn("Available wavelengths are not suitable for calculating PSSR_CHLB. Try increasing distance.")
+    return None
 
 
 def pssr_car(hsi, distance=20):
@@ -634,7 +653,8 @@ def pssr_car(hsi, distance=20):
         # Naturally ranges from 0 to inf
         index_array_raw = r800 / r470
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSSR_CAR")
-    fatal_error("Available wavelengths are not suitable for calculating PSSR_CAR. Try increasing distance.")
+    warn("Available wavelengths are not suitable for calculating PSSR_CAR. Try increasing distance.")
+    return None
 
 
 def rgri(hsi, distance=20):
@@ -660,7 +680,8 @@ def rgri(hsi, distance=20):
         # Naturally ranges from 0 to inf
         index_array_raw = r670 / r560
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="RGRI")
-    fatal_error("Available wavelengths are not suitable for calculating RGRI. Try increasing distance.")
+    warn("Available wavelengths are not suitable for calculating RGRI. Try increasing distance.")
+    return None
 
 
 def rvsi(hsi, distance=20):
@@ -691,7 +712,8 @@ def rvsi(hsi, distance=20):
         # Naturally ranges from -1 to 1
         index_array_raw = ((r714 + r752) / 2) - r733
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="RVSI")
-    fatal_error("Available wavelengths are not suitable for calculating RVSI. Try increasing distance.")
+    warn("Available wavelengths are not suitable for calculating RVSI. Try increasing distance.")
+    return None
 
 
 def sipi(hsi, distance=20):
@@ -722,7 +744,8 @@ def sipi(hsi, distance=20):
         # Naturally ranges from -inf to inf
         index_array_raw = (r800 - r670) / (r800 - r445)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="SIPI")
-    fatal_error("Available wavelengths are not suitable for calculating SIPI. Try increasing distance.")
+    warn("Available wavelengths are not suitable for calculating SIPI. Try increasing distance.")
+    return None
 
 
 def sr(hsi, distance=20):
@@ -751,7 +774,8 @@ def sr(hsi, distance=20):
         # Naturally ranges from 0 to inf
         index_array_raw = r800 / r670
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="SR")
-    fatal_error("Available wavelengths are not suitable for calculating SR. Try increasing distance.")
+    warn("Available wavelengths are not suitable for calculating SR. Try increasing distance.")
+    return None
 
 
 def vari(hsi, distance=20):
@@ -782,7 +806,8 @@ def vari(hsi, distance=20):
         # Naturally ranges from -inf to inf
         index_array_raw = (r550 - r670) / (r550 + r670 - r480)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="VARI")
-    fatal_error("Available wavelengths are not suitable for calculating VARI. Try increasing distance.")
+    warn("Available wavelengths are not suitable for calculating VARI. Try increasing distance.")
+    return None
 
 
 def vi_green(hsi, distance=20):
@@ -811,7 +836,8 @@ def vi_green(hsi, distance=20):
         # Naturally ranges from -1 to 1
         index_array_raw = (r550 - r670) / (r550 + r670)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="VI_GREEN")
-    fatal_error("Available wavelengths are not suitable for calculating VI_GREEN. Try increasing distance.")
+    warn("Available wavelengths are not suitable for calculating VI_GREEN. Try increasing distance.")
+    return None
 
 
 def wi(hsi, distance=20):
@@ -840,7 +866,8 @@ def wi(hsi, distance=20):
         # Naturally ranges from 0 to Inf
         index_array_raw = r900 / r970
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="WI")
-    fatal_error("Available wavelengths are not suitable for calculating WBI. Try increasing distance.")
+    warn("Available wavelengths are not suitable for calculating WBI. Try increasing distance.")
+    return None
 
 
 def _package_index(hsi, raw_index, method):
