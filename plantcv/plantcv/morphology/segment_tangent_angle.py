@@ -122,7 +122,7 @@ def segment_tangent_angle(segmented_img, objects, size, label=None):
         if type(intersection_angles[i]) is str:
             text = f"{intersection_angles[i]}"
         else:
-            text = f"{intersection_angles[1]:0,.2f}"
+            text = f"{intersection_angles[i]:0,.2f}"
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
         segment_ids.append(i)

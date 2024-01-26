@@ -657,7 +657,7 @@ def _plot(x, mph, mpd, threshold, edge, valley, ax, ind):
     ax.set_xlabel('Data #', fontsize=14)
     ax.set_ylabel('Amplitude', fontsize=14)
     mode = 'Valley detection' if valley else 'Peak detection'
-    ax.set_title(f"mode ({mph=}, {mpd=}, {threshold=}, {edge=})")
+    ax.set_title(f"{mode} ({mph=}, {mpd=}, {threshold=}, {edge=})")
     plt.show()
 
 

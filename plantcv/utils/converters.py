@@ -204,13 +204,12 @@ def tabulate_bayes_classes(input_file, output_file):
                 class_dict[class_name].append("")
 
     # Open the output file
-    out = open(output_file, "w")
-    # Create the output table
-    class_names = class_dict.keys()
-    out.write("\t".join(map(str, class_names)) + "\n")
-    for i in range(0, total_rgb):
-        row = []
-        for class_name in class_names:
-            row.append(class_dict[class_name][i])
-        out.write("\t".join(map(str, row)) + "\n")
-    out.close()
+    with open(output_file, "w") as out:
+        # Create the output table
+        class_names = class_dict.keys()
+        out.write("\t".join(map(str, class_names)) + "\n")
+        for i in range(0, total_rgb):
+            row = []
+            for class_name in class_names:
+                row.append(class_dict[class_name][i])
+            out.write("\t".join(map(str, row)) + "\n")
