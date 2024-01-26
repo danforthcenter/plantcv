@@ -149,15 +149,15 @@ def naive_bayes_multiclass(samples_file, outfile, mkplots=False):
         for channel, cls in pdfs.items():
             _plot_pdf(channel, os.path.dirname(outfile), **cls)
     # Write the PDFs to a text file
-    out = open(outfile, "w")
-    # Write the column labels
-    out.write("class\tchannel\t" + "\t".join(map(str, range(0, 256))) + "\n")
-    # For each channel
-    for channel, cls in pdfs.items():
-        # For each class
-        for class_name, pdf in cls.items():
-            # Each row is the PDF for the given class and color channel
-            out.write(class_name + "\t" + channel + "\t" + "\t".join(map(str, pdf)) + "\n")
+    with open(outfile, "w") as out:
+        # Write the column labels
+        out.write("class\tchannel\t" + "\t".join(map(str, range(0, 256))) + "\n")
+        # For each channel
+        for channel, cls in pdfs.items():
+            # For each class
+            for class_name, pdf in cls.items():
+                # Each row is the PDF for the given class and color channel
+                out.write(class_name + "\t" + channel + "\t" + "\t".join(map(str, pdf)) + "\n")
 
 
 def _split_plant_background_signal(channel, mask):
