@@ -197,5 +197,4 @@ def acute(img, mask, win, threshold):
         _debug(visual=ori_img, filename=f"{params.device}_acute_plms.png")
 
         return homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist
-    else:
-        return [], [], [], [], [], []
+    return [], [], [], [], [], []
