@@ -19,7 +19,7 @@ def checkerboard_calib(img_path, col_corners, row_corners, output_directory):
     img_path    = directory of checkerboard images to be used for calibration
     col_corners = the number from inside corners in a column of the checkerboard
     row_corners = the number from inside corners in a row of the checkerboard
-    output_directory = filepath where the outputs will be saved
+    output_directory = filepath where the outputs will be saved.
 
     :param img_path: path to directory of checkerboard images
     :param col_corners: non-negative real number
@@ -90,9 +90,9 @@ def calibrate_camera(rgb_img, mtx_filename, dist_filename):
 
     newcameramtx, _ = cv.getOptimalNewCameraMatrix(mtx, dist, (w, h), 1, (w, h))
 
-    dst = cv.undistort(rgb_img, mtx, dist, None, newcameramtx)
+    corrected_img = cv.undistort(rgb_img, mtx, dist, None, newcameramtx)
 
     # Debug images
-    _debug(visual=dst, filename=os.path.join(params.debug_outdir, str(params.device) + "_checkerboard_corners.png"))
+    _debug(visual=corrected_img, filename=os.path.join(params.debug_outdir, str(params.device) + "_checkerboard_corners.png"))
 
-    return dst
+    return corrected_img

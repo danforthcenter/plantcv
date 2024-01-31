@@ -50,9 +50,9 @@ class TransformTestData:
         # Fish eye image
         self.fisheye_test_img = os.path.join(self.datadir, "fisheye_test_img.png")
         # mtx matrix
-        self.mtx = os.path.join(self.datadir, "mtx.gz")
+        self.mtx = os.path.join(self.datadir, "mtx.npz")
         # dist matrix
-        self.dist = os.path.join(self.datadir, "dist.gz")
+        self.dist = os.path.join(self.datadir, "dist.npz")
 
     @staticmethod
     def create_test_img(sz_img):
