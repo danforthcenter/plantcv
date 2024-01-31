@@ -7,9 +7,11 @@ from plantcv.plantcv.readimage import readimage
 from plantcv.plantcv.rgb2gray import rgb2gray
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv.transform.color_correction import save_matrix
+from plantcv.plantcv.transform.color_correction import load_matrix
 
 
-def checkerboard_calib(img_path, col_corners, row_corners):
+def checkerboard_calib(img_path, col_corners, row_corners, output_directory):
     """
     Use several checkerboard images to calibrate a camera with image distortions.
 
@@ -17,10 +19,12 @@ def checkerboard_calib(img_path, col_corners, row_corners):
     img_path    = directory of checkerboard images to be used for calibration
     col_corners = the number from inside corners in a column of the checkerboard
     row_corners = the number from inside corners in a row of the checkerboard
+    output_directory = filepath where the outputs will be saved
 
     :param img_path: path to directory of checkerboard images
     :param col_corners: non-negative real number
     :param row_corners: non-negative real number
+    :param output_directory = string
     :return mtx: numpy.ndarray
     :return dist: numpy.ndarray
     """
@@ -33,7 +37,7 @@ def checkerboard_calib(img_path, col_corners, row_corners):
     imgpoints = []  # 2d points in image plane
 
     for fname in images:
-        img, path, _ = readimage(filename=os.path.join(img_path + "/" + fname), mode="native")
+        img, _, _ = readimage(filename=os.path.join(img_path, fname), mode="native")
         img1 = np.copy(img)
         gray_img = rgb2gray(img1)
         ret, corners = cv.findChessboardCorners(gray_img, (col_corners, row_corners))
@@ -50,20 +54,28 @@ def checkerboard_calib(img_path, col_corners, row_corners):
 
     _, mtx, dist, _, _ = cv.calibrateCamera(objpoints, imgpoints, gray_img.shape[::-1], None, None)
 
+    # check output_directory, if it does not exist, create
+    if not os.path.exists(output_directory):
+        os.mkdir(output_directory)
+
+    # save matrices
+    save_matrix(mtx, os.path.join(output_directory, "mtx.npz"))
+    save_matrix(dist, os.path.join(output_directory, "dist.npz"))
+
     # Debug images
-    _debug(visual=img1, filename=os.path.join(params.debug_outdir, "_checkerboard_corners.png"))
+    _debug(visual=img1, filename=os.path.join(params.debug_outdir, str(params.device) + "_checkerboard_corners.png"))
 
     return mtx, dist
 
 
-def calibrate_camera(rgb_img, mtx, dist):
+def calibrate_camera(rgb_img, mtx_filename, dist_filename):
     """
     Use the outputs from checkerboard_calib to correct the distortions in an image
 
     Inputs:
     img  = an RGB image
-    mtx  = an output of checkerboar_calib
-    dist = ret = an output of checkerboar_calib
+    mtx  = a .npz file, an output of checkerboar_calib
+    dist = a .npz file, an output of checkerboar_calib
 
     :param img: path to an image
     :param ret: float
@@ -71,6 +83,9 @@ def calibrate_camera(rgb_img, mtx, dist):
     :param dist: numpy.ndarray
     :return corrected_img: numpy.ndarray
     """
+    mtx = load_matrix(mtx_filename)
+    dist = load_matrix(dist_filename)
+
     h, w = rgb_img.shape[:2]
 
     newcameramtx, _ = cv.getOptimalNewCameraMatrix(mtx, dist, (w, h), 1, (w, h))
