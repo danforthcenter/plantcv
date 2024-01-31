@@ -21,8 +21,9 @@ This fucntion uses images of checkerboards to correct distortions introduced by 
 
 ![Screenshot](img/documentation_images/transform_camera_calibration/checkerboard_example.png)
 
-**Input image example**
-![Screenshot](img/documentation_images/transform_camera_calibration/example_fisheye_plant.jpg)
+**Checkerboard calibration**
+
+![Screenshot](img/documentation_images/transform_camera_calibration/corners_registered_checkerboard.png)
 
 ```python
 
@@ -38,13 +39,3 @@ mtx, dist = pcv.checkerboard_calib(img_path = "./img_files", col_corners = 13, r
 corrected_img = pcv.calibrate_camera(img = img, mtx = mtx, dist = dist)
 
 ```
-
-**Checkerboard calibration**
-
-![Screenshot](img/documentation_images/transform_camera_calibration/corners_registered_checkerboard.png)
-
-**Corrected image**
-
-![Screenshot](img/documentation_images/transform_camera_calibration/camera_calib_corrected.png)
-
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/checkerboard_calib.py)
