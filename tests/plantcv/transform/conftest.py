@@ -48,7 +48,7 @@ class TransformTestData:
         self.checkerboard_imgdir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                                 "..", "..", "testdata", "checkerboard_imgdir")
         # Fish eye image
-        self.fisheye_test_img = os.path.join(self.datadir, "fisheye_test_img.png")
+        self.fisheye_test_img = os.path.join(self.datadir, "fisheye_test_img.jpg")
         # mtx matrix
         self.mtx = os.path.join(self.datadir, "mtx.npz")
         # dist matrix
