@@ -45,12 +45,18 @@ def checkerboard_calib(img_path, col_corners, row_corners, output_directory):
         if ret is False:
             print("Checkerboard image " + fname + " does not match given dimensions.")
             continue
-        if ret is True:
+        else:
             objpoints.append(objp)
             corners2 = cv.cornerSubPix(gray_img, corners, (11, 11), (-1, -1), criteria)
             imgpoints.append(corners2)
             # Draw and display the corners
-            cv.drawChessboardCorners(img1, (col_corners, row_corners), corners2, ret)
+            debug_mode = params.debug
+            params.debug = None
+            out_img = cv.drawChessboardCorners(img1, (col_corners, row_corners), corners2, ret)
+            # Debug images
+            params.debug = debug_mode
+            _debug(visual=out_img, filename=os.path.join(params.debug_outdir, str(params.device) +
+                                                         "_checkerboard_corners.png"))
 
     _, mtx, dist, _, _ = cv.calibrateCamera(objpoints, imgpoints, gray_img.shape[::-1], None, None)
 
@@ -61,9 +67,6 @@ def checkerboard_calib(img_path, col_corners, row_corners, output_directory):
     # save matrices
     save_matrix(mtx, os.path.join(output_directory, "mtx.npz"))
     save_matrix(dist, os.path.join(output_directory, "dist.npz"))
-
-    # Debug images
-    _debug(visual=img1, filename=os.path.join(params.debug_outdir, str(params.device) + "_checkerboard_corners.png"))
 
     return mtx, dist
 
