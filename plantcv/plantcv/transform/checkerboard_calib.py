@@ -27,7 +27,6 @@ def checkerboard_calib(img_path, col_corners, row_corners, output_directory):
     :return mtx: numpy.ndarray
     :return dist: numpy.ndarray
     """
-
     images = os.listdir(img_path)
     objp = np.zeros((col_corners*row_corners, 3), np.float32)
     objp[:, :2] = np.mgrid[0:col_corners, 0:row_corners].T.reshape(-1, 2)
@@ -45,7 +44,7 @@ def checkerboard_calib(img_path, col_corners, row_corners, output_directory):
             objpoints.append(objp)
             corners2 = cv.cornerSubPix(gray_img, corners, (11, 11), (-1, -1), criteria)
             imgpoints.append(corners2)
-            # Draw and display the corners 
+            # Draw and display the corners
             debug_mode = params.debug
             params.debug = None
             out_img = cv.drawChessboardCorners(img1, (col_corners, row_corners), corners2, ret)
@@ -72,7 +71,6 @@ def checkerboard_calib(img_path, col_corners, row_corners, output_directory):
 def calibrate_camera(rgb_img, mtx_filename, dist_filename):
     """
     Use the outputs from checkerboard_calib to correct the distortions in an image
-
     Inputs:
     img  = an RGB image
     mtx  = a .npz file, an output of checkerboar_calib
