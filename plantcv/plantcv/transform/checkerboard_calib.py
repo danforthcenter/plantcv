@@ -14,7 +14,6 @@ from plantcv.plantcv.transform.color_correction import load_matrix
 def checkerboard_calib(img_path, col_corners, row_corners, output_directory):
     """
     Use several checkerboard images to calibrate a camera with image distortions.
-
     Inputs:
     img_path    = directory of checkerboard images to be used for calibration
     col_corners = the number from inside corners in a column of the checkerboard
@@ -42,14 +41,11 @@ def checkerboard_calib(img_path, col_corners, row_corners, output_directory):
         gray_img = rgb2gray(img1)
         ret, corners = cv.findChessboardCorners(gray_img, (col_corners, row_corners))
         criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
-        if ret is False:
-            print("Checkerboard image " + fname + " does not match given dimensions.")
-            continue
-        else:
+        if ret is True:
             objpoints.append(objp)
             corners2 = cv.cornerSubPix(gray_img, corners, (11, 11), (-1, -1), criteria)
             imgpoints.append(corners2)
-            # Draw and display the corners
+            # Draw and display the corners 
             debug_mode = params.debug
             params.debug = None
             out_img = cv.drawChessboardCorners(img1, (col_corners, row_corners), corners2, ret)
@@ -57,6 +53,8 @@ def checkerboard_calib(img_path, col_corners, row_corners, output_directory):
             params.debug = debug_mode
             _debug(visual=out_img, filename=os.path.join(params.debug_outdir, str(params.device) +
                                                          "_checkerboard_corners.png"))
+        else:
+            print("Checkerboard image " + fname + " does not match given dimensions.")
 
     _, mtx, dist, _, _ = cv.calibrateCamera(objpoints, imgpoints, gray_img.shape[::-1], None, None)
 
