@@ -6,7 +6,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 
 
-def detect_discs(bin_img, ecc_thresh=0):
+def eccentricity(bin_img, ecc_thresh=0):
     """Detect/filter disc-shaped regions in a binary image based on eccentricity.
 
     A value of eccentricity between 0 and 1 corresponds to an ellipse.
