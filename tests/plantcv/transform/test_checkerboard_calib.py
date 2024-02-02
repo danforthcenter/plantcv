@@ -13,6 +13,24 @@ def test_checkerboard_calibration(transform_test_data, tmpdir):
     col_corners = 19
     checkerboard_dir = transform_test_data.checkerboard_imgdir
     mtx, dist = checkerboard_calib(checkerboard_dir, row_corners, col_corners, cache_dir)
+    # assert that mtx and dist are numpy arrays and that the output files exist
+    assert isinstance(mtx, np.ndarray)
+    assert isinstance(dist, np.ndarray)
+    assert os.path.exists(os.path.join(cache_dir, "mtx.npz")) is True
+    assert os.path.exists(os.path.join(cache_dir, "dist.npz")) is True
+
+
+def test_checkerboard_calibration_dne(transform_test_data, tmpdir):
+    """Test for PlantCV."""
+    # Create a test tmp directory
+    tmp_dir = tmpdir.mkdir("cache")
+    cache_dir = os.path.join(tmp_dir, "outputs")
+    # test the checkerboard_calib function
+    row_corners = 13
+    col_corners = 19
+    checkerboard_dir = transform_test_data.checkerboard_imgdir
+    mtx, dist = checkerboard_calib(checkerboard_dir, row_corners, col_corners, cache_dir)
+    # assert that mtx and dist are numpy arrays and that the output files exist
     assert isinstance(mtx, np.ndarray)
     assert isinstance(dist, np.ndarray)
     assert os.path.exists(os.path.join(cache_dir, "mtx.npz")) is True
