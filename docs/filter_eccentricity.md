@@ -21,6 +21,7 @@ The closer the value to 0 the closer the shape is to a circle.
 ![ori_img](img/documentation_images/filter_eccentricity/count_img.jpg)
 
 **Mask generated using binary threshold in the blue channel**
+
 ![bin_img](img/documentation_images/filter_eccentricity/discs_pre_scaled.png)
 
 ```python
@@ -42,9 +43,11 @@ mask_5 = pcv.filter.eccentricity(bin_img=binary_img, ecc_thresh=0.5)
 ```
 
 **Mask of detected objects with eccentricity threshold of 0.9**
+
 ![count_img](img/documentation_images/filter_eccentricity/count_mask.png)
 
 **Mask of detected objects with eccentricity threshold of 0.5**
+
 ![count_img](img/documentation_images/filter_eccentricity/discs_mask_scaled.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/filter/eccentricity.py)
