@@ -1,10 +1,10 @@
-## Detect discs 
+## Filter on object eccentricity 
 
-Detects disc-shaped regions in a binary image based on eccentricity.
+Detects more circular regions in a binary image based on eccentricity.
 A value of eccentricity between 0 and 1 corresponds to an ellipse.
 The closer the value to 0 the closer the shape is to a circle.
 
-**plantcv.detect_discs**(*bin_img, ecc_thresh=0*)
+**plantcv.filter.eccentricity**(*bin_img, ecc_thresh=0*)
 
 **returns** mask
 
@@ -18,10 +18,10 @@ The closer the value to 0 the closer the shape is to a circle.
 
 **Original image**
 
-![ori_img](img/documentation_images/detect_discs/count_img.jpg)
+![ori_img](img/documentation_images/filter_eccentricity/count_img.jpg)
 
 **Mask generated using binary threshold in the blue channel**
-![bin_img](img/documentation_images/detect_discs/discs_pre_scaled.png)
+![bin_img](img/documentation_images/filter_eccentricity/discs_pre_scaled.png)
 
 ```python
 
@@ -33,18 +33,18 @@ pcv.params.debug = "plot"
 
 # Apply detect discs to the binary image with an
 # eccentricity threshold of 0.9
-discs_mask_9 = pcv.detect_discs(bin_img=binary_img, ecc_thresh=0.9)
+mask_9 = pcv.filter.eccentricity(bin_img=binary_img, ecc_thresh=0.9)
 
 # Apply detect discs to the binary image with an
 # eccentricity threshold of 0.5
-discs_mask_5 = pcv.detect_discs(bin_img=binary_img, ecc_thresh=0.5)
+mask_5 = pcv.filter.eccentricity(bin_img=binary_img, ecc_thresh=0.5)
 
 ```
 
 **Mask of detected objects with eccentricity threshold of 0.9**
-![count_img](img/documentation_images/detect_discs/count_mask.png)
+![count_img](img/documentation_images/filter_eccentricity/count_mask.png)
 
 **Mask of detected objects with eccentricity threshold of 0.5**
-![count_img](img/documentation_images/detect_discs/discs_mask_scaled.png)
+![count_img](img/documentation_images/filter_eccentricity/discs_mask_scaled.png)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/detect_discs.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/filter/eccentricity.py)
