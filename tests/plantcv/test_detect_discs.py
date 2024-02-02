@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from plantcv.plantcv import detect_discs
+import plantcv.plantcv.detect_discs as detect_discs
 
 
 def test_detect_discs(test_data):
