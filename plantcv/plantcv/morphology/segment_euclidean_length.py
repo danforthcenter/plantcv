@@ -75,7 +75,7 @@ def segment_euclidean_length(segmented_img, objects, label=None):
 
     # Put labels of length
     for c, value in enumerate(segment_lengths):
-        text = "{:.2f}".format(value)
+        text = f"{value:0,.2f}"
         w = x_list[c]
         h = y_list[c]
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,

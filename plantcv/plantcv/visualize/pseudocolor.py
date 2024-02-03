@@ -54,7 +54,7 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
 
     # Check if background is a supported type
     if background.upper() not in ["IMAGE", "WHITE", "BLACK"]:
-        fatal_error("Background type {0} is not supported. Please use 'white', 'black', or 'image'.".format(background))
+        fatal_error(f"Background type {background} is not supported. Please use 'white', 'black', or 'image'.")
 
     bad_idx, bad_idy = [], []
 
