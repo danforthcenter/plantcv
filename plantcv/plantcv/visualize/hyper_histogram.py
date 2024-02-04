@@ -61,7 +61,7 @@ def _rgb_to_webcode(rgb_values):
     webcode = "#"
     for value in rgb_values:
         code_ = hex(int(value*255)).replace('0x', '')
-        code = code_.upper() if len(code_) > 1 else '0{}'.format(code_.upper())
+        code = code_.upper() if len(code_) > 1 else f'0{code_.upper()}'
         webcode += code
     return webcode
 
