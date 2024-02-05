@@ -19,7 +19,7 @@ def read_dataset(source_path, pattern='', sort=True):
     :return dataset: list
     """
     if not os.path.exists(source_path):
-        raise IOError("Directory does not exist: {0}".format(source_path))
+        raise IOError(f"Directory does not exist: {source_path}")
 
     img_path_list = []
     img_extensions = ['.png', '.jpg', '.jpeg', '.tif', '.tiff', '.gif']

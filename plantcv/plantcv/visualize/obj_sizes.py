@@ -67,7 +67,7 @@ def obj_sizes(img, mask, num_objects=100):
 
     # Label with area values
     for c, value in enumerate(area_vals):
-        text = "{:.0f}".format(value)
+        text = f"{value:0,.0f}"
         w = label_coord_x[c]
         h = label_coord_y[c]
         cv2.putText(img=plotting_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
