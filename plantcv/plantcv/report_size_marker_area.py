@@ -87,7 +87,7 @@ def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_c
     else:
         # Reset debug mode
         params.debug = debug
-        fatal_error("marker must be either 'define' or 'detect' but {0} was provided.".format(marker))
+        fatal_error(f"marker must be either 'define' or 'detect' but {marker} was provided.")
 
     # Calculate the moments of the defined marker region
     m = cv2.moments(marker_mask, binaryImage=True)

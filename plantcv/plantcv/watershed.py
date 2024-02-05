@@ -40,6 +40,10 @@ def watershed_segmentation(rgb_img, mask, distance=10, label=None):
     debug = params.debug
     params.debug = None
 
+    # Store color sequence mode and set to random for watershed_img debug
+    color_sequence = params.color_sequence
+    params.color_sequence = "random"
+
     # Set lable to params.sample_label if None
     if label is None:
         label = params.sample_label
@@ -68,6 +72,9 @@ def watershed_segmentation(rgb_img, mask, distance=10, label=None):
 
     # Reset debug mode
     params.debug = debug
+
+    # Reset color sequence mode
+    params.color_sequence = color_sequence
     _debug(visual=dist_transform,
            filename=os.path.join(params.debug_outdir, str(params.device) + '_watershed_dist_img.png'),
            cmap='gray')
