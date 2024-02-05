@@ -59,9 +59,9 @@ def options():
 ###########################################
 def run_naive_bayes(args):
     if not os.path.exists(args.imgdir):
-        raise IOError("Directory does not exist: {0}".format(args.imgdir))
+        raise IOError(f"Directory does not exist: {args.imgdir}")
     if not os.path.exists(args.maskdir):
-        raise IOError("Directory does not exist: {0}".format(args.maskdir))
+        raise IOError(f"Directory does not exist: {args.maskdir}")
     print("Running the naive Bayes two-class training method...")
     plantcv.learn.naive_bayes(imgdir=args.imgdir, maskdir=args.maskdir, outfile=args.outfile, mkplots=args.plots)
 ###########################################
@@ -71,7 +71,7 @@ def run_naive_bayes(args):
 ###########################################
 def run_naive_bayes_multiclass(args):
     if not os.path.exists(args.file):
-        raise IOError("File does not exist: {0}".format(args.file))
+        raise IOError(f"File does not exist: {args.file}")
     print("Running the naive Bayes multiclass training method...")
     plantcv.learn.naive_bayes_multiclass(samples_file=args.file, outfile=args.outfile, mkplots=args.plots)
 ###########################################
