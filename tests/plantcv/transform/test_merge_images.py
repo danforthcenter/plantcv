@@ -1,4 +1,3 @@
-import numpy as np
 import cv2
 from plantcv.plantcv.transform import merge_images
 
@@ -14,7 +13,7 @@ def test_merge_images_HR(test_data):
     corrected_img = merge_images(test_data.mergehoriz, overlap_percentage = 30,
                                  direction = "horizontal", method = "random")
     query_img = cv2.imread(test_data.merged_HS)
-    assert corrected_img.shape() == query_img.shape()
+    assert corrected_img.shape == query_img.shape
     
 def test_merge_images_HA(test_data):
     """Test for PlantCV."""
@@ -42,7 +41,7 @@ def test_merge_images_VR(test_data):
     corrected_img = merge_images(test_data.mergevert, overlap_percentage = 30,
                                  direction = "vertical", method = "random")
     query_img = cv2.imread(test_data.merged_VS)
-    assert corrected_img.shape() == query_img.shape()
+    assert corrected_img.shape == query_img.shape
     
 def test_merge_images_VA(test_data):
     """Test for PlantCV."""
