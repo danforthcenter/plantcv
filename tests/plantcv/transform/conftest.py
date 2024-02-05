@@ -44,6 +44,22 @@ class TransformTestData:
         self.source_corrected = os.path.join(self.datadir, "source_corrected.png")
         # Color card image
         self.colorcard_img = os.path.join(self.datadir, "colorcard_img.png")
+        # Merged image HS
+        self.merged_HS = os.path.join(self.datadir, "merged_HS.jpg")
+        # Merged image HA
+        self.merged_HA = os.path.join(self.datadir, "merged_HA.jpg")
+        # Merged image HG
+        self.merged_HG = os.path.join(self.datadir, "merged_HG.jpg")
+        # Merged image VS
+        self.merged_VS = os.path.join(self.datadir, "merged_VS.jpg")
+        # Merged image VA
+        self.merged_VA = os.path.join(self.datadir, "merged_VA.jpg")
+        # Merged image VG
+        self.merged_VG = os.path.join(self.datadir, "merged_VG.jpg")
+        # Horizontal images to merge
+        self.mergehoriz = os.path.join(self.datadir, "mergehoriz")
+        # Horizontal images to merge
+        self.mergevert = os.path.join(self.datadir, "mergevert")
 
     @staticmethod
     def create_test_img(sz_img):
