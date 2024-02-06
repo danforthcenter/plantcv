@@ -58,10 +58,10 @@ class TransformTestData:
         self.merged_VG = os.path.join(self.datadir, "merged_VG.jpg")
         # Horizontal images to merge
         self.mergehoriz = os.path.join(os.path.dirname(os.path.abspath(__file__)), 
-                                       "..", "..", "testdata", "mergehoriz")
+                                       "..", "..", "testdata", "mergehoriz/")
         # Horizontal images to merge
         self.mergevert = os.path.join(os.path.dirname(os.path.abspath(__file__)), 
-                                      "..", "..", "testdata", "mergevert")
+                                      "..", "..", "testdata", "mergevert/")
 
     @staticmethod
     def create_test_img(sz_img):
