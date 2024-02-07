@@ -96,10 +96,10 @@ def merge_images(img_path, overlap_percentage, direction="vertical", method="sta
                     alpha = 1 - beta
                     merged_x = start_x + x
                     if direction == "vertical":
-                        combined_image[merged_x, :] = cv2.addWeighted(combined_image[merged_x, :], alpha, 
+                        combined_image[merged_x, :] = cv2.addWeighted(combined_image[merged_x, :], alpha,
                                                                       image[x, :], beta, 0)
                     else:
-                        combined_image[:, merged_x] = cv2.addWeighted(combined_image[:, merged_x], alpha, 
+                        combined_image[:, merged_x] = cv2.addWeighted(combined_image[:, merged_x], alpha,
                                                                       image[:, x], beta, 0)
                 # Copy the non-overlapping part
                 non_overlap_start = start_x + overlap_pixels
@@ -109,6 +109,6 @@ def merge_images(img_path, overlap_percentage, direction="vertical", method="sta
                 else:
                     non_overlap_end = non_overlap_start + width - overlap_pixels
                     combined_image[:, non_overlap_start:non_overlap_end] = image[:, overlap_pixels:]
- 
+
     _debug(visual=combined_image, filename=os.path.join(params.debug_outdir, "_merged_image.png"))
     return combined_image
