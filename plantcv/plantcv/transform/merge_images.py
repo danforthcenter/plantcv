@@ -55,7 +55,7 @@ def merge_images(img_path, overlap_percentage, direction="vertical", method="sta
         combined_width = overlap_dims[1] - (overlap_pixels_width*(len(image_files)-1))
         blank_image = np.zeros((height, combined_width, 3), dtype=np.uint8)
         combined_image = mergehoriz(img_path, image_files, blank_image, width, overlap_pixels_width, method)
-           
+
     _debug(visual=combined_image, filename=os.path.join(params.debug_outdir, "_merged_image.png"))
     return combined_image
 
