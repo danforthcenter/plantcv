@@ -10,7 +10,7 @@ from plantcv.plantcv import params, outputs, fatal_error
 from plantcv.plantcv._debug import _debug
 
 
-def _is_square(contour):
+def _is_square(contour, min_size):
     """Determine if a contour is square or not.
 
     Parameters
@@ -23,7 +23,7 @@ def _is_square(contour):
     bool
         True if the contour is square, False otherwise.
     """
-    return (cv2.contourArea(contour) > 1000 and
+    return (cv2.contourArea(contour) > min_size and
             max(cv2.minAreaRect(contour)[1]) / min(cv2.minAreaRect(contour)[1]) < 1.27 and
             (cv2.contourArea(contour) / np.prod(cv2.minAreaRect(contour)[1])) > 0.8)
 
@@ -44,6 +44,7 @@ def detect_color_card(rgb_img, label=None, **kwargs):
         adaptive_method: 0 (mean) or 1 (Gaussian) (default = 1)
         block_size: int (default = 51)
         radius: int (default = 20)
+        min_size: int (default = 1000)
 
     Returns
     -------
@@ -55,6 +56,7 @@ def detect_color_card(rgb_img, label=None, **kwargs):
         label = params.sample_label
 
     # Get keyword arguments and set defaults if not set
+    min_size = kwargs.get("min_size", 1000)  # Minimum size for _is_square chip filtering
     radius = kwargs.get("radius", 20)  # Radius of circles to draw on the color chips
     adaptive_method = kwargs.get("adaptive_method", 1)  # cv2.adaptiveThreshold method
     block_size = kwargs.get("block_size", 51)  # cv2.adaptiveThreshold block size
@@ -71,7 +73,7 @@ def detect_color_card(rgb_img, label=None, **kwargs):
     contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     # Filter contours, keep only square-shaped ones
-    filtered_contours = [contour for contour in contours if _is_square(contour)]
+    filtered_contours = [contour for contour in contours if _is_square(contour, min_size)]
     # Calculate median area of square contours
     target_square_area = np.median([cv2.contourArea(cnt) for cnt in filtered_contours])
     # Filter contours again, keep only those within 20% of median area
