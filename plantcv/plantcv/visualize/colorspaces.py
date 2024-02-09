@@ -75,7 +75,8 @@ def colorspaces(rgb_img, original_img=True):
         width = img.shape[1]
         img_sizes.append(width)
     max_width = max(img_sizes)
-    new = [cv2.copyMakeBorder(arr, 0, 0, (max_width - arr.shape[1]), 0, cv2.BORDER_CONSTANT, value=(0, 0, 0)) for arr in sub_imgs]
+    new = [cv2.copyMakeBorder(arr, 0, 0, (max_width - arr.shape[1]), 0, 
+                              cv2.BORDER_CONSTANT, value=(0, 0, 0)) for arr in sub_imgs]
     plotting_img = np.vstack(new)
 
     # If original_img is True then also plot the original image with the rest of them
