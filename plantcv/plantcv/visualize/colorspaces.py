@@ -66,10 +66,18 @@ def colorspaces(rgb_img, original_img=True):
                                  resize_factor(labeled_imgs[8], factors=(3/4, 3/4)),
                                  resize_factor(labeled_imgs[9], factors=(3/4, 3/4))])
 
-    # Compile images together, including a larger version of the original image
-    plotting_img = np.vstack([np.hstack([labeled_imgs[0], labeled_imgs[1], labeled_imgs[2]]),
-                              np.hstack([labeled_imgs[3], labeled_imgs[4], labeled_imgs[5]]),
-                             cmky_labeled_img])
+    # Compile images together, and add padding to resize so that image widths are all equal
+    sub_imgs = [np.hstack([labeled_imgs[0], labeled_imgs[1], labeled_imgs[2]]),
+                np.hstack([labeled_imgs[3], labeled_imgs[4], labeled_imgs[5]]),
+                cmky_labeled_img]
+    img_sizes = []
+    for img in sub_imgs:
+        width = img.shape[1]
+        img_sizes.append(width)
+    max_width = max(img_sizes)
+    new = [cv2.copyMakeBorder(arr, 0, 0, (max_width - arr.shape[1]), 0,
+                              cv2.BORDER_CONSTANT, value=(0, 0, 0)) for arr in sub_imgs]
+    plotting_img = np.vstack(new)
 
     # If original_img is True then also plot the original image with the rest of them
     if original_img:
