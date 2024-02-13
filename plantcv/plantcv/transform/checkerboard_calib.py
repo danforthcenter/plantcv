@@ -11,14 +11,14 @@ from plantcv.plantcv.transform.color_correction import save_matrix
 from plantcv.plantcv.transform.color_correction import load_matrix
 
 
-def checkerboard_calib(img_path, col_corners, row_corners, output_directory):
+def checkerboard_calib(img_path, col_corners, row_corners, out_dir):
     """
     Use several checkerboard images to calibrate a camera with image distortions.
     Inputs:
     img_path    = directory of checkerboard images to be used for calibration
     col_corners = the number from inside corners in a column of the checkerboard
     row_corners = the number from inside corners in a row of the checkerboard
-    output_directory = filepath where the outputs will be saved.
+    output_directory = filepath where the outputs will be saved
 
     :param img_path: path to directory of checkerboard images
     :param col_corners: non-negative real number
@@ -58,12 +58,12 @@ def checkerboard_calib(img_path, col_corners, row_corners, output_directory):
     _, mtx, dist, _, _ = cv.calibrateCamera(objpoints, imgpoints, gray_img.shape[::-1], None, None)
 
     # check output_directory, if it does not exist, create
-    if not os.path.exists(output_directory):
-        os.mkdir(output_directory)
+    if not os.path.exists(out_dir):
+        os.mkdir(out_dir)
 
     # save matrices
-    save_matrix(mtx, os.path.join(output_directory, "mtx.npz"))
-    save_matrix(dist, os.path.join(output_directory, "dist.npz"))
+    save_matrix(mtx, os.path.join(out_dir, "mtx.npz"))
+    save_matrix(dist, os.path.join(out_dir, "dist.npz"))
 
     return mtx, dist
 

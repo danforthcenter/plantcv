@@ -2,14 +2,14 @@
 
 This function uses the outputs of **plantcv.checkerboard_calib** to correct distortions introduced by the camera.
 
-**plantcv.transform.calibrate_camera**(*rgb_img, mtx, dist*)
+**plantcv.transform.calibrate_camera**(*rgb_img, mtx, dist)
 
 **returns** corrected image
 
 - **Parameters:**
     - rgb_img - an RGB image to be corrected
-    - mtx - a numpy array output from **plantcv.checkerboard_calib**
-    - dist - a numpy array output from **plantcv.checkerboard_calib**
+    - mtx - path to a .npz file output from **plantcv.checkerboard_calib**
+    - dist - path to a .npz file output from **plantcv.checkerboard_calib**
 
 - **Context:**
     - Used to correct image distortions based on checkerboard calibrations
@@ -31,10 +31,10 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 # Create calibration matrices with checkerboard images
-mtx, dist = pcv.transform.checkerboard_calib(img_path = "./img_files", col_corners = 13, row_corners = 19)
+mtx, dist = pcv.transform.checkerboard_calib(img_path = "./img_files/", col_corners = 13, row_corners = 19, out_dir = "./output/")
 
 # Correct distortions using the outpus from checkerboard calibration
-corrected_img = pcv.transform.calibrate_camera(img = img, mtx = mtx, dist = dist)
+corrected_img = pcv.transform.calibrate_camera(img = img, mtx = "./output/mtx.npz", dist = "./output/dist.npz")
 
 ```
 
