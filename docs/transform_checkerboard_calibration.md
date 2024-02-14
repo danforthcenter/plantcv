@@ -10,6 +10,7 @@ This fucntion uses images of checkerboards to correct distortions introduced by 
     - img_path - a path to a directory of checkerboard images
     - col_corners - the number of *inner* corners in a column of the checkerboard
     - row_corners - the number of *inner* corners in a row of the checkerboard
+    - out_dir - directory where the output files will be saved
 
 - **Context:**
     - Used to create calibration matrices for camera calibration
@@ -33,9 +34,9 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 # Create calibration matrices with checkerboard images
-mtx, dist = pcv.transform.checkerboard_calib(img_path = "./img_files", col_corners = 13, row_corners = 19)
+mtx, dist = pcv.transform.checkerboard_calib(img_path = "./img_files/", col_corners = 13, row_corners = 19, out_dir = "./output/")
 
 # Correct distortions using the outpus from checkerboard calibration
-corrected_img = pcv.transform.calibrate_camera(img = img, mtx = mtx, dist = dist)
+corrected_img = pcv.transform.calibrate_camera(img = img, mtx = "./output/mtx.npz", dist = "./output/dist.npz")
 
 ```
