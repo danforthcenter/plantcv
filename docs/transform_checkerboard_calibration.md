@@ -1,6 +1,6 @@
 ## Checkerboard calibration
 
-This fucntion uses images of checkerboards to correct distortions introduced by cameras. The checkerboard calibration works best with > 10 checkerboard images at different angles to the camera and in different areas of the field of view. 
+This function uses images of checkerboards to correct distortions introduced by cameras. The checkerboard calibration works best with > 10 checkerboard images at different angles to the camera and in different areas of the field of view. 
 
 **plantcv.transform.checkerboard_calib**(*img_path, col_corners, row_corners*)
 
