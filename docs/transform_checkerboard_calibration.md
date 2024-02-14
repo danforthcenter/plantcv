@@ -36,7 +36,7 @@ pcv.params.debug = "plot"
 # Create calibration matrices with checkerboard images
 mtx, dist = pcv.transform.checkerboard_calib(img_path = "./img_files/", col_corners = 13, row_corners = 19, out_dir = "./output/")
 
-# Correct distortions using the outpus from checkerboard calibration
-corrected_img = pcv.transform.calibrate_camera(img = img, mtx = "./output/mtx.npz", dist = "./output/dist.npz")
+# Correct distortions using the outputs from checkerboard calibration
+corrected_img = pcv.transform.calibrate_camera(rgb_img = img, mtx = "./output/mtx.npz", dist = "./output/dist.npz")
 
 ```
