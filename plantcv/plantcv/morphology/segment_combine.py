@@ -58,14 +58,14 @@ def segment_combine(segment_list, objects, mask):
     # Color each segment a different color, use a previously saved scale if available
     rand_color = color_palette(num=len(all_objects), saved=True)
     # Plot all segment contours
-    for i, cnt in enumerate(all_objects):
+    for i in enumerate(all_objects):
         cv2.drawContours(labeled_img, all_objects[i], -1, rand_color[i], params.line_thickness, lineType=8)
         # Store coordinates for labels
         label_coord_x.append(all_objects[i][0][0][0])
         label_coord_y.append(all_objects[i][0][0][1])
 
     # Label segments
-    for i, cnt in enumerate(all_objects):
+    for i in enumerate(all_objects):
         w = label_coord_x[i]
         h = label_coord_y[i]
         text = f"ID:{i}"
