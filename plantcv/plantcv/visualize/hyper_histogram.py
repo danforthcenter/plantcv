@@ -67,7 +67,7 @@ def _rgb_to_webcode(rgb_values):
 
 
 def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None,
-                    title=None, wvlengths=[480, 550, 650]):
+                    title=None, wvlengths=None):
     """Plot a histograms of selected wavelengths from a hyperspectral image.
 
     This function calculates the histogram of selected wavelengths hyperspectral images
@@ -96,6 +96,9 @@ def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None
     :param wvlengths: list
     :return fig_hist: altair.vegalite.v5.api.Chart
     """
+    # Use default wavelengths if none given
+    if wvlengths is None:
+        wvlengths = [480, 550, 650]
     # Always sort desired wavelengths
     wvlengths.sort()
 

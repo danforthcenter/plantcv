@@ -490,7 +490,7 @@ def correct_color(target_img, target_mask, source_img, source_mask, output_direc
     return target_matrix, source_matrix, transformation_matrix, corrected_img
 
 
-def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=[]):
+def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=None):
     """Create a labeled mask for color card chips.
 
     Inputs:
@@ -533,6 +533,9 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
             chips.append(circle(img=rgb_img, x=x, y=y, r=radius))
     # Restore debug parameter
     params.debug = debug
+    # If exclude is None, set to an empty list
+    if exclude is None:
+        exclude = []
     # Sort excluded chips from largest to smallest
     exclude.sort(reverse=True)
     # Remove any excluded chips
