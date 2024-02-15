@@ -353,7 +353,7 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
         fatal_error("Source_img is not an RGB image.")
 
     # split transformation_matrix
-    red, green, blue, _, _, _, _, _, _ = np.split(transformation_matrix, 9, 1)
+    red, green, blue = np.split(transformation_matrix, 3, axis=1)
 
     source_dtype = source_img.dtype
     # normalization value as max number if the type is unsigned int
