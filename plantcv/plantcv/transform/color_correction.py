@@ -235,8 +235,11 @@ def get_matrix_m(target_matrix, source_matrix):
     """
     # if the number of chips in source_img match the number of chips in target_matrix
     if np.shape(target_matrix) == np.shape(source_matrix):
-        _, t_r, t_g, t_b = np.split(target_matrix, 4, 1)
-        _, s_r, s_g, s_b = np.split(source_matrix, 4, 1)
+        try:
+            _, t_r, t_g, t_b = np.split(target_matrix, 4, 1)
+            _, s_r, s_g, s_b = np.split(source_matrix, 4, 1)
+        except ValueError as e:
+            print("An error occurred with tuple unpacking:", e)
     else:
         combined_matrix = np.zeros((np.ma.size(source_matrix, 0), 7))
         row_count = 0
