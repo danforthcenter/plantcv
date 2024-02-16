@@ -61,6 +61,10 @@ def detect_color_card(rgb_img, label=None, **kwargs):
     adaptive_method = kwargs.get("adaptive_method", 1)  # cv2.adaptiveThreshold method
     block_size = kwargs.get("block_size", 51)  # cv2.adaptiveThreshold block size
 
+    # Throw a fatal error if block_size is not odd or greater than 1
+    if not (block_size % 2 == 1 and block_size > 1):
+        fatal_error('block_size parameter must be an odd int greater than 1.')
+
     # Hard code since we don't currently support other color cards
     nrows = 6
     ncols = 4
