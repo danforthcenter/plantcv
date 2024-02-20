@@ -15,4 +15,3 @@ from plantcv.plantcv.visualize.chlorophyll_fluorescence import chlorophyll_fluor
 __all__ = ["pseudocolor", "colorize_masks", "histogram", "colorspaces", "auto_threshold_methods",
            "overlay_two_imgs", "colorize_label_img", "obj_size_ecdf", "obj_sizes", "hyper_histogram",
            "pixel_scatter_plot", "time_lapse_video", "chlorophyll_fluorescence"]
-
