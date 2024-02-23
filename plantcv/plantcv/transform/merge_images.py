@@ -48,19 +48,19 @@ def merge_images(img_path, overlap_percentage, direction="vertical", method="sta
         overlap_pixels_height = int(height * overlap_percentage / 100)
         combined_height = overlap_dims[0] - (overlap_pixels_height*(len(image_files)-1))
         blank_image = np.zeros((combined_height, width, 3), dtype=np.uint8)
-        combined_image = mergevert(img_path, image_files, blank_image, height, overlap_pixels_height, method)
+        combined_image = _mergevert(img_path, image_files, blank_image, height, overlap_pixels_height, method)
 
     elif direction == "horizontal":
         overlap_pixels_width = int(width * overlap_percentage / 100)
         combined_width = overlap_dims[1] - (overlap_pixels_width*(len(image_files)-1))
         blank_image = np.zeros((height, combined_width, 3), dtype=np.uint8)
-        combined_image = mergehoriz(img_path, image_files, blank_image, width, overlap_pixels_width, method)
+        combined_image = _mergehoriz(img_path, image_files, blank_image, width, overlap_pixels_width, method)
 
     _debug(visual=combined_image, filename=os.path.join(params.debug_outdir, "_merged_image.png"))
     return combined_image
 
 
-def mergevert(img_path, image_files, combined_image, height, overlap_pixels, method="stacked"):
+def _mergevert(img_path, image_files, combined_image, height, overlap_pixels, method="stacked"):
     """
     Private function to reduce if/else statements. Merges images vertically.
     Inputs: same as above with the addition of calculated overlap pixels and
@@ -90,7 +90,7 @@ def mergevert(img_path, image_files, combined_image, height, overlap_pixels, met
     return combined_image
 
 
-def mergehoriz(img_path, image_files, combined_image, width, overlap_pixels, method="stacked"):
+def _mergehoriz(img_path, image_files, combined_image, width, overlap_pixels, method="stacked"):
     """
     Private function to reduce if/else statements. Merges images horizontally.
     Inputs: same as above with the addition of calculated overlap pixels and

@@ -18,11 +18,9 @@ from plantcv.plantcv.transform.resize import resize, resize_factor
 from plantcv.plantcv.transform.warp import warp, warp_align
 from plantcv.plantcv.transform.gamma_correct import gamma_correct
 from plantcv.plantcv.transform.merge_images import merge_images
-from plantcv.plantcv.transform.merge_images import mergevert
-from plantcv.plantcv.transform.merge_images import mergehoriz
 
 __all__ = ["get_color_matrix", "get_matrix_m", "calc_transformation_matrix", "apply_transformation_matrix",
            "save_matrix", "load_matrix", "correct_color", "create_color_card_mask", "quick_color_check",
            "find_color_card", "std_color_matrix", "affine_color_correction", "rescale", "nonuniform_illumination", "resize",
            "resize_factor", "warp", "rotate", "warp", "warp_align", "gamma_correct", "detect_color_card",
-           "merge_images", "mergevert", "mergehoriz"]
+           "merge_images"]
