@@ -10,7 +10,7 @@ merged (ie. prefix_1.png, prefix_2.png, etc.). There are 4 methods for handling 
 
 - **Parameters:**
     - paths_to_imgs - a list of image paths
-    - overlap_percentage - amount of overlap between successive images
+    - overlap_percentage - amount of overlap between successive images (see example below for how to calculate this value)
     - direction - vertical (default), or horizontal, determines in which direction successive images should be added
     - method - Available options are stacked, random, average, and gradual and dictate
         how the overlap region should be handled 
@@ -43,9 +43,22 @@ from plantcv import plantcv as pcv
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "plot"
 
-# Merge images horizontally with a 30% overlap by averaging the overlap pixels
+# Merge images vertially with a 30% overlap by averaging the overlap pixels
 images = pcv.io.read_dataset(source_path="./input_images/")
 merged_img = pcv.transform.merge_images(paths_to_imgs=images, overlap_percentage=30, direction="vertical", method="gradual")
+
+```
+
+To calculate the overlap percentage, use the following formula:
+
+```python
+# Calculate the overlap percentage
+# overlap = amount of overlap in measured units (e.g. inches)
+# dpu = dots per unit of the image (e.g. 100), units must match overlap units
+# width or height = width or height of the image in pixels depending on orientation
+#
+# percent = ((overlap * dpu) / width or height) * 100
+overlap = ((0.5 * 100) / img.shape[0]) * 100
 
 ```
 
