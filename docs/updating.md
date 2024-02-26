@@ -1197,6 +1197,11 @@ pages for more details on the input and output variable types.
 * pre v3.0dev1: NA
 * post v3.0dev2: matrix = **plantcv.transform.load_matrix**(*filename*)
 
+#### plantcv.transfor.merge_images
+
+* pre v4.2.1: NA
+* post v4.2.1: merged_img = **plantcv.transform.merge_images**(*paths_to_imgs, overlap_percentage, direction = "vertical", method = "stacked"*)
+
 #### plantcv.transform.resize
 
 * pre v3.11: NA
