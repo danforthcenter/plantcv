@@ -1,6 +1,6 @@
 ## Camera calibration
 
-This function uses the outputs of **plantcv.checkerboard_calib** to correct distortions introduced by the camera.
+This function uses the outputs of [**plantcv.transform.checkerboard_calib**](transform_checkerboard_calibration.md) to correct distortions introduced by the camera.
 
 **plantcv.transform.calibrate_camera**(*rgb_img, mtx, dist)
 
