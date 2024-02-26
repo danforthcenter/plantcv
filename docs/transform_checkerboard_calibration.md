@@ -2,7 +2,7 @@
 
 This function uses images of checkerboards to correct distortions introduced by cameras. The checkerboard calibration works best with > 10 checkerboard images at different angles to the camera and in different areas of the field of view. 
 
-**plantcv.transform.checkerboard_calib**(*img_path, col_corners, row_corners*)
+**plantcv.transform.checkerboard_calib**(*img_path, col_corners, row_corners, out_dir*)
 
 **returns** mtx, dist
 
@@ -14,7 +14,7 @@ This function uses images of checkerboards to correct distortions introduced by 
 
 - **Context:**
     - Used to create calibration matrices for camera calibration
-    - Outputs can be passed to **plantcv.calibrate_camera** for distortion corrections
+    - Outputs can be passed to [**plantcv.transform.calibrate_camera**](transform_calibrate_camera.md) for distortion corrections
 
 - **Example use:**
 
@@ -40,3 +40,5 @@ mtx, dist = pcv.transform.checkerboard_calib(img_path = "./img_files/", col_corn
 corrected_img = pcv.transform.calibrate_camera(rgb_img = img, mtx = "./output/mtx.npz", dist = "./output/dist.npz")
 
 ```
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/transform/checkerboard_calib.py)
