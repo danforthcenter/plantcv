@@ -9,7 +9,7 @@ matplotlib.use("Template")
 class FilterTestData:
     def __init__(self):
         """Initialize simple variables."""
-        # Binary mask for eccentricity filter 
+        # Binary mask for eccentricity filter
         self.small_bin_fill = os.path.join(self.datadir,"floodfill.png")
 
 
