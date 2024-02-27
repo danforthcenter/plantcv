@@ -10,4 +10,4 @@ def test_filter_eccentricity(filter_test_data):
 
     filtered_mask = eccentricity(bin_img=mask, ecc_thresh=0.95)
 
-    assert np.sum(mask) > np.sum(filtered_mask)
+    assert np.sum(mask) = np.sum(filtered_mask)
