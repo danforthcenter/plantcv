@@ -9,6 +9,8 @@ matplotlib.use("Template")
 class FilterTestData:
     def __init__(self):
         """Initialize simple variables."""
+        # Test data directory
+        self.datadir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "testdata")
         # Binary mask for eccentricity filter
         self.small_bin_fill = os.path.join(self.datadir, "floodfill.png")
 
