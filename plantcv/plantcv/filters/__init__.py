@@ -1,3 +1,3 @@
-from plantcv.plantcv.filter.eccentricity import eccentricity
+from plantcv.plantcv.filters.eccentricity import eccentricity
 
 __all__ = ["eccentricity"]
