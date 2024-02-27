@@ -10,7 +10,7 @@ class FilterTestData:
     def __init__(self):
         """Initialize simple variables."""
         # Binary mask for eccentricity filter
-        self.small_bin_fill = os.path.join(self.datadir,"floodfill.png")
+        self.small_bin_fill = os.path.join(self.datadir, "floodfill.png")
 
 
 @pytest.fixture(scope="session")
