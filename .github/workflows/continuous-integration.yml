@@ -45,7 +45,7 @@ jobs:
         pip install .
         py.test --cov-report=xml --cov=plantcv tests/
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4.1.0
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         file: ./coverage.xml
