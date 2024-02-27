@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from plantcv.plantcv.filter import eccentricity
+from plantcv.plantcv.filters import eccentricity
 
 
 def test_filter_eccentricity(filter_test_data):
