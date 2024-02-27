@@ -10,7 +10,7 @@ import matplotlib
 matplotlib.use("Template")
 
 
-class FilterTestData:
+class FiltersTestData:
     def __init__(self):
         """Initialize simple variables."""
         # Binary mask for eccentricity filter 
@@ -18,6 +18,6 @@ class FilterTestData:
 
 
 @pytest.fixture(scope="session")
-def filter_test_data():
+def filters_test_data():
     """Test data object for the PlantCV filter submodule."""
-    return FilterTestData()
+    return FiltersTestData()
