@@ -44,7 +44,7 @@ jobs:
       run: |
         pip install .
         py.test --cov-report=xml --cov=plantcv tests/
-    - name: Upload coverage to Codecov
+    - name: Upload coverage to Deepsource
       uses: deepsourcelabs/test-coverage-action@master
       with:
         key: python
