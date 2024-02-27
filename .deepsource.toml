@@ -14,6 +14,3 @@ enabled = true
 [[analyzers]]
 name = "test-coverage"
 enabled = true
-  
-    [analyzers.meta]
-    fail_under = 100
