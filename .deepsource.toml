@@ -11,6 +11,7 @@ enabled = true
   max_line_length = 127
   skip_doc_coverage = ["magic", "init", "class", "module"]
 
+[[analyzers]]
 name = "test-coverage"
 enabled = true
   
