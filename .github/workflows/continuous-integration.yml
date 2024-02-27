@@ -44,33 +44,9 @@ jobs:
       run: |
         pip install .
         py.test --cov-report=xml --cov=plantcv tests/
-    - name: Upload Coverage Artifact
-      uses: actions/upload-artifact@v4.3.1
+    - name: Upload coverage to Codecov
+      uses: deepsourcelabs/test-coverage-action@master
       with:
-        name: plantcv-${{ matrix.os }}-${{ matrix.python-version }}.coverage
-        path: coverage.xml
-
-  upload-coverage:
-    name: Upload coverage to Codecov
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 2
-
-      - name: Download Coverage Artifact
-        uses: actions/download-artifact@v4.1.3
-        with:
-          path: reports
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4.1.0
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: reports
-          flags: unittests
-          env_vars: OS,PYTHON
-          fail_ci_if_error: true
+        key: python
+        coverage-file: coverage.xml
+        dsn: ${{ secrets.DEEPSOURCE_DSN }}
