@@ -422,7 +422,7 @@ pages for more details on the input and output variable types.
 #### plantcv.filters.eccentricity 
 
 * pre v4.3:  NA 
-* post v4.3: filterec_mask = **plantcv.filters.eccentricity**(*bin_img, ecc_thresh=0*)
+* post v4.3: filtered_mask = **plantcv.filters.eccentricity**(*bin_img, ecc_thresh=0*)
 
 #### plantcv.find_objects
 
