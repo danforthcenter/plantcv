@@ -1,5 +1,5 @@
 ![builds](https://github.com/danforthcenter/plantcv/workflows/builds/badge.svg)
-[![codecov](https://codecov.io/gh/danforthcenter/plantcv/branch/main/graph/badge.svg)](https://codecov.io/gh/danforthcenter/plantcv)
+[![DeepSource](https://app.deepsource.com/gh/danforthcenter/plantcv.svg/?label=code+coverage&show_trend=true&token=og8rSyKxywOCGkIk8UNiF7B_)](https://app.deepsource.com/gh/danforthcenter/plantcv/)
 [![DeepSource](https://app.deepsource.com/gh/danforthcenter/plantcv.svg/?label=active+issues&show_trend=true&token=og8rSyKxywOCGkIk8UNiF7B_)](https://app.deepsource.com/gh/danforthcenter/plantcv/)
 [![Documentation Status](http://readthedocs.org/projects/plantcv/badge/?version=latest)](http://plantcv.readthedocs.io/en/latest/?badge=latest)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=index.ipynb)
