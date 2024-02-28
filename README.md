@@ -1,7 +1,7 @@
 ![builds](https://github.com/danforthcenter/plantcv/workflows/builds/badge.svg)
 [![DeepSource](https://app.deepsource.com/gh/danforthcenter/plantcv.svg/?label=code+coverage&show_trend=true&token=og8rSyKxywOCGkIk8UNiF7B_)](https://app.deepsource.com/gh/danforthcenter/plantcv/)
 [![DeepSource](https://app.deepsource.com/gh/danforthcenter/plantcv.svg/?label=active+issues&show_trend=true&token=og8rSyKxywOCGkIk8UNiF7B_)](https://app.deepsource.com/gh/danforthcenter/plantcv/)
-[![Documentation Status](http://readthedocs.org/projects/plantcv/badge/?version=latest)](http://plantcv.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/plantcv/badge/?version=stable)](https://plantcv.readthedocs.io/en/stable/?badge=stable)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=index.ipynb)
 [![Docker Pulls](https://img.shields.io/docker/pulls/danforthcenter/plantcv.svg)](https://hub.docker.com/r/danforthcenter/plantcv/)
 [![GitHub release](https://img.shields.io/github/release/danforthcenter/plantcv.svg)](https://github.com/danforthcenter/plantcv/releases)
