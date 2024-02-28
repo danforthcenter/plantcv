@@ -65,6 +65,7 @@ nav:
       - 'Flood Fill': floodfill.md
       - 'Flip Image': flip.md
       - 'Filters':
+        - 'Eccentricity Filter': filters_eccentricity.md
         - 'Laplace Filter': laplace_filter.md
         - 'Sobel Filter': sobel_filter.md
         - 'Scharr Filter': scharr_filter.md
