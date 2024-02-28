@@ -1,9 +1,5 @@
 import pytest
 import os
-import pickle as pkl
-import numpy as np
-import xarray as xr
-import pandas as pd
 import matplotlib
 
 # Disable plotting
@@ -13,8 +9,10 @@ matplotlib.use("Template")
 class FiltersTestData:
     def __init__(self):
         """Initialize simple variables."""
-        # Binary mask for eccentricity filter 
-        self.small_bin_fill = os.path.join(self.datadir,"floodfill.png")
+        # Test data directory
+        self.datadir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "testdata")
+        # Binary mask for eccentricity filter
+        self.small_bin_fill = os.path.join(self.datadir, "floodfill.png")
 
 
 @pytest.fixture(scope="session")

@@ -1,5 +1,4 @@
 import cv2
-import pytest
 import numpy as np
 from plantcv.plantcv.filters import eccentricity
 

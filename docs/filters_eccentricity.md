@@ -4,7 +4,7 @@ Detects more circular regions in a binary image based on eccentricity.
 A value of eccentricity between 0 and 1 corresponds to an ellipse.
 The closer the value to 0 the closer the shape is to a circle.
 
-**plantcv.filter.eccentricity**(*bin_img, ecc_thresh=0*)
+**plantcv.filters.eccentricity**(*bin_img, ecc_thresh=0*)
 
 **returns** mask
 
@@ -18,11 +18,11 @@ The closer the value to 0 the closer the shape is to a circle.
 
 **Original image**
 
-![ori_img](img/documentation_images/filter_eccentricity/count_img.jpg)
+![ori_img](img/documentation_images/filters_eccentricity/count_img.jpg)
 
 **Mask generated using binary threshold in the blue channel**
 
-![bin_img](img/documentation_images/filter_eccentricity/discs_pre_scaled.png)
+![bin_img](img/documentation_images/filters_eccentricity/discs_pre_scaled.png)
 
 ```python
 
@@ -34,20 +34,20 @@ pcv.params.debug = "plot"
 
 # Apply detect discs to the binary image with an
 # eccentricity threshold of 0.9
-mask_9 = pcv.filter.eccentricity(bin_img=binary_img, ecc_thresh=0.9)
+mask_9 = pcv.filters.eccentricity(bin_img=binary_img, ecc_thresh=0.9)
 
 # Apply detect discs to the binary image with an
 # eccentricity threshold of 0.5
-mask_5 = pcv.filter.eccentricity(bin_img=binary_img, ecc_thresh=0.5)
+mask_5 = pcv.filters.eccentricity(bin_img=binary_img, ecc_thresh=0.5)
 
 ```
 
 **Mask of detected objects with eccentricity threshold of 0.9**
 
-![count_img](img/documentation_images/filter_eccentricity/count_mask.png)
+![count_img](img/documentation_images/filters_eccentricity/count_mask.png)
 
 **Mask of detected objects with eccentricity threshold of 0.5**
 
-![count_img](img/documentation_images/filter_eccentricity/discs_mask_scaled.png)
+![count_img](img/documentation_images/filters_eccentricity/discs_mask_scaled.png)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/filter/eccentricity.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/filters/eccentricity.py)
