@@ -52,10 +52,10 @@ def _analyze_spectral(img, mask, label):
     :return img: plantcv.plantcv.Spectral_data
     """
     array_data = img.array_data
-
+    
     # List of wavelengths recorded created from parsing the header file will be string, make list of floats
     wavelength_data = array_data[np.where(mask > 0)]
-        
+    
     # Initialize analysis output values with zeros
     wavelength_means = np.full(len(img.wavelength_dict), 0)
     max_per_band = np.full(len(img.wavelength_dict), 0)
@@ -93,8 +93,6 @@ def _analyze_spectral(img, mask, label):
         new_std_per_band.append(std_per_band[i].astype(float))
         new_max_per_band.append(max_per_band[i].astype(float))
         new_min_per_band.append(min_per_band[i].astype(float))
-
-    
 
     wavelength_labels = []
     for i in img.wavelength_dict.keys():
