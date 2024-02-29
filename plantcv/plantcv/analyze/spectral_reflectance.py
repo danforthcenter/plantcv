@@ -52,20 +52,20 @@ def _analyze_spectral(img, mask, label):
     :return img: plantcv.plantcv.Spectral_data
     """
     array_data = img.array_data
-    
+
     # List of wavelengths recorded created from parsing the header file will be string, make list of floats
     wavelength_data = array_data[np.where(mask > 0)]
-    
+
     # Initialize analysis output values with zeros
     wavelength_means = np.full(len(img.wavelength_dict), 0)
     max_per_band = np.full(len(img.wavelength_dict), 0)
     min_per_band = np.full(len(img.wavelength_dict), 0)
     std_per_band = np.full(len(img.wavelength_dict), 0)
-    
+
     avg_reflectance = 0
     std_reflectance = 0
     median_reflectance = 0
-    
+
     # check if mask is empty and procees only if it is not
     if wavelength_data.size != 0:
         # Calculate mean reflectance across wavelengths
@@ -73,7 +73,7 @@ def _analyze_spectral(img, mask, label):
         max_per_band = wavelength_data.max(axis=0)
         min_per_band = wavelength_data.min(axis=0)
         std_per_band = wavelength_data.std(axis=0)
-        
+
         # Calculate reflectance statistics
         avg_reflectance = np.average(wavelength_data)
         std_reflectance = np.std(wavelength_data)
