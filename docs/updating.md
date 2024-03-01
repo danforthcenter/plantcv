@@ -915,6 +915,16 @@ pages for more details on the input and output variable types.
 * post v4.0: Deprecated, see:
     * filtered_mask = **pcv.roi.filter**(*mask, roi, roi_type='partial'*)
 
+#### plantcv.transform.calibrate_camera
+
+* pre v4.2.1: NA
+* post v4.2.1: corrected_img = **plantcv.transform.calibrate_camera**(*rgb_img, mtx, dist*)
+
+#### plantcv.transform.checkerboard_calib
+
+* pre v4.2.1: NA
+* post v4.2.1: mtx, dist = **plantcv.transform.checkerboard_calib**(*img_path, col_corners, row_corners, out_dir*)
+
 #### plantcv.transform.rotate
 
 * post v3.12.0: rotated_img = **plantcv.transform.rotate**(*img, rotation_deg, crop*)
