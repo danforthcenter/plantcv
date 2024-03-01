@@ -50,3 +50,5 @@ jobs:
         key: python
         coverage-file: coverage.xml
         dsn: ${{ secrets.DEEPSOURCE_DSN }}
+      env:
+        DEEPSOURCE_DSN: ${{ secrets.DEEPSOURCE_DSN }}
