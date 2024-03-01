@@ -1,6 +1,7 @@
 """Tests for pcv.plot_image."""
 import pytest
 import cv2
+import altair as alt
 from matplotlib import pyplot as plt
 from plantcv.plantcv import PSII_data
 from plantcv.plantcv import plot_image
@@ -43,5 +44,13 @@ def test_plot_image_psiidata():
 def test_plantcv_plot_image_dataarray(test_data):
     """Test for PlantCV."""
     plot_image(test_data.psii_cropreporter('ojip_dark').squeeze('measurement', drop=True), col='frame_label')
+    # Assert that the image was plotted without error
+    assert True
+
+
+def test_plantcv_plot_image_altair():
+    """Test for PlantCV."""
+    chart = alt.Chart().mark_point()
+    plot_image(chart)
     # Assert that the image was plotted without error
     assert True

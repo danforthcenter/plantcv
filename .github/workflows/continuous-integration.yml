@@ -44,11 +44,11 @@ jobs:
       run: |
         pip install .
         py.test --cov-report=xml --cov=plantcv tests/
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
+    - name: Upload coverage to Deepsource
+      uses: deepsourcelabs/test-coverage-action@master
       with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        file: ./coverage.xml
-        flags: unittests
-        env_vars: OS,PYTHON
-        fail_ci_if_error: true
+        key: python
+        coverage-file: coverage.xml
+        dsn: ${{ secrets.DEEPSOURCE_DSN }}
+      env:
+        DEEPSOURCE_DSN: ${{ secrets.DEEPSOURCE_DSN }}

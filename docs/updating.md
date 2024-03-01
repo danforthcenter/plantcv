@@ -419,6 +419,11 @@ pages for more details on the input and output variable types.
 * pre v3.3: NA
 * post v3.3: filtered_img = **plantcv.fill**(*bin_img*)
 
+#### plantcv.filters.eccentricity 
+
+* pre v4.3:  NA 
+* post v4.3: filtered_mask = **plantcv.filters.eccentricity**(*bin_img, ecc_thresh=0*)
+
 #### plantcv.find_objects
 
 * pre v3.0dev2: device, objects, hierarchy = **plantcv.find_objects**(*img, mask, device, debug=None*)
@@ -1191,6 +1196,11 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev1: NA
 * post v3.0dev2: matrix = **plantcv.transform.load_matrix**(*filename*)
+
+#### plantcv.transfor.merge_images
+
+* pre v4.2.1: NA
+* post v4.2.1: merged_img = **plantcv.transform.merge_images**(*paths_to_imgs, overlap_percentage, direction = "vertical", method = "stacked"*)
 
 #### plantcv.transform.resize
 
