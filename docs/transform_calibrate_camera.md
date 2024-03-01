@@ -2,7 +2,7 @@
 
 This function uses the outputs of [**plantcv.transform.checkerboard_calib**](transform_checkerboard_calibration.md) to correct distortions introduced by the camera.
 
-**plantcv.transform.calibrate_camera**(*rgb_img, mtx, dist)
+**plantcv.transform.calibrate_camera**(*rgb_img, mtx, dist*)
 
 **returns** corrected image
 
