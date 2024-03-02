@@ -570,6 +570,17 @@
         "code",
         "bug"
       ]
+    },
+    {
+      "login": "rayn-alex",
+      "name": "Dr. Alexander Kutschera",
+      "avatar_url": "https://avatars.githubusercontent.com/u/129968640?v=4",
+      "profile": "https://rayngrowingsystems.com/",
+      "contributions": [
+        "code",
+        "bug",
+        "question"
+      ]
     }
   ],
   "contributorsPerLine": 7,
