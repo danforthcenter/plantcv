@@ -44,6 +44,15 @@ class TransformTestData:
         self.source_corrected = os.path.join(self.datadir, "source_corrected.png")
         # Color card image
         self.colorcard_img = os.path.join(self.datadir, "colorcard_img.png")
+        # Checkerboard image directory
+        self.checkerboard_imgdir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                                "..", "..", "testdata", "checkerboard_imgdir")
+        # Fish eye image
+        self.fisheye_test_img = os.path.join(self.datadir, "fisheye_test_img.jpg")
+        # mtx matrix
+        self.mtx = os.path.join(self.datadir, "mtx.npz")
+        # dist matrix
+        self.dist = os.path.join(self.datadir, "dist.npz")
         # Merged image HS
         self.merged_HS = os.path.join(self.datadir, "merged_HS.jpg")
         # Merged image HA
