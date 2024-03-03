@@ -305,7 +305,8 @@ def calc_transformation_matrix(matrix_m, matrix_b):
     if np.shape(matrix_m)[0] != np.shape(matrix_b)[1] or np.shape(matrix_m)[1] != np.shape(matrix_b)[0]:
         fatal_error("Cannot multiply matrices.")
 
-    t_r, t_r2, t_r3, t_g, t_g2, t_g3, t_b, t_b2, t_b3 = np.split(matrix_b, 9, 1)
+    matrix_b_split = np.array_split(matrix_b, 9, axis=1)
+    t_r, t_r2, t_r3, t_g, t_g2, t_g3, t_b, t_b2, t_b3 = matrix_b_split + [None] * (9 - len(matrix_b_split))
 
     # multiply each 22x1 matrix from target color space by matrix_m
     red = np.matmul(matrix_m, t_r)
@@ -353,7 +354,8 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
         fatal_error("Source_img is not an RGB image.")
 
     # split transformation_matrix
-    red, green, blue, _, _, _, _, _, _ = np.split(transformation_matrix, 9, 1)
+    transformation_matrix_split = np.array_split(transformation_matrix, 9, axis=1)
+    red, green, blue, *remaining = transformation_matrix_split + [None] * (9 - len(transformation_matrix_split))
 
     source_dtype = source_img.dtype
     # normalization value as max number if the type is unsigned int
