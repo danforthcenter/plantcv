@@ -316,7 +316,6 @@ def calc_transformation_matrix(matrix_m, matrix_b):
     t_b = matrix_b_split[6]
     t_b2 = matrix_b_split[7]
     t_b3 = matrix_b_split[8]
-
     # multiply each 22x1 matrix from target color space by matrix_m
     red = np.matmul(matrix_m, t_r)
     green = np.matmul(matrix_m, t_g)
