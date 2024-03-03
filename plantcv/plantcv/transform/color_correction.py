@@ -305,6 +305,7 @@ def calc_transformation_matrix(matrix_m, matrix_b):
     if np.shape(matrix_m)[0] != np.shape(matrix_b)[1] or np.shape(matrix_m)[1] != np.shape(matrix_b)[0]:
         fatal_error("Cannot multiply matrices.")
 
+    # split matrix_b, doing this way to avoid deepsource issue
     matrix_b_split = np.array_split(matrix_b, 9, axis=1)
     t_r = matrix_b_split[0]
     t_r2 = matrix_b_split[1]
@@ -315,7 +316,7 @@ def calc_transformation_matrix(matrix_m, matrix_b):
     t_b = matrix_b_split[6]
     t_b2 = matrix_b_split[7]
     t_b3 = matrix_b_split[8]
-    
+
     # multiply each 22x1 matrix from target color space by matrix_m
     red = np.matmul(matrix_m, t_r)
     green = np.matmul(matrix_m, t_g)
