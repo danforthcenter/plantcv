@@ -69,7 +69,6 @@ def _rgb_to_webcode(rgb_values):
 def assign_color(wavelength):
     """
     Assigns a color to a given wavelength based on predefined wavelength ranges.
-
     Inputs:
     - wavelength (int): The wavelength for which to assign a color.
 
@@ -81,21 +80,20 @@ def assign_color(wavelength):
     if wavelength < 290:
         # under uv
         return color_palette(num=256)[-154]
-    elif 290 <= wavelength < 445:
+    if 290 <= wavelength < 445:
         # uv
         uv_colors = _get_color_dict_uv()
-        return uv_colors.get(wavelength, None)
-    elif 445 <= wavelength < 701:
+        return uv_colors.get(wavelength)
+    if 445 <= wavelength < 701:
         # visible
         vis_colors = _get_color_dict_vis()
-        return vis_colors.get(wavelength, None)
-    elif 701 <= wavelength < 1701:
+        return vis_colors.get(wavelength)
+    if 701 <= wavelength < 1701:
         # nir
         nir_colors = _get_color_dict_nir()
-        return nir_colors.get(wavelength, None)
-    else:
-        # above nir
-        return color_palette(num=256)[-1]
+        return nir_colors.get(wavelength)
+    # above nir
+    return color_palette(num=256)[-1]
 
 
 def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None,
