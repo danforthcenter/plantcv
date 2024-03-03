@@ -76,7 +76,6 @@ def assign_color(wavelength):
     - color (str or None): The color assigned to the wavelength.
                            Returns None if the wavelength is not within any predefined range.
     """
-
     if wavelength < 290:
         # under uv
         return color_palette(num=256)[-154]
