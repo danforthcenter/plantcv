@@ -60,6 +60,7 @@ def mask_kmeans(labeled_img, K, patch_size, cat_list=[]):
     mg = np.floor(patch_size / 2).astype(np.int32)
     h, w = labeled_img.shape
     if len(cat_list) == 0:
+        mask_dict = {}
         L = [*range(K)]        
         for i in L:
             mask = np.ones(labeled_img.shape)
@@ -68,7 +69,10 @@ def mask_kmeans(labeled_img, K, patch_size, cat_list=[]):
             mask[:, w-mg:w] = False
             mask[0:mg, :] = False
             mask[h-mg:h, :] = False
-            pcv.plot_image(mask)
+            mask_light = abs(1-mask)
+            _debug(visual=mask_light, filename=os.path.join(params.debug_outdir, "_kmeans_mask_"+str(i)+".png"))
+            mask_dict[str(i)] = mask_light
+        return mask_dict
     else: 
         mask = np.ones(labeled_img.shape)
         for label in cat_list:
@@ -77,4 +81,6 @@ def mask_kmeans(labeled_img, K, patch_size, cat_list=[]):
         mask[:, w-mg:w] = False
         mask[0:mg, :] = False
         mask[h-mg:h, :] = False 
-        pcv.plot_image(mask)
+        mask_light = abs(1-mask)
+        _debug(visual=mask_light, filename=os.path.join(params.debug_outdir, "_kmeans_combined_mask.png"))
+        return mask_light
