@@ -10,7 +10,8 @@ from sklearn.feature_extraction import image
 from joblib import dump
 
 
-def train_kmeans(img_dir, K, out_path="./kmeansout.fit", prefix="", patch_size=10, sigma=5, sampling=None, seed=1, num_imgs=0, n_init=10):
+def train_kmeans(img_dir, K, out_path="./kmeansout.fit", prefix="", patch_size=10, sigma=5, sampling=None, 
+                 seed=1, num_imgs=0, n_init=10):
     """
     Trains a patch-based kmeans clustering model for identifying image features.
     Inputs:
@@ -49,10 +50,10 @@ def train_kmeans(img_dir, K, out_path="./kmeansout.fit", prefix="", patch_size=1
             img = cv2.imread(os.path.join(img_dir, img_name))
             if i == 0:
                 #Getting info from first image
-                patches = _patch_extract(img, patch_size=patch_size, sigma=sigma)  
+                patches = patch_extract(img, patch_size=patch_size, sigma=sigma)  
             else:
                 #Concatenating each additional image
-                patches = np.vstack((patches,_patch_extract(img, patch_size=patch_size, sigma=sigma)))
+                patches = np.vstack((patches,patch_extract(img, patch_size=patch_size, sigma=sigma)))
             i += 1
             
     kmeans = MiniBatchKMeans(n_clusters=K, n_init=n_init, random_state=seed)
@@ -60,7 +61,8 @@ def train_kmeans(img_dir, K, out_path="./kmeansout.fit", prefix="", patch_size=1
     dump(fitted, out_path)
     return fitted
 
-def _patch_extract(img, patch_size=10, sigma=5, sampling=None, seed=1):
+
+def patch_extract(img, patch_size=10, sigma=5, sampling=None, seed=1):
     """
     Extracts patches from an image.
     Inputs:
