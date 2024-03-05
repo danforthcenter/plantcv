@@ -43,7 +43,7 @@ jobs:
       # Run coverage analysis on pytest tests
       run: |
         pip install .
-        py.test --cov-report=xml --cov=plantcv tests/
+        py.test --cov-report=xml --cov=./
     - name: Upload coverage to Deepsource
       uses: deepsourcelabs/test-coverage-action@master
       with:
