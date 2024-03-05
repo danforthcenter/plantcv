@@ -45,9 +45,12 @@ labeled_img = predict_kmeans(img='./Silphium_seed_example.png',
                              model_path="./kmeansout_seed.fit", patch_size=16)
 
 #Choosing clusters for each category within the seed image
-background = mask_kmeans(labeled_img=labeled_img, K=20, patch_size=16, cat_list=[0, 4, 9, 10, 18])
-wings = mask_kmeans(labeled_img=labeled_img, K=20, patch_size=16, cat_list=[19, 2, 11, 8, 6, 5, 15, 12])
-seed = mask_kmeans(labeled_img=labeled_img, K=20, patch_size=16, cat_list=[13, 3, 7, 17, 1, 16, 14])
+background = mask_kmeans(labeled_img=labeled_img, K=20, patch_size=16, 
+                         cat_list=[0, 4, 9, 10, 18])
+wings = mask_kmeans(labeled_img=labeled_img, K=20, patch_size=16, 
+                    cat_list=[19, 2, 11, 8, 6, 5, 15, 12])
+seed = mask_kmeans(labeled_img=labeled_img, K=20, patch_size=16, 
+                   cat_list=[13, 3, 7, 17, 1, 16, 14])
 
 ```
 
