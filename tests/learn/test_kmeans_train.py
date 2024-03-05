@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 import os
 from joblib import load
-from plantcv.plantcv.learn import train_kmeans
+from plantcv.learn import train_kmeans
 
 
 def test_train_kmeans(learn_test_data, tmpdir):
