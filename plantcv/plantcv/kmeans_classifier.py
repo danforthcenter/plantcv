@@ -10,7 +10,7 @@ from sklearn.feature_extraction import image
 from joblib import load
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
-from plantcv.learn import patch_extract
+from plantcv.learn.train_kmeans import patch_extract
 
 
 def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10):
