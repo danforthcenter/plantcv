@@ -10,7 +10,7 @@
 [![license](https://img.shields.io/github/license/danforthcenter/plantcv.svg)](https://github.com/danforthcenter/plantcv/blob/main/LICENSE)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](docs/CODE_OF_CONDUCT.md)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-53-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-54-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 # PlantCV: Plant phenotyping using computer vision
@@ -131,9 +131,10 @@ issues have already been filed.
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/lchavez037"><img src="https://avatars.githubusercontent.com/u/18586794?v=4?s=100" width="100px;" alt="lchavez037"/><br /><sub><b>lchavez037</b></sub></a><br /><a href="https://github.com/danforthcenter/plantcv/commits?author=lchavez037" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/leowlima"><img src="https://avatars.githubusercontent.com/u/123584304?v=4?s=100" width="100px;" alt="leowlima"/><br /><sub><b>leowlima</b></sub></a><br /><a href="https://github.com/danforthcenter/plantcv/commits?author=leowlima" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/mtwatso2-eng"><img src="https://avatars.githubusercontent.com/u/55025422?v=4?s=100" width="100px;" alt="mtwatso2-eng"/><br /><sub><b>mtwatso2-eng</b></sub></a><br /><a href="https://github.com/danforthcenter/plantcv/commits?author=mtwatso2-eng" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/scallen81"><img src="https://avatars.githubusercontent.com/u/21960021?v=4?s=100" width="100px;" alt="scallen81"/><br /><sub><b>scallen81</b></sub></a><br /><a href="https://github.com/danforthcenter/plantcv/commits?author=scallen81" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/natejly"><img src="https://avatars.githubusercontent.com/u/141955513?v=4?s=100" width="100px;" alt="natejly"/><br /><sub><b>natejly</b></sub></a><br /><a href="https://github.com/danforthcenter/plantcv/commits?author=natejly" title="Code">💻</a></td>
     </tr>
     <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/scallen81"><img src="https://avatars.githubusercontent.com/u/21960021?v=4?s=100" width="100px;" alt="scallen81"/><br /><sub><b>scallen81</b></sub></a><br /><a href="https://github.com/danforthcenter/plantcv/commits?author=scallen81" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/sdkenney42"><img src="https://avatars.githubusercontent.com/u/128510721?v=4?s=100" width="100px;" alt="sdkenney42"/><br /><sub><b>sdkenney42</b></sub></a><br /><a href="https://github.com/danforthcenter/plantcv/commits?author=sdkenney42" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/typelogic"><img src="https://avatars.githubusercontent.com/u/45341970?v=4?s=100" width="100px;" alt="typelogic"/><br /><sub><b>typelogic</b></sub></a><br /><a href="https://github.com/danforthcenter/plantcv/commits?author=typelogic" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/wurDevTim"><img src="https://avatars.githubusercontent.com/u/81219429?v=4?s=100" width="100px;" alt="wurDevTim"/><br /><sub><b>wurDevTim</b></sub></a><br /><a href="https://github.com/danforthcenter/plantcv/commits?author=wurDevTim" title="Code">💻</a> <a href="https://github.com/danforthcenter/plantcv/commits?author=wurDevTim" title="Documentation">📖</a> <a href="https://github.com/danforthcenter/plantcv/commits?author=wurDevTim" title="Tests">⚠️</a></td>
