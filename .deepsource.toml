@@ -4,7 +4,9 @@ test_patterns = ["tests/**"]
 
 exclude_patterns = [
   "setup.py",
-  "conftest.py"
+  "tests/conftest.py",
+  "tests/*/conftest.py",
+  "versioneer.py"
 ]
 
 [[analyzers]]
