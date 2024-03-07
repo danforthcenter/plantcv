@@ -94,7 +94,7 @@ def _analyze_distribution(mask,  bin_size_x=100, bin_size_y=100, label=None):
             Y_histogram[bin_index_y] = white_pixels_y
 
         for x in range(0, width, bin_size_x):
-            x_slice = mask[y:min(x+bin_size_x, width), :]
+            x_slice = mask[:, x:min(x+bin_size_x, width)]  # Corrected slicing indices here
             white_pixels_x = np.sum(x_slice == 255)  # Count white pixels
             bin_index_x = min(x // bin_size_x, num_bins_x - 1)  # Ensure index within range
             X_histogram[bin_index_x] = white_pixels_x
@@ -116,13 +116,17 @@ def _analyze_distribution(mask,  bin_size_x=100, bin_size_y=100, label=None):
         Y_distribution_mean = np.sum(Y_histogram * y_axis) / np.sum(Y_histogram)
         Y_distribution_std = np.std(y_axis)
 
-    #Save histograms
+    # Convert numpy arrays to lists before adding to outputs
+    X_histogram_list = X_histogram.tolist()
+    Y_histogram_list = Y_histogram.tolist()
+    
+    # Save histograms
     outputs.add_observation(sample=label, variable='X_frequencies', trait='X frequencies',
-                        method='plantcv.plantcv.analyze.distribution', scale='frequency', datatype=list,
-                        value=X_histogram, label=x_axis)
+                            method='plantcv.plantcv.analyze.distribution', scale='frequency', datatype=list,
+                            value=X_histogram_list, label=x_axis.tolist())
     outputs.add_observation(sample=label, variable='Y_frequencies', trait='Y frequencies',
-                         method='plantcv.plantcv.analyze.distribution', scale='frequency', datatype=list,
-                        value=Y_histogram, label=y_axis)
+                            method='plantcv.plantcv.analyze.distribution', scale='frequency', datatype=list,
+                            value=Y_histogram_list, label=y_axis.tolist())
 
     # Save average measurements
     outputs.add_observation(sample=label, variable='X_distribution_mean', trait='X distribution mean',
