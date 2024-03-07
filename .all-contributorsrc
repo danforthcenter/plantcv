@@ -581,6 +581,15 @@
         "bug",
         "question"
       ]
+    },
+    {
+      "login": "natejly",
+      "name": "natejly",
+      "avatar_url": "https://avatars.githubusercontent.com/u/141955513?v=4",
+      "profile": "https://github.com/natejly",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

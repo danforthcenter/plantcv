@@ -6,10 +6,10 @@ name: builds
 on:
   push:
     # Run when main is updated
-    branches: [ main, 4.x, release-4.0 ]
+    branches: [ main ]
   pull_request:
     # Run on pull requests against main
-    branches: [ main, 4.x, release-4.0 ]
+    branches: [ main ]
 
 jobs:
   build:
@@ -33,18 +33,13 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 pytest pytest-cov ipython
         pip install -r requirements.txt
-    - name: Lint with flake8
-      run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test and generate coverage report
       # Run coverage analysis on pytest tests
       run: |
         pip install .
-        py.test --cov-report=xml --cov=plantcv tests/
+        py.test --cov-report=xml --cov=./
     - name: Upload coverage to Deepsource
+      if: ${{ matrix.python-version == '3.10' }}
       uses: deepsourcelabs/test-coverage-action@master
       with:
         key: python
