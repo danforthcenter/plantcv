@@ -56,7 +56,7 @@ def warp(img, refimg, pts, refpts, method='default'):
     """
     if len(pts) != len(refpts):
         fatal_error('Please provide same number of corresponding coordinates.')
-    if not(len(pts) >= 4 and len(refpts) >= 4):
+    if not (len(pts) >= 4 and len(refpts) >= 4):
         fatal_error('Please provide at least 4 pairs of points!')
     # convert coordinates to int if they are not int
     pts = [tuple(map(int, tup)) for tup in pts]

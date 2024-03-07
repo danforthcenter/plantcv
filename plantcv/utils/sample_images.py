@@ -116,7 +116,7 @@ def _sample_phenodata(source_path, dest_path, num=100):
     if len(snapshots) < num:
         fatal_error(f"Number of snapshots found ({len(snapshots)}) less than 'num'.")
     # Randomly select the snapshots
-    random_snapshots = random.sample(snapshots.keys(), num)
+    random_snapshots = random.sample(list(snapshots.keys()), num)
     # Iterate over all images in the dataset
     for fpath, meta in dataset["images"].items():
         # If the snapshot ID is in the random snapshots
