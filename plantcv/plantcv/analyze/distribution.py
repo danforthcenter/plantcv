@@ -2,29 +2,28 @@
 import os
 import cv2
 import numpy as np
-from scipy import stats
-from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
-from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import outputs
-from plantcv.plantcv.visualize import histogram
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _iterate_analysis
 
 
-def distribution(labeled_mask, bin_size_x=100, bin_size_y=100, label=None):
+def distribution(labeled_mask, n_labels, bin_size_x=100, bin_size_y=100, label=None):
     """A function that analyzes the X and Y distribution of objects and outputs data.
 
     Inputs:
     labeled_mask     = Labeled mask of objects (32-bit).
+    n_labels         = Total number expected individual objects (default = 1).
     bin_size_x       = Total number of desired bins for the histogram in the X direction
     bin_size_y       = Total number of desired bins for the histogram in the Y direction
     label            = Optional label parameter, modifies the variable name of
                        observations recorded (default = pcv.params.sample_label).
 
     Returns:
-    distribution_image   = histogram output
+    distribution_image   = histogram output, list containing x-distribution and y-dist plot
 
     :param mask: numpy.ndarray
+    :param n_labels: int
     :param bin_size_x: int
     :param bin_size_y: int
     :param label: str
@@ -33,15 +32,23 @@ def distribution(labeled_mask, bin_size_x=100, bin_size_y=100, label=None):
     # Set lable to params.sample_label if None
     if label is None:
         label = params.sample_label
-
-    _ = _iterate_analysis(labeled_mask=labeled_mask, label=label, function=_analyze_distribution,
+    # Create combined mask as "img" for iterative analysis input 
+    img = np.where(labeled_mask > 0, 255, 0).astype(np.uint8)
+    _ = _iterate_analysis(img=img, labeled_mask=labeled_mask, n_labels=n_labels, label=label, 
+                          function=_analyze_distribution,
                           **{"bin_size_x": bin_size_x,"bin_size_y": bin_size_y})
-    distribution_chart = outputs.plot_dists(variable="distribution_frequencies")
-    _debug(visual=distribution_chart, filename=os.path.join(params.debug_outdir, str(params.device) + '_distribution_hist.png'))
-    return distribution_chart
+    # Plot distributions
+    gray_chart_x = outputs.plot_dists(variable="X_frequencies")
+    gray_chart_y = outputs.plot_dists(variable="Y_frequencies")
+    # Add plot labels 
+    gray_chart_x = gray_chart_x.properties(title="x-axis distribution")
+    gray_chart_y = gray_chart_y.properties(title="y-axis distribution")
+    _debug(visual=gray_chart_x, filename=os.path.join(params.debug_outdir, str(params.device) + '_x_distribution_hist.png'))
+    _debug(visual=gray_chart_y, filename=os.path.join(params.debug_outdir, str(params.device) + '_y_distribution_hist.png'))
+    return [gray_chart_x, gray_chart_y]
 
 
-def _analyze_distribution(mask,  bin_size_x=100, bin_size_y=100, label=None):
+def _analyze_distribution(img, mask, bin_size_x=100, bin_size_y=100, label=None):
     """Analyze the color properties of an image object
     Inputs:
     mask             = Binary mask made from selected contours
@@ -119,7 +126,7 @@ def _analyze_distribution(mask,  bin_size_x=100, bin_size_y=100, label=None):
     # Convert numpy arrays to lists before adding to outputs
     X_histogram_list = X_histogram.tolist()
     Y_histogram_list = Y_histogram.tolist()
-    
+
     # Save histograms
     outputs.add_observation(sample=label, variable='X_frequencies', trait='X frequencies',
                             method='plantcv.plantcv.analyze.distribution', scale='frequency', datatype=list,
