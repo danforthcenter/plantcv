@@ -8,7 +8,7 @@ from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _iterate_analysis
 
 
-def distribution(labeled_mask, n_labels, bin_size_x=100, bin_size_y=100, label=None):
+def distribution(labeled_mask, n_labels=1, bin_size_x=100, bin_size_y=100, label=None):
     """A function that analyzes the X and Y distribution of objects and outputs data.
 
     Inputs:
