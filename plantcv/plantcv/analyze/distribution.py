@@ -65,7 +65,6 @@ def _analyze_distribution(img, mask, bin_size_x=100, bin_size_y=100, label=None)
     :param label: str
     :return distribution_images: list
     """
-
     # Save user debug setting
     debug = params.debug
     params.debug = None
