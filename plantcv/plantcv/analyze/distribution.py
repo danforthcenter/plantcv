@@ -66,7 +66,7 @@ def _analyze_distribution(img, mask, bin_size_x=100, bin_size_y=100, label=None)
     :return distribution_images: list
     """
     # Image not needed
-    img /= 1
+    img -= 0
     # Initialize output data
     # find the height and width, in pixels, for this image
     height, width = mask.shape[:2]
