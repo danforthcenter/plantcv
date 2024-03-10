@@ -65,10 +65,6 @@ def _analyze_distribution(img, mask, bin_size_x=100, bin_size_y=100, label=None)
     :param label: str
     :return distribution_images: list
     """
-    # Save user debug setting
-    debug = params.debug
-    params.debug = None
-
     # Initialize output data
     # find the height and width, in pixels, for this image
     height, width = mask.shape[:2]
@@ -89,9 +85,7 @@ def _analyze_distribution(img, mask, bin_size_x=100, bin_size_y=100, label=None)
 
     # Skip empty masks
     if np.count_nonzero(mask) != 0:
-
         # Calculate histogram
-        params.debug = None
         for y in range(0, height, bin_size_y):
             y_slice = mask[y:min(y+bin_size_y, height), :]
             white_pixels_y = np.sum(y_slice == 255)  # Count white pixels
@@ -103,9 +97,6 @@ def _analyze_distribution(img, mask, bin_size_x=100, bin_size_y=100, label=None)
             white_pixels_x = np.sum(x_slice == 255)  # Count white pixels
             bin_index_x = min(x // bin_size_x, num_bins_x - 1)  # Ensure index within range
             X_histogram[bin_index_x] = white_pixels_x
-
-        # Restore user debug setting
-        params.debug = debug
 
         # Determine the axes of the histograms
         y_axis = np.arange(len(Y_histogram)) * bin_size_y
