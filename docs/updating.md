@@ -228,7 +228,6 @@ pages for more details on the input and output variable types.
 * post v3.12: analysis_image = **plantcv.analyze_color**(*rgb_img, mask, hist_plot_type=None, colorspaces="all", label="default"*)
 * post v4.0: DEPRECATED see plantcv.analyze.color
 
-
 #### plantcv.analyze_nir_intensity
 
 * pre v3.0dev2: device, hist_header, hist_data, analysis_img = **plantcv.analyze_NIR_intensity**(*img, rgbimg, mask, bins, device, histplot=False, debug=None, filename=False*)
@@ -273,6 +272,10 @@ pages for more details on the input and output variable types.
 * pre v4.0: (see plantcv.analyze_color)
 * post v4.0: histogram = **plantcv.analyze.color**(*rgb_img, labeled_mask, n_labels=1, colorspaces="hsv", label=None*)
 
+#### plantcv.analyze.distribution
+
+* pre v4.2.1: NA
+* post v4.2.1: x_dist, y_dist = **plantcv.analyze.distribution**(*labeled_mask, n_labels=1, bin_size_x=100, bin_size_y=100, label=None*)
 
 #### plantcv.analyze.grayscale
 
