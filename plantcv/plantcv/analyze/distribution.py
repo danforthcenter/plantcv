@@ -35,7 +35,7 @@ def distribution(labeled_mask, n_labels=1, bin_size_x=100, bin_size_y=100, label
     img = np.where(labeled_mask > 0, 255, 0).astype(np.uint8)
     _ = _iterate_analysis(img=img, labeled_mask=labeled_mask, n_labels=n_labels, label=label, 
                           function=_analyze_distribution,
-                          **{"bin_size_x": bin_size_x,"bin_size_y": bin_size_y})
+                          **{"bin_size_x": bin_size_x, "bin_size_y": bin_size_y})
     # Plot distributions
     gray_chart_x = outputs.plot_dists(variable="X_frequencies")
     gray_chart_y = outputs.plot_dists(variable="Y_frequencies")
