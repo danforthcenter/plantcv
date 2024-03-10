@@ -88,13 +88,13 @@ def _analyze_distribution(img, mask, bin_size_x=100, bin_size_y=100, label=None)
         # Calculate histogram
         for y in range(0, height, bin_size_y):
             y_slice = mask[y:min(y+bin_size_y, height), :]
-            white_pixels_y = np.sum(y_slice == 255)  # Count white pixels
+            white_pixels_y = np.count_nonzero(y_slice)  # Count white pixels
             bin_index_y = min(y // bin_size_y, num_bins_y - 1)  # Ensure index within range
             y_histogram[bin_index_y] = white_pixels_y
 
         for x in range(0, width, bin_size_x):
             x_slice = mask[:, x:min(x+bin_size_x, width)]  # Corrected slicing indices here
-            white_pixels_x = np.sum(x_slice == 255)  # Count white pixels
+            white_pixels_x = np.count_nonzero(x_slice)  # Count white pixels
             bin_index_x = min(x // bin_size_x, num_bins_x - 1)  # Ensure index within range
             x_histogram[bin_index_x] = white_pixels_x
 
