@@ -1,6 +1,5 @@
 # Tests for pcv.analyze.distribution
 import cv2
-import numpy as np
 from plantcv.plantcv import outputs
 from plantcv.plantcv.analyze import distribution as analyze_distribution
 
