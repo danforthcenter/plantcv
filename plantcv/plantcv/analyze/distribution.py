@@ -1,6 +1,5 @@
 """Analyzes the X and Y spatial distribution of objects in an image."""
 import os
-import cv2
 import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
