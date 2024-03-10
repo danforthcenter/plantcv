@@ -31,15 +31,15 @@ def distribution(labeled_mask, n_labels=1, bin_size_x=100, bin_size_y=100, label
     # Set lable to params.sample_label if None
     if label is None:
         label = params.sample_label
-    # Create combined mask as "img" for iterative analysis input 
+    # Create combined mask as "img" for iterative analysis input
     img = np.where(labeled_mask > 0, 255, 0).astype(np.uint8)
-    _ = _iterate_analysis(img=img, labeled_mask=labeled_mask, n_labels=n_labels, label=label, 
+    _ = _iterate_analysis(img=img, labeled_mask=labeled_mask, n_labels=n_labels, label=label,
                           function=_analyze_distribution,
                           **{"bin_size_x": bin_size_x, "bin_size_y": bin_size_y})
     # Plot distributions
     gray_chart_x = outputs.plot_dists(variable="X_frequencies")
     gray_chart_y = outputs.plot_dists(variable="Y_frequencies")
-    # Add plot labels 
+    # Add plot labels
     gray_chart_x = gray_chart_x.properties(title="x-axis distribution")
     gray_chart_y = gray_chart_y.properties(title="y-axis distribution")
     _debug(visual=gray_chart_x, filename=os.path.join(params.debug_outdir, str(params.device) + '_x_distribution_hist.png'))
