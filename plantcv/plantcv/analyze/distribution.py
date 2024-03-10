@@ -72,8 +72,8 @@ def _analyze_distribution(img, mask, bin_size_x=100, bin_size_y=100, label=None)
     num_bins_x = width // bin_size_x
 
     # Initialize output measurements
-    y_histogram = np.zeros(height // bin_size_y)
-    x_histogram = np.zeros(width // bin_size_x)
+    y_histogram = np.zeros(num_bins_y)
+    x_histogram = np.zeros(num_bins_x)
 
     # Undefined defaults
     x_distribution_mean = np.nan
