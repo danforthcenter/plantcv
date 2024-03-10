@@ -2,12 +2,13 @@
 
 Spatial distribution analysis outputs numeric properties describing the pixel distribution in the X and Y dimension for plants, roots, flowers, etc. In particular, this application can be useful for analyzing the distribution of roots in soil. 
  
-**plantcv.analyze.distribution**(*labeled_mask, bin_size_x=100, bin_size_y=100, label=None*)
+**plantcv.analyze.distribution**(*labeled_mask, n_labels=1, bin_size_x=100, bin_size_y=100, label=None*)
 
-**returns** Ridgeline plot of histograms of pixel distribution in the X and Y dimensions
+**returns** Ridgeline plots of histograms of pixel distribution in the X and Y dimensions
 
 - **Parameters:**
     - labeled_mask - Labeled mask of objects (32-bit, output from [`pcv.create_labels`](create_labels.md) or [`pcv.roi.filter`](roi_filter.md)).
+    - n_labels - Total number expected individual objects (default = 1).
     - bin_size_x - Optional parameter, defines the size of the bin in pixels in the X direction. 
     - bin_size_y - Optional parameter, defines the size of the bin in pixels in the Y direction. 
     - label - Optional label parameter, modifies the variable name of observations recorded. Can be a prefix or list (default = pcv.params.sample_label).
@@ -21,8 +22,6 @@ Spatial distribution analysis outputs numeric properties describing the pixel di
     
 **Original image**
 
-
-
 ```python
 
 from plantcv import plantcv as pcv
@@ -35,7 +34,7 @@ pcv.params.debug = "plot"
 pcv.params.sample_label = "plant"
 
 # Characterize object shapes
-distribution_image = pcv.analyze.distribution(labeled_mask=mask, bin_size = 100, n_labels=1)
+distribution_image = pcv.analyze.distribution(labeled_mask=mask)
 
 # Access data stored out from analyze.distribution
 X_distribution_mean = pcv.outputs.observations['plant_1']['X_distribution_mean']['value']
@@ -43,8 +42,5 @@ X_distribution_mean = pcv.outputs.observations['plant_1']['X_distribution_mean']
 ```
 
 **Histograms of X distribution values**
-
-
-
 
 **Source Code:** 
