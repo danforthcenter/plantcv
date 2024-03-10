@@ -72,16 +72,16 @@ def _analyze_distribution(img, mask, bin_size_x=100, bin_size_y=100, label=None)
     num_bins_x = width // bin_size_x
 
     # Initialize output measurements
-    Y_histogram = np.zeros(height // bin_size_y)
-    X_histogram = np.zeros(width // bin_size_x)
+    y_histogram = np.zeros(height // bin_size_y)
+    x_histogram = np.zeros(width // bin_size_x)
 
     # Undefined defaults
-    X_distribution_mean = np.nan
-    X_distribution_median = np.nan
-    X_distribution_std = np.nan
-    Y_distribution_mean = np.nan
-    Y_distribution_median = np.nan
-    Y_distribution_std = np.nan
+    x_distribution_mean = np.nan
+    x_distribution_median = np.nan
+    x_distribution_std = np.nan
+    y_distribution_mean = np.nan
+    y_distribution_median = np.nan
+    y_distribution_std = np.nan
 
     # Skip empty masks
     if np.count_nonzero(mask) != 0:
@@ -90,58 +90,58 @@ def _analyze_distribution(img, mask, bin_size_x=100, bin_size_y=100, label=None)
             y_slice = mask[y:min(y+bin_size_y, height), :]
             white_pixels_y = np.sum(y_slice == 255)  # Count white pixels
             bin_index_y = min(y // bin_size_y, num_bins_y - 1)  # Ensure index within range
-            Y_histogram[bin_index_y] = white_pixels_y
+            y_histogram[bin_index_y] = white_pixels_y
 
         for x in range(0, width, bin_size_x):
             x_slice = mask[:, x:min(x+bin_size_x, width)]  # Corrected slicing indices here
             white_pixels_x = np.sum(x_slice == 255)  # Count white pixels
             bin_index_x = min(x // bin_size_x, num_bins_x - 1)  # Ensure index within range
-            X_histogram[bin_index_x] = white_pixels_x
+            x_histogram[bin_index_x] = white_pixels_x
 
         # Determine the axes of the histograms
-        y_axis = np.arange(len(Y_histogram)) * bin_size_y
-        x_axis = np.arange(len(X_histogram)) * bin_size_x
+        y_axis = np.arange(len(y_histogram)) * bin_size_y
+        x_axis = np.arange(len(x_histogram)) * bin_size_x
 
         # Calculate the median X and Y value distribution
-        X_distribution_median = np.median(x_axis)
-        Y_distribution_median = np.median(y_axis)
+        x_distribution_median = np.median(x_axis)
+        y_distribution_median = np.median(y_axis)
 
         # Calculate the mean and standard deviation X and Y  value distribution
-        X_distribution_mean = np.sum(X_histogram * x_axis) / np.sum(X_histogram)
-        X_distribution_std = np.std(x_axis)
-        Y_distribution_mean = np.sum(Y_histogram * y_axis) / np.sum(Y_histogram)
-        Y_distribution_std = np.std(y_axis)
+        x_distribution_mean = np.sum(x_histogram * x_axis) / np.sum(x_histogram)
+        x_distribution_std = np.std(x_axis)
+        y_distribution_mean = np.sum(y_histogram * y_axis) / np.sum(y_histogram)
+        y_distribution_std = np.std(y_axis)
 
     # Convert numpy arrays to lists before adding to outputs
-    X_histogram_list = X_histogram.tolist()
-    Y_histogram_list = Y_histogram.tolist()
+    x_histogram_list = x_histogram.tolist()
+    y_histogram_list = y_histogram.tolist()
 
     # Save histograms
     outputs.add_observation(sample=label, variable='X_frequencies', trait='X frequencies',
                             method='plantcv.plantcv.analyze.distribution', scale='frequency', datatype=list,
-                            value=X_histogram_list, label=x_axis.tolist())
+                            value=x_histogram_list, label=x_axis.tolist())
     outputs.add_observation(sample=label, variable='Y_frequencies', trait='Y frequencies',
                             method='plantcv.plantcv.analyze.distribution', scale='frequency', datatype=list,
-                            value=Y_histogram_list, label=y_axis.tolist())
+                            value=y_histogram_list, label=y_axis.tolist())
 
     # Save average measurements
     outputs.add_observation(sample=label, variable='X_distribution_mean', trait='X distribution mean',
                             method='plantcv.plantcv.analyze.distribution', scale='pixels', datatype=float,
-                            value=X_distribution_mean, label='pixel')
+                            value=x_distribution_mean, label='pixel')
     outputs.add_observation(sample=label, variable='X_distribution_median', trait='X distribution median',
                             method='plantcv.plantcv.analyze.distribution', scale='pixel', datatype=float,
-                            value=X_distribution_median, label='pixel')
+                            value=x_distribution_median, label='pixel')
     outputs.add_observation(sample=label, variable='X_distribution_std', trait='X distribution standard deviation',
                             method='plantcv.plantcv.analyze.distribution', scale='pixel', datatype=float,
-                            value=X_distribution_std, label='pixel')
+                            value=x_distribution_std, label='pixel')
     outputs.add_observation(sample=label, variable='Y_distribution_mean', trait='Y distribution mean',
                             method='plantcv.plantcv.analyze.distribution', scale='pixels', datatype=float,
-                            value=Y_distribution_mean, label='pixel')
+                            value=y_distribution_mean, label='pixel')
     outputs.add_observation(sample=label, variable='Y_distribution_median', trait='Y distribution median',
                             method='plantcv.plantcv.analyze.distribution', scale='pixel', datatype=float,
-                            value=Y_distribution_median, label='pixel')
+                            value=y_distribution_median, label='pixel')
     outputs.add_observation(sample=label, variable='Y_distribution_std', trait='Y distribution standard deviation',
                             method='plantcv.plantcv.analyze.distribution', scale='pixel', datatype=float,
-                            value=Y_distribution_std, label='pixel')
+                            value=y_distribution_std, label='pixel')
 
     return mask
