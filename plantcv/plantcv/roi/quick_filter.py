@@ -55,7 +55,7 @@ def quick_filter(mask, roi):
 
     # The summed image now only contains objects that overlap the ROI
     # Subtract 0.5 to remove the ROI mask
-    summed = (summed - 0.5)
+    summed = summed - 0.5
 
     # Round and set the data type back to uint8
     summed = summed.round().astype("uint8")
