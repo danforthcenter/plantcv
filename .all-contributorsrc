@@ -567,6 +567,27 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/73593696?v=4",
       "profile": "https://tj-schultz.github.io/",
       "contributions": [
+        "code",
+        "bug"
+      ]
+    },
+    {
+      "login": "rayn-alex",
+      "name": "Dr. Alexander Kutschera",
+      "avatar_url": "https://avatars.githubusercontent.com/u/129968640?v=4",
+      "profile": "https://rayngrowingsystems.com/",
+      "contributions": [
+        "code",
+        "bug",
+        "question"
+      ]
+    },
+    {
+      "login": "natejly",
+      "name": "natejly",
+      "avatar_url": "https://avatars.githubusercontent.com/u/141955513?v=4",
+      "profile": "https://github.com/natejly",
+      "contributions": [
         "code"
       ]
     }

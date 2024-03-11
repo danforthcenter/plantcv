@@ -419,6 +419,11 @@ pages for more details on the input and output variable types.
 * pre v3.3: NA
 * post v3.3: filtered_img = **plantcv.fill**(*bin_img*)
 
+#### plantcv.filters.eccentricity 
+
+* pre v4.3:  NA 
+* post v4.3: filtered_mask = **plantcv.filters.eccentricity**(*bin_img, ecc_thresh=0*)
+
 #### plantcv.find_objects
 
 * pre v3.0dev2: device, objects, hierarchy = **plantcv.find_objects**(*img, mask, device, debug=None*)
@@ -910,6 +915,16 @@ pages for more details on the input and output variable types.
 * post v4.0: Deprecated, see:
     * filtered_mask = **pcv.roi.filter**(*mask, roi, roi_type='partial'*)
 
+#### plantcv.transform.calibrate_camera
+
+* pre v4.2.1: NA
+* post v4.2.1: corrected_img = **plantcv.transform.calibrate_camera**(*rgb_img, mtx, dist*)
+
+#### plantcv.transform.checkerboard_calib
+
+* pre v4.2.1: NA
+* post v4.2.1: mtx, dist = **plantcv.transform.checkerboard_calib**(*img_path, col_corners, row_corners, out_dir*)
+
 #### plantcv.transform.rotate
 
 * post v3.12.0: rotated_img = **plantcv.transform.rotate**(*img, rotation_deg, crop*)
@@ -1191,6 +1206,11 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev1: NA
 * post v3.0dev2: matrix = **plantcv.transform.load_matrix**(*filename*)
+
+#### plantcv.transfor.merge_images
+
+* pre v4.2.1: NA
+* post v4.2.1: merged_img = **plantcv.transform.merge_images**(*paths_to_imgs, overlap_percentage, direction = "vertical", method = "stacked"*)
 
 #### plantcv.transform.resize
 

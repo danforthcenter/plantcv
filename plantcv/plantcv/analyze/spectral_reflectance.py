@@ -56,11 +56,28 @@ def _analyze_spectral(img, mask, label):
     # List of wavelengths recorded created from parsing the header file will be string, make list of floats
     wavelength_data = array_data[np.where(mask > 0)]
 
-    # Calculate mean reflectance across wavelengths
-    wavelength_means = wavelength_data.mean(axis=0)
-    max_per_band = wavelength_data.max(axis=0)
-    min_per_band = wavelength_data.min(axis=0)
-    std_per_band = wavelength_data.std(axis=0)
+    # Initialize analysis output values with zeros
+    wavelength_means = np.full(len(img.wavelength_dict), 0)
+    max_per_band = np.full(len(img.wavelength_dict), 0)
+    min_per_band = np.full(len(img.wavelength_dict), 0)
+    std_per_band = np.full(len(img.wavelength_dict), 0)
+
+    avg_reflectance = 0
+    std_reflectance = 0
+    median_reflectance = 0
+
+    # check if mask is empty and procees only if it is not
+    if wavelength_data.size != 0:
+        # Calculate mean reflectance across wavelengths
+        wavelength_means = wavelength_data.mean(axis=0)
+        max_per_band = wavelength_data.max(axis=0)
+        min_per_band = wavelength_data.min(axis=0)
+        std_per_band = wavelength_data.std(axis=0)
+
+        # Calculate reflectance statistics
+        avg_reflectance = np.average(wavelength_data)
+        std_reflectance = np.std(wavelength_data)
+        median_reflectance = np.median(wavelength_data)
 
     # Create lists with wavelengths in float format rather than as strings
     # and make a list of the frequencies since they are in an array
@@ -76,11 +93,6 @@ def _analyze_spectral(img, mask, label):
         new_std_per_band.append(std_per_band[i].astype(float))
         new_max_per_band.append(max_per_band[i].astype(float))
         new_min_per_band.append(min_per_band[i].astype(float))
-
-    # Calculate reflectance statistics
-    avg_reflectance = np.average(wavelength_data)
-    std_reflectance = np.std(wavelength_data)
-    median_reflectance = np.median(wavelength_data)
 
     wavelength_labels = []
     for i in img.wavelength_dict.keys():
