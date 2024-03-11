@@ -5,7 +5,7 @@ import altair as alt
 from matplotlib import pyplot as plt
 from plantcv.plantcv import PSII_data
 from plantcv.plantcv import plot_image
-
+import pandas as pd
 
 def test_plot_image_rgb(test_data):
     """Test for PlantCV."""
@@ -50,7 +50,14 @@ def test_plantcv_plot_image_dataarray(test_data):
 
 def test_plantcv_plot_image_altair():
     """Test for PlantCV."""
-    chart = alt.Chart().mark_point()
+    data = pd.DataFrame({
+        'x': [1, 2, 3, 4, 5],
+        'y': [1, 2, 3, 4, 5]
+    })
+    chart = alt.Chart(data).mark_point().encode(
+        x='x',
+        y='y'
+    )
     plot_image(chart)
     # Assert that the image was plotted without error
     assert True
