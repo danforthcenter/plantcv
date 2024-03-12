@@ -20,7 +20,7 @@ class TestData:
         # RGB image
         self.small_rgb_img = os.path.join(self.datadir, "setaria_small_plant_rgb.png")
         # Binary mask for fill
-        self.small_bin_fill = os.path.join(self.datadir,"floodfill.png")
+        self.small_bin_fill = os.path.join(self.datadir, "floodfill.png")
         # Binary mask for RGB image
         self.small_bin_img = os.path.join(self.datadir, "setaria_small_plant_mask.png")
         # Gray image
@@ -46,7 +46,7 @@ class TestData:
         # ENVI hyperspectral data
         self.envi_bil_file = os.path.join(self.datadir, "darkReference")
         # ENVI hyperspectral data
-        self.envi_sample_data = os.path.join(self.datadir,"corn-kernel-hyperspectral.raw")
+        self.envi_sample_data = os.path.join(self.datadir, "corn-kernel-hyperspectral.raw")
         # Thermal image
         self.thermal_img = os.path.join(self.datadir, "FLIR2600.csv")
         # Thermal image data
