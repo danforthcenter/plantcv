@@ -11,5 +11,5 @@ def test_distribution(test_data):
     # Read in test data
     mask = cv2.imread(test_data.small_bin_img, -1)
 
-    _ = analyze_distribution(labeled_mask=mask, n_labels=1)
-    assert int(outputs.observations['default_1']['X_distribution_mean']['value']) == 200
+    _ = analyze_distribution(labeled_mask=mask, n_labels=1, direction="across")
+    assert int(outputs.observations['default_1']['x_distribution_mean']['value']) == 200
