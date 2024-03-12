@@ -29,6 +29,9 @@ def distribution(labeled_mask, n_labels=1, direction="down", bin_size=100, hist_
     alt.vegalite.v5.api.FacetChart
         Facet chart of the object distribution histograms
     """
+    # Increment the device counter
+    params.device += 1
+
     # Set lable to params.sample_label if None
     if label is None:
         label = params.sample_label
