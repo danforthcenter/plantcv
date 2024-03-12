@@ -81,6 +81,11 @@ def _analyze_distribution(img, mask, direction="y", bin_size=100, hist_range="ab
     """
     # Image not needed
     img -= 0
+
+    # Store debug
+    debug = params.debug
+    params.debug = None
+
     # Initialize output data
     # find the height, in pixels, for this image
     height = mask.shape[0]
@@ -128,5 +133,7 @@ def _analyze_distribution(img, mask, direction="y", bin_size=100, hist_range="ab
     outputs.add_observation(sample=label, variable='Y_distribution_std', trait='Y distribution standard deviation',
                             method='plantcv.plantcv.analyze.distribution', scale='pixel', datatype=float,
                             value=dist_std, label='pixel')
+    # Restore debug
+    params.debug = debug
 
     return mask
