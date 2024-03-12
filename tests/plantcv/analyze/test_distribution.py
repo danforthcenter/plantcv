@@ -9,7 +9,8 @@ def test_distribution(test_data):
     # Clear previous outputs
     outputs.clear()
     # Read in test data
-    mask = cv2.imread(test_data.small_bin_img, -1)
+    mask = cv2.imread(test_data.small_bin_fill, -1)
 
-    _ = analyze_distribution(labeled_mask=mask, n_labels=1, direction="across")
-    assert int(outputs.observations['default_1']['x_distribution_mean']['value']) == 200
+    _ = analyze_distribution(labeled_mask=mask, n_labels=1, direction="across", hist_range="relative")
+    print(outputs.observations)
+    assert int(outputs.observations['default_1']['x_distribution_mean']['value']) == 130

@@ -1,7 +1,7 @@
 """Analyzes the X and Y spatial distribution of objects in an image."""
 import os
 import numpy as np
-from plantcv.plantcv import outputs, params
+from plantcv.plantcv import auto_crop, outputs, params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _iterate_analysis
 
@@ -85,6 +85,10 @@ def _analyze_distribution(img, mask, direction="y", bin_size=100, hist_range="ab
     # Store debug
     debug = params.debug
     params.debug = None
+
+    # Autocrop the mask if hist_range is "relative" to set the scale to the object size
+    if hist_range == "relative" and np.count_nonzero(mask) != 0:
+        mask = auto_crop(img=mask, mask=mask, padding_x=0, padding_y=0, color="black")
 
     # Initialize output data
     # find the height, in pixels, for this image
