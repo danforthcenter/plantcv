@@ -58,7 +58,9 @@ def train_kmeans(img_dir, K, out_path="./kmeansout.fit", prefix="", patch_size=1
             
     kmeans = MiniBatchKMeans(n_clusters=K, n_init=n_init, random_state=seed)
     fitted = kmeans.fit(patches)
-    dump(fitted, out_path)
+    f = open(out_path, 'w')
+    dump(fitted, f, protocol=5)
+    f.close()
     return fitted
 
 

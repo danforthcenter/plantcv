@@ -12,7 +12,7 @@ def test_train_kmeans(learn_test_data, tmpdir):
     training_dir = learn_test_data.kmeans_train_dir
     # Train full model and partial model 
     fit_subset = train_kmeans(img_dir=training_dir, prefix="image", 
-                              out_path=cache_dir+"kmeansout_subset.fit", K=5, num_imgs=5)
+                              out_path=cache_dir+"/kmeansout_subset.fit", K=5, num_imgs=5)
     fit_full = train_kmeans(img_dir=training_dir, prefix="image", 
                             out_path=cache_dir+"/kmeansout_full.fit", K=5)
     # Load example ouputs
