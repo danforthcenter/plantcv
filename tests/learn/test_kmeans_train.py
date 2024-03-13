@@ -15,9 +15,13 @@ def test_train_kmeans(learn_test_data, tmpdir):
                               out_path=cache_dir+"/kmeansout_subset.fit", K=5, num_imgs=5)
     fit_full = train_kmeans(img_dir=training_dir, prefix="image", 
                             out_path=cache_dir+"/kmeansout_full.fit", K=5)
-    # Load example ouputs
-    test_subset = load(training_dir+"/kmeansout_subset.fit")
-    test_full = load(training_dir+"/kmeansout_full.fit")
-    # Test equality
+    # Load example ouputs and test equality
+    f = open(training_dir+"/kmeansout_subset.fit", "rb")
+    test_subset = load(f)
     assert fit_subset == test_subset
+    f.close()
+    
+    f = open(training_dir+"/kmeansout_full.fit", "rb")
+    test_full = load(f)
     assert fit_full == test_full
+    f.close()
