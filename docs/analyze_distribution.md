@@ -45,7 +45,7 @@ y_distribution_mean = pcv.outputs.observations['plant_1']['y_distribution_mean']
 
 # Calculate the distribution along the y-axis ("down")
 # The histogram scales are relative, on the object's coordinate scale
-y_distribution_mean = pcv.analyze.distribution(labeled_mask=mask, n_labels=num, bin_size=10, hist_range="relative")
+y_dist_chart = pcv.analyze.distribution(labeled_mask=mask, n_labels=num, bin_size=10, hist_range="relative")
 
 
 ```

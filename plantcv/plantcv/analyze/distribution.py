@@ -18,7 +18,7 @@ def distribution(labeled_mask, n_labels=1, direction="down", bin_size=100, hist_
     direction : str, optional
         Image axis to calculate the distribution of object pixels ("down" or "across"), by default "down"
     bin_size : int, optional
-        Total number of desired bins for the histogram, by default 100
+        Histogram bin size in pixels, by default 100
     hist_range : str, optional
         The histogram range can be set to the image dimensions ("absolute") or "relative" to each object, by default "absolute"
     label : str or None, optional
@@ -65,8 +65,7 @@ def _analyze_distribution(img, mask, direction="y", bin_size=100, hist_range="ab
     """Analyze the color properties of an image object
     Inputs:
     mask             = Binary mask made from selected contours
-    bin_size_x       = Total number of desired bins for the histogram in the X direction
-    bin_size_y       = Total number of desired bins for the histogram in the Y direction
+    bin_size         = Size in pixels of the histogram bins
     label            = optional label parameter, modifies the variable name of observations recorded
 
     Returns:
@@ -74,8 +73,7 @@ def _analyze_distribution(img, mask, direction="y", bin_size=100, hist_range="ab
 
     :param img: numpy.ndarray
     :param mask: numpy.ndarray
-    :param bin_size_x: int
-    :param bin_size_y: int
+    :param bin_size: int
     :param label: str
     :return distribution_images: list
     """
