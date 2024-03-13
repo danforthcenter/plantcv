@@ -22,7 +22,8 @@ roots, flowers, etc. In particular, this application can be useful for analyzing
     automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
     These data can always get accessed during a workflow (example below). For more detail about data output see [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
-**Original image**
+**Labeled mask (colorized for effect)**
+![Screenshot](img/documentation_images/analyze_distribution/colorized_mask.png)
 
 ```python
 
@@ -36,19 +37,23 @@ pcv.params.debug = "plot"
 pcv.params.sample_label = "plant"
 
 # Calculate the distribution along the y-axis ("down")
-y_dist_chart = pcv.analyze.distribution(labeled_mask=mask)
+# The histogram scales are absolute, on the image coordinate scale
+y_dist_chart = pcv.analyze.distribution(labeled_mask=mask, n_labels=num, bin_size=10)
 
 # Access data stored out from analyze.distribution
 y_distribution_mean = pcv.outputs.observations['plant_1']['y_distribution_mean']['value']
 
-# Calculate the distribution along the x-axis ("across")
-x_dist_chart = pcv.analyze.distribution(labeled_mask=mask, direction="across")
+# Calculate the distribution along the y-axis ("down")
+# The histogram scales are relative, on the object's coordinate scale
+y_distribution_mean = pcv.analyze.distribution(labeled_mask=mask, n_labels=num, bin_size=10, hist_range="relative")
 
-# Access data stored out from analyze.distribution
-x_distribution_mean = pcv.outputs.observations['plant_1']['x_distribution_mean']['value']
 
 ```
 
-**Histograms of X distribution values**
+**Histograms of Y distribution values on the image scale**
+![Screenshot](img/documentation_images/analyze_distribution/image_scale.png)
 
-**Source Code:** 
+**Histograms of Y distribution values on each object's scale**
+![Screenshot](img/documentation_images/analyze_distribution/object_scale.png)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/analyze/distribution.py)
