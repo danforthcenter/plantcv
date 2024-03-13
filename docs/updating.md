@@ -275,7 +275,7 @@ pages for more details on the input and output variable types.
 #### plantcv.analyze.distribution
 
 * pre v4.2.1: NA
-* post v4.2.1: x_dist, y_dist = **plantcv.analyze.distribution**(*labeled_mask, n_labels=1, direction="down", bin_size=100, hist_range="absolute", label=None*)
+* post v4.2.1: dist_chart = **plantcv.analyze.distribution**(*labeled_mask, n_labels=1, direction="down", bin_size=100, hist_range="absolute", label=None*)
 
 #### plantcv.analyze.grayscale
 
