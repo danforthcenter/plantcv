@@ -108,8 +108,8 @@ def _analyze_distribution(img, mask, direction="y", bin_size=100, hist_range="ab
         # Calculate histogram
         for i in range(0, height, bin_size):
             # Extract a slice from the mask the width of bin_size at each step
-            slice = mask[i:min(i+bin_size, height), :]
-            count = np.count_nonzero(slice)  # Count white pixels
+            mask_slice = mask[i:min(i+bin_size, height), :]
+            count = np.count_nonzero(mask_slice)  # Count white pixels
             bin_index = min(i // bin_size, num_bins - 1)  # Ensure index within range
             hist[bin_index] += count  # Add count to the bin
             counts += [bin_index * bin_size] * count
