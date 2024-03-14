@@ -125,14 +125,16 @@ def _analyze_distribution(img, mask, direction="y", bin_size=100, hist_range="ab
                             value=hist.tolist(), label=bin_labels.tolist())
 
     # Save average measurements
-    outputs.add_observation(sample=label, variable=f'{direction}_distribution_mean', trait=f'{direction} distribution mean',
+    outputs.add_observation(sample=label, variable=f'{direction}_distribution_mean', 
+                            trait=f'{direction} distribution mean',
                             method='plantcv.plantcv.analyze.distribution', scale='pixels', datatype=float,
                             value=mean_bin, label='pixel')
     outputs.add_observation(sample=label, variable=f'{direction}_distribution_median',
                             trait=f'{direction} distribution median',
                             method='plantcv.plantcv.analyze.distribution', scale='pixel', datatype=float,
                             value=median_bin, label='pixel')
-    outputs.add_observation(sample=label, variable='Y_distribution_std', trait='Y distribution standard deviation',
+    outputs.add_observation(sample=label, variable=f'{direction}_distribution_std', 
+                            trait=f'{direction} distribution standard deviation',
                             method='plantcv.plantcv.analyze.distribution', scale='pixel', datatype=float,
                             value=dist_std, label='pixel')
     # Restore debug
