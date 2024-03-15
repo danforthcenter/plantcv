@@ -17,7 +17,7 @@ def test_kmeans_classifier(test_data):
     test_dict = {}
     for i in range(5):
         test_dict[str(i)], _, _ = pcv.readimage(input_dir+"/label_example_"+str(i)+".png")
-    assert mask_dict == test_dict
+    assert mask_dict.all() == test_dict.all()
 
     combo_mask = mask_kmeans(labeled_img=labeled_img, K=5, cat_list=[1,2,3])
     combo_example, _, _ = pcv.readimage(input_dir+"/combo_mask_example.png")
