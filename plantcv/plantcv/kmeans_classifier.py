@@ -35,10 +35,9 @@ def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10):
     #Do the prediction
     train_patches = patch_extract(train_img,patch_size=patch_size)
     train_labels = kmeans.predict(train_patches)
-    #If odd:
-    labeled = train_labels.reshape(h - 2*mg, w - 2*mg)
-    if patch_size%2 == 0:  # else, even
-        labeled = train_labels.reshape(h - 2*mg + 1, w - 2*mg + 1)
+    reshape_params = [[h - 2*mg + 1, w - 2*mg + 1],[h - 2*mg, w - 2*mg]]
+    #Takes care of even vs odd numbered patch size reshaping
+    labeled = train_labels.reshape(reshape_params[patch_size%2][0],reshape_params[patch_size%2][1])
     _debug(visual=labeled, filename=os.path.join(params.debug_outdir, "_labeled_img.png"))
     return labeled
 
