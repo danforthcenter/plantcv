@@ -9,6 +9,7 @@ roots, flowers, etc. In particular, this application can be useful for analyzing
 
 - **Parameters:**
     - labeled_mask - Labeled mask of objects from any binary mask or from [`pcv.create_labels`](create_labels.md).
+        * If given a binary image, function will return distribution of all pixels.
     - n_labels - Optional parameter, total number expected individual objects (default = 1).
     - direction - Optional parameter, image axis to calculate the distribution of object pixels ("down" or "across"; default = "down").
     - bin_size - Optional parameter, defines the size of the bin in pixels in the X direction. 
