@@ -9,7 +9,7 @@ from plantcv import plantcv as pcv
 def test_kmeans_classifier(test_data):
     """Test for PlantCV."""
     input_dir = test_data.kmeans_classifier_dir
-    labeled_img = predict_kmeans(img=input_dir+"/test_image.jpg", model_path=input_dir+"/kmeans_out.fit")
+    labeled_img = predict_kmeans(img=input_dir+"/test_image.jpg", model_path=input_dir+"/kmeans_out.fit", patch_size=5)
     test_labeled, _, _ = pcv.readimage(input_dir+"/labeled_image.png")
     assert (labeled_img == test_labeled).all()
     
