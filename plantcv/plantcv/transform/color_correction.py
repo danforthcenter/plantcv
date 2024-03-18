@@ -305,8 +305,17 @@ def calc_transformation_matrix(matrix_m, matrix_b):
     if np.shape(matrix_m)[0] != np.shape(matrix_b)[1] or np.shape(matrix_m)[1] != np.shape(matrix_b)[0]:
         fatal_error("Cannot multiply matrices.")
 
-    t_r, t_r2, t_r3, t_g, t_g2, t_g3, t_b, t_b2, t_b3 = np.split(matrix_b, 9, 1)
-
+    # split matrix_b, doing this way to avoid deepsource issue
+    matrix_b_split = np.array_split(matrix_b, 9, axis=1)
+    t_r = matrix_b_split[0]
+    t_r2 = matrix_b_split[1]
+    t_r3 = matrix_b_split[2]
+    t_g = matrix_b_split[3]
+    t_g2 = matrix_b_split[4]
+    t_g3 = matrix_b_split[5]
+    t_b = matrix_b_split[6]
+    t_b2 = matrix_b_split[7]
+    t_b3 = matrix_b_split[8]
     # multiply each 22x1 matrix from target color space by matrix_m
     red = np.matmul(matrix_m, t_r)
     green = np.matmul(matrix_m, t_g)
@@ -353,7 +362,10 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
         fatal_error("Source_img is not an RGB image.")
 
     # split transformation_matrix
-    red, green, blue, _, _, _, _, _, _ = np.split(transformation_matrix, 9, 1)
+    transformation_matrix_split = np.array_split(transformation_matrix, 9, axis=1)
+    red = transformation_matrix_split[0]
+    green = transformation_matrix_split[1]
+    blue = transformation_matrix_split[2]
 
     source_dtype = source_img.dtype
     # normalization value as max number if the type is unsigned int
@@ -490,7 +502,7 @@ def correct_color(target_img, target_mask, source_img, source_mask, output_direc
     return target_matrix, source_matrix, transformation_matrix, corrected_img
 
 
-def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=[]):
+def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=None):
     """Create a labeled mask for color card chips.
 
     Inputs:
@@ -533,6 +545,9 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
             chips.append(circle(img=rgb_img, x=x, y=y, r=radius))
     # Restore debug parameter
     params.debug = debug
+    # If exclude is None, set to an empty list
+    if exclude is None:
+        exclude = []
     # Sort excluded chips from largest to smallest
     exclude.sort(reverse=True)
     # Remove any excluded chips
