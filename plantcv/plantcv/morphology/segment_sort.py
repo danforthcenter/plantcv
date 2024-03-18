@@ -36,6 +36,9 @@ def segment_sort(skel_img, objects, mask=None, first_stem=True):
     debug = params.debug
     params.debug = None
 
+    # Store label
+    label = params.sample_label
+
     secondary_objects = []
     primary_objects = []
 
@@ -58,8 +61,8 @@ def segment_sort(skel_img, objects, mask=None, first_stem=True):
             primary_objects.append(cnt)
             # Remove the first "tip" since it corresponds to stem not leaf. This helps
             # leaf number to match the number of "tips"
-            outputs.observations["default"]["tips"]["value"] = outputs.observations["default"]["tips"]["value"][1:]
-            outputs.observations["default"]["tips"]["label"] = outputs.observations["default"]["tips"]["label"][:-1]
+            outputs.observations[label]["tips"]["value"] = outputs.observations[label]["tips"]["value"][1:]
+            outputs.observations[label]["tips"]["label"] = outputs.observations[label]["tips"]["label"][:-1]
 
         # Sort segments
         else:

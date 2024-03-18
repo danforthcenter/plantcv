@@ -30,7 +30,6 @@ def auto_crop(img, mask, padding_x=0, padding_y=0, color='black'):
     :return cropped: numpy.ndarray, list
     """
     params.device += 1
-    img_copy = np.copy(img)
     img_copy2 = np.copy(img)
 
     # Get the height and width of the reference image
@@ -43,7 +42,6 @@ def auto_crop(img, mask, padding_x=0, padding_y=0, color='black'):
     obj = _object_composition(contours=cnt, hierarchy=cnt_str)
 
     x, y, w, h = cv2.boundingRect(obj)
-    cv2.rectangle(img_copy, (x, y), (x + w, y + h), (0, 255, 0), 5)
 
     crop_img = img[y:y + h, x:x + w]
 
@@ -80,14 +78,10 @@ def auto_crop(img, mask, padding_x=0, padding_y=0, color='black'):
     else:
         fatal_error('Color was provided but ' + str(color) + ' is not "white", "black", or "image"!')
 
-    if len(np.shape(img_copy)) == 3:
-        cmap = None
-    else:
+    cmap = None
+    if len(np.shape(img_copy2)) != 3:
         cmap = 'gray'
 
-    _debug(visual=img_copy,
-           filename=os.path.join(params.debug_outdir, str(params.device) + "_crop_area.png"),
-           cmap=cmap)
     _debug(visual=cropped,
            filename=os.path.join(params.debug_outdir, str(params.device) + "_auto_cropped.png"),
            cmap=cmap)
