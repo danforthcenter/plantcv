@@ -32,6 +32,7 @@ nav:
         - 'Read Bayer Raw Image': read_bayer.md
       - 'Analysis Methods':
         - 'Analyze Color': analyze_color2.md
+        - 'Analyze Pixel Distributions': analyze_distribution.md
         - 'Analyze Grayscale': analyze_grayscale.md
         - 'Analyze Size and Shape': analyze_size.md
         - 'Horizontal Boundary Tool': analyze_bound_horizontal2.md
