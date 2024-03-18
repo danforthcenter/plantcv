@@ -34,40 +34,37 @@ The first function (predict_kmeans) takes a target image and uses a trained kmea
 
 **Input image example**
 
-![Screenshot](img/documentation_images/kmeans_clustering/Silphium_seed_example.png)
+![Screenshot](img/documentation_images/kmeans_clustering/leaf_example.png)
 
 ```python
 
 from plantcv import plantcv as pcv
 
 #Labeling a target image
-labeled_img = predict_kmeans(img='./Silphium_seed_example.png',
-                             model_path="./kmeansout_seed.fit", patch_size=16)
+labeled_img = predict_kmeans(img='./leaf_example.png',
+                             model_path="./kmeansout_leaf.fit", patch_size=5)
 
 #Choosing clusters for each category within the seed image
-background = mask_kmeans(labeled_img=labeled_img, K=20, patch_size=16, 
-                         cat_list=[0, 4, 9, 10, 18])
-wings = mask_kmeans(labeled_img=labeled_img, K=20, patch_size=16, 
-                    cat_list=[19, 2, 11, 8, 6, 5, 15, 12])
-seed = mask_kmeans(labeled_img=labeled_img, K=20, patch_size=16, 
-                   cat_list=[13, 3, 7, 17, 1, 16, 14])
+background = mask_kmeans(labeled_img=labeled_img, K=10, patch_size=5, cat_list=[0, 2, 4, 6, 7])
+sick = mask_kmeans(labeled_img=labeled_img, K=10, patch_size=5, cat_list=[1, 3])
+leaf = mask_kmeans(labeled_img=labeled_img, K=10, patch_size=5, cat_list=[5, 8, 9])
 
 ```
 
 **Labeled image**
 
-![Screenshot](img/documentation_images/kmeans_clustering/Silphium_seed_labeled.png)
+![Screenshot](img/documentation_images/kmeans_clustering/leaf_labeled.png)
 
 **Combined mask of background clusters**
 
-![Screenshot](img/documentation_images/kmeans_clustering/Silphium_background_mask.png)
+![Screenshot](img/documentation_images/kmeans_clustering/leaf_background_mask.png)
 
-**Combined mask of wing clusters**
+**Combined mask of healthy clusters**
 
-![Screenshot](img/documentation_images/kmeans_clustering/Silphium_wing_mask.png)
+![Screenshot](img/documentation_images/kmeans_clustering/leaf_healthy_mask.png)
 
-**Combined mask of seed clusters**
+**Combined mask of sick clusters**
 
-![Screenshot](img/documentation_images/kmeans_clustering/Silphium_seed_mask.png)
+![Screenshot](img/documentation_images/kmeans_clustering/leaf_sick_mask.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/kmeans_classifier.py)
