@@ -1,12 +1,8 @@
-#For classifying an image based on a trained kmeans clustering model output from train_kmeans.py
+# For classifying an image based on a trained kmeans clustering model output from train_kmeans.py
 
 import os
 import numpy as np
-import cv2
 import plantcv.plantcv as pcv
-from skimage.filters import gaussian
-from sklearn.cluster import MiniBatchKMeans
-from sklearn.feature_extraction import image
 from joblib import load
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
@@ -27,17 +23,17 @@ def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10):
     """
     kmeans = load(model_path)
     train_img, _, _ = pcv.readimage(img)
-    
-    #Shapes 
-    mg = np.floor(patch_size / 2).astype(np.int32)
-    h, w,_ = train_img.shape
 
-    #Do the prediction
-    train_patches = patch_extract(train_img,patch_size=patch_size)
+    # Shapes 
+    mg = np.floor(patch_size / 2).astype(np.int32)
+    h, w, _ = train_img.shape
+
+    # Do the prediction
+    train_patches = patch_extract(train_img, patch_size=patch_size)
     train_labels = kmeans.predict(train_patches)
-    reshape_params = [[h - 2*mg + 1, w - 2*mg + 1],[h - 2*mg, w - 2*mg]]
-    #Takes care of even vs odd numbered patch size reshaping
-    labeled = train_labels.reshape(reshape_params[patch_size%2][0],reshape_params[patch_size%2][1])
+    reshape_params = [[h - 2*mg + 1, w - 2*mg + 1], [h - 2*mg, w - 2*mg]]
+    # Takes care of even vs odd numbered patch size reshaping
+    labeled = train_labels.reshape(reshape_params[patch_size % 2][0], reshape_params[patch_size % 2][1])
     _debug(visual=labeled, filename=os.path.join(params.debug_outdir, "_labeled_img.png"))
     return labeled
 
@@ -60,10 +56,10 @@ def mask_kmeans(labeled_img, K, patch_size=10, cat_list=[]):
     h, w = labeled_img.shape
     if len(cat_list) == 0:
         mask_dict = {}
-        L = [*range(K)]        
+        L = [*range(K)]
         for i in L:
             mask = np.ones(labeled_img.shape)
-            mask = np.logical_and(mask,labeled_img != i)
+            mask = np.logical_and(mask, labeled_img != i)
             mask[:, 0:mg] = False
             mask[:, w-mg:w] = False
             mask[0:mg, :] = False
@@ -72,14 +68,13 @@ def mask_kmeans(labeled_img, K, patch_size=10, cat_list=[]):
             _debug(visual=mask_light, filename=os.path.join(params.debug_outdir, "_kmeans_mask_"+str(i)+".png"))
             mask_dict[str(i)] = mask_light
         return mask_dict
-    else: 
-        mask = np.ones(labeled_img.shape)
-        for label in cat_list:
-            mask = np.logical_and(mask,labeled_img != label)
-        mask[:, 0:mg] = False
-        mask[:, w-mg:w] = False
-        mask[0:mg, :] = False
-        mask[h-mg:h, :] = False 
-        mask_light = abs(1-mask)
-        _debug(visual=mask_light, filename=os.path.join(params.debug_outdir, "_kmeans_combined_mask.png"))
-        return mask_light
+    mask = np.ones(labeled_img.shape)
+    for label in cat_list:
+        mask = np.logical_and(mask, labeled_img != label)
+    mask[:, 0:mg] = False
+    mask[:, w-mg:w] = False
+    mask[0:mg, :] = False
+    mask[h-mg:h, :] = False 
+    mask_light = abs(1-mask)
+    _debug(visual=mask_light, filename=os.path.join(params.debug_outdir, "_kmeans_combined_mask.png"))
+    return mask_light

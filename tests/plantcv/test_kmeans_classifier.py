@@ -1,6 +1,3 @@
-import numpy as np
-import cv2
-import os
 from plantcv.plantcv.kmeans_classifier import mask_kmeans
 from plantcv.plantcv.kmeans_classifier import predict_kmeans
 from plantcv import plantcv as pcv
