@@ -54,7 +54,7 @@ def mask_kmeans(labeled_img, K, patch_size=10, cat_list=None):
     """
     mg = np.floor(patch_size / 2).astype(np.int32)
     h, w = labeled_img.shape
-    if cat_list == None:
+    if cat_list is None:
         mask_dict = {}
         L = [*range(K)]
         for i in L:

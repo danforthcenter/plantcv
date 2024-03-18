@@ -1,6 +1,6 @@
 from plantcv import plantcv as pcv
-from plantcv.plantcv.kmeans_classifier import mask_kmeans
-from plantcv.plantcv.kmeans_classifier import predict_kmeans
+from pcv.kmeans_classifier import mask_kmeans
+from pcv.kmeans_classifier import predict_kmeans
 
 
 def test_kmeans_classifier(test_data):
