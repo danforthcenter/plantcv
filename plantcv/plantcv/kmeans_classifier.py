@@ -13,7 +13,7 @@ def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10):
     """
     Uses a trained, patch-based kmeans clustering model to predict clusters from an input image.
     Inputs:
-    img = An image on which to predict clusters 
+    img = An image on which to predict clusters
     model_path = Path to directory where the trained model output is stored
     patch_size = Size of the NxN neighborhood around each pixel
     :param img: numpy.ndarray
@@ -24,7 +24,7 @@ def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10):
     kmeans = load(model_path)
     train_img, _, _ = pcv.readimage(img)
 
-    # Shapes 
+    # Shapes
     mg = np.floor(patch_size / 2).astype(np.int32)
     h, w, _ = train_img.shape
 
@@ -38,14 +38,14 @@ def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10):
     return labeled
 
 
-def mask_kmeans(labeled_img, K, patch_size=10, cat_list=[]):
+def mask_kmeans(labeled_img, K, patch_size=10, cat_list=None):
     """
     Uses the predicted clusters from a target image to generate a binary mask.
     Inputs:
     labeled_img = An image with predicted clusters
     K = Number of clusters to fit
     patch_size = Size of the NxN neighborhood around each pixel
-    cat_list = A list of the numeric classes for composing a combined mask. 
+    cat_list = A list of the numeric classes for composing a combined mask.
                If empty, function prints all classes as separate masks.
     :param labeled_img: numpy.ndarray
     :param K: positive non-zero integer
@@ -54,7 +54,7 @@ def mask_kmeans(labeled_img, K, patch_size=10, cat_list=[]):
     """
     mg = np.floor(patch_size / 2).astype(np.int32)
     h, w = labeled_img.shape
-    if len(cat_list) == 0:
+    if cat_list == None:
         mask_dict = {}
         L = [*range(K)]
         for i in L:
@@ -74,7 +74,7 @@ def mask_kmeans(labeled_img, K, patch_size=10, cat_list=[]):
     mask[:, 0:mg] = False
     mask[:, w-mg:w] = False
     mask[0:mg, :] = False
-    mask[h-mg:h, :] = False 
+    mask[h-mg:h, :] = False
     mask_light = abs(1-mask)
     _debug(visual=mask_light, filename=os.path.join(params.debug_outdir, "_kmeans_combined_mask.png"))
     return mask_light

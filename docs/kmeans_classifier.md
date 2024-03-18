@@ -17,7 +17,7 @@ The first function (predict_kmeans) takes a target image and uses a trained kmea
 - **Example use below**
 
 
-**plantcv.kmeans_classifier.mask_kmeans**(labeled_img, K, patch_size, cat_list=[])
+**plantcv.kmeans_classifier.mask_kmeans**(labeled_img, K, patch_size, cat_list=None)
 
 **outputs** Either a combined mask of the requestedlist of clusters or a dictionary of each cluster as a separate mask with keys corresponding to the cluster number 
 
@@ -25,7 +25,7 @@ The first function (predict_kmeans) takes a target image and uses a trained kmea
     - labeled_img = The output from predict_kmeans, an image with pixels labeled according to their cluster assignment
     - K = The number of clusters in the trained model
     - patch_size = Size of the NxN neighborhood around each pixel, used for classification
-    - cat_list = List of clusters to include in a combined mask. If empty, output is a dictionary of separate masks for each cluster
+    - cat_list = List of clusters to include in a combined mask. If None, output is a dictionary of separate masks for each cluster
 
 - **Context:**
     - Used to create masks from kmeans cluster assignments on a target image.  

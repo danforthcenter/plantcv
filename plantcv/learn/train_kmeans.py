@@ -10,7 +10,7 @@ from skimage.filters import gaussian
 from joblib import dump
 
 
-def train_kmeans(img_dir, K, out_path="./kmeansout.fit", prefix="", patch_size=10, sigma=5, sampling=None, 
+def train_kmeans(img_dir, K, out_path="./kmeansout.fit", prefix="", patch_size=10, sigma=5, sampling=None,
                  seed=1, num_imgs=0, n_init=10):
     """
     Trains a patch-based kmeans clustering model for identifying image features.
@@ -22,8 +22,8 @@ def train_kmeans(img_dir, K, out_path="./kmeansout.fit", prefix="", patch_size=1
     patch_size = Size of the NxN neighborhood around each pixel
     sigma = Gaussian blur sigma. Denotes severity of gaussian blur performed before patch identification
     sampling = Fraction of image from which patches are identified
-    seed = Seed for determinism of random elements like sampling of patches 
-    num_imgs = Number of images to use for training. Default is all of them in img_dir with prefix 
+    seed = Seed for determinism of random elements like sampling of patches
+    num_imgs = Number of images to use for training. Default is all of them in img_dir with prefix
     n_init = Number of random initiations tried by MiniBatchKMeans. The algorithm is run on the best one
     :param img_dir: str
     :param K: positive non-zero integer
@@ -43,7 +43,7 @@ def train_kmeans(img_dir, K, out_path="./kmeansout.fit", prefix="", patch_size=1
         training_files = file_names
     else:
         training_files = random.choices(file_names, k=num_imgs)  # choosing a set of random files
-    # Read and extract patches    
+    # Read and extract patches
     i = 0
     for img_name in training_files:
         if prefix in img_name:
@@ -70,7 +70,7 @@ def patch_extract(img, patch_size=10, sigma=5, sampling=None, seed=1):
     patch_size = Size of the NxN neighborhood around each pixel
     sigma = sigma = Gaussian blur sigma. Denotes severity of gaussian blur performed before patch identification
     sampling = Fraction of image from which patches are identified
-    seed = Seed for determinism of random elements like sampling of patches 
+    seed = Seed for determinism of random elements like sampling of patches
     :param img: numpy.ndarray
     :param patch_size: positive non-zero integer
     :param sigma: positive real number or sequence of positive real numbers

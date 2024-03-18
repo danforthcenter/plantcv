@@ -1,5 +1,5 @@
 import os
-from plantcv.learn.train_kmeans import train_kmeans, patch_extract
+from plantcv.learn.train_kmeans import train_kmeans
 
 
 def test_train_kmeans(learn_test_data, tmpdir):
