@@ -75,8 +75,8 @@ def watershed_segmentation(rgb_img, mask, distance=10, label=None):
 
     # Reset color sequence mode
     params.color_sequence = color_sequence
-    _debug(visual=dist_transform,
-           filename=os.path.join(params.debug_outdir, str(params.device) + '_watershed_dist_img.png'),
+    _debug(visual=labels,
+           filename=os.path.join(params.debug_outdir, str(params.device) + '_watershed_labels_img.png'),
            cmap='gray')
     _debug(visual=joined,
            filename=os.path.join(params.debug_outdir, str(params.device) + '_watershed_img.png'))
@@ -86,6 +86,6 @@ def watershed_segmentation(rgb_img, mask, distance=10, label=None):
                             value=estimated_object_count, label='none')
 
     # Store images
-    outputs.images.append([dist_transform, joined])
+    outputs.images.append([labels, joined])
 
-    return joined
+    return labels
