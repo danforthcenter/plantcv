@@ -54,17 +54,17 @@ class TransformTestData:
         # dist matrix
         self.dist = os.path.join(self.datadir, "dist.npz")
         # Merged image HS
-        self.merged_HS = os.path.join(self.datadir, "merged_HS.png")
+        self.merged_HS = os.path.join(self.datadir, "merged_HS.jpg")
         # Merged image HA
-        self.merged_HA = os.path.join(self.datadir, "merged_HA.png")
+        self.merged_HA = os.path.join(self.datadir, "merged_HA.jpg")
         # Merged image HG
-        self.merged_HG = os.path.join(self.datadir, "merged_HG.png")
+        self.merged_HG = os.path.join(self.datadir, "merged_HG.jpg")
         # Merged image VS
-        self.merged_VS = os.path.join(self.datadir, "merged_VS.png")
+        self.merged_VS = os.path.join(self.datadir, "merged_VS.jpg")
         # Merged image VA
-        self.merged_VA = os.path.join(self.datadir, "merged_VA.png")
+        self.merged_VA = os.path.join(self.datadir, "merged_VA.jpg")
         # Merged image VG
-        self.merged_VG = os.path.join(self.datadir, "merged_VG.png")
+        self.merged_VG = os.path.join(self.datadir, "merged_VG.jpg")
         # Horizontal images to merge
         self.mergehoriz = self.get_file_paths(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                                            "..", "..", "testdata", "mergehoriz/"))
