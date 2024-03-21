@@ -48,7 +48,7 @@ def test_merge_images_HG(transform_test_data, tmpdir):
 def test_merge_images_VS(transform_test_data, tmpdir):
     """Test for PlantCV."""
     cache_dir = tmpdir.mkdir("cache")
-    corrected_img = merge_images(transform_test_data.mergehoriz, overlap_percentage=30,
+    corrected_img = merge_images(transform_test_data.mergevert, overlap_percentage=30,
                                  direction="vertical", method="stacked")
     pcv.print_image(corrected_img, os.path.join(cache_dir, "merged_img.jpg"))
     merged_img = cv2.imread(os.path.join(cache_dir, "merged_img.jpg"))
@@ -67,7 +67,7 @@ def test_merge_images_VR(transform_test_data):
 def test_merge_images_VA(transform_test_data, tmpdir):
     """Test for PlantCV."""
     cache_dir = tmpdir.mkdir("cache")
-    corrected_img = merge_images(transform_test_data.mergehoriz, overlap_percentage=30,
+    corrected_img = merge_images(transform_test_data.mergevert, overlap_percentage=30,
                                  direction="vertical", method="average")
     pcv.print_image(corrected_img, os.path.join(cache_dir, "merged_img.jpg"))
     merged_img = cv2.imread(os.path.join(cache_dir, "merged_img.jpg"))
@@ -78,7 +78,7 @@ def test_merge_images_VA(transform_test_data, tmpdir):
 def test_merge_images_VG(transform_test_data, tmpdir):
     """Test for PlantCV."""
     cache_dir = tmpdir.mkdir("cache")
-    corrected_img = merge_images(transform_test_data.mergehoriz, overlap_percentage=30,
+    corrected_img = merge_images(transform_test_data.mergevert, overlap_percentage=30,
                                  direction="vertical", method="gradual")
     pcv.print_image(corrected_img, os.path.join(cache_dir, "merged_img.jpg"))
     merged_img = cv2.imread(os.path.join(cache_dir, "merged_img.jpg"))
