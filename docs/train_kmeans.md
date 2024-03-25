@@ -2,13 +2,13 @@
 
 This function takes in a collection of training images and fits a patch-based kmeans cluster model for later use in classifying cluster assignment in a target image. 
 
-**plantcv.learn.train_kmeans**(img_dir, K, out_path="./kmeansout.fit", prefix="", patch_size=10, sigma=5, sampling=None, seed=1, num_imgs=0, n_init=10)
+**plantcv.learn.train_kmeans**(img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, sigma=5, sampling=None, seed=1, num_imgs=0, n_init=10)
 
 **outputs** A model fit file
 
 - **Parameters:**
     - img_idr = Path to directory where training images are stored
-    - K = Number of clusters to fit
+    - k = Number of clusters to fit
     - out_path = Path to directory where the model output should be stored
     - prefix = Keyword for target images. Anything in img_dir without the prefix will be skipped
     - patch_size = Size of the NxN neighborhood around each pixel
@@ -31,7 +31,7 @@ from plantcv import plantcv as pcv
 
 # Use 10 images to train 6 clusters with a patch size of 4
 pcv.learn.train_kmeans(img_dir="./silphium_integrifolium_root_images", 
-             out_path="./kmeansout_.fit", prefix="Silphium", K=6, patch_size=4, num_imgs=10)
+             out_path="./kmeansout_.fit", prefix="Silphium", k=6, patch_size=4, num_imgs=10)
 
 ```
 
