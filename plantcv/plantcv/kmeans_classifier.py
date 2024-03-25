@@ -38,7 +38,7 @@ def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10):
     return labeled
 
 
-def mask_kmeans(labeled_img, K, patch_size=10, cat_list=None):
+def mask_kmeans(labeled_img, k, patch_size=10, cat_list=None):
     """
     Uses the predicted clusters from a target image to generate a binary mask.
     Inputs:
@@ -56,7 +56,7 @@ def mask_kmeans(labeled_img, K, patch_size=10, cat_list=None):
     h, w = labeled_img.shape
     if cat_list is None:
         mask_dict = {}
-        L = [*range(K)]
+        L = [*range(k)]
         for i in L:
             mask = np.ones(labeled_img.shape)
             mask = np.logical_and(mask, labeled_img != i)

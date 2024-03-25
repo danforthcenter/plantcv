@@ -11,9 +11,9 @@ def test_train_kmeans(learn_test_data, tmpdir):
     outfile_full = os.path.join(str(cache_dir), "kmeansout_full.fit")
     # Train full model and partial model 
     train_kmeans(img_dir=training_dir, prefix="kmeans_train",
-                 out_path=outfile_subset, K=5, num_imgs=3)
+                 out_path=outfile_subset, k=5, num_imgs=3)
     train_kmeans(img_dir=training_dir, prefix="kmeans_train",
-                 out_path=outfile_full, K=5)
+                 out_path=outfile_full, k=5)
     assert os.path.exists(outfile_subset)
     assert os.path.exists(outfile_full)
     

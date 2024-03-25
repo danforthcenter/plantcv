@@ -10,7 +10,7 @@ from skimage.filters import gaussian
 from joblib import dump
 
 
-def train_kmeans(img_dir, K, out_path="./kmeansout.fit", prefix="", patch_size=10, sigma=5, sampling=None,
+def train_kmeans(img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, sigma=5, sampling=None,
                  seed=1, num_imgs=0, n_init=10):
     """
     Trains a patch-based kmeans clustering model for identifying image features.
@@ -56,7 +56,7 @@ def train_kmeans(img_dir, K, out_path="./kmeansout.fit", prefix="", patch_size=1
                 patches = np.vstack((patches, patch_extract(img, patch_size=patch_size, sigma=sigma, sampling=sampling)))
             i += 1
 
-    kmeans = MiniBatchKMeans(n_clusters=K, n_init=n_init, random_state=seed)
+    kmeans = MiniBatchKMeans(n_clusters=k, n_init=n_init, random_state=seed)
     fitted = kmeans.fit(patches)
     dump(fitted, out_path)
     return fitted
