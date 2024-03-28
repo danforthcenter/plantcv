@@ -1,10 +1,10 @@
 ## Classification using a kmeans cluster model
 
-The first function (predict_kmeans) takes a target image and uses a trained kmeans model produced by plantcv.learn.train_kmeans.py to classify regions of the target image by the trained clusters. The second function (mask_kmeans) takes a list of clusters and produces the combined mask from clusters of interest. 
+The first function (`pcv.predict_kmeans`) takes a target image and uses a trained kmeans model produced by [`pcv.learn.train_kmeans`](train_kmeans.md) to classify regions of the target image by the trained clusters. The second function (`pcv.mask_kmeans`) takes a list of clusters and produces the combined mask from clusters of interest. 
 
 **plantcv.kmeans_classifier.predict_kmeans**(img, model_path="./kmeansout.fit", patch_size=10)
 
-**outputs** An images with regions colored and labeled according to cluster assignment
+**outputs** An image with regions colored and labeled according to cluster assignment
 
 - **Parameters:**
     - img = Path to target image
@@ -41,13 +41,13 @@ The first function (predict_kmeans) takes a target image and uses a trained kmea
 from plantcv import plantcv as pcv
 
 #Labeling a target image
-labeled_img = predict_kmeans(img='./leaf_example.png',
-                             model_path="./kmeansout_leaf.fit", patch_size=5)
+labeled_img = pcv.predict_kmeans(img='./leaf_example.png',
+                                 model_path="./kmeansout_leaf.fit", patch_size=5)
 
 #Choosing clusters for each category within the seed image
-background = mask_kmeans(labeled_img=labeled_img, k=10, patch_size=5, cat_list=[0, 2, 4, 6, 7])
-sick = mask_kmeans(labeled_img=labeled_img, k=10, patch_size=5, cat_list=[1, 3])
-leaf = mask_kmeans(labeled_img=labeled_img, k=10, patch_size=5, cat_list=[5, 8, 9])
+background = pcv.mask_kmeans(labeled_img=labeled_img, k=10, patch_size=5, cat_list=[0, 2, 4, 6, 7])
+sick = pcv.mask_kmeans(labeled_img=labeled_img, k=10, patch_size=5, cat_list=[1, 3])
+leaf = pcv.mask_kmeans(labeled_img=labeled_img, k=10, patch_size=5, cat_list=[5, 8, 9])
 
 ```
 
