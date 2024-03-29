@@ -19,10 +19,11 @@ This function takes in a collection of training images and fits a patch-based km
     - n_init = Number of random initiations tried by MiniBatchKMeans. The algorithm is run on the best one
 
 - **Context:**
-    - Used to fit a kmeans cluster model on a set of training images.
+    - Used to fit a kmeans cluster model on a set of training images. Intended to be used with `pcv.predict_kmeans`
+    and `pcv.mask_kmeans` downstream, which are documented [here](kmeans_classifier.md). 
 
 - **Example use:**
-
+    - Below 
 
 ```python
 
