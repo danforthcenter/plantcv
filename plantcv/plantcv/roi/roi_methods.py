@@ -184,15 +184,16 @@ def _draw_roi(img, roi_contour):
     cv2.drawContours(ref_img, roi_contour, -1, (255, 0, 0), params.line_thickness)
     # Collect coordinates for debug numbering 
     if len(roi_contour) > 1:
-        label_coord_x = []
-        label_coord_y = []
+        label_coords= []
         for i, cnt in enumerate(roi_contour):
-            label_coord_x.append(roi_contour[i][0][0][0])
-            label_coord_y.append(roi_contour[i][0][0][1])
+            M = cv2.moments(cnt)
+            if M['m00'] != 0:
+                cxy =[int(M['m10']/M['m00']),int(M['m01']/M['m00'])]
+                label_coords.append(cxy)
         # Add number labels to debug 
         for i, cnt in enumerate(roi_contour):
             # Label slope lines
-            cv2.putText(img=ref_img, text=f"{i}", org=(label_coord_x[i], label_coord_y[i]), 
+            cv2.putText(img=ref_img, text=f"{i}", org=(label_coords[i]), 
                         fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                         fontScale=params.text_size, color=(255, 0, 0), 
                         thickness=params.text_thickness)
