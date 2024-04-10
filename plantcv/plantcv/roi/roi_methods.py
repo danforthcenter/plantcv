@@ -183,18 +183,19 @@ def _draw_roi(img, roi_contour):
     # Draw the contour on the reference image
     cv2.drawContours(ref_img, roi_contour, -1, (255, 0, 0), params.line_thickness)
     # Collect coordinates for debug numbering 
-    label_coord_x = []
-    label_coord_y = []
-    for i, cnt in enumerate(roi_contour):
-        label_coord_x.append(roi_contour[i][0][0][0])
-        label_coord_y.append(roi_contour[i][0][0][1])
-    # Add number labels to debug 
-    for i, cnt in enumerate(roi_contour):
-        # Label slope lines
-        cv2.putText(img=ref_img, text=f"ID:{i}", org=(label_coord_x[i], label_coord_y[i]), 
-                    fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                    fontScale=params.text_size, color=(255, 0, 0), 
-                    thickness=params.text_thickness)
+    if len(roi_contour) > 1:
+        label_coord_x = []
+        label_coord_y = []
+        for i, cnt in enumerate(roi_contour):
+            label_coord_x.append(roi_contour[i][0][0][0])
+            label_coord_y.append(roi_contour[i][0][0][1])
+        # Add number labels to debug 
+        for i, cnt in enumerate(roi_contour):
+            # Label slope lines
+            cv2.putText(img=ref_img, text=f"{i}", org=(label_coord_x[i], label_coord_y[i]), 
+                        fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                        fontScale=params.text_size, color=(255, 0, 0), 
+                        thickness=params.text_thickness)
     _debug(visual=ref_img,
            filename=os.path.join(params.debug_outdir, str(params.device) + "_roi.png"))
 
