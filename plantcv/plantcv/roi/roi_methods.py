@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 from sklearn.mixture import GaussianMixture
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv import color_palette
 from plantcv.plantcv._helpers import _cv2_findcontours
 from plantcv.plantcv._helpers import _roi_filter
 from plantcv.plantcv import fatal_error, warn, params, Objects
@@ -180,11 +181,10 @@ def _draw_roi(img, roi_contour):
     # If the reference image is grayscale convert it to color
     if len(np.shape(ref_img)) == 2:
         ref_img = cv2.cvtColor(ref_img, cv2.COLOR_GRAY2BGR)
-    # Draw the contour on the reference image
-    cv2.drawContours(ref_img, roi_contour, -1, (255, 0, 0), params.line_thickness)
     # Collect coordinates for debug numbering 
     if len(roi_contour) > 1:
         label_coords= []
+        rand_color = color_palette(num=len(roi_contour), saved=False)
         for i, cnt in enumerate(roi_contour):
             M = cv2.moments(cnt)
             if M['m00'] != 0:
@@ -195,8 +195,12 @@ def _draw_roi(img, roi_contour):
             # Label slope lines
             cv2.putText(img=ref_img, text=f"{i}", org=(label_coords[i]), 
                         fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                        fontScale=params.text_size, color=(255, 0, 0), 
+                        fontScale=params.text_size, color=rand_color[i], 
                         thickness=params.text_thickness)
+            cv2.drawContours(ref_img, roi_contour, i, rand_color[i], params.line_thickness)
+    else:
+         # Draw the contour on the reference image
+        cv2.drawContours(ref_img, roi_contour, -1, params.line_color, params.line_thickness)
     _debug(visual=ref_img,
            filename=os.path.join(params.debug_outdir, str(params.device) + "_roi.png"))
 
