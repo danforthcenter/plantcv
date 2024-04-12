@@ -16,7 +16,8 @@
       starting coordinate (`coord`), number of row and columns, and spacing to create a grid of ROIs,
       or a custom list of coordinates that specify the centers of the ROIs. Providing a custom list 
       of coordinates (list of tuples) is useful for missing plants or any arrangement that isn't 
-      a perfect grid. Returns an Objects instance that can be used in downstream steps. 
+      a perfect grid. Returns an Objects instance that can be used in downstream steps. The analysis
+      image includes a number representing ROI order. 
 
 **Reference Image**
 
