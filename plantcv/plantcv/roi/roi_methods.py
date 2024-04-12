@@ -181,25 +181,25 @@ def _draw_roi(img, roi_contour):
     # If the reference image is grayscale convert it to color
     if len(np.shape(ref_img)) == 2:
         ref_img = cv2.cvtColor(ref_img, cv2.COLOR_GRAY2BGR)
-    # Collect coordinates for debug numbering 
+    # Collect coordinates for debug numbering
     if len(roi_contour) > 1:
-        label_coords= []
+        label_coords = []
         rand_color = color_palette(num=len(roi_contour), saved=False)
         for i, cnt in enumerate(roi_contour):
             M = cv2.moments(cnt)
             if M['m00'] != 0:
-                cxy =[int(M['m10']/M['m00']),int(M['m01']/M['m00'])]
+                cxy =[int(M['m10'] / M['m00']), int(M['m01'] / M['m00'])]
                 label_coords.append(cxy)
-        # Add number labels to debug 
+        # Add number labels to debug
         for i, cnt in enumerate(roi_contour):
             # Label slope lines
-            cv2.putText(img=ref_img, text=f"{i}", org=(label_coords[i]), 
+            cv2.putText(img=ref_img, text=f"{i}", org=(label_coords[i]),
                         fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                        fontScale=params.text_size, color=rand_color[i], 
+                        fontScale=params.text_size, color=rand_color[i],
                         thickness=params.text_thickness)
             cv2.drawContours(ref_img, roi_contour, i, rand_color[i], params.line_thickness)
     else:
-         # Draw the contour on the reference image
+        # Draw the contour on the reference image
         cv2.drawContours(ref_img, roi_contour, -1, params.line_color, params.line_thickness)
     _debug(visual=ref_img,
            filename=os.path.join(params.debug_outdir, str(params.device) + "_roi.png"))

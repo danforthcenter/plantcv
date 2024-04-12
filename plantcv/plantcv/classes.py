@@ -14,7 +14,8 @@ import pandas as pd
 class Params:
     """PlantCV parameters class."""
 
-    def __init__(self, device=0, debug=None, debug_outdir=".", line_thickness=5, line_color=(255, 0, 255), dpi=100, text_size=0.55,
+    def __init__(self, device=0, debug=None, debug_outdir=".", line_thickness=5,
+                 line_color=(255, 0, 255), dpi=100, text_size=0.55,
                  text_thickness=2, marker_size=60, color_scale="gist_rainbow", color_sequence="sequential",
                  sample_label="default", saved_color_scale=None, verbose=True):
         """Initialize parameters.
