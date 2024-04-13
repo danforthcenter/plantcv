@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools >= 61.0", "versioneer[toml]==0.29"]
+requires = ["setuptools >= 64.0", "setuptools_scm>=8"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
@@ -56,13 +56,4 @@ Homepage = "https://plantcv.org"
 Documentation = "https://plantcv.readthedocs.io"
 Repository = "https://github.com/danforthcenter/plantcv"
 
-[tool.versioneer]
-VCS = "git"
-style = "pep440"
-versionfile_source = "plantcv/plantcv/_version.py"
-versionfile_build = "plantcv/plantcv/_version.py"
-tag_prefix = "v"
-parentdir_prefix = "plantcv-"
-
-[tool.setuptools.dynamic]
-version = {attr = "plantcv.plantcv.__version__"}
+[tool.setuptools_scm]
