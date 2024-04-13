@@ -28,11 +28,10 @@ jobs:
       uses: actions/setup-python@main
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
+    - name: Install test dependencies
       run: |
         python -m pip install --upgrade pip
         pip install flake8 pytest pytest-cov ipython
-        pip install -r requirements.txt
     - name: Test and generate coverage report
       # Run coverage analysis on pytest tests
       run: |
