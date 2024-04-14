@@ -29,7 +29,7 @@ def chlorophyll_fluorescence(ps_da, labeled_mask, n_labels=1, label="object"):
 
     # Check that the dataarray is valid
     try:
-        if ps_da.name != "ojip_light" and ps_da.name != "ojip_dark":
+        if ps_da.name not in ["ojip_light", "ojip_dark"]:
             fatal_error("You must provide a xarray DataArray with name ojip_light or ojip_dark")
     except AttributeError:
         if isinstance(ps_da, PSII_data):
