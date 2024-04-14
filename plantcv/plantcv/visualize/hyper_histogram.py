@@ -16,7 +16,7 @@ def _get_color_dict_uv():
     uv_wavelengths = np.arange(290, 444)
     uv_colors_ = color_palette(num=256)
     uv_colors_ = uv_colors_[0:len(uv_wavelengths)]
-    uv_colors_ = [tuple([xi / 255 for xi in x]) for x in uv_colors_[::-1]]
+    uv_colors_ = [tuple(xi / 255 for xi in x) for x in uv_colors_[::-1]]
     uv_colors = {}
     for i, wv in enumerate(uv_wavelengths):
         uv_colors[wv] = uv_colors_[i]
@@ -28,7 +28,7 @@ def _get_color_dict_vis():
     params.color_scale = "turbo"
     vis_wavelengths = np.arange(445, 701)
     vis_colors_ = color_palette(num=256)
-    vis_colors_ = [tuple([xi / 255 for xi in x]) for x in vis_colors_]
+    vis_colors_ = [tuple(xi / 255 for xi in x) for x in vis_colors_]
     vis_colors = {}
     for i, wv in enumerate(vis_wavelengths):
         vis_colors[wv] = vis_colors_[i]
