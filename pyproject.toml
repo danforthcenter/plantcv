@@ -12,17 +12,17 @@ readme = "README.md"
 license = {file = "LICENSE"}
 dynamic = ["version"]
 dependencies = [
-    "matplotlib>=1.5",
-    "numpy>=1.11",
+    "matplotlib >= 1.5",
+    "numpy >= 1.11",
     "pandas",
     "python-dateutil",
     "scipy",
-    "scikit-image>=0.19",
+    "scikit-image >= 0.19, < 0.23",
     "scikit-learn",
     "dask",
     "dask-jobqueue",
     "opencv-python",
-    "xarray>=2022.11.0",
+    "xarray >= 2022.11.0",
     "statsmodels",
     "altair",
     "vl-convert-python",
