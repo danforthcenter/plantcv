@@ -38,7 +38,7 @@ jobs:
         pip install .
         py.test --cov-report=xml --cov=./
     - name: Upload coverage to Deepsource
-      if: ${{ matrix.python-version == '3.12' }}
+      if: ${{ matrix.python-version == '3.11' }}
       uses: deepsourcelabs/test-coverage-action@master
       with:
         key: python
