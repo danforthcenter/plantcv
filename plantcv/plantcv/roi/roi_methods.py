@@ -188,7 +188,7 @@ def _draw_roi(img, roi_contour):
         for i, cnt in enumerate(roi_contour):
             M = cv2.moments(cnt)
             if M['m00'] != 0:
-                cxy =[int(M['m10'] / M['m00']), int(M['m01'] / M['m00'])]
+                cxy = [int(M['m10'] / M['m00']), int(M['m01'] / M['m00'])]
                 label_coords.append(cxy)
         # Add number labels to debug
         for i, cnt in enumerate(roi_contour):
