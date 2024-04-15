@@ -58,7 +58,7 @@ mask for use with analysis functions.
 lbl_mask, n_lbls = pcv.create_labels(mask=mask, rois=rois)
 
 # Analyze the shape of each plant 
-shape_img = pcv.analyze.size(img=img_copy, labeled_mask=lbl_mask, n_labels=n_lbls, label="plant")
+shape_img = pcv.analyze.size(img=img1, labeled_mask=lbl_mask, n_labels=n_lbls, label="plant")
 
 # Print out a text file with shape data for each plant in the image 
 pcv.outputs.save_results(filename=filename)
