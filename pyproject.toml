@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools >= 64.0", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["plantcv"]
+
+[project]
+name = "plantcv"
+description = "PlantCV: Plant phenotyping with computer vision"
+readme = "README.md"
+license = {file = "LICENSE"}
+dynamic = ["version"]
+dependencies = [
+    "matplotlib >= 1.5",
+    "numpy >= 1.11",
+    "pandas",
+    "python-dateutil",
+    "scipy",
+    "scikit-image >= 0.19",
+    "scikit-learn",
+    "dask",
+    "dask-jobqueue",
+    "opencv-python",
+    "xarray >= 2022.11.0",
+    "statsmodels",
+    "altair",
+    "vl-convert-python",
+]
+requires-python = ">=3.8"
+authors = [
+    {name = "PlantCV Team", email = "plantcv@danforthcenter.org"},
+]
+keywords = ["plantcv", "plant phenotyping", "image analysis", "computer vision"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Development Status :: 5 - Production/Stable",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-cov",
+]
+
+[project.scripts]
+plantcv-run-workflow = "plantcv.parallel.cli:main"
+plantcv-train = "plantcv.learn.cli:main"
+plantcv-utils = "plantcv.utils.cli:main"
+
+[project.urls]
+Homepage = "https://plantcv.org"
+Documentation = "https://plantcv.readthedocs.io"
+Repository = "https://github.com/danforthcenter/plantcv"
+
+[tool.setuptools_scm]

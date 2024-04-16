@@ -12,7 +12,7 @@
 - macOS x86 (Intel) and M (ARM) processors
 - Windows 64-bit, x86 processors
 
-PlantCV requires Python (tested with versions 3.8, 3.9, and 3.10) and these [Python packages](https://github.com/danforthcenter/plantcv/blob/main/requirements.txt).
+PlantCV requires Python (tested with versions 3.9, 3.10, and 3.11) and these [Python packages](https://github.com/danforthcenter/plantcv/blob/main/pyproject.toml).
 Additionally, we recommend installing [JupyterLab](https://jupyter.org/).
 
 ### Install via a package manager <a name="install"></a>
