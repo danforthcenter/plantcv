@@ -24,6 +24,7 @@ dependencies:
   - jupyterlab
   - altair
   - vl-convert-python
+  - git
 
 channels:
   - conda-forge
