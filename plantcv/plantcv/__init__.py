@@ -1,3 +1,8 @@
+from importlib.metadata import version
+
+# Auto versioning
+__version__ = version("plantcv")
+
 from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.classes import Params
 from plantcv.plantcv.classes import Outputs
@@ -78,10 +83,6 @@ from plantcv.plantcv import filters
 from plantcv.plantcv.kmeans_classifier import predict_kmeans
 from plantcv.plantcv.kmeans_classifier import mask_kmeans
 # add new functions to end of lists
-
-# Auto versioning
-from . import _version
-__version__ = _version.get_versions()['version']
 
 __all__ = [
     "fatal_error",

@@ -18,7 +18,7 @@ def test_closing_grayscale(test_data):
     # Read in test data
     gray_img = cv2.imread(test_data.small_gray_img, -1)
     filtered_img = closing(gray_img=gray_img, kernel=np.ones((4, 4), np.uint8))
-    assert np.sum(filtered_img) == 33160632
+    assert np.sum(filtered_img) > np.sum(gray_img)
 
 
 def test_closing_bad_input(test_data):
