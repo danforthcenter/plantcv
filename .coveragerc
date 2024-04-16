@@ -1,6 +1,0 @@
-# .coveragerc to control coverage.py
-
-[report]
-# Omit versioneer
-omit = 
-    plantcv/plantcv/_version.py
