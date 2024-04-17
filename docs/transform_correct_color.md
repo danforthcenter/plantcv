@@ -18,7 +18,7 @@ It also outputs, corrected_img, but storage (print or plot) is determined by deb
     - output_directory - a file path to which the target_matrix, source_matrix, and transformation_matrix will be save as .npz files
 
 - **Context:**
-    - Use the [pcv.transform.detect_color_card](tutorials/transform_detect_color_card.md) to automatically detect the `target_mask` and `source_mask`.
+    - Use the [pcv.transform.detect_color_card](transform_detect_color_card.md) to automatically detect the `target_mask` and `source_mask`.
 
 **Reference Images**
 
