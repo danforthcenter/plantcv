@@ -591,6 +591,11 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: lp_filtered = **plantcv.laplace_filter**(*gray_img, k, scale*)
 * post v3.2: lp_filtered = **plantcv.laplace_filter**(*gray_img, ksize, scale*)
 
+#### plantcv.learn.train_kmeans
+
+* pre v4.3: NA 
+* post v4.3: **plantcv.learn.train_kmeans**(*img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, sigma=5, sampling=None, seed=1, num_imgs=0, n_init=10*)
+
 #### plantcv.logical_and
 
 * pre v3.0dev2: device, merged = **plantcv.logical_and**(*img1, img2, device, debug=None*)
@@ -605,6 +610,11 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, merged = **plantcv.logical_xor**(*img1, img2, device, debug=None*)
 * post v3.0dev2: merged = **plantcv.logical_xor**(*bin_img1, bin_img2*)
+
+#### plantcv.mask_kmeans
+
+* pre v4.3: NA 
+* post v4.3: **plantcv.mask_kmeans**(*labeled_img, k, patch_size, cat_list=None*)
 
 #### plantcv.median_blur
 
@@ -788,6 +798,11 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: NA
 * post v4.0: marker = **plantcv.Points**(*img, figsize=(6,12)*)
+
+#### plantcv.predict_kmeans
+
+* pre v4.3: NA
+* post v4.3: **plantcv.predict_kmeans**(*img, model_path="./kmeansout.fit", patch_size=10*)
 
 #### plantcv.print_image
 

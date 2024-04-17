@@ -90,6 +90,7 @@ nav:
       - 'I/O Functions':
           - 'Random Subset': io_random_subset.md
           - 'Read Dataset': io_read_dataset.md
+      - 'Kmeans Clustering Classifier': kmeans_classifier.md
       - 'Landmark Analysis':
         - 'Acute': homology_acute.md
         - 'Space': homology_space.md
@@ -209,6 +210,7 @@ nav:
       - 'White balance': white_balance.md
       - 'Within Frame': within_frame.md
     - 'Machine Learning Training':
+      - 'Kmeans Clustering': train_kmeans.md
       - 'Naive Bayes': naive_bayes.md
       - 'Naive Bayes Multiclass': naive_bayes_multiclass.md
     - 'Parallelization':
