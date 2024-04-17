@@ -9,12 +9,11 @@ def test_kmeans_classifier(test_data):
     labeled_img = predict_kmeans(img=input_dir+"/test_image.jpg", model_path=input_dir+"/kmeans_out.fit", patch_size=5)
     test_labeled, _, _ = readimage(input_dir+"/labeled_image.png")
     assert (labeled_img == test_labeled).all()
-    
+
     mask_dict = mask_kmeans(labeled_img=labeled_img, k=4, patch_size=5)
     for i in range(4):
         assert (readimage(input_dir+"/label_example_"+str(i)+".png")[0] == mask_dict[str(i)]).all()
 
-    combo_mask = mask_kmeans(labeled_img=labeled_img, k=4, patch_size=5, cat_list=[1,2])
+    combo_mask = mask_kmeans(labeled_img=labeled_img, k=4, patch_size=5, cat_list=[1, 2])
     combo_example, _, _ = readimage(input_dir+"/combo_mask_example.png")
     assert (combo_mask == combo_example).all()
-    
