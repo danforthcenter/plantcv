@@ -43,6 +43,19 @@
     </select>
 </div>
 
+<!--Simple RGB Tutorial-->
+<div class="card" style="display:block">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/vis_tutorial');return false;">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-simple-rgb-workflow/blob/main/tutorial_card.png?raw=true" alt="Simple RGB tutorial" width="600" height="auto">
+    </a>
+    <div class="card-title">
+        <h6>Simple RGB image workflow</h6>
+    </div>
+    <div class="card-tags">
+        <span><strong>Tags</strong>: plant shoot, single plant, side-view, RGB, shape analysis, color analysis</span>
+    </div>
+</div>
+
 <!--VIS Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/vis_tutorial');return false;">
