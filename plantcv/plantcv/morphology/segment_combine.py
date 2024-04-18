@@ -65,7 +65,7 @@ def segment_combine(segment_list, objects, mask):
         label_coord_y.append(all_objects[i][0][0][1])
 
     # Label segments
-    for i, cnt in enumerate(all_objects):
+    for i, _ in enumerate(all_objects):
         w = label_coord_x[i]
         h = label_coord_y[i]
         text = f"ID:{i}"
