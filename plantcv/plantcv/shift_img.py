@@ -31,7 +31,7 @@ def shift_img(img, number, side="right"):
 
     # get the sizes of the images
     if len(np.shape(img)) == 3:
-        ix, iy, iz = np.shape(img)
+        ix, iy, _ = np.shape(img)
         ori_img = np.copy(img)
         cmap = None
     else:
