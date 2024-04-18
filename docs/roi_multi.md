@@ -51,7 +51,7 @@ rois2 = pcv.roi.multi(img=img1, coord=[(25,120), (165,260), (310, 260)],
 
 ### Next steps:
 
-This function returns an Objects dataclass, which can be used with [create_labels](create_labels.md) to createa a labeled
+This function returns an Objects dataclass, which can be used with [create_labels](create_labels.md) to create a labeled
 mask for use with analysis functions.
 
 ```python
@@ -67,6 +67,6 @@ pcv.outputs.save_results(filename=filename)
 
 **Image with shape analysis characteristics on each plant** 
 
-![Screenshot](img/documentation_images/multi/multi_plants_shape.jpg)
+![Screenshot](img/documentation_images/multi/multi_plants_shape.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/roi/roi_methods.py)
