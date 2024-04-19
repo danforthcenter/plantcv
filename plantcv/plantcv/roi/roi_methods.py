@@ -186,7 +186,7 @@ def _draw_roi(img, roi_contour):
         label_coords = []
         rand_color = color_palette(num=len(roi_contour), saved=False)
         for i, cnt in enumerate(roi_contour):
-            M = cv2.moments(cnt)
+            M = cv2.moments(cnt[0])
             if M['m00'] != 0:
                 cxy = [int(M['m10'] / M['m00']), int(M['m01'] / M['m00'])]
                 label_coords.append(cxy)
@@ -197,10 +197,10 @@ def _draw_roi(img, roi_contour):
                         fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                         fontScale=params.text_size, color=rand_color[i],
                         thickness=params.text_thickness)
-            cv2.drawContours(ref_img, roi_contour, i, rand_color[i], params.line_thickness)
+            cv2.drawContours(ref_img, cnt[0], -1, rand_color[i], params.line_thickness)
     else:
         # Draw the contour on the reference image
-        cv2.drawContours(ref_img, roi_contour, -1, params.line_color, params.line_thickness)
+        cv2.drawContours(ref_img, roi_contour[0], -1, params.line_color, params.line_thickness)
     _debug(visual=ref_img,
            filename=os.path.join(params.debug_outdir, str(params.device) + "_roi.png"))
 
@@ -392,8 +392,7 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
 
     # Draw the ROIs if requested
     # Create an array of contours and list of hierarchy for debug image
-    roi_contour1, _ = _cv2_findcontours(bin_img=all_roi_img)
-    _draw_roi(img=img, roi_contour=roi_contour1)
+    _draw_roi(img=img, roi_contour=roi_objects.contours)
     return roi_objects
 
 
