@@ -1,8 +1,6 @@
 """Write hyperspectral image data to a file."""
 import os
-from plantcv.plantcv import _version
-
-__version__ = _version.get_versions()['version']
+from plantcv.plantcv import __version__ as version
 
 
 def write_data(filename, spectral_data):
@@ -25,7 +23,7 @@ def write_data(filename, spectral_data):
     wavelenghths = list(spectral_data.wavelength_dict.keys())
     with open(filename+'.hdr', mode='w') as f:
         f.write('ENVI\n')
-        f.write(f'; this file was created using PlantCV version {__version__}\n')
+        f.write(f'; this file was created using PlantCV version {version}\n')
         f.write(f'; original file: {spectral_data.filename}\n')
         f.write('interleave = bil\n')
         f.write(f'samples = {samples}\n')
