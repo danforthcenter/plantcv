@@ -19,3 +19,11 @@ def test_detect_color_card_none_found(transform_test_data):
     rgb_img = cv2.imread(transform_test_data.target_img)
     with pytest.raises(RuntimeError):
         _ = detect_color_card(rgb_img=rgb_img)
+
+
+def test_detect_color_card_incorrect_block_size(transform_test_data):
+    """Test for PlantCV."""
+    # Load rgb image
+    rgb_img = cv2.imread(transform_test_data.colorcard_img)
+    with pytest.raises(RuntimeError):
+        _ = detect_color_card(rgb_img=rgb_img, block_size=2)
