@@ -52,7 +52,8 @@ def detect_color_card(rgb_img, label=None, **kwargs):
         Labeled mask of chips.
     """
     # Set lable to params.sample_label if None
-    label = params.sample_label if label is None else label
+    if label is None:
+        label = params.sample_label
 
     # Get keyword arguments and set defaults if not set
     min_size = kwargs.get("min_size", 1000)  # Minimum size for _is_square chip filtering
