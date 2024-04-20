@@ -52,6 +52,36 @@ def _get_contour_sizes(contours):
     return marea, mwidth, mheight
 
 
+def _draw_color_chips(rgb_img, new_centers, radius):
+    """Create labeled mask and debug image of color chips.
+
+    Parameters
+    ----------
+    rgb_img : numpy.ndarray
+        Input RGB image data containing a color card.
+    new_centers : numpy.array
+        Chip centers after transformation.
+    radius : int
+        Radius of circles to draw on the color chips.
+
+    Returns
+    -------
+    list
+        Labeled mask and debug image.
+    """
+    # Create blank img for drawing the labeled color card mask
+    labeled_mask = np.zeros(rgb_img.shape[0:2])
+    debug_img = np.copy(rgb_img)
+
+    # Loop over the new chip centers and draw them on the RGB image and labeled mask
+    for i, pt in enumerate(new_centers):
+        cv2.circle(labeled_mask, new_centers[i], radius, (i + 1) * 10, -1)
+        cv2.circle(debug_img, new_centers[i], radius, (255, 255, 0), -1)
+        cv2.putText(debug_img, text=str(i), org=pt, fontScale=params.text_size, color=(0, 0, 0),
+                    fontFace=cv2.FONT_HERSHEY_SIMPLEX, thickness=params.text_thickness)
+    return labeled_mask, debug_img
+
+
 def detect_color_card(rgb_img, label=None, **kwargs):
     """Automatically detect a color card.
 
@@ -141,16 +171,8 @@ def detect_color_card(rgb_img, label=None, **kwargs):
     # Transform the chip centers using the perspective transform matrix
     new_centers = cv2.transform(np.array([centers]), m_transform)[0][:, 0:2]
 
-    # Create blank img for drawing the labeled color card mask
-    labeled_mask = np.zeros(imgray.shape)
-    debug_img = np.copy(rgb_img)
-
-    # Loop over the new chip centers and draw them on the RGB image and labeled mask
-    for i, pt in enumerate(new_centers):
-        cv2.circle(labeled_mask, new_centers[i], radius, (i + 1) * 10, -1)
-        cv2.circle(debug_img, new_centers[i], radius, (255, 255, 0), -1)
-        cv2.putText(debug_img, text=str(i), org=pt, fontScale=params.text_size, color=(0, 0, 0),
-                    fontFace=cv2.FONT_HERSHEY_SIMPLEX, thickness=params.text_thickness)
+    # Create labeled mask and debug image of color chips
+    labeled_mask, debug_img = _draw_color_chips(rgb_img, new_centers, radius)
 
     # Save out chip size for pixel to cm standardization
     outputs.add_observation(sample=label, variable='median_color_chip_size', trait='size of color card chips identified',
