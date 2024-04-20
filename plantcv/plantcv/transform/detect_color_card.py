@@ -28,6 +28,30 @@ def _is_square(contour, min_size):
             (cv2.contourArea(contour) / np.prod(cv2.minAreaRect(contour)[1])) > 0.8)
 
 
+def _get_contour_sizes(contours):
+    """Get the shape and size of all contours.
+
+    Parameters
+    ----------
+    contours : list
+        List of OpenCV contours.
+
+    Returns
+    -------
+    list
+        Contour areas, widths, and heights.
+    """
+    # Initialize chip shape lists
+    marea, mwidth, mheight = [], [], []
+    # Loop over our contours and size data about them
+    for cnt in contours:
+        marea.append(cv2.contourArea(cnt))
+        _, wh, _ = cv2.minAreaRect(cnt)  # Rotated rectangle
+        mwidth.append(wh[0])
+        mheight.append(wh[1])
+    return marea, mwidth, mheight
+
+
 def detect_color_card(rgb_img, label=None, **kwargs):
     """Automatically detect a color card.
 
@@ -89,13 +113,7 @@ def detect_color_card(rgb_img, label=None, **kwargs):
         fatal_error('No color card found')
 
     # Initialize chip shape lists
-    marea, mwidth, mheight = [], [], []
-    # Loop over our contours and size data about them
-    for cnt in filtered_contours:
-        marea.append(cv2.contourArea(cnt))
-        _, wh, _ = cv2.minAreaRect(cnt)  # Rotated rectangle
-        mwidth.append(wh[0])
-        mheight.append(wh[1])
+    marea, mwidth, mheight = _get_contour_sizes(filtered_contours)
 
     # Create dataframe for easy summary stats
     chip_size = np.median(marea)
