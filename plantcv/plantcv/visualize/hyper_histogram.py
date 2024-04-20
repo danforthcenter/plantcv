@@ -40,7 +40,7 @@ def _get_color_dict_nir():
     params.color_scale = "inferno"
     nir_wavelengths = np.arange(701, 1725)
     nir_colors_ = color_palette(num=256)
-    nir_colors_ = [tuple([xi / 255 for xi in nir_colors_[math.floor(idx / 4)]]) for (idx, _) in
+    nir_colors_ = [tuple(xi / 255 for xi in nir_colors_[math.floor(idx / 4)]) for (idx, _) in
                    enumerate(nir_wavelengths)]
     nir_colors = {}
     for i, wv in enumerate(nir_wavelengths):
@@ -67,7 +67,7 @@ def _rgb_to_webcode(rgb_values):
 
 
 def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None,
-                    title=None, wvlengths=[480, 550, 650]):
+                    title=None, wvlengths=None):
     """Plot a histograms of selected wavelengths from a hyperspectral image.
 
     This function calculates the histogram of selected wavelengths hyperspectral images
@@ -96,6 +96,10 @@ def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None
     :param wvlengths: list
     :return fig_hist: altair.vegalite.v5.api.Chart
     """
+    # Set default wavelengths to plot
+    if (wvlengths is None):
+        wvlengths = [480, 550, 650]
+        
     # Always sort desired wavelengths
     wvlengths.sort()
 
