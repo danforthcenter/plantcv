@@ -80,6 +80,8 @@ class TestData:
         self.cluster_names = os.path.join(self.datadir, "cluster_names.txt")
         # Clustered contours names file with too many labels
         self.cluster_names_too_many = os.path.join(self.datadir, "cluster_names_too_many.txt")
+        # Kmeans classifier directory
+        self.kmeans_classifier_dir = os.path.join(self.datadir, "kmeans_classifier_dir")
 
     @staticmethod
     def load_hsi(pkl_file):
