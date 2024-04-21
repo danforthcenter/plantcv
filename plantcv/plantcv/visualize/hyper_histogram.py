@@ -66,6 +66,36 @@ def _rgb_to_webcode(rgb_values):
     return webcode
 
 
+def _get_color_dict(match_wls):
+    color_dict = {}
+    if any(x < 290 for x in match_wls):
+        # under uv
+        params.color_scale = "cool_r"
+        color_ = color_palette(num=256)[-154]
+        under_uv_colors_ = {}
+        for i, wv in enumerate([x for x in match_wls if x < 290]):
+            under_uv_colors_[wv] = color_
+        color_dict = {**color_dict, **under_uv_colors_}
+    if any(290 <= x < 445 for x in match_wls):
+        uv_colors = _get_color_dict_uv()
+        color_dict = {**color_dict, **uv_colors}
+    if any(445 <= x < 701 for x in match_wls):
+        vis_colors = _get_color_dict_vis()
+        color_dict = {**color_dict, **vis_colors}
+    if any(701 <= x < 1701 for x in match_wls):
+        nir_colors = _get_color_dict_nir()
+        color_dict = {**color_dict, **nir_colors}
+    if any(x >= 1701 for x in match_wls):
+        # above nir
+        params.color_scale = "inferno"
+        color_ = color_palette(num=256)[-1]
+        above_uv_colors_ = {}
+        for i, wv in enumerate([x for x in match_wls if x >= 1701]):
+            above_uv_colors_[wv] = color_
+        color_dict = {**color_dict, **above_uv_colors_}
+    return color_dict
+
+
 def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None,
                     title=None, wvlengths=None):
     """Plot a histograms of selected wavelengths from a hyperspectral image.
@@ -97,9 +127,9 @@ def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None
     :return fig_hist: altair.vegalite.v5.api.Chart
     """
     # Set default wavelengths to plot
-    if (wvlengths is None):
+    if wvlengths is None:
         wvlengths = [480, 550, 650]
-        
+
     # Always sort desired wavelengths
     wvlengths.sort()
 
@@ -127,33 +157,7 @@ def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None
     match_wls = [round(wls[i]) for i in match_ids]
 
     # prepare color dictionary(ies)
-    color_dict = {}
-    if any(x < 290 for x in match_wls):
-        # under uv
-        params.color_scale = "cool_r"
-        color_ = color_palette(num=256)[-154]
-        under_uv_colors_ = {}
-        for i, wv in enumerate([x for x in match_wls if x < 290]):
-            under_uv_colors_[wv] = color_
-        color_dict = {**color_dict, **under_uv_colors_}
-    if any(290 <= x < 445 for x in match_wls):
-        uv_colors = _get_color_dict_uv()
-        color_dict = {**color_dict, **uv_colors}
-    if any(445 <= x < 701 for x in match_wls):
-        vis_colors = _get_color_dict_vis()
-        color_dict = {**color_dict, **vis_colors}
-    if any(701 <= x < 1701 for x in match_wls):
-        nir_colors = _get_color_dict_nir()
-        color_dict = {**color_dict, **nir_colors}
-    if any(x >= 1701 for x in match_wls):
-        # above nir
-        params.color_scale = "inferno"
-        color_ = color_palette(num=256)[-1]
-        above_uv_colors_ = {}
-        for i, wv in enumerate([x for x in match_wls if x >= 1701]):
-            above_uv_colors_[wv] = color_
-        color_dict = {**color_dict, **above_uv_colors_}
-
+    color_dict = _get_color_dict(match_wls)
     colors_rgb = [color_dict[wv] for wv in match_wls]
     colors_hex = [_rgb_to_webcode(x) for x in colors_rgb]
 
