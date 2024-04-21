@@ -215,7 +215,7 @@ def triangle(gray_img, object_type="light", xstep=1):
 
     # Find point corresponding to highest peak
     # Find intensity value (y) of highest peak
-    max_peak_int = max(list(newhist[i] for i in ind))
+    max_peak_int = max(newhist[i] for i in ind)
     # Find value (x) of highest peak
     max_peak = [i for i, x in enumerate(newhist) if x == max(newhist)]
     # Combine x,y
