@@ -52,5 +52,4 @@ def test_multiprocess(parallel_test_data, tmpdir):
 
 def test_process_images_multiproc():
     """Test for PlantCV."""
-    result = _process_images_multiproc(['python', '-c', 'print("Hello World!")'])
-    assert result is None
+    assert _process_images_multiproc(['python', '-c', 'print("Hello World!")']) is None

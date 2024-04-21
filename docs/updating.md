@@ -228,7 +228,6 @@ pages for more details on the input and output variable types.
 * post v3.12: analysis_image = **plantcv.analyze_color**(*rgb_img, mask, hist_plot_type=None, colorspaces="all", label="default"*)
 * post v4.0: DEPRECATED see plantcv.analyze.color
 
-
 #### plantcv.analyze_nir_intensity
 
 * pre v3.0dev2: device, hist_header, hist_data, analysis_img = **plantcv.analyze_NIR_intensity**(*img, rgbimg, mask, bins, device, histplot=False, debug=None, filename=False*)
@@ -273,6 +272,10 @@ pages for more details on the input and output variable types.
 * pre v4.0: (see plantcv.analyze_color)
 * post v4.0: histogram = **plantcv.analyze.color**(*rgb_img, labeled_mask, n_labels=1, colorspaces="hsv", label=None*)
 
+#### plantcv.analyze.distribution
+
+* pre v4.2.1: NA
+* post v4.2.1: dist_chart = **plantcv.analyze.distribution**(*labeled_mask, n_labels=1, direction="down", bin_size=100, hist_range="absolute", label=None*)
 
 #### plantcv.analyze.grayscale
 
@@ -588,6 +591,11 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: lp_filtered = **plantcv.laplace_filter**(*gray_img, k, scale*)
 * post v3.2: lp_filtered = **plantcv.laplace_filter**(*gray_img, ksize, scale*)
 
+#### plantcv.learn.train_kmeans
+
+* pre v4.3: NA 
+* post v4.3: **plantcv.learn.train_kmeans**(*img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, sigma=5, sampling=None, seed=1, num_imgs=0, n_init=10*)
+
 #### plantcv.logical_and
 
 * pre v3.0dev2: device, merged = **plantcv.logical_and**(*img1, img2, device, debug=None*)
@@ -602,6 +610,11 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, merged = **plantcv.logical_xor**(*img1, img2, device, debug=None*)
 * post v3.0dev2: merged = **plantcv.logical_xor**(*bin_img1, bin_img2*)
+
+#### plantcv.mask_kmeans
+
+* pre v4.3: NA 
+* post v4.3: **plantcv.mask_kmeans**(*labeled_img, k, patch_size, cat_list=None*)
 
 #### plantcv.median_blur
 
@@ -786,6 +799,11 @@ pages for more details on the input and output variable types.
 * pre v4.0: NA
 * post v4.0: marker = **plantcv.Points**(*img, figsize=(6,12)*)
 
+#### plantcv.predict_kmeans
+
+* pre v4.3: NA
+* post v4.3: **plantcv.predict_kmeans**(*img, model_path="./kmeansout.fit", patch_size=10*)
+
 #### plantcv.print_image
 
 * pre v3.0dev2: **plantcv.print_image**(*img, filename*)
@@ -907,6 +925,11 @@ pages for more details on the input and output variable types.
 * post v3.1: roi_contours, roi_hierarchies = **plantcv.roi.multi**(*img, coord, radius, spacing=None, nrows=None, ncols=None*)
 * post v4.0: roi_objects = **plantcv.roi.multi**(*img, coord, radius=None, spacing=None, nrows=None, ncols=None*)
 
+#### plantcv.roi.quick_filter
+
+* pre v4.2.1: NA
+* post v4.2.1: filtered_mask = **plantcv.roi.quick_filter**(*mask, roi*)
+
 #### plantcv.roi_objects
 
 * pre v3.0dev2: device, kept_cnt, hierarchy, mask, obj_area = **plantcv.roi_objects**(*img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, device, debug=None*)
@@ -914,6 +937,16 @@ pages for more details on the input and output variable types.
 * post v3.3: kept_cnt, hierarchy, mask, obj_area = **plantcv.roi_objects**(*img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy,roi_type='partial'*)
 * post v4.0: Deprecated, see:
     * filtered_mask = **pcv.roi.filter**(*mask, roi, roi_type='partial'*)
+
+#### plantcv.transform.calibrate_camera
+
+* pre v4.2.1: NA
+* post v4.2.1: corrected_img = **plantcv.transform.calibrate_camera**(*rgb_img, mtx, dist*)
+
+#### plantcv.transform.checkerboard_calib
+
+* pre v4.2.1: NA
+* post v4.2.1: mtx, dist = **plantcv.transform.checkerboard_calib**(*img_path, col_corners, row_corners, out_dir*)
 
 #### plantcv.transform.rotate
 

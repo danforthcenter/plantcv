@@ -15,7 +15,7 @@ def test_read_cropreporter(photosynthesis_test_data, tmpdir):
     assert isinstance(ps, PSII_data) and ps.ojip_dark.shape == (1500, 2048, 7, 1)
     # check labels
     true_labels = ['Fdark', 'F0', 'PSD2', 'PSD3', 'Fm', 'PSD5', 'PSD6']
-    assert all([a == b for a, b in zip(ps.ojip_dark.coords['frame_label'].to_dict()['data'], true_labels)])
+    assert all(a == b for a, b in zip(ps.ojip_dark.coords['frame_label'].to_dict()['data'], true_labels))
 
     # Create dataset with only 3 frames
     cache_dir = os.path.join(tmpdir, "sub")
@@ -39,13 +39,13 @@ def test_read_cropreporter(photosynthesis_test_data, tmpdir):
     ps = read_cropreporter(filename=inffilename)
     # check labels
     true_dark_labels = ['Fdark', 'F0', 'Fm', 'PSD3', 'PSD4', 'PSD5', 'PSD6']
-    assert all([a == b for a, b in zip(ps.ojip_dark.coords['frame_label'].to_dict()['data'], true_dark_labels)])
+    assert all(a == b for a, b in zip(ps.ojip_dark.coords['frame_label'].to_dict()['data'], true_dark_labels))
     true_light_labels = ['Flight', 'Fp', 'Fmp', 'PSL3', 'PSL4', 'PSL5', 'PSL6']
-    assert all([a == b for a, b in zip(ps.ojip_light.coords['frame_label'].to_dict()['data'], true_light_labels)])
+    assert all(a == b for a, b in zip(ps.ojip_light.coords['frame_label'].to_dict()['data'], true_light_labels))
     true_pam_dark_labels = ["Fdark", "F0", "Fm", "Fs"]
-    assert all([a == b for a, b in zip(ps.pam_dark.coords['frame_label'].to_dict()['data'], true_pam_dark_labels)])
+    assert all(a == b for a, b in zip(ps.pam_dark.coords['frame_label'].to_dict()['data'], true_pam_dark_labels))
     true_pam_light_labels = ["Flight", "Fp", "Fmp", "Fs"]
-    assert all([a == b for a, b in zip(ps.pam_light.coords['frame_label'].to_dict()['data'], true_pam_light_labels)])
+    assert all(a == b for a, b in zip(ps.pam_light.coords['frame_label'].to_dict()['data'], true_pam_light_labels))
 
 
 def test_read_cropreporter_spc_only(photosynthesis_test_data, tmpdir):
