@@ -67,13 +67,22 @@ def _rgb_to_webcode(rgb_values):
 
 
 def _get_color_dict(match_wls):
+    """
+    sets the color scale based on the wavelength range
+
+    Inputs:
+    match_wls: list of wavelengths to be plotted
+    
+    Returns:
+    color_dict: dictionary of wavelengths and their corresponding colors
+    """
     color_dict = {}
     if any(x < 290 for x in match_wls):
         # under uv
         params.color_scale = "cool_r"
         color_ = color_palette(num=256)[-154]
         under_uv_colors_ = {}
-        for i, wv in enumerate([x for x in match_wls if x < 290]):
+        for _, wv in enumerate(x for x in match_wls if x < 290):
             under_uv_colors_[wv] = color_
         color_dict = {**color_dict, **under_uv_colors_}
     if any(290 <= x < 445 for x in match_wls):
@@ -90,7 +99,7 @@ def _get_color_dict(match_wls):
         params.color_scale = "inferno"
         color_ = color_palette(num=256)[-1]
         above_uv_colors_ = {}
-        for i, wv in enumerate([x for x in match_wls if x >= 1701]):
+        for _, wv in enumerate(x for x in match_wls if x >= 1701):
             above_uv_colors_[wv] = color_
         color_dict = {**color_dict, **above_uv_colors_}
     return color_dict
