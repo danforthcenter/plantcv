@@ -191,7 +191,6 @@ def _draw_roi(img, roi_contour):
                 cxy = [int(M['m10'] / M['m00']), int(M['m01'] / M['m00'])]
                 label_coords.append(cxy)
         # Add number labels to debug
-        #for i, cnt in enumerate(roi_contour):
             # Label slope lines
                 cv2.putText(img=ref_img, text=f"{i}", org=(label_coords[i]),
                             fontFace=cv2.FONT_HERSHEY_SIMPLEX,
@@ -341,14 +340,13 @@ def auto_grid(mask, nrows, ncols, radius=None, img=None):
     coord, spacing = _calculate_grid(mask, nrows, ncols)
     if img is None:
         img = mask
-    roi_objects, overlap_img, all_roi_img = _grid_roi(img, nrows, ncols,
+    roi_objects, overlap_img, _ = _grid_roi(img, nrows, ncols,
                                                       coord, radius, spacing)
     if np.amax(overlap_img) > 255:
         warn("Two or more of the user defined regions of interest overlap! "
              "If you only see one ROI then they may overlap exactly.")
     # Draw the ROIs if requested
     # Create an array of contours and list of hierarchy for debug image
-    #roi_contour1, _ = _cv2_findcontours(bin_img=all_roi_img)
     _draw_roi(img=img, roi_contour=roi_objects.contours)
     return roi_objects
 
@@ -377,7 +375,7 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
     # Grid of ROIs
     if (isinstance(coord, tuple)) and ((nrows and ncols) is not None) and (isinstance(spacing, tuple)):
         roi_objects, overlap_img, _ = _grid_roi(img, nrows, ncols, coord,
-                                                          radius, spacing)
+                                                radius, spacing)
     # User specified ROI centers
     elif (isinstance(coord, list)) and ((nrows and ncols) is None) and (spacing is None):
         roi_objects, overlap_img, _ = _rois_from_coordinates(img=img, coord=coord, radius=radius)
