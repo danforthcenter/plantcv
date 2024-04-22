@@ -59,7 +59,7 @@ def image_fusion(img1, img2, wvs1, wvs2, array_type="multispectral"):
     # Scale the array data to 0-1 by dividing by the maximum data type value
     array_data = (array_data / np.iinfo(array_data.dtype).max).astype(np.float32)
 
-    r, c, b = array_data.shape
+    r, c, _ = array_data.shape
 
     fused_array = Spectral_data(array_data=array_data,
                                 max_wavelength=float(max(wavelengths)),
