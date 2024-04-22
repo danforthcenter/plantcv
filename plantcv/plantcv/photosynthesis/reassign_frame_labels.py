@@ -30,7 +30,7 @@ def reassign_frame_labels(ps_da, mask):
     params.device += 1
 
     try:
-        if ps_da.name != "ojip_light" and ps_da.name != "ojip_dark":
+        if ps_da.name not in ["ojip_light", "ojip_dark"]:
             fatal_error("You must provide a xarray DataArray with name ojip_light or ojip_dark")
     except AttributeError:
         if isinstance(ps_da, PSII_data):
