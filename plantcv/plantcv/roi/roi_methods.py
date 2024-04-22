@@ -341,7 +341,7 @@ def auto_grid(mask, nrows, ncols, radius=None, img=None):
     if img is None:
         img = mask
     roi_objects, overlap_img, _ = _grid_roi(img, nrows, ncols,
-                                                      coord, radius, spacing)
+                                            coord, radius, spacing)
     if np.amax(overlap_img) > 255:
         warn("Two or more of the user defined regions of interest overlap! "
              "If you only see one ROI then they may overlap exactly.")
