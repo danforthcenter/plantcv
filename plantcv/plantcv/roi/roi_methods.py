@@ -348,8 +348,8 @@ def auto_grid(mask, nrows, ncols, radius=None, img=None):
              "If you only see one ROI then they may overlap exactly.")
     # Draw the ROIs if requested
     # Create an array of contours and list of hierarchy for debug image
-    roi_contour1, _ = _cv2_findcontours(bin_img=all_roi_img)
-    _draw_roi(img=img, roi_contour=roi_contour1)
+    #roi_contour1, _ = _cv2_findcontours(bin_img=all_roi_img)
+    _draw_roi(img=img, roi_contour=roi_objects.contours)
     return roi_objects
 
 
@@ -423,7 +423,7 @@ def custom(img, vertices):
     roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
 
     # Draw the ROIs if requested
-    _draw_roi(img=img, roi_contour=roi_contour)
+    _draw_roi(img=img, roi_contour=roi.contours)
 
     return roi
 
