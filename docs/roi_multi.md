@@ -36,18 +36,17 @@ rois1 = pcv.roi.multi(img=img1, coord=(25,120), radius=20,
                                       spacing=(70, 70), nrows=3, ncols=6)
 
 # Specify a list of coordinates of desired ROIs 
-rois2 = pcv.roi.multi(img=img1, coord=[(25,120), (165,260), (310, 260)], 
-                                      radius=20)
+rois2 = pcv.roi.multi(img=img1, coord=[(1745,1615), (820, 740), (820,1150)], radius=20)
                                       
 ```
 
 **Grid of ROIs**
 
-![Screenshot](img/documentation_images/multi/grid_roi.jpg)
+![Screenshot](img/documentation_images/multi/grid_roi.png)
 
 **Custom list of ROIs** 
 
-![Screenshot](img/documentation_images/multi/custom_list_roi.jpg)
+![Screenshot](img/documentation_images/multi/custom_list_roi.png)
 
 ### Next steps:
 
