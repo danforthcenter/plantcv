@@ -199,7 +199,7 @@ def _draw_roi(img, roi_contour):
                 cv2.drawContours(ref_img, cnt[0], -1, rand_color[i], params.line_thickness)
     else:
         # Draw the contour on the reference image
-        cv2.drawContours(ref_img, roi_contour[0], -1, params.line_color, params.line_thickness)
+        cv2.drawContours(ref_img, [roi_contour[0]], -1, params.line_color, params.line_thickness)
     _debug(visual=ref_img,
            filename=os.path.join(params.debug_outdir, str(params.device) + "_roi.png"))
 
@@ -421,7 +421,7 @@ def custom(img, vertices):
     roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
 
     # Draw the ROIs if requested
-    _draw_roi(img=img, roi_contour=roi.contours)
+    _draw_roi(img=img, roi_contour=roi_contour)
 
     return roi
 
