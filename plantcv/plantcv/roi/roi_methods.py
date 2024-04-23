@@ -33,7 +33,7 @@ def from_binary_image(img, bin_img):
     roi_contour, roi_hierarchy = _cv2_findcontours(bin_img=bin_img)
     roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
     # Draw the ROI if requested
-    _draw_roi(img=img, roi_contour=roi_contour)
+    _draw_roi(img=img, roi_contour=roi)
 
     return roi
 
@@ -74,7 +74,7 @@ def rectangle(img, x, y, h, w):
     roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
 
     # Draw the ROI if requested
-    _draw_roi(img=img, roi_contour=roi_contour)
+    _draw_roi(img=img, roi_contour=roi)
 
     # Check whether the ROI is correctly bounded inside the image
     if x < 0 or y < 0 or x + w > width or y + h > height:
@@ -115,7 +115,7 @@ def circle(img, x, y, r):
     roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
 
     # Draw the ROI if requested
-    _draw_roi(img=img, roi_contour=roi_contour)
+    _draw_roi(img=img, roi_contour=roi)
 
     # Check whether the ROI is correctly bounded inside the image
     if x - r < 0 or x + r > width or y - r < 0 or y + r > height:
@@ -160,7 +160,7 @@ def ellipse(img, x, y, r1, r2, angle):
     roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
 
     # Draw the ROI if requested
-    _draw_roi(img=img, roi_contour=roi_contour)
+    _draw_roi(img=img, roi_contour=roi)
 
     # Checks ellipse goes outside the image by checking row and column sum of edges
     if (np.sum(bin_img[0, :]) + np.sum(bin_img[-1, :]) + np.sum(bin_img[:, 0]) + np.sum(bin_img[:, -1]) > 0) or \
@@ -182,24 +182,22 @@ def _draw_roi(img, roi_contour):
     if len(np.shape(ref_img)) == 2:
         ref_img = cv2.cvtColor(ref_img, cv2.COLOR_GRAY2BGR)
     # Collect coordinates for debug numbering
-    if len(roi_contour) > 1:
-        label_coords = []
-        rand_color = color_palette(num=len(roi_contour), saved=False)
-        for i, cnt in enumerate(roi_contour):
-            M = cv2.moments(cnt[0])
-            if M['m00'] != 0:
-                cxy = [int(M['m10'] / M['m00']), int(M['m01'] / M['m00'])]
-                label_coords.append(cxy)
+    rand_color = color_palette(num=len(roi_contour.contours),
+                               saved=False) if len(roi_contour.contours) > 1 else [params.line_color]
+    label_coords = []
+    for i, cnt in enumerate(roi_contour):
+        M = cv2.moments(cnt.contours[0][0])
+        if M['m00'] != 0:
+            cxy = [int(M['m10'] / M['m00']), int(M['m01'] / M['m00'])]
+            label_coords.append(cxy)
         # Add number labels to debug
-            # Label slope lines
-                cv2.putText(img=ref_img, text=f"{i}", org=(label_coords[i]),
-                            fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                            fontScale=params.text_size, color=rand_color[i],
-                            thickness=params.text_thickness)
-                cv2.drawContours(ref_img, cnt[0], -1, rand_color[i], params.line_thickness)
-    else:
-        # Draw the contour on the reference image
-        cv2.drawContours(ref_img, [roi_contour[0]], -1, params.line_color, params.line_thickness)
+        # Label slope lines
+            cv2.putText(img=ref_img, text=f"{i}", org=(label_coords[i]),
+                        fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                        fontScale=params.text_size, color=rand_color[i],
+                        thickness=params.text_thickness)
+            cv2.drawContours(ref_img, cnt.contours[0], -1, rand_color[i], params.line_thickness)
+
     _debug(visual=ref_img,
            filename=os.path.join(params.debug_outdir, str(params.device) + "_roi.png"))
 
@@ -347,7 +345,7 @@ def auto_grid(mask, nrows, ncols, radius=None, img=None):
              "If you only see one ROI then they may overlap exactly.")
     # Draw the ROIs if requested
     # Create an array of contours and list of hierarchy for debug image
-    _draw_roi(img=img, roi_contour=roi_objects.contours)
+    _draw_roi(img=img, roi_contour=roi_objects)
     return roi_objects
 
 
@@ -389,7 +387,7 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
              "If you only see one ROI then they may overlap exactly.")
 
     # Draw the ROIs if requested
-    _draw_roi(img=img, roi_contour=roi_objects.contours)
+    _draw_roi(img=img, roi_contour=roi_objects)
     return roi_objects
 
 
@@ -421,7 +419,7 @@ def custom(img, vertices):
     roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
 
     # Draw the ROIs if requested
-    _draw_roi(img=img, roi_contour=roi_contour)
+    _draw_roi(img=img, roi_contour=roi)
 
     return roi
 
