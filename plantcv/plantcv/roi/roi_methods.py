@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 from sklearn.mixture import GaussianMixture
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv import color_palette
 from plantcv.plantcv._helpers import _cv2_findcontours
 from plantcv.plantcv._helpers import _roi_filter
 from plantcv.plantcv import fatal_error, warn, params, Objects
@@ -32,7 +33,7 @@ def from_binary_image(img, bin_img):
     roi_contour, roi_hierarchy = _cv2_findcontours(bin_img=bin_img)
     roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
     # Draw the ROI if requested
-    _draw_roi(img=img, roi_contour=roi_contour)
+    _draw_roi(img=img, roi_contour=roi)
 
     return roi
 
@@ -73,7 +74,7 @@ def rectangle(img, x, y, h, w):
     roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
 
     # Draw the ROI if requested
-    _draw_roi(img=img, roi_contour=roi_contour)
+    _draw_roi(img=img, roi_contour=roi)
 
     # Check whether the ROI is correctly bounded inside the image
     if x < 0 or y < 0 or x + w > width or y + h > height:
@@ -114,7 +115,7 @@ def circle(img, x, y, r):
     roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
 
     # Draw the ROI if requested
-    _draw_roi(img=img, roi_contour=roi_contour)
+    _draw_roi(img=img, roi_contour=roi)
 
     # Check whether the ROI is correctly bounded inside the image
     if x - r < 0 or x + r > width or y - r < 0 or y + r > height:
@@ -159,7 +160,7 @@ def ellipse(img, x, y, r1, r2, angle):
     roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
 
     # Draw the ROI if requested
-    _draw_roi(img=img, roi_contour=roi_contour)
+    _draw_roi(img=img, roi_contour=roi)
 
     # Checks ellipse goes outside the image by checking row and column sum of edges
     if (np.sum(bin_img[0, :]) + np.sum(bin_img[-1, :]) + np.sum(bin_img[:, 0]) + np.sum(bin_img[:, -1]) > 0) or \
@@ -180,8 +181,23 @@ def _draw_roi(img, roi_contour):
     # If the reference image is grayscale convert it to color
     if len(np.shape(ref_img)) == 2:
         ref_img = cv2.cvtColor(ref_img, cv2.COLOR_GRAY2BGR)
-    # Draw the contour on the reference image
-    cv2.drawContours(ref_img, roi_contour, -1, (255, 0, 0), params.line_thickness)
+    # Collect coordinates for debug numbering
+    rand_color = color_palette(num=len(roi_contour.contours),
+                               saved=False) if len(roi_contour.contours) > 1 else [params.line_color]
+    label_coords = []
+    for i, cnt in enumerate(roi_contour):
+        M = cv2.moments(cnt.contours[0][0])
+        if M['m00'] != 0:
+            cxy = [int(M['m10'] / M['m00']), int(M['m01'] / M['m00'])]
+            label_coords.append(cxy)
+        # Add number labels to debug
+        # Label slope lines
+            cv2.putText(img=ref_img, text=f"{i}", org=(label_coords[i]),
+                        fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                        fontScale=params.text_size, color=rand_color[i],
+                        thickness=params.text_thickness)
+            cv2.drawContours(ref_img, cnt.contours[0], -1, rand_color[i], params.line_thickness)
+
     _debug(visual=ref_img,
            filename=os.path.join(params.debug_outdir, str(params.device) + "_roi.png"))
 
@@ -322,15 +338,14 @@ def auto_grid(mask, nrows, ncols, radius=None, img=None):
     coord, spacing = _calculate_grid(mask, nrows, ncols)
     if img is None:
         img = mask
-    roi_objects, overlap_img, all_roi_img = _grid_roi(img, nrows, ncols,
-                                                      coord, radius, spacing)
+    roi_objects, overlap_img, _ = _grid_roi(img, nrows, ncols,
+                                            coord, radius, spacing)
     if np.amax(overlap_img) > 255:
         warn("Two or more of the user defined regions of interest overlap! "
              "If you only see one ROI then they may overlap exactly.")
     # Draw the ROIs if requested
     # Create an array of contours and list of hierarchy for debug image
-    roi_contour1, _ = _cv2_findcontours(bin_img=all_roi_img)
-    _draw_roi(img=img, roi_contour=roi_contour1)
+    _draw_roi(img=img, roi_contour=roi_objects)
     return roi_objects
 
 
@@ -357,11 +372,11 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
     """
     # Grid of ROIs
     if (isinstance(coord, tuple)) and ((nrows and ncols) is not None) and (isinstance(spacing, tuple)):
-        roi_objects, overlap_img, all_roi_img = _grid_roi(img, nrows, ncols, coord,
-                                                          radius, spacing)
-        # User specified ROI centers
+        roi_objects, overlap_img, _ = _grid_roi(img, nrows, ncols, coord,
+                                                radius, spacing)
+    # User specified ROI centers
     elif (isinstance(coord, list)) and ((nrows and ncols) is None) and (spacing is None):
-        roi_objects, overlap_img, all_roi_img = _rois_from_coordinates(img=img, coord=coord, radius=radius)
+        roi_objects, overlap_img, _ = _rois_from_coordinates(img=img, coord=coord, radius=radius)
     else:
         fatal_error("Function can either make a grid of ROIs (user must provide nrows, ncols, spacing, and coord) "
                     "or take custom ROI coordinates (user must provide only a list of tuples to 'coord' parameter). "
@@ -372,9 +387,7 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
              "If you only see one ROI then they may overlap exactly.")
 
     # Draw the ROIs if requested
-    # Create an array of contours and list of hierarchy for debug image
-    roi_contour1, _ = _cv2_findcontours(bin_img=all_roi_img)
-    _draw_roi(img=img, roi_contour=roi_contour1)
+    _draw_roi(img=img, roi_contour=roi_objects)
     return roi_objects
 
 
@@ -406,7 +419,7 @@ def custom(img, vertices):
     roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
 
     # Draw the ROIs if requested
-    _draw_roi(img=img, roi_contour=roi_contour)
+    _draw_roi(img=img, roi_contour=roi)
 
     return roi
 

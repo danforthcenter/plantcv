@@ -25,6 +25,8 @@ Attributes are accessed as plantcv.params.*attribute*.
  [plantcv.morphology.find_tips](find_tips.md), [plantcv.morphology.segment_skeleton](segment_skeleton.md), [plantcv.morphology.segment_tangent_angle](segment_tangent_angle.md),
  [plantcv.morphology.segment_id](segment_id.md), and every region of interest function. Default = 5. 
 
+ **line_color**: The line color for singular ROI debug images, including [plantcv.roi.circle](roi_circle.md), [plantcv.roi.rectangle](roi_rectangle.md), [plantcv.roi.ellipse](roi_ellipse.md), and [plantcv.roi.custom](roi_custom.md).  
+
 **dpi**: Dots per inch for plotting debugging images. Default = 100.
 
 **text_size**: Size of the text for labels in debugging plots created by [segment_angle](segment_angle.md), [segment_curvature](segment_curvature.md), [segment_euclidean_length](segment_euclidean_length.md),
@@ -66,13 +68,14 @@ img, imgpath, imgname = pcv.readimage(filename="test.png")
 
 # Use a v3 function to create a region of interest
 # Note that debug is not explicitly provided but is used implicitly by the function
-roi_contour, roi_hierarchy = pcv.roi.rectangle(x=100, y=100, h=200, w=200, img=img)
+pcv.params.line_color = (255, 0, 0)  # Draw with blue line color 
+roi = pcv.roi.rectangle(x=100, y=100, h=200, w=200, img=img)
 
 # It might be preferred to have a thicker or thinner line drawn depending on the size of the image.
 # Change line thickness from the default (5) to make it thinner, and plot the rectangular ROI again,  
 # (note: this won't change the returns for most functions but instead is a purely optional preference regarding the plot in debug='print' and debug='plot') 
 pcv.params.line_thickness = 3 
-roi_contour, roi_hierarchy = pcv.roi.rectangle(x=100, y=100, h=200, w=200, img=img)
+roi = pcv.roi.rectangle(x=100, y=100, h=200, w=200, img=img)
 
 ```
 *Default Thickness (5)*
