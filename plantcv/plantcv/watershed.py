@@ -59,10 +59,12 @@ def watershed_segmentation(rgb_img, mask, distance=10, label=None):
     plt_img = np.copy(rgb_img)
     rand_color = color_palette(len(np.unique(labels)))
     for i in np.unique(labels):
-        # Find contours
-        submask = np.where(labels == i, 255, 0).astype(np.uint8)
-        cnt, _ = _cv2_findcontours(bin_img=submask)
-        cv2.drawContours(plt_img, cnt, -1, rand_color[i], params.line_thickness)
+        # Skip black background i=0
+        if i > 0:
+            # Find contours
+            submask = np.where(labels == i, 255, 0).astype(np.uint8)
+            cnt, _ = _cv2_findcontours(bin_img=submask)
+            cv2.drawContours(plt_img, cnt, -1, rand_color[i], params.line_thickness)
 
     _debug(visual=plt_img,
            filename=os.path.join(params.debug_outdir, str(params.device) + '_watershed_labeled_img.png'),
