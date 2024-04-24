@@ -60,8 +60,8 @@ def _make_pseudo_rgb(spectral_array):
         max_wavelength = max(float(i) for i in wl_keys)
         min_wavelength = min(float(i) for i in wl_keys)
         # Check range of available wavelength
-        if max_wavelength >= 635 and min_wavelength <= 490:
-            id_red = _find_closest(spectral_array=np.array([float(i) for i in wl_keys]), target=710)
+        if max_wavelength >= 600 and min_wavelength <= 490:
+            id_red = _find_closest(spectral_array=np.array([float(i) for i in wl_keys]), target=630)
             id_green = _find_closest(spectral_array=np.array([float(i) for i in wl_keys]), target=540)
             id_blue = _find_closest(spectral_array=np.array([float(i) for i in wl_keys]), target=480)
 

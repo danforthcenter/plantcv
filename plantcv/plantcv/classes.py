@@ -14,7 +14,8 @@ import pandas as pd
 class Params:
     """PlantCV parameters class."""
 
-    def __init__(self, device=0, debug=None, debug_outdir=".", line_thickness=5, dpi=100, text_size=0.55,
+    def __init__(self, device=0, debug=None, debug_outdir=".", line_thickness=5,
+                 line_color=(255, 0, 255), dpi=100, text_size=0.55,
                  text_thickness=2, marker_size=60, color_scale="gist_rainbow", color_sequence="sequential",
                  sample_label="default", saved_color_scale=None, verbose=True):
         """Initialize parameters.
@@ -24,6 +25,7 @@ class Params:
         debug             = None, print, or plot. Print = save to file, Plot = print to screen. (default: None)
         debug_outdir      = Debug images output directory. (default: .)
         line_thickness    = Width of line drawings. (default: 5)
+        line_color        = Color of line annotations (default = (255, 0, 255))
         dpi               = Figure plotting resolution, dots per inch. (default: 100)
         text_size         = Size of plotting text. (default: 0.55)
         text_thickness    = Thickness of plotting text. (default: 2)
@@ -52,6 +54,7 @@ class Params:
         self.debug = debug
         self.debug_outdir = debug_outdir
         self.line_thickness = line_thickness
+        self.line_color = line_color
         self.dpi = dpi
         self.text_size = text_size
         self.text_thickness = text_thickness
