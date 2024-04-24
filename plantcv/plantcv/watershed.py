@@ -5,6 +5,7 @@
 import cv2
 import os
 import numpy as np
+from skimage.color import label2rgb
 from scipy import ndimage as ndi
 from skimage.feature import peak_local_max
 from skimage.segmentation import watershed
@@ -72,10 +73,12 @@ def watershed_segmentation(rgb_img, mask, distance=10, label=None):
 
     # Reset debug mode
     params.debug = debug
+    colorful = label2rgb(labels)
+    colorful2 = ((255*colorful).astype(np.uint8))
 
     # Reset color sequence mode
     params.color_sequence = color_sequence
-    _debug(visual=labels,
+    _debug(visual=colorful2,
            filename=os.path.join(params.debug_outdir, str(params.device) + '_watershed_labels_img.png'),
            cmap='gray')
     _debug(visual=joined,
