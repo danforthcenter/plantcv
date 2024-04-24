@@ -14,6 +14,7 @@ from plantcv.plantcv import apply_mask
 from plantcv.plantcv import color_palette
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
+from plantcv.plantcv._helpers import _cv2_findcontours
 
 
 def watershed_segmentation(rgb_img, mask, distance=10, label=None):
@@ -65,6 +66,17 @@ def watershed_segmentation(rgb_img, mask, distance=10, label=None):
     colorful = label2rgb(labels)
     colorful2 = ((255*colorful).astype(np.uint8))
 
+     # Plot image
+    plt_img = np.copy(rgb_img)
+    rand_color = color_palette(len(np.unique(labels)))
+    for i in np.unique(labels):
+        # Find contours
+        submask = np.where(labels == i, 255, 0).astype(np.uint8)
+        cnt, cnt_str = _cv2_findcontours(bin_img=submask)
+        cv2.drawContours(plt_img, cnt, -1,rand_color[i], params.line_thickness)
+    _debug(visual=plt_img,
+           filename=os.path.join(params.debug_outdir, str(params.device) + '_watershed_labels_img.png'),
+           cmap='gray')
     # Reset color sequence mode
     params.color_sequence = color_sequence
     _debug(visual=colorful2,
