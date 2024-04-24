@@ -85,7 +85,4 @@ def watershed_segmentation(rgb_img, mask, distance=10, label=None):
                             method='plantcv.plantcv.watershed', scale='none', datatype=int,
                             value=estimated_object_count, label='none')
 
-    # Store images
-    outputs.images.append([labels, joined])
-
     return labels
