@@ -16,7 +16,8 @@
       starting coordinate (`coord`), number of row and columns, and spacing to create a grid of ROIs,
       or a custom list of coordinates that specify the centers of the ROIs. Providing a custom list 
       of coordinates (list of tuples) is useful for missing plants or any arrangement that isn't 
-      a perfect grid. Returns an Objects instance that can be used in downstream steps. 
+      a perfect grid. Returns an Objects instance that can be used in downstream steps. The analysis
+      image includes a number representing ROI order. 
 
 **Reference Image**
 
@@ -35,29 +36,28 @@ rois1 = pcv.roi.multi(img=img1, coord=(25,120), radius=20,
                                       spacing=(70, 70), nrows=3, ncols=6)
 
 # Specify a list of coordinates of desired ROIs 
-rois2 = pcv.roi.multi(img=img1, coord=[(25,120), (165,260), (310, 260)], 
-                                      radius=20)
+rois2 = pcv.roi.multi(img=img1, coord=[(1745,1615), (820, 740), (820,1150)], radius=20)
                                       
 ```
 
 **Grid of ROIs**
 
-![Screenshot](img/documentation_images/multi/grid_roi.jpg)
+![Screenshot](img/documentation_images/multi/grid_roi.png)
 
 **Custom list of ROIs** 
 
-![Screenshot](img/documentation_images/multi/custom_list_roi.jpg)
+![Screenshot](img/documentation_images/multi/custom_list_roi.png)
 
 ### Next steps:
 
-This function returns an Objects dataclass, which can be used with [create_labels](create_labels.md) to createa a labeled
+This function returns an Objects dataclass, which can be used with [create_labels](create_labels.md) to create a labeled
 mask for use with analysis functions.
 
 ```python
 lbl_mask, n_lbls = pcv.create_labels(mask=mask, rois=rois)
 
 # Analyze the shape of each plant 
-shape_img = pcv.analyze.size(img=img_copy, labeled_mask=lbl_mask, n_labels=n_lbls, label="plant")
+shape_img = pcv.analyze.size(img=img1, labeled_mask=lbl_mask, n_labels=n_lbls, label="plant")
 
 # Print out a text file with shape data for each plant in the image 
 pcv.outputs.save_results(filename=filename)
@@ -66,6 +66,6 @@ pcv.outputs.save_results(filename=filename)
 
 **Image with shape analysis characteristics on each plant** 
 
-![Screenshot](img/documentation_images/multi/multi_plants_shape.jpg)
+![Screenshot](img/documentation_images/multi/multi_plants_shape.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/roi/roi_methods.py)

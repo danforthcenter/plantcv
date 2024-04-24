@@ -39,7 +39,7 @@ rois = pcv.roi.auto_grid(mask=mask, nrows=3, ncols=6, radius=20, img=img)
 
 **Grid of ROIs**
 
-![Screenshot](img/documentation_images/multi/grid_roi.jpg)
+![Screenshot](img/documentation_images/multi/grid_roi.png)
 
 ### Next steps:
 
@@ -60,6 +60,6 @@ pcv.outputs.save_results(filename=filename)
 
 **Image with shape analysis characteristics on each plant** 
 
-![Screenshot](img/documentation_images/multi/multi_plants_shape.jpg)
+![Screenshot](img/documentation_images/multi/multi_plants_shape.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/roi/roi_methods.py)

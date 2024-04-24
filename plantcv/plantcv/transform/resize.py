@@ -151,7 +151,7 @@ def resize_factor(img, factors, interpolation="auto"):
     :param interpolation: str
     :return resized_img: numpy.ndarray
     """
-    if not isinstance(factors, tuple) or len(factors) != 2 or not all([n > 0 for n in factors]):
+    if not isinstance(factors, tuple) or len(factors) != 2 or not all(n > 0 for n in factors):
         fatal_error(f"The input factors={factors} should be a tuple of length 2 with values greater than 0.")
 
     interp_mtd = _set_interpolation(input_size=(1, 1), output_size=factors, method=interpolation)
