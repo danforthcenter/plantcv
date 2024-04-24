@@ -36,10 +36,6 @@ def watershed_segmentation(rgb_img, mask, distance=10, label=None):
     :param label: str
     :return analysis_images: list
     """
-    # Store debug mode
-    debug = params.debug
-    params.debug = None
-
     # Store color sequence mode and set to random for watershed_img debug
     color_sequence = params.color_sequence
     params.color_sequence = "random"
@@ -59,7 +55,7 @@ def watershed_segmentation(rgb_img, mask, distance=10, label=None):
     labels = watershed(dist_transform1, markers, mask=mask)
     estimated_object_count = len(np.unique(markers)) - 1
 
-     # Plot image
+    # Plot image
     plt_img = np.copy(rgb_img)
     rand_color = color_palette(len(np.unique(labels)))
     for i in np.unique(labels):
@@ -74,7 +70,7 @@ def watershed_segmentation(rgb_img, mask, distance=10, label=None):
 
     # Reset color sequence mode
     params.color_sequence = color_sequence
-    
+
     outputs.add_observation(sample=label, variable='estimated_object_count', trait='estimated object count',
                             method='plantcv.plantcv.watershed', scale='none', datatype=int,
                             value=estimated_object_count, label='none')
