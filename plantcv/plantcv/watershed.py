@@ -5,12 +5,10 @@
 import cv2
 import os
 import numpy as np
-from skimage.color import label2rgb
 from scipy import ndimage as ndi
 from skimage.feature import peak_local_max
 from skimage.segmentation import watershed
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import apply_mask
 from plantcv.plantcv import color_palette
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
@@ -61,27 +59,21 @@ def watershed_segmentation(rgb_img, mask, distance=10, label=None):
     labels = watershed(dist_transform1, markers, mask=mask)
     estimated_object_count = len(np.unique(markers)) - 1
 
-    # Reset debug mode
-    params.debug = debug
-    colorful = label2rgb(labels)
-    colorful2 = ((255*colorful).astype(np.uint8))
-
      # Plot image
     plt_img = np.copy(rgb_img)
     rand_color = color_palette(len(np.unique(labels)))
     for i in np.unique(labels):
         # Find contours
         submask = np.where(labels == i, 255, 0).astype(np.uint8)
-        cnt, cnt_str = _cv2_findcontours(bin_img=submask)
-        cv2.drawContours(plt_img, cnt, -1,rand_color[i], params.line_thickness)
+        cnt, _ = _cv2_findcontours(bin_img=submask)
+        cv2.drawContours(plt_img, cnt, -1, rand_color[i], params.line_thickness)
+
     _debug(visual=plt_img,
-           filename=os.path.join(params.debug_outdir, str(params.device) + '_watershed_labels_img.png'),
+           filename=os.path.join(params.debug_outdir, str(params.device) + '_watershed_labeled_img.png'),
            cmap='gray')
+
     # Reset color sequence mode
     params.color_sequence = color_sequence
-    _debug(visual=colorful2,
-           filename=os.path.join(params.debug_outdir, str(params.device) + '_watershed_labels_img.png'),
-           cmap='gray')
     
     outputs.add_observation(sample=label, variable='estimated_object_count', trait='estimated object count',
                             method='plantcv.plantcv.watershed', scale='none', datatype=int,
