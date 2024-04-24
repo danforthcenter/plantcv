@@ -58,17 +58,6 @@ def watershed_segmentation(rgb_img, mask, distance=10, label=None):
     markers = ndi.label(local_max, structure=np.ones((3, 3)))[0]
     dist_transform1 = -dist_transform
     labels = watershed(dist_transform1, markers, mask=mask)
-
-    img1 = np.copy(rgb_img)
-
-    for x in np.unique(labels):
-        rand_color = color_palette(len(np.unique(labels)))
-        img1[labels == x] = rand_color[x]
-
-    img2 = apply_mask(img1, mask, 'black')
-
-    joined = np.concatenate((img2, rgb_img), axis=1)
-
     estimated_object_count = len(np.unique(markers)) - 1
 
     # Reset debug mode
@@ -81,9 +70,7 @@ def watershed_segmentation(rgb_img, mask, distance=10, label=None):
     _debug(visual=colorful2,
            filename=os.path.join(params.debug_outdir, str(params.device) + '_watershed_labels_img.png'),
            cmap='gray')
-    _debug(visual=joined,
-           filename=os.path.join(params.debug_outdir, str(params.device) + '_watershed_img.png'))
-
+    
     outputs.add_observation(sample=label, variable='estimated_object_count', trait='estimated object count',
                             method='plantcv.plantcv.watershed', scale='none', datatype=int,
                             value=estimated_object_count, label='none')
