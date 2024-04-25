@@ -195,8 +195,8 @@
         <h6>Camera Calibration Tutorial</h6>
     </div>
     <div class="card-tags">
-        <span><strong>Tags</strong>: </span>
-    </div> calibration, transform, checkerboard, distortion, RGB
+        <span><strong>Tags</strong>: calibration, transform, checkerboard, distortion, RGB </span>
+    </div> 
 </div>
 
 
