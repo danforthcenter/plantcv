@@ -196,7 +196,7 @@
     </div>
     <div class="card-tags">
         <span><strong>Tags</strong>: </span>
-    </div> calibration, transform, checkerboard, distortion, RGB, tutorial
+    </div> calibration, transform, checkerboard, distortion, RGB
 </div>
 
 
