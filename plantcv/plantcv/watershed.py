@@ -28,13 +28,13 @@ def watershed_segmentation(rgb_img, mask, distance=10, label=None):
                           observations recorded (default = pcv.params.sample_label).
 
     Returns:
-    analysis_images     = list of output images
+    labels              = labeled mask with segmentation results
 
     :param rgb_img: numpy.ndarray
     :param mask: numpy.ndarray
     :param distance: int
     :param label: str
-    :return analysis_images: list
+    :return labels: numpy.ndarray
     """
     # Store color sequence mode and set to random for watershed_img debug
     color_sequence = params.color_sequence
