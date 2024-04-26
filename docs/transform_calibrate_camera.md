@@ -8,8 +8,8 @@ This function uses the outputs of [**plantcv.transform.checkerboard_calib**](tra
 
 - **Parameters:**
     - rgb_img - an RGB image to be corrected
-    - mtx - path to a .npz file output from **plantcv.checkerboard_calib**
-    - dist - path to a .npz file output from **plantcv.checkerboard_calib**
+    - mtx_filename - path to a .npz file output from **plantcv.checkerboard_calib**
+    - dist_filename - path to a .npz file output from **plantcv.checkerboard_calib**
 
 - **Context:**
     - Used to correct image distortions based on checkerboard calibrations
@@ -34,7 +34,7 @@ pcv.params.debug = "plot"
 mtx, dist = pcv.transform.checkerboard_calib(img_path = "./img_files/", col_corners = 13, row_corners = 19, out_dir = "./output/")
 
 # Correct distortions using the outputs from checkerboard calibration
-corrected_img = pcv.transform.calibrate_camera(rgb_img = img, mtx = "./output/mtx.npz", dist = "./output/dist.npz")
+corrected_img = pcv.transform.calibrate_camera(rgb_img = img, mtx_filename = "./output/mtx.npz", dist_filename = "./output/dist.npz")
 
 ```
 
