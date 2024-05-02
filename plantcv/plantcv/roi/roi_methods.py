@@ -190,7 +190,7 @@ def _draw_roi(img, roi_contour):
         if M['m00'] != 0:
             cxy = [int(M['m10'] / M['m00']), int(M['m01'] / M['m00'])]
             label_coords.append(cxy)
-            # Add number labels to debug 
+            # Add number labels to debug
             if len(roi_contour.contours) > 1:
                 cv2.putText(img=ref_img, text=f"{i}", org=(label_coords[i]),
                             fontFace=cv2.FONT_HERSHEY_SIMPLEX,
