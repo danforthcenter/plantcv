@@ -191,11 +191,10 @@ def _draw_roi(img, roi_contour):
             cxy = [int(M['m10'] / M['m00']), int(M['m01'] / M['m00'])]
             label_coords.append(cxy)
             # Add number labels to debug
-            if len(roi_contour.contours) > 1:
-                cv2.putText(img=ref_img, text=f"{i}", org=(label_coords[i]),
-                            fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                            fontScale=params.text_size, color=rand_color[i],
-                            thickness=params.text_thickness)
+            cv2.putText(img=ref_img, text=f"{i+1}", org=(label_coords[i]),
+                        fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                        fontScale=params.text_size, color=rand_color[i],
+                        thickness=params.text_thickness)
         # Draw ROI outline regardless
         cv2.drawContours(ref_img, cnt.contours[0], -1, rand_color[i], params.line_thickness)
 
