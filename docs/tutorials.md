@@ -280,7 +280,7 @@
 
 <!--Kmeans Tutorial-->
 <div class="card" style="display:block">
-    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/kmeans_tutorial');return false;">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/kmeans_clustering_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-tutorial-kmeans-clustering/blob/main/tutorial_card.png?raw=true" alt="Kmeans tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
