@@ -114,12 +114,13 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
             largest_hierarchy = np.array([largest_hierarchy])
             # Overwrite mask so it only has the largest contour
             mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
-            for i, cnt in enumerate(largest_cnt):
-                if i == 0:
-                    color = (255)
-                else:
-                    color = (0)
-                cv2.drawContours(mask, largest_cnt, i, color, -1, lineType=8, hierarchy=largest_hierarchy, maxLevel=0)
+            cv2.drawContours(mask, largest_cnt, 0, (255), 0, hierarchy=largest_hierarchy, maxLevel=2)
+            # for i, cnt in enumerate(largest_cnt):
+            #     if i == 0:
+            #         color = (255)
+            #     else:
+            #         color = (0)
+            #     cv2.drawContours(mask, largest_cnt, i, color, -1, lineType=cv2.LINE_AA, hierarchy=largest_hierarchy, maxLevel=0)
             # Refind contours and hierarchy from new mask so they are easier to work with downstream
             kept_cnt, kept_hierarchy = _cv2_findcontours(bin_img=mask)
 
