@@ -89,11 +89,37 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
             # Print warning statement about this feature
             warn("roi_type='largest' will only return the largest contour and its immediate children. Other "
                  "subcontours will be dropped.")
+            # PLOTTING DOESNT WORK, NEED TO KEEP CHILD CONTOUR INFO, therefore need to loop i think 
             # Find the largest contour in the list of contours
             sorted_objects = sorted(kept_cnt, key=lambda x: cv2.contourArea(x), reverse=True)
+            c = max(kept_cnt, key = cv2.contourArea)
+
             # Overwrite mask so it only has the largest contour
             mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
-            cv2.drawContours(mask, sorted_objects, -1, 255, -1, lineType=8)
+            cv2.drawContours(mask, c, -1, (255), lineType=8)
+            ## Add back in older logic 
+            largest_area = 0
+            index = 0
+            for c, cnt in enumerate(kept_cnt):
+                area = cv2.contourArea(cnt)
+                if area > largest_area:
+                    largest_area = area
+                    index = c
+
+            # Store the largest contour as a list
+            largest_cnt = [kept_cnt[index]]
+
+            # Store the hierarchy of the largest contour into a list
+            largest_hierarchy = [kept_hierarchy[0][index]]
+
+            # Iterate through contours to find children of the largest contour
+            for i, khi in enumerate(kept_hierarchy[0]):
+                if khi[3] == index:  # is the parent equal to the largest contour?
+                    largest_hierarchy.append(khi)
+                    largest_cnt.append(kept_cnt[i])
+
+            # Make the kept hierarchies into an array so that cv2 can use it
+            largest_hierarchy = np.array([largest_hierarchy])
        
             # Refind contours and hierarchy from new mask so they are easier to work with downstream
             kept_cnt, kept_hierarchy = _cv2_findcontours(bin_img=mask)
