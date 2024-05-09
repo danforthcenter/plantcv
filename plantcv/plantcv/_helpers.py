@@ -89,7 +89,6 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
             # Print warning statement about this feature
             warn("roi_type='largest' will only return the largest contour and its immediate children. Other "
                  "subcontours will be dropped.")
-            # PLOTTING DOESNT WORK, NEED TO KEEP CHILD CONTOUR INFO, therefore need to loop i think 
             # Find the largest contour in the list of contours
             sorted_objects = sorted(kept_cnt, key=lambda x: cv2.contourArea(x), reverse=True)
             c = max(kept_cnt, key = cv2.contourArea)
@@ -119,12 +118,13 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
             largest_hierarchy = np.array([largest_hierarchy])
             # Overwrite mask so it only has the largest contour
             mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
+            # cv2.drawContours(mask, largest_cnt, -1, (255), lineType=4, hierarchy=largest_hierarchy, maxLevel=0)
             for i, cnt in enumerate(largest_cnt):
                 if i == 0:
                     color = (255)
                 else:
                     color = (0)
-                cv2.drawContours(mask, largest_cnt, i, color, -1, lineType=4, hierarchy=largest_hierarchy)
+                cv2.drawContours(mask, largest_cnt, i, color, -1, lineType=8, hierarchy=largest_hierarchy, maxLevel=0)
             # Refind contours and hierarchy from new mask so they are easier to work with downstream
             kept_cnt, kept_hierarchy = _cv2_findcontours(bin_img=mask)
 
