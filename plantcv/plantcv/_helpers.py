@@ -124,7 +124,7 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
                     color = (255)
                 else:
                     color = (0)
-                cv2.drawContours(mask, largest_cnt, i, color, -1, lineType=8, hierarchy=largest_hierarchy, maxLevel=0)
+                cv2.drawContours(mask, largest_cnt, i, color, -1, lineType=4, hierarchy=largest_hierarchy)
             # Refind contours and hierarchy from new mask so they are easier to work with downstream
             kept_cnt, kept_hierarchy = _cv2_findcontours(bin_img=mask)
 
