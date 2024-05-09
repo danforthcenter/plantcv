@@ -89,11 +89,11 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
             # Print warning statement about this feature
             warn("roi_type='largest' will only return the largest contour and its immediate children. Other "
                  "subcontours will be dropped.")
-            # Find the index of the largest contour in the list of contours
+            # Find the largest contour in the list of contours
             sorted_objects = sorted(kept_cnt, key=lambda x: cv2.contourArea(x), reverse=True)
             # Overwrite mask so it only has the largest contour
             mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
-            cv2.drawContours(mask, sorted_objects, 0, 255, -1, lineType=8)
+            cv2.drawContours(mask, sorted_objects, -1, 255, -1, lineType=8)
        
             # Refind contours and hierarchy from new mask so they are easier to work with downstream
             kept_cnt, kept_hierarchy = _cv2_findcontours(bin_img=mask)
