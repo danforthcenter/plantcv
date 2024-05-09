@@ -94,9 +94,6 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
             sorted_objects = sorted(kept_cnt, key=lambda x: cv2.contourArea(x), reverse=True)
             c = max(kept_cnt, key = cv2.contourArea)
 
-            # Overwrite mask so it only has the largest contour
-            mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
-            cv2.drawContours(mask, c, -1, (255), lineType=8)
             ## Add back in older logic 
             largest_area = 0
             index = 0
@@ -120,7 +117,14 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
 
             # Make the kept hierarchies into an array so that cv2 can use it
             largest_hierarchy = np.array([largest_hierarchy])
-       
+            # Overwrite mask so it only has the largest contour
+            mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
+            for i, cnt in enumerate(largest_cnt):
+                if i == 0:
+                    color = (255)
+                else:
+                    color = (0)
+                cv2.drawContours(mask, largest_cnt, i, color, -1, lineType=8, hierarchy=largest_hierarchy, maxLevel=0)
             # Refind contours and hierarchy from new mask so they are easier to work with downstream
             kept_cnt, kept_hierarchy = _cv2_findcontours(bin_img=mask)
 
