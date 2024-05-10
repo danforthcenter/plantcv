@@ -87,34 +87,38 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
         # Find the largest contour if roi_type is set to 'largest'
         if roi_type.upper() == 'LARGEST':
             # Print warning statement about this feature
-            warn("roi_type='largest' will only return the largest contour and its immediate children. Other "
-                 "subcontours will be dropped.")
+            # warn("roi_type='largest' will only return the largest contour and its immediate children. Other "
+            #      "subcontours will be dropped.")
             # Find the largest contour in the list of contours
-            largest_area = 0
-            index = 0
-            for c, cnt in enumerate(kept_cnt):
-                area = cv2.contourArea(cnt)
-                if area > largest_area:
-                    largest_area = area
-                    index = c
+            # largest_area = 0
+            # index = 0
+            # for c, cnt in enumerate(kept_cnt):
+            #     area = cv2.contourArea(cnt)
+            #     if area > largest_area:
+            #         largest_area = area
+            #         index = c
 
-            # Store the largest contour as a list
-            largest_cnt = [kept_cnt[index]]
+            index = np.argmax([cv2.contourArea(c) for c in kept_cnt])
 
-            # Store the hierarchy of the largest contour into a list
-            largest_hierarchy = [kept_hierarchy[0][index]]
+            # # Store the largest contour as a list
+            # largest_cnt = [kept_cnt[index]]
 
-            # Iterate through contours to find children of the largest contour
-            for i, khi in enumerate(kept_hierarchy[0]):
-                if khi[3] == index:  # is the parent equal to the largest contour?
-                    largest_hierarchy.append(khi)
-                    largest_cnt.append(kept_cnt[i])
+            # # Store the hierarchy of the largest contour into a list
+            # largest_hierarchy = [kept_hierarchy[0][index]]
+
+            # # Iterate through contours to find children of the largest contour
+            # for i, khi in enumerate(kept_hierarchy[0]):
+            #     if khi[3] == index:  # is the parent equal to the largest contour?
+            #         largest_hierarchy.append(khi)
+            #         largest_cnt.append(kept_cnt[i])
 
             # Make the kept hierarchies into an array so that cv2 can use it
-            largest_hierarchy = np.array([largest_hierarchy])
+            # largest_hierarchy = np.array([largest_hierarchy])
             # Overwrite mask so it only has the largest contour
             mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
-            cv2.drawContours(mask, largest_cnt, 0, (255), -1, hierarchy=largest_hierarchy, maxLevel=2)
+            cv2.drawContours(mask, kept_cnt, contourIdx=index, color=(255), thickness=-1, hierarchy=kept_hierarchy, maxLevel=2)
+
+            #cv2.drawContours(mask, largest_cnt, -1, (255), -1, hierarchy=largest_hierarchy, maxLevel=2)
             # for i, cnt in enumerate(largest_cnt):
             #     if i == 0:
             #         color = (255)
