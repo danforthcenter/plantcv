@@ -335,6 +335,6 @@ def test_filter_nested():
     roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     roi_Obj = Objects(contours=[roi], hierarchy=[roi_str])
     filtered_mask = filter(mask=mask, roi=roi_Obj, roi_type="largest")
-    area = cv2.countNonZero(filtered_mask)
-    assert area_pre == area 
-    assert area_total > area
+    filtered_area = cv2.countNonZero(filtered_mask)
+    assert area_pre == filtered_area 
+    assert area_total > filtered_area
