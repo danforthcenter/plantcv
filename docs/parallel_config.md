@@ -215,12 +215,5 @@ To run `plantcv-run-workflow` with a config file you can use the following:
 plantcv-run-workflow --config my_config.json
 ```
 
-Remember that `python` and `plantcv-run-workflow` need to be in your PATH, for example with Conda environment. On 
-Windows you will need to specify the whole path to `plantcv-run-workflow`.
-
-```shell
-plantcv-run-workflow --config my_config.json
-```
-
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/parallel/__init__.py)
 
