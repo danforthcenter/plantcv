@@ -42,8 +42,8 @@ pcv.params.sample_label = "plant"
 # Segment image with watershed function
 labels = pcv.watershed_segmentation(rgb_img=crop_img, mask=bin_mask, distance=10)
 
-# Utilize the labeled mask 
-shape_img = pcv.analyze.size(img=crop_img, labeled_mask=labels, n_labels=np.unique(labels))
+# Utilize the labeled mask, n_labels -1 since we don't want to analyze background  
+shape_img = pcv.analyze.size(img=crop_img, labeled_mask=labels, n_labels=np.unique(labels)-1)
 
 ```
 
