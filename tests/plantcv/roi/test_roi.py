@@ -336,3 +336,4 @@ def test_filter_nested():
     filtered_mask = filter(mask=mask, roi=roi_Obj, roi_type="largest")
     area_filtered = cv2.countNonZero(filtered_mask)
     assert area_filtered < area_total
+    assert area_filtered == area_pre
