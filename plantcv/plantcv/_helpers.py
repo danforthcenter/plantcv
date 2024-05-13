@@ -73,7 +73,7 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
     # Allows user to find all objects that are completely inside or overlapping with ROI
     if roi_type.upper() in ('PARTIAL', 'LARGEST'):
         # Filter contours outside of the region of interest
-        for c, cnt in enumerate(object_contour):
+        for c, _ in enumerate(object_contour):
             filtering_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
             cv2.fillPoly(filtering_mask, [np.vstack(object_contour[c])], (255))
             overlap_img = logical_and(filtering_mask, roi_mask)
