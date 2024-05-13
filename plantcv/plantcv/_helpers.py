@@ -97,7 +97,10 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
                 if area > largest_area:
                     largest_area = area
                     index = c
-            cv2.drawContours(mask, kept_cnt[0], contourIdx=index, color=(255), thickness=-1, hierarchy=kept_hierarchy, maxLevel=2)
+            # Create new mask
+            mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
+            # Draw just the largest contour and all children contours it might have
+            cv2.drawContours(mask, kept_cnt, contourIdx=index, color=(255), thickness=-1, hierarchy=kept_hierarchy, maxLevel=2)
             # Refind contours and hierarchy from new mask so they are easier to work with downstream
             kept_cnt, kept_hierarchy = _cv2_findcontours(bin_img=mask)
 
