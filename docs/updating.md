@@ -1342,6 +1342,7 @@ pages for more details on the input and output variable types.
 * post v3.3: analysis_image = **plantcv.watershed_segmentation**(*rgb_img, mask, distance=10*)
 * post v3.11: analysis_image = **plantcv.watershed_segmentation**(*rgb_img, mask, distance=10, label="default"*)
 * post v4.0: analysis_image = **plantcv.watershed_segmentation**(*rgb_img, mask, distance=10, label=None*)
+* post v4.3: labeled_mask = **plantcv.watershed_segmentation**(*rgb_img, mask, distance=10, label=None*)
 
 #### plantcv.white_balance
 
