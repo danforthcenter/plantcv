@@ -9,10 +9,10 @@ from scipy import ndimage as ndi
 from skimage.feature import peak_local_max
 from skimage.segmentation import watershed
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import apply_mask
 from plantcv.plantcv import color_palette
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
+from plantcv.plantcv._helpers import _cv2_findcontours
 
 
 def watershed_segmentation(rgb_img, mask, distance=10, label=None):
@@ -28,18 +28,14 @@ def watershed_segmentation(rgb_img, mask, distance=10, label=None):
                           observations recorded (default = pcv.params.sample_label).
 
     Returns:
-    analysis_images     = list of output images
+    labels              = labeled mask with segmentation results
 
     :param rgb_img: numpy.ndarray
     :param mask: numpy.ndarray
     :param distance: int
     :param label: str
-    :return analysis_images: list
+    :return labels: numpy.ndarray
     """
-    # Store debug mode
-    debug = params.debug
-    params.debug = None
-
     # Store color sequence mode and set to random for watershed_img debug
     color_sequence = params.color_sequence
     params.color_sequence = "random"
@@ -57,35 +53,28 @@ def watershed_segmentation(rgb_img, mask, distance=10, label=None):
     markers = ndi.label(local_max, structure=np.ones((3, 3)))[0]
     dist_transform1 = -dist_transform
     labels = watershed(dist_transform1, markers, mask=mask)
-
-    img1 = np.copy(rgb_img)
-
-    for x in np.unique(labels):
-        rand_color = color_palette(len(np.unique(labels)))
-        img1[labels == x] = rand_color[x]
-
-    img2 = apply_mask(img1, mask, 'black')
-
-    joined = np.concatenate((img2, rgb_img), axis=1)
-
     estimated_object_count = len(np.unique(markers)) - 1
 
-    # Reset debug mode
-    params.debug = debug
+    # Plot image
+    plt_img = np.copy(rgb_img)
+    rand_color = color_palette(len(np.unique(labels)))
+    for i in np.unique(labels):
+        # Skip black background i=0
+        if i > 0:
+            # Find contours
+            submask = np.where(labels == i, 255, 0).astype(np.uint8)
+            cnt, _ = _cv2_findcontours(bin_img=submask)
+            cv2.drawContours(plt_img, cnt, -1, rand_color[i], params.line_thickness)
+
+    _debug(visual=plt_img,
+           filename=os.path.join(params.debug_outdir, str(params.device) + '_watershed_labeled_img.png'),
+           cmap='gray')
 
     # Reset color sequence mode
     params.color_sequence = color_sequence
-    _debug(visual=dist_transform,
-           filename=os.path.join(params.debug_outdir, str(params.device) + '_watershed_dist_img.png'),
-           cmap='gray')
-    _debug(visual=joined,
-           filename=os.path.join(params.debug_outdir, str(params.device) + '_watershed_img.png'))
 
     outputs.add_observation(sample=label, variable='estimated_object_count', trait='estimated object count',
                             method='plantcv.plantcv.watershed', scale='none', datatype=int,
                             value=estimated_object_count, label='none')
 
-    # Store images
-    outputs.images.append([dist_transform, joined])
-
-    return joined
+    return labels
