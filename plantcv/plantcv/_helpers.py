@@ -73,7 +73,7 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
     # Allows user to find all objects that are completely inside or overlapping with ROI
     if roi_type.upper() in ('PARTIAL', 'LARGEST'):
         # Filter contours outside of the region of interest
-        for c, cnt in enumerate(object_contour):
+        for c, _ in enumerate(object_contour):
             filtering_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
             cv2.fillPoly(filtering_mask, [np.vstack(object_contour[c])], (255))
             overlap_img = logical_and(filtering_mask, roi_mask)
@@ -86,22 +86,9 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
 
         # Find the largest contour if roi_type is set to 'largest'
         if roi_type.upper() == 'LARGEST':
-            # Print warning statement about this feature
-            warn("roi_type='largest' will only return the largest contour and its immediate children. Other "
-                 "subcontours will be dropped.")
-            # Find the index of the largest contour in the list of contours
-            largest_area = 0
-            index = 0
-            for c, cnt in enumerate(kept_cnt):
-                area = len(cnt)
-                if area > largest_area:
-                    largest_area = area
-                    index = c
-            # Create new mask
+            index = np.argmax([cv2.contourArea(c) for c in kept_cnt])
             mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
-            # Draw just the largest contour and all children contours it might have
             cv2.drawContours(mask, kept_cnt, contourIdx=index, color=(255), thickness=-1, hierarchy=kept_hierarchy, maxLevel=2)
-            # Refind contours and hierarchy from new mask so they are easier to work with downstream
             kept_cnt, kept_hierarchy = _cv2_findcontours(bin_img=mask)
 
     # Allows user to cut objects to the ROI (all objects completely outside ROI will not be kept)
