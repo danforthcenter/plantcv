@@ -291,6 +291,19 @@
     </div>
 </div>
 
+<!--Kmeans Tutorial-->
+<div class="card" style="display:block">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/kmeans_clustering_tutorial');return false;">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-kmeans-clustering/blob/main/tutorial_card.png?raw=true" alt="Kmeans tutorial" width="600" height="auto">
+    </a>
+    <div class="card-title">
+        <h6>Kmeans Clustering Tutorial</h6>
+    </div>
+    <div class="card-tags">
+        <span><strong>Tags</strong>: Kmeans, train, patch, classify, combine, mask, tutorial</span>
+    </div>
+</div>
+
 <script type="text/javascript">
     function getTags() {
         var tag_list = [];
