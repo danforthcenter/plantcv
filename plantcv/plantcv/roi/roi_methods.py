@@ -425,7 +425,7 @@ def custom(img, vertices):
 
 
 # Filter a mask based on a region of interest
-def filter(mask, roi, roi_type="partial"):
+def mask_filter(mask, roi, roi_type="partial"):
     """Filter a mask using a region of interest. Connected regions of non-zero pixels outside the ROI turn to zero
 
     Inputs:
