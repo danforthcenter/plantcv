@@ -199,6 +199,19 @@
     </div>
 </div>
 
+<!--Camera Calibration Tutorial-->
+<div class="card" style="display:block">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/camera_calibration_tutorial');return false;">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-camera-calibration/blob/main/tutorial_card.png?raw=true" alt="camera calibration tutorial" width="600" height="auto">
+    </a>
+    <div class="card-title">
+        <h6>Camera Calibration Tutorial</h6>
+    </div>
+    <div class="card-tags">
+        <span><strong>Tags</strong>: calibration, transform, checkerboard, distortion, RGB </span>
+    </div> 
+</div>
+
 
 <!--Sorghum Morphology Tutorial-->
 <div class="card" style="display:block">
