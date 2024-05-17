@@ -86,36 +86,67 @@ def _get_color_dict(match_wls):
     """
     color_dict = {}
 
-    # Under UV range
+    color_dict.update(_handle_under_uv(match_wls))
+    color_dict.update(_handle_uv(match_wls))
+    color_dict.update(_handle_visible(match_wls))
+    color_dict.update(_handle_nir(match_wls))
+    color_dict.update(_handle_above_nir(match_wls))
+
+    return color_dict
+
+
+def _handle_under_uv(match_wls):
+    """
+    Helper to handle under wavelengths under uv
+    """
     under_uv_wls = [x for x in match_wls if x < 290]
     if under_uv_wls:
         params.color_scale = "cool_r"
         color_ = color_palette(num=256)[-154]
-        color_dict.update(update_color_dict(under_uv_wls, color_))
+        return update_color_dict(under_uv_wls, color_)
+    return {}
 
-    # UV range
+
+def _handle_uv(match_wls):
+    """
+    Helper to handle uv wavelengths
+    """
     uv_wls = [x for x in match_wls if 290 <= x < 445]
     if uv_wls:
-        color_dict.update(_get_color_dict_uv())
+        return _get_color_dict_uv()
+    return {}
 
-    # Visible range
+
+def _handle_visible(match_wls):
+    """
+    Helper to handle visible wavelengths
+    """
     vis_wls = [x for x in match_wls if 445 <= x < 701]
     if vis_wls:
-        color_dict.update(_get_color_dict_vis())
+        return _get_color_dict_vis()
+    return {}
 
-    # Near-Infrared range
+
+def _handle_nir(match_wls):
+    """
+    Helper to handle nir wavelengths
+    """
     nir_wls = [x for x in match_wls if 701 <= x < 1701]
     if nir_wls:
-        color_dict.update(_get_color_dict_nir())
+        return _get_color_dict_nir()
+    return {}
 
-    # Above Near-Infrared range
+
+def _handle_above_nir(match_wls):
+    """
+    Helper to handle wavelengths above nir
+    """
     above_nir_wls = [x for x in match_wls if x >= 1701]
     if above_nir_wls:
         params.color_scale = "inferno"
         color_ = color_palette(num=256)[-1]
-        color_dict.update(update_color_dict(above_nir_wls, color_))
-
-    return color_dict
+        return update_color_dict(above_nir_wls, color_)
+    return {}
 
 
 def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None,
