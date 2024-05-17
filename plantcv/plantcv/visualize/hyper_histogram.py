@@ -68,9 +68,7 @@ def _rgb_to_webcode(rgb_values):
 
 # Helper function to update color dictionary
 def update_color_dict(wavelengths, color):
-    """
-    Update the color dictionary with the given color.
-    """
+    """Update the color dictionary with the given color."""
     return {wv: color for wv in wavelengths}
 
 
