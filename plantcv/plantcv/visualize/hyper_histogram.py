@@ -96,9 +96,7 @@ def _get_color_dict(match_wls):
 
 
 def _handle_under_uv(match_wls):
-    """
-    Helper to handle under wavelengths under uv
-    """
+    """Helper to handle under wavelengths under uv"""
     under_uv_wls = [x for x in match_wls if x < 290]
     if under_uv_wls:
         params.color_scale = "cool_r"
@@ -108,9 +106,7 @@ def _handle_under_uv(match_wls):
 
 
 def _handle_uv(match_wls):
-    """
-    Helper to handle uv wavelengths
-    """
+    """Helper to handle uv wavelengths"""
     uv_wls = [x for x in match_wls if 290 <= x < 445]
     if uv_wls:
         return _get_color_dict_uv()
@@ -118,9 +114,7 @@ def _handle_uv(match_wls):
 
 
 def _handle_visible(match_wls):
-    """
-    Helper to handle visible wavelengths
-    """
+    """Helper to handle visible wavelengths"""
     vis_wls = [x for x in match_wls if 445 <= x < 701]
     if vis_wls:
         return _get_color_dict_vis()
@@ -128,9 +122,7 @@ def _handle_visible(match_wls):
 
 
 def _handle_nir(match_wls):
-    """
-    Helper to handle nir wavelengths
-    """
+    """Helper to handle nir wavelengths"""
     nir_wls = [x for x in match_wls if 701 <= x < 1701]
     if nir_wls:
         return _get_color_dict_nir()
@@ -138,9 +130,7 @@ def _handle_nir(match_wls):
 
 
 def _handle_above_nir(match_wls):
-    """
-    Helper to handle wavelengths above nir
-    """
+    """Helper to handle wavelengths above nir"""
     above_nir_wls = [x for x in match_wls if x >= 1701]
     if above_nir_wls:
         params.color_scale = "inferno"
