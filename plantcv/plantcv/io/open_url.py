@@ -1,3 +1,4 @@
+"""Open an image from a URL."""
 import imageio.v3 as iio
 import cv2
 from plantcv.plantcv import fatal_error
