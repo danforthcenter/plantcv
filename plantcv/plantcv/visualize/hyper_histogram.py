@@ -66,6 +66,14 @@ def _rgb_to_webcode(rgb_values):
     return webcode
 
 
+# Helper function to update color dictionary
+def update_color_dict(wavelengths, color):
+    """
+    Update the color dictionary with the given color.
+    """
+    return {wv: color for wv in wavelengths}
+
+
 def _get_color_dict(match_wls):
     """
     Sets the color scale based on the wavelength range.
@@ -77,10 +85,6 @@ def _get_color_dict(match_wls):
     color_dict: dictionary of wavelengths and their corresponding colors
     """
     color_dict = {}
-
-    # Helper function to update color dictionary
-    def update_color_dict(wavelengths, color):
-        return {wv: color for wv in wavelengths}
 
     # Under UV range
     under_uv_wls = [x for x in match_wls if x < 290]
