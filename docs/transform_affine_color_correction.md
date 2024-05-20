@@ -13,8 +13,8 @@ Euclidean distance between the transformed source color values and the target co
 
  - **Parameters:**
     - rgb_img       - an RGB image with color chips visualized
-    - source_matrix - array of RGB color values (intensity in the range [0-1]) from the image to be corrected where each row is one color reference and the columns are organized as index,R,G,B
-    - target_matrix - array of target RGB color values (intensity in the range [0-1]) where each row is one color reference and the columns are organized as index,R,G,B (likely created with [plantcv.transform.create_color_card_mask](create_color_card_mask.md) or [plantcv.transform.detect_color_card](transform_detect_color_card.md)).
+    - source_matrix - array of RGB color values (intensity in the range [0-1]) from the image to be corrected where each row is one color reference and the columns are organized as index,R,G,B; likely created with [plantcv.transform.get_color_matrix](get_color_matrix.md) or [plantcv.transform.detect_color_card](transform_detect_color_card.md)).
+    - target_matrix - array of target RGB color values (intensity in the range [0-1]) where each row is one color reference and the columns are organized as index,R,G,B; likely created with [plantcv.transform.std_color_matrix](std_color_matrix.md). 
 - **Example use:**
     - [Color Correction Tutorial](tutorials/transform_color_correction_tutorial.md)
 
