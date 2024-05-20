@@ -39,9 +39,9 @@ pcv.params.debug = 'plot'
 # using standard color values for the color card
 tgt_matrix = pcv.transform.std_color_matrix(pos=2)
 
-corrected_img = pcv.transform.affine_correct_color(rgb_img=img,
-                                                   source_matrix=src_matrix,
-                                                   target_matrix=tgt_matrix)
+corrected_img = pcv.transform.affine_color_correction(rgb_img=img,
+                                                      source_matrix=src_matrix,
+                                                      target_matrix=tgt_matrix)
 
 ```
 
