@@ -1,5 +1,5 @@
-from plantcv.plantcv.kmeans_classifier import mask_kmeans
-from plantcv.plantcv.kmeans_classifier import predict_kmeans
+from plantcv.plantcv import mask_kmeans
+from plantcv.plantcv import predict_kmeans
 from plantcv.plantcv import readimage
 
 
