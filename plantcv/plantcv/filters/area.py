@@ -6,7 +6,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 
 
-def area(bin_img, upper_thresh, lower_thresh=0):
+def obj_area(bin_img, upper_thresh, lower_thresh=0):
     """Detect/filter regions in a binary image based on object area.
 
     Inputs:
