@@ -34,10 +34,10 @@ def obj_area(bin_img, upper_thresh, lower_thresh=0):
     # Store the list of coordinates (row,col) for the objects that pass
     for obj in obj_measures:
         if obj.area > upper_thresh:
-            # Where region area is too large, draw the region 
+            # Where region area is too large, draw the region
             large += np.where(labeled_img == obj.label, 255, 0).astype(np.uint8)
         if obj.area > lower_thresh:
-            # Where region area is large enough to keep, draw the region 
+            # Where region area is large enough to keep, draw the region
             medium_large += np.where(labeled_img == obj.label, 255, 0).astype(np.uint8)
     # Keep middle sized objects
     keep = medium_large - large
