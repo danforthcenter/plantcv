@@ -1,9 +1,8 @@
 import os
 import numpy as np
 from skimage import morphology
-from plantcv.plantcv import params
+from plantcv.plantcv import params, fatal_error
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import fatal_error
 
 
 def closing(gray_img, kernel=None):
