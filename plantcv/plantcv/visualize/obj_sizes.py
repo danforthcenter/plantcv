@@ -36,7 +36,8 @@ def obj_sizes(img, mask, num_objects=100):
     params.debug = None
 
     # ID contours and sort them from largest to smallest
-    id_objects, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
+    contours = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    id_objects, _ = contours[-2:]
     # Function sorts smallest to largest so keep the last X objects listed
     # sorted_objects = sorted_objects[len(sorted_objects) - num_objects: len(sorted_objects)]
     sorted_objects = sorted(id_objects, key=cv2.contourArea)
