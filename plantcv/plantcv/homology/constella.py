@@ -47,10 +47,10 @@ def constella(cur_plms, pc_starscape, group_iter, outfile_prefix):
             # Create list of current clusters present group identity assignments
             cur_index_id = np.array(cur_plms_copy.iloc[cur_index, 0])
             # Are any of the plms in the current cluster unnamed, how many?
-            empty_count = np.count_nonzero(cur_index_id == None)
-            empty_index = [i for (i, v) in zip(cur_index, cur_plms_copy.iloc[cur_index, 0].values == None) if v]
+            empty_count = np.count_nonzero(cur_index_id is None)
+            empty_index = [i for (i, v) in zip(cur_index, cur_plms_copy.iloc[cur_index, 0].values is None) if v]
             # Are any of the plms in the current cluster already assigned an identity, what are those identities?
-            unique_ids = np.unique(cur_index_id[np.array(cur_index_id) != None])
+            unique_ids = np.unique(cur_index_id[np.array(cur_index_id) is not None])
 
             # If cluster is two unnamed plms exactly, assign this group their own identity as a pair
             if empty_count == 2:
@@ -72,7 +72,7 @@ def constella(cur_plms, pc_starscape, group_iter, outfile_prefix):
                     # Store boolean positions for plms with IDs matching current id out of current cluster
                     match_ids = [i for i, x in enumerate(cur_plms_copy.iloc[cur_index, 0].values == uid) if x]
                     # Store boolean positions for plms which are unnamed out of current cluster
-                    null_ids = [i for i, x in enumerate(cur_plms_copy.iloc[cur_index, 0].values == None) if x]
+                    null_ids = [i for i, x in enumerate(cur_plms_copy.iloc[cur_index, 0].values is None) if x]
                     # If exactly 1 matching ID and 1 null ID (i.e. 2 plms total)
                     # continue to pass ID name to the unnamed plm
                     if len(match_ids) + len(null_ids) == 2:
@@ -83,7 +83,7 @@ def constella(cur_plms, pc_starscape, group_iter, outfile_prefix):
                             cur_plms_copy.iloc[[cur_index[i] for i in null_ids], 0] = uid
 
     # Now that all groups that can be linked are formed, name rogues...
-    rogues = [i for i, x in enumerate(cur_plms_copy.loc[:, 'group'].values == None) if x]
+    rogues = [i for i, x in enumerate(cur_plms_copy.loc[:, 'group'].values is None) if x]
     for rogue in rogues:
         cur_plms_copy.iloc[[rogue], 0] = group_iter
         group_iter = group_iter + 1
