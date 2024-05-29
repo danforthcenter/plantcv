@@ -6,6 +6,7 @@ from plantcv.plantcv import params
 
 
 def get_empty_count(cur_index_id):
+    """Helper function for getting empty count"""
     empty_count = 0
     for i in cur_index_id:
         if i is None:
@@ -14,6 +15,7 @@ def get_empty_count(cur_index_id):
 
 
 def get_empty_indicies(cur_index, cur_plms_copy):
+    """Helper function for getting empty indicies"""
     empty_index = []
     for i, v in zip(cur_index, cur_plms_copy.iloc[cur_index, 0].values):
         if v is None:
