@@ -44,7 +44,7 @@ def get_rogues(cur_plms_copy):
 def generate_labelnames(plmnames, grpnames):
     """Helper function for generating label names"""
     labelnames = []
-    for li in enumerate(plmnames):
+    for li in range(0, len(plmnames)):
         labelname = f'{plmnames[li]} ({int(grpnames[li])})'
         labelnames.append(labelname)
     return labelnames
