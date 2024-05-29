@@ -5,15 +5,20 @@ from scipy.cluster.hierarchy import cut_tree
 from plantcv.plantcv import params
 
 
-def count_empty_plms(cur_index_id):
-    """Helper function for counting empty plms"""
+def get_empty_count(cur_index_id):
     empty_count = 0
-    empty_index = []
-    for i, v in enumerate(cur_index_id):
-        if v is None:
+    for i in cur_index_id:
+        if i is None:
             empty_count += 1
+    return empty_count
+
+
+def get_empty_indicies(cur_index, cur_plms_copy):
+    empty_index = []
+    for i, v in zip(cur_index, cur_plms_copy.iloc[cur_index, 0].values):
+        if v is None:
             empty_index.append(i)
-    return empty_count, empty_index
+    return empty_index
 
 
 def get_unique_ids(cur_index_id):
@@ -37,8 +42,8 @@ def get_rogues(cur_plms_copy):
 def generate_labelnames(plmnames, grpnames):
     """Helper function for generating label names"""
     labelnames = []
-    for li in enumerate(plmnames):
-        labelname = f'{plmnames[li]} ({int(grpnames[li])})'
+    for li in range(len(plmnames)):
+        labelname = '{} ({})'.format(plmnames[li], int(grpnames[li]))
         labelnames.append(labelname)
     return labelnames
 
@@ -108,7 +113,8 @@ def constella(cur_plms, pc_starscape, group_iter, outfile_prefix):
             # Create list of current clusters present group identity assignments
             cur_index_id = np.array(cur_plms_copy.iloc[cur_index, 0])
             # Are any of the plms in the current cluster unnamed, how many?
-            empty_count, empty_index = count_empty_plms(cur_index_id)
+            empty_count = get_empty_count(cur_index_id)
+            empty_index = get_empty_indicies(cur_index, cur_plms_copy)
             # Are any of the plms in the current cluster already assigned an identity, what are those identities?
             unique_ids = get_unique_ids(cur_index_id)
             # If cluster is two unnamed plms exactly, assign this group their own identity as a pair
