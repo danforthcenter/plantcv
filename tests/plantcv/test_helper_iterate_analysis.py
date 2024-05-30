@@ -21,3 +21,4 @@ def analysis_test_func(img, mask, label):
     """Test analysis function."""
     if mask is not None and label is not None:
         return img
+    return None
