@@ -235,8 +235,12 @@ def get_matrix_m(target_matrix, source_matrix):
     """
     # if the number of chips in source_img match the number of chips in target_matrix
     if np.shape(target_matrix) == np.shape(source_matrix):
-        _, t_r, t_g, t_b = np.split(target_matrix, 4, 1)
-        _, s_r, s_g, s_b = np.split(source_matrix, 4, 1)
+        t_r = target_matrix[:, 1].reshape(-1, 1)
+        t_g = target_matrix[:, 2].reshape(-1, 1)
+        t_b = target_matrix[:, 3].reshape(-1, 1)
+        s_r = source_matrix[:, 1].reshape(-1, 1)
+        s_g = source_matrix[:, 2].reshape(-1, 1)
+        s_b = source_matrix[:, 3].reshape(-1, 1)
     else:
         combined_matrix = np.zeros((np.ma.size(source_matrix, 0), 7))
         row_count = 0
@@ -251,7 +255,12 @@ def get_matrix_m(target_matrix, source_matrix):
                     combined_matrix[row_count][5] = source_matrix[i][2]
                     combined_matrix[row_count][6] = source_matrix[i][3]
                     row_count += 1
-        _, t_r, t_g, t_b, s_r, s_g, s_b = np.split(combined_matrix, 7, 1)
+        t_r = combined_matrix[:, 1].reshape(-1, 1)
+        t_g = combined_matrix[:, 2].reshape(-1, 1)
+        t_b = combined_matrix[:, 3].reshape(-1, 1)
+        s_r = combined_matrix[:, 4].reshape(-1, 1)
+        s_g = combined_matrix[:, 5].reshape(-1, 1)
+        s_b = combined_matrix[:, 6].reshape(-1, 1)
     t_r2 = np.square(t_r)
     t_r3 = np.power(t_r, 3)
     t_g2 = np.square(t_g)
@@ -305,7 +314,15 @@ def calc_transformation_matrix(matrix_m, matrix_b):
     if np.shape(matrix_m)[0] != np.shape(matrix_b)[1] or np.shape(matrix_m)[1] != np.shape(matrix_b)[0]:
         fatal_error("Cannot multiply matrices.")
 
-    t_r, t_r2, t_r3, t_g, t_g2, t_g3, t_b, t_b2, t_b3 = np.split(matrix_b, 9, 1)
+    t_r = matrix_b[:, 0].reshape(-1, 1)
+    t_r2 = matrix_b[:, 1].reshape(-1, 1)
+    t_r3 = matrix_b[:, 2].reshape(-1, 1)
+    t_g = matrix_b[:, 3].reshape(-1, 1)
+    t_g2 = matrix_b[:, 4].reshape(-1, 1)
+    t_g3 = matrix_b[:, 5].reshape(-1, 1)
+    t_b = matrix_b[:, 6].reshape(-1, 1)
+    t_b2 = matrix_b[:, 7].reshape(-1, 1)
+    t_b3 = matrix_b[:, 8].reshape(-1, 1)
 
     # multiply each 22x1 matrix from target color space by matrix_m
     red = np.matmul(matrix_m, t_r)
@@ -353,7 +370,9 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
         fatal_error("Source_img is not an RGB image.")
 
     # split transformation_matrix
-    red, green, blue, _, _, _, _, _, _ = np.split(transformation_matrix, 9, 1)
+    red = transformation_matrix[:, 0].reshape(-1, 1)
+    green = transformation_matrix[:, 1].reshape(-1, 1)
+    blue = transformation_matrix[:, 2].reshape(-1, 1)
 
     source_dtype = source_img.dtype
     # normalization value as max number if the type is unsigned int
