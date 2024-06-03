@@ -441,7 +441,6 @@ def filter(mask, roi, roi_type="partial"):
     :param roi_type: str
     :return filtered_mask: numpy.ndarray
     """
-
     found_obj, found_hier = _cv2_findcontours(bin_img=mask)
 
     _, _, filtered_mask = _roi_filter(img=mask, roi=roi, obj=found_obj,
