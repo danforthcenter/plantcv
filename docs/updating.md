@@ -427,6 +427,11 @@ pages for more details on the input and output variable types.
 * pre v4.3:  NA 
 * post v4.3: filtered_mask = **plantcv.filters.eccentricity**(*bin_img, ecc_thresh=0*)
 
+#### plantcv.filters.solidity 
+
+* pre v4.3:  NA 
+* post v4.3: filtered_mask = **plantcv.filters.solidity**(*bin_img, thresh=0.9*)
+
 #### plantcv.find_objects
 
 * pre v3.0dev2: device, objects, hierarchy = **plantcv.find_objects**(*img, mask, device, debug=None*)
