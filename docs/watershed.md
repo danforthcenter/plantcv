@@ -31,6 +31,7 @@ Needs a mask file which specifies area which is object is white, and background 
 
 ```python
 
+import numpy as np
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
@@ -41,10 +42,17 @@ pcv.params.sample_label = "plant"
 # Segment image with watershed function
 labels = pcv.watershed_segmentation(rgb_img=crop_img, mask=bin_mask, distance=10)
 
+# Utilize the labeled mask, n_labels -1 since we don't want to analyze background  
+shape_img = pcv.analyze.size(img=crop_img, labeled_mask=labels, n_labels=np.unique(labels)-1)
+
 ```
 
 **Watershed Segmentation**
 
 ![Screenshot](img/documentation_images/watershed/watershed.jpg)
+
+**Downstream analysis e.g. `analyze.size`** 
+
+![Screenshot](img/documentation_images/watershed/watershed_shape_measure.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/watershed.py)
