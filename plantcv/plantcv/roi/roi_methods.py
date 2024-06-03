@@ -173,6 +173,14 @@ def ellipse(img, x, y, r1, r2, angle):
 # Draw the ROI on a reference image
 def _draw_roi(img, roi_contour):
     """Draw an ROI
+
+    Inputs
+    img           = An RGB or grayscale image to plot the ROI on in debug mode.
+    roi_contour   = A list of contours and hierarchies for the ROI.
+
+    Returns
+    None
+
     :param img: numpy.ndarray
     :param roi_contour: list
     """
@@ -203,6 +211,23 @@ def _draw_roi(img, roi_contour):
 
 
 def _calculate_grid(mask, nrows, ncols):
+    """Calculate the grid layout of ROIs
+
+    Inputs
+    mask          = A binary mask
+    nrows         = Number of rows in ROI layout
+    ncols         = Number of columns in ROI layout
+
+    Returns
+    coord         = Two-element tuple of the center of the top left object (x,y)
+    spacing       = Two-element tuple of the horizontal and vertical spacing between ROIs, (x,y)
+
+    :param mask: numpy.ndarray
+    :param nrows: int
+    :param ncols: int
+    :return coord: tuple
+    :return spacing: tuple
+    """
     contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[-2:]
     centers = []
     for c in contours:
@@ -224,12 +249,52 @@ def _calculate_grid(mask, nrows, ncols):
 
 
 def _adjust_radius_coord(height, width, coord, radius):
+    """Adjust the radius of the ROI
+
+    Inputs
+    height        = Height of the image
+    width         = Width of the image
+    coord         = List of tuples identifying the center of each roi [(x1,y1),(x2,y2)]
+    radius        = Radius of the ROI
+
+    Returns
+    radius        = Adjusted radius
+
+    :param height: int
+    :param width: int
+    :param coord: list
+    :param radius: int
+    :return radius: int
+    """
     x = [i[0] for i in coord]
     y = [i[1] for i in coord]
     return _adjust_radius_max_min(height, width, radius, max(x), min(x), max(y), min(y))
 
 
 def _adjust_radius_grid(height, width, coord, radius, spacing, nrows, ncols):
+    """Adjust the radius of the ROI
+
+    Inputs
+    height        = Height of the image
+    width         = Width of the image
+    coord         = Two-element tuple of the center of the top left object (x,y)
+    radius        = Radius of the ROI
+    spacing       = Two-element tuple of the horizontal and vertical spacing between ROIs, (x,y)
+    nrows         = Number of rows in ROI layout
+    ncols         = Number of columns in ROI layout
+
+    Returns
+    radius        = Adjusted radius
+
+    :param height: int
+    :param width: int
+    :param coord: tuple
+    :param radius: int
+    :param spacing: tuple
+    :param nrows: int
+    :param ncols: int
+    :return radius: int
+    """
     xmax = coord[0] + (ncols-1)*spacing[0]
     xmin = coord[0]
     ymax = coord[1] + (nrows-1)*spacing[1]
@@ -238,6 +303,29 @@ def _adjust_radius_grid(height, width, coord, radius, spacing, nrows, ncols):
 
 
 def _adjust_radius_max_min(height, width, radius, xmax, xmin, ymax, ymin):
+    """Adjust the radius of the ROI
+
+    Inputs
+    height        = Height of the image
+    width         = Width of the image
+    radius        = Radius of the ROI
+    xmax          = Maximum x coordinate of the ROI
+    xmin          = Minimum x coordinate of the ROI
+    ymax          = Maximum y coordinate of the ROI
+    ymin          = Minimum y coordinate of the ROI
+
+    Returns
+    radius        = Adjusted radius
+
+    :param height: int
+    :param width: int
+    :param radius: int
+    :param xmax: int
+    :param xmin: int
+    :param ymax: int
+    :param ymin: int
+    :return radius: int
+    """
     if ((xmin < 0) or (xmax > width) or (ymin < 0) or (ymax > height)):
         fatal_error("An ROI extends outside of the image!")
     distances_to_edge = [xmin, width-xmax, ymin, height-ymax]
@@ -249,6 +337,24 @@ def _adjust_radius_max_min(height, width, radius, xmax, xmin, ymax, ymin):
 
 
 def _rois_from_coordinates(img, coord=None, radius=None):
+    """Create multiple circular ROIs on a single image from a list of coordinates
+    Inputs
+    img           = Input image data
+    coord         = List of tuples identifying the center of each roi [(x1,y1),(x2,y2)]
+    radius        = A single radius for all ROIs
+
+    Returns
+    roi_objects   = a dataclass with roi objects and hierarchies
+    overlap_img   = A binary image with overlapping ROIs
+    all_roi_img   = A binary image with all ROIs
+
+    :param img: numpy.ndarray
+    :param coord: list
+    :param radius: int
+    :return roi_objects: plantcv.plantcv.classes.Objects
+    :return overlap_img: numpy.ndarray
+    :return all_roi_img: numpy.ndarray
+    """
     if radius is None:
         fatal_error("Specify a radius if creating rois from a list of coordinates")
     # Get the height and width of the reference image
@@ -276,6 +382,31 @@ def _rois_from_coordinates(img, coord=None, radius=None):
 
 
 def _grid_roi(img, nrows, ncols, coord=None, radius=None, spacing=None):
+    """
+    Create a grid of ROIs
+    Inputs
+    img           = Input image data
+    nrows         = Number of rows in ROI layout
+    ncols         = Number of columns in ROI layout
+    coord         = Two-element tuple of the center of the top left object (x,y)
+    radius        = Optional parameter to specify the radius of the circular rois
+    spacing       = Two-element tuple of the horizontal and vertical spacing between ROIs, (x,y)
+
+    Returns
+    roi_objects   = a dataclass with roi objects and hierarchies
+    overlap_img   = A binary image with overlapping ROIs
+    all_roi_img   = A binary image with all ROIs
+
+    param img: numpy.ndarray
+    param nrows: int
+    param ncols: int
+    param coord: tuple
+    param radius: int
+    param spacing: tuple
+    return roi_objects: plantcv.plantcv.classes.Objects
+    return overlap_img: numpy.ndarray
+    return all_roi_img: numpy.ndarray
+    """
     if radius is None:
         RADIUS_RATIO = 0.325
         if spacing[0] == 0:
@@ -325,6 +456,7 @@ def auto_grid(mask, nrows, ncols, radius=None, img=None):
 
     Returns:
     roi_objects   = a dataclass with roi objects and hierarchies
+
     :param mask: numpy.ndarray
     :param nrows: int
     :param ncols: int
@@ -351,6 +483,7 @@ def auto_grid(mask, nrows, ncols, radius=None, img=None):
 
 def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
     """Create multiple circular ROIs on a single image
+
     Inputs
     img           = Input image data.
     coord         = Two-element tuple of the center of the top left object (x,y) or a list of tuples identifying
@@ -360,8 +493,10 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
                     is a list and `rows` and `cols` are None.
     nrows         = Number of rows in ROI layout. Should be missing or None if each center coordinate pair is listed.
     ncols         = Number of columns in ROI layout. Should be missing or None if each center coordinate pair is listed.
-    Returns:
+
+    Returns
     roi_objects   = a dataclass with roi objects and hierarchies
+
     :param img: numpy.ndarray
     :param coord: tuple, list
     :param radius: int
