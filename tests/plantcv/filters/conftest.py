@@ -13,6 +13,8 @@ class FiltersTestData:
         self.datadir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "testdata")
         # Binary mask for eccentricity filter
         self.small_bin_fill = os.path.join(self.datadir, "floodfill.png")
+        # Binary mask for solidity filter
+        self.small_bin = os.path.join(self.datadir, "setaria_small_plant_mask.png")
 
 
 @pytest.fixture(scope="session")
