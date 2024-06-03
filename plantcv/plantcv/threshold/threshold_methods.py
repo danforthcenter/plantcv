@@ -768,7 +768,7 @@ def _get_gray(rgb_img, _):
 
 
 def _get_index(rgb_img, _):
-    """Get a vector with linear indices of the pixels in an image """
+    """Get a vector with linear indices of the pixels in an image"""
     h, w, _ = rgb_img.shape
     return np.arange(h*w).reshape(h, w)
 
