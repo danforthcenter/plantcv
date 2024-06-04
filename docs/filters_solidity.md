@@ -15,13 +15,10 @@ The closer the value to 1 the closer the shape is to a circle.
 - **Example use:**
     - Below
 
-**Original image**
+**Original image, to be cropped for better viewing**
 
-![ori_img](img/documentation_images/filters_solidity/)
+![ori_img](img/documentation_images/filters_solidity/crop.png)
 
-**Mask generated using binary threshold in the blue channel**
-
-![bin_img](img/documentation_images/filters_solidity/)
 
 ```python
 
@@ -35,18 +32,14 @@ pcv.params.debug = "plot"
 # solidity threshold of 0.9
 mask_9 = pcv.filters.solidity(bin_img=binary_img, thresh=0.9)
 
-# Apply detect discs to the binary image with an
-# eccentricity threshold of 0.5
-mask_5 = pcv.filters.solidity(bin_img=binary_img, thresh=0.5)
-
 ```
 
-**Mask of detected objects with solidity threshold of 0.9**
+**Mask of detected objects**
 
-![count_img](img/documentation_images/filters_solidity/)
+![count_img](img/documentation_images/filters_solidity/fill.png)
 
-**Mask of detected objects with solidity threshold of 0.5**
+**Mask of filtered objects with solidity threshold of 0.9**
 
-![count_img](img/documentation_images/filters_solidity/)
+![count_img](img/documentation_images/filters_solidity/filtered_mask.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/filters/solidity.py)
