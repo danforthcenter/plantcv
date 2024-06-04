@@ -38,8 +38,8 @@ filtered_mask = pcv.filters.obj_area(bin_img=img_l_post, lower_thresh=350, upper
 
 ![count_img](img/documentation_images/filters_obj_area/fill.png)
 
-**Mask of filtered objects with solidity threshold of 0.9**
+**Mask of filtered objects**
 
 ![count_img](img/documentation_images/filters_obj_area/filtered_mask.png)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/filters/solidity.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/filters/obj_area.py)
