@@ -18,7 +18,7 @@ area than the `upper_thresh`.
 
 **Original image, to be cropped for better viewing**
 
-![ori_img](img/documentation_images/filters_solidity/crop.png)
+![ori_img](img/documentation_images/filters_obj_area/crop.png)
 
 
 ```python
