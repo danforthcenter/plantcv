@@ -314,6 +314,17 @@ def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity'
     """
     # Function that calculates the texture of a kernel
     def calc_texture(inputs):
+        """Calculate the texture of a kernel.
+
+        Inputs
+        inputs         = Kernel of pixels
+
+        Returns
+        diss           = Texture measurement
+
+        :param inputs: numpy.ndarray
+        :return diss: float
+        """
         inputs = np.reshape(a=inputs, newshape=[ksize, ksize])
         inputs = inputs.astype(np.uint8)
         # Greycomatrix takes image, distance offset, angles (in radians), symmetric, and normed
@@ -476,6 +487,20 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
 
 # Internal method for calling the OpenCV threshold function to reduce code duplication
 def _call_threshold(gray_img, threshold, threshold_method, method_name):
+    """Calls the OpenCV threshold function to reduce code duplication
+
+    Inputs
+    gray_img         = Grayscale image data
+    threshold        = Threshold value (0-255)
+    threshold_method = Thresholding method to use
+    method_name      = Name of the method used for debugging purposes
+
+    Returns
+    bin_img          = Thresholded, binary image
+
+    :param gray_img: numpy.ndarray
+    :param threshold: double
+    """
     # Threshold the image
     _, bin_img = cv2.threshold(gray_img, threshold, 255, threshold_method)
 
@@ -491,7 +516,24 @@ def _call_threshold(gray_img, threshold, threshold_method, method_name):
 
 # Internal method for calling the OpenCV adaptiveThreshold function to reduce code duplication
 def _call_adaptive_threshold(gray_img, ksize, offset, adaptive_method, threshold_method, method_name):
+    """Calls the OpenCV adaptiveThreshold function to reduce code duplication
 
+    Inputs
+    gray_img         = Grayscale image data
+    ksize            = Size of the block of pixels used to compute the local average
+    offset           = Value substracted from the local average to compute the local threshold.
+    adaptive_method  = Adaptive thresholding algorithm to use
+    threshold_method = Thresholding method to use
+    method_name      = Name of the method used for debugging purposes
+
+    Returns
+    bin_img          = Thresholded, binary image
+
+    :param gray_img: numpy.ndarray
+    :param ksize: int
+    :param offset: float
+    :method_name: str
+    """
     if ksize < 3:
         fatal_error("ksize must be >= 3")
 
