@@ -12,7 +12,3 @@ def test_output_mask(test_data, tmpdir):
     mask = cv2.imread(test_data.small_bin_img, -1)
     imgpath, maskpath, _ = output_mask(img=img, mask=mask, filename='test.png', outdir=cache_dir, mask_only=False)
     assert all([os.path.exists(imgpath) is True, os.path.exists(maskpath) is True])
-
-
-if __name__ == "__main__":
-    test_output_mask()
