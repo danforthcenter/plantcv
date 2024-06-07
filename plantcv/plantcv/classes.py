@@ -370,7 +370,7 @@ class Points:
         self.fig, self.ax = plt.subplots(1, 1, figsize=figsize)
         self.ax.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
 
-        self.points = []
+        self.points_list = []
         self.events = []
 
         self.fig.canvas.mpl_connect('button_press_event', self.onclick)
@@ -381,12 +381,12 @@ class Points:
         if event.button == 1:
 
             self.ax.plot(event.xdata, event.ydata, 'x', c='red')
-            self.points.append((floor(event.xdata), floor(event.ydata)))
+            self.points_list.append((floor(event.xdata), floor(event.ydata)))
 
         else:
-            idx_remove, _ = _find_closest_pt((event.xdata, event.ydata), self.points)
+            idx_remove, _ = _find_closest_pt((event.xdata, event.ydata), self.points_list)
             # remove the closest point to the user right clicked one
-            self.points.pop(idx_remove)
+            self.points_list.pop(idx_remove)
             self.ax.lines[idx_remove].remove()
         self.fig.canvas.draw()
 

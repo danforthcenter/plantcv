@@ -43,4 +43,4 @@ def test_points_interactive(annotate_test_data):
     e5.xdata, e5.ydata = (301, 200)
     drawer_rgb.onclick(e5)
 
-    assert drawer_rgb.points[0] == point1
+    assert drawer_rgb.points_list[0] == point1
