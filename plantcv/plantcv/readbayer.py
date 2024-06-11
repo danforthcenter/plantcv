@@ -66,7 +66,7 @@ def readbayer(filename, bayerpattern='BG', alg='default'):
     try:
         img = cv2.cvtColor(image_raw, conversion_codes[alg_upper][bayerpattern_upper])
     except KeyError:
-        raise ValueError("Invalid algorithm or Bayer pattern")
+        raise RuntimeError("Invalid algorithm or Bayer pattern")
 
     # Split path from filename
     path, img_name = os.path.split(filename)
