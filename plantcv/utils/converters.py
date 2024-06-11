@@ -100,6 +100,7 @@ def _last_index(*args):
 
 
 def write_to_csv(multi_file, meta_vars, multi_vars, data):
+    """Helper method to write traits to a CSV file."""
     # Create a CSV file of vector traits
     with open(multi_file, "w") as csv:
         # Create a header for the long-format table
