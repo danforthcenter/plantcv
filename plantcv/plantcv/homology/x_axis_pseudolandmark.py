@@ -159,11 +159,7 @@ def x_axis_pseudolandmarks(img, mask, label=None):
         # ave_value = col_ave[indice_ave]
         # max_value = max_width[indice_ave]
         top = list(zip(x_vals, top_points))
-        top = np.array(top)
-        top.shape = (20, 1, 2)
         bottom = list(zip(x_vals, bottom_points))
-        bottom = np.array(bottom)
-        bottom.shape = (20, 1, 2)
         center_v = list(zip(x_centroids, y_centroids))
 
     elif extent < 21:
@@ -172,18 +168,18 @@ def x_axis_pseudolandmarks(img, mask, label=None):
         x_coords = list(range(x, x + 20))
         u_points = [y] * 20
         top = list(zip(x_coords, u_points))
-        top = np.array(top)
-        top.shape = (20, 1, 2)
         b_points = [y + width] * 20
         bottom = list(zip(x_coords, b_points))
-        bottom = np.array(bottom)
-        bottom.shape = (20, 1, 2)
         m = cv2.moments(mask, binaryImage=True)
         # Centroid (center of mass x, center of mass y)
         _, cmy = (m['m10'] / m['m00'], m['m01'] / m['m00'])
         c_points = [cmy] * 20
         center_v = list(zip(x_coords, c_points))
 
+    top = np.array(top)
+    top.shape = (20, 1, 2)
+    bottom = np.array(bottom)
+    bottom.shape = (20, 1, 2)
     center_v = np.array(center_v)
     center_v.shape = (20, 1, 2)
     img2 = np.copy(img)
