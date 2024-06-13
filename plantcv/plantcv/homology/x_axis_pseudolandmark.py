@@ -32,9 +32,9 @@ def _calculate_centroids_x(largest, smallest, xval, y_centroids, x_centroids, s)
         smy = xval
         x_centroids.append(int(smx))
         y_centroids.append(int(smy))
-        
-        
-def x_axis_pseudolandmarks_x(img, mask, label=None):
+
+
+def x_axis_pseudolandmarks(img, mask, label=None):
     """
     Divide up object contour into 20 equidistance segments and generate landmarks for each
 
