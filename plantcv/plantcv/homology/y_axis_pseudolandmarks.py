@@ -7,7 +7,7 @@ from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
 from plantcv.plantcv import params, outputs
 
 
-def _draw_circles(arr, img, color):
+def _draw_circles_y(arr, img, color):
     """Helper function to draw circles on an image."""
     for i in arr:
         x = i[0, 0]
@@ -15,7 +15,7 @@ def _draw_circles(arr, img, color):
         cv2.circle(img, (int(x), int(y)), params.line_thickness, color, -1)
 
 
-def _calculate_centroids(largest, smallest, yval, x_centroids, y_centroids, s):
+def _calculate_centroids_y(largest, smallest, yval, x_centroids, y_centroids, s):
     """Helper function to calculate centroids"""
     if largest - smallest > 3:
         if s['m00'] > 0.001:
@@ -153,7 +153,7 @@ def y_axis_pseudolandmarks(img, mask, label=None):
             window[:low_point] = 0
             window[high_point:] = 0
             # Centroid (center of mass x, center of mass y)
-            _calculate_centroids(largest, smallest, yval, x_centroids, y_centroids, cv2.moments(window))
+            _calculate_centroids_y(largest, smallest, yval, x_centroids, y_centroids, cv2.moments(window))
         left = list(zip(left_points, y_vals))
         left = np.array(left)
         left.shape = (20, 1, 2)
@@ -184,9 +184,9 @@ def y_axis_pseudolandmarks(img, mask, label=None):
         center_h.shape = (20, 1, 2)
 
     img2 = np.copy(img)
-    _draw_circles(left, img2, (255, 0, 0))
-    _draw_circles(right, img2, (255, 0, 255))
-    _draw_circles(center_h, img2, (0, 79, 255))
+    _draw_circles_y(left, img2, (255, 0, 0))
+    _draw_circles_y(right, img2, (255, 0, 255))
+    _draw_circles_y(center_h, img2, (0, 79, 255))
 
     _debug(visual=img2, filename=os.path.join(params.debug_outdir, (str(params.device) + '_y_axis_pseudolandmarks.png')))
 
