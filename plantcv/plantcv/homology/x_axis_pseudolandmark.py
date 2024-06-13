@@ -17,6 +17,7 @@ def _draw_circles_x(arr, img, color):
 
 
 def _calculate_centroids_x(largest, smallest, xval, y_centroids, x_centroids, s):
+    """Helper function to calculate centroids"""
     # Centroid (center of mass x, center of mass y)
     if largest - smallest > 3:
         if s['m00'] > 0.001:
