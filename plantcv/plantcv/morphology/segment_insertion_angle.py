@@ -17,7 +17,6 @@ from plantcv.plantcv._helpers import _cv2_findcontours
 
 
 def _segment_leafs(leaf_objects, segmented_img, size, tips):
-    """Helper method to segment leafs"""
     label_coord_x = []
     label_coord_y = []
     valid_segment = []
