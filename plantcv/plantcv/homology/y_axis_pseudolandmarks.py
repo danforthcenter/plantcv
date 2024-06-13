@@ -7,6 +7,14 @@ from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
 from plantcv.plantcv import params, outputs
 
 
+def _draw_circles(arr, img, color):
+    """Helper function to draw circles on an image."""
+    for i in arr:
+        x = i[0, 0]
+        y = i[0, 1]
+        cv2.circle(img, (int(x), int(y)), params.line_thickness, color, -1)
+
+
 def y_axis_pseudolandmarks(img, mask, label=None):
     """
     Divide up object contour into 19 equidistant segments and generate landmarks for each
@@ -152,25 +160,7 @@ def y_axis_pseudolandmarks(img, mask, label=None):
         center_h = list(zip(x_centroids, y_centroids))
         center_h = np.array(center_h)
         center_h.shape = (20, 1, 2)
-
-        img2 = np.copy(img)
-        for i in left:
-            x = i[0, 0]
-            y = i[0, 1]
-            cv2.circle(img2, (int(x), int(y)), params.line_thickness, (255, 0, 0), -1)
-        for i in right:
-            x = i[0, 0]
-            y = i[0, 1]
-            cv2.circle(img2, (int(x), int(y)), params.line_thickness, (255, 0, 255), -1)
-        for i in center_h:
-            x = i[0, 0]
-            y = i[0, 1]
-            cv2.circle(img2, (int(x), int(y)), params.line_thickness, (0, 79, 255), -1)
-
-        _debug(visual=img2,
-               filename=os.path.join(params.debug_outdir, (str(params.device) + '_y_axis_pseudolandmarks.png')))
-
-    elif extent < 21:
+    else:
         # If the length of the object is less than 20 pixels just make the object a 20 pixel rectangle
         x, y, width, height = cv2.boundingRect(obj)
         y_coords = list(range(y, y + 20))
@@ -190,22 +180,12 @@ def y_axis_pseudolandmarks(img, mask, label=None):
         center_h = np.array(center_h)
         center_h.shape = (20, 1, 2)
 
-        img2 = np.copy(img)
-        for i in left:
-            x = i[0, 0]
-            y = i[0, 1]
-            cv2.circle(img2, (int(x), int(y)), params.line_thickness, (255, 0, 0), -1)
-        for i in right:
-            x = i[0, 0]
-            y = i[0, 1]
-            cv2.circle(img2, (int(x), int(y)), params.line_thickness, (255, 0, 255), -1)
-        for i in center_h:
-            x = i[0, 0]
-            y = i[0, 1]
-            cv2.circle(img2, (int(x), int(y)), params.line_thickness, (0, 79, 255), -1)
+    img2 = np.copy(img)
+    _draw_circles(left, img2, (255, 0, 0))
+    _draw_circles(right, img2, (255, 0, 255))
+    _draw_circles(center_h, img2, (0, 79, 255))
 
-        _debug(visual=img2,
-               filename=os.path.join(params.debug_outdir, (str(params.device) + '_y_axis_pseudolandmarks.png')))
+    _debug(visual=img2, filename=os.path.join(params.debug_outdir, (str(params.device) + '_y_axis_pseudolandmarks.png')))
 
     # Store into global measurements
     for pt in left:
