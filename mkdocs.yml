@@ -89,6 +89,7 @@ nav:
       - 'Image Fusion': image_fusion.md
       - 'Invert': invert.md
       - 'I/O Functions':
+          - 'Open Image from URL': io_open_url.md
           - 'Random Subset': io_random_subset.md
           - 'Read Dataset': io_read_dataset.md
       - 'Kmeans Clustering Classifier': kmeans_classifier.md
