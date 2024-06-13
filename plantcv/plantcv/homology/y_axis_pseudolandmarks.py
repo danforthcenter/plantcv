@@ -15,6 +15,23 @@ def _draw_circles(arr, img, color):
         cv2.circle(img, (int(x), int(y)), params.line_thickness, color, -1)
 
 
+def _calculate_centroids(largest, smallest, yval, x_centroids, y_centroids, s):
+    if largest - smallest > 3:
+        if s['m00'] > 0.001:
+            smx, smy = (s['m10'] / s['m00'], s['m01'] / s['m00'])
+            x_centroids.append(int(smx))
+            y_centroids.append(int(smy))
+        if s['m00'] < 0.001:
+            smx, smy = (s['m10'] / 0.001, s['m01'] / 0.001)
+            x_centroids.append(int(smx))
+            y_centroids.append(int(smy))
+    else:
+        smx = (largest + smallest) / 2
+        smy = yval
+        x_centroids.append(int(smx))
+        y_centroids.append(int(smy))
+        
+        
 def y_axis_pseudolandmarks(img, mask, label=None):
     """
     Divide up object contour into 19 equidistant segments and generate landmarks for each
@@ -134,23 +151,8 @@ def y_axis_pseudolandmarks(img, mask, label=None):
             window = np.copy(mask)
             window[:low_point] = 0
             window[high_point:] = 0
-            s = cv2.moments(window)
             # Centroid (center of mass x, center of mass y)
-            if largest - smallest > 3:
-                if s['m00'] > 0.001:
-                    smx, smy = (s['m10'] / s['m00'], s['m01'] / s['m00'])
-                    x_centroids.append(int(smx))
-                    y_centroids.append(int(smy))
-                if s['m00'] < 0.001:
-                    smx, smy = (s['m10'] / 0.001, s['m01'] / 0.001)
-                    x_centroids.append(int(smx))
-                    y_centroids.append(int(smy))
-            else:
-                smx = (largest + smallest) / 2
-                smy = yval
-                x_centroids.append(int(smx))
-                y_centroids.append(int(smy))
-
+            _calculate_centroids(largest, smallest, yval, x_centroids, y_centroids, cv2.moments(window))
         left = list(zip(left_points, y_vals))
         left = np.array(left)
         left.shape = (20, 1, 2)
