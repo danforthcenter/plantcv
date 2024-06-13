@@ -7,37 +7,6 @@ from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
 from plantcv.plantcv import params, outputs
 
 
-def _get_contour_widths(low_point, high_point, obj):
-    """helper to get contour widths for each row in the object contour."""
-    # Get all rows within these two points
-    rows = []
-    lps = []
-    rps = []
-    # Get a continuous list of the values between the top and the bottom of the interval save as vals
-    vals = list(range(low_point, high_point))
-    # For each row... get all coordinates from object contour that match row
-    for v in vals:
-        # Value is all entries that match the row
-        value = obj[v == obj[:, 0, 1]]
-        if len(value) > 0:
-            # Could potentially be more than two points in all contour in each pixel row
-            # Grab largest x coordinate (column)
-            largest = value[:, 0, 0].max()
-            # Grab smallest x coordinate (column)
-            smallest = value[:, 0, 0].min()
-            # Take the difference between the two (this is how far across the object is on this plane)
-            row_width = largest - smallest
-            # Append this value to a list
-            rows.append(row_width)
-            lps.append(smallest)
-            rps.append(largest)
-        if len(value) == 0:
-            rows.append(1)
-            lps.append(1)
-            rps.append(1)
-    return rows, min(lps), max(rps)
-
-
 def y_axis_pseudolandmarks(img, mask, label=None):
     """
     Divide up object contour into 19 equidistant segments and generate landmarks for each
@@ -118,7 +87,32 @@ def y_axis_pseudolandmarks(img, mask, label=None):
             # Get the lower and upper bounds
             # (lower and higher in terms of value; low point is actually towards top of photo, higher is lower of photo)
             low_point, high_point = pt
-            rows, smallest, largest = _get_contour_widths(low_point, high_point, obj)
+    # Get all rows within these two points
+        rows = []
+        lps = []
+        rps = []
+        # Get a continuous list of the values between the top and the bottom of the interval save as vals
+        vals = list(range(low_point, high_point))
+        # For each row... get all coordinates from object contour that match row
+        for v in vals:
+            # Value is all entries that match the row
+            value = obj[v == obj[:, 0, 1]]
+            if len(value) > 0:
+                # Could potentially be more than two points in all contour in each pixel row
+                # Grab largest x coordinate (column)
+                largest = value[:, 0, 0].max()
+                # Grab smallest x coordinate (column)
+                smallest = value[:, 0, 0].min()
+                # Take the difference between the two (this is how far across the object is on this plane)
+                row_width = largest - smallest
+                # Append this value to a list
+                rows.append(row_width)
+                lps.append(smallest)
+                rps.append(largest)
+            if len(value) == 0:
+                rows.append(1)
+                lps.append(1)
+                rps.append(1)
             # For each of the points find the median and average width
             row_median.append(np.median(np.array(rows)))
             row_ave.append(np.mean(np.array(rows)))
