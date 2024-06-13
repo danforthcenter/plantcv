@@ -1,6 +1,6 @@
 ## Dual Object Area Filter
 
-Filters regions of a binary mask that are smaller in area than the `lower_thresh` and any regions larger in
+Filters objects in a binary mask that are smaller in area than the `lower_thresh` and any objects larger in
 area than the `upper_thresh`. 
 
 **plantcv.filters.obj_area**(*bin_img, upper_thresh, lower_thresh=0*)
@@ -8,9 +8,9 @@ area than the `upper_thresh`.
 **returns** mask
 
 - **Parameters:**
-    - bin_img - Binary image containing the connected regions to consider
-    - upper_thresh - Upper size threshold, above which a region is removed
-    - lower_thresh - (Optional, default = 0) Lower size threshold, below which a region is removed
+    - bin_img - Binary image containing the objects to consider
+    - upper_thresh - Upper size threshold, above which an object is removed
+    - lower_thresh - (Optional, default = 0) Lower size threshold, below which an object is removed
 - **Context:**
     - Used to isolate objects of interest in a binary image that are moderate in object area. The output mask can be used for further analysis.
 - **Example use:**
