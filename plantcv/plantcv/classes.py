@@ -397,12 +397,12 @@ class Objects:
     def __init__(self, contours: list = None, hierarchy: list = None):
         self.contours = contours
         self.hierarchy = hierarchy
+        self.n = 0
         if contours is None:
             self.contours = []
             self.hierarchy = []
 
     def __iter__(self):
-        self.n = 0
         return self
 
     def __next__(self):
