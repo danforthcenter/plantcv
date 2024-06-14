@@ -196,7 +196,7 @@ def _longest_axis(height, width, hull, cmx, cmy):
     vhull = np.vstack(hull)
 
     for i, c in enumerate(vhull):
-        xy = tuple([int(ci) for ci in c])
+        xy = tuple(int(ci) for ci in c)
         pptest = cv2.pointPolygonTest(centerpoint[0], xy, measureDist=True)
         dist.append(pptest)
 
@@ -213,7 +213,7 @@ def _longest_axis(height, width, hull, cmx, cmy):
     slope = 1
 
     if xdiff != 0:
-        slope = (float(ydiff / xdiff))
+        slope = float(ydiff / xdiff)
     b_line = caliper_mid_y - (slope * caliper_mid_x)
 
     if slope != 0:
