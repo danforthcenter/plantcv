@@ -93,7 +93,7 @@ def json2csv(json_file, csv_prefix):
                 scalar_data["value"].append(row[1])
                 scalar_data["label"].append(row[2])
                 # Add metadata variables
-                for i in range(len(meta_vars)):
+                for i, _ in enumerate(meta_vars):
                     scalar_data[meta_vars[i]].append(meta_row[i])
     # Create a pandas dataframe from the dictionary
     df = pd.DataFrame(scalar_data)
