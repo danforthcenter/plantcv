@@ -30,7 +30,6 @@ def create_labels(mask, rois=None, roi_type="partial"):
     :return labeled_mask: numpy.ndarray
     :return num_labels: int
     """
-
     # Store debug mode
     debug = params.debug
     params.debug = None

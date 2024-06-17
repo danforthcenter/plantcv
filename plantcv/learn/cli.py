@@ -58,6 +58,7 @@ def options():
 # Run the naive Bayes method
 ###########################################
 def run_naive_bayes(args):
+    """Run the naive Bayes two-class training method"""
     if not os.path.exists(args.imgdir):
         raise IOError(f"Directory does not exist: {args.imgdir}")
     if not os.path.exists(args.maskdir):
@@ -70,6 +71,7 @@ def run_naive_bayes(args):
 # Run the naive Bayes multiclass method
 ###########################################
 def run_naive_bayes_multiclass(args):
+    """Run the naive Bayes multiclass training method"""
     if not os.path.exists(args.file):
         raise IOError(f"File does not exist: {args.file}")
     print("Running the naive Bayes multiclass training method...")
