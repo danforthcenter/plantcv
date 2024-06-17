@@ -77,7 +77,7 @@ class Outputs:
 
         # Add a method to clear measurements
     def clear(self):
-        """Clear all measurments"""
+        """Clear all measurements"""
         self.measurements = {}
         self.images = []
         self.observations = {}
