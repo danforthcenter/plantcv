@@ -8,6 +8,15 @@ from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
 
 
+def _get_index(chain, threshold):
+    """Helper function for identifying links in chain with acute angles"""
+    index = []
+    for c, link in enumerate(chain):     # Identify links in chain with acute angles
+        if float(link) <= threshold:
+            index.append(c)         # Append positions of acute links to index
+    return index
+
+
 def _get_distance(point1, point2):
     """Helper function for distance between two points"""
     return np.sqrt((point1[0][0]-point2[0][0]) ** 2 + (point1[0][1]-point2[0][1]) ** 2)
@@ -26,7 +35,7 @@ def _get_point(obj, k, direction, win):
         pos = obj[idx]
         dist_2 = np.sqrt(np.square(pos[0][0] - vert[0][0]) + np.square(pos[0][1] - vert[0][1]))
         if i >= 2:
-            if dist_2 > dist_1 and dist_2 <= win:
+            if dist_1 < dist_2 <= win:
                 dist_1 = dist_2
                 point = pos
             elif dist_2 > win:
@@ -34,6 +43,16 @@ def _get_point(obj, k, direction, win):
         else:
             point = pos
     return point
+
+
+def _store_pixel_values(obj, island, mask, vals):
+    pix_x, pix_y, w, h = cv2.boundingRect(obj[island])
+    for c in range(w):
+        for r in range(h):
+            # Identify pixels in local window internal to the island hull
+            pos = cv2.pointPolygonTest(obj[island], (pix_x+c, pix_y+r), 0)
+            if pos > 0:
+                vals.append(mask[pix_y+r][pix_x+c])  # Store pixel value if internal
 
 
 def acute(img, mask, win, threshold):
@@ -89,114 +108,100 @@ def acute(img, mask, win, threshold):
         ang = math.degrees(math.acos(dot))
 
         chain.append(ang)
+    index = _get_index(chain, threshold)  # Index chain to find clusters below angle threshold
 
-    index = []                      # Index chain to find clusters below angle threshold
+    if len(index) == 0:
+        return [], [], [], [], [], []
 
-    for c, link in enumerate(chain):     # Identify links in chain with acute angles
-        if float(link) <= threshold:
-            index.append(c)         # Append positions of acute links to index
+    isle = []
+    island = []
 
-    if len(index) != 0:
-
-        isle = []
-        island = []
-
-        for ind in index:           # Scan for iterative links within index
-            if not island:
-                island.append(ind)       # Initiate new link island
-            elif island[-1]+1 == ind:
-                island.append(ind)       # Append successful iteration to island
-            elif island[-1]+1 != ind:
-                pt_a = obj[ind]
-                pt_b = obj[island[-1]+1]
-                dist = np.sqrt(np.square(pt_a[0][0]-pt_b[0][0])+np.square(pt_a[0][1]-pt_b[0][1]))
-                if win/2 > dist:
-                    island.append(ind)
-                else:
-                    isle.append(island)
-                    island = [ind]
-
-        isle.append(island)
-
-        if len(isle) > 1:
-            if (isle[0][0] == 0) & (isle[-1][-1] == (len(chain)-1)):
-                if params.debug is not None:
-                    print('Fusing contour edges')
-                island = isle[-1]+isle[0]  # Fuse overlapping ends of contour
-                # Delete islands to be spliced if start-end fusion required
-                del isle[0]
-                del isle[-1]
-                isle.insert(0, island)      # Prepend island to isle
-        else:
-            if params.debug is not None:
-                print('Microcontour...')
-
-        # Homologous point maximum distance method
-        pt = []
-        vals = []
-        maxpts = []
-        ss_pts = []
-        ts_pts = []
-        ptvals = []
-        max_dist = [['cont_pos', 'max_dist', 'angle']]
-        for island in isle:
-
-            # Identify if contour is concavity/convexity using image mask
-            pix_x, pix_y, w, h = cv2.boundingRect(obj[island])  # Obtain local window around island
-
-            for c in range(w):
-                for r in range(h):
-                    # Identify pixels in local window internal to the island hull
-                    pos = cv2.pointPolygonTest(obj[island], (pix_x+c, pix_y+r), 0)
-                    if pos > 0:
-                        vals.append(mask[pix_y+r][pix_x+c])  # Store pixel value if internal
-            if len(vals) > 0:
-                ptvals.append(sum(vals)/len(vals))
-                vals = []
+    for ind in index:           # Scan for iterative links within index
+        if not island:
+            island.append(ind)       # Initiate new link island
+        elif island[-1]+1 == ind:
+            island.append(ind)       # Append successful iteration to island
+        elif island[-1]+1 != ind:
+            pt_a = obj[ind]
+            pt_b = obj[island[-1]+1]
+            dist = np.sqrt(np.square(pt_a[0][0]-pt_b[0][0])+np.square(pt_a[0][1]-pt_b[0][1]))
+            if win/2 > dist:
+                island.append(ind)
             else:
-                ptvals.append('NaN')        # If no values can be retrieved (small/collapsed contours)
-                vals = []
-            if len(island) >= 3:               # If landmark is multiple points (distance scan for position)
-                if params.debug is not None:
-                    print('route C')
-                ss = obj[island[0]]            # Store isle "x" start site
-                ts = obj[island[-1]]           # Store isle "x" termination site
-                dist_1 = 0
-                for d in island:   # Scan from ss to ts within isle "x"
-                    site = obj[[d]]
-                    ss_d = np.sqrt(np.square(ss[0][0] - site[0][0][0]) + np.square(ss[0][1] - site[0][0][1]))
-                    ts_d = np.sqrt(np.square(ts[0][0] - site[0][0][0]) + np.square(ts[0][1] - site[0][0][1]))
-                    # Current mean distance of 'd' to 'ss' & 'ts'
-                    dist_2 = np.mean([np.abs(ss_d), np.abs(ts_d)])
-                    max_dist.append([d, dist_2, chain[d]])
-                    if dist_2 > dist_1:                          # Current mean distance better fit that previous best?
-                        pt = d
-                        dist_1 = dist_2                          # Current mean becomes new best mean
-                # print pt
-                if params.debug is not None:
-                    print(f"Landmark site: {pt}, Start site: {island[0]}, Term. site: {island[-1]}")
+                isle.append(island)
+                island = [ind]
 
-                maxpts.append(pt)           # Empty 'pts' prior to next mean distance scan
-                ss_pts.append(island[0])
-                ts_pts.append(island[-1])
+    isle.append(island)
 
+    if len(isle) > 1:
+        if (isle[0][0] == 0) & (isle[-1][-1] == (len(chain)-1)):
             if params.debug is not None:
-                print(f'Landmark point indices: {maxpts}')
-                print(f'Starting site indices: {ss_pts}')
-                print(f'Termination site indices: {ts_pts}')
+                print('Fusing contour edges')
+            island = isle[-1]+isle[0]  # Fuse overlapping ends of contour
+            # Delete islands to be spliced if start-end fusion required
+            del isle[0]
+            del isle[-1]
+            isle.insert(0, island)      # Prepend island to isle
+    else:
+        if params.debug is not None:
+            print('Microcontour...')
 
-        homolog_pts = obj[maxpts]
-        start_pts = obj[ss_pts]
-        stop_pts = obj[ts_pts]
+    # Homologous point maximum distance method
+    pt = []
+    vals = []
+    maxpts = []
+    ss_pts = []
+    ts_pts = []
+    ptvals = []
+    max_dist = [['cont_pos', 'max_dist', 'angle']]
+    for island in isle:
+        _store_pixel_values(obj, island, mask, vals)
+        if len(vals) > 0:
+            ptvals.append(sum(vals)/len(vals))
+            vals = []
+        else:
+            ptvals.append('NaN')        # If no values can be retrieved (small/collapsed contours)
+            vals = []
+        if len(island) >= 3:               # If landmark is multiple points (distance scan for position)
+            if params.debug is not None:
+                print('route C')
+            ss = obj[island[0]]            # Store isle "x" start site
+            ts = obj[island[-1]]           # Store isle "x" termination site
+            dist_1 = 0
+            for d in island:   # Scan from ss to ts within isle "x"
+                site = obj[[d]]
+                ss_d = np.sqrt(np.square(ss[0][0] - site[0][0][0]) + np.square(ss[0][1] - site[0][0][1]))
+                ts_d = np.sqrt(np.square(ts[0][0] - site[0][0][0]) + np.square(ts[0][1] - site[0][0][1]))
+                # Current mean distance of 'd' to 'ss' & 'ts'
+                dist_2 = np.mean([np.abs(ss_d), np.abs(ts_d)])
+                max_dist.append([d, dist_2, chain[d]])
+                if dist_2 > dist_1:                          # Current mean distance better fit that previous best?
+                    pt = d
+                    dist_1 = dist_2                          # Current mean becomes new best mean
+            # print pt
+            if params.debug is not None:
+                print(f"Landmark site: {pt}, Start site: {island[0]}, Term. site: {island[-1]}")
 
-        ori_img = np.copy(img)
-        # Convert grayscale images to color
-        if len(np.shape(ori_img)) == 2:
-            ori_img = cv2.cvtColor(ori_img, cv2.COLOR_GRAY2BGR)
-        # Draw acute points on the original image
-        cv2.drawContours(ori_img, homolog_pts, -1, (255, 255, 255), params.line_thickness)
-        # print/plot debug image
-        _debug(visual=ori_img, filename=f"{params.device}_acute_plms.png")
+            maxpts.append(pt)           # Empty 'pts' prior to next mean distance scan
+            ss_pts.append(island[0])
+            ts_pts.append(island[-1])
 
-        return homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist
-    return [], [], [], [], [], []
+        if params.debug is not None:
+            print(f'Landmark point indices: {maxpts}')
+            print(f'Starting site indices: {ss_pts}')
+            print(f'Termination site indices: {ts_pts}')
+
+    homolog_pts = obj[maxpts]
+    start_pts = obj[ss_pts]
+    stop_pts = obj[ts_pts]
+
+    ori_img = np.copy(img)
+    # Convert grayscale images to color
+    if len(np.shape(ori_img)) == 2:
+        ori_img = cv2.cvtColor(ori_img, cv2.COLOR_GRAY2BGR)
+    # Draw acute points on the original image
+    cv2.drawContours(ori_img, homolog_pts, -1, (255, 255, 255), params.line_thickness)
+    # print/plot debug image
+    _debug(visual=ori_img, filename=f"{params.device}_acute_plms.png")
+
+    return homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist
