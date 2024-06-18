@@ -8,6 +8,34 @@ from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
 
 
+def _get_distance(point1, point2):
+    """Helper function for distance between two points"""
+    return np.sqrt((point1[0][0]-point2[0][0]) ** 2 + (point1[0][1]-point2[0][1]) ** 2)
+
+
+def _get_point(obj, k, direction, win):
+    """Helper function for getting a point in a contour"""
+    vert = obj[k]
+    dist_1 = 0
+    for i in range(len(obj)):
+        idx = k - i if direction == 'reverse' else k + i
+        if idx < 0:
+            idx += len(obj)
+        elif idx >= len(obj):
+            idx -= len(obj)
+        pos = obj[idx]
+        dist_2 = np.sqrt(np.square(pos[0][0] - vert[0][0]) + np.square(pos[0][1] - vert[0][1]))
+        if i >= 2:
+            if dist_2 > dist_1 and dist_2 <= win:
+                dist_1 = dist_2
+                point = pos
+            elif dist_2 > win:
+                break
+        else:
+            point = pos
+    return point
+
+
 def acute(img, mask, win, threshold):
     """Identify landmark positions within a contour for morphometric analysis
 
@@ -49,40 +77,14 @@ def acute(img, mask, win, threshold):
     chain = []                                         # Create empty chain to store angle scores
     for k in list(range(len(obj))):                    # Coordinate-by-coordinate 3-point assignments
         vert = obj[k]
-        dist_1 = 0
-        for r in range(len(obj)):                      # Reverse can to obtain point A
-            rev = k - r
-            pos = obj[rev]
-            dist_2 = np.sqrt(np.square(pos[0][0]-vert[0][0])+np.square(pos[0][1]-vert[0][1]))
-            if r >= 2:
-                if (dist_2 > dist_1) & (dist_2 <= win):  # Further from vertex than current pt A while within window?
-                    dist_1 = dist_2
-                    pt_a = pos                              # Load best fit within window as point A
-                elif dist_2 > win:
-                    break
-            else:
-                pt_a = pos
-        dist_1 = 0
-        for f in range(len(obj)):                      # Forward scan to obtain point B
-            fwd = k + f
-            if fwd >= len(obj):
-                fwd -= len(obj)
-            pos = obj[fwd]
-            dist_2 = np.sqrt(np.square(pos[0][0]-vert[0][0])+np.square(pos[0][1]-vert[0][1]))
-            if f >= 2:
-                if (dist_2 > dist_1) & (dist_2 <= win):  # Further from vertex than current pt B while within window?
-                    dist_1 = dist_2
-                    pt_b = pos                              # Load best fit within window as point B
-                elif dist_2 > win:
-                    break
-            else:
-                pt_b = pos
+        pt_a = _get_point(obj, k, 'reverse', win)
+        pt_b = _get_point(obj, k, 'forward', win)
 
         # Angle in radians derived from Law of Cosines, converted to degrees
-        p12 = np.sqrt((vert[0][0]-pt_a[0][0])*(vert[0][0]-pt_a[0][0])+(vert[0][1]-pt_a[0][1])*(vert[0][1]-pt_a[0][1]))
-        p13 = np.sqrt((vert[0][0]-pt_b[0][0])*(vert[0][0]-pt_b[0][0])+(vert[0][1]-pt_b[0][1])*(vert[0][1]-pt_b[0][1]))
-        p23 = np.sqrt((pt_a[0][0]-pt_b[0][0])*(pt_a[0][0]-pt_b[0][0])+(pt_a[0][1]-pt_b[0][1])*(pt_a[0][1]-pt_b[0][1]))
-        dot = (p12*p12 + p13*p13 - p23*p23)/(2*p12*p13)
+        p12 = _get_distance(vert, pt_a)
+        p13 = _get_distance(vert, pt_b)
+        p23 = _get_distance(pt_a, pt_b)
+        dot = (p12 ** 2 + p13 ** 2 - p23 ** 2)/(2*p12*p13)
 
         ang = math.degrees(math.acos(dot))
 
