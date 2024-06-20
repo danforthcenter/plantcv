@@ -33,35 +33,23 @@ def filter_objs(bin_img, cut_side = "upper", thresh="NA", property="area"):
     if type(getattr(obj_measures[0], property)) in correct_types:  
         # blank mask to draw discs onto
         filtered_mask = np.zeros(labeled_img.shape, dtype=np.uint8)
-        # check if there's a thresh value or not:
-        if thresh != "NA":
+        #Pull all values and calculate the mean
+        valueslist = []
+        for obj in obj_measures:
+            valueslist.append(getattr(obj, property))
+        if thresh == "NA":
+            thresh = sum(valueslist)/len(valueslist)   #mean
         # Store the list of coordinates (row,col) for the objects that pass
-        # also store a list of all values to print the range
-            valueslist = []
+        if cut_side == "upper":
             for obj in obj_measures:
-                valueslist.append(getattr(obj, property))
-                if cut_side == "upper":
-                    if getattr(obj, property) > thresh:
-                        # Convert coord values to int
-                        filtered_mask += np.where(labeled_img == obj.label, 255, 0).astype(np.uint8)
-                elif cut_side == "lower":
-                    if getattr(obj, property) < thresh:
-                        # Convert coord values to int
-                        filtered_mask += np.where(labeled_img == obj.label, 255, 0).astype(np.uint8)
-        else:
-            valueslist = []
+                if getattr(obj, property) > thresh:
+                    # Convert coord values to int
+                    filtered_mask += np.where(labeled_img == obj.label, 255, 0).astype(np.uint8)
+        elif cut_side == "lower":
             for obj in obj_measures:
-                valueslist.append(getattr(obj, property))
-            mean_val = sum(valueslist)/len(valueslist)
-            for obj in obj_measures:
-                if cut_side == "upper":
-                    if getattr(obj, property) > mean_val:
-                        # Convert coord values to int
-                        filtered_mask += np.where(labeled_img == obj.label, 255, 0).astype(np.uint8)
-                elif cut_side == "lower":
-                    if getattr(obj, property) < mean_val:
-                        # Convert coord values to int
-                        filtered_mask += np.where(labeled_img == obj.label, 255, 0).astype(np.uint8)
+                if getattr(obj, property) < thresh:
+                    # Convert coord values to int
+                    filtered_mask += np.where(labeled_img == obj.label, 255, 0).astype(np.uint8)
         if params.debug == "plot":
             print("Min value = " + str(min(valueslist)))
             print("Max value = " + str(max(valueslist)))
