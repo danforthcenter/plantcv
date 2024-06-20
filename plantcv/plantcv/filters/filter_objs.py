@@ -31,7 +31,7 @@ def filter_objs(bin_img, cut_side="upper", thresh="NA", regprop="area"):
     obj_measures = regionprops(labeled_img)
     # check to see if property of interest is the right type
     correct_types = [np.int64, np.float64, int, float]
-    if type(getattr(obj_measures[0], regprop)) in correct_types: 
+    if type(getattr(obj_measures[0], regprop)) in correct_types:
         # blank mask to draw discs onto
         filtered_mask = np.zeros(labeled_img.shape, dtype=np.uint8)
         # Pull all values and calculate the mean
@@ -56,7 +56,7 @@ def filter_objs(bin_img, cut_side="upper", thresh="NA", regprop="area"):
             print("Max value = " + str(max(valueslist)))
             print("Mean value = " + str(sum(valueslist)/len(valueslist)))
 
-        _debug(visual=filtered_mask, filename=os.path.join(params.debug_outdir, 
+        _debug(visual=filtered_mask, filename=os.path.join(params.debug_outdir,
                                                            f"{params.device}_discs_mask_{regprop}_{thresh}.png"))
     else:  # Property not the right type
         print(type(getattr(obj_measures[0], regprop)))
