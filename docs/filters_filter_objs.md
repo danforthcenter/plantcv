@@ -3,7 +3,7 @@
 Calculates properties of objects in a binary image. 
 Keeps objects that are either above or below a specified threshold for a specified property.
 
-**plantcv.filters.filter_objs**(*bin_img, cut_side = "upper", thresh="NA", property="area"*)
+**plantcv.filters.filter_objs**(*bin_img, cut_side = "upper", thresh="NA", regprop="area"*)
 
 **returns** filtered_mask
 
@@ -11,7 +11,7 @@ Keeps objects that are either above or below a specified threshold for a specifi
     - bin_img - Binary image containing the connected regions to consider
     - cut_side - "upper" or "lower", side to keep when objects are divided by the "thresh" value
     - thresh - Threshold for keeping objects. Default is to threshold at the mean value for the property
-    - property - Which object property to filter on
+    - regprop - Which object property to filter on
 - **Context:**
     - Used to isolate objects of interest in a binary image based on their features. The output mask can be used for further analysis.
 - **Example use:**
@@ -32,13 +32,13 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 # Apply filter on solidity
-filtered_solidity = pcv.filters.filter_objs(bin_img=binary_img, cut_side="upper", thresh=0.6, property="solidity")
+filtered_solidity = pcv.filters.filter_objs(bin_img=binary_img, cut_side="upper", thresh=0.6, regprop="solidity")
 
 # Apply filter on eccentricity
-filtered_eccentricity = pcv.filters.filter_objs(bin_img=binary_img, cut_side="lower", thresh=0.99, property="eccentricity")
+filtered_eccentricity = pcv.filters.filter_objs(bin_img=binary_img, cut_side="lower", thresh=0.99, regprop="eccentricity")
 
 # Apply filter on area
-filtered_eccentricity = pcv.filters.filter_objs(bin_img=binary_img, cut_side="lower", thresh=6000, property="area")
+filtered_eccentricity = pcv.filters.filter_objs(bin_img=binary_img, cut_side="lower", thresh=6000, regprop="area")
 
 ```
 
