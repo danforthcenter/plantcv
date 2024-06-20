@@ -5,7 +5,7 @@ from skimage.measure import label, regionprops
 from plantcv.plantcv import params, fatal_error
 from plantcv.plantcv._debug import _debug
 
-def filter_property(bin_img, cut_side = "upper", thresh="NA", property="area"):
+def filter_objs(bin_img, cut_side = "upper", thresh="NA", property="area"):
     """Detect/filter regions in a binary image based on anything calculated by skimage.measure.regionprops.
     Inputs:
     bin_img         = Binary image containing the connected regions to consider

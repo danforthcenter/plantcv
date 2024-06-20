@@ -3,7 +3,7 @@
 Calculates properties of objects in a binary image. 
 Keeps objects that are either above or below a specified threshold for a specified property.
 
-**plantcv.filters.filter**(*bin_img, cut_side = "upper", thresh="NA", property="area"*)
+**plantcv.filters.filter_objs**(*bin_img, cut_side = "upper", thresh="NA", property="area"*)
 
 **returns** filtered_mask
 
@@ -20,7 +20,7 @@ Keeps objects that are either above or below a specified threshold for a specifi
 
 **Input binary mask**
 
-![bin_img](img/documentation_images/filters_filter/example_barley_mask.png)
+![bin_img](img/documentation_images/filters_filter_objs/example_barley_mask.png)
 
 
 ```python
@@ -32,26 +32,26 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 # Apply filter on solidity
-filtered_solidity = pcv.filters.filter(bin_img=binary_img, cut_side="upper", thresh=0.6, property="solidity")
+filtered_solidity = pcv.filters.filter_objs(bin_img=binary_img, cut_side="upper", thresh=0.6, property="solidity")
 
 # Apply filter on eccentricity
-filtered_eccentricity = pcv.filters.filter(bin_img=binary_img, cut_side="lower", thresh=0.99, property="eccentricity")
+filtered_eccentricity = pcv.filters.filter_objs(bin_img=binary_img, cut_side="lower", thresh=0.99, property="eccentricity")
 
 # Apply filter on area
-filtered_eccentricity = pcv.filters.filter(bin_img=binary_img, cut_side="lower", thresh=6000, property="area")
+filtered_eccentricity = pcv.filters.filter_objs(bin_img=binary_img, cut_side="lower", thresh=6000, property="area")
 
 ```
 
 **Mask of objects with solidity > 0.6**
 
-![count_img](img/documentation_images/filters_filter/example_filter_1.png)
+![count_img](img/documentation_images/filters_filter_objs/example_filter_1.png)
 
 **Mask of objects with eccentricity < 0.99**
 
-![count_img](img/documentation_images/filters_filter/example_filter_2.png)
+![count_img](img/documentation_images/filters_filter_objs/example_filter_2.png)
 
 **Mask of objects with area < 6000**
 
-![count_img](img/documentation_images/filters_filter/example_filter_3.png)
+![count_img](img/documentation_images/filters_filter_objs/example_filter_3.png)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/filters/filter.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/filters/filter_objs.py)

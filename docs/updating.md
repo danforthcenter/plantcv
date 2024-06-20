@@ -427,10 +427,10 @@ pages for more details on the input and output variable types.
 * pre v4.3:  NA 
 * post v4.3: filtered_mask = **plantcv.filters.eccentricity**(*bin_img, ecc_thresh=0*)
 
-#### plantcv.filters.filter
+#### plantcv.filters.filter_objs
 
 * pre v4.4:  NA 
-* post v4.4: filtered_mask = **plantcv.filters.filter**(*bin_img, cut_side = "upper", thresh="NA", property="area"*)
+* post v4.4: filtered_mask = **plantcv.filters.filter_objs**(*bin_img, cut_side = "upper", thresh="NA", property="area"*)
 
 #### plantcv.find_objects
 

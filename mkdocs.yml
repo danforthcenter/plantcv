@@ -67,7 +67,7 @@ nav:
       - 'Flip Image': flip.md
       - 'Filters':
         - 'Eccentricity Filter': filters_eccentricity.md
-        - 'Filter': filters_filter.md
+        - 'Object Filter': filters_filter_objs.md
         - 'Laplace Filter': laplace_filter.md
         - 'Sobel Filter': sobel_filter.md
         - 'Scharr Filter': scharr_filter.md
