@@ -1,0 +1,82 @@
+import os
+import cv2
+import random
+import numpy as np
+from skimage.measure import label, regionprops
+from plantcv.plantcv import params
+from plantcv.plantcv._debug import _debug
+from plantcv.plantcv import color_palette
+
+
+
+def region_props(bin_img, num_objects=50, img=None):
+    """Detect/filter regions in a binary image based on object area.
+
+    Inputs:
+    bin_img         = Binary image containing the connected regions to consider
+    num_objects     = Number of object to get annotated with property value labels (optional, default=50)
+    img             = (optional, default=None) Visualization image for plotting
+
+    Returns:
+    filtered_mask  = Binary image that contains only the filtered regions
+
+    :param bin_img: numpy.ndarray
+    :param upper_thresh: float
+    :param lower_thresh: float
+    :return filtered_mask: numpy.ndarray
+    """
+    debug = params.debug
+    params.debug = None
+    
+    params.device += 1
+    plotting_img = np.copy(img)
+    # Convert grayscale images to color
+    if len(np.shape(plotting_img)) == 2:
+        plotting_img = cv2.cvtColor(plotting_img, cv2.COLOR_GRAY2BGR)
+        
+    label_coord_x = []
+    label_coord_y = []
+    prop_vals = []
+    
+    rand_color = color_palette(num=num_objects, saved=False)
+    random.shuffle(rand_color)
+    
+    # label connected regions
+    labeled_img = label(bin_img)
+    # measure region properties
+    obj_measures = regionprops(labeled_img)
+    # blank masks to draw regions onto
+    keep = np.zeros(labeled_img.shape, dtype=np.uint8)
+    
+    # sort based on property value of each region
+    sorted_objects = sorted(
+            regionprops(labeled_img),
+            key=lambda r: r.area,
+            reverse=True)
+
+    for i, obj in enumerate(sorted_objects):
+        # Break out of the for loop once the number of objects have been plotted
+        if i >= num_objects:
+            break
+        # ID and store area values and centers of mass for labeling them
+        # Skip iteration if contour area is zero
+        # This is needed because cv2.contourArea can be > 0 while moments area is 0.
+        prop_vals.append(obj.area)
+        label_coord_x.append(obj.centroid[0])
+        label_coord_y.append(obj.centroid[1])
+        # Fill in objects with color
+        #cv2.drawContours(plotting_img, sorted_objects, i, rand_color[i], thickness=-1)
+        ##! not straightforward since contttours list not resorted too anymore 
+    for c, value in enumerate(prop_vals):
+        text = f"{value:0,.0f}"
+        w = int(label_coord_x[c])
+        h = int(label_coord_y[c])
+        cv2.putText(img=plotting_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                    fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
+
+    params.debug = debug
+
+    _debug(visual=plotting_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_object_sizes.png'))
+
+    return plotting_img
+
