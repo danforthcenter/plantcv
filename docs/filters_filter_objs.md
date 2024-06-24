@@ -39,7 +39,7 @@ filtered_solidity = pcv.filters.filter_objs(bin_img=binary_img, cut_side="upper"
 filtered_eccentricity = pcv.filters.filter_objs(bin_img=binary_img, cut_side="lower", thresh=0.99, regprop="eccentricity")
 
 # Apply filter on area
-filtered_eccentricity = pcv.filters.filter_objs(bin_img=binary_img, cut_side="lower", thresh=6000, regprop="area")
+filtered_area = pcv.filters.filter_objs(bin_img=binary_img, cut_side="lower", thresh=6000, regprop="area")
 
 ```
 
