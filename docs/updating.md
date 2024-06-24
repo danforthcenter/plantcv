@@ -430,7 +430,7 @@ pages for more details on the input and output variable types.
 #### plantcv.filters.filter_objs
 
 * pre v4.4:  NA 
-* post v4.4: filtered_mask = **plantcv.filters.filter_objs**(*bin_img, cut_side = "upper", thresh="NA", regprop="area"*)
+* post v4.4: filtered_mask = **plantcv.filters.filter_objs**(*bin_img, cut_side = "upper", thresh=0, regprop="area"*)
 
 #### plantcv.find_objects
 
