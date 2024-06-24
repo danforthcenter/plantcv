@@ -39,13 +39,13 @@ def filter_objs(bin_img, cut_side="upper", thresh=0, regprop="area"):
         # Store the list of coordinates (row,col) for the objects that pass
         if cut_side == "upper":
             for obj in obj_measures:
-                valueslist.append(getattr(obj,regprop))
+                valueslist.append(getattr(obj, regprop))
                 if getattr(obj, regprop) > thresh:
                     # Convert coord values to int
                     filtered_mask += np.where(labeled_img == obj.label, 255, 0).astype(np.uint8)
         elif cut_side == "lower":
             for obj in obj_measures:
-                valueslist.append(getattr(obj,regprop))
+                valueslist.append(getattr(obj, regprop))
                 if getattr(obj, regprop) < thresh:
                     # Convert coord values to int
                     filtered_mask += np.where(labeled_img == obj.label, 255, 0).astype(np.uint8)

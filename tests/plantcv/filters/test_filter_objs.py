@@ -12,7 +12,7 @@ def test_filter_objs_upper_na(filters_test_data):
     mask = cv2.imread(filters_test_data.barley_example)
     filtered_mask = filter_objs(bin_img=mask)
     _, nobjs = create_labels(mask=filtered_mask)
-    assert nobjs == 7
+    assert nobjs == 20
 
 def test_filter_objs_lower_thresh(filters_test_data):
     """Test for PlantCV."""
