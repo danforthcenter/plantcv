@@ -6,7 +6,7 @@ from plantcv.plantcv import params, fatal_error
 from plantcv.plantcv._debug import _debug
 
 
-def filter_objs(bin_img, cut_side="upper", thresh="NA", regprop="area"):
+def filter_objs(bin_img, cut_side="upper", thresh=0, regprop="area"):
     """Detect/filter regions in a binary image based on anything calculated by skimage.measure.regionprops.
     Inputs:
     bin_img         = Binary image containing the connected regions to consider
@@ -36,18 +36,16 @@ def filter_objs(bin_img, cut_side="upper", thresh="NA", regprop="area"):
         filtered_mask = np.zeros(labeled_img.shape, dtype=np.uint8)
         # Pull all values and calculate the mean
         valueslist = []
-        for obj in obj_measures:
-            valueslist.append(getattr(obj, regprop))
-        if thresh == "NA":
-            thresh = sum(valueslist)/len(valueslist)   # mean
         # Store the list of coordinates (row,col) for the objects that pass
         if cut_side == "upper":
             for obj in obj_measures:
+                valueslist.append(getattr(obj,regprop))
                 if getattr(obj, regprop) > thresh:
                     # Convert coord values to int
                     filtered_mask += np.where(labeled_img == obj.label, 255, 0).astype(np.uint8)
         elif cut_side == "lower":
             for obj in obj_measures:
+                valueslist.append(getattr(obj,regprop))
                 if getattr(obj, regprop) < thresh:
                     # Convert coord values to int
                     filtered_mask += np.where(labeled_img == obj.label, 255, 0).astype(np.uint8)

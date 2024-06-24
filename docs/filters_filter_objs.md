@@ -2,15 +2,16 @@
 
 Calculates properties of objects in a binary image. 
 Keeps objects that are either above or below a specified threshold for a specified property.
+When debug set to "plot," also prints the min, max, and mean of the specified property.
 
-**plantcv.filters.filter_objs**(*bin_img, cut_side = "upper", thresh="NA", regprop="area"*)
+**plantcv.filters.filter_objs**(*bin_img, cut_side = "upper", thresh=0, regprop="area"*)
 
 **returns** filtered_mask
 
 - **Parameters:**
     - bin_img - Binary image containing the connected regions to consider
     - cut_side - "upper" or "lower", side to keep when objects are divided by the "thresh" value
-    - thresh - Threshold for keeping objects. Default is to threshold at the mean value for the property
+    - thresh - Threshold for keeping objects. 
     - regprop - Which object property to filter on
 - **Context:**
     - Used to isolate objects of interest in a binary image based on their features. The output mask can be used for further analysis.
@@ -28,7 +29,7 @@ Keeps objects that are either above or below a specified threshold for a specifi
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file),
-# or "plot"
+# or "plot" 
 pcv.params.debug = "plot"
 
 # Apply filter on solidity
