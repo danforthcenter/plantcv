@@ -150,7 +150,6 @@ def _rgb_image_to_df(img, bins, lower_bound, upper_bound, mask, b_names):
         prop = np.append(prop, hist_percent)
         hist_count = np.append(hist_count, hist_)
         channel = channel + [b_name for _ in range(len(hist_percent))]
-    # return
     return pd.DataFrame(
         {'pixel intensity': px_int, 'proportion of pixels (%)': prop, 'hist_count': hist_count,
             'color channel': channel})

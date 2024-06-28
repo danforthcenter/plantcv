@@ -47,7 +47,21 @@ def _calculate_angle(pt_a, vert, pt_b):
 
 
 def _get_isle(index, obj, win):
-    """Find clusters of points with angles below the threshold"""
+    """Find clusters of points with angles below the threshold
+
+    Inputs:
+    index       = list of positions of acute links
+    obj         = object composition of the contour
+    win         = maximum cumulative pixel distance window for calculating angle
+
+    Returns:
+    isle        = list of clusters of points with angles below the threshold
+
+    :param index: list
+    :param obj: numpy.ndarray
+    :param win: int
+    :return isle: list"""
+
     isle = []
     island = []
 
@@ -71,7 +85,21 @@ def _get_isle(index, obj, win):
 
 
 def _get_internal_pixels(mask, obj, island):
-    """Get pixel values from the mask that are internal to the island"""
+    """Get pixel values from the mask that are internal to the island
+
+    Inputs:
+    mask        = binary mask used to generate contour array (necessary for ptvals)
+    obj         = object composition of the contour
+    island      = list of clusters of points with angles below the threshold
+
+    Returns:
+    vals        = list of pixel values within the island
+
+    :param mask: numpy.ndarray
+    :param obj: numpy.ndarray
+    :param island: list
+    :return vals: list
+    """
     vals = []
     pix_x, pix_y, w, h = cv2.boundingRect(obj[island])  # Obtain local window around island
     for c in range(w):
@@ -84,6 +112,21 @@ def _get_internal_pixels(mask, obj, island):
 
 
 def _find_farthest_point(obj, island):
+    """Helper function to find the farthest point in the island from the start and end points of the island
+
+    Inputs:
+    obj         = object composition of the contour
+    island      = list of clusters of points with angles below the threshold
+
+    Returns:
+    pt          = farthest point from the start and end points of the island
+    max_dist    = list of maximum distances from the start and end points of the island
+
+    :param obj: numpy.ndarray
+    :param island: list
+    :return pt: int
+    :return max_dist: list
+    """
     ss = obj[island[0]]            # Store isle "x" start site
     ts = obj[island[-1]]           # Store isle "x" termination site
     dist_1 = 0
@@ -101,6 +144,65 @@ def _find_farthest_point(obj, island):
             dist_1 = dist_2
 
     return pt, max_dist
+
+
+def _process_islands_for_landmarks(isle, mask, obj, params):
+    """Helper function to process islands to find landmark points and average pixel values within the island
+
+    Inputs:
+    isle        = list of clusters of points with angles below the threshold
+    mask        = binary mask used to generate contour array (necessary for ptvals)
+    obj         = object composition of the contour
+    params      = plantcv.params object
+
+    Returns:
+    maxpts      = list of landmark points
+    ss_pts      = list of starting points
+    ts_pts      = list of termination points
+    ptvals      = list of average pixel values within the island
+    max_dist    = list of maximum distances from the start and end points of the island
+
+    :param isle: list
+    :param mask: numpy.ndarray
+    :param obj: numpy.ndarray
+    :param params: plantcv.params
+    :return maxpts: list
+    :return ss_pts: list
+    :return ts_pts: list
+    :return ptvals: list
+    :return max_dist: list
+    """
+    maxpts = []
+    ss_pts = []
+    ts_pts = []
+    ptvals = []
+    max_dist = [['cont_pos', 'max_dist', 'angle']]
+    for island in isle:
+        vals = _get_internal_pixels(mask, obj, island)
+        if len(vals) > 0:
+            ptvals.append(sum(vals)/len(vals))
+            vals = []
+        else:
+            ptvals.append('NaN')        # If no values can be retrieved (small/collapsed contours)
+            vals = []
+        if len(island) >= 3:               # If landmark is multiple points (distance scan for position)
+            if params.debug is not None:
+                print('route C')
+
+            pt, max_dist = _find_farthest_point(obj, island)
+            if params.debug is not None:
+                print(f"Landmark site: {pt}, Start site: {island[0]}, Term. site: {island[-1]}")
+
+            maxpts.append(pt)           # Empty 'pts' prior to next mean distance scan
+            ss_pts.append(island[0])
+            ts_pts.append(island[-1])
+
+        if params.debug is not None:
+            print(f'Landmark point indices: {maxpts}')
+            print(f'Starting site indices: {ss_pts}')
+            print(f'Termination site indices: {ts_pts}')
+
+    return maxpts, ss_pts, ts_pts, ptvals, max_dist
 
 
 def acute(img, mask, win, threshold):
@@ -168,37 +270,7 @@ def acute(img, mask, win, threshold):
         if params.debug is not None:
             print('Microcontour...')
 
-    # Homologous point maximum distance method
-    pt = []
-    maxpts = []
-    ss_pts = []
-    ts_pts = []
-    ptvals = []
-    max_dist = [['cont_pos', 'max_dist', 'angle']]
-    for island in isle:
-        vals = _get_internal_pixels(mask, obj, island)
-        if len(vals) > 0:
-            ptvals.append(sum(vals)/len(vals))
-            vals = []
-        else:
-            ptvals.append('NaN')        # If no values can be retrieved (small/collapsed contours)
-            vals = []
-        if len(island) >= 3:               # If landmark is multiple points (distance scan for position)
-            if params.debug is not None:
-                print('route C')
-
-            pt, max_dist = _find_farthest_point(obj, island)
-            if params.debug is not None:
-                print(f"Landmark site: {pt}, Start site: {island[0]}, Term. site: {island[-1]}")
-
-            maxpts.append(pt)           # Empty 'pts' prior to next mean distance scan
-            ss_pts.append(island[0])
-            ts_pts.append(island[-1])
-
-        if params.debug is not None:
-            print(f'Landmark point indices: {maxpts}')
-            print(f'Starting site indices: {ss_pts}')
-            print(f'Termination site indices: {ts_pts}')
+    maxpts, ss_pts, ts_pts, ptvals, max_dist = _process_islands_for_landmarks(isle, mask, obj, params)
 
     homolog_pts = obj[maxpts]
     start_pts = obj[ss_pts]
