@@ -8,15 +8,6 @@ from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
 
 
-def _get_index(chain, threshold):
-    """Helper function for identifying links in chain with acute angles"""
-    index = []
-    for c, link in enumerate(chain):     # Identify links in chain with acute angles
-        if float(link) <= threshold:
-            index.append(c)         # Append positions of acute links to index
-    return index
-
-
 def _get_distance(point1, point2):
     """Helper function for distance between two points"""
     return np.sqrt((point1[0][0]-point2[0][0]) ** 2 + (point1[0][1]-point2[0][1]) ** 2)
@@ -45,14 +36,71 @@ def _get_point(obj, k, direction, win):
     return point
 
 
-def _store_pixel_values(obj, island, mask, vals):
-    pix_x, pix_y, w, h = cv2.boundingRect(obj[island])
+def _calculate_angle(pt_a, vert, pt_b):
+    """Calculate angle in degrees using the Law of Cosines"""
+    p12 = _get_distance(vert, pt_a)
+    p13 = _get_distance(vert, pt_b)
+    p23 = _get_distance(pt_a, pt_b)
+    dot = (p12 ** 2 + p13 ** 2 - p23 ** 2) / (2 * p12 * p13)
+    ang = math.degrees(math.acos(dot))
+    return ang
+
+
+def _get_isle(index, obj, win):
+    """Find clusters of points with angles below the threshold"""
+    isle = []
+    island = []
+
+    for ind in index:           # Scan for iterative links within index
+        if not island:
+            island.append(ind)       # Initiate new link island
+        elif island[-1]+1 == ind:
+            island.append(ind)       # Append successful iteration to island
+        elif island[-1]+1 != ind:
+            pt_a = obj[ind]
+            pt_b = obj[island[-1]+1]
+            dist = np.sqrt(np.square(pt_a[0][0]-pt_b[0][0])+np.square(pt_a[0][1]-pt_b[0][1]))
+            if win/2 > dist:
+                island.append(ind)
+            else:
+                isle.append(island)
+                island = [ind]
+
+    isle.append(island)
+    return isle
+
+
+def _get_internal_pixels(mask, obj, island):
+    """Get pixel values from the mask that are internal to the island"""
+    vals = []
+    pix_x, pix_y, w, h = cv2.boundingRect(obj[island])  # Obtain local window around island
     for c in range(w):
         for r in range(h):
             # Identify pixels in local window internal to the island hull
             pos = cv2.pointPolygonTest(obj[island], (pix_x+c, pix_y+r), 0)
             if pos > 0:
                 vals.append(mask[pix_y+r][pix_x+c])  # Store pixel value if internal
+    return vals
+
+
+def _find_farthest_point(obj, island):
+    ss = obj[island[0]]            # Store isle "x" start site
+    ts = obj[island[-1]]           # Store isle "x" termination site
+    dist_1 = 0
+    pt = island[0]
+    max_dist = []
+
+    for d in island:
+        site = obj[[d]]
+        ss_d = np.sqrt(np.square(ss[0][0] - site[0][0][0]) + np.square(ss[0][1] - site[0][0][1]))
+        ts_d = np.sqrt(np.square(ts[0][0] - site[0][0][0]) + np.square(ts[0][1] - site[0][0][1]))
+        dist_2 = np.mean([np.abs(ss_d), np.abs(ts_d)])
+
+        if dist_2 > dist_1:
+            pt = d
+            dist_1 = dist_2
+
+    return pt, max_dist
 
 
 def acute(img, mask, win, threshold):
@@ -66,7 +114,7 @@ def acute(img, mask, win, threshold):
     threshold   = angle score threshold to be applied for mapping out landmark
                   coordinate clusters within each contour
 
-    Outputs:
+    Returns:
     homolog_pts = pseudo-landmarks selected from each landmark cluster
     start_pts   = pseudo-landmark island starting position; useful in parsing homolog_pts in downstream analyses
     stop_pts    = pseudo-landmark island end position ; useful in parsing homolog_pts in downstream analyses
@@ -93,45 +141,19 @@ def acute(img, mask, win, threshold):
     contours, hierarchy = _cv2_findcontours(bin_img=mask)
     obj = _object_composition(contours=contours, hierarchy=hierarchy)
 
-    chain = []                                         # Create empty chain to store angle scores
-    for k in list(range(len(obj))):                    # Coordinate-by-coordinate 3-point assignments
-        vert = obj[k]
-        pt_a = _get_point(obj, k, 'reverse', win)
-        pt_b = _get_point(obj, k, 'forward', win)
+    chain = [_calculate_angle(_get_point(obj, k, 'reverse', win), obj[k], _get_point(obj, k, 'forward', win))
+             for k in range(len(obj))]
 
-        # Angle in radians derived from Law of Cosines, converted to degrees
-        p12 = _get_distance(vert, pt_a)
-        p13 = _get_distance(vert, pt_b)
-        p23 = _get_distance(pt_a, pt_b)
-        dot = (p12 ** 2 + p13 ** 2 - p23 ** 2)/(2*p12*p13)
+    index = []                      # Index chain to find clusters below angle threshold
 
-        ang = math.degrees(math.acos(dot))
-
-        chain.append(ang)
-    index = _get_index(chain, threshold)  # Index chain to find clusters below angle threshold
+    for c, link in enumerate(chain):     # Identify links in chain with acute angles
+        if float(link) <= threshold:
+            index.append(c)         # Append positions of acute links to index
 
     if len(index) == 0:
         return [], [], [], [], [], []
 
-    isle = []
-    island = []
-
-    for ind in index:           # Scan for iterative links within index
-        if not island:
-            island.append(ind)       # Initiate new link island
-        elif island[-1]+1 == ind:
-            island.append(ind)       # Append successful iteration to island
-        elif island[-1]+1 != ind:
-            pt_a = obj[ind]
-            pt_b = obj[island[-1]+1]
-            dist = np.sqrt(np.square(pt_a[0][0]-pt_b[0][0])+np.square(pt_a[0][1]-pt_b[0][1]))
-            if win/2 > dist:
-                island.append(ind)
-            else:
-                isle.append(island)
-                island = [ind]
-
-    isle.append(island)
+    isle = _get_isle(index, obj, win)  # Find clusters of points with angles below the threshold
 
     if len(isle) > 1:
         if (isle[0][0] == 0) & (isle[-1][-1] == (len(chain)-1)):
@@ -148,14 +170,13 @@ def acute(img, mask, win, threshold):
 
     # Homologous point maximum distance method
     pt = []
-    vals = []
     maxpts = []
     ss_pts = []
     ts_pts = []
     ptvals = []
     max_dist = [['cont_pos', 'max_dist', 'angle']]
     for island in isle:
-        _store_pixel_values(obj, island, mask, vals)
+        vals = _get_internal_pixels(mask, obj, island)
         if len(vals) > 0:
             ptvals.append(sum(vals)/len(vals))
             vals = []
@@ -165,20 +186,8 @@ def acute(img, mask, win, threshold):
         if len(island) >= 3:               # If landmark is multiple points (distance scan for position)
             if params.debug is not None:
                 print('route C')
-            ss = obj[island[0]]            # Store isle "x" start site
-            ts = obj[island[-1]]           # Store isle "x" termination site
-            dist_1 = 0
-            for d in island:   # Scan from ss to ts within isle "x"
-                site = obj[[d]]
-                ss_d = np.sqrt(np.square(ss[0][0] - site[0][0][0]) + np.square(ss[0][1] - site[0][0][1]))
-                ts_d = np.sqrt(np.square(ts[0][0] - site[0][0][0]) + np.square(ts[0][1] - site[0][0][1]))
-                # Current mean distance of 'd' to 'ss' & 'ts'
-                dist_2 = np.mean([np.abs(ss_d), np.abs(ts_d)])
-                max_dist.append([d, dist_2, chain[d]])
-                if dist_2 > dist_1:                          # Current mean distance better fit that previous best?
-                    pt = d
-                    dist_1 = dist_2                          # Current mean becomes new best mean
-            # print pt
+
+            pt, max_dist = _find_farthest_point(obj, island)
             if params.debug is not None:
                 print(f"Landmark site: {pt}, Start site: {island[0]}, Term. site: {island[-1]}")
 
