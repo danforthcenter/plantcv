@@ -51,8 +51,7 @@ def _add_rows(maskv, ix, my, position):
 
     if maskv.shape[0] > ix:
         return maskv[:ix, :my]
-    else:
-        return _adjust_height(maskv, ix, my)
+    return _adjust_height(maskv, ix, my)
 
 
 def _adjust_height(maskv, ix, my):
@@ -74,7 +73,7 @@ def _adjust_height(maskv, ix, my):
 
 def _add_columns(maskv, iy, y, position):
     """Add columns to the left or right"""
-    mx, my = maskv.shape
+    mx, _ = maskv.shape
     if position == "left":
         cols = np.zeros((mx, y), dtype=np.uint8)
         maskv = np.hstack((cols, maskv))
@@ -84,8 +83,7 @@ def _add_columns(maskv, iy, y, position):
 
     if maskv.shape[1] > iy:
         return maskv[:, :iy]
-    else:
-        return _adjust_width(maskv, iy, mx)
+    return _adjust_width(maskv, iy, mx)
 
 
 def _adjust_width(maskv, iy, mx):
