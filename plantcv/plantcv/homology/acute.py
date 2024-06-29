@@ -61,8 +61,8 @@ def _get_isle(index, obj, win):
     :param index: list
     :param obj: numpy.ndarray
     :param win: int
-    :return isle: list"""
-
+    :return isle: list
+    """
     isle = []
     island = []
 
