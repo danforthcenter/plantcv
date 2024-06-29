@@ -55,21 +55,9 @@ def json2csv(json_file, csv_prefix):
     scalar_file = csv_prefix + "-single-value-traits.csv"
     multi_file = csv_prefix + "-multi-value-traits.csv"
 
-    # Create a CSV file of vector traits
-    with open(multi_file, "w") as csv:
-        # Create a header for the long-format table
-        csv.write(",".join(map(str, meta_vars + ["sample", "trait", "value", "label"])) + "\n")
-        # Iterate over each entity
-        for entity in data["entities"]:
-            # Add metadata variables
-            meta_row = _create_metadata_row(meta_vars=meta_vars, metadata=entity["metadata"])
-            # Add trait variables
-            for sample, var in itertools.product(entity["observations"].keys(), multi_vars):
-                data_rows = _create_data_rows(var=var, obs=entity["observations"][sample])
-                for row in data_rows:
-                    csv.write(",".join(map(str, meta_row + [sample] + row)) + "\n")
-
     # Create a CSV file of scalar traits
+    write_to_csv(multi_file, meta_vars, multi_vars, data)
+
     # Initialize a dictionary to store the data
     scalar_data = {
         "sample": [],
@@ -109,6 +97,23 @@ def json2csv(json_file, csv_prefix):
 def _last_index(*args):
     """Aggregation function to return the last index of a list."""
     return np.array(args[-1])[-1]
+
+
+def write_to_csv(multi_file, meta_vars, multi_vars, data):
+    """Helper method to write traits to a CSV file."""
+    # Create a CSV file of vector traits
+    with open(multi_file, "w") as csv:
+        # Create a header for the long-format table
+        csv.write(",".join(map(str, meta_vars + ["sample", "trait", "value", "label"])) + "\n")
+        # Iterate over each entity
+        for entity in data["entities"]:
+            # Add metadata variables
+            meta_row = _create_metadata_row(meta_vars=meta_vars, metadata=entity["metadata"])
+            # Add trait variables
+            for sample, var in itertools.product(entity["observations"].keys(), multi_vars):
+                data_rows = _create_data_rows(var=var, obs=entity["observations"][sample])
+                for row in data_rows:
+                    csv.write(",".join(map(str, meta_row + [sample] + row)) + "\n")
 
 
 def _create_metadata_row(meta_vars, metadata):
