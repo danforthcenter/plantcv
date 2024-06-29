@@ -146,14 +146,14 @@ def _find_farthest_point(obj, island):
     return pt, max_dist
 
 
-def _process_islands_for_landmarks(isle, mask, obj, params):
+def _process_islands_for_landmarks(isle, mask, obj, params_obj):
     """Helper function to process islands to find landmark points and average pixel values within the island
 
-    Inputs:
+    Inputs:f
     isle        = list of clusters of points with angles below the threshold
     mask        = binary mask used to generate contour array (necessary for ptvals)
     obj         = object composition of the contour
-    params      = plantcv.params object
+    params_obj      = plantcv.params object
 
     Returns:
     maxpts      = list of landmark points
@@ -165,7 +165,7 @@ def _process_islands_for_landmarks(isle, mask, obj, params):
     :param isle: list
     :param mask: numpy.ndarray
     :param obj: numpy.ndarray
-    :param params: plantcv.params
+    :param params_obj: plantcv.params
     :return maxpts: list
     :return ss_pts: list
     :return ts_pts: list
@@ -186,18 +186,18 @@ def _process_islands_for_landmarks(isle, mask, obj, params):
             ptvals.append('NaN')        # If no values can be retrieved (small/collapsed contours)
             vals = []
         if len(island) >= 3:               # If landmark is multiple points (distance scan for position)
-            if params.debug is not None:
+            if params_obj.debug is not None:
                 print('route C')
 
             pt, max_dist = _find_farthest_point(obj, island)
-            if params.debug is not None:
+            if params_obj.debug is not None:
                 print(f"Landmark site: {pt}, Start site: {island[0]}, Term. site: {island[-1]}")
 
             maxpts.append(pt)           # Empty 'pts' prior to next mean distance scan
             ss_pts.append(island[0])
             ts_pts.append(island[-1])
 
-        if params.debug is not None:
+        if params_obj.debug is not None:
             print(f'Landmark point indices: {maxpts}')
             print(f'Starting site indices: {ss_pts}')
             print(f'Termination site indices: {ts_pts}')
