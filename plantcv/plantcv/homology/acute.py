@@ -47,7 +47,8 @@ def _calculate_angle(pt_a, vert, pt_b):
 
 
 def _get_isle(index, obj, win):
-    """Find clusters of points with angles below the threshold
+    """
+    Find clusters of points with angles below the threshold
 
     Inputs:
     index       = list of positions of acute links
@@ -85,7 +86,8 @@ def _get_isle(index, obj, win):
 
 
 def _get_internal_pixels(mask, obj, island):
-    """Get pixel values from the mask that are internal to the island
+    """
+    Get pixel values from the mask that are internal to the island
 
     Inputs:
     mask        = binary mask used to generate contour array (necessary for ptvals)
@@ -147,9 +149,10 @@ def _find_farthest_point(obj, island):
 
 
 def _process_islands_for_landmarks(isle, mask, obj, params_obj):
-    """Helper function to process islands to find landmark points and average pixel values within the island
+    """
+    Helper function to process islands to find landmark points and average pixel values within the island
 
-    Inputs:f
+    Inputs:
     isle        = list of clusters of points with angles below the threshold
     mask        = binary mask used to generate contour array (necessary for ptvals)
     obj         = object composition of the contour
@@ -206,7 +209,8 @@ def _process_islands_for_landmarks(isle, mask, obj, params_obj):
 
 
 def acute(img, mask, win, threshold):
-    """Identify landmark positions within a contour for morphometric analysis
+    """
+    Identify landmark positions within a contour for morphometric analysis
 
     Inputs:
     img         = Original image used for plotting purposes
