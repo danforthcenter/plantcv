@@ -326,9 +326,15 @@ def test_filter_nested():
                     dtype=np.int32)]
     cnt_str = np.array([[[-1, -1,  1, -1], [-1, -1, -1,  0]]], dtype=np.int32)
     cv2.drawContours(mask, cnt, -1, (255), -1, lineType=8, hierarchy=cnt_str)
+    area_pre = cv2.countNonZero(mask)
+    # Add small 2x2 square that should get filtered out
+    mask = cv2.rectangle(mask, (5, 5), (7, 7), 255, -1)
+    area_total = cv2.countNonZero(mask)
+
     roi = [np.array([[[0, 0]], [[0, 99]], [[99, 99]], [[99, 0]]], dtype=np.int32)]
     roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     roi_Obj = Objects(contours=[roi], hierarchy=[roi_str])
     filtered_mask = filter(mask=mask, roi=roi_Obj, roi_type="largest")
-    area = cv2.countNonZero(filtered_mask)
-    assert area == 580
+    filtered_area = cv2.countNonZero(filtered_mask)
+    assert area_pre == filtered_area
+    assert area_total > filtered_area
