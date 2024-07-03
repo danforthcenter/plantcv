@@ -565,6 +565,11 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, img_inv = **plantcv.invert**(*img, device, debug=None*)
 * post v3.0dev2: img_inv = **plantcv.invert**(*gray_img*)
 
+#### plantcv.io.open_url
+
+* pre v4.2.1: NA
+* post v4.2.1: img = **plantcv.io.open_url**(*url*)
+
 #### plantcv.io.random_subset
 
 * pre v3.14.0: NA
