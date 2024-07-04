@@ -112,6 +112,20 @@ def _last_index(*args):
 
 
 def _create_metadata_row(meta_vars, metadata):
+    """Create a row of metadata.
+
+    Parameters
+    ----------
+    meta_vars : list
+        List of metadata terms
+    metadata : dict
+        Metadata dictionary
+
+    Returns
+    -------
+    list
+        List of metadata values
+    """
     meta_row = []
     for var in meta_vars:
         val = "NA"
@@ -127,6 +141,20 @@ def _create_metadata_row(meta_vars, metadata):
 
 
 def _create_data_rows(var, obs):
+    """Create rows of data for a variable.
+
+    Parameters
+    ----------
+    var : str
+        Variable name
+    obs : dict
+        Data dictionary
+
+    Returns
+    -------
+    list
+        List of lists of data rows
+    """
     data_rows = []
     if var in obs:
         value = obs[var]["value"]
