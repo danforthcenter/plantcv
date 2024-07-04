@@ -397,7 +397,7 @@ def _read_filenames(config):
     # Get a list of all files
     if config.include_all_subdirs is False:
         # If subdirectories are excluded, use glob to get a list of all image files
-        fns = list(glob.glob(pathname=os.path.join(config.input_dir, '*%s' % config.imgformat)))
+        fns = list(glob.glob(pathname=os.path.join(config.input_dir, f'*{config.imgformat}')))
     else:
         # If subdirectories are included, recursively walk through the path
         fns = []

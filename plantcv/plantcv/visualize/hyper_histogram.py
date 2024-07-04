@@ -40,7 +40,7 @@ def _get_color_dict_nir():
     params.color_scale = "inferno"
     nir_wavelengths = np.arange(701, 1725)
     nir_colors_ = color_palette(num=256)
-    nir_colors_ = [tuple([xi / 255 for xi in nir_colors_[math.floor(idx / 4)]]) for (idx, _) in
+    nir_colors_ = [tuple(xi / 255 for xi in nir_colors_[math.floor(idx / 4)]) for (idx, _) in
                    enumerate(nir_wavelengths)]
     nir_colors = {}
     for i, wv in enumerate(nir_wavelengths):
