@@ -123,3 +123,4 @@ def landmark_reference_pt_dist(points_r, centroid_r, bline_r, label=None):
                             trait='average angle between landmark point and baseline',
                             method='plantcv.plantcv.landmark_reference_pt_dist', scale='degrees', datatype=float,
                             value=ang_ave_b, label='degrees')
+    return None

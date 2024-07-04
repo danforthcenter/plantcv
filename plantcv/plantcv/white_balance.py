@@ -10,6 +10,30 @@ from plantcv.plantcv import params
 
 
 def _hist(img, hmax, x, y, h, w, data_type):
+    """Corrects the exposure of an image based on its histogram.
+
+    Parameters
+    ----------
+    img : numpy.ndarray
+        An RGB image on which to perform the correction
+    hmax : int
+        The maximum pixel intensity value
+    x : int
+        The x-coordinate of the top left corner of the ROI
+    y : int
+        The y-coordinate of the top left corner of the ROI
+    h : int
+        The height of the ROI
+    w : int
+        The width of the ROI
+    data_type : type
+        The data type of the image
+
+    Returns
+    -------
+    numpy.ndarray
+        Image after exposure correction
+    """
     _, bins = np.histogram(img[y:y + h, x:x + w], bins='auto')
     max1 = np.amax(bins)
     alpha = hmax / float(max1)
@@ -19,6 +43,32 @@ def _hist(img, hmax, x, y, h, w, data_type):
 
 
 def _max(img, hmax, mask, x, y, h, w, data_type):
+    """Corrects the exposure of an image based on the maximum pixel intensity value.
+
+    Parameters
+    ----------
+    img : numpy.ndarray
+        An RGB image on which to perform the correction
+    hmax : int
+        The maximum pixel intensity value
+    mask : numpy.ndarray
+        An image mask
+    x : int
+        The x-coordinate of the top left corner of the ROI
+    y : int
+        The y-coordinate of the top left corner of the ROI
+    h : int
+        The height of the ROI
+    w : int
+        The width of the ROI
+    data_type : type
+        The data type of the image
+
+    Returns
+    -------
+    numpy.ndarray
+        Image after exposure correction
+    """
     imgcp = np.copy(img)
     cv2.rectangle(mask, (x, y), (x + w, y + h), (255, 255, 255), -1)
     mask_binary = mask[:, :, 0]
