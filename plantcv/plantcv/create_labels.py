@@ -57,7 +57,7 @@ def create_labels(mask, rois=None, roi_type="partial"):
     # Restore debug parameter
     params.debug = debug
     colorful = label2rgb(labeled_mask)
-    colorful2 = ((255*colorful).astype(np.uint8))
+    colorful2 = (255*colorful).astype(np.uint8)
 
     _debug(colorful2, filename=os.path.join(params.debug_outdir,
                                             str(params.device) +
