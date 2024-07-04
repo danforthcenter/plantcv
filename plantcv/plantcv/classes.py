@@ -397,18 +397,19 @@ class Objects:
     def __init__(self, contours: list = None, hierarchy: list = None):
         self.contours = contours
         self.hierarchy = hierarchy
+        self._n = 0
         if contours is None:
             self.contours = []
             self.hierarchy = []
 
     def __iter__(self):
-        self.n = 0
+        self._n = 0
         return self
 
     def __next__(self):
-        if self.n < len(self.contours):
-            self.n += 1
-            return Objects(contours=[self.contours[self.n-1]], hierarchy=[self.hierarchy[self.n-1]])
+        if self._n < len(self.contours):
+            self._n += 1
+            return Objects(contours=[self.contours[self._n-1]], hierarchy=[self.hierarchy[self._n-1]])
         raise StopIteration
 
     def append(self, contour, h):
