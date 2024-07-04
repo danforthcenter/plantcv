@@ -196,7 +196,7 @@ def _longest_axis(height, width, hull, cmx, cmy):
     vhull = np.vstack(hull)
 
     for i, c in enumerate(vhull):
-        xy = tuple([int(ci) for ci in c])
+        xy = tuple(int(ci) for ci in c)
         pptest = cv2.pointPolygonTest(centerpoint[0], xy, measureDist=True)
         dist.append(pptest)
 

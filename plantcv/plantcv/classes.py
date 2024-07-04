@@ -77,6 +77,7 @@ class Outputs:
 
         # Add a method to clear measurements
     def clear(self):
+        """Clear all measurements"""
         self.measurements = {}
         self.images = []
         self.observations = {}
@@ -366,7 +367,6 @@ class Points:
         :param figsize: desired figure size, (12,6) by default
         :attribute points: list of points as (x,y) coordinates tuples
         """
-
         self.fig, self.ax = plt.subplots(1, 1, figsize=figsize)
         self.ax.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
 
@@ -412,14 +412,17 @@ class Objects:
         raise StopIteration
 
     def append(self, contour, h):
+        """Append a contour and its hierarchy to the object"""
         self.contours.append(contour)
         self.hierarchy.append(h)
 
     def save(self, filename):
+        """Save the object to a file"""
         np.savez(filename, contours=self.contours, hierarchy=self.hierarchy)
 
     @staticmethod
     def load(filename):
+        """Load a saved object file"""
         file = np.load(filename)
         obj = Objects(file['contours'].tolist(), file['hierarchy'])
         return obj
