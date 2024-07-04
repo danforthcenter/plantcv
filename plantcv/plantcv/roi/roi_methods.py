@@ -229,6 +229,8 @@ def _calculate_grid(mask, nrows, ncols):
     centers = []
     for c in contours:
         m = cv2.moments(c)
+        if m['m00'] == 0:
+            continue
         cmx, cmy = (float(m['m10'] / m['m00']), float(m['m01'] / m['m00']))
         centers.append((cmx, cmy))
     # cluster by x and y coordinates to get grid layout
