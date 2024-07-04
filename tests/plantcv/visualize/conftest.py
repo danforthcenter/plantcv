@@ -1,6 +1,5 @@
 import pytest
 import os
-import numpy as np
 import matplotlib
 import pickle as pkl
 
@@ -23,12 +22,6 @@ class VisualizeTestData:
         self.small_composed_contours_file = os.path.join(self.datadir, "setaria_small_plant_composed_contours.npz")
         # PlantCV hyperspectral image object
         self.hsi_file = os.path.join(self.datadir, "hsi.pkl")
-
-    @staticmethod
-    def load_composed_contours(npz_file):
-        """Load data saved in a NumPy .npz file."""
-        data = np.load(npz_file, encoding="latin1")
-        return data['contour']
 
     @staticmethod
     def load_hsi(pkl_file):
