@@ -6,16 +6,21 @@ from plantcv.plantcv import fatal_error
 
 
 def sample_images(source_path, dest_path, num=100):
-    """Gets a sample of images from the source directory and copies them to the destination directory
+    """Gets a sample of images from the source directory and copies them to the destination directory.
 
-    Inputs
-    source_path = The directory containing the images to be sampled
-    dest_path = The directory where the sampled images will be copied
-    num = The number of images to sample
+    Parameters
+    ----------
+    source_path : str
+        The directory containing the images to be sampled
+    dest_path : str
+        The directory where the sampled images will be copied
+    num : int, optional
+        The number of images to sample, by default 100
 
-    :param source_path: str
-    :param dest_path: str
-    :param num: int
+    Raises
+    ------
+    IOError
+        Raised if the source directory does not exist
     """
     if not os.path.exists(source_path):
         raise IOError(f"Directory does not exist: {source_path}")
