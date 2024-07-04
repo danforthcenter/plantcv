@@ -12,26 +12,27 @@ from plantcv.plantcv import params
 def _hist(img, hmax, x, y, h, w, data_type):
     """Corrects the exposure of an image based on its histogram.
 
-    Inputs
-    img     = An RGB image on which to perform the correction
-    hmax    = The maximum pixel intensity value
-    x       = The x-coordinate of the top left corner of the ROI
-    y       = The y-coordinate of the top left corner of the ROI
-    h       = The height of the ROI
-    w       = The width of the ROI
-    data_type = The data type of the image
+    Parameters
+    ----------
+    img : numpy.ndarray
+        An RGB image on which to perform the correction
+    hmax : int
+        The maximum pixel intensity value
+    x : int
+        The x-coordinate of the top left corner of the ROI
+    y : int
+        The y-coordinate of the top left corner of the ROI
+    h : int
+        The height of the ROI
+    w : int
+        The width of the ROI
+    data_type : type
+        The data type of the image
 
     Returns
-    corrected = Image after exposure correction
-
-    :param img: numpy.ndarray
-    :param hmax: int
-    :param x: int
-    :param y: int
-    :param h: int
-    :param w: int
-    :param data_type: numpy.dtype
-    :return corrected: numpy.ndarray
+    -------
+    numpy.ndarray
+        Image after exposure correction
     """
     _, bins = np.histogram(img[y:y + h, x:x + w], bins='auto')
     max1 = np.amax(bins)
@@ -44,28 +45,29 @@ def _hist(img, hmax, x, y, h, w, data_type):
 def _max(img, hmax, mask, x, y, h, w, data_type):
     """Corrects the exposure of an image based on the maximum pixel intensity value.
 
-    Inputs
-    img     = An RGB image on which to perform the correction
-    hmax    = The maximum pixel intensity value
-    mask    = An image mask
-    x       = The x-coordinate of the top left corner of the ROI
-    y       = The y-coordinate of the top left corner of the ROI
-    h       = The height of the ROI
-    w       = The width of the ROI
-    data_type = The data type of the image
+    Parameters
+    ----------
+    img : numpy.ndarray
+        An RGB image on which to perform the correction
+    hmax : int
+        The maximum pixel intensity value
+    mask : numpy.ndarray
+        An image mask
+    x : int
+        The x-coordinate of the top left corner of the ROI
+    y : int
+        The y-coordinate of the top left corner of the ROI
+    h : int
+        The height of the ROI
+    w : int
+        The width of the ROI
+    data_type : type
+        The data type of the image
 
     Returns
-    corrected = Image after exposure correction
-
-    :param img: numpy.ndarray
-    :param hmax: int
-    :param mask: numpy.ndarray
-    :param x: int
-    :param y: int
-    :param h: int
-    :param w: int
-    :param data_type: numpy.dtype
-    :return corrected: numpy.ndarray
+    -------
+    numpy.ndarray
+        Image after exposure correction
     """
     imgcp = np.copy(img)
     cv2.rectangle(mask, (x, y), (x + w, y + h), (255, 255, 255), -1)
