@@ -67,6 +67,7 @@ nav:
       - 'Flip Image': flip.md
       - 'Filters':
         - 'Eccentricity Filter': filters_eccentricity.md
+        - 'Object Filter': filters_obj_props.md
         - 'Laplace Filter': laplace_filter.md
         - 'Sobel Filter': sobel_filter.md
         - 'Scharr Filter': scharr_filter.md
@@ -88,6 +89,7 @@ nav:
       - 'Image Fusion': image_fusion.md
       - 'Invert': invert.md
       - 'I/O Functions':
+          - 'Open Image from URL': io_open_url.md
           - 'Random Subset': io_random_subset.md
           - 'Read Dataset': io_read_dataset.md
       - 'Kmeans Clustering Classifier': kmeans_classifier.md
