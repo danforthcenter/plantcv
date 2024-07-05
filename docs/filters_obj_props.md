@@ -33,26 +33,26 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 # Apply filter on solidity
-filtered_solidity = pcv.filters.filter_objs(bin_img=binary_img, cut_side="upper", thresh=0.6, regprop="solidity")
+filtered_solidity = pcv.filters.obj_props(bin_img=binary_img, cut_side="upper", thresh=0.6, regprop="solidity")
 
 # Apply filter on eccentricity
-filtered_eccentricity = pcv.filters.filter_objs(bin_img=binary_img, cut_side="lower", thresh=0.99, regprop="eccentricity")
+filtered_eccentricity = pcv.filters.obj_props(bin_img=binary_img, cut_side="lower", thresh=0.99, regprop="eccentricity")
 
 # Apply filter on area
-filtered_area = pcv.filters.filter_objs(bin_img=binary_img, cut_side="lower", thresh=6000, regprop="area")
+filtered_area = pcv.filters.obj_props(bin_img=binary_img, cut_side="lower", thresh=6000, regprop="area")
 
 ```
 
 **Mask of objects with solidity > 0.6**
 
-![count_img](img/documentation_images/filters_filter_objs/example_filter_1.png)
+![count_img](img/documentation_images/filters_obj_props/example_filter_1.png)
 
 **Mask of objects with eccentricity < 0.99**
 
-![count_img](img/documentation_images/filters_filter_objs/example_filter_2.png)
+![count_img](img/documentation_images/filters_obj_props/example_filter_2.png)
 
 **Mask of objects with area < 6000**
 
-![count_img](img/documentation_images/filters_filter_objs/example_filter_3.png)
+![count_img](img/documentation_images/filters_obj_props/example_filter_3.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/filters/filter_objs.py)
