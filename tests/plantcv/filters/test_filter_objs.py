@@ -14,6 +14,7 @@ def test_filter_objs_upper_na(filters_test_data):
     _, nobjs = create_labels(mask=filtered_mask)
     assert nobjs == 20
 
+
 def test_filter_objs_lower_thresh(filters_test_data):
     """Test for PlantCV."""
     # Read in test data
@@ -22,11 +23,13 @@ def test_filter_objs_lower_thresh(filters_test_data):
     _, nobjs = create_labels(mask=filtered_mask)
     assert nobjs == 11
 
+
 def test_bad_params(filters_test_data):
     """PlantCV Test"""
     mask = cv2.imread(filters_test_data.barley_example)
     with pytest.raises(RuntimeError):
         _ = obj_props(bin_img=mask, cut_side="middle")
+
 
 def test_bad_property(filters_test_data):
     """PlantCV Test"""
