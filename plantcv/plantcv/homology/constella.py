@@ -45,7 +45,7 @@ def _generate_labelnames(plmnames, grpnames):
     """Helper function for generating label names"""
     labelnames = []
     for li in range(0, len(plmnames)):
-        labelname = f'{plmnames[li]} ({int(grpnames[li])})'
+        labelname = f'{plmnames[li]} ({grpnames[li]})'
         labelnames.append(labelname)
     return labelnames
 
