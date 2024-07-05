@@ -6,7 +6,7 @@ from plantcv.plantcv import params, fatal_error
 from plantcv.plantcv._debug import _debug
 
 
-def filter_objs(bin_img: np.ndarray, cut_side: str = "upper", thresh: int | float = 0, regprop: str = "area") -> np.ndarray:
+def obj_props(bin_img: np.ndarray, cut_side: str = "upper", thresh: int | float = 0, regprop: str = "area") -> np.ndarray:
     """Detect/filter regions in a binary image based on calculated properties.
 
     Parameters:
