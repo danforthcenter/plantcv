@@ -134,16 +134,16 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     [vx, vy, x, y] = cv2.fitLine(combined_stem[0], cv2.DIST_L2, 0, 0.01, 0.01)
     stem_slope = -vy / vx
     stem_slope = stem_slope[0]
-    lefty = int((-x * vy / vx) + y)
-    righty = int(((cols - x) * vy / vx) + y)
+    lefty = int(np.array((-x * vy / vx) + y).item())
+    righty = int(np.array(((cols - x) * vy / vx) + y).item())
     cv2.line(labeled_img, (cols - 1, righty), (0, lefty), (150, 150, 150), 3)
 
     for t, segment in enumerate(insertion_segments):
         # Find line fit to each segment
         [vx, vy, x, y] = cv2.fitLine(segment, cv2.DIST_L2, 0, 0.01, 0.01)
         slope = -vy / vx
-        left_list = int((-x * vy / vx) + y)
-        right_list = int(((cols - x) * vy / vx) + y)
+        left_list = int(np.array((-x * vy / vx) + y).item())
+        right_list = int(np.array(((cols - x) * vy / vx) + y).item())
         segment_slopes.append(slope[0])
 
         # Draw slope lines if possible
