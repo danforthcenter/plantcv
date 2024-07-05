@@ -61,9 +61,9 @@ def filter_objs(bin_img: np.ndarray, cut_side: str = "upper", thresh: int | floa
         filtered_mask += np.where(labeled_img == obj.label, gray_val, 0).astype(np.uint8)
 
     if params.debug == "plot":
-        print("Min value = " + str(min(valueslist)))
-        print("Max value = " + str(max(valueslist)))
-        print("Mean value = " + str(sum(valueslist)/len(valueslist)))
+        print(f"Min value = {min(valueslist)}")
+        print(f"Max value = {max(valueslist)}")
+        print(f"Mean value = {sum(valueslist)/len(valueslist)}")
 
     _debug(visual=filtered_mask, filename=os.path.join(params.debug_outdir,
                                                        f"{params.device}_discs_mask_{regprop}_{thresh}.png"))
