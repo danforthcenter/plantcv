@@ -6,21 +6,25 @@ from plantcv.plantcv import params, fatal_error
 from plantcv.plantcv._debug import _debug
 
 
-def filter_objs(bin_img, cut_side="upper", thresh=0, regprop="area"):
-    """Detect/filter regions in a binary image based on anything calculated by skimage.measure.regionprops.
-    Inputs:
-    bin_img         = Binary image containing the connected regions to consider
-    cut_side        = "upper" or "lower", side to keep when objects are divided by the "thresh" value
-    thresh          = Threshold above which a region is kept
-    regprop         = Which object property to filter on
-                      Can choose from "float" or "int" type properties calculated by scikitimage.measure.regionprops
+def filter_objs(bin_img: np.ndarray, cut_side: str = "upper", thresh: int | float = 0, regprop: str = "area") -> np.ndarray:
+    """Detect/filter regions in a binary image based on calculated properties.
+
+    Parameters:
+    ----------
+    bin_img : numpy.ndarray
+        Binary image containing the objects to consider.
+    cut_side : str, default: "upper"
+        Side to keep when objects are divided by the "thresh" value.
+    thresh : int | float, default: 0
+        Region property threshold value.
+    regprop : str, default: "area"
+        Region property to filter on. Can choose from "area" or other int and float properties calculated by
+        skimage.measure.regionprops.
+
     Returns:
-    filtered_mask  = Binary image that contains only the detected objects
-    :param bin_img: numpy.ndarray
-    :param cut_sice: string
-    :param thresh: float
-    :param regprop: string
-    :return filtered_mask: numpy.ndarray
+    -------
+    filtered_mask : numpy.ndarray
+        Binary image that contains only the filtered objects.
     """
     params.device += 1
     if cut_side not in ("upper", "lower"):
