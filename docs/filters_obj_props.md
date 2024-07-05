@@ -4,7 +4,7 @@ Calculates properties of objects in a binary image.
 Keeps objects that are either above or below a specified threshold for a specified property.
 When debug set to "plot," also prints the min, max, and mean of the specified property.
 
-**plantcv.filters.filter_objs**(*bin_img, cut_side = "upper", thresh=0, regprop="area"*)
+**plantcv.filters.obj_props**(*bin_img, cut_side = "upper", thresh=0, regprop="area"*)
 
 **returns** filtered_mask
 
@@ -21,7 +21,7 @@ When debug set to "plot," also prints the min, max, and mean of the specified pr
 
 **Input binary mask**
 
-![bin_img](img/documentation_images/filters_filter_objs/example_barley_mask.png)
+![bin_img](img/documentation_images/filters_obj_props/example_barley_mask.png)
 
 
 ```python
