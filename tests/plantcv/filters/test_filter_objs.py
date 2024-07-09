@@ -1,17 +1,18 @@
 import cv2
 import pytest
-import plantcv.plantcv as pcv
+from plantcv.plantcv import params
 from plantcv.plantcv.filters import obj_props
 from plantcv.plantcv import create_labels
 
 
 def test_filter_objs_upper_na(filters_test_data):
     """Test for PlantCV."""
-    pcv.params.debug = "plot"
+    params.debug = "plot"
     # Read in test data
     mask = cv2.imread(filters_test_data.barley_example)
     filtered_mask = obj_props(bin_img=mask)
     _, nobjs = create_labels(mask=filtered_mask)
+    params.debug = None
     assert nobjs == 20
 
 
