@@ -5,7 +5,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 
 
-@pytest.mark.parametrize("debug", ["print", "plot"])
+@pytest.mark.parametrize("debug", ["print", "plot", None])
 def test_debug(debug, test_data, tmpdir):
     """Test for PlantCV."""
     # Create a test tmp directory
