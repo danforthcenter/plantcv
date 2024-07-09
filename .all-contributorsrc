@@ -590,6 +590,25 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "kaitlynrying",
+      "name": "Kaitlyn Ying",
+      "avatar_url": "https://avatars.githubusercontent.com/u/156353832?v=4",
+      "profile": "https://github.com/kaitlynrying",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "ghernandez-57",
+      "name": "ghernandez-57",
+      "avatar_url": "https://avatars.githubusercontent.com/u/170016226?v=4",
+      "profile": "https://github.com/ghernandez-57",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

@@ -14,7 +14,7 @@
     - Used to define a grid of multiple circular regions of interest in the same binary mask. Users
       specify a number of rows and columns, and the function detects a grid of circular ROIs based
       on the inputs. A custom radius can optionally be set for the individual circles. If the image from
-      which the binary mask was created is passed as an argumnet, ROIs will be drawn on that image if
+      which the binary mask was created is passed as an argument, ROIs will be drawn on that image if
       debug is set to plot. Otherwise, they will be drawn on the binary mask. Returns an Objects
       dataclass that can be used in downstream steps. It is not necessary for there to be a plant
       in every grid cell, just that the objects follow a general grid structure and that there is at
@@ -39,7 +39,7 @@ rois = pcv.roi.auto_grid(mask=mask, nrows=3, ncols=6, radius=20, img=img)
 
 **Grid of ROIs**
 
-![Screenshot](img/documentation_images/multi/grid_roi.jpg)
+![Screenshot](img/documentation_images/multi/grid_roi.png)
 
 ### Next steps:
 
@@ -60,6 +60,6 @@ pcv.outputs.save_results(filename=filename)
 
 **Image with shape analysis characteristics on each plant** 
 
-![Screenshot](img/documentation_images/multi/multi_plants_shape.jpg)
+![Screenshot](img/documentation_images/multi/multi_plants_shape.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/roi/roi_methods.py)

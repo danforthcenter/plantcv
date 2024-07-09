@@ -43,6 +43,19 @@
     </select>
 </div>
 
+<!--Simple RGB Tutorial-->
+<div class="card" style="display:block">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/simple_rgb_tutorial');return false;">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-simple-rgb-workflow/blob/main/tutorial_card.png?raw=true" alt="Simple RGB tutorial" width="600" height="auto">
+    </a>
+    <div class="card-title">
+        <h6>Simple RGB image workflow</h6>
+    </div>
+    <div class="card-tags">
+        <span><strong>Tags</strong>: plant shoot, single plant, side-view, RGB, shape analysis, color analysis</span>
+    </div>
+</div>
+
 <!--VIS Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/vis_tutorial');return false;">
@@ -186,6 +199,19 @@
     </div>
 </div>
 
+<!--Camera Calibration Tutorial-->
+<div class="card" style="display:block">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/camera_calibration_tutorial');return false;">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-camera-calibration/blob/main/tutorial_card.png?raw=true" alt="camera calibration tutorial" width="600" height="auto">
+    </a>
+    <div class="card-title">
+        <h6>Camera Calibration Tutorial</h6>
+    </div>
+    <div class="card-tags">
+        <span><strong>Tags</strong>: calibration, transform, checkerboard, distortion, RGB </span>
+    </div> 
+</div>
+
 
 <!--Sorghum Morphology Tutorial-->
 <div class="card" style="display:block">
@@ -275,6 +301,19 @@
     </div>
     <div class="card-tags">
         <span><strong>Tags</strong>: pseudo-landmarking, homology, morphometrics, setaria</span>
+    </div>
+</div>
+
+<!--Kmeans Tutorial-->
+<div class="card" style="display:block">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/kmeans_clustering_tutorial');return false;">
+        <img src="https://github.com/danforthcenter/plantcv-tutorial-kmeans-clustering/blob/main/tutorial_card.png?raw=true" alt="Kmeans tutorial" width="600" height="auto">
+    </a>
+    <div class="card-title">
+        <h6>Kmeans Clustering Tutorial</h6>
+    </div>
+    <div class="card-tags">
+        <span><strong>Tags</strong>: Kmeans, train, patch, classify, combine, mask, tutorial</span>
     </div>
 </div>
 

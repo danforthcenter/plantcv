@@ -427,6 +427,11 @@ pages for more details on the input and output variable types.
 * pre v4.3:  NA 
 * post v4.3: filtered_mask = **plantcv.filters.eccentricity**(*bin_img, ecc_thresh=0*)
 
+#### plantcv.filters.obj_props
+
+* pre v4.4:  NA 
+* post v4.4: filtered_mask = **plantcv.filters.obj_props**(*bin_img, cut_side = "upper", thresh=0, regprop="area"*)
+
 #### plantcv.find_objects
 
 * pre v3.0dev2: device, objects, hierarchy = **plantcv.find_objects**(*img, mask, device, debug=None*)
@@ -564,6 +569,11 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, img_inv = **plantcv.invert**(*img, device, debug=None*)
 * post v3.0dev2: img_inv = **plantcv.invert**(*gray_img*)
+
+#### plantcv.io.open_url
+
+* pre v4.2.1: NA
+* post v4.2.1: img = **plantcv.io.open_url**(*url*)
 
 #### plantcv.io.random_subset
 
@@ -1342,6 +1352,7 @@ pages for more details on the input and output variable types.
 * post v3.3: analysis_image = **plantcv.watershed_segmentation**(*rgb_img, mask, distance=10*)
 * post v3.11: analysis_image = **plantcv.watershed_segmentation**(*rgb_img, mask, distance=10, label="default"*)
 * post v4.0: analysis_image = **plantcv.watershed_segmentation**(*rgb_img, mask, distance=10, label=None*)
+* post v4.3: labeled_mask = **plantcv.watershed_segmentation**(*rgb_img, mask, distance=10, label=None*)
 
 #### plantcv.white_balance
 

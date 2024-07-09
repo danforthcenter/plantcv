@@ -14,7 +14,8 @@ import pandas as pd
 class Params:
     """PlantCV parameters class."""
 
-    def __init__(self, device=0, debug=None, debug_outdir=".", line_thickness=5, dpi=100, text_size=0.55,
+    def __init__(self, device=0, debug=None, debug_outdir=".", line_thickness=5,
+                 line_color=(255, 0, 255), dpi=100, text_size=0.55,
                  text_thickness=2, marker_size=60, color_scale="gist_rainbow", color_sequence="sequential",
                  sample_label="default", saved_color_scale=None, verbose=True):
         """Initialize parameters.
@@ -24,6 +25,7 @@ class Params:
         debug             = None, print, or plot. Print = save to file, Plot = print to screen. (default: None)
         debug_outdir      = Debug images output directory. (default: .)
         line_thickness    = Width of line drawings. (default: 5)
+        line_color        = Color of line annotations (default = (255, 0, 255))
         dpi               = Figure plotting resolution, dots per inch. (default: 100)
         text_size         = Size of plotting text. (default: 0.55)
         text_thickness    = Thickness of plotting text. (default: 2)
@@ -52,6 +54,7 @@ class Params:
         self.debug = debug
         self.debug_outdir = debug_outdir
         self.line_thickness = line_thickness
+        self.line_color = line_color
         self.dpi = dpi
         self.text_size = text_size
         self.text_thickness = text_thickness
@@ -74,6 +77,7 @@ class Outputs:
 
         # Add a method to clear measurements
     def clear(self):
+        """Clear all measurements"""
         self.measurements = {}
         self.images = []
         self.observations = {}
@@ -363,7 +367,6 @@ class Points:
         :param figsize: desired figure size, (12,6) by default
         :attribute points: list of points as (x,y) coordinates tuples
         """
-
         self.fig, self.ax = plt.subplots(1, 1, figsize=figsize)
         self.ax.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
 
@@ -394,29 +397,33 @@ class Objects:
     def __init__(self, contours: list = None, hierarchy: list = None):
         self.contours = contours
         self.hierarchy = hierarchy
+        self._n = 0
         if contours is None:
             self.contours = []
             self.hierarchy = []
 
     def __iter__(self):
-        self.n = 0
+        self._n = 0
         return self
 
     def __next__(self):
-        if self.n < len(self.contours):
-            self.n += 1
-            return Objects(contours=[self.contours[self.n-1]], hierarchy=[self.hierarchy[self.n-1]])
+        if self._n < len(self.contours):
+            self._n += 1
+            return Objects(contours=[self.contours[self._n-1]], hierarchy=[self.hierarchy[self._n-1]])
         raise StopIteration
 
     def append(self, contour, h):
+        """Append a contour and its hierarchy to the object"""
         self.contours.append(contour)
         self.hierarchy.append(h)
 
     def save(self, filename):
+        """Save the object to a file"""
         np.savez(filename, contours=self.contours, hierarchy=self.hierarchy)
 
     @staticmethod
     def load(filename):
+        """Load a saved object file"""
         file = np.load(filename)
         obj = Objects(file['contours'].tolist(), file['hierarchy'])
         return obj

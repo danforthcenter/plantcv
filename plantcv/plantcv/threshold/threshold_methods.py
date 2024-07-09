@@ -215,7 +215,7 @@ def triangle(gray_img, object_type="light", xstep=1):
 
     # Find point corresponding to highest peak
     # Find intensity value (y) of highest peak
-    max_peak_int = max(list(newhist[i] for i in ind))
+    max_peak_int = max(newhist[i] for i in ind)
     # Find value (x) of highest peak
     max_peak = [i for i, x in enumerate(newhist) if x == max(newhist)]
     # Combine x,y
@@ -314,6 +314,18 @@ def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity'
     """
     # Function that calculates the texture of a kernel
     def calc_texture(inputs):
+        """Kernel calculate texture function.
+
+        Parameters
+        ----------
+        inputs : numpy.ndarray
+            Input pixel array
+
+        Returns
+        -------
+        float
+            Texture value
+        """
         inputs = np.reshape(a=inputs, newshape=[ksize, ksize])
         inputs = inputs.astype(np.uint8)
         # Greycomatrix takes image, distance offset, angles (in radians), symmetric, and normed
@@ -476,6 +488,24 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
 
 # Internal method for calling the OpenCV threshold function to reduce code duplication
 def _call_threshold(gray_img, threshold, threshold_method, method_name):
+    """Calls the OpenCV threshold function to reduce code duplication
+
+    Parameters
+    ----------
+    gray_img : numpy.ndarray
+        Grayscale image data
+    threshold : int
+        Threshold value
+    threshold_method : int
+        OpenCV thresholding method
+    method_name : str
+        Name of the method used for debugging purposes
+
+    Returns
+    -------
+    numpy.ndarray
+        Thresholded, binary image
+    """
     # Threshold the image
     _, bin_img = cv2.threshold(gray_img, threshold, 255, threshold_method)
 
@@ -491,7 +521,28 @@ def _call_threshold(gray_img, threshold, threshold_method, method_name):
 
 # Internal method for calling the OpenCV adaptiveThreshold function to reduce code duplication
 def _call_adaptive_threshold(gray_img, ksize, offset, adaptive_method, threshold_method, method_name):
+    """Calls the OpenCV adaptiveThreshold function to reduce code duplication
 
+    Parameters
+    ----------
+    gray_img : numpy.ndarray
+        Grayscale image data
+    ksize : int
+        Size of the block of pixels used to compute the local average
+    offset : float
+        Value substracted from the local average to compute the local threshold
+    adaptive_method : int
+        Adaptive thresholding algorithm to use
+    threshold_method : int
+        Thresholding method to use
+    method_name : str
+        Name of the method used for debugging purposes
+
+    Returns
+    -------
+    numpy.ndarray
+        Thresholded, binary image
+    """
     if ksize < 3:
         fatal_error("ksize must be >= 3")
 
@@ -768,7 +819,7 @@ def _get_gray(rgb_img, _):
 
 
 def _get_index(rgb_img, _):
-    """Get a vector with linear indices of the pixels in an image """
+    """Get a vector with linear indices of the pixels in an image"""
     h, w, _ = rgb_img.shape
     return np.arange(h*w).reshape(h, w)
 
