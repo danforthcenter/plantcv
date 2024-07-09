@@ -22,11 +22,11 @@ def space(cur_plms, include_bound_dist=False, include_centroid_dist=False, inclu
     :return new_plms: pandas.core.frame.DataFrame
     """
     new_plms = cur_plms.copy(deep=True)
-    bot_left = [int(min(new_plms.loc[:, ['plm_x']].values)), int(max(new_plms.loc[:, ['plm_y']].values))]
-    bot_right = [int(max(new_plms.loc[:, ['plm_x']].values)), int(max(new_plms.loc[:, ['plm_y']].values))]
-    top_left = [int(min(new_plms.loc[:, ['plm_x']].values)), int(min(new_plms.loc[:, ['plm_y']].values))]
-    top_right = [int(max(new_plms.loc[:, ['plm_x']].values)), int(min(new_plms.loc[:, ['plm_y']].values))]
-    centroid = [int(np.mean(new_plms.loc[:, ['plm_x']].values)), int(np.mean(new_plms.loc[:, ['plm_y']].values))]
+    bot_left = [int(min(new_plms.loc[:, ['plm_x']].values).item()), int(max(new_plms.loc[:, ['plm_y']].values).item())]
+    bot_right = [int(max(new_plms.loc[:, ['plm_x']].values).item()), int(max(new_plms.loc[:, ['plm_y']].values).item())]
+    top_left = [int(min(new_plms.loc[:, ['plm_x']].values).item()), int(min(new_plms.loc[:, ['plm_y']].values).item())]
+    top_right = [int(max(new_plms.loc[:, ['plm_x']].values).item()), int(min(new_plms.loc[:, ['plm_y']].values).item())]
+    centroid = [int(np.mean(new_plms.loc[:, ['plm_x']].values).item()), int(np.mean(new_plms.loc[:, ['plm_y']].values).item())]
 
     bot_left_dist = np.sqrt(np.square(new_plms.loc[:, ['plm_x']].values - bot_left[0]) + np.square(
         new_plms.loc[:, ['plm_y']].values - bot_left[1]))
@@ -70,7 +70,7 @@ def space(cur_plms, include_bound_dist=False, include_centroid_dist=False, inclu
             a = 90 - (np.arctan(rise[m] / run[m]) * (180 / np.pi))
         elif run[m] < 0:
             a = -(90 - (np.arctan(rise[m] / run[m]) * (180 / np.pi)))
-        orientation.append(float(a))
+        orientation.append(float(np.array(a).item()))
 
         # Use the sign of the run to determine if the weight should
         # shift in the 0-180 or 180-360 range for 360 arc conversion
@@ -79,7 +79,7 @@ def space(cur_plms, include_bound_dist=False, include_centroid_dist=False, inclu
             centroid_a = 90 - (np.arctan(centroid_rise[m] / centroid_run[m]) * (180 / np.pi))
         elif centroid_run[m] < 0:
             centroid_a = -(90 - (np.arctan(centroid_rise[m] / centroid_run[m]) * (180 / np.pi)))
-        centroid_orientation.append(float(centroid_a))
+        centroid_orientation.append(float(np.array(centroid_a).item()))
 
     if include_orient_angles is True:
         new_plms.insert(len(new_plms.columns), 'orientation', orientation, True)
