@@ -298,7 +298,8 @@ class Spectral_data:
     """PlantCV Hyperspectral data class"""
 
     def __init__(self, array_data, max_wavelength, min_wavelength, max_value, min_value, d_type, wavelength_dict,
-                 samples, lines, interleave, wavelength_units, array_type, pseudo_rgb, filename, default_bands):
+                 samples, lines, interleave, wavelength_units, array_type, pseudo_rgb, filename, default_bands,
+                 geo_transform):
         # The actual array/datacube
         self.array_data = array_data
         # Min/max available wavelengths (for spectral datacube)
@@ -325,6 +326,8 @@ class Spectral_data:
         self.filename = filename
         # The default band indices needed to make an pseudo_rgb image, if not available then store None
         self.default_bands = default_bands
+        # The transformation matrix that converts xy coordinates to georeferenced coordinates
+        self.transform = geo_transform
 
 
 class PSII_data:
