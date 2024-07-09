@@ -5,7 +5,7 @@ from scipy.cluster.hierarchy import cut_tree
 from plantcv.plantcv import params
 
 
-def get_empty_count(cur_index_id):
+def _get_empty_count(cur_index_id):
     """Helper function for getting empty count"""
     empty_count = 0
     for i in cur_index_id:
@@ -14,7 +14,7 @@ def get_empty_count(cur_index_id):
     return empty_count
 
 
-def get_empty_indicies(cur_index, cur_plms_copy):
+def _get_empty_indicies(cur_index, cur_plms_copy):
     """Helper function for getting empty indicies"""
     empty_index = []
     for i, v in zip(cur_index, cur_plms_copy.iloc[cur_index, 0].values):
@@ -23,7 +23,7 @@ def get_empty_indicies(cur_index, cur_plms_copy):
     return empty_index
 
 
-def get_unique_ids(cur_index_id):
+def _get_unique_ids(cur_index_id):
     """Helper function for getting id's"""
     unique_ids = []
     for id_ in cur_index_id:
@@ -32,7 +32,7 @@ def get_unique_ids(cur_index_id):
     return unique_ids
 
 
-def get_rogues(cur_plms_copy):
+def _get_rogues(cur_plms_copy):
     """Helper function for getting rogues"""
     rogues = []
     for i, x in enumerate(cur_plms_copy['group'].values):
@@ -41,16 +41,16 @@ def get_rogues(cur_plms_copy):
     return rogues
 
 
-def generate_labelnames(plmnames, grpnames):
+def _generate_labelnames(plmnames, grpnames):
     """Helper function for generating label names"""
     labelnames = []
     for li in range(0, len(plmnames)):
-        labelname = f'{plmnames[li]} ({int(grpnames[li])})'
+        labelname = f'{plmnames[li]} ({grpnames[li]})'
         labelnames.append(labelname)
     return labelnames
 
 
-def pair_unnassigned(unique_ids, cur_index, cur_index_id, cur_plms_copy, empty_count, sanity_check_pos):
+def _pair_unnassigned(unique_ids, cur_index, cur_index_id, cur_plms_copy, empty_count, sanity_check_pos):
     """Helper function for pairing unassigned"""
     for uid in unique_ids:
         # If only one plm assigned a name in current cluster and a second unnamed plm exists
@@ -115,10 +115,10 @@ def constella(cur_plms, pc_starscape, group_iter, outfile_prefix):
             # Create list of current clusters present group identity assignments
             cur_index_id = np.array(cur_plms_copy.iloc[cur_index, 0])
             # Are any of the plms in the current cluster unnamed, how many?
-            empty_count = get_empty_count(cur_index_id)
-            empty_index = get_empty_indicies(cur_index, cur_plms_copy)
+            empty_count = _get_empty_count(cur_index_id)
+            empty_index = _get_empty_indicies(cur_index, cur_plms_copy)
             # Are any of the plms in the current cluster already assigned an identity, what are those identities?
-            unique_ids = get_unique_ids(cur_index_id)
+            unique_ids = _get_unique_ids(cur_index_id)
             # If cluster is two unnamed plms exactly, assign this group their own identity as a pair
             if empty_count == 2:
                 pair_names = cur_plms_copy.iloc[empty_index, 1].values
@@ -131,8 +131,8 @@ def constella(cur_plms, pc_starscape, group_iter, outfile_prefix):
                     cur_plms_copy.iloc[empty_index[1], 0] = group_iter + 1
                     group_iter = group_iter + 2
             # If cluster is one unnamed plm and one plm with an identity, assign the unnamed plm the identity of the
-            pair_unnassigned(unique_ids, cur_index, cur_index_id, cur_plms_copy, empty_count, sanity_check_pos)
-    rogues = get_rogues(cur_plms_copy)
+            _pair_unnassigned(unique_ids, cur_index, cur_index_id, cur_plms_copy, empty_count, sanity_check_pos)
+    rogues = _get_rogues(cur_plms_copy)
     for rogue in rogues:
         cur_plms_copy.iloc[[rogue], 0] = group_iter
         group_iter = group_iter + 1
@@ -140,7 +140,7 @@ def constella(cur_plms, pc_starscape, group_iter, outfile_prefix):
     grpnames = cur_plms_copy.loc[:, ['group']].values
     plmnames = cur_plms_copy.loc[:, ['plmname']].values
 
-    labelnames = generate_labelnames(plmnames, grpnames)
+    labelnames = _generate_labelnames(plmnames, grpnames)
 
     if params.debug is not None:
         plt.figure()

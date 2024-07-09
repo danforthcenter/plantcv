@@ -46,7 +46,7 @@ def analyze_stem(rgb_img, stem_objects, label=None):
                             value=height, label=None)
     outputs.add_observation(sample=label, variable='stem_angle', trait='angle of combined stem object',
                             method='plantcv.plantcv.morphology.analyze_stem', scale='degrees', datatype=float,
-                            value=float(slope), label=None)
+                            value=float(slope.item()), label=None)
     outputs.add_observation(sample=label, variable='stem_length', trait='path length of combined stem object',
                             method='plantcv.plantcv.morphology.analyze_stem', scale='None', datatype=float,
                             value=stem_length, label=None)
@@ -56,8 +56,8 @@ def analyze_stem(rgb_img, stem_objects, label=None):
     # Draw combined stem angle
     x_min = 0  # Set bounds for regression lines to get drawn
     x_max = img_x
-    intercept1 = int(((x - x_min) * slope) + y)
-    intercept2 = int(((x - x_max) * slope) + y)
+    intercept1 = int(np.array(((x - x_min) * slope) + y).item())
+    intercept2 = int(np.array(((x - x_max) * slope) + y).item())
     if slope > 1000000 or slope < -1000000:
         print("Slope  is ", slope, " and cannot be plotted.")
     else:
