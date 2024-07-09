@@ -327,7 +327,7 @@ class Spectral_data:
         # The default band indices needed to make an pseudo_rgb image, if not available then store None
         self.default_bands = default_bands
         # The transformation matrix that converts xy coordinates to georeferenced coordinates
-        self.transform = geo_transform
+        self.geo_transform = geo_transform
 
 
 class PSII_data:
