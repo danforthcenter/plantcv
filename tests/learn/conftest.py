@@ -17,6 +17,8 @@ class LearnTestData:
         self.rgb_values_table = os.path.join(self.datadir, "rgb_values_table.txt")
         # Kmeans training directory
         self.kmeans_train_dir = os.path.join(self.datadir, "kmeans_train_dir")
+        # Kmeans training grayscale directory
+        self.kmeans_train_gray_dir = os.path.join(self.datadir, "kmeans_train_gray_dir")
 
 
 @pytest.fixture(scope="session")
