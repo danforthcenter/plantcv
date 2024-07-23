@@ -8,7 +8,7 @@ def test_kmeans_classifier(test_data):
     input_dir = test_data.kmeans_classifier_dir
     input_dir_gray = test_data.kmeans_classifier_gray_dir
     labeled_img = predict_kmeans(img=input_dir+"/test_image.jpg", model_path=input_dir+"/kmeans_out.fit", patch_size=5)
-    labeled_img_gray = predict_kmeans(img=input_dir_gray+"/test_image_gray.jpg", model_path=input_dir+"/kmeans_out_gray.fit", patch_size=5)
+    labeled_img_gray = predict_kmeans(img=input_dir_gray+"/test_image_gray.jpg", model_path=input_dir_gray+"/kmeans_out_gray.fit", patch_size=5)
     test_labeled, _, _ = readimage(input_dir+"/labeled_image.png")
     test_labeled_gray, _, _ = readimage(input_dir_gray+"/labeled_image_gray.png")
     assert (labeled_img == test_labeled).all()
