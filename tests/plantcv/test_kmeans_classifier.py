@@ -2,7 +2,6 @@ from plantcv.plantcv.kmeans_classifier import mask_kmeans
 from plantcv.plantcv.kmeans_classifier import predict_kmeans
 from plantcv.plantcv import readimage
 
-
 def test_kmeans_classifier(test_data):
     """Test for PlantCV."""
     input_dir = test_data.kmeans_classifier_dir

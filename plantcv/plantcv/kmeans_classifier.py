@@ -30,8 +30,6 @@ def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10):
         h, w = train_img.shape
     elif len(train_img.shape) == 3 and train_img.shape[2] == 3:
         h, w, _ = train_img.shape
-    else:
-        raise ValueError("predict_kmeans() can only handle grayscale and rgb images")
 
     # Do the prediction
     train_patches = patch_extract(train_img, patch_size=patch_size)
