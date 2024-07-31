@@ -54,9 +54,9 @@ def options():
     nbm_cmd.add_argument("--sampling", help="Fraction of pixels sampled per image for patch extraction",
                          required=False)
     nbm_cmd.add_argument("--seed", help="Random seed for reproducibility", required=False)
-    nbm_cmd.add_argument("n", "--num_imgs", help="Number of images in training directory to use.", 
+    nbm_cmd.add_argument("-n", "--num_imgs", help="Number of images in training directory to use.", 
                          required=False)
-    nbm_cmd.add_argument("n_init", help="Number of Kmeans random initiations", required=False)
+    nbm_cmd.add_argument("--n_init", help="Number of Kmeans random initiations", required=False)
     nbm_cmd.set_defaults(func=run_kmeans)
 
     # If no arguments are given, print the help menu
@@ -101,7 +101,10 @@ def run_kmeans(args):
     if not os.path.exists(args.imgdir):
         raise IOError(f"Directory does not exist: {args.imgdir}")
     print("Running the Kmeans training method...")
-    plantcv.learn.train_kmeans()
+    plantcv.learn.train_kmeans(img_dir=args.imgdir, k=args.categories, out_path=args.out,
+                               prefix=args.prefix, patch_size=args.patch_size, sigma=args.sigma,
+                               sampling=args.sampling, seed=args.seed, num_imgs=args.num_imgs,
+                               n_init=args.n_init)
 ###########################################
 
 
