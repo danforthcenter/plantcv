@@ -42,6 +42,22 @@ def options():
     nbm_cmd.add_argument("-o", "--outfile", help="Trained classifier output filename.", required=True)
     nbm_cmd.add_argument("-p", "--plots", help="Make output plots.", default=False, action="store_true")
     nbm_cmd.set_defaults(func=run_naive_bayes_multiclass)
+    
+    # Create the Kmeans subcommand
+    nbm_cmd = subparsers.add_parser("Kmeans", help="Run the Kmeans training method.")
+    nbm_cmd.add_argument("-i", "--imgdir", help="Input directory containing images.", required=True)
+    nbm_cmd.add_argument("-k", "--categories", help="Number of classification categories.", required=True)
+    nbm_cmd.add_argument("-o", "--out", help="Trained model output path and filename.", required=True)
+    nbm_cmd.add_argument("-r", "--prefix", help="File prefix for training images.", required=False)
+    nbm_cmd.add_argument("-p", "--patch_size", help="Patch size.", required=False)
+    nbm_cmd.add_argument("-s", "--sigma", help="Severity of Gaussian blur, sigma.", required=False)
+    nbm_cmd.add_argument("--sampling", help="Fraction of pixels sampled per image for patch extraction",
+                         required=False)
+    nbm_cmd.add_argument("--seed", help="Random seed for reproducibility", required=False)
+    nbm_cmd.add_argument("n", "--num_imgs", help="Number of images in training directory to use.", 
+                         required=False)
+    nbm_cmd.add_argument("n_init", help="Number of Kmeans random initiations", required=False)
+    nbm_cmd.set_defaults(func=run_kmeans)
 
     # If no arguments are given, print the help menu
     if len(sys.argv) == 1:
@@ -76,6 +92,16 @@ def run_naive_bayes_multiclass(args):
         raise IOError(f"File does not exist: {args.file}")
     print("Running the naive Bayes multiclass training method...")
     plantcv.learn.naive_bayes_multiclass(samples_file=args.file, outfile=args.outfile, mkplots=args.plots)
+###########################################
+
+# Run the Kmeans training method
+###########################################
+def run_kmeans(args):
+    """Run the Kmeans training method"""
+    if not os.path.exists(args.imgdir):
+        raise IOError(f"Directory does not exist: {args.imgdir}")
+    print("Running the Kmeans training method...")
+    plantcv.learn.train_kmeans()
 ###########################################
 
 
