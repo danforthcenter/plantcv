@@ -44,7 +44,7 @@ def options():
     nbm_cmd.set_defaults(func=run_naive_bayes_multiclass)
     
     # Create the Kmeans subcommand
-    nbm_cmd = subparsers.add_parser("Kmeans", help="Run the Kmeans training method.")
+    nbm_cmd = subparsers.add_parser("kmeans", help="Run the Kmeans training method.")
     nbm_cmd.add_argument("-i", "--imgdir", help="Input directory containing images.", required=True)
     nbm_cmd.add_argument("-k", "--categories", help="Number of classification categories.", required=True)
     nbm_cmd.add_argument("-o", "--out", help="Trained model output path and filename.", required=True)
