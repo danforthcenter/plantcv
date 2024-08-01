@@ -90,7 +90,7 @@ def test_run_kmeans_bad_imgdir():
     import sys
     sys.argv = ["plantcv-train", "kmeans",
                 "--imgdir", "does-not-exist",
-                "--categories", "does-not-exist",
+                "--categories", "3",
                 "--out", "does-not-exist"]
     with pytest.raises(IOError):
         main()
