@@ -107,6 +107,6 @@ def test_run_kmeans(tmpdir, learn_test_data):
     sys.argv = ["plantcv-train", "kmeans",
                 "--imgdir", imgdir,
                 "--categories", "3",
-                "--outfile", outfile]
+                "--out", outfile]
     assert main() is None
     
