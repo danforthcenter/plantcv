@@ -102,11 +102,12 @@ def test_run_kmeans(tmpdir, learn_test_data):
     # Define input and output files
     imgdir = learn_test_data.kmeans_train_dir
     outfile = os.path.join(str(tmp_dir), "kmeans.fit")
+    kval = 3
     # Mock ARGV
     import sys
     sys.argv = ["plantcv-train", "kmeans",
                 "--imgdir", imgdir,
-                "--categories", "3",
+                "--categories", kval,
                 "--out", outfile]
     assert main() is None
     
