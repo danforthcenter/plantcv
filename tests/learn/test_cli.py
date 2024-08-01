@@ -100,7 +100,7 @@ def test_run_kmeans(tmpdir, learn_test_data):
     # Temp directory
     tmp_dir = tmpdir.mkdir("sub")
     # Define input and output files
-    imgdir = os.path.join(learn_test_data, "kmeans_train_dir")
+    imgdir = learn_test_data.kmeans_train_dir
     outfile = os.path.join(str(tmp_dir), "kmeans.fit")
     # Mock ARGV
     import sys
