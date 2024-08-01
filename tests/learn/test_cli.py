@@ -109,3 +109,4 @@ def test_run_kmeans(tmpdir, learn_test_data):
                 "--categories", 3,
                 "--outfile", outfile]
     assert main() is None
+    
