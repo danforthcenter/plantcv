@@ -46,17 +46,18 @@ def options():
     # Create the Kmeans subcommand
     nbm_cmd = subparsers.add_parser("kmeans", help="Run the Kmeans training method.")
     nbm_cmd.add_argument("-i", "--imgdir", help="Input directory containing images.", required=True)
-    nbm_cmd.add_argument("-k", "--categories", help="Number of classification categories.", required=True)
+    nbm_cmd.add_argument("-k", "--categories", help="Number of classification categories.", required=True,
+                         type=int)
     nbm_cmd.add_argument("-o", "--out", help="Trained model output path and filename.", required=True)
     nbm_cmd.add_argument("-r", "--prefix", help="File prefix for training images.", required=False)
-    nbm_cmd.add_argument("-p", "--patch_size", help="Patch size.", required=False)
-    nbm_cmd.add_argument("-s", "--sigma", help="Severity of Gaussian blur, sigma.", required=False)
+    nbm_cmd.add_argument("-p", "--patch_size", help="Patch size.", required=False, type=int)
+    nbm_cmd.add_argument("-s", "--sigma", help="Severity of Gaussian blur, sigma.", required=False, type=int)
     nbm_cmd.add_argument("--sampling", help="Fraction of pixels sampled per image for patch extraction",
-                         required=False)
-    nbm_cmd.add_argument("--seed", help="Random seed for reproducibility", required=False)
+                         required=False, type=float)
+    nbm_cmd.add_argument("--seed", help="Random seed for reproducibility", required=False, type=int)
     nbm_cmd.add_argument("-n", "--num_imgs", help="Number of images in training directory to use.",
-                         required=False)
-    nbm_cmd.add_argument("--n_init", help="Number of Kmeans random initiations", required=False)
+                         required=False, type=int)
+    nbm_cmd.add_argument("--n_init", help="Number of Kmeans random initiations", required=False, type=int)
     nbm_cmd.set_defaults(func=run_kmeans)
 
     # If no arguments are given, print the help menu
