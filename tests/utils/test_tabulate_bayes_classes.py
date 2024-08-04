@@ -1,7 +1,7 @@
 import pytest
 import os
 import pandas as pd
-from plantcv.utils import tabulate_bayes_classes
+from plantcv.utils.converters import tabulate_bayes_classes
 
 
 def test_tabulate_bayes_classes(utils_test_data, tmpdir):
