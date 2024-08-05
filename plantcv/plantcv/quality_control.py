@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
+import matplotlib.pyplot as plt
 
 def quality_control(img):
 
