@@ -103,10 +103,10 @@ def run_kmeans(args):
     if not os.path.exists(args.imgdir):
         raise IOError(f"Directory does not exist: {args.imgdir}")
     print("Running the Kmeans training method...")
-    plantcv.learn.train_kmeans(img_dir=args.imgdir, k=int(args.categories), out_path=args.out,
-                               prefix=args.prefix, patch_size=int(args.patch_size), sigma=int(args.sigma),
-                               sampling=float(args.sampling), seed=int(args.seed), num_imgs=int(args.num_imgs),
-                               n_init=int(args.n_init))
+    plantcv.learn.train_kmeans(img_dir=args.imgdir, k=args.categories, out_path=args.out,
+                               prefix=args.prefix, patch_size=args.patch_size, sigma=args.sigma,
+                               sampling=args.sampling, seed=args.seed, num_imgs=args.num_imgs,
+                               n_init=args.n_init)
 ###########################################
 
 
