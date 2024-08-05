@@ -3,10 +3,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def quality_control(img, warning_threshold=0.05):
+
     """Perform quality control by checking for problematic color data and plotting histograms.
-    
-    This function performs an analysis of an image to check for over- or underexposure 
-    in the red, green, and blue color channels. It also generates and displays histograms 
+    This function performs an analysis of an image to check for over- or underexposure
+    in the red, green, and blue color channels. It also generates and displays histograms
     for each color channel to visualize the distribution of pixel intensities.
 
     Args:
@@ -15,13 +15,13 @@ def quality_control(img, warning_threshold=0.05):
                                     for over- or underexposure (default is 0.05 for 5%).
 
     Returns:
-        None: This function does not return any value. It prints a warning if the image 
+        None: This function does not return any value. It prints a warning if the image
               is over- or underexposed and displays histograms of color channel intensities.
     """
-    
+
     # Convert the img from BGR to RGB
     img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    
+
     # Split the img into its Red, Green, and Blue channels
     red_channel, green_channel, blue_channel = img_rgb[:, :, 0], img_rgb[:, :, 1], img_rgb[:, :, 2]
 
@@ -29,9 +29,9 @@ def quality_control(img, warning_threshold=0.05):
     def check_exposure(channel):
         """Check if a color channel is over- or underexposed.
 
-        This function analyzes the given color channel to determine if 
-        more than the specified percentage of its pixels are either at the 
-        minimum (0) or maximum (255) intensity values, which may indicate 
+        This function analyzes the given color channel to determine if
+        more than the specified percentage of its pixels are either at the
+        minimum (0) or maximum (255) intensity values, which may indicate
         over- or underexposure issues.
 
         Args:
@@ -57,7 +57,7 @@ def quality_control(img, warning_threshold=0.05):
             "responsibly, as color values are lost above the minimum (0) and maximum "
             "(255). Change camera settings to capture appropriate images."
         )
-    
+
     # Plot the histograms
     plt.figure(figsize=(10, 5))
 
