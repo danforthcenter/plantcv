@@ -2,8 +2,8 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-def quality_control(img, warning_threshold=0.05):
 
+def quality_control(img, warning_threshold=0.05):
     """Perform quality control by checking for problematic color data and plotting histograms.
     This function performs an analysis of an image to check for over- or underexposure
     in the red, green, and blue color channels. It also generates and displays histograms
@@ -18,7 +18,6 @@ def quality_control(img, warning_threshold=0.05):
         None: This function does not return any value. It prints a warning if the image
               is over- or underexposed and displays histograms of color channel intensities.
     """
-
     # Convert the img from BGR to RGB
     img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
