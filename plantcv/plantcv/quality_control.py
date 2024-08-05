@@ -1,10 +1,8 @@
-# Do quality control of images by determining if there is problematic color data
-
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-def quality_control(img):
+def quality_control(img, warning_threshold=0.05):
     """Perform quality control by checking for problematic color data and plotting histograms.
     
     This function performs an analysis of an image to check for over- or underexposure 
@@ -13,15 +11,17 @@ def quality_control(img):
 
     Args:
         img (numpy.ndarray): An image in BGR format as a 3D numpy array.
+        warning_threshold (float): The percentage threshold for triggering a warning
+                                    for over- or underexposure (default is 0.05 for 5%).
 
     Returns:
         None: This function does not return any value. It prints a warning if the image 
               is over- or underexposed and displays histograms of color channel intensities.
     """
-
+    
     # Convert the img from BGR to RGB
     img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
+    
     # Split the img into its Red, Green, and Blue channels
     red_channel, green_channel, blue_channel = img_rgb[:, :, 0], img_rgb[:, :, 1], img_rgb[:, :, 2]
 
@@ -30,9 +30,9 @@ def quality_control(img):
         """Check if a color channel is over- or underexposed.
 
         This function analyzes the given color channel to determine if 
-        more than 5% of its pixels are either at the minimum (0) or 
-        maximum (255) intensity values, which may indicate over- or 
-        underexposure issues.
+        more than the specified percentage of its pixels are either at the 
+        minimum (0) or maximum (255) intensity values, which may indicate 
+        over- or underexposure issues.
 
         Args:
             channel (numpy.ndarray): A 2D numpy array representing the color channel of an image.
@@ -43,21 +43,21 @@ def quality_control(img):
         total_pixels = channel.size
         zero_count = np.sum(channel == 0)
         max_count = np.sum(channel == 255)
-        return (zero_count / total_pixels > 0.05) or (max_count / total_pixels > 0.05)
+        return (zero_count / total_pixels > warning_threshold) or (max_count / total_pixels > warning_threshold)
 
     # Check each channel for over- or underexposure
     if (
         check_exposure(red_channel) or
         check_exposure(green_channel) or
         check_exposure(blue_channel)
-        ):
+    ):
         print(
-            "WARNING: The image is over- or underexposed because more than 5% of "
+            f"WARNING: The image is over- or underexposed because more than {warning_threshold * 100}% of "
             "pixels are equal to 0 or 255 intensity. Color cannot be analyzed "
             "responsibly, as color values are lost above the minimum (0) and maximum "
             "(255). Change camera settings to capture appropriate images."
-            )
-
+        )
+    
     # Plot the histograms
     plt.figure(figsize=(10, 5))
 
