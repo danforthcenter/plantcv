@@ -47,16 +47,16 @@ def quality_control(img):
 
     # Check each channel for over- or underexposure
     if (
-    check_exposure(red_channel) or
-    check_exposure(green_channel) or
-    check_exposure(blue_channel)
-    ):
-    print(
-        "WARNING: The image is over- or underexposed because more than 5% of "
-        "pixels are equal to 0 or 255 intensity. Color cannot be analyzed "
-        "responsibly, as color values are lost above the minimum (0) and maximum "
-        "(255). Change camera settings to capture appropriate images."
-        )
+        check_exposure(red_channel) or
+        check_exposure(green_channel) or
+        check_exposure(blue_channel)
+        ):
+        print(
+            "WARNING: The image is over- or underexposed because more than 5% of "
+            "pixels are equal to 0 or 255 intensity. Color cannot be analyzed "
+            "responsibly, as color values are lost above the minimum (0) and maximum "
+            "(255). Change camera settings to capture appropriate images."
+            )
 
     # Plot the histograms
     plt.figure(figsize=(10, 5))
