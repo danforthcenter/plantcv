@@ -2,7 +2,6 @@
 
 import cv2
 import numpy as np
-from skimage.color import label2rgb
 from plantcv.plantcv._debug import _debug
 
 def _row_resize(row, ncol):
