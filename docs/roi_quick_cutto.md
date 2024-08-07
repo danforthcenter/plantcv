@@ -20,11 +20,11 @@ Filter objects (connected regions of non-zero pixels) within a region of interes
 
 **RGB image**
 
-![Screenshot](img/documentation_images/roi_filter/rgb_img.png)
+![Screenshot](img/documentation_images/roi_quick_cutto/rgb_img.jpg)
 
 **Thresholded image (mask)**
 
-![Screenshot](img/documentation_images/roi_filter/bin_img.png)
+![Screenshot](img/documentation_images/roi_quick_cutto/mask.png)
 
 **ROI visualization**
 
