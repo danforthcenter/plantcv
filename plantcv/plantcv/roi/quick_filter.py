@@ -73,7 +73,7 @@ def quick_filter(mask, roi):
     return summed
 
 
-def quick_cutto(mask, roi):
+def _quick_cutto(mask, roi):
     """Quickly filter a binary mask using a region of interest.
     Inputs
     ------
