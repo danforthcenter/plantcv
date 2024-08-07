@@ -95,7 +95,7 @@ def _quick_cutto(mask, roi):
     labeled_mask = np.zeros(mask.shape, dtype=np.uint8)
     bin_mask = labeled_mask.copy()
     num_labels = len(roi.contours)
-    for i, roi in enumerate(roi):
+    for i in range(num_labels):
         # Pixel intensity of (i+1) such that the first object has value
         cv2.drawContours(labeled_mask, roi.contours[i], -1, (i+1), -1)
         cv2.drawContours(bin_mask, roi.contours[i], -1, (255), -1)
