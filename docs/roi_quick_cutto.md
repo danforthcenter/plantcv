@@ -28,7 +28,7 @@ Filter objects (connected regions of non-zero pixels) within a region of interes
 
 **ROI visualization**
 
-![Screenshot](img/documentation_images/roi_filter/roi_img.png)
+![Screenshot](img/documentation_images/roi_quick_cutto/roi.png)
 
 
 ```python
@@ -46,7 +46,7 @@ filtered_mask = pcv.roi._quick_cutto(mask=mask, roi=roi)
 
 **Filtered mask**
 
-![Screenshot](img/documentation_images/roi_filter/ .png)
+![Screenshot](img/documentation_images/roi_quick_cutto/colored_mask.png)
 
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/roi/quick_filter.py)
