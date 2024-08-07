@@ -109,4 +109,4 @@ def _quick_cutto(mask, roi):
     params.debug = debug
     _debug(visual=colorful2, filename=os.path.join(params.debug_outdir, f"{params.device}_label_colored_mask.png"))
 
-    return cropped_mask, label_mask_where
+    return cropped_mask, label_mask_where, num_labels

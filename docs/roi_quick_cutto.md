@@ -6,7 +6,7 @@ Filter objects (connected regions of non-zero pixels) within a region of interes
 
 **plantcv.roi._quick_cutto**(*mask, roi*)
 
-**returns** filtered_mask, labeled mask
+**returns** filtered_mask, labeled mask, num_labels
 
 - **Parameters:**
     - mask = binary image data to be filtered

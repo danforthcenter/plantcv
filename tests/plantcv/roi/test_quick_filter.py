@@ -31,7 +31,7 @@ def test_quick_cutto(test_data):
     roi = [np.array([[[200, 200]], [[200, 190]], [[249, 190]], [[249, 200]]], dtype=np.int32)]
     roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     roi_obj = Objects(contours=[roi], hierarchy=[roi_str])
-    filtered_mask, _ = _quick_cutto(mask=mask, roi=roi_obj)
+    filtered_mask, _, _ = _quick_cutto(mask=mask, roi=roi_obj)
     area = cv2.countNonZero(filtered_mask)
     # Assert that the contours were filtered as expected
     assert area == 7
