@@ -3,8 +3,8 @@ import os
 import cv2
 import numpy as np
 from skimage.measure import label
-from plantcv.plantcv import params
 from skimage.color import label2rgb
+from plantcv.plantcv import params
 from plantcv.plantcv.roi import roi2mask
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv.logical_and import logical_and
@@ -91,7 +91,7 @@ def _quick_cutto(mask, roi):
     # Store debug
     debug = params.debug
     params.debug = None
-    
+
     labeled_mask = np.zeros(mask.shape, dtype=np.uint8)
     bin_mask = labeled_mask.copy()
     num_labels = len(roi.contours)
@@ -99,10 +99,10 @@ def _quick_cutto(mask, roi):
         # Pixel intensity of (i+1) such that the first object has value
         cv2.drawContours(labeled_mask, roi.contours[i], -1, (i+1), -1)
         cv2.drawContours(bin_mask, roi.contours[i], -1, (255), -1)
-    cropped_mask = logical_and(mask, bin_mask) 
+    cropped_mask = logical_and(mask, bin_mask)
     # Make a labeled mask from the cropped objects
     label_mask_where = np.where(cropped_mask == 255, labeled_mask, 0)
-    
+
     # Print/plot debug image
     colorful = label2rgb(label_mask_where)
     colorful2 = (255*colorful).astype(np.uint8)
