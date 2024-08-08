@@ -40,7 +40,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 # ROI filter keeps objects that are partially inside ROI
-filtered_mask = pcv.roi._quick_cutto(mask=mask, roi=roi)
+filtered_mask, lbl_mask, num = pcv.roi._quick_cutto(mask=mask, roi=roi)
 
 ```
 
