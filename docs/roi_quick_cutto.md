@@ -20,7 +20,7 @@ Filter objects (connected regions of non-zero pixels) within a region of interes
 
 **RGB image**
 
-![Screenshot](img/documentation_images/roi_quick_cutto/rgb_img.jpg)
+![Screenshot](img/documentation_images/report_size_marker/seed-image.jpg)
 
 **Thresholded image (mask)**
 
