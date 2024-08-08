@@ -84,7 +84,7 @@ def _quick_cutto(mask, roi):
     -------
     cropped_mask = Filtered binary mask
     label_mask_where = Labeled mask
-    num_labels = Number of labeled objects 
+    num_labels = Number of labeled objects
     """
     # Increment the device counter
     params.device += 1
