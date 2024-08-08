@@ -93,14 +93,15 @@ def _quick_cutto(mask, roi):
     debug = params.debug
     params.debug = None
 
-    labeled_mask = np.zeros(mask.shape, dtype=np.uint8)
-    bin_mask = labeled_mask.copy()
+    mask_copy = np.copy(mask).astype(np.int32)
+    labeled_mask = np.zeros(mask.shape, dtype=np.int32)
+    bin_mask = np.copy(labeled_mask)
     num_labels = len(roi.contours)
     for i in range(num_labels):
         # Pixel intensity of (i+1) such that the first object has value
         cv2.drawContours(labeled_mask, roi.contours[i], -1, (i+1), -1)
         cv2.drawContours(bin_mask, roi.contours[i], -1, (255), -1)
-    cropped_mask = logical_and(mask, bin_mask)
+    cropped_mask = logical_and(mask_copy, bin_mask)
     # Make a labeled mask from the cropped objects
     label_mask_where = np.where(cropped_mask == 255, labeled_mask, 0)
 
@@ -110,4 +111,4 @@ def _quick_cutto(mask, roi):
     params.debug = debug
     _debug(visual=colorful2, filename=os.path.join(params.debug_outdir, f"{params.device}_label_colored_mask.png"))
 
-    return cropped_mask, label_mask_where, num_labels
+    return cropped_mask.astype(np.int8), label_mask_where, num_labels
