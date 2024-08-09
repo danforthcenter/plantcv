@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from plantcv.plantcv import outputs
 
 # Function to check for over- or underexposure
-def check_exposure(channel, warning_threshold):
+def check_exposure(channel, warning_threshold, label):
     """Check if a color channel is over- or underexposed.
 
     This function analyzes the given color channel to determine if
@@ -26,7 +26,7 @@ def check_exposure(channel, warning_threshold):
     outputs.add_observation(sample="default", variable='percent_over_or_under_exposed',
                             trait='how much of the given rgb image is over/underexposed',
                             method='plantcv.plantcv.quality_control', scale='percentage', datatype=float,
-                            value=proportion_bad_pix, label=str(channel))
+                            value=proportion_bad_pix, label=label)
     return (zero_count / total_pixels > warning_threshold) or (max_count / total_pixels > warning_threshold)
 
 def quality_control(img, warning_threshold=0.05):
@@ -52,9 +52,9 @@ def quality_control(img, warning_threshold=0.05):
 
     # Check each channel for over- or underexposure
     if (
-        check_exposure(red_channel, warning_threshold) or
-        check_exposure(green_channel, warning_threshold) or
-        check_exposure(blue_channel, warning_threshold)
+        check_exposure(red_channel, warning_threshold, label="red") or
+        check_exposure(green_channel, warning_threshold, label="green") or
+        check_exposure(blue_channel, warning_threshold, label="blue")
     ):
         print(
             f"WARNING: The image is over- or underexposed because more than {warning_threshold * 100}% of "
