@@ -2,7 +2,7 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-
+from plantcv.plantcv import outputs
 
 # Function to check for over- or underexposure
 def check_exposure(channel, warning_threshold):
@@ -22,6 +22,11 @@ def check_exposure(channel, warning_threshold):
     total_pixels = channel.size
     zero_count = np.sum(channel == 0)
     max_count = np.sum(channel == 255)
+    proportion_bad_pix = zero_count / total_pixels
+    outputs.add_observation(sample="default", variable='percent_over_or_under_exposed',
+                            trait='how much of the given rgb image is over/underexposed',
+                            method='plantcv.plantcv.quality_control', scale='percentage', datatype=float,
+                            value=proportion_bad_pix, label=str(channel))
     return (zero_count / total_pixels > warning_threshold) or (max_count / total_pixels > warning_threshold)
 
 def quality_control(img, warning_threshold=0.05):
