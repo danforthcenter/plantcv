@@ -1,7 +1,28 @@
+# Perform quality control by checking for problematic color data
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
+
+# Function to check for over- or underexposure
+def check_exposure(channel, warning_threshold):
+    """Check if a color channel is over- or underexposed.
+
+    This function analyzes the given color channel to determine if
+    more than the specified percentage of its pixels are either at the
+    minimum (0) or maximum (255) intensity values, which may indicate
+    over- or underexposure issues.
+
+    Args:
+        channel (numpy.ndarray): A 2D numpy array representing the color channel of an image.
+
+    Returns:
+        bool: True if the channel is over- or underexposed, otherwise False.
+    """
+    total_pixels = channel.size
+    zero_count = np.sum(channel == 0)
+    max_count = np.sum(channel == 255)
+    return (zero_count / total_pixels > warning_threshold) or (max_count / total_pixels > warning_threshold)
 
 def quality_control(img, warning_threshold=0.05):
     """Perform quality control by checking for problematic color data and plotting histograms.
@@ -24,31 +45,11 @@ def quality_control(img, warning_threshold=0.05):
     # Split the img into its Red, Green, and Blue channels
     red_channel, green_channel, blue_channel = img_rgb[:, :, 0], img_rgb[:, :, 1], img_rgb[:, :, 2]
 
-    # Function to check for over- or underexposure
-    def check_exposure(channel):
-        """Check if a color channel is over- or underexposed.
-
-        This function analyzes the given color channel to determine if
-        more than the specified percentage of its pixels are either at the
-        minimum (0) or maximum (255) intensity values, which may indicate
-        over- or underexposure issues.
-
-        Args:
-            channel (numpy.ndarray): A 2D numpy array representing the color channel of an image.
-
-        Returns:
-            bool: True if the channel is over- or underexposed, otherwise False.
-        """
-        total_pixels = channel.size
-        zero_count = np.sum(channel == 0)
-        max_count = np.sum(channel == 255)
-        return (zero_count / total_pixels > warning_threshold) or (max_count / total_pixels > warning_threshold)
-
     # Check each channel for over- or underexposure
     if (
-        check_exposure(red_channel) or
-        check_exposure(green_channel) or
-        check_exposure(blue_channel)
+        check_exposure(red_channel, warning_threshold) or
+        check_exposure(green_channel, warning_threshold) or
+        check_exposure(blue_channel, warning_threshold)
     ):
         print(
             f"WARNING: The image is over- or underexposed because more than {warning_threshold * 100}% of "
