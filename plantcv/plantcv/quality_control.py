@@ -4,12 +4,11 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from plantcv.plantcv.warn import warn
-from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import outputs, params
 
 
 # Function to check for over- or underexposure
-def check_exposure(channel, warning_threshold, label):
+def _check_exposure(channel, warning_threshold, label):
     """Check if a color channel is over- or underexposed.
 
     This function analyzes the given color channel to determine if
@@ -54,9 +53,9 @@ def quality_control(img, warning_threshold=0.05):
 
     # Check each channel for over- or underexposure
     if (
-        check_exposure(red_channel, warning_threshold, label="red") or
-        check_exposure(green_channel, warning_threshold, label="green") or
-        check_exposure(blue_channel, warning_threshold, label="blue")
+        _check_exposure(red_channel, warning_threshold, label="red") or
+        _check_exposure(green_channel, warning_threshold, label="green") or
+        _check_exposure(blue_channel, warning_threshold, label="blue")
     ):
         warn(warning=f"The image is over- or underexposed because more than {warning_threshold * 100}% of "
             "pixels are equal to 0 or 255 intensity. Color cannot be analyzed "
