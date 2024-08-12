@@ -18,6 +18,7 @@ This is a plotting method used to examine several output versions, such as from 
 ```python
 
 from plantcv import plantcv as pcv
+import os
 
 # Read in a list of images
 images = []
