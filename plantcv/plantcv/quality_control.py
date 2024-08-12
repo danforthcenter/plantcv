@@ -1,8 +1,11 @@
 # Perform quality control by checking for problematic color data
+import os
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-from plantcv.plantcv import warn, outputs
+from plantcv.plantcv.warn import warn
+from plantcv.plantcv._debug import _debug
+from plantcv.plantcv import outputs, params
 
 
 # Function to check for over- or underexposure
@@ -60,29 +63,34 @@ def quality_control(img, warning_threshold=0.05):
             "responsibly, as color values are lost above the minimum (0) and maximum "
             "(255). Change camera settings to capture appropriate images.")
 
-    # Plot the histograms
-    plt.figure(figsize=(10, 5))
+    if params.debug is not None:
+        # Plot the histograms
+        fig = plt.figure(figsize=(10, 5))
 
-    # Red histogram
-    plt.subplot(131)
-    plt.hist(red_channel.ravel(), bins=256, color='red', alpha=0.5)
-    plt.title('Red Histogram')
-    plt.xlabel('Intensity Value')
-    plt.ylabel('Count')
+        # Red histogram
+        plt.subplot(131)
+        plt.hist(red_channel.ravel(), bins=256, color='red', alpha=0.5)
+        plt.title('Red Histogram')
+        plt.xlabel('Intensity Value')
+        plt.ylabel('Count')
 
-    # Green histogram
-    plt.subplot(132)
-    plt.hist(green_channel.ravel(), bins=256, color='green', alpha=0.5)
-    plt.title('Green Histogram')
-    plt.xlabel('Intensity Value')
-    plt.ylabel('Count')
+        # Green histogram
+        plt.subplot(132)
+        plt.hist(green_channel.ravel(), bins=256, color='green', alpha=0.5)
+        plt.title('Green Histogram')
+        plt.xlabel('Intensity Value')
+        plt.ylabel('Count')
 
-    # Blue histogram
-    plt.subplot(133)
-    plt.hist(blue_channel.ravel(), bins=256, color='blue', alpha=0.5)
-    plt.title('Blue Histogram')
-    plt.xlabel('Intensity Value')
-    plt.ylabel('Count')
+        # Blue histogram
+        plt.subplot(133)
+        plt.hist(blue_channel.ravel(), bins=256, color='blue', alpha=0.5)
+        plt.title('Blue Histogram')
+        plt.xlabel('Intensity Value')
+        plt.ylabel('Count')
 
-    plt.tight_layout()
-    plt.show()
+        plt.tight_layout()
+        if params.debug == "print":
+            plt.savefig(os.path.join(params.debug_outdir, str(params.device) + '_bad_exposure_hist.png'))
+            plt.close()
+        elif params.debug == "plot":
+            plt.show()
