@@ -57,7 +57,7 @@ def quality_control(img, warning_threshold=0.05):
         _check_exposure(green_channel, warning_threshold, label="green") or
         _check_exposure(blue_channel, warning_threshold, label="blue")
     ):
-        warn(warning=f"The image is over- or underexposed because more than {warning_threshold * 100}% of "
+        warn(f"The image is over- or underexposed because more than {warning_threshold * 100}% of "
             "pixels are equal to 0 or 255 intensity. Color cannot be analyzed "
             "responsibly, as color values are lost above the minimum (0) and maximum "
             "(255). Change camera settings to capture appropriate images.")
