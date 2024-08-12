@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from plantcv.plantcv import outputs, warn
 
+
 # Function to check for over- or underexposure
 def check_exposure(channel, warning_threshold, label):
     """Check if a color channel is over- or underexposed.
@@ -25,6 +26,7 @@ def check_exposure(channel, warning_threshold, label):
     proportion_bad_pix = zero_count / total_pixels
     outputs.add_metadata(term=label + "_percent_bad_exposure_qc", datatype=float, value=proportion_bad_pix)
     return (zero_count / total_pixels > warning_threshold) or (max_count / total_pixels > warning_threshold)
+
 
 def quality_control(img, warning_threshold=0.05):
     """Perform quality control by checking for problematic color data and plotting histograms.
