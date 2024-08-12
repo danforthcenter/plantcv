@@ -34,13 +34,14 @@ Filter objects (connected regions of non-zero pixels) within a region of interes
 ```python
 
 from plantcv import plantcv as pcv
+from plantcv.plantcv.roi.quick_filter import _quick_cutto
 
 # Set global debug behavior to None (default), "print" (to file),
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "plot"
 
 # ROI filter keeps objects that are partially inside ROI
-filtered_mask, lbl_mask, num = pcv.roi._quick_cutto(mask=mask, roi=roi)
+filtered_mask, lbl_mask, num = _quick_cutto(mask=mask, roi=roi)
 
 ```
 
