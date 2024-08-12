@@ -23,7 +23,7 @@ def check_exposure(channel, warning_threshold, label):
     zero_count = np.sum(channel == 0)
     max_count = np.sum(channel == 255)
     proportion_bad_pix = zero_count / total_pixels
-    outputs.add_metadata(term=label + "_exposure_qc", datatype=float, value=proportion_bad_pix)
+    outputs.add_metadata(term=label + "_percent_bad_exposure_qc", datatype=float, value=proportion_bad_pix)
     return (zero_count / total_pixels > warning_threshold) or (max_count / total_pixels > warning_threshold)
 
 def quality_control(img, warning_threshold=0.05):
