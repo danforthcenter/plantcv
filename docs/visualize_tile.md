@@ -30,9 +30,13 @@ composite = pcv.visualize.tile(images=images, nrow=2, ncol=2)
 ```
 
 **Input images**
+
 ![Screenshot](img/documentation_images/visualize_tile/Tile_1.jpg)
+
 ![Screenshot](img/documentation_images/visualize_tile/Tile_2.jpg)
+
 ![Screenshot](img/documentation_images/visualize_tile/Tile_3.jpg)
+
 ![Screenshot](img/documentation_images/visualize_tile/Tile_4.jpg)
 
 **Ouput**
