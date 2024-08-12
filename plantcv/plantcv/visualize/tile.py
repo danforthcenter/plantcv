@@ -2,6 +2,8 @@
 
 import cv2
 import numpy as np
+import os
+from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 
 def _row_resize(row, ncol):
