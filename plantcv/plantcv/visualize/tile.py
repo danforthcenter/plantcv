@@ -40,11 +40,12 @@ def tile(images, nrow, ncol):
 
     :param images: list of numpy.ndarray objects
     :param nrow: int
-    :return ncol: int
+    :param ncol: int
+    :return comp_img: numpy.ndarray
     """
     tracker = 0
     mat = []
-    for i in range(nrow):
+    for _ in range(nrow):
         row = []
         for _ in range(ncol):
             if tracker <= (len(images) - 1):
