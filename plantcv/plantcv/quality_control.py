@@ -64,7 +64,7 @@ def quality_control(img, warning_threshold=0.05):
 
     if params.debug is not None:
         # Plot the histograms
-        fig = plt.figure(figsize=(10, 5))
+        plt.figure(figsize=(10, 5))
 
         # Red histogram
         plt.subplot(131)
