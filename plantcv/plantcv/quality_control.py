@@ -23,10 +23,7 @@ def check_exposure(channel, warning_threshold, label):
     zero_count = np.sum(channel == 0)
     max_count = np.sum(channel == 255)
     proportion_bad_pix = zero_count / total_pixels
-    outputs.add_observation(sample="default", variable='percent_over_or_under_exposed',
-                            trait='how much of the given rgb image is over/underexposed',
-                            method='plantcv.plantcv.quality_control', scale='percentage', datatype=float,
-                            value=proportion_bad_pix, label=label)
+    outputs.add_metadata(term=label + "_exposure_qc", datatype=float, value=proportion_bad_pix)
     return (zero_count / total_pixels > warning_threshold) or (max_count / total_pixels > warning_threshold)
 
 def quality_control(img, warning_threshold=0.05):
