@@ -6,25 +6,28 @@ import os
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 
+
 def _row_resize(row, ncol):
-    """ Resizes and concatenates objects in a row """
+    """Resizes and concatenates objects in a row"""
     h_min = min(img.shape[0] for img in row)
     # Resizing each image so they're the same
-    row_resize = [cv2.resize(img, (int(img.shape[1] * h_min / img.shape[0]), h_min), 
+    row_resize = [cv2.resize(img, (int(img.shape[1] * h_min / img.shape[0]), h_min),
                              interpolation=cv2.INTER_CUBIC) for img in row]
     # Add empty images to the end of the row so things still stay the same size
-    while len(row_resize) < ncol: 
-       row_resize.append(np.zeros(row_resize[0].shape, dtype=np.uint8))
+    while len(row_resize) < ncol:
+        row_resize.append(np.zeros(row_resize[0].shape, dtype=np.uint8))
     # Concatenate horizontally
     return cv2.hconcat(row_resize)
 
+
 # Same as _row_resize but for columns
 def _col_resize(col):
-    """ Resized and concatenates objects in a column """
+    """Resized and concatenates objects in a column"""
     w_min = min(img.shape[1] for img in col)
-    col_resize = [cv2.resize(img, (w_min, int(img.shape[0] * w_min / img.shape[1])), 
+    col_resize = [cv2.resize(img, (w_min, int(img.shape[0] * w_min / img.shape[1])),
                              interpolation=cv2.INTER_CUBIC) for img in col]
     return cv2.vconcat(col_resize)
+
 
 # The function that does the tiling
 def tile(images, nrow, ncol):

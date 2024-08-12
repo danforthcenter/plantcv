@@ -10,6 +10,6 @@ def test_tile(visualize_test_data):
     images = []
     for i in os.listdir(visualize_test_data.tile_dir):
         images.append(pcv.readimage(visualize_test_data.tile_dir+i)[0])
-    composite = pcv.visualize.tile(images=images, nrow=2, ncol=2)
+    composite = tile(images=images, nrow=2, ncol=2)
     query_img, _, _ = pcv.readimage(visualize_test_data.tile_out)
     assert (composite == query_img).all()
