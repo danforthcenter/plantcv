@@ -19,13 +19,24 @@ This is a plotting method used to examine several output versions, such as from 
 
 from plantcv import plantcv as pcv
 
+# Read in a list of images
+images = []
+for i in os.listdir("./test_images/"):
+    images.append(pcv.readimage("./test_images/"+i)[0])
+
 # Examine all images at once
-composite = pcv.visualize.tile(images=images, nrow=3, ncol=3)
+composite = pcv.visualize.tile(images=images, nrow=2, ncol=2)
 
 ```
 
+**Input images**
+![Screenshot](img/documentation_images/visualize_tile/Tile_1.png)
+![Screenshot](img/documentation_images/visualize_tile/Tile_2.png)
+![Screenshot](img/documentation_images/visualize_tile/Tile_3.png)
+![Screenshot](img/documentation_images/visualize_tile/Tile_4.png)
+
 **Ouput**
 
-![Screenshot](img/documentation_images/visualize_colorspaces/all_colorspaces.jpg)
+![Screenshot](img/documentation_images/visualize_tile/Tile_output.png)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/visualize/colorspaces.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/visualize/tile.py)

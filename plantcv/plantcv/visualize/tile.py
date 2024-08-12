@@ -25,7 +25,7 @@ def _col_resize(col):
     return cv2.vconcat(col_resize)
 
 # The function that does the tiling
-def img_tile(images, nrow, ncol):
+def tile(images, nrow, ncol):
     """Tile a list of images into a composite with given dimensions.
 
     Inputs:
