@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from math import floor
 import altair as alt
 import pandas as pd
-import affine.Affine as Affine
+import affine
 
 
 class Params:
@@ -329,7 +329,7 @@ class Spectral_data:
         self.default_bands = default_bands
         # The transformation matrix that converts xy coordinates to georeferenced coordinates
         if not geo_transform:
-            self.geo_transform = Affine.identity()
+            self.geo_transform = affine.Affine.identity()
         # The coordinate system of a georeferenced image
         self.geo_crs = geo_crs
 
