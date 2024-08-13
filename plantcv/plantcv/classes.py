@@ -9,7 +9,6 @@ import matplotlib.pyplot as plt
 from math import floor
 import altair as alt
 import pandas as pd
-import affine
 
 
 class Params:
@@ -328,8 +327,9 @@ class Spectral_data:
         # The default band indices needed to make an pseudo_rgb image, if not available then store None
         self.default_bands = default_bands
         # The transformation matrix that converts xy coordinates to georeferenced coordinates
+        # Default is the input list for affine.Affine to make an identity matrix
         if not geo_transform:
-            self.geo_transform = affine.Affine.identity()
+            self.geo_transform = (1.0, 0.0, 0.0, 0.0, 1.0, 0.0)
         # The coordinate system of a georeferenced image
         self.geo_crs = geo_crs
 
