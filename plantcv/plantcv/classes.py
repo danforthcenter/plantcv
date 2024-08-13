@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from math import floor
 import altair as alt
 import pandas as pd
+import affine.Affine as Affine
 
 
 class Params:
@@ -299,7 +300,7 @@ class Spectral_data:
 
     def __init__(self, array_data, max_wavelength, min_wavelength, max_value, min_value, d_type, wavelength_dict,
                  samples, lines, interleave, wavelength_units, array_type, pseudo_rgb, filename, default_bands,
-                 geo_transform):
+                 geo_transform=None, geo_crs=None):
         # The actual array/datacube
         self.array_data = array_data
         # Min/max available wavelengths (for spectral datacube)
@@ -327,7 +328,10 @@ class Spectral_data:
         # The default band indices needed to make an pseudo_rgb image, if not available then store None
         self.default_bands = default_bands
         # The transformation matrix that converts xy coordinates to georeferenced coordinates
-        self.geo_transform = geo_transform
+        if not geo_transform:
+            self.geo_transform = Affine.identity()
+        # The coordinate system of a georeferenced image
+        self.geo_crs = geo_crs
 
 
 class PSII_data:
