@@ -23,7 +23,7 @@ class VisualizeTestData:
         # PlantCV hyperspectral image object
         self.hsi_file = os.path.join(self.datadir, "hsi.pkl")
         # Tile image directory
-        self.tile_dir = os.path.join(self.datadir, "visualize_tile/")
+        self.tile_dir = os.path.join(self.datadir, "visualize_tile")
         # Tile image output
         self.tile_out = os.path.join(self.datadir, "Tile_output.png")
 
