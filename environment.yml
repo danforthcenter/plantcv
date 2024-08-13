@@ -25,7 +25,6 @@ dependencies:
   - altair
   - vl-convert-python
   - git
-  - affine
 
 channels:
   - conda-forge
