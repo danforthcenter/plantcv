@@ -7,7 +7,7 @@ def test_tile(visualize_test_data):
     """Test for PlantCV."""
     # Read in image list
     images = []
-    paths = [visualize_test_data.tile_dir+i for i in visualize_test_data.tile_dir]
+    paths = [visualize_test_data.tile_dir+i for i in os.listdir(visualize_test_data.tile_dir)]
     paths.sort
     for i in paths:
         images.append(pcv.readimage(i)[0])
