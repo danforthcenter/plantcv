@@ -1,9 +1,7 @@
 import cv2
 import pytest
-from plantcv.plantcv import params
-from plantcv.plantcv import outputs
-from plantcv.plantcv import readimage
-from plantcv.plantcv import exposure
+from plantcv.plantcv import params, outputs
+from plantcv.plantcv.qc import exposure
 
 
 @pytest.mark.parametrize("mode", ["print", "plot"])
