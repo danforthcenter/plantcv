@@ -30,7 +30,7 @@ def _check_exposure(channel, warning_threshold, label):
     return (zero_count / total_pixels > warning_threshold) or (max_count / total_pixels > warning_threshold)
 
 
-def quality_control(img, warning_threshold=0.05):
+def exposure(img, warning_threshold=0.05):
     """Perform quality control by checking for problematic color data and plotting histograms.
     This function performs an analysis of an image to check for over- or underexposure
     in the red, green, and blue color channels. It also generates and displays histograms

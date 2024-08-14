@@ -82,7 +82,7 @@ from plantcv.plantcv import analyze
 from plantcv.plantcv import filters
 from plantcv.plantcv.kmeans_classifier import predict_kmeans
 from plantcv.plantcv.kmeans_classifier import mask_kmeans
-from plantcv.plantcv.quality_control import quality_control
+from plantcv.plantcv.exposure import exposure
 # add new functions to end of lists
 
 __all__ = [
@@ -159,5 +159,5 @@ __all__ = [
     "filters",
     "predict_kmeans",
     "mask_kmeans",
-    "quality_control"
+    "exposure"
 ]
