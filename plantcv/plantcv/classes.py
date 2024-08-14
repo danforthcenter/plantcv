@@ -328,6 +328,7 @@ class Spectral_data:
         self.default_bands = default_bands
         # The transformation matrix that converts xy coordinates to georeferenced coordinates
         # Default is the input list for affine.Affine to make an identity matrix
+        self.geo_transform = geo_transform
         if not geo_transform:
             self.geo_transform = (1.0, 0.0, 0.0, 0.0, 1.0, 0.0)
         # The coordinate system of a georeferenced image
