@@ -30,7 +30,7 @@ def _check_exposure(channel, warning_threshold, label):
     return (zero_count / total_pixels > warning_threshold) or (max_count / total_pixels > warning_threshold)
 
 
-def exposure(img, warning_threshold=0.05):
+def exposure(rgb_img, warning_threshold=0.05):
     """Perform quality control by checking for problematic color data and plotting histograms.
     This function performs an analysis of an image to check for over- or underexposure
     in the red, green, and blue color channels. It also generates and displays histograms
@@ -46,7 +46,7 @@ def exposure(img, warning_threshold=0.05):
               is over- or underexposed and displays histograms of color channel intensities.
     """
     # Convert the img from BGR to RGB
-    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img_rgb = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2RGB)
 
     # Split the img into its Red, Green, and Blue channels
     red_channel, green_channel, blue_channel = img_rgb[:, :, 0], img_rgb[:, :, 1], img_rgb[:, :, 2]

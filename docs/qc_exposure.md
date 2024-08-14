@@ -7,12 +7,12 @@ If there are quality problems in the image, change the camera settings to reduce
 This function is meant to be run in a jupyter notebook during workflow development. 
 
 
-**plantcv.exposurek**(*img, warning_threshold*)
+**plantcv.qc.exposure**(*rgb_img, warning_threshold=0.05*)
 
 **returns** Altair chart
 
 - **Parameters**
-    - img (numpy.ndarray) - An image in BGR format as a 3D numpy array.
+    - rgb_img (numpy.ndarray) - An image in BGR format as a 3D numpy array.
     - warning_threshold (float) - The percentage threshold for triggering a warning
                     for over- or underexposure (default is 0.05 for 5%).
             
@@ -25,7 +25,7 @@ This function is meant to be run in a jupyter notebook during workflow developme
 
 from plantcv import plantcv as pcv
 
-quality = pcv.exposure(img = image, warning_threshold=0.05)
+quality = pcv.exposure(rgb_img=image, warning_threshold=0.05)
 
 ```
 **Acceptable quality for exposure**
@@ -38,4 +38,4 @@ Warning: The image is over- or underexposed because more than 5.0% of pixels are
 
 ![Screenshot](img/documentation_images/exposure/quality_control_bad.png)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/exposure.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/qc/exposure.py)
