@@ -7,8 +7,8 @@ def test_tile(visualize_test_data):
     """Test for PlantCV."""
     # Read in image list
     images = []
-    paths = [visualize_test_data.tile_dir+"Tile1.png", visualize_test_data.tile_dir+"Tile2.png",
-             visualize_test_data.tile_dir+"Tile3.png", visualize_test_data.tile_dir+"Tile4.png"]
+    paths = [visualize_test_data.tile_dir+"Tile_1.jpg", visualize_test_data.tile_dir+"Tile_2.jpg",
+             visualize_test_data.tile_dir+"Tile_3.jpg", visualize_test_data.tile_dir+"Tile_4.jpg"]
     for i in paths:
         images.append(pcv.readimage(i)[0])
     composite = tile(images=images, nrow=2, ncol=3)

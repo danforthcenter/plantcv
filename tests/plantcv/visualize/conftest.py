@@ -25,7 +25,7 @@ class VisualizeTestData:
         # Tile image directory
         self.tile_dir = os.path.join(self.datadir, "visualize_tile/")
         # Tile image output
-        self.tile_out = os.path.join(self.datadir, "Tile_output.png")
+        self.tile_out = os.path.join(self.datadir, "Tile_output.jpg")
 
     @staticmethod
     def load_hsi(pkl_file):
