@@ -40,18 +40,17 @@ def _check_exposure(channel, warning_threshold, channel_name):
 
 def exposure(rgb_img, warning_threshold=0.05):
     """Perform quality control by checking for problematic color data and plotting histograms.
+
     This function performs an analysis of an image to check for over- or underexposure
     in the red, green, and blue color channels. It also generates and displays histograms
     for each color channel to visualize the distribution of pixel intensities.
 
-    Args:
-        img (numpy.ndarray): An image in BGR format as a 3D numpy array.
-        warning_threshold (float): The percentage threshold for triggering a warning
-                                    for over- or underexposure (default is 0.05 for 5%).
-
-    Returns:
-        None: This function does not return any value. It prints a warning if the image
-              is over- or underexposed and displays histograms of color channel intensities.
+    Parameters
+    ----------
+    rgb_img : numpy.ndarray
+        Color image data.
+    warning_threshold : float, optional
+        The threshold value for triggering a warning for over- or underexposure, by default 0.05
     """
     # Convert the img from BGR to RGB
     img_rgb = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2RGB)
