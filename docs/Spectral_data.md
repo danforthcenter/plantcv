@@ -38,6 +38,10 @@ Attributes are accessed as spectral_data_instance.*attribute*.
 
 **filename**: The filename where the data originated from
 
+**geo_transform**: The affine transformation matrix used to convert from an xy coordinate system to a georeferenced coordinate system. Default is the input list used by the affine package to create an identity matrix.
+
+**geo_crs**: The original coordinate system of a georeferenced image. Default is "None".
+
 ### Example
 
 PlantCV functions from the hyperspectral sub-package use `Spectral_data` implicitly.
