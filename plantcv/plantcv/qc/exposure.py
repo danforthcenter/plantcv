@@ -3,8 +3,7 @@ import os
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-from plantcv.plantcv.warn import warn
-from plantcv.plantcv import outputs, params
+from plantcv.plantcv import outputs, params, warn
 
 
 # Function to check for over- or underexposure
