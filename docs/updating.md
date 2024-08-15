@@ -832,6 +832,11 @@ pages for more details on the input and output variable types.
 * post v3.2: Deprecated, see:
     * pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, axes=True, colorbar=True*)
 
+#### plantcv.qc.exposure
+
+* pre v4.3.1: NA
+* post v4.3.1: chart = **plantcv.qc.exposure**(*rgb_img, warning_threshold=0.05*)
+
 #### plantcv.readbayer
 
 * pre v3.0: NA
