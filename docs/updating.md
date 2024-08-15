@@ -835,7 +835,7 @@ pages for more details on the input and output variable types.
 #### plantcv.qc.exposure
 
 * pre v4.3.1: NA
-* post v4.3.1: **plantcv.qc.exposure**(*rgb_img, warning_threshold=0.05*)
+* post v4.3.1: chart = **plantcv.qc.exposure**(*rgb_img, warning_threshold=0.05*)
 
 #### plantcv.readbayer
 

@@ -2,8 +2,10 @@
 import os
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
+import pandas as pd
+import altair as alt
 from plantcv.plantcv import outputs, params, warn
+from plantcv.plantcv._debug import _debug
 
 
 # Function to check for over- or underexposure
@@ -50,7 +52,13 @@ def exposure(rgb_img, warning_threshold=0.05):
         Color image data.
     warning_threshold : float, optional
         The threshold value for triggering a warning for over- or underexposure, by default 0.05
+
+    Returns:
+    -------
+    chart : altair.vegalite.v5.api.Chart
+        Histogram chart of RGB image intensity values.
     """
+    params.device += 1
     # Convert the img from BGR to RGB
     img_rgb = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2RGB)
 
@@ -69,34 +77,36 @@ def exposure(rgb_img, warning_threshold=0.05):
             "responsibly, as color values are lost above the minimum (0) and maximum "
             "(255). Change camera settings to capture appropriate images.")
 
-    if params.debug is not None:
-        # Plot the histograms
-        plt.figure(figsize=(10, 5))
+    # Create a dataframe to store the histogram data
+    df = pd.DataFrame({
+        'intensity': np.arange(256),
+        'Red Channel': np.histogram(red_channel.ravel(), bins=256)[0] / red_channel.size,
+        'Green Channel': np.histogram(green_channel.ravel(), bins=256)[0] / green_channel.size,
+        'Blue Channel': np.histogram(blue_channel.ravel(), bins=256)[0] / blue_channel.size
+    })
 
-        # Red histogram
-        plt.subplot(131)
-        plt.hist(red_channel.ravel(), bins=256, color='red', alpha=0.5)
-        plt.title('Red Histogram')
-        plt.xlabel('Intensity Value')
-        plt.ylabel('Count')
+    # Plot the histograms
+    chart = alt.Chart(df).transform_fold(
+        ["Red Channel", "Green Channel", "Blue Channel"],
+        as_=['Channel', 'Proportion']
+    ).mark_area(
+        opacity=0.5
+    ).encode(
+        alt.X('intensity:Q', title="Intensity Value"),
+        alt.Y('Proportion:Q', title="Proportion of Pixels"),
+        alt.Color(
+            'Channel:N',
+            scale=alt.Scale(range=['red', 'green', 'blue']),
+            sort=['red', 'green', 'blue'],
+            legend=None
+        ),
+        column=alt.Column('Channel:N', sort=['Red Channel', 'Green Channel', 'Blue Channel'], title=None)
+    ).properties(
+        width=200,
+        height=200
+    )
 
-        # Green histogram
-        plt.subplot(132)
-        plt.hist(green_channel.ravel(), bins=256, color='green', alpha=0.5)
-        plt.title('Green Histogram')
-        plt.xlabel('Intensity Value')
-        plt.ylabel('Count')
+    # Display or save the plot
+    _debug(chart, filename=os.path.join(params.debug_outdir, f"{params.device}_bad_exposure_hist.png"))
 
-        # Blue histogram
-        plt.subplot(133)
-        plt.hist(blue_channel.ravel(), bins=256, color='blue', alpha=0.5)
-        plt.title('Blue Histogram')
-        plt.xlabel('Intensity Value')
-        plt.ylabel('Count')
-
-        plt.tight_layout()
-        if params.debug == "print":
-            plt.savefig(os.path.join(params.debug_outdir, str(params.device) + '_bad_exposure_hist.png'))
-            plt.close()
-        elif params.debug == "plot":
-            plt.show()
+    return chart

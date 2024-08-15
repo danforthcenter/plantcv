@@ -25,7 +25,7 @@ This function is meant to be run in a jupyter notebook during workflow developme
 
 from plantcv import plantcv as pcv
 
-quality = pcv.exposure(rgb_img=image, warning_threshold=0.05)
+chart = pcv.exposure(rgb_img=image, warning_threshold=0.05)
 
 ```
 **Acceptable quality for exposure**
