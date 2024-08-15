@@ -30,12 +30,12 @@ chart = pcv.exposure(rgb_img=image, warning_threshold=0.05)
 ```
 **Acceptable quality for exposure**
 
-![Screenshot](img/documentation_images/exposure/quality_control_good.png)
+![Screenshot](img/documentation_images/qc_exposure/quality_control_good.png)
 
 **Problematic quality for exposure**
 
 Warning: The image is over- or underexposed because more than 5.0% of pixels are equal to 0 or 255 intensity. Color cannot be analyzed responsibly, as color values are lost above the minimum (0) and maximum (255). Change camera settings to capture appropriate images.
 
-![Screenshot](img/documentation_images/exposure/quality_control_bad.png)
+![Screenshot](img/documentation_images/qc_exposure/quality_control_bad.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/qc/exposure.py)
