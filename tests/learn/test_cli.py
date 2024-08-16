@@ -83,7 +83,8 @@ def test_run_naive_bayes_multiclass_bad_file():
                 "--plots"]
     with pytest.raises(IOError):
         main()
-        
+
+
 def test_run_kmeans_bad_imgdir():
     """Test for PlantCV."""
     # Mock ARGV
@@ -94,6 +95,7 @@ def test_run_kmeans_bad_imgdir():
                 "--out", "does-not-exist"]
     with pytest.raises(IOError):
         main()
+
 
 def test_run_kmeans(tmpdir, learn_test_data):
     """Test for PlantCV."""
@@ -109,4 +111,3 @@ def test_run_kmeans(tmpdir, learn_test_data):
                 "--categories", "3",
                 "--out", outfile]
     assert main() is None
-    
