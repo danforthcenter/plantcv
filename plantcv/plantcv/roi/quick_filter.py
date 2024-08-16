@@ -4,9 +4,10 @@ import cv2
 import numpy as np
 from skimage.measure import label
 from skimage.color import label2rgb
-from plantcv.plantcv import params, logical_and
+from plantcv.plantcv import params
 from plantcv.plantcv.roi import roi2mask
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv.logical_and import logical_and
 
 
 def quick_filter(mask, roi):
