@@ -12,14 +12,18 @@ from plantcv.plantcv.logical_and import logical_and
 
 def quick_filter(mask, roi):
     """Quickly filter a binary mask using a region of interest.
-    Inputs
-    ------
-    mask = binary mask
-    roi  = PlantCV ROI object
+
+    Parameters
+    ----------
+    mask : numpy.ndarray
+        Binary mask to filter.
+    roi : plantcv.plantcv.classes.Objects
+        PlantCV ROI object.
 
     Returns
     -------
-    filtered_mask = Filtered binary mask
+    numpy.ndarray
+        Filtered binary mask.
     """
     # Increment the device counter
     params.device += 1
@@ -74,17 +78,19 @@ def quick_filter(mask, roi):
 
 
 def _quick_cutto(mask, roi):
-    """Quickly filter a binary mask using a region of interest.
-    Inputs
-    ------
-    mask = binary mask
-    roi  = PlantCV ROI object(s)
+    """Quickly filter a binary mask using a region of interest by cutting to each ROI.
+
+    Parameters
+    ----------
+    mask : numpy.ndarray
+        Binary mask to filter.
+    roi : plantcv.plantcv.classes.Objects
+        PlantCV ROI object.
 
     Returns
     -------
-    cropped_mask = Filtered binary mask
-    label_mask_where = Labeled mask
-    num_labels = Number of labeled objects
+    numpy.ndarray, numpy.ndarray, int
+        Filtered binary mask, labeled mask, number of labels.
     """
     # Increment the device counter
     params.device += 1
