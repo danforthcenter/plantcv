@@ -46,7 +46,7 @@ def tile(images, ncol):
     """
     # Increment the device counter
     params.device += 1
-    
+
     # Calculate number of rows - always rounds up
     nrow = int(len(images) / ncol) + (len(images) % ncol > 0)
     tracker = 0
