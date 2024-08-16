@@ -1347,7 +1347,7 @@ pages for more details on the input and output variable types.
 #### plantcv.visualize.tile
 
 * pre v4.4: NA
-* post v4.4: tile_img = **pcv.visualize.tile**(*img_list, nrow, ncol*)
+* post v4.4: tile_img = **pcv.visualize.tile**(*img_list, ncol*)
 
 #### plantcv.visualize.time_lapse_video
 
