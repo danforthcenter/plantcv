@@ -1344,6 +1344,11 @@ pages for more details on the input and output variable types.
 * pre v4.0: NA
 * post v4.0: fig, ax = **pcv.visualize.pixel_scatter_plot**(*paths_to_imgs, x_channel, y_channel*)
 
+#### plantcv.visualize.tile
+
+* pre v4.4: NA
+* post v4.4: tile_img = **pcv.visualize.tile**(*img_list, ncol*)
+
 #### plantcv.visualize.time_lapse_video
 
 * pre v4.0: NA
