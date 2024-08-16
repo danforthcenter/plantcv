@@ -10,5 +10,5 @@ def test_tile(visualize_test_data):
              visualize_test_data.tile_dir+"Tile_3.jpg", visualize_test_data.tile_dir+"Tile_4.jpg"]
     for i in paths:
         images.append(pcv.readimage(i)[0])
-    composite = tile(images=images, nrow=2, ncol=3)
+    composite = tile(images=images, ncol=3)
     assert composite.shape == (663, 855, 3)
