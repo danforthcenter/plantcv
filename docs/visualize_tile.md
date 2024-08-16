@@ -2,14 +2,13 @@
 
 This is a plotting method used to examine several output versions, such as from different model fits with varying parameters, all at once.
 
-**plantcv.visualize.tile**(*images, nrow, ncol*)
+**plantcv.visualize.tile**(*images, ncol*)
 
 **returns** comp_img
 
 - **Parameters:**
     - images - A list of numpy arrays to tile into a composite.
-    - nrow - Number of rows in composite output
-    - ncol - Number of columns in composite output
+    - ncol - Number of columns in composite output. Number of rows is calculated from the number of input images.
 
 - **Example use:**
     - Below
@@ -26,7 +25,7 @@ for i in os.listdir("./test_images/"):
     images.append(pcv.readimage("./test_images/"+i)[0])
 
 # Examine all images at once
-composite = pcv.visualize.tile(images=images, nrow=2, ncol=2)
+composite = pcv.visualize.tile(images=images, ncol=2)
 
 ```
 

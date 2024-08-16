@@ -30,22 +30,25 @@ def _col_resize(col):
 
 
 # The function that does the tiling
-def tile(images, nrow, ncol):
+def tile(images, ncol):
     """Tile a list of images into a composite with given dimensions.
 
     Inputs:
     images      = A list of images
-    nrow        = Number of rows in desired composite
     ncol        = Number of columns in desired composite
 
     Returns:
     comp_img    = A composite image of tiled inputs from list
 
     :param images: list of numpy.ndarray objects
-    :param nrow: int
     :param ncol: int
     :return comp_img: numpy.ndarray
     """
+    # Increment the device counter
+    params.device += 1
+    
+    # Calculate number of rows - always rounds up
+    nrow = int(len(images) / ncol) + (len(images) % ncol > 0)
     tracker = 0
     mat = []
     for _ in range(nrow):
