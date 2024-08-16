@@ -8,7 +8,20 @@ from plantcv.plantcv._debug import _debug
 
 
 def _row_resize(row, ncol):
-    """Resizes and concatenates objects in a row"""
+    """Resizes and concatenates objects in a row.
+
+    Parameters
+    ----------
+    row : list of numpy.ndarray
+        List of images to concatenate.
+    ncol : int
+        Number of columns in desired composite image.
+
+    Returns
+    -------
+    numpy.ndarray
+        Image concatenated horizontally.
+    """
     h_min = min(img.shape[0] for img in row)
     # Resizing each image so they're the same
     row_resize = [cv2.resize(img, (int(img.shape[1] * h_min / img.shape[0]), h_min),
@@ -22,7 +35,18 @@ def _row_resize(row, ncol):
 
 # Same as _row_resize but for columns
 def _col_resize(col):
-    """Resized and concatenates objects in a column"""
+    """Resized and concatenates objects in a column.
+
+    Parameters
+    ----------
+    col : list of numpy.ndarray
+        List of images to concatenate vertically.
+
+    Returns
+    -------
+    numpy.ndarray
+        Image concatenated vertically.
+    """
     w_min = min(img.shape[1] for img in col)
     col_resize = [cv2.resize(img, (w_min, int(img.shape[0] * w_min / img.shape[1])),
                              interpolation=cv2.INTER_CUBIC) for img in col]
@@ -33,16 +57,17 @@ def _col_resize(col):
 def tile(images, ncol):
     """Tile a list of images into a composite with given dimensions.
 
-    Inputs:
-    images      = A list of images
-    ncol        = Number of columns in desired composite
+    Parameters
+    ----------
+    images : list of numpy.ndarray
+        List of images to tile.
+    ncol : int
+        Number of columns in desired composite image.
 
-    Returns:
-    comp_img    = A composite image of tiled inputs from list
-
-    :param images: list of numpy.ndarray objects
-    :param ncol: int
-    :return comp_img: numpy.ndarray
+    Returns
+    -------
+    numpy.ndarray
+        Tiled composite image.
     """
     # Increment the device counter
     params.device += 1
