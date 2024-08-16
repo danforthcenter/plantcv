@@ -10,3 +10,4 @@ def test_tile(visualize_test_data):
         images.append(cv2.imread(visualize_test_data.small_rgb_img))
     composite = tile(images=images, ncol=3)
     assert composite.shape == (670, 1200, 3)
+    
