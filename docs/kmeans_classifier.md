@@ -13,6 +13,7 @@ The first function (`pcv.predict_kmeans`) takes a target image and uses a traine
 
 - **Context:**
     - Used to classify cluster assignment of pixels in a target image using a trained kmeans clustering model.
+    - [Command line interface](tools.md) also available
 
 - **Example use below**
 
