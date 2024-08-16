@@ -155,7 +155,6 @@ nav:
         - 'Create Grid of ROIs Automatically': roi_auto_grid.md
         - 'Filter a mask by ROI': roi_filter.md
         - 'Filter a mask by ROI (quickly)': roi_quick_filter.md
-        - 'Cut a mask by ROI (quickly)': roi_quick_cutto.md
         - 'Convert ROI to Mask': roi2mask.md
       - 'Segment Image Series': segment_image_series.md
       - 'Shift Image': shift.md
