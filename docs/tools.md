@@ -10,7 +10,7 @@ detail is provided in the [Machine Learning Tutorial](tutorials/machine_learning
 provided below:
 
 ```
-usage: plantcv-train [-h] {naive_bayes,naive_bayes_multiclass}
+usage: plantcv-train [-h] {naive_bayes,naive_bayes_multiclass, kmeans}
 
 Subcommands:
     naive_bayes
@@ -32,6 +32,21 @@ Subcommands:
                                              class.
             -o OUTFILE, --outfile OUTFILE    Trained classifier output filename.
             -p, --plots                      Make output plots.
+    kmeans
+        usage: plantcv-train kmeans [-h] -i IMGDIR -k CATEGORIES -o OUTFILE [-r] [-p] [-s] [-n] [--sampling] [--seed] [--n_init]
+
+        optional arguments:
+            -h, --help                      Show this message and exit
+            -i IMGDIR, --imgdir IMDIR       Input directory containing images. 
+            -k INT, --categories INT        Number of classification categories.
+            -o OUTFILE, --out OUTFILE       Trained model output path and filename.
+            -r PREFIX, --prefix PREFIX      File prefix for training images.
+            -p INT, --patch_size INT        Patch size.
+            -s INT, --sigma INT             Severity of Gaussian blur, sigma.
+            --sampling FLOAT                Fraction of pixels sampled per image for patch extraction
+            --seed INT                      Random seed for reproducibility
+            -n INT, --num_imgs INT          Number of images in training directory to use.
+            --n_init INT                    Number of Kmeans random initiations  
 
 ```
 
