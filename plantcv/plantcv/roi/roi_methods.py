@@ -360,7 +360,7 @@ def _rois_from_coordinates(img, coord=None, radius=None):
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
     radius = _adjust_radius_coord(height, width, coord, radius)
-    overlap_img = np.zeros((height, width))
+    overlap_img = np.zeros((height, width), dtype=np.uint8)
     roi_objects = Objects()
     for i in range(0, len(coord)):
         # Initialize a binary image for each circle
@@ -370,7 +370,7 @@ def _rois_from_coordinates(img, coord=None, radius=None):
         # Draw the circle on the binary image
         # Keep track of each roi individually to check overlapping
         circle_img = cv2.circle(bin_img, (x, y), radius, 255, -1)
-        overlap_img = overlap_img + circle_img
+        overlap_img = cv2.circle(overlap_img, (x, y), radius, 255, -1)
         # Make a list of contours and hierarchies
         rc, rh = cv2.findContours(circle_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[-2:]
         roi_objects.append(rc, rh)
