@@ -9,7 +9,9 @@ theme: readthedocs
 nav:
 - Home: index.md
 - Documentation:
-  - 'Installation': installation.md
+  - 'Installation': 
+    - 'Installing PlantCV on Windows': installation_windows.md
+    - 'Installing PlantCV on Mac': installation_mac.md
   - 'Updating PlantCV': updating.md
   - 'Frequently Asked Questions': faq.md
   - 'Analysis Approaches': analysis_approach.md
