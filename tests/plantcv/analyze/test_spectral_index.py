@@ -16,6 +16,18 @@ def test_spectral_index(test_data):
     assert outputs.observations['default_1']['mean_index_savi']['value'] > 0
 
 
+def test_spectral_index_empty_roi(test_data):
+    """Test for PlantCV."""
+    # Clear previous outputs
+    outputs.clear()
+    index_array = test_data.load_hsi(test_data.savi_file)
+    mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8)
+    mask_img[10:20, :, ] = 2
+    _ = spectral_index(index_img=index_array, labeled_mask=mask_img)
+
+    assert outputs.observations['default_1']['mean_index_savi']['value'] > 0
+    
+
 def test_spectral_index_set_range(test_data):
     """Test for PlantCV."""
     # Clear previous outputs
