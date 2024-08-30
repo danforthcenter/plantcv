@@ -90,7 +90,7 @@ def _analyze_index(img, mask, bins=100, min_bin=0, max_bin=1, label=None):
     # Calculate observed min and max pixel values of the masked array
     if masked_array.any():
         observed_max = np.nanmax(masked_array)
-        observed_min = np.nanmin(masked_array)        
+        observed_min = np.nanmin(masked_array)
 
     # Auto calculate max_bin if set
     if type(max_bin) is str and (max_bin.upper() == "AUTO"):
@@ -109,7 +109,7 @@ def _analyze_index(img, mask, bins=100, min_bin=0, max_bin=1, label=None):
     if mask.any():
         _, hist_data = histogram(img.array_data, mask=mask, bins=bins, lower_bound=b, upper_bound=maxval,
                                  hist_data=True)
-        bin_labels, hist_percent = hist_data["pixel intensity"].tolist(), hist_data["proportion of pixels (%)"].tolist()        
+        bin_labels, hist_percent = hist_data["pixel intensity"].tolist(), hist_data["proportion of pixels (%)"].tolist()
 
     # Restore user debug setting
     params.debug = debug
