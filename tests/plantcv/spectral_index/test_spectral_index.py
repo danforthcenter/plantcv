@@ -118,6 +118,18 @@ def test_evi_bad_input(spectral_index_test_data):
     assert spectral_index.evi(hsi=index_array, distance=20) is None
 
 
+def test_gli(spectral_index_test_data):
+    """Test for PlantCV."""
+    index_array = spectral_index.gli(spectral_index_test_data.load_hsi(), distance=20)
+    assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
+
+
+def test_gli_bad_input(spectral_index_test_data):
+    """Test for PlantCV."""
+    index_array = spectral_index.gli(spectral_index_test_data.load_hsi(), distance=20)
+    assert spectral_index.gli(hsi=index_array, distance=20) is None
+
+
 def test_mari(spectral_index_test_data):
     """Test for PlantCV."""
     index_array = spectral_index.mari(spectral_index_test_data.load_hsi(), distance=20)
@@ -164,6 +176,18 @@ def test_ndre_bad_input(spectral_index_test_data):
     """Test for PlantCV."""
     index_array = spectral_index.ndre(spectral_index_test_data.load_hsi(), distance=20)
     assert spectral_index.ndre(hsi=index_array, distance=20) is None
+
+
+def test_npci(spectral_index_test_data):
+    """Test for PlantCV."""
+    index_array = spectral_index.npci(spectral_index_test_data.load_hsi(), distance=20)
+    assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
+
+
+def test_npci_bad_input(spectral_index_test_data):
+    """Test for PlantCV."""
+    index_array = spectral_index.npci(spectral_index_test_data.load_hsi(), distance=20)
+    assert spectral_index.npci(hsi=index_array, distance=20) is None
 
 
 def test_psnd_chla(spectral_index_test_data):

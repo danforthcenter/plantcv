@@ -328,6 +328,39 @@ def evi(hsi, distance=20):
     return None
 
 
+def gli(hsi, distance=20):
+    """Green leave index
+
+    GLI = (2 * R530 - R670 - R480) / (2 * R530 + R670 + R480)
+
+    The theoretical range for EVI is (-1, 1).
+
+    Inputs:
+    hsi         = hyperspectral image (PlantCV Spectral_data instance)
+    distance    = how lenient to be if the required wavelengths are not available
+
+    Returns:
+    index_array = Index data as a Spectral_data instance
+
+    :param hsi: __main__.Spectral_data
+    :param distance: int
+    :return index_array: __main__.Spectral_data
+    """
+    if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 480:
+        r480_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 480)
+        r670_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
+        r530_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 530)
+        r480 = (hsi.array_data[:, :, r480_index])
+        r670 = (hsi.array_data[:, :, r670_index])
+        r530 = (hsi.array_data[:, :, r530_index])
+        # Naturally ranges from -1 to 1
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = (2 * r530 - r670 - r480) / (2 * r530 + r670 + r480)
+        return _package_index(hsi=hsi, raw_index=index_array_raw, method="GLI")
+    warn("Available wavelengths are not suitable for calculating GLI. Try increasing distance.")
+    return None
+
+
 def mari(hsi, distance=20):
     """Modified Anthocyanin Reflectance Index.
 
@@ -455,6 +488,37 @@ def ndre(hsi, distance=20):
             index_array_raw = (r790 - r720) / (r790 + r720)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="NDRE")
     warn("Available wavelengths are not suitable for calculating NDRE. Try increasing distance.")
+    return None
+
+
+def npci(hsi, distance=20):
+    """Normalized Pigment Chlorophyll Index.
+
+    NPCI = (R680 - R430) / (R680 + R430)
+
+    The theoretical range for NPCI is [-1.0, 1.0].
+
+    Inputs:
+    hsi         = hyperspectral image (PlantCV Spectral_data instance)
+    distance    = how lenient to be if the required wavelengths are not available
+
+    Returns:
+    index_array = Index data as a Spectral_data instance
+
+    :param hsi: __main__.Spectral_data
+    :param distance: int
+    :return index_array: __main__.Spectral_data
+    """
+    if (float(hsi.max_wavelength) + distance) >= 790 and (float(hsi.min_wavelength) - distance) <= 720:
+        r430_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 430)
+        r680_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 680)
+        r680 = (hsi.array_data[:, :, r680_index])
+        r430 = (hsi.array_data[:, :, r430_index])
+        # Naturally ranges from -1 to 1
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = (r680 - r430) / (r680 + r430)
+        return _package_index(hsi=hsi, raw_index=index_array_raw, method="NPCI")
+    warn("Available wavelengths are not suitable for calculating NPCI. Try increasing distance.")
     return None
 
 
