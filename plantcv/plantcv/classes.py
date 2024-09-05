@@ -3,6 +3,7 @@ import os
 import cv2
 import json
 import numpy as np
+import datetime
 from plantcv import plantcv as pcv
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv.annotate.points import _find_closest_pt
@@ -172,6 +173,12 @@ class Outputs:
         :param filename: str
         :param outformat: str
         """
+        # Add current date & time to metadata
+        self.metadata["run_date"] = {
+            "datatype": "str",
+            "value":  "{:%Y-%m-%dT%H:%M:%S}".format(datetime.datetime.now())
+        }
+       
         if outformat.upper() == "JSON":
             if os.path.isfile(filename):
                 with open(filename, 'r') as f:
