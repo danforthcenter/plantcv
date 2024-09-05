@@ -5,7 +5,7 @@ import cv2
 import numpy as np
 import pandas as pd
 from plantcv.plantcv import fatal_error
-from plantcv.plantcv import params
+from plantcv.plantcv import params, outputs
 from plantcv.plantcv.hyperspectral import read_data
 from plantcv.plantcv._debug import _debug
 
@@ -52,7 +52,8 @@ def readimage(filename, mode="native"):
 
     # Split path from filename
     path, img_name = os.path.split(filename)
-
+    # Add image size to metadata 
+    outputs.add_metadata(term="img_shape", datatype=float, value=np.shape(img))
     # Debugging visualization
     _debug(visual=img, filename=os.path.join(params.debug_outdir, "input_image.png"))
 
