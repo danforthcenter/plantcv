@@ -3,6 +3,7 @@ import os
 import cv2
 import json
 import numpy as np
+from plantcv import plantcv as pcv
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv.annotate.points import _find_closest_pt
 import matplotlib.pyplot as plt
@@ -74,6 +75,10 @@ class Outputs:
         self.images = []
         self.observations = {}
         self.metadata = {}
+        self.metadata["PlantCV_Version"] = {
+            "datatype": "str",
+            "value": pcv.__version__
+        }
 
         # Add a method to clear measurements
     def clear(self):
@@ -81,7 +86,10 @@ class Outputs:
         self.measurements = {}
         self.images = []
         self.observations = {}
-        self.metadata = {}
+        self.metadata["PlantCV_Version"] = {
+            "datatype": "str",
+            "value": pcv.__version__
+        }
 
     # Method to add observation to outputs
     def add_observation(self, sample, variable, trait, method, scale, datatype, value, label):
