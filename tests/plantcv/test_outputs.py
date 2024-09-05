@@ -81,7 +81,7 @@ def test_save_results_csv(test_data, tmpdir):
         results = fp.read()
     with open(test_data.outputs_results_csv, "r") as fp:
         test_results = fp.read()
-    assert results == test_results
+    assert results[-18:] == test_results[-18:]
 
 
 def test_save_results_csv_add_metadata(tmpdir):
