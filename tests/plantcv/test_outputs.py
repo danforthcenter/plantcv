@@ -97,7 +97,7 @@ def test_save_results_csv_add_metadata(tmpdir):
     with open(outfile, "r") as fp:
         results = fp.read()
     x = slice(0, 33)
-    assert results[x] == "add_date,sample,trait,value,label"
+    assert results[x] == "PlantCV_Version,add_date,run_date"
 
 
 def test_add_metadata_invalid_type():
