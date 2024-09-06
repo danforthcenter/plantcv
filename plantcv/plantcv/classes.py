@@ -76,10 +76,7 @@ class Outputs:
         self.images = []
         self.observations = {}
         self.metadata = {}
-        self.metadata["PlantCV_Version"] = {
-            "datatype": "str",
-            "value": pcv.__version__
-        }
+        self.metadata = {}
 
         # Add a method to clear measurements
     def clear(self):
@@ -87,10 +84,7 @@ class Outputs:
         self.measurements = {}
         self.images = []
         self.observations = {}
-        self.metadata["PlantCV_Version"] = {
-            "datatype": "str",
-            "value": pcv.__version__
-        }
+        self.metadata = {}
 
     # Method to add observation to outputs
     def add_observation(self, sample, variable, trait, method, scale, datatype, value, label):
@@ -179,6 +173,10 @@ class Outputs:
         self.metadata["run_date"] = {
             "datatype": "str",
             "value": run_datetime
+        }
+        self.metadata["plantcv_version"] = {
+            "datatype": "str",
+            "value": pcv.__version__
         }
 
         if outformat.upper() == "JSON":
