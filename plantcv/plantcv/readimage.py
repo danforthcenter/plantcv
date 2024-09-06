@@ -52,8 +52,6 @@ def readimage(filename, mode="native"):
 
     # Split path from filename
     path, img_name = os.path.split(filename)
-    # Add image size to metadata
-    outputs.add_metadata(term="img_shape", datatype=tuple, value=np.shape(img))
     # Debugging visualization
     _debug(visual=img, filename=os.path.join(params.debug_outdir, "input_image.png"))
 
