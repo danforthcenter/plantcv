@@ -178,7 +178,7 @@ class Outputs:
             "datatype": "str",
             "value":  "{:%Y-%m-%dT%H:%M:%S}".format(datetime.datetime.now())
         }
-       
+
         if outformat.upper() == "JSON":
             if os.path.isfile(filename):
                 with open(filename, 'r') as f:
