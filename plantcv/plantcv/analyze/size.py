@@ -124,6 +124,7 @@ def _analyze_size(img, mask, label):
                  (255, 0, 255), params.line_thickness)
 
     # Store outputs
+    outputs.add_metadata(term="analysis_img_dims", datatype=tuple, value=np.shape(img)[:2])
     outputs.add_observation(sample=label, variable='area', trait='area',
                             method='plantcv.plantcv.analyze.size', scale='pixels', datatype=int,
                             value=area, label='pixels')
