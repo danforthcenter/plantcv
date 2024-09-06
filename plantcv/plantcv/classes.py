@@ -174,9 +174,10 @@ class Outputs:
         :param outformat: str
         """
         # Add current date & time to metadata
+        run_datetime = "f{:%Y-%m-%dT%H:%M:%S}".format(datetime.datetime.now())
         self.metadata["run_date"] = {
             "datatype": "str",
-            "value":  "{:%Y-%m-%dT%H:%M:%S}".format(datetime.datetime.now())
+            "value": run_datetime
         }
 
         if outformat.upper() == "JSON":
