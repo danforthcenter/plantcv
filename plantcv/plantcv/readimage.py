@@ -5,7 +5,7 @@ import cv2
 import numpy as np
 import pandas as pd
 from plantcv.plantcv import fatal_error
-from plantcv.plantcv import params, outputs
+from plantcv.plantcv import params
 from plantcv.plantcv.hyperspectral import read_data
 from plantcv.plantcv._debug import _debug
 
