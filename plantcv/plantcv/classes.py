@@ -174,7 +174,8 @@ class Outputs:
         :param outformat: str
         """
         # Add current date & time to metadata
-        run_datetime = "f{:%Y-%m-%dT%H:%M:%S}".format(datetime.datetime.now())
+        run_datetime = datetime.datetime.now()
+        run_datetime = run_datetime.strftime("%Y-%m-%dT%H:%M:%S")
         self.metadata["run_date"] = {
             "datatype": "str",
             "value": run_datetime
