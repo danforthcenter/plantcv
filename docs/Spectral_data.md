@@ -42,6 +42,8 @@ Attributes are accessed as spectral_data_instance.*attribute*.
 
 **geo_crs**: The original coordinate system of a georeferenced image. Default is "None".
 
+**geo_res**: The resolution of a geospatial image. Default is "None".
+
 ### Example
 
 PlantCV functions from the hyperspectral sub-package use `Spectral_data` implicitly.

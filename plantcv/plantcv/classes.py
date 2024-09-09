@@ -299,7 +299,7 @@ class Spectral_data:
 
     def __init__(self, array_data, max_wavelength, min_wavelength, max_value, min_value, d_type, wavelength_dict,
                  samples, lines, interleave, wavelength_units, array_type, pseudo_rgb, filename, default_bands,
-                 geo_transform=None, geo_crs=None):
+                 geo_transform=None, geo_crs=None, geo_res=None):
         # The actual array/datacube
         self.array_data = array_data
         # Min/max available wavelengths (for spectral datacube)
@@ -333,6 +333,8 @@ class Spectral_data:
             self.geo_transform = (1.0, 0.0, 0.0, 0.0, 1.0, 0.0)
         # The coordinate system of a georeferenced image
         self.geo_crs = geo_crs
+        # The resolution of a geospatial image
+        self.geo_res = geo_res
 
 
 class PSII_data:
