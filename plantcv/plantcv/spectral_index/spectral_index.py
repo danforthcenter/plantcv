@@ -287,8 +287,13 @@ def egi(rgb_img, distance=40):
             r530 = (rgb_img.array_data[:, :, r530_index])
             r700 = (rgb_img.array_data[:, :, r700_index])
             # Naturally ranges from -1 to 2
+
+            total = r700 + r530 + r460
             with np.errstate(divide="ignore", invalid="ignore"):
-                index_array_raw = (2 * r530 - r700 - r460) / (2 * r530 + r700 + r460)
+                r = r700/ total
+                g = r530 / total
+                b = r460 / total
+                index_array_raw = (2 * g) - r - b
             return _package_index(hsi=rgb_img, raw_index=index_array_raw, method="GLI")
         warn("Available wavelengths are not suitable for calculating GLI. Try increasing distance.")
         return None
