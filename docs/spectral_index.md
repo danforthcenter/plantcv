@@ -93,16 +93,24 @@ g = G / (R + G + B)
 b = B / (R + G + B)
 EGI = 2g - r - b
 ```
+If the input image is hyperspectral, we use ~R700 for RED, ~R530 for GREEN, and ~R460 for BLUE
+```
+r = R700 / (R700 + R530 + R460)
+g = R530 / (R700 + R530 + R460)
+b = R460 / (R700 + R530 + R460)
+EGI = 2g - r - b
+```
 
 Index range: -1, 2
 
-**plantcv.spectral_index.egi**(*rgb_img*)
+**plantcv.spectral_index.egi**(*rgb_img, distance=40*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
 - **Parameters:**
-    - rgb_img     - Color image.
-
+    - rgb_img     - Color image or hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`).
+    - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index when using a hyperspectral images as input.
+  
 ### EVI
 
 Calculates the Enhanced Vegetation index using reflectance values ([Huete et al., 1997](#references)):
@@ -129,27 +137,26 @@ Index range: -∞, ∞
 
 ### GLI
 
-Calculates the Green Leaf index using reflectance values ([Louhaichi et al., 2001](#references)):
+Calculates the Green Leaf index using RGB values ([Louhaichi et al., 2001](#references)):
 
 ```
 GLI = (2 * GREEN - RED - BLUE) / (2 * GREEN + RED + BLUE)
 ```
 
-Here, we use ~R670 for RED, ~R530 for GREEN, and ~R480 for BLUE:
-
+If the input image is hyperspectral, we use ~R670 for RED, ~R530 for GREEN, and ~R480 for BLUE
 ```
 GLI = (2 * R530 - R670 - R480) / (2 * R530 + R670 + R480)
 ```
 
 Index range: -1, 1
 
-**plantcv.spectral_index.gli**(*hsi, distance=20*)
+**plantcv.spectral_index.gli**(*img, distance=20*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
 - **Parameters:**
-    - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
-    - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
+    - img         - Color image or hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
+    - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index when using a hyperspectral images as input.
 
 ### GDVI
 
@@ -651,11 +658,14 @@ cri550_array = pcv.hyperspectral.extract_index.cri550(hsi=spectral_data, distanc
 # Extract CRI700 index from the datacube 
 cri700_array = pcv.spectral_index.cri700(hsi=spectral_data, distance=20)
 
+# Extract EGI index from the datacube 
+egi_array = pcv.spectral_index.egi(rgb_img=spectral_data, distance=40)
+
 # Extract EVI index from the datacube 
 evi_array = pcv.spectral_index.evi(hsi=spectral_data, distance=20)
 
 # Extract GLI index from the datacube 
-gli_array = pcv.spectral_index.gli(hsi=spectral_data, distance=20)
+gli_array = pcv.spectral_index.gli(img=spectral_data, distance=20)
 
 # Extract MARI index from the datacube 
 mari_array = pcv.spectral_index.mari(hsi=spectral_data, distance=20)
@@ -714,7 +724,11 @@ vi_green_array = pcv.spectral_index.vi_green(hsi=spectral_data, distance=20)
 # Extract WI index from the datacube 
 wi_array = pcv.spectral_index.wi(hsi=spectral_data, distance=20)
 
-egi_array = pcv.spectral_index.egi(rgb_img=img)
+# Extract EGI index from RGB image
+egi_array_rgb = pcv.spectral_index.egi(rgb_img=img)
+
+# Extract GLI index from RGB image
+gli_array_rgb = pcv.spectral_index.gli(img=img)
 
 ```
 

@@ -258,7 +258,7 @@ def cri700(hsi, distance=20):
     return None
 
 
-def egi(rgb_img):
+def egi(rgb_img, distance=40):
     """Excess Green Index.
 
     r = R / (R + G + B)
@@ -269,30 +269,46 @@ def egi(rgb_img):
     The theoretical range for EGI is (-1, 2).
 
     Inputs:
-    rgb_img      = Color image (np.array)
+    rgb_img      = Color image (np.array) or hyperspectral image (PlantCV Spectral_data instance)
 
     Returns:
     index_array    = Index data as a Spectral_data instance
 
+    :param distance: int
     :param rgb_img: np.array
     :return index_array: np.array
     """
-    # Split the RGB image into component channels
-    blue, green, red = cv2.split(rgb_img)
-    # Calculate float32 sum of all channels
-    total = red.astype(np.float32) + green.astype(np.float32) + blue.astype(np.float32)
-    # Calculate normalized channels
-    with np.errstate(divide="ignore", invalid="ignore"):
-        r = red.astype(np.float32) / total
-        g = green.astype(np.float32) / total
-        b = blue.astype(np.float32) / total
-    index_array_raw = (2 * g) - r - b
+    if type(rgb_img) is Spectral_data:
+        if (float(rgb_img.max_wavelength) + distance) >= 800 and (float(rgb_img.min_wavelength) - distance) <= 460:
+            r460_index = _find_closest(np.array([float(i) for i in rgb_img.wavelength_dict.keys()]), 460)
+            r530_index = _find_closest(np.array([float(i) for i in rgb_img.wavelength_dict.keys()]), 530)
+            r700_index = _find_closest(np.array([float(i) for i in rgb_img.wavelength_dict.keys()]), 700)
+            r460 = (rgb_img.array_data[:, :, r460_index])
+            r530 = (rgb_img.array_data[:, :, r530_index])
+            r700 = (rgb_img.array_data[:, :, r700_index])
+            # Naturally ranges from -1 to 2
+            with np.errstate(divide="ignore", invalid="ignore"):
+                index_array_raw = (2 * r530 - r700 - r460) / (2 * r530 + r700 + r460)
+            return _package_index(hsi=rgb_img, raw_index=index_array_raw, method="GLI")
+        warn("Available wavelengths are not suitable for calculating GLI. Try increasing distance.")
+        return None
+    else:
+        # Split the RGB image into component channels
+        blue, green, red = cv2.split(rgb_img)
+        # Calculate float32 sum of all channels
+        total = red.astype(np.float32) + green.astype(np.float32) + blue.astype(np.float32)
+        # Calculate normalized channels
+        with np.errstate(divide="ignore", invalid="ignore"):
+            r = red.astype(np.float32) / total
+            g = green.astype(np.float32) / total
+            b = blue.astype(np.float32) / total
+            index_array_raw = (2 * g) - r - b
 
-    hsi = Spectral_data(array_data=None, max_wavelength=0, min_wavelength=0, max_value=255, min_value=0,
-                        d_type=np.uint8, wavelength_dict={}, samples=None, lines=None, interleave=None,
-                        wavelength_units=None, array_type=None, pseudo_rgb=None, filename=None, default_bands=None)
+        hsi = Spectral_data(array_data=None, max_wavelength=0, min_wavelength=0, max_value=255, min_value=0,
+                            d_type=np.uint8, wavelength_dict={}, samples=None, lines=None, interleave=None,
+                            wavelength_units=None, array_type=None, pseudo_rgb=None, filename=None, default_bands=None)
 
-    return _package_index(hsi=hsi, raw_index=index_array_raw, method="EGI")
+        return _package_index(hsi=hsi, raw_index=index_array_raw, method="EGI")
 
 
 def evi(hsi, distance=20):
@@ -328,37 +344,57 @@ def evi(hsi, distance=20):
     return None
 
 
-def gli(hsi, distance=20):
+def gli(img, distance=20):
     """Green leave index
 
     GLI = (2 * R530 - R670 - R480) / (2 * R530 + R670 + R480)
+    or
+    GLI = (2 * G - R - B) / (2 * G + R + B)
 
-    The theoretical range for EVI is (-1, 1).
+    The theoretical range for GLI is (-1, 1).
 
     Inputs:
-    hsi         = hyperspectral image (PlantCV Spectral_data instance)
+    img         = hyperspectral image (PlantCV Spectral_data instance), or color image (np.array)
     distance    = how lenient to be if the required wavelengths are not available
 
     Returns:
     index_array = Index data as a Spectral_data instance
 
-    :param hsi: __main__.Spectral_data
+    :param img: __main__.Spectral_data, or np.array
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-    if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 480:
-        r480_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 480)
-        r670_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
-        r530_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 530)
-        r480 = (hsi.array_data[:, :, r480_index])
-        r670 = (hsi.array_data[:, :, r670_index])
-        r530 = (hsi.array_data[:, :, r530_index])
-        # Naturally ranges from -1 to 1
+    if type(img) is Spectral_data:
+        if (float(img.max_wavelength) + distance) >= 800 and (float(img.min_wavelength) - distance) <= 480:
+            r480_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 480)
+            r670_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 670)
+            r530_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 530)
+            r480 = (img.array_data[:, :, r480_index])
+            r670 = (img.array_data[:, :, r670_index])
+            r530 = (img.array_data[:, :, r530_index])
+            # Naturally ranges from -1 to 1
+            with np.errstate(divide="ignore", invalid="ignore"):
+                index_array_raw = (2 * r530 - r670 - r480) / (2 * r530 + r670 + r480)
+            return _package_index(hsi=img, raw_index=index_array_raw, method="GLI")
+        warn("Available wavelengths are not suitable for calculating GLI. Try increasing distance.")
+        return None
+    else:
+        # Split the RGB image into component channels
+        blue, green, red = cv2.split(img)
+
+        # Calculate normalized channels
         with np.errstate(divide="ignore", invalid="ignore"):
-            index_array_raw = (2 * r530 - r670 - r480) / (2 * r530 + r670 + r480)
+            r = red.astype(np.float32)
+            g = green.astype(np.float32)
+            b = blue.astype(np.float32)
+            index_array_raw = (2 * g - r - b) / (2 * g + r + b)
+
+        hsi = Spectral_data(array_data=None, max_wavelength=0, min_wavelength=0, max_value=255, min_value=0,
+                            d_type=np.uint8, wavelength_dict={}, samples=None, lines=None, interleave=None,
+                            wavelength_units=None, array_type=None, pseudo_rgb=None, filename=None, default_bands=None)
+
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="GLI")
-    warn("Available wavelengths are not suitable for calculating GLI. Try increasing distance.")
-    return None
+
 
 
 def mari(hsi, distance=20):
