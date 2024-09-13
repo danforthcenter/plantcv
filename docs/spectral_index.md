@@ -653,7 +653,7 @@ ari_array = pcv.spectral_index.ari(hsi=spectral_data, distance=20)
 ci_rededge_array = pcv.spectral_index.ci_rededge(hsi=spectral_data, distance=20)
 
 # Extract CRI550 index from the datacube 
-cri550_array = pcv.hyperspectral.extract_index.cri550(hsi=spectral_data, distance=20)
+cri550_array = pcv.spectral_index.cri550(hsi=spectral_data, distance=20)
 
 # Extract CRI700 index from the datacube 
 cri700_array = pcv.spectral_index.cri700(hsi=spectral_data, distance=20)
@@ -679,7 +679,7 @@ mtci_array = pcv.spectral_index.mtci(hsi=spectral_data, distance=20)
 # Extract NDRE index from the datacube 
 ndre_array = pcv.spectral_index.ndre(hsi=spectral_data, distance=20)
 
-# Extract NPCRI index from the datacube 
+# Extract NPCI index from the datacube 
 npci_array = pcv.spectral_index.npci(hsi=spectral_data, distance=20)
 
 # Extract PSND_CHLA index from the datacube 
@@ -723,12 +723,6 @@ vi_green_array = pcv.spectral_index.vi_green(hsi=spectral_data, distance=20)
 
 # Extract WI index from the datacube 
 wi_array = pcv.spectral_index.wi(hsi=spectral_data, distance=20)
-
-# Extract EGI index from RGB image
-egi_array_rgb = pcv.spectral_index.egi(rgb_img=img)
-
-# Extract GLI index from RGB image
-gli_array_rgb = pcv.spectral_index.gli(img=img)
 
 ```
 
