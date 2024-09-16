@@ -369,9 +369,9 @@ def gli(img, distance=20):
             r480_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 480)
             r670_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 670)
             r530_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 530)
-            blue = (img.array_data[:, :, r480_index]).astype(np.float32)
-            red = (img.array_data[:, :, r670_index]).astype(np.float32)
-            green = (img.array_data[:, :, r530_index]).astype(np.float32)
+            blue = (img.array_data[:, :, r480_index])
+            red = (img.array_data[:, :, r670_index])
+            green = (img.array_data[:, :, r530_index])
         else:
             warn("Available wavelengths are not suitable for calculating GLI. Try increasing distance.")
             return None
