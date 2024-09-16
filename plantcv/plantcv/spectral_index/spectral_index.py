@@ -288,7 +288,7 @@ def egi(rgb_img, distance=40):
             green = (rgb_img.array_data[:, :, r530_index])
             red = (rgb_img.array_data[:, :, r700_index])
         # If the required range of data is outside the available wavelengths
-        if (float(rgb_img.max_wavelength) + distance) <= 700 or (float(rgb_img.min_wavelength) - distance) >= 460:
+        else:
             warn("Available wavelengths are not suitable for calculating EGI. Try increasing distance.")
             return None
 
@@ -365,15 +365,16 @@ def gli(img, distance=20):
     :return index_array: __main__.Spectral_data
     """
     if type(img) is Spectral_data:
-        if (float(img.max_wavelength) + distance) >= 800 and (float(img.min_wavelength) - distance) <= 480:
+        if (float(img.max_wavelength) + distance) >= 670 and (float(img.min_wavelength) - distance) <= 480:
             r480_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 480)
             r670_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 670)
             r530_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 530)
             blue = (img.array_data[:, :, r480_index]).astype(np.float32)
             red = (img.array_data[:, :, r670_index]).astype(np.float32)
             green = (img.array_data[:, :, r530_index]).astype(np.float32)
-        warn("Available wavelengths are not suitable for calculating GLI. Try increasing distance.")
-        return None
+        else:
+            warn("Available wavelengths are not suitable for calculating GLI. Try increasing distance.")
+            return None
     if type(img) is np.ndarray:
         # Split the RGB image into component channels
         blue, green, red = cv2.split(img)
@@ -540,7 +541,7 @@ def npci(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-    if (float(hsi.max_wavelength) + distance) >= 790 and (float(hsi.min_wavelength) - distance) <= 720:
+    if (float(hsi.max_wavelength) + distance) >= 680 and (float(hsi.min_wavelength) - distance) <= 430:
         r430_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 430)
         r680_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 680)
         r680 = (hsi.array_data[:, :, r680_index])
