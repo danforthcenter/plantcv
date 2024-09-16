@@ -279,27 +279,22 @@ def egi(rgb_img, distance=40):
     :return index_array: np.array
     """
     if type(rgb_img) is Spectral_data:
-        if (float(rgb_img.max_wavelength) + distance) >= 800 and (float(rgb_img.min_wavelength) - distance) <= 460:
+        # If the available wavelengths completely cover the required range of data
+        if (float(rgb_img.max_wavelength) + distance) >= 700 and (float(rgb_img.min_wavelength) - distance) <= 460:
             r460_index = _find_closest(np.array([float(i) for i in rgb_img.wavelength_dict.keys()]), 460)
             r530_index = _find_closest(np.array([float(i) for i in rgb_img.wavelength_dict.keys()]), 530)
             r700_index = _find_closest(np.array([float(i) for i in rgb_img.wavelength_dict.keys()]), 700)
-            r460 = (rgb_img.array_data[:, :, r460_index])
-            r530 = (rgb_img.array_data[:, :, r530_index])
-            r700 = (rgb_img.array_data[:, :, r700_index])
-            # Naturally ranges from -1 to 2
+            blue = (rgb_img.array_data[:, :, r460_index])
+            green = (rgb_img.array_data[:, :, r530_index])
+            red = (rgb_img.array_data[:, :, r700_index])
+        # If the required range of data is outside the available wavelengths
+        if (float(rgb_img.max_wavelength) + distance) <= 700 or (float(rgb_img.min_wavelength) - distance) >= 460:
+            warn("Available wavelengths are not suitable for calculating EGI. Try increasing distance.")
+            return None
 
-            total = r700 + r530 + r460
-            with np.errstate(divide="ignore", invalid="ignore"):
-                r = r700 / total
-                g = r530 / total
-                b = r460 / total
-                index_array_raw = (2 * g) - r - b
-            return _package_index(hsi=rgb_img, raw_index=index_array_raw, method="GLI")
-        warn("Available wavelengths are not suitable for calculating GLI. Try increasing distance.")
-        return None
-
-    # Split the RGB image into component channels
-    blue, green, red = cv2.split(rgb_img)
+    if type(rgb_img) is np.ndarray:
+        # Split the RGB image into component channels
+        blue, green, red = cv2.split(rgb_img)
     # Calculate float32 sum of all channels
     total = red.astype(np.float32) + green.astype(np.float32) + blue.astype(np.float32)
     # Calculate normalized channels
@@ -374,17 +369,14 @@ def gli(img, distance=20):
             r480_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 480)
             r670_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 670)
             r530_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 530)
-            r480 = (img.array_data[:, :, r480_index])
-            r670 = (img.array_data[:, :, r670_index])
-            r530 = (img.array_data[:, :, r530_index])
-            # Naturally ranges from -1 to 1
-            with np.errstate(divide="ignore", invalid="ignore"):
-                index_array_raw = (2 * r530 - r670 - r480) / (2 * r530 + r670 + r480)
-            return _package_index(hsi=img, raw_index=index_array_raw, method="GLI")
+            blue = (img.array_data[:, :, r480_index]).astype(np.float32)
+            red = (img.array_data[:, :, r670_index]).astype(np.float32)
+            green = (img.array_data[:, :, r530_index]).astype(np.float32)
         warn("Available wavelengths are not suitable for calculating GLI. Try increasing distance.")
         return None
-    # Split the RGB image into component channels
-    blue, green, red = cv2.split(img)
+    if type(img) is np.ndarray:
+        # Split the RGB image into component channels
+        blue, green, red = cv2.split(img)
 
     # Calculate normalized channels
     with np.errstate(divide="ignore", invalid="ignore"):
