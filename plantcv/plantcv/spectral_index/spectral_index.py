@@ -290,30 +290,30 @@ def egi(rgb_img, distance=40):
 
             total = r700 + r530 + r460
             with np.errstate(divide="ignore", invalid="ignore"):
-                r = r700/ total
+                r = r700 / total
                 g = r530 / total
                 b = r460 / total
                 index_array_raw = (2 * g) - r - b
             return _package_index(hsi=rgb_img, raw_index=index_array_raw, method="GLI")
         warn("Available wavelengths are not suitable for calculating GLI. Try increasing distance.")
         return None
-    else:
-        # Split the RGB image into component channels
-        blue, green, red = cv2.split(rgb_img)
-        # Calculate float32 sum of all channels
-        total = red.astype(np.float32) + green.astype(np.float32) + blue.astype(np.float32)
-        # Calculate normalized channels
-        with np.errstate(divide="ignore", invalid="ignore"):
-            r = red.astype(np.float32) / total
-            g = green.astype(np.float32) / total
-            b = blue.astype(np.float32) / total
-            index_array_raw = (2 * g) - r - b
 
-        hsi = Spectral_data(array_data=None, max_wavelength=0, min_wavelength=0, max_value=255, min_value=0,
-                            d_type=np.uint8, wavelength_dict={}, samples=None, lines=None, interleave=None,
-                            wavelength_units=None, array_type=None, pseudo_rgb=None, filename=None, default_bands=None)
+    # Split the RGB image into component channels
+    blue, green, red = cv2.split(rgb_img)
+    # Calculate float32 sum of all channels
+    total = red.astype(np.float32) + green.astype(np.float32) + blue.astype(np.float32)
+    # Calculate normalized channels
+    with np.errstate(divide="ignore", invalid="ignore"):
+        r = red.astype(np.float32) / total
+        g = green.astype(np.float32) / total
+        b = blue.astype(np.float32) / total
+        index_array_raw = (2 * g) - r - b
 
-        return _package_index(hsi=hsi, raw_index=index_array_raw, method="EGI")
+    hsi = Spectral_data(array_data=None, max_wavelength=0, min_wavelength=0, max_value=255, min_value=0,
+                        d_type=np.uint8, wavelength_dict={}, samples=None, lines=None, interleave=None,
+                        wavelength_units=None, array_type=None, pseudo_rgb=None, filename=None, default_bands=None)
+
+    return _package_index(hsi=hsi, raw_index=index_array_raw, method="EGI")
 
 
 def evi(hsi, distance=20):
@@ -383,23 +383,21 @@ def gli(img, distance=20):
             return _package_index(hsi=img, raw_index=index_array_raw, method="GLI")
         warn("Available wavelengths are not suitable for calculating GLI. Try increasing distance.")
         return None
-    else:
-        # Split the RGB image into component channels
-        blue, green, red = cv2.split(img)
+    # Split the RGB image into component channels
+    blue, green, red = cv2.split(img)
 
-        # Calculate normalized channels
-        with np.errstate(divide="ignore", invalid="ignore"):
-            r = red.astype(np.float32)
-            g = green.astype(np.float32)
-            b = blue.astype(np.float32)
-            index_array_raw = (2 * g - r - b) / (2 * g + r + b)
+    # Calculate normalized channels
+    with np.errstate(divide="ignore", invalid="ignore"):
+        r = red.astype(np.float32)
+        g = green.astype(np.float32)
+        b = blue.astype(np.float32)
+        index_array_raw = (2 * g - r - b) / (2 * g + r + b)
 
-        hsi = Spectral_data(array_data=None, max_wavelength=0, min_wavelength=0, max_value=255, min_value=0,
-                            d_type=np.uint8, wavelength_dict={}, samples=None, lines=None, interleave=None,
-                            wavelength_units=None, array_type=None, pseudo_rgb=None, filename=None, default_bands=None)
+    hsi = Spectral_data(array_data=None, max_wavelength=0, min_wavelength=0, max_value=255, min_value=0,
+                        d_type=np.uint8, wavelength_dict={}, samples=None, lines=None, interleave=None,
+                        wavelength_units=None, array_type=None, pseudo_rgb=None, filename=None, default_bands=None)
 
-        return _package_index(hsi=hsi, raw_index=index_array_raw, method="GLI")
-
+    return _package_index(hsi=hsi, raw_index=index_array_raw, method="GLI")
 
 
 def mari(hsi, distance=20):
