@@ -1017,22 +1017,6 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: sb_img = **plantcv.sobel_filter**(*gray_img, dx, dy, k*)
 * post v3.2: sb_img = **plantcv.sobel_filer**(*gray_img, dx, dy, ksize*)
 
-#### plantcv.spectral_index.ndvi(hsi, distance=20)
-
-* post v3.8: array = plantcv.spectral_index.ndvi(hsi, distance=20)
-
-#### plantcv.spectral_index.gdvi(hsi, distance=20)
-
-* post v3.8: array = **plantcv.spectral_index.gdvi**(*hsi, distance=20*)
-
-#### plantcv.spectral_index.savi(hsi, distance=20)
-
-* post v3.8: array = **plantcv.spectral_index.savi**(*hsi, distance=20*)
-
-#### plantcv.spectral_index.pri(hsi, distance=20)
-
-* post v3.8: array = **plantcv.spectral_index.pri**(*hsi, distance=20*)
-
 #### plantcv.spectral_index.ari(hsi, distance=20)
 
 * post v3.8: array = **plantcv.spectral_index.ari**(*hsi, distance=20*)
@@ -1062,6 +1046,10 @@ pages for more details on the input and output variable types.
 
 * post v4.4: array = **plantcv.spectral_index.gli**(*img, distance=20*)
 
+#### plantcv.spectral_index.gdvi(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.gdvi**(*hsi, distance=20*)
+
 #### plantcv.spectral_index.mari(hsi, distance=20)
 
 * post v3.8: array = **plantcv.spectral_index.mari**(*hsi, distance=20*)
@@ -1078,6 +1066,18 @@ pages for more details on the input and output variable types.
 
 * post v3.8: array = **plantcv.spectral_index.ndre**(*hsi, distance=20*)
 
+#### plantcv.spectral_index.ndvi(hsi, distance=20)
+
+* post v3.8: array = plantcv.spectral_index.ndvi(hsi, distance=20)
+
+#### plantcv.spectral_index.pri(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.pri**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.psnd_car(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.psnd_car**(*hsi, distance=20*)
+
 #### plantcv.spectral_index.psnd_chla(hsi, distance=20)
 
 * post v3.8: array = **plantcv.spectral_index.psnd_chla**(*hsi, distance=20*)
@@ -1086,13 +1086,13 @@ pages for more details on the input and output variable types.
 
 * post v3.8: array = **plantcv.spectral_index.psnd_chlb**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.psnd_car(hsi, distance=20)
-
-* post v3.8: array = **plantcv.spectral_index.psnd_car**(*hsi, distance=20*)
-
 #### plantcv.spectral_index.psri(hsi, distance=20)
 
 * post v3.8: array = **plantcv.spectral_index.psri**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.pssr_car(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.pssr_car**(*hsi, distance=20*)
 
 #### plantcv.spectral_index.pssr_chla(hsi, distance=20)
 
@@ -1102,10 +1102,6 @@ pages for more details on the input and output variable types.
 
 * post v3.8: array = **plantcv.spectral_index.pssr_chlb**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.pssr_car(hsi, distance=20)
-
-* post v3.8: array = **plantcv.spectral_index.pssr_car**(*hsi, distance=20*)
-
 #### plantcv.spectral_index.rgri(hsi, distance=20)
 
 * post v3.8: array = **plantcv.spectral_index.rgri**(*hsi, distance=20*)
@@ -1113,6 +1109,10 @@ pages for more details on the input and output variable types.
 #### plantcv.spectral_index.rvsi(hsi, distance=20)
 
 * post v3.8: array = **plantcv.spectral_index.rvsi**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.savi(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.savi**(*hsi, distance=20*)
 
 #### plantcv.spectral_index.sipi(hsi, distance=20)
 
