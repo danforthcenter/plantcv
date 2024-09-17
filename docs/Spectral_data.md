@@ -34,13 +34,11 @@ Attributes are accessed as spectral_data_instance.*attribute*.
 
 **array_type**: The type of array data (entire datacube, specific index, first derivative, etc)
 
-**pseudo_rgb**: Psuedo-RGB image if the array_type is a datacube
+**pseudo_rgb**: Pseudo-RGB image if the array_type is a datacube
 
 **filename**: The filename where the data originated from
 
-**geo_transform**: The affine transformation matrix used to convert from an xy coordinate system to a georeferenced coordinate system. Default is the input list used by the affine package to create an identity matrix.
-
-**geo_crs**: The original coordinate system of a georeferenced image. Default is "None".
+**metadata**: Metadata in a dictionary. Included keys might be specific to hyperspectral or geospatial image types 
 
 ### Example
 
