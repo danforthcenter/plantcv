@@ -40,7 +40,7 @@ If you need any help, please contact us.
 Before getting started, please read our [contributor guidelines](CONTRIBUTING.md) and [code of conduct](CODE_OF_CONDUCT.md).
 
 You can build PlantCV from the source code if you are a developer or want the absolute latest version available.
-As noted in the [installation documentation](installation_mac.md), we recommend installing PlantCV in a virtual environment. We will outline how to do this using `conda`.
+As noted in the [installation documentation](installation.md), we recommend installing PlantCV in a virtual environment. We will outline how to do this using `conda`.
 You will also need a [GitHub](https://github.com) account. You will need to
 [clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) the PlantCV
 repository from GitHub before getting started.
