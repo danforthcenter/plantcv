@@ -1068,7 +1068,7 @@ pages for more details on the input and output variable types.
 
 #### plantcv.spectral_index.ndvi
 
-* post v3.8: array = plantcv.spectral_index.ndvi(hsi, distance=20)
+* post v3.8: array = **plantcv.spectral_index.ndvi**(*hsi, distance=20*)
 
 #### plantcv.spectral_index.npci
 
