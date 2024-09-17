@@ -1,27 +1,35 @@
-## Installing PlantCV on Mac and Linux
+## Installing PlantCV
+
+!!!note
+    This guide describes typical installations of PlantCV.
+    PlantCV can be installed from source for developers or users who want to test the latest features.
+    Please see our [Contributing Guide](#CONTRIBUTING.md) for more information.
 
 ### Table of contents
-1. [Step-by-step installation guide](#guide)
-2. [Supported platforms and dependencies](#dependencies)
-3. [Install via a package manager](#install)
+1. [Supported platforms and dependencies](#dependencies)
+2. [Desktop installation step-by-step guide](#desktop)
+3. [Server/command-line step-by-step guide](#cli)
+4. [Detailed installation instructions](#detailed)
     1. [Conda](#conda)
     2. [PyPI](#pypi)
-4. [Installing PlantCV for contributors](#contributors)
-
-### Step-by-step installation guide <a name="guide"></a>
-
-<iframe src="https://scribehow.com/embed/Installing_PlantCV__MacOSLinux__awAP9Xm2SgWV4SMZadm9CQ" width="640" height="640" allowfullscreen frameborder="0"></iframe>
-
 
 ### Supported platforms and dependencies <a name="dependencies"></a>
 - Linux 64-bit, x86 processors
 - macOS x86 (Intel) and M (ARM) processors
 - Windows 64-bit, x86 processors
 
+### Desktop installation step-by-step guide <a name="desktop"></a>
+
+<iframe src="https://scribehow.com/embed/Install_PlantCV_via_Jupyter_Lab_Desktop__cS9d6VcxRcuDPGZxDfQycw" width="100%" height="640" allowfullscreen frameborder="0"></iframe>
+
+### Server/command-line step-by-step guide <a name="cli"></a>
+
+<iframe src="https://scribehow.com/embed/Installing_PlantCV__MacOSLinux__awAP9Xm2SgWV4SMZadm9CQ" width="640" height="640" allowfullscreen frameborder="0"></iframe>
+
+### Detailed installation instructions <a name="detailed"></a>
+
 PlantCV requires Python (tested with versions 3.9, 3.10, and 3.11) and these [Python packages](https://github.com/danforthcenter/plantcv/blob/main/pyproject.toml).
 Additionally, we recommend installing [JupyterLab](https://jupyter.org/).
-
-### Install via a package manager <a name="install"></a>
 
 !!!note
     We recommend installing PlantCV in a virtual environment, which is a self-contained Python environment that includes
@@ -59,7 +67,6 @@ Or with optional (but recommended) dependencies:
 conda create -n plantcv -c conda-forge plantcv jupyterlab ipympl nodejs
 
 ```
-
 
 #### PyPI <a name="pypi"></a>
 Optionally, PlantCV can be installed from PyPi.
