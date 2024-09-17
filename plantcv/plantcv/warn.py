@@ -19,4 +19,3 @@ def warn(warning):
     """
     if params.verbose:
         print(f"Warning: {warning}", file=sys.stderr)
-    return None
