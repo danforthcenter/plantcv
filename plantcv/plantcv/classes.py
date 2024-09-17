@@ -76,7 +76,6 @@ class Outputs:
         self.images = []
         self.observations = {}
         self.metadata = {}
-        self.metadata = {}
 
         # Add a method to clear measurements
     def clear(self):
