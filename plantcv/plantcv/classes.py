@@ -4,7 +4,7 @@ import cv2
 import json
 import numpy as np
 import datetime
-from plantcv import plantcv as pcv
+from plantcv.plantcv import __version__ as ver
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv.annotate.points import _find_closest_pt
 import matplotlib.pyplot as plt
@@ -166,17 +166,10 @@ class Outputs:
         :param filename: str
         :param outformat: str
         """
-        # Add current date & time to metadata
-        run_datetime = datetime.datetime.now()
-        run_datetime = run_datetime.strftime("%Y-%m-%dT%H:%M:%S")
-        self.metadata["run_date"] = {
-            "datatype": "str",
-            "value": run_datetime
-        }
-        self.metadata["plantcv_version"] = {
-            "datatype": "str",
-            "value": pcv.__version__
-        }
+        # Add current date & time to metadata in UTC format
+        run_datetime = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        self.add_metadata(term="run_date", datatype=str, value=run_datetime)
+        self.add_metadata(term="plantcv_version", datatype=str, value=ver)
 
         if outformat.upper() == "JSON":
             if os.path.isfile(filename):
