@@ -152,7 +152,7 @@ class Outputs:
         # Save the observation for the sample and variable
         self.metadata[term] = {
             "datatype": str(datatype),
-            "value": value
+            "value": [value]
         }
 
     # Method to save observations to a file
