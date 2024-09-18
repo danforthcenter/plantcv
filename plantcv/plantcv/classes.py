@@ -3,6 +3,8 @@ import os
 import cv2
 import json
 import numpy as np
+import datetime
+from plantcv.plantcv import __version__ as ver
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv.annotate.points import _find_closest_pt
 import matplotlib.pyplot as plt
@@ -150,7 +152,7 @@ class Outputs:
         # Save the observation for the sample and variable
         self.metadata[term] = {
             "datatype": str(datatype),
-            "value": value
+            "value": [value]
         }
 
     # Method to save observations to a file
@@ -164,6 +166,11 @@ class Outputs:
         :param filename: str
         :param outformat: str
         """
+        # Add current date & time to metadata in UTC format
+        run_datetime = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        self.add_metadata(term="run_date", datatype=str, value=run_datetime)
+        self.add_metadata(term="plantcv_version", datatype=str, value=ver)
+
         if outformat.upper() == "JSON":
             if os.path.isfile(filename):
                 with open(filename, 'r') as f:
@@ -299,7 +306,7 @@ class Spectral_data:
 
     def __init__(self, array_data, max_wavelength, min_wavelength, max_value, min_value, d_type, wavelength_dict,
                  samples, lines, interleave, wavelength_units, array_type, pseudo_rgb, filename, default_bands,
-                 geo_transform=None, geo_crs=None):
+                 metadata=None):
         # The actual array/datacube
         self.array_data = array_data
         # Min/max available wavelengths (for spectral datacube)
@@ -326,13 +333,10 @@ class Spectral_data:
         self.filename = filename
         # The default band indices needed to make an pseudo_rgb image, if not available then store None
         self.default_bands = default_bands
-        # The transformation matrix that converts xy coordinates to georeferenced coordinates
-        # Default is the input list for affine.Affine to make an identity matrix
-        self.geo_transform = geo_transform
-        if not geo_transform:
-            self.geo_transform = (1.0, 0.0, 0.0, 0.0, 1.0, 0.0)
-        # The coordinate system of a georeferenced image
-        self.geo_crs = geo_crs
+        # Metadata, flexible components in a dictionary
+        self.metadata = metadata
+        if not metadata:
+            self.metadata = {}
 
 
 class PSII_data:
