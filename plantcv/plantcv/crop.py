@@ -71,6 +71,7 @@ def crop(img, x, y, h, w):
     pt2 = (x + w - 1, y + h - 1)
 
     ref_img = cv2.rectangle(img=np.copy(ref_img), pt1=pt1, pt2=pt2, color=(255, 0, 0), thickness=params.line_thickness)
+
     _debug(visual=ref_img, filename=os.path.join(params.debug_outdir, str(params.device) + "_crop.png"))
 
     return cropped
