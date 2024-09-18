@@ -52,6 +52,7 @@ def readimage(filename, mode="native"):
 
     # Split path from filename
     path, img_name = os.path.split(filename)
+
     # Debugging visualization
     _debug(visual=img, filename=os.path.join(params.debug_outdir, "input_image.png"))
 
