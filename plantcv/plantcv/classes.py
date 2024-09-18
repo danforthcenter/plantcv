@@ -3,6 +3,8 @@ import os
 import cv2
 import json
 import numpy as np
+import datetime
+from plantcv.plantcv import __version__ as ver
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv.annotate.points import _find_closest_pt
 import matplotlib.pyplot as plt
@@ -150,7 +152,7 @@ class Outputs:
         # Save the observation for the sample and variable
         self.metadata[term] = {
             "datatype": str(datatype),
-            "value": value
+            "value": [value]
         }
 
     # Method to save observations to a file
@@ -164,6 +166,11 @@ class Outputs:
         :param filename: str
         :param outformat: str
         """
+        # Add current date & time to metadata in UTC format
+        run_datetime = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        self.add_metadata(term="run_date", datatype=str, value=run_datetime)
+        self.add_metadata(term="plantcv_version", datatype=str, value=ver)
+
         if outformat.upper() == "JSON":
             if os.path.isfile(filename):
                 with open(filename, 'r') as f:
