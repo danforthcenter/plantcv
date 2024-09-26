@@ -1,14 +1,21 @@
 # Warnings handling
 
 import sys
+from plantcv.plantcv import params
 
 
 def warn(warning):
-    """Print out warning message
+    """Print a warning message to stderr.
 
-    Inputs:
-    warning = warning message text
+    Parameters
+    ----------
+    warning : str
+        Warning message to print.
 
-    :param warning: str
+    Returns
+    -------
+    None
+        Function does not return anything.
     """
-    print(f"Warning: {warning}", file=sys.stderr)
+    if params.verbose:
+        print(f"Warning: {warning}", file=sys.stderr)
