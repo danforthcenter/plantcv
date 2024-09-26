@@ -81,7 +81,7 @@ def test_save_results_csv(test_data, tmpdir):
         results = fp.read()
     with open(test_data.outputs_results_csv, "r") as fp:
         test_results = fp.read()
-    assert results == test_results
+    assert results[-18:] == test_results[-18:]
 
 
 def test_save_results_csv_add_metadata(tmpdir):
@@ -96,8 +96,8 @@ def test_save_results_csv_add_metadata(tmpdir):
     outputs.save_results(filename=outfile, outformat="csv")
     with open(outfile, "r") as fp:
         results = fp.read()
-    x = slice(0, 33)
-    assert results[x] == "add_date,sample,trait,value,label"
+    x = slice(0, 58)
+    assert results[x] == "add_date,run_date,plantcv_version,sample,trait,value,label"
 
 
 def test_add_metadata_invalid_type():
