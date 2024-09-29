@@ -2,7 +2,7 @@ import pytest
 import cv2
 import numpy as np
 from plantcv.plantcv import Objects
-from plantcv.plantcv.roi import from_binary_image, rectangle, circle, ellipse, auto_grid, multi, custom, filter
+from plantcv.plantcv.roi import from_binary_image, rectangle, circle, ellipse, auto_grid, multi, custom, mask_filter
 
 
 def test_from_binary_image(roi_test_data):
@@ -247,7 +247,7 @@ def test_filter(mode, exp, test_data):
     roi = [np.array([[[150, 150]], [[150, 174]], [[249, 174]], [[249, 150]]], dtype=np.int32)]
     roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     roi_Obj = Objects(contours=[roi], hierarchy=[roi_str])
-    filtered_mask = filter(mask=mask, roi=roi_Obj, roi_type=mode)
+    filtered_mask = mask_filter(mask=mask, roi=roi_Obj, roi_type=mode)
     area = cv2.countNonZero(filtered_mask)
     # Assert that the contours were filtered as expected
     assert area == exp
@@ -264,7 +264,7 @@ def test_filter_multi(test_data):
     roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     # make a multi-ROI by repeating the same roi twice
     roi_Obj = Objects(contours=[roi, roi], hierarchy=[roi_str, roi_str])
-    filtered_mask = filter(mask=mask, roi=roi_Obj, roi_type="partial")
+    filtered_mask = mask_filter(mask=mask, roi=roi_Obj, roi_type="partial")
     area = cv2.countNonZero(filtered_mask)
     # Assert that the contours were filtered as expected
     assert area == 221
@@ -281,7 +281,7 @@ def test_filter_bad_input(test_data):
     roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     roi_Obj = Objects(contours=[roi], hierarchy=[roi_str])
     with pytest.raises(RuntimeError):
-        _ = filter(mask=mask, roi=roi_Obj, roi_type="cut")
+        _ = mask_filter(mask=mask, roi=roi_Obj, roi_type="cut")
 
 
 def test_filter_grayscale_input(test_data):
@@ -294,7 +294,7 @@ def test_filter_grayscale_input(test_data):
     roi = [np.array([[[150, 150]], [[150, 174]], [[249, 174]], [[249, 150]]], dtype=np.int32)]
     roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     roi_Obj = Objects(contours=[roi], hierarchy=[roi_str])
-    filtered_mask = filter(mask=mask, roi=roi_Obj, roi_type="partial")
+    filtered_mask = mask_filter(mask=mask, roi=roi_Obj, roi_type="partial")
     area = cv2.countNonZero(filtered_mask)
     # Assert that the contours were filtered as expected
     assert area == 221
@@ -310,7 +310,7 @@ def test_filter_no_overlap(test_data):
     roi = [np.array([[[0, 0]], [[0, 24]], [[24, 24]], [[24, 0]]], dtype=np.int32)]
     roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     roi_Obj = Objects(contours=[roi], hierarchy=[roi_str])
-    filtered_mask = filter(mask=mask, roi=roi_Obj, roi_type="partial")
+    filtered_mask = mask_filter(mask=mask, roi=roi_Obj, roi_type="partial")
     area = cv2.countNonZero(filtered_mask)
     # Assert that the contours were filtered as expected
     assert area == 0
@@ -334,7 +334,7 @@ def test_filter_nested():
     roi = [np.array([[[0, 0]], [[0, 99]], [[99, 99]], [[99, 0]]], dtype=np.int32)]
     roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     roi_Obj = Objects(contours=[roi], hierarchy=[roi_str])
-    filtered_mask = filter(mask=mask, roi=roi_Obj, roi_type="largest")
+    filtered_mask = mask_filter(mask=mask, roi=roi_Obj, roi_type="largest")
     filtered_area = cv2.countNonZero(filtered_mask)
     assert area_pre == filtered_area
     assert area_total > filtered_area
