@@ -85,7 +85,7 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
         kept_cnt, kept_hierarchy = _cv2_findcontours(bin_img=mask)
 
         # Find the largest contour if roi_type is set to 'largest'
-        if roi_type.upper() == 'LARGEST':
+        if roi_type.upper() == 'LARGEST' and kept_cnt:
             index = np.argmax([cv2.contourArea(c) for c in kept_cnt])
             mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
             cv2.drawContours(mask, kept_cnt, contourIdx=index, color=(255), thickness=-1, hierarchy=kept_hierarchy, maxLevel=2)
