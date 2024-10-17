@@ -145,7 +145,7 @@ def detect_color_card(rgb_img, label=None, **kwargs):
 
     # Draw filtered contours on debug img
     debug_img = np.copy(rgb_img)
-    cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness) 
+    cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
     # Initialize chip shape lists
     marea, mwidth, mheight = _get_contour_sizes(filtered_contours)
 
@@ -196,7 +196,7 @@ def detect_color_card(rgb_img, label=None, **kwargs):
 
 
 def auto_detect_correct(rgb_img, label=None, **kwargs):
-    """Automatically detect a color card.
+    """Automatically detect a color card and then does affine color correction.
 
     Parameters
     ----------
@@ -229,3 +229,4 @@ def auto_detect_correct(rgb_img, label=None, **kwargs):
     std_color_matrix = std_color_matrix(pos=3)
     return affine_color_correction(rgb_img=rgb_img, source_matrix=card_matrix,
                                    target_matrix=std_color_matrix)
+    
