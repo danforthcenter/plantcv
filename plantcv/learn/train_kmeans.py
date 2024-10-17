@@ -8,6 +8,7 @@ from sklearn.cluster import MiniBatchKMeans
 from sklearn.feature_extraction import image
 from skimage.filters import gaussian
 from joblib import dump
+from plantcv.plantcv import fatal_error
 
 
 def train_kmeans(img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, sigma=5, sampling=None,
@@ -83,6 +84,8 @@ def patch_extract(img, patch_size=10, sigma=5, sampling=None, seed=1):
         img_blur = np.round(gaussian(img, sigma=sigma)*255).astype(np.uint16)
     elif len(img.shape) == 3 and img.shape[2] == 3:
         img_blur = np.round(gaussian(img, sigma=sigma, channel_axis=2)*255).astype(np.uint16)
+    else:
+        fatal_error("Kmeans training only supports grayscale and RGB images.")
     # Extract patches
     patches = image.extract_patches_2d(img_blur, (patch_size, patch_size),
                                        max_patches=sampling, random_state=seed)
