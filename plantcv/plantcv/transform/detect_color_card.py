@@ -142,6 +142,9 @@ def detect_color_card(rgb_img, label=None, **kwargs):
     if len(filtered_contours) == 0:
         fatal_error('No color card found')
 
+    # Draw filtered contours on debug img
+    debug_img = np.copy(rgb_img)
+    cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=-1) 
     # Initialize chip shape lists
     marea, mwidth, mheight = _get_contour_sizes(filtered_contours)
 
@@ -172,7 +175,7 @@ def detect_color_card(rgb_img, label=None, **kwargs):
     new_centers = cv2.transform(np.array([centers]), m_transform)[0][:, 0:2]
 
     # Create labeled mask and debug image of color chips
-    labeled_mask, debug_img = _draw_color_chips(rgb_img, new_centers, radius)
+    labeled_mask, debug_img = _draw_color_chips(debug_img, new_centers, radius)
 
     # Save out chip size for pixel to cm standardization
     outputs.add_observation(sample=label, variable='median_color_chip_size', trait='size of color card chips identified',
