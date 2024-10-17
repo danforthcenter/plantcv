@@ -144,7 +144,7 @@ def detect_color_card(rgb_img, label=None, **kwargs):
 
     # Draw filtered contours on debug img
     debug_img = np.copy(rgb_img)
-    cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=-1) 
+    cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness) 
     # Initialize chip shape lists
     marea, mwidth, mheight = _get_contour_sizes(filtered_contours)
 
@@ -191,4 +191,4 @@ def detect_color_card(rgb_img, label=None, **kwargs):
     # Debugging
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
 
-    return labeled_mask
+    return labeled_mask, debug_img
