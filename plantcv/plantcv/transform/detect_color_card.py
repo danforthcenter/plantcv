@@ -179,15 +179,9 @@ def detect_color_card(rgb_img, label=None, **kwargs):
     labeled_mask, debug_img = _draw_color_chips(debug_img, new_centers, radius)
 
     # Save out chip size for pixel to cm standardization
-    outputs.add_observation(sample=label, variable='median_color_chip_size', trait='size of color card chips identified',
-                            method='plantcv.plantcv.transform.detect_color_card', scale='square pixels',
-                            datatype=float, value=chip_size, label="median")
-    outputs.add_observation(sample=label, variable='median_color_chip_width', trait='width of color card chips identified',
-                            method='plantcv.plantcv.transform.detect_color_card', scale='pixels',
-                            datatype=float, value=chip_width, label="width")
-    outputs.add_observation(sample=label, variable='median_color_chip_height', trait='height of color card chips identified',
-                            method='plantcv.plantcv.transform.detect_color_card', scale='pixels',
-                            datatype=float, value=chip_height, label="height")
+    outputs.add_metadata(term="median_color_chip_size", datatype=float, value=chip_size)
+    outputs.add_metadata(term="median_color_chip_width", datatype=float, value=chip_width)
+    outputs.add_metadata(term="median_color_chip_height", datatype=float, value=chip_height)
 
     # Debugging
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
