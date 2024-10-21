@@ -55,4 +55,4 @@ filtered_area = pcv.filters.obj_props(bin_img=binary_img, cut_side="lower", thre
 
 ![count_img](img/documentation_images/filters_obj_props/example_filter_3.png)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/filters/filter_objs.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/filters/obj_props.py)
