@@ -10,7 +10,7 @@ from plantcv.plantcv.transform.color_correction import quick_color_check
 from plantcv.plantcv.transform.find_color_card import find_color_card
 from plantcv.plantcv.transform.color_correction import std_color_matrix
 from plantcv.plantcv.transform.color_correction import affine_color_correction
-from plantcv.plantcv.transform.detect_color_card import detect_color_card, auto_detect_correct
+from plantcv.plantcv.transform.detect_color_card import detect_color_card
 from plantcv.plantcv.transform.rescale import rescale
 from plantcv.plantcv.transform.rotate import rotate
 from plantcv.plantcv.transform.nonuniform_illumination import nonuniform_illumination
@@ -24,4 +24,4 @@ __all__ = ["get_color_matrix", "get_matrix_m", "calc_transformation_matrix", "ap
            "save_matrix", "load_matrix", "correct_color", "create_color_card_mask", "quick_color_check",
            "find_color_card", "std_color_matrix", "affine_color_correction", "rescale", "nonuniform_illumination", "resize",
            "resize_factor", "warp", "rotate", "warp", "warp_align", "gamma_correct", "detect_color_card", "checkerboard_calib",
-           "calibrate_camera", "merge_images", "auto_detect_correct"]
+           "calibrate_camera", "merge_images"]
