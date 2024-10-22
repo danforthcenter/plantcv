@@ -185,4 +185,4 @@ def detect_color_card(rgb_img, label=None, **kwargs):
     # Debugging
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
 
-    return labeled_mask
+    return labeled_mask, debug_img
