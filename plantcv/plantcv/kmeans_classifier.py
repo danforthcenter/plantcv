@@ -71,9 +71,9 @@ def mask_kmeans(labeled_img, k, patch_size=10, cat_list=None):
             _debug(visual=mask_light, filename=os.path.join(params.debug_outdir, "_kmeans_mask_"+str(i)+".png"))
             mask_dict[str(i)] = mask_light
         return mask_dict
-    mask = np.ones(labeled_img.shape)
+    mask = np.zeros(labeled_img.shape)
     for label in cat_list:
-        mask = np.logical_and(mask, labeled_img != label)
+        mask = np.logical_or(mask, labeled_img = label)
     mask[:, 0:mg] = False
     mask[:, w-mg:w] = False
     mask[0:mg, :] = False
