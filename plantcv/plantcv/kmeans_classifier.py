@@ -23,6 +23,14 @@ def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10):
     """
     kmeans = load(model_path)
     train_img, _, _ = pcv.readimage(img)
+    
+    before = after = int((patch_size - 1)/2)   #odd
+    if patch_size%2 == 0:   #even
+        before = int((patch_size-2)/2)
+        after = int(patch_size/2)
+    
+    #padding
+    train_img = np.pad(train_img, pad_width=(before, after), mode="empty")
 
     # Shapes
     mg = np.floor(patch_size / 2).astype(np.int32)
