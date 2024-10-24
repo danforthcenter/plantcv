@@ -24,9 +24,23 @@ def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10):
     kmeans = load(model_path)
     train_img, _, _ = pcv.readimage(img)
 
+    before = after = int((patch_size - 1)/2)   # odd
+    if patch_size % 2 == 0:   # even
+        before = int((patch_size-2)/2)
+        after = int(patch_size/2)
+
+    # Padding
+    if len(train_img.shape) == 2:  # gray
+        train_img = np.pad(train_img, pad_width=((before, after), (before, after)), mode="edge")
+    elif len(train_img.shape) == 3 and train_img.shape[2] == 3:  # rgb
+        train_img = np.pad(train_img, pad_width=((before, after), (before, after), (0, 0)), mode="edge")
+
     # Shapes
     mg = np.floor(patch_size / 2).astype(np.int32)
-    h, w, _ = train_img.shape
+    if len(train_img.shape) == 2:
+        h, w = train_img.shape
+    elif len(train_img.shape) == 3 and train_img.shape[2] == 3:
+        h, w, _ = train_img.shape
 
     # Do the prediction
     train_patches = patch_extract(train_img, patch_size=patch_size)
@@ -58,8 +72,8 @@ def mask_kmeans(labeled_img, k, patch_size=10, cat_list=None):
         mask_dict = {}
         L = [*range(k)]
         for i in L:
-            mask = np.ones(labeled_img.shape)
-            mask = np.logical_and(mask, labeled_img != i)
+            mask = np.zeros(labeled_img.shape)
+            mask = np.logical_or(mask, labeled_img == i)
             mask[:, 0:mg] = False
             mask[:, w-mg:w] = False
             mask[0:mg, :] = False
@@ -68,13 +82,13 @@ def mask_kmeans(labeled_img, k, patch_size=10, cat_list=None):
             _debug(visual=mask_light, filename=os.path.join(params.debug_outdir, "_kmeans_mask_"+str(i)+".png"))
             mask_dict[str(i)] = mask_light
         return mask_dict
-    mask = np.ones(labeled_img.shape)
+    mask = np.zeros(labeled_img.shape)
     for label in cat_list:
-        mask = np.logical_and(mask, labeled_img != label)
+        mask = np.logical_or(mask, labeled_img == label)
     mask[:, 0:mg] = False
     mask[:, w-mg:w] = False
     mask[0:mg, :] = False
     mask[h-mg:h, :] = False
-    mask_light = abs(1-mask)
+    mask_light = abs(~(mask-1))
     _debug(visual=mask_light, filename=os.path.join(params.debug_outdir, "_kmeans_combined_mask.png"))
     return mask_light
