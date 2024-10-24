@@ -72,8 +72,8 @@ def mask_kmeans(labeled_img, k, patch_size=10, cat_list=None):
         mask_dict = {}
         L = [*range(k)]
         for i in L:
-            mask = np.ones(labeled_img.shape)
-            mask = np.logical_and(mask, labeled_img != i)
+            mask = np.zeros(labeled_img.shape)
+            mask = np.logical_or(mask, labeled_img == i)
             mask[:, 0:mg] = False
             mask[:, w-mg:w] = False
             mask[0:mg, :] = False
@@ -84,11 +84,11 @@ def mask_kmeans(labeled_img, k, patch_size=10, cat_list=None):
         return mask_dict
     mask = np.zeros(labeled_img.shape)
     for label in cat_list:
-        mask = np.logical_or(mask, labeled_img = label)
+        mask = np.logical_or(mask, labeled_img == label)
     mask[:, 0:mg] = False
     mask[:, w-mg:w] = False
     mask[0:mg, :] = False
     mask[h-mg:h, :] = False
-    mask_light = abs(1-mask)
+    mask_light = mask
     _debug(visual=mask_light, filename=os.path.join(params.debug_outdir, "_kmeans_combined_mask.png"))
     return mask_light
