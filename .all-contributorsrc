@@ -619,6 +619,16 @@
         "bug",
         "doc"
       ]
+    },
+    {
+      "login": "jbraley1107",
+      "name": "jbraley1107",
+      "avatar_url": "https://avatars.githubusercontent.com/u/186077704?v=4",
+      "profile": "https://github.com/jbraley1107",
+      "contributions": [
+        "review",
+        "userTesting"
+      ]
     }
   ],
   "contributorsPerLine": 7,
