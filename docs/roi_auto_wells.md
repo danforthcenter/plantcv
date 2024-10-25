@@ -32,7 +32,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 # Detect Circular Shapes and Use as ROIs
-rois1 = pcv.roi.auto_wells(gray_img=gray_img, mindist = 20, candec = 50 
+rois1 = pcv.roi.auto_wells(gray_img=gray_img, mindist = 20, candec = 50, 
 accthresh = 30, minradius = 40, maxradius = 50, nrows=4, ncols=6, radiusadjust=-10)
                                       
 ```

@@ -529,8 +529,7 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
 
 def auto_wells(gray_img, mindist, candec, accthresh, minradius, maxradius,
                nrows, ncols, radiusadjust=None):
-    """
-    Hough Circle Well Detection
+    """Hough Circle Well Detection
 
     Keyword inputs:
     gray_img = gray image (np.ndarray)
@@ -541,7 +540,7 @@ def auto_wells(gray_img, mindist, candec, accthresh, minradius, maxradius,
     maxradius = maximum circle radius
     nrows = expected number of rows
     ncols = expected number of columns
-    radiusadjust = amount to adjust the average radius, this can be desirable 
+    radiusadjust = amount to adjust the average radius, this can be desirable
     if you want ROI to sit inside a well, for example (in that case you might
     set it to a negative value).
 
@@ -568,8 +567,8 @@ def auto_wells(gray_img, mindist, candec, accthresh, minradius, maxradius,
 
     sorted_indicesx = np.argsort(clusters_x)
     sorted_x = np.sort(clusters_x)
-    xlist = [i for i in range(len(clusters_x))]
-    clusterxdf = {'clusters_x': sorted_x, 'sorted': sorted_indicesx, 
+    xlist = list(range(len(clusters_x)))
+    clusterxdf = {'clusters_x': sorted_x, 'sorted': sorted_indicesx,
                   'xindex': [0]*len(clusters_x)}
     xdf = pd.DataFrame(clusterxdf)
     xdf = xdf.sort_values(by='clusters_x', ascending=True)
@@ -577,7 +576,7 @@ def auto_wells(gray_img, mindist, candec, accthresh, minradius, maxradius,
 
     sorted_indicesy = np.argsort(clusters_y)
     sorted_y = np.sort(clusters_y)
-    ylist = [i for i in range(len(clusters_y))]
+    ylist = list(range(len(clusters_y)))
     clusterydf = {'clusters_y': sorted_y, 'sorted': sorted_indicesy,
                   'yindex': [0]*len(clusters_y)}
     ydf = pd.DataFrame(clusterydf)
@@ -587,8 +586,8 @@ def auto_wells(gray_img, mindist, candec, accthresh, minradius, maxradius,
     df['column'] = gm_x.predict(centers_x)
     df['row'] = gm_y.predict(centers_y)
 
-    df['row'] = df['row'].replace(list(ydf['sorted']),list(ydf['yindex']))
-    df['column'] = df['column'].replace(list(xdf['sorted']),list(xdf['xindex']))
+    df['row'] = df['row'].replace(list(ydf['sorted']), list(ydf['yindex']))
+    df['column'] = df['column'].replace(list(xdf['sorted']), list(xdf['xindex']))
 
     df = df.sort_values(by=['row', 'column'], ascending=[True, True])
     df['xy'] = list(zip(df.x, df.y))
