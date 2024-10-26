@@ -27,7 +27,6 @@ def _hough_circle(gray_img, mindist, candec, accthresh, minradius, maxradius):
     :return dataframe: pandas dataframe
     :return img: np.ndarray
     """
-
     circles = cv2.HoughCircles(gray_img, cv2.HOUGH_GRADIENT,
                                dp=1, minDist=mindist,
                                param1=candec, param2=accthresh,
