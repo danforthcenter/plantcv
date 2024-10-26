@@ -528,7 +528,8 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
 
 
 def auto_wells(gray_img, mindist, candec, accthresh, minradius, maxradius, nrows, ncols, radiusadjust=None):
-    '''Hough Circle Well Detection.
+    """Hough Circle Well Detection.
+
     Keyword inputs:
     gray_img = gray image (np.ndarray)
     mindist = minimum distance between detected circles
@@ -551,7 +552,8 @@ def auto_wells(gray_img, mindist, candec, accthresh, minradius, maxradius, nrows
     :param nrows = int
     :param ncols = int
     :return roi: plantcv.plantcv.classes.Objects
-    '''
+    """
+    # Use hough circle helper function
     df, _ = _hough_circle(gray_img, mindist, candec, accthresh, minradius,
                           maxradius)
     xlist = []
