@@ -554,8 +554,12 @@ def auto_wells(gray_img, mindist, candec, accthresh, minradius, maxradius, nrows
     :return roi: plantcv.plantcv.classes.Objects
     """
     # Use hough circle helper function
-    df, _ = _hough_circle(gray_img, mindist, candec, accthresh, minradius,
-                          maxradius)
+    maxfind = nrows * ncols
+    df, img = _hough_circle(gray_img, mindist, candec, accthresh, minradius,
+                          maxradius, maxfind)
+
+    _debug(img, filename=os.path.join(params.debug_outdir, str(params.device) + '_roi_houghcircle.png'), cmap='gray')
+
     xlist = []
     centers_x = df['x'].values.reshape(-1, 1)
     centers_y = df['y'].values.reshape(-1, 1)
