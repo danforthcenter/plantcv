@@ -17,7 +17,7 @@ def _hough_circle(gray_img, mindist, candec, accthresh, minradius, maxradius, ma
     accthresh = accumulator threshold for the circl centers
     minradius = minimum circle radius
     maxradius = maximum circle radius
-    maxfound = maximum number of circles to find 
+    maxfound = maximum number of circles to find
 
     :param gray_img: np.ndarray
     :param mindist: int
@@ -67,10 +67,9 @@ def _hough_circle(gray_img, mindist, candec, accthresh, minradius, maxradius, ma
                     x.append(i[0])
                     y.append(i[1])
                     radius.append(i[2])
-            else:
-                warn('Number of found circles is ' +
-                     str(len(circles[0, :])) +
-                     ' Change Parameters. Only drawing first '+str(maxfound))
+            warn('Number of found circles is ' +
+                 str(len(circles[0, :])) +
+                 ' Change Parameters. Only drawing first '+str(maxfound))
     else:
         for i in circles[0, :]:
             # draw the outer circle

@@ -556,7 +556,7 @@ def auto_wells(gray_img, mindist, candec, accthresh, minradius, maxradius, nrows
     # Use hough circle helper function
     maxfind = nrows * ncols
     df, img = _hough_circle(gray_img, mindist, candec, accthresh, minradius,
-                          maxradius, maxfind)
+                            maxradius, maxfind)
 
     _debug(img, filename=os.path.join(params.debug_outdir, str(params.device) + '_roi_houghcircle.png'), cmap='gray')
 
