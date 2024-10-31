@@ -55,5 +55,5 @@ def readimage(filename, mode="native"):
 
     # Debugging visualization
     _debug(visual=img, filename=os.path.join(params.debug_outdir, "input_image.png"))
-
+    print("test edit")
     return img, path, img_name
