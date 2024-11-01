@@ -13,15 +13,15 @@ def test_kmeans_classifier(test_data):
     assert (labeled_img == test_labeled).all()
     assert (labeled_img_gray == test_labeled_gray).all()
 
-    mask_dict = mask_kmeans(labeled_img=labeled_img, k=4, patch_size=4)
-    mask_dict_gray = mask_kmeans(labeled_img=labeled_img_gray, k=4, patch_size=4)
+    mask_dict = mask_kmeans(labeled_img=labeled_img, k=4)
+    mask_dict_gray = mask_kmeans(labeled_img=labeled_img_gray, k=4)
     for i in range(4):
         assert (readimage(input_dir+"/label_example_"+str(i)+".png")[0] == mask_dict[str(i)]).all()
     for i in range(4):
         assert (readimage(input_dir_gray+"/label_example_gray_"+str(i)+".png")[0] == mask_dict_gray[str(i)]).all()
 
-    combo_mask = mask_kmeans(labeled_img=labeled_img, k=4, patch_size=4, cat_list=[1, 2])
-    combo_mask_gray = mask_kmeans(labeled_img=labeled_img_gray, k=4, patch_size=4, cat_list=[1, 2])
+    combo_mask = mask_kmeans(labeled_img=labeled_img, k=4, cat_list=[1, 2])
+    combo_mask_gray = mask_kmeans(labeled_img=labeled_img_gray, k=4, cat_list=[1, 2])
     combo_example, _, _ = readimage(input_dir+"/combo_mask_example.png")
     combo_example_gray, _, _ = readimage(input_dir_gray+"/combo_mask_example_gray.png")
     assert (combo_mask == combo_example).all()
