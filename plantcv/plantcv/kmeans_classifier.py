@@ -52,7 +52,7 @@ def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10):
     return labeled
 
 
-def mask_kmeans(labeled_img, k, patch_size=10, cat_list=None):
+def mask_kmeans(labeled_img, k, cat_list=None):
     """
     Uses the predicted clusters from a target image to generate a binary mask.
     Inputs:
@@ -66,29 +66,23 @@ def mask_kmeans(labeled_img, k, patch_size=10, cat_list=None):
     :param patch_size: positive non-zero integer
     :param cat_list: list of positive non-zero integers
     """
-    mg = np.floor(patch_size / 2).astype(np.int32)
-    h, w = labeled_img.shape
     if cat_list is None:
         mask_dict = {}
         L = [*range(k)]
         for i in L:
-            mask = np.zeros(labeled_img.shape)
-            mask = np.logical_or(mask, labeled_img == i)
-            mask[:, 0:mg] = False
-            mask[:, w-mg:w] = False
-            mask[0:mg, :] = False
-            mask[h-mg:h, :] = False
-            mask_light = abs(1-mask)
+            mask_light = np.where(labeled_img == i, 1, 0)
             _debug(visual=mask_light, filename=os.path.join(params.debug_outdir, "_kmeans_mask_"+str(i)+".png"))
             mask_dict[str(i)] = mask_light
         return mask_dict
-    mask = np.zeros(labeled_img.shape)
-    for label in cat_list:
-        mask = np.logical_or(mask, labeled_img == label)
-    mask[:, 0:mg] = False
-    mask[:, w-mg:w] = False
-    mask[0:mg, :] = False
-    mask[h-mg:h, :] = False
-    mask_light = abs(~(mask-1))
+    # Store debug 
+    debug = params.debug
+    # Change to None so that logical_or does not plot each stepwise addition
+    params.debug = None
+    for idx, i in enumerate(cat_list):
+        if idx == 0:
+            mask_light = np.where(labeled_img == i, 1, 0)
+        else:
+            mask_light = pcv.logical_or(mask_light, np.where(labeled_img == i, 1, 0))
+    params.debug = debug
     _debug(visual=mask_light, filename=os.path.join(params.debug_outdir, "_kmeans_combined_mask.png"))
     return mask_light
