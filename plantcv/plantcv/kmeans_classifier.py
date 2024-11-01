@@ -74,7 +74,7 @@ def mask_kmeans(labeled_img, k, cat_list=None):
             _debug(visual=mask_light, filename=os.path.join(params.debug_outdir, "_kmeans_mask_"+str(i)+".png"))
             mask_dict[str(i)] = mask_light
         return mask_dict
-    # Store debug 
+    # Store debug
     debug = params.debug
     # Change to None so that logical_or does not plot each stepwise addition
     params.debug = None
