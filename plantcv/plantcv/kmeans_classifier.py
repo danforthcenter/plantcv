@@ -70,7 +70,7 @@ def mask_kmeans(labeled_img, k, cat_list=None):
         mask_dict = {}
         L = [*range(k)]
         for i in L:
-            mask_light = np.where(labeled_img == i, 1, 0)
+            mask_light = np.where(labeled_img == i, 255, 0)
             _debug(visual=mask_light, filename=os.path.join(params.debug_outdir, "_kmeans_mask_"+str(i)+".png"))
             mask_dict[str(i)] = mask_light
         return mask_dict
@@ -80,9 +80,9 @@ def mask_kmeans(labeled_img, k, cat_list=None):
     params.debug = None
     for idx, i in enumerate(cat_list):
         if idx == 0:
-            mask_light = np.where(labeled_img == i, 1, 0)
+            mask_light = np.where(labeled_img == i, 255, 0)
         else:
-            mask_light = pcv.logical_or(mask_light, np.where(labeled_img == i, 1, 0))
+            mask_light = pcv.logical_or(mask_light, np.where(labeled_img == i, 255, 0))
     params.debug = debug
     _debug(visual=mask_light, filename=os.path.join(params.debug_outdir, "_kmeans_combined_mask.png"))
     return mask_light
