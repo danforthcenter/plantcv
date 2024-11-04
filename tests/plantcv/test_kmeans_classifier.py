@@ -2,12 +2,14 @@ from plantcv.plantcv.kmeans_classifier import mask_kmeans
 from plantcv.plantcv.kmeans_classifier import predict_kmeans
 from plantcv.plantcv import readimage
 
+
 def test_kmeans_classifier(test_data):
     """Test for PlantCV."""
     input_dir = test_data.kmeans_classifier_dir
     input_dir_gray = test_data.kmeans_classifier_gray_dir
     labeled_img = predict_kmeans(img=input_dir+"/test_image.jpg", model_path=input_dir+"/kmeans_out.fit", patch_size=4)
-    labeled_img_gray = predict_kmeans(img=input_dir_gray+"/test_image_gray.jpg", model_path=input_dir_gray+"/kmeans_out_gray.fit", patch_size=4)
+    labeled_img_gray = predict_kmeans(img=input_dir_gray+"/test_image_gray.jpg",
+                                      model_path=input_dir_gray+"/kmeans_out_gray.fit", patch_size=4)
     test_labeled, _, _ = readimage(input_dir+"/labeled_image.png")
     test_labeled_gray, _, _ = readimage(input_dir_gray+"/labeled_image_gray.png")
     assert (labeled_img == test_labeled).all()
