@@ -38,4 +38,3 @@ def auto_correct_color(rgb_img, label=None, **kwargs):
     std_matrix = std_color_matrix(pos=3)
     return affine_color_correction(rgb_img=rgb_img, source_matrix=card_matrix,
                                    target_matrix=std_matrix)
-
