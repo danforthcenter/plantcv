@@ -25,7 +25,7 @@ def auto_correct_color(rgb_img, label=None, **kwargs):
     numpy.ndarray
         Color corrected image
     """
-     # Set lable to params.sample_label if None
+    # Set lable to params.sample_label if None
     if label is None:
         label = params.sample_label
 
@@ -38,4 +38,4 @@ def auto_correct_color(rgb_img, label=None, **kwargs):
     std_matrix = std_color_matrix(pos=3)
     return affine_color_correction(rgb_img=rgb_img, source_matrix=card_matrix,
                                    target_matrix=std_matrix)
-    
+
