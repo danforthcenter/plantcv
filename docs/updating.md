@@ -1339,6 +1339,12 @@ pages for more details on the input and output variable types.
 
 * pre v3.13: NA
 * post v3.13: fig_ecdf = **plantcv.visualize.obj_size_ecdf**(*mask, title=None*)
+* post v4.0: fig_ecdf = **plantcv.visualize.obj_size_ecdf**(*mask*)
+
+#### plantcv.visualize.obj_sizes
+
+* pre v3.13: NA
+* post v3.13: plotting_img = **pcv.visualize.obj_sizes**(*img, mask, num_objects=100*)
 
 #### plantcv.visualize.pseudocolor
 
@@ -1347,11 +1353,6 @@ pages for more details on the input and output variable types.
 * post v3.3: pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, axes=True, colorbar=True*)
 * post v3.12: pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, axes=True, colorbar=True, obj_padding="auto", title=None*)
 * post v4.0: pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, mask=None, cmap=None, background="image", min_value=0, max_value=255, axes=True, colorbar=True, title=None*)
-
-#### plantcv.visualize.obj_sizes
-
-* pre v3.13: NA
-* post v3.13: plotting_img = **pcv.visualize.obj_sizes**(*img, mask, num_objects=100*)
 
 #### plantcv.visualize.pixel_scatter_plot
 
