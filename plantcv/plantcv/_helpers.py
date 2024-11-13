@@ -42,7 +42,6 @@ def _hough_circle(gray_img, mindist, candec, accthresh, minradius, maxradius, ma
     x = []
     y = []
     radius = []
-    print(circles)
     if circles is None:
         fatal_error('number of circles found is None with these parameters')
     circles = np.uint16(np.around(circles))
