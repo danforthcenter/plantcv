@@ -222,9 +222,9 @@ def prune_by_height_partial(skel_img, line_position=0, mask=None):
 
         # Keep segments longer than specified size
         for i in range(0, len(secondary_objects)):
-            x,y,w,h2 = cv2.boundingRect(secondary_objects[i]) # Let (x,y) be the top-left coordinate of the rectangle and (w,h) be its width and height 
+            _, y, _, h2 = cv2.boundingRect(secondary_objects[i]) # Let (x,y) be the top-left coordinate of the rectangle and (w,h) be its width and height 
             
-            if y < h:
+            if y + h2 <= h:
                 kept_segments.append(secondary_objects[i])
             else:
                 removed_segments.append(secondary_objects[i])
