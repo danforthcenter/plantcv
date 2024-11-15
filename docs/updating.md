@@ -145,7 +145,7 @@ roi = pcv.roi.rectangle(img=img, x=100, y=100, h=100, w=100)
 
 # Filter binary image to make a clean mask based on ROI 
 # (no longer needs `pcv.find_objects` or `pcv.object_composition`)
-mask = pcv.roi.filter(mask=bin_img, roi=roi, roi_type="partial")
+mask = pcv.roi.filter(mask=bin_mask, roi=roi, roi_type="partial")
 
 # Extract shape traits from plant
 shape_img = pcv.analyze.size(img=img,labeled_mask=mask, n_labels=1)
