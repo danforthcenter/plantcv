@@ -177,7 +177,7 @@ def prune_by_height(skel_img, line_position=0, mask=None):
     return pruned_img, segmented_img, segment_objects
 
 
-def prune_by_height_partial(skel_img, line_position=0, mask=None):
+def prune_by_height_partial(skel_img, line_position=None, mask=None):
     """Prune the segments of a skeleton.
     The pruning algorithm proposed by Renee Dale and implemented by Haley Schuhl. 
     Segments a skeleton into discrete pieces, prunes off all below a height threshold.
@@ -206,11 +206,12 @@ def prune_by_height_partial(skel_img, line_position=0, mask=None):
     params.debug = None
 
     pruned_img = skel_img.copy()
-    branch_pts_img = pcv.morphology.find_branch_pts(skel_img=pruned_img)
-    branch_pts = pcv.outputs.observations['default']['branch_pts']['value']
-    # Using the min function with a key
-    min_y = min(branch_pts, key=lambda coord: coord[1])
-
+    if line_position is None:
+        branch_pts_img = pcv.morphology.find_branch_pts(skel_img=pruned_img)
+        branch_pts = pcv.outputs.observations['default']['branch_pts']['value']
+        # Using the min function with a key
+        min_y = min(branch_pts, key=lambda coord: coord[1])
+        line_position = min_y
     img_dims = np.shape(skel_img)[:2]
     h = img_dims[1] - line_position
     h = line_position + 1 # Adjust by one pixel to shift away from branch point 
