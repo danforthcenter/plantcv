@@ -39,8 +39,6 @@ def prune(skel_img, size=0, mask=None):
     debug = params.debug
     params.debug = None
 
-    pruned_img = skel_img.copy()
-
     _, objects = segment_skeleton(skel_img)
     kept_segments = []
     removed_segments = []
@@ -64,7 +62,7 @@ def prune(skel_img, size=0, mask=None):
                          lineType=8)
 
         # Subtract all short segments from the skeleton image
-        pruned_img = image_subtract(pruned_img, removed_barbs)
+        pruned_img = image_subtract(skel_img, removed_barbs)
         pruned_img = _iterative_prune(pruned_img, 1)
 
     # Make debugging image
@@ -117,7 +115,6 @@ def prune_by_height(skel_img, line_position=0, mask=None):
     debug = params.debug
     params.debug = None
 
-    pruned_img = skel_img.copy()
     img_dims = np.shape(skel_img)[:2]
     h = img_dims[1] - line_position
     h = line_position
@@ -147,7 +144,7 @@ def prune_by_height(skel_img, line_position=0, mask=None):
                          lineType=8)
 
         # Subtract all short segments from the skeleton image
-        pruned_img = image_subtract(pruned_img, removed_barbs)
+        pruned_img = image_subtract(skel_img, removed_barbs)
         pruned_img = _iterative_prune(pruned_img, 1)
 
     # Make debugging image
@@ -204,7 +201,6 @@ def prune_by_height_partial(skel_img, line_position=None, mask=None):
     debug = params.debug
     params.debug = None
 
-    pruned_img = skel_img.copy()
     if line_position is None:
         # Find the line position based on the highest branch point in the skeleton
         _ = find_branch_pts(skel_img=pruned_img)
@@ -241,7 +237,7 @@ def prune_by_height_partial(skel_img, line_position=None, mask=None):
                          lineType=8)
 
         # Subtract all short segments from the skeleton image
-        pruned_img = image_subtract(pruned_img, removed_barbs)
+        pruned_img = image_subtract(skel_img, removed_barbs)
         pruned_img = _iterative_prune(pruned_img, 1)
 
     # Make debugging image
