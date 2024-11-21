@@ -3,10 +3,9 @@
 import os
 import cv2
 import numpy as np
-from plantcv.plantcv import params
+from plantcv.plantcv import params, outputs
 from plantcv.plantcv import image_subtract
-from plantcv.plantcv.morphology import segment_sort
-from plantcv.plantcv.morphology import segment_skeleton
+from plantcv.plantcv.morphology import segment_sort, find_branch_pts, segment_skeleton
 from plantcv.plantcv.morphology import _iterative_prune
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours
@@ -207,14 +206,15 @@ def prune_by_height_partial(skel_img, line_position=None, mask=None):
 
     pruned_img = skel_img.copy()
     if line_position is None:
-        branch_pts_img = pcv.morphology.find_branch_pts(skel_img=pruned_img)
-        branch_pts = pcv.outputs.observations['default']['branch_pts']['value']
+        # Find the line position based on the highest branch point in the skeleton
+        _ = find_branch_pts(skel_img=pruned_img)
+        branch_pts = outputs.observations['default']['branch_pts']['value']
         # Using the min function with a key
         min_y = min(branch_pts, key=lambda coord: coord[1])
         line_position = min_y
     img_dims = np.shape(skel_img)[:2]
     h = img_dims[1] - line_position
-    h = line_position + 1 # Adjust by one pixel to shift away from branch point 
+    h = line_position + 1 # Adjust by one pixel to shift from directly on the branch point 
 
     _, objects = segment_skeleton(skel_img)
     kept_segments = []
