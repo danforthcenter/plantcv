@@ -209,7 +209,7 @@ def prune_by_height_partial(skel_img, line_position=None, mask=None, label=None)
 
     if line_position is None:
         # Find the line position based on the highest branch point in the skeleton
-        _ = find_branch_pts(skel_img=pruned_img)
+        _ = find_branch_pts(skel_img=skel_img)
         branch_pts = outputs.observations['default']['branch_pts']['value']
         # Using the min function with a key
         min_y = min(branch_pts, key=lambda coord: coord[1])
@@ -263,9 +263,16 @@ def prune_by_height_partial(skel_img, line_position=None, mask=None, label=None)
     # Segment the pruned skeleton
     segmented_img, segment_objects = segment_skeleton(pruned_img, mask)
     # Save outputs about number of segments above/below reference
-    outputs.add_observation(sample=label, variable='segment_insertion_angle', trait='segment insertion angle',
-                            method='plantcv.plantcv.morphology.segment_insertion_angle', scale='degrees', datatype=list,
-                            value=all_intersection_angles, label=segment_ids)
+    outputs.add_observation(sample=label, variable='prune_horizontal_reference_position',
+                            trait='prune horizontal reference position',
+                            method='plantcv.plantcv.morphology.prune_by_height', scale='pixels', datatype=int,
+                            value=h, label='none')
+    outputs.add_observation(sample=label, variable='segments_above_reference', trait='segments above reference',
+                            method='plantcv.plantcv.morphology.prune_by_height', scale='object_number', datatype=int,
+                            value=len(kept_segments), label="none")
+    outputs.add_observation(sample=label, variable='segments_below_reference', trait='segments below reference',
+                            method='plantcv.plantcv.morphology.prune_by_height', scale='object_number', datatype=int,
+                            value=len(removed_segments), label="none")
 
     # Reset debug mode
     params.debug = debug
