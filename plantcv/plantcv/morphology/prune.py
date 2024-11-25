@@ -213,7 +213,6 @@ def prune_by_height_partial(skel_img, line_position=None, mask=None, label=None)
         branch_pts = outputs.observations['default']['branch_pts']['value']
         # Using the min function with a key
         min_y = min(branch_pts, key=lambda coord: coord[1])
-        print(min_y)
         line_position = min_y[1]
     img_dims = np.shape(skel_img)[:2]
     h = img_dims[1] - line_position
