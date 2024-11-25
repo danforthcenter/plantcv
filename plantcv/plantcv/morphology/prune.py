@@ -173,7 +173,7 @@ def prune_by_height(skel_img, line_position=0, mask=None):
     return pruned_img, segmented_img, segment_objects
 
 
-def prune_by_height_partial(skel_img, line_position=None, mask=None):
+def prune_by_height_partial(skel_img, line_position=None, mask=None, label=None):
     """Prune the segments of a skeleton.
     The pruning algorithm proposed by Renee Dale and implemented by Haley Schuhl. 
     Segments a skeleton into discrete pieces, prunes off all below a height threshold.
@@ -184,6 +184,8 @@ def prune_by_height_partial(skel_img, line_position=None, mask=None):
     skel_img    = Skeletonized image
     h           = Height below which to prune secondary segments 
     mask        = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
+    label            = Optional label parameter, modifies the variable name of
+                       observations recorded (default = pcv.params.sample_label).
 
     Returns:
     pruned_img      = Pruned image
@@ -193,10 +195,14 @@ def prune_by_height_partial(skel_img, line_position=None, mask=None):
     :param skel_img: numpy.ndarray
     :param size: int
     :param mask: numpy.ndarray
+    :param label: str
     :return pruned_img: numpy.ndarray
     :return segmented_img: numpy.ndarray
     :return segment_objects: list
     """
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
     # Store debug
     debug = params.debug
     params.debug = None
@@ -256,6 +262,10 @@ def prune_by_height_partial(skel_img, line_position=None, mask=None):
 
     # Segment the pruned skeleton
     segmented_img, segment_objects = segment_skeleton(pruned_img, mask)
+    # Save outputs about number of segments above/below reference
+    outputs.add_observation(sample=label, variable='segment_insertion_angle', trait='segment insertion angle',
+                            method='plantcv.plantcv.morphology.segment_insertion_angle', scale='degrees', datatype=list,
+                            value=all_intersection_angles, label=segment_ids)
 
     # Reset debug mode
     params.debug = debug
