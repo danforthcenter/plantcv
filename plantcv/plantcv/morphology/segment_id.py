@@ -51,7 +51,7 @@ def segment_id(skel_img, objects, mask=None):
         # Label slope lines
         w = label_coord_x[i]
         h = label_coord_y[i]
-        text = f"ID:{i}"
+        text = f"{i}"
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=params.text_size, color=rand_color[i], thickness=params.text_thickness)
 
