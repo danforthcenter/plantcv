@@ -534,7 +534,7 @@ def auto_wells(gray_img, mindist, candec, accthresh, minradius, maxradius, nrows
     gray_img = gray image (np.ndarray)
     mindist = minimum distance between detected circles
     candec = higher threshold of canny edge detector
-    accthresh = accumulator threshold for the circl centers
+    accthresh = accumulator threshold for the circle centers
     minradius = minimum circle radius
     maxradius = maximum circle radius
     nrows = expected number of rows

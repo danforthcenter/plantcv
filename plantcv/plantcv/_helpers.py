@@ -59,7 +59,7 @@ def _hough_circle(gray_img, mindist, candec, accthresh, minradius, maxradius, ma
                 radius.append(i[2])
         else:
             for n, i in enumerate(circles[0, :]):
-                if n <= maxfound:
+                if n <= (maxfound-1):
                     # draw the outer circle
                     cv2.circle(cimg, (i[0], i[1]), i[2], (0, 255, 0),
                                params.line_thickness)
