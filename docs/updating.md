@@ -1213,7 +1213,7 @@ pages for more details on the input and output variable types.
 #### plantcv.transform.auto_correct_color
 
 * pre v4.6: NA
-* post v4.6: corrected_img = **plantcv.transform.r**(*rgb_img, label=None, **kwargs*)
+* post v4.6: corrected_img = **plantcv.transform.auto_correct_color**(*rgb_img, label=None, **kwargs*)
 
 #### plantcv.transform.correct_color
 
