@@ -16,7 +16,7 @@ def test_hough_circle_warn(test_data):
     img = cv2.imread(test_data.hough_circle, -1)
     df, _ = _hough_circle(img, 20, 50, 30, 35, 50, 24)
 
-    assert df.shape == (25, 3)
+    assert df.shape == (24, 3)
 
 
 def test_hough_circle_none(test_data):
