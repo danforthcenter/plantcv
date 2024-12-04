@@ -34,10 +34,7 @@ corrected_rgb = pcv.transform.auto_correct_color(rgb_img=old_card)
 
 **Debug Image: automatically detected and masked the color card**
 
-![Screenshot](img/documentation_images/correct_color_imgs/auto_correct_color.png)
+![Screenshot](img/documentation_images/correct_color_imgs/detect_color_card.png)
 
-**Corrected Image:**
-
-![Screenshot](img/documentation_images/transform_affine_color_corr/tobacco_leaves_corrected.jpg)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/transform/auto_correct_color.py)
