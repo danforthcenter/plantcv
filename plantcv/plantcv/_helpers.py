@@ -3,6 +3,94 @@ import numpy as np
 from plantcv.plantcv.logical_and import logical_and
 from plantcv.plantcv import fatal_error, warn
 from plantcv.plantcv import params
+import pandas as pd
+
+
+def _hough_circle(gray_img, mindist, candec, accthresh, minradius, maxradius, maxfound=None):
+    """
+    Hough Circle Detection
+
+    Keyword inputs:
+    gray_img = gray image (np.ndarray)
+    mindist = minimum distance between detected circles
+    candec = higher threshold of canny edge detector
+    accthresh = accumulator threshold for the circl centers
+    minradius = minimum circle radius
+    maxradius = maximum circle radius
+    maxfound = maximum number of circles to find
+
+    :param gray_img: np.ndarray
+    :param mindist: int
+    :param candec: int
+    :param accthresh: int
+    :param minradius: int
+    :param maxradius: int
+    :param maxfound: None or int
+    :return dataframe: pandas dataframe
+    :return img: np.ndarray
+    """
+    # Store debug
+    debug = params.debug
+    params.debug = None
+
+    circles = cv2.HoughCircles(gray_img, cv2.HOUGH_GRADIENT,
+                               dp=1, minDist=mindist,
+                               param1=candec, param2=accthresh,
+                               minRadius=minradius, maxRadius=maxradius)
+
+    cimg = cv2.cvtColor(gray_img, cv2.COLOR_GRAY2BGR)
+    x = []
+    y = []
+    radius = []
+    if circles is None:
+        fatal_error('number of circles found is None with these parameters')
+    circles = np.uint16(np.around(circles))
+    if maxfound is not None:
+        if maxfound >= len(circles[0, :]):
+            for i in circles[0, :]:
+                # draw the outer circle
+                cv2.circle(cimg, (i[0], i[1]), i[2], (0, 255, 0),
+                           params.line_thickness)
+                # draw the center of the circle
+                cv2.circle(cimg, (i[0], i[1]), 2, (0, 0, 255),
+                           params.line_thickness)
+                x.append(i[0])
+                y.append(i[1])
+                radius.append(i[2])
+        else:
+            for n, i in enumerate(circles[0, :]):
+                if n <= (maxfound-1):
+                    # draw the outer circle
+                    cv2.circle(cimg, (i[0], i[1]), i[2], (0, 255, 0),
+                               params.line_thickness)
+                    # draw the center of the circle
+                    cv2.circle(cimg, (i[0], i[1]), 2, (0, 0, 255),
+                               params.line_thickness)
+                    x.append(i[0])
+                    y.append(i[1])
+                    radius.append(i[2])
+            warn('Number of found circles is ' +
+                 str(len(circles[0, :])) +
+                 ' Change Parameters. Only drawing first '+str(maxfound))
+    else:
+        for i in circles[0, :]:
+            # draw the outer circle
+            cv2.circle(cimg, (i[0], i[1]), i[2], (0, 255, 0),
+                       params.line_thickness)
+            # draw the center of the circle
+            cv2.circle(cimg, (i[0], i[1]), 2, (0, 0, 255),
+                       params.line_thickness)
+            x.append(i[0])
+            y.append(i[1])
+            radius.append(i[2])
+
+    data = {'x': x, 'y': y, 'radius': radius}
+    df = pd.DataFrame(data)
+
+    # Reset debug mode
+    params.debug = debug
+
+    return df, cimg
 
 
 def _cv2_findcontours(bin_img):
