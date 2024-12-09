@@ -67,7 +67,9 @@ def json2csv(json_file, csv_prefix):
             for sample, var in itertools.product(entity["observations"].keys(), multi_vars):
                 data_rows = _create_data_rows(var=var, obs=entity["observations"][sample])
                 for row in data_rows:
-                    csv.write(",".join(map(str, meta_row + [sample] + row)) + "\n")
+                    coord_f = str(row[1]).replace(",", " ")
+                    row_formatted = [str(row[0]), str(coord_f), str(row[2])]
+                    csv.write(",".join(map(str, meta_row + [sample] + row_formatted)) + "\n")
 
     # Create a CSV file of scalar traits
     # Initialize a dictionary to store the data
