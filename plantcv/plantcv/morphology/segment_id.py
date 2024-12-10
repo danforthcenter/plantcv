@@ -7,7 +7,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 
 
-def segment_id(skel_img, objects, mask=None):
+def segment_id(skel_img, objects, mask=None, optimal_assignment=None):
     """Plot segment IDs.
 
     Inputs:
@@ -38,9 +38,14 @@ def segment_id(skel_img, objects, mask=None):
     # Create a color scale, use a previously stored scale if available
     rand_color = color_palette(num=len(objects), saved=True)
 
+    
     # Plot all segment contours
     for i, cnt in enumerate(objects):
-        cv2.drawContours(segmented_img, cnt, -1, rand_color[i], params.line_thickness, lineType=8)
+        if optimal_assignment is not None:
+            color_index = optimal_assignment[i]
+        else: 
+            color_index = i
+        cv2.drawContours(segmented_img, cnt, -1, rand_color[color_index], params.line_thickness, lineType=8)
         # Store coordinates for labels
         label_coord_x.append(objects[i][0][0][0])
         label_coord_y.append(objects[i][0][0][1])
@@ -48,12 +53,20 @@ def segment_id(skel_img, objects, mask=None):
     labeled_img = segmented_img.copy()
 
     for i, cnt in enumerate(objects):
-        # Label slope lines
+        if optimal_assignment is not None:
+            # relabel IDs
+            text = f"{optimal_assignment[i]}"
+            color_index = optimal_assignment[i]
+
+        else:
+            text = f"{i}"
+            color_index = i
+        # Label segments
         w = label_coord_x[i]
         h = label_coord_y[i]
-        text = f"ID:{i}"
+        
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                    fontScale=params.text_size, color=rand_color[i], thickness=params.text_thickness)
+                    fontScale=params.text_size, color=rand_color[color_index], thickness=params.text_thickness)
 
     _debug(visual=labeled_img, filename=os.path.join(params.debug_outdir, f"{params.device}_segmented_ids.png"))
 
