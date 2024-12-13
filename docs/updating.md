@@ -1210,6 +1210,11 @@ pages for more details on the input and output variable types.
 * pre v3.0dev1: NA
 * post v3.0dev2: determinant, transformation_matrix = **plantcv.transform.calc_transformation_matrix**(*matrix_m, matrix_b*)
 
+#### plantcv.transform.auto_correct_color
+
+* pre v4.6: NA
+* post v4.6: corrected_img = **plantcv.transform.auto_correct_color**(*rgb_img, label=None, **kwargs*)
+
 #### plantcv.transform.correct_color
 
 * pre v3.0dev1: NA
