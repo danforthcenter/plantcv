@@ -319,8 +319,9 @@ def read_data(filename, mode="ENVI"):
     # Make pseudo-rgb image and replace it inside the class instance object
     pseudo_rgb = _make_pseudo_rgb(spectral_array)
     spectral_array.pseudo_rgb = pseudo_rgb
-    spectral_array.array_data = spectral_array.array_data.astype("float32")  # required for further calculations
-    if spectral_array.d_type == np.uint8:  # only convert if data seems to be uint8
+
+    if spectral_array.d_type == np.uint8:
+        spectral_array.array_data = spectral_array.array_data.astype("float32")  # required for further calculations
         spectral_array.array_data = spectral_array.array_data / 255  # convert 0-255 (orig.) to 0-1 range
         spectral_array.d_type = np.float32
 
