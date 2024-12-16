@@ -145,7 +145,7 @@ roi = pcv.roi.rectangle(img=img, x=100, y=100, h=100, w=100)
 
 # Filter binary image to make a clean mask based on ROI 
 # (no longer needs `pcv.find_objects` or `pcv.object_composition`)
-mask = pcv.roi.filter(mask=bin_img, roi=roi, roi_type="partial")
+mask = pcv.roi.filter(mask=bin_mask, roi=roi, roi_type="partial")
 
 # Extract shape traits from plant
 shape_img = pcv.analyze.size(img=img,labeled_mask=mask, n_labels=1)
@@ -934,6 +934,11 @@ pages for more details on the input and output variable types.
 * pre v4.0: NA
 * post v4.0: roi_objects = **pcv.roi.auto_grid**(*mask, nrows, ncols, radius=None, img=None*)
 
+#### plantcv.roi.auto_wells
+
+* pre v4.6: NA
+* post v4.6: roi_objects = **pcv.roi.auto_wells**(*gray_img, mindist, candec, accthresh, minradius, maxradius, nrows, ncols, radiusadjust=None*)
+
 #### plantcv.roi.multi
 
 * pre v3.1: NA
@@ -1209,6 +1214,11 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev1: NA
 * post v3.0dev2: determinant, transformation_matrix = **plantcv.transform.calc_transformation_matrix**(*matrix_m, matrix_b*)
+
+#### plantcv.transform.auto_correct_color
+
+* pre v4.6: NA
+* post v4.6: corrected_img = **plantcv.transform.auto_correct_color**(*rgb_img, label=None, **kwargs*)
 
 #### plantcv.transform.correct_color
 
