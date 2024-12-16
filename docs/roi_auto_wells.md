@@ -1,6 +1,6 @@
 ## Autodetect Cicular Regions of Interest (ROI) 
 
-**plantcv.roi.auto_wells**(*gray_img, *)
+**plantcv.roi.auto_wells**(*gray_img, mindist, candec, accthresh, minradius, maxradius, nrows, ncols, radiusadjust=None*)
 
 **returns** roi_objects
 

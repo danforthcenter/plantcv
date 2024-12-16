@@ -934,6 +934,11 @@ pages for more details on the input and output variable types.
 * pre v4.0: NA
 * post v4.0: roi_objects = **pcv.roi.auto_grid**(*mask, nrows, ncols, radius=None, img=None*)
 
+#### plantcv.roi.auto_wells
+
+* pre v4.6: NA
+* post v4.6: roi_objects = **pcv.roi.auto_wells**(*gray_img, mindist, candec, accthresh, minradius, maxradius, nrows, ncols, radiusadjust=None*)
+
 #### plantcv.roi.multi
 
 * pre v3.1: NA
