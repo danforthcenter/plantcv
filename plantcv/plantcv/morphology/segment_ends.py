@@ -33,7 +33,7 @@ def segment_ends(objects, mask=None, label=None):
     segment_end_objs2 = [] 
 
     # Find segment end coordinates
-    for i, cnt in enumerate(leaf_objects):
+    for i in range(len(leaf_objects)):
         # Draw leaf objects
         find_segment_tangents = np.zeros(mask.shape[:2], np.uint8)
         cv2.drawContours(find_segment_tangents, leaf_objects, i, 255, 1, lineType=8)
