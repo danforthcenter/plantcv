@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import image_subtract
-from plantcv.plantcv.morphology import find_tips
+from plantcv.plantcv.morphology import _find_tips
 from plantcv.plantcv._helpers import _cv2_findcontours
 
 
@@ -26,7 +26,7 @@ def _iterative_prune(skel_img, size):
 
     # Iteratively remove endpoints (tips) from a skeleton
     for _ in range(0, size):
-        endpoints = find_tips(pruned_img)
+        endpoints, _, _ = _find_tips(pruned_img)
         pruned_img = image_subtract(pruned_img, endpoints)
 
     # Make debugging image
