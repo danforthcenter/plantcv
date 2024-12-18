@@ -26,10 +26,6 @@ def _find_tips(skel_img, mask=None):
     :param label: str
     :return tip_img: numpy.ndarray
     """
-    # Set lable to params.sample_label if None
-    if label is None:
-        label = params.sample_label
-
     # In a kernel: 1 values line up with 255s, -1s line up with 0s, and 0s correspond to dont care
     endpoint1 = np.array([[-1, -1, -1],
                           [-1, 1, -1],
