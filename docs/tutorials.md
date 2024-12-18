@@ -317,6 +317,19 @@
     </div>
 </div>
 
+<!--Tassel Analysis Tutorial-->
+<div class="card" style="display:block">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/tassel_tutorial');return false;">
+        <img src="https://github.com/danforthcenter/plantcv-tasselyzer-tutorial/blob/main/tasselyzer_tutorial_card.png?raw=true" alt="Tasselyzer tutorial" width="600" height="auto">
+    </a>
+    <div class="card-title">
+        <h6>Tassel Analysis Tutorial</h6>
+    </div>
+    <div class="card-tags">
+        <span><strong>Tags</strong>: maize, machine learning, segmentation, tassel, naive bayes</span>
+    </div>
+</div>
+
 <script type="text/javascript">
     function getTags() {
         var tag_list = [];
