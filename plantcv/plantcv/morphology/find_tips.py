@@ -100,6 +100,10 @@ def find_tips(skel_img, mask=None, label=None):
     tip_img, tip_list, tip_labels = _find_tips(skel_img=skel_img, mask=mask)
 
     _debug(visual=tip_img, filename=os.path.join(params.debug_outdir, f"{params.device}_skeleton_tips.png"))
+    
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
     # Save coordinates to Outputs 
     outputs.add_observation(sample=label, variable='tips', trait='list of tip coordinates identified from a skeleton',
                             method='plantcv.plantcv.morphology.find_tips', scale='pixels', datatype=list,
