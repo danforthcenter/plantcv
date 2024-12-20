@@ -24,6 +24,8 @@ def segment_ends(segmented_img, objects, label=None):
     """
     
     labeled_img = segmented_img.copy()
+    if len(np.shape(labeled_img)) == 2:
+        labeled_img = cv2.cvtColor(labeled_img, cv2.COLOR_GRAY2RGB)
     leaf_objects = objects
     segment_end_objs1 = [] 
     segment_end_objs2 = [] 
