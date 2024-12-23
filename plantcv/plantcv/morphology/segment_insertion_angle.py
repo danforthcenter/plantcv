@@ -62,7 +62,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     pruned_away = []
 
     # Create a list of tip tuples to use for sorting
-    tips, tip_tuples, _ = _find_tips(skel_img)
+    tips, _, _ = _find_tips(skel_img)
 
     for i, cnt in enumerate(leaf_objects):
         # Draw leaf objects
