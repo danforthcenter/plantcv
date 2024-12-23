@@ -26,8 +26,7 @@ def segment_ends(skel_img, leaf_objects, mask=None, label=None):
     # Store debug
     debug = params.debug
     params.debug = None
-    
-    
+
     if mask is None:
         labeled_img = skel_img.copy()
     else:
@@ -59,7 +58,6 @@ def segment_ends(skel_img, leaf_objects, mask=None, label=None):
             overlap_img = logical_and(segment_plot, tips)
             x, y = segment_end_obj[j].ravel()[:2]
             coord = (int(x), int(y))
-
             # If none of the tips are within a segment_end then it's an insertion segment
             if np.sum(overlap_img) == 0:
                 inner_list.append(coord)

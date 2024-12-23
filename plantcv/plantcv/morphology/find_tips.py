@@ -109,5 +109,5 @@ def find_tips(skel_img, mask=None, label=None):
     outputs.add_observation(sample=label, variable='tips', trait='list of tip coordinates identified from a skeleton',
                             method='plantcv.plantcv.morphology.find_tips', scale='pixels', datatype=list,
                             value=tip_list, label=tip_labels)
-    
+
     return tip_img
