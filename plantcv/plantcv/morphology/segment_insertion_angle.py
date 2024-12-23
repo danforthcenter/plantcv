@@ -9,11 +9,9 @@ from plantcv.plantcv import outputs
 from plantcv.plantcv import logical_and
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import color_palette
-from plantcv.plantcv.morphology import _iterative_prune
-from plantcv.plantcv.morphology import _find_tips
 from plantcv.plantcv.morphology.segment_tangent_angle import _slope_to_intesect_angle
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _cv2_findcontours
+from plantcv.plantcv._helpers import _cv2_findcontours, _find_tips, _iterative_prune
 
 
 def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects, size, label=None):

@@ -7,8 +7,7 @@ from plantcv.plantcv import outputs
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import color_palette
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _cv2_findcontours
-from plantcv.plantcv.morphology import _find_tips
+from plantcv.plantcv._helpers import _cv2_findcontours, _find_tips
 from scipy.spatial.distance import euclidean
 
 

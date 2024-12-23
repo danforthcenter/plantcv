@@ -5,11 +5,10 @@ import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 from plantcv.plantcv import color_palette
-from plantcv.plantcv.morphology import _find_tips
 from plantcv.plantcv.morphology import segment_path_length
 from plantcv.plantcv.morphology import segment_euclidean_length
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _cv2_findcontours
+from plantcv.plantcv._helpers import _cv2_findcontours, _find_tips
 
 
 def segment_curvature(segmented_img, objects, label=None):

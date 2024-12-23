@@ -5,9 +5,7 @@ import numpy as np
 from plantcv.plantcv import dilate, logical_and
 from plantcv.plantcv import params, outputs
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv.morphology import _iterative_prune, _find_tips
-from plantcv.plantcv._helpers import _cv2_findcontours
-
+from plantcv.plantcv._helpers import _cv2_findcontours, _find_tips, _iterative_prune
 
 def segment_ends(skel_img, leaf_objects, mask=None, label=None):
     """Find tips and segment branch points .
