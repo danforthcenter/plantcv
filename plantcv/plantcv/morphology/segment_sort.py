@@ -5,7 +5,6 @@ import cv2
 import numpy as np
 from plantcv.plantcv import dilate
 from plantcv.plantcv import params
-from plantcv.plantcv import outputs
 from plantcv.plantcv import logical_and
 from plantcv.plantcv.morphology import _find_tips
 from plantcv.plantcv._debug import _debug
@@ -35,9 +34,6 @@ def segment_sort(skel_img, objects, mask=None, first_stem=True):
     # Store debug
     debug = params.debug
     params.debug = None
-
-    # Store label
-    label = params.sample_label
 
     secondary_objects = []
     primary_objects = []
