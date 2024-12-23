@@ -39,7 +39,6 @@ def segment_id(skel_img, objects, mask=None, optimal_assignment=None):
     # Create a color scale, use a previously stored scale if available
     rand_color = color_palette(num=len(objects), saved=True)
 
-    
     # Plot all segment contours
     for i, cnt in enumerate(objects):
         if optimal_assignment is not None:
@@ -58,14 +57,12 @@ def segment_id(skel_img, objects, mask=None, optimal_assignment=None):
             # relabel IDs
             text = f"{optimal_assignment[i]}"
             color_index = optimal_assignment[i]
-
         else:
             text = f"{i}"
             color_index = i
         # Label segments
         w = label_coord_x[i]
         h = label_coord_y[i]
-        
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=params.text_size, color=rand_color[color_index], thickness=params.text_thickness)
 

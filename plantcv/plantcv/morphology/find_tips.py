@@ -80,6 +80,7 @@ def _find_tips(skel_img, mask=None):
 
     return tip_img, tip_list, tip_labels
 
+
 def find_tips(skel_img, mask=None, label=None):
     """Find tips in skeletonized image.
     The endpoints algorithm was inspired by Jean-Patrick Pommier: https://gist.github.com/jeanpat/5712699
