@@ -71,10 +71,12 @@ def segment_ends(skel_img, leaf_objects, mask=None, label=None):
     if label is None:
         label = params.sample_label
     # Save coordinates to Outputs 
-    outputs.add_observation(sample=label, variable='segment_tips', trait='list of tip coordinates identified from segments',
+    outputs.add_observation(sample=label, variable='segment_tips',
+                            trait='list of tip coordinates identified from segments',
                             method='plantcv.plantcv.morphology.segment_ends', scale='None', datatype=list,
                             value=tip_list, label=labels)
-    outputs.add_observation(sample=label, variable='segment_branch_points', trait='list of branch point coordinates identified from segments',
+    outputs.add_observation(sample=label, variable='segment_branch_points',
+                            trait='list of branch point coordinates identified from segments',
                             method='plantcv.plantcv.morphology.segment_ends', scale='None', datatype=list,
                             value=inner_list, label=labels)
     # Reset debug mode
