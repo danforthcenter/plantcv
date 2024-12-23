@@ -1,4 +1,4 @@
-# Find both segment end coordinates 
+# Find both segment end coordinates
 import os
 import cv2
 import numpy as np
@@ -37,7 +37,7 @@ def segment_ends(skel_img, leaf_objects, mask=None, label=None):
     # Initialize list of tip data points
     tip_list = []
     labels = []
-    inner_list = [] 
+    inner_list = []
 
     # Find segment end coordinates
     for i in range(len(leaf_objects)):
@@ -70,7 +70,7 @@ def segment_ends(skel_img, leaf_objects, mask=None, label=None):
     # Set lable to params.sample_label if None
     if label is None:
         label = params.sample_label
-    # Save coordinates to Outputs 
+    # Save coordinates to Outputs
     outputs.add_observation(sample=label, variable='segment_tips',
                             trait='list of tip coordinates identified from segments',
                             method='plantcv.plantcv.morphology.segment_ends', scale='None', datatype=list,

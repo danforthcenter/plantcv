@@ -14,7 +14,7 @@ def segment_id(skel_img, objects, mask=None, optimal_assignment=None):
     skel_img      = Skeletonized image
     objects       = List of contours
     mask          = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
-    optimal_assignment = functions similar to the "label" parameter where it replaces the unique labels 
+    optimal_assignment = functions similar to the "label" parameter where it replaces the unique labels
 
     Returns:
     segmented_img = Segmented image
@@ -43,7 +43,7 @@ def segment_id(skel_img, objects, mask=None, optimal_assignment=None):
     for i, cnt in enumerate(objects):
         if optimal_assignment is not None:
             color_index = optimal_assignment[i]
-        else: 
+        else:
             color_index = i
         cv2.drawContours(segmented_img, cnt, -1, rand_color[color_index], params.line_thickness, lineType=8)
         # Store coordinates for labels
