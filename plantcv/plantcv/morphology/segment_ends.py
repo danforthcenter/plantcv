@@ -49,8 +49,8 @@ def segment_ends(skel_img, leaf_objects, mask=None, label=None):
         # Prune back ends of leaves
         pruned_segment = _iterative_prune(find_segment_tangents, 1)
         # Segment ends are the portions pruned off
-        segment_ends = find_segment_tangents - pruned_segment
-        segment_end_obj, _ = _cv2_findcontours(bin_img=segment_ends)
+        ends = find_segment_tangents - pruned_segment
+        segment_end_obj, _ = _cv2_findcontours(bin_img=ends)
         # Determine if a segment is segment tip or branch point
         for j, obj in enumerate(segment_end_obj):
             segment_plot = np.zeros(skel_img.shape[:2], np.uint8)
