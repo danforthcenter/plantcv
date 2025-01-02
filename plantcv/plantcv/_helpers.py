@@ -8,6 +8,56 @@ from plantcv.plantcv import params
 import pandas as pd
 
 
+def _find_segment_ends(skel_img, leaf_objects, plotting_img, size):
+    """Find both segment ends and sort into tips or inner branchpoints.
+
+    Inputs:
+    skel_img         = Skeletonized image
+    leaf_objects     = List of leaf segments
+    plotting_img     = Mask for debugging, might be a copy of the Skeletonized image
+    size             = Size of inner segment ends (in pixels)
+
+    :param skel_img: numpy.ndarray
+    :param leaf_objects: list
+    :param plotting_img: numpy.ndarray
+    """
+    labeled_img = cv2.cvtColor(plotting_img, cv2.COLOR_GRAY2RGB)
+    tips, _, _ = _find_tips(skel_img)
+    # Initialize list of tip data points
+    labels = []
+    tip_list = []
+    inner_list = []
+
+    # Find segment end coordinates
+    for i in range(len(leaf_objects)):
+        labels.append(i)
+        # Draw leaf objects
+        find_segment_tangents = np.zeros(labeled_img.shape[:2], np.uint8)
+        cv2.drawContours(find_segment_tangents, leaf_objects, i, 255, 1, lineType=8)
+        cv2.drawContours(labeled_img, leaf_objects, i, (150, 150, 150), params.line_thickness, lineType=8)  # segments debug
+        # Prune back ends of leaves
+        pruned_segment = _iterative_prune(find_segment_tangents, size)
+        # Segment ends are the portions pruned off
+        ends = find_segment_tangents - pruned_segment
+        segment_end_obj, _ = _cv2_findcontours(bin_img=ends)
+        # Determine if a segment is segment tip or branch point
+        for j, obj in enumerate(segment_end_obj):
+            segment_plot = np.zeros(skel_img.shape[:2], np.uint8)
+            cv2.drawContours(segment_plot, obj, -1, 255, 1, lineType=8)
+            segment_plot = dilate(segment_plot, 3, 1)
+            overlap_img = logical_and(segment_plot, tips)
+            x, y = segment_end_obj[j].ravel()[:2]
+            coord = (int(x), int(y))
+            # If none of the tips are within a segment_end then it's an insertion segment
+            if np.sum(overlap_img) == 0:
+                inner_list.append(coord)
+                cv2.circle(labeled_img, coord, params.line_thickness, (50, 0, 255), -1)  # Red auricles
+            else:
+                tip_list.append(coord)
+                cv2.circle(labeled_img, coord, params.line_thickness, (0, 255, 0), -1)  # green tips
+                
+    return labeled_img, tip_list, inner_list, labels
+
 def _iterative_prune(skel_img, size):
     """Iteratively remove endpoints (tips) from a skeletonized image.
     The pruning algorithm was inspired by Jean-Patrick Pommier: https://gist.github.com/jeanpat/5712699
