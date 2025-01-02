@@ -15,7 +15,7 @@ def segment_ends(skel_img, leaf_objects, mask=None, label=None):
     mask             = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
     label            = Optional label parameter, modifies the variable name of
                        observations recorded (default = pcv.params.sample_label).
-                       
+
     Returns:
     sorted_ids       = Optimal assignment of leaf objects based on inner-segment y-coordinates
 
@@ -51,12 +51,11 @@ def segment_ends(skel_img, leaf_objects, mask=None, label=None):
     # Reset debug mode
     params.debug = debug
     _debug(visual=labeled_img, filename=os.path.join(params.debug_outdir, f"{params.device}_segment_ends.png"))
-    
-    # Determine optimal segment order by y-coordinate order
-    d = {} 
-    for i, coord in enumerate(inner_list):
-        d[coord[1]] = i 
 
+    # Determine optimal segment order by y-coordinate order
+    d = {}
+    for i, coord in enumerate(inner_list):
+        d[coord[1]] = i
     keys = list(d.keys())
     values = list(d.values())
     sorted_key_index = np.argsort(keys)

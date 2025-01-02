@@ -55,8 +55,9 @@ def _find_segment_ends(skel_img, leaf_objects, plotting_img, size):
             else:
                 tip_list.append(coord)
                 cv2.circle(labeled_img, coord, params.line_thickness, (0, 255, 0), -1)  # green tips
-                
+
     return labeled_img, tip_list, inner_list, labels
+
 
 def _iterative_prune(skel_img, size):
     """Iteratively remove endpoints (tips) from a skeletonized image.
