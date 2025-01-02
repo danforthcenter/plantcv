@@ -11,7 +11,7 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv import color_palette
 from plantcv.plantcv.morphology.segment_tangent_angle import _slope_to_intesect_angle
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _cv2_findcontours, _find_tips, _iterative_prune
+from plantcv.plantcv._helpers import _cv2_findcontours, _find_tips, _iterative_prune, _find_segment_ends
 
 
 def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects, size, label=None):
@@ -46,6 +46,10 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     # Store debug
     debug = params.debug
     params.debug = None
+    
+    # Find and sort segment ends, and create debug image
+    labeled_img, tip_list, insertion_segments, labels = _find_segment_ends(
+        skel_img=skel_img, leaf_objects=leaf_objects, plotting_img=skel_img, size=size)
 
     cols = segmented_img.shape[1]
     labeled_img = segmented_img.copy()
