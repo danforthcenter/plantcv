@@ -4,7 +4,7 @@ Find segment tip and inner branch-point coordinates, and sort them by the y-coor
 
 **plantcv.morphology.segment_ends**(*skel_img, leaf_objects, mask=None, label=None*)
 
-**returns** Optimal assignment of segment IDs
+**returns** Re-ordered leaf segments
 
 - **Parameters:**
     - skel_img - Skeleton image (output from [plantcv.morphology.skeletonize](skeletonize.md))
@@ -29,18 +29,17 @@ pcv.params.debug = "plot"
 # Adjust line thickness with the global line thickness parameter (default = 5)
 pcv.params.line_thickness = 3 
 
-sorted_ids = pcv.morphology.segment_ends(skel_img=skeleton,
+sorted_obs = pcv.morphology.segment_ends(skel_img=skeleton,
                                          leaf_objects=leaf_obj,
                                          mask=plant_mask,
                                          label="leaves")
 
 segmented_img, leaves_labeled = pcv.morphology.segment_id(skel_img=skeleton, 
                                                           objects=leaf_obj,
-                                                          mask=plant_mask,
-                                                          optimal_assignment=sorted_ids)
+                                                          mask=plant_mask
 # Without optimal assignment leaf tips are used by default
 segmented_img, leaves_labeled = pcv.morphology.segment_id(skel_img=skeleton, 
-                                                          objects=leaf_obj,
+                                                          objects=sorted_obs,
                                                           mask=plant_mask)
 
 ```
