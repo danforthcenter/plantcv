@@ -16,9 +16,7 @@ Find segment tip and inner branch-point coordinates, and sort them by the y-coor
 
 **Reference Images**
 
-![Screenshot](img/documentation_images/segment_id/skeleton_image.jpg)
-
-![Screenshot](img/documentation_images/segment_id/mask_image.jpg)
+![Screenshot](img/documentation_images/segment_ends/setaria_mask.png)
 
 ```python
 
@@ -47,14 +45,8 @@ segmented_img, leaves_labeled = pcv.morphology.segment_id(skel_img=skeleton,
 
 ```
 
-*Input Segmented Image, Leaves Only with Mask*
+*Segment end points Debug*
 
-![Screenshot](img/documentation_images//.jpg)
-
-
-
-*Labeled Image, Leaves Only with Mask without Optimal Reassignment of segments*
-
-![Screenshot](img/documentation_images/segment_id/labeled_leaves_mask.jpg)
+![Screenshot](img/documentation_images/segment_ends/segment_end_pts.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/morphology/segment_ends.py)
