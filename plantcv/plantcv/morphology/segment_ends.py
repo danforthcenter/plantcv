@@ -7,7 +7,7 @@ from plantcv.plantcv._helpers import _find_segment_ends
 
 
 def segment_ends(skel_img, leaf_objects, mask=None, label=None):
-    """Find tips and segment branch points .
+    """Find tips and segment branch points.
 
     Inputs:
     skel_img         = Skeletonized image
@@ -17,7 +17,7 @@ def segment_ends(skel_img, leaf_objects, mask=None, label=None):
                        observations recorded (default = pcv.params.sample_label).
 
     Returns:
-    sorted_ids       = Optimal assignment of leaf objects based on inner-segment y-coordinates
+    sorted_obs       = Reordered segments based on segment branch point y-coordinates
 
     :param segmented_img: numpy.ndarray
     :param leaf_objects: list
@@ -55,9 +55,10 @@ def segment_ends(skel_img, leaf_objects, mask=None, label=None):
     # Determine optimal segment order by y-coordinate order
     d = {}
     for i, coord in enumerate(inner_list):
-        d[coord[1]] = i
+        d[coord[1]] = leaf_objects[i]  # y-coord is the key and index the value
     keys = list(d.keys())
     values = list(d.values())
     sorted_key_index = np.argsort(keys)
-    sorted_ids = [values[i] for i in sorted_key_index]
-    return sorted_ids[::-1]
+    sorted_objs = [values[i] for i in sorted_key_index[::-1]]
+
+    return sorted_objs
