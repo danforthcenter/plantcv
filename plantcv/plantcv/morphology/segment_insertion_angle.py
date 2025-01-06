@@ -63,51 +63,11 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     valid_segment = []
     pruned_away = []
 
-    # Create a list of tip tuples to use for sorting
-    tips, _, _ = _find_tips(skel_img)
-
-    for i, cnt in enumerate(leaf_objects):
-        # Draw leaf objects
-        find_segment_tangents = np.zeros(segmented_img.shape[:2], np.uint8)
-        cv2.drawContours(find_segment_tangents, leaf_objects, i, 255, 1, lineType=8)
-
-        # Prune back ends of leaves
-        pruned_segment = _iterative_prune(find_segment_tangents, size)
-
-        # Segment ends are the portions pruned off
-        segment_ends = find_segment_tangents - pruned_segment
-        segment_end_obj, segment_end_hierarchy = _cv2_findcontours(bin_img=segment_ends)
-
-        if not len(segment_end_obj) == 2:
-            print("Size too large, contour with ID#", i, "got pruned away completely.")
-            pruned_away.append(True)
-        else:
-            # The contour can have insertion angle calculated
-            pruned_away.append(False)
-            valid_segment.append(cnt)
-
-            # Determine if a segment is leaf end or leaf insertion segment
-            for j, obj in enumerate(segment_end_obj):
-
-                segment_plot = np.zeros(segmented_img.shape[:2], np.uint8)
-                cv2.drawContours(segment_plot, obj, -1, 255, 1, lineType=8)
-                segment_plot = dilate(segment_plot, 3, 1)
-                overlap_img = logical_and(segment_plot, tips)
-
-                # If none of the tips are within a segment_end then it's an insertion segment
-                if np.sum(overlap_img) == 0:
-                    insertion_segments.append(segment_end_obj[j])
-                    insertion_hierarchies.append(segment_end_hierarchy[0][j])
-
-            # Store coordinates for labels
-            label_coord_x.append(leaf_objects[i][0][0][0])
-            label_coord_y.append(leaf_objects[i][0][0][1])
-
     # Create a color scale, use a previously stored scale if available
     rand_color = color_palette(num=len(valid_segment), saved=True)
 
-    for i, cnt in enumerate(valid_segment):
-        cv2.drawContours(labeled_img, valid_segment, i, rand_color[i], params.line_thickness, lineType=8)
+    for i, cnt in enumerate(leaf_objects):
+        cv2.drawContours(labeled_img, leaf_objects, i, rand_color[i], params.line_thickness, lineType=8)
 
     # Plot stem segments
     stem_img = np.zeros(segmented_img.shape[:2], np.uint8)
@@ -167,7 +127,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
 
     segment_ids = []
 
-    for i, cnt in enumerate(insertion_segments):
+    for i in range(len(insertion_segments)):
         # Label slope lines
         w = label_coord_x[i]
         h = label_coord_y[i]
