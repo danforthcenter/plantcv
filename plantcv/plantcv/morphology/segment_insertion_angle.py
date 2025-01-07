@@ -77,49 +77,47 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     cv2.line(labeled_img, (cols - 1, righty), (0, lefty), (150, 150, 150), 3)
 
     for t, segment in enumerate(insertion_segments):
-        # Find line fit to each segment
-        [vx, vy, x, y] = cv2.fitLine(segment, cv2.DIST_L2, 0, 0.01, 0.01)
-        slope = -vy / vx
-        left_list = int(np.array((-x * vy / vx) + y).item())
-        right_list = int(np.array(((cols - x) * vy / vx) + y).item())
-        segment_slopes.append(slope[0])
+        if len(segment) == size:
+            pruned_away.append(False)
+            # Find line fit to each segment
+            [vx, vy, x, y] = cv2.fitLine(segment, cv2.DIST_L2, 0, 0.01, 0.01)
+            slope = -vy / vx
+            left_list = int(np.array((-x * vy / vx) + y).item())
+            right_list = int(np.array(((cols - x) * vy / vx) + y).item())
+            segment_slopes.append(slope[0])
 
-        # Draw slope lines if possible
-        if slope > 1000000 or slope < -1000000:
-            print("Slope of contour with ID#", t, "is", slope, "and cannot be plotted.")
+            # Draw slope lines if possible
+            if slope > 1000000 or slope < -1000000:
+                print("Slope of contour with ID#", t, "is", slope, "and cannot be plotted.")
+            else:
+                cv2.line(labeled_img, (cols - 1, right_list), (0, left_list), rand_color[t], 1)
+
+            # Store intersection angles between insertion segment and stem line
+            intersection_angle = _slope_to_intesect_angle(slope[0], stem_slope)
+            # Function measures clockwise but we want the acute angle between stem and leaf insertion
+            if intersection_angle > 90:
+                intersection_angle = 180 - intersection_angle
+            intersection_angles.append(intersection_angle)
         else:
-            cv2.line(labeled_img, (cols - 1, right_list), (0, left_list), rand_color[t], 1)
-
-        # Store intersection angles between insertion segment and stem line
-        intersection_angle = _slope_to_intesect_angle(slope[0], stem_slope)
-        # Function measures clockwise but we want the acute angle between stem and leaf insertion
-        if intersection_angle > 90:
-            intersection_angle = 180 - intersection_angle
-        intersection_angles.append(intersection_angle)
+            pruned_away.append(True)
+            intersection_angles.append(0)
 
     # Compile list of measurements where there is a 'NA' where pruned away segments would go.
-    intersection_angles_editing = intersection_angles.copy()
-    for j in pruned_away:
-        if j:
+    for j, pruned in enumerate(pruned_away):
+        # Store coordinates for labels
+        w = leaf_objects[j][0][0][0]
+        h = leaf_objects[j][0][0][1]
+        if pruned:
             all_intersection_angles.append('NA')
         else:
-            all_intersection_angles.append(intersection_angles_editing[0])
-            intersection_angles_editing.remove(intersection_angles_editing[0])
-
-    segment_ids = []
-
-    for i in range(len(insertion_segments)):
-        # Label slope lines
-        w = label_coord_x[i]
-        h = label_coord_y[i]
-        text = f"{intersection_angles[i]:0,.2f}"
-        cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+            text = f"{intersection_angles[j]:0,.2f}"
+            cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
-        segment_ids.append(i)
+            all_intersection_angles.append(intersection_angles[j])
 
     outputs.add_observation(sample=label, variable='segment_insertion_angle', trait='segment insertion angle',
                             method='plantcv.plantcv.morphology.segment_insertion_angle', scale='degrees', datatype=list,
-                            value=all_intersection_angles, label=segment_ids)
+                            value=all_intersection_angles, label=range(len(all_intersection_angles)))
 
     # Reset debug mode
     params.debug = debug
