@@ -11,7 +11,7 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv import color_palette
 from plantcv.plantcv.morphology.segment_tangent_angle import _slope_to_intesect_angle
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _cv2_findcontours, _find_tips, _iterative_prune, _find_segment_ends
+from plantcv.plantcv._helpers import _cv2_findcontours, _find_segment_ends
 
 
 def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects, size, label=None):
@@ -48,44 +48,25 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     params.debug = None
     
     # Find and sort segment ends, and create debug image
-    labeled_img, tip_list, insertion_segments, labels = _find_segment_ends(
+    _, _, insertion_segments, _ = _find_segment_ends(
         skel_img=skel_img, leaf_objects=leaf_objects, plotting_img=skel_img, size=size)
 
     cols = segmented_img.shape[1]
     labeled_img = segmented_img.copy()
     segment_slopes = []
-    insertion_segments = []
-    insertion_hierarchies = []
     intersection_angles = []
     all_intersection_angles = []
     label_coord_x = []
     label_coord_y = []
-    valid_segment = []
     pruned_away = []
 
     # Create a color scale, use a previously stored scale if available
-    rand_color = color_palette(num=len(valid_segment), saved=True)
+    rand_color = color_palette(num=len(insertion_segments), saved=True)
 
-    for i, cnt in enumerate(leaf_objects):
+    for i in range(len(leaf_objects)):
         cv2.drawContours(labeled_img, leaf_objects, i, rand_color[i], params.line_thickness, lineType=8)
 
-    # Plot stem segments
-    stem_img = np.zeros(segmented_img.shape[:2], np.uint8)
-    cv2.drawContours(stem_img, stem_objects, -1, 255, 2, lineType=8)
-    stem_img = closing(stem_img)
-    combined_stem, _ = _cv2_findcontours(bin_img=stem_img)
-
-    # Make sure stem objects are a single contour
-    loop_count = 0
-    while len(combined_stem) > 1 and loop_count < 50:
-        loop_count += 1
-        stem_img = dilate(stem_img, 2, 1)
-        stem_img = closing(stem_img)
-        combined_stem, _ = _cv2_findcontours(bin_img=stem_img)
-    if len(combined_stem) > 1:
-        # Reset debug mode
-        params.debug = debug
-        fatal_error('Unable to combine stem objects.')
+    combined_stem = _combine_stem_segments(segmented_img, stem_objects, debug)
 
     # Find slope of the stem
     [vx, vy, x, y] = cv2.fitLine(combined_stem[0], cv2.DIST_L2, 0, 0.01, 0.01)
@@ -147,3 +128,38 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
            filename=os.path.join(params.debug_outdir, f"{params.device}_segment_insertion_angles.png"))
 
     return labeled_img
+
+
+def _combine_stem_segments(segmented_img, stem_objects, debug):
+    """
+    Groups stem objects into a single object.
+
+    Inputs:
+    segmented_img  = Contour tuple
+    stem_objects   = Contours belonging to the stem
+
+    Returns:
+    combined_stem  = grouped contours list
+
+    :param segmented_img: numpy.ndarray
+    :param stem_objects: list
+    :return combined_stem: numpy.ndarray
+    """
+    # Plot stem segments
+    stem_img = np.zeros(segmented_img.shape[:2], np.uint8)
+    cv2.drawContours(stem_img, stem_objects, -1, 255, 2, lineType=8)
+    stem_img = closing(stem_img)
+    combined_stem, _ = _cv2_findcontours(bin_img=stem_img)
+# Make sure stem objects are a single contour
+    loop_count = 0
+    while len(combined_stem) > 1 and loop_count < 50:
+        loop_count += 1
+        stem_img = dilate(stem_img, 2, 1)
+        stem_img = closing(stem_img)
+        combined_stem, _ = _cv2_findcontours(bin_img=stem_img)
+    if len(combined_stem) > 1:
+        # Reset debug mode
+        params.debug = debug
+        fatal_error('Unable to combine stem objects.')
+    else:
+        return combined_stem
