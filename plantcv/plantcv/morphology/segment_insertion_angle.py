@@ -77,7 +77,8 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     cv2.line(labeled_img, (cols - 1, righty), (0, lefty), (150, 150, 150), 3)
 
     for t, segment in enumerate(insertion_segments):
-        if len(segment) == size:
+        print(len(segment))
+        if len(segment) <= size:
             pruned_away.append(False)
             # Find line fit to each segment
             [vx, vy, x, y] = cv2.fitLine(segment, cv2.DIST_L2, 0, 0.01, 0.01)
@@ -117,7 +118,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
 
     outputs.add_observation(sample=label, variable='segment_insertion_angle', trait='segment insertion angle',
                             method='plantcv.plantcv.morphology.segment_insertion_angle', scale='degrees', datatype=list,
-                            value=all_intersection_angles, label=range(len(all_intersection_angles)))
+                            value=intersection_angles, label=range(len(intersection_angles)))
 
     # Reset debug mode
     params.debug = debug
