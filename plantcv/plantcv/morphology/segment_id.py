@@ -45,10 +45,10 @@ def segment_id(skel_img, objects, mask=None, optimal_assignment=None):
             color_index = optimal_assignment[i]
         else:
             color_index = i
-        cv2.drawContours(segmented_img, cnt, -1, rand_color[color_index], params.line_thickness, lineType=8)
+        cv2.drawContours(segmented_img, cnt, -1, rand_color[i], params.line_thickness, lineType=8)
         # Store coordinates for labels
-        label_coord_x.append(objects[i][0][0][0])
-        label_coord_y.append(objects[i][0][0][1])
+        label_coord_x.append(objects[color_index][0][0][0])
+        label_coord_y.append(objects[color_index][0][0][1])
 
     labeled_img = segmented_img.copy()
 
@@ -61,8 +61,8 @@ def segment_id(skel_img, objects, mask=None, optimal_assignment=None):
             text = f"{i}"
             color_index = i
         # Label segments
-        w = label_coord_x[i]
-        h = label_coord_y[i]
+        w = label_coord_x[color_index]
+        h = label_coord_y[color_index]
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=params.text_size, color=rand_color[color_index], thickness=params.text_thickness)
 

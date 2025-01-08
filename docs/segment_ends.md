@@ -4,7 +4,7 @@ Find segment tip and inner branch-point coordinates, and sort them by the y-coor
 
 **plantcv.morphology.segment_ends**(*skel_img, leaf_objects, mask=None, label=None*)
 
-**returns** Optimal assignment of segment IDs
+**returns** Re-ordered leaf segments
 
 - **Parameters:**
     - skel_img - Skeleton image (output from [plantcv.morphology.skeletonize](skeletonize.md))
@@ -16,9 +16,7 @@ Find segment tip and inner branch-point coordinates, and sort them by the y-coor
 
 **Reference Images**
 
-![Screenshot](img/documentation_images/segment_id/skeleton_image.jpg)
-
-![Screenshot](img/documentation_images/segment_id/mask_image.jpg)
+![Screenshot](img/documentation_images/segment_ends/setaria_mask.png)
 
 ```python
 
@@ -31,30 +29,23 @@ pcv.params.debug = "plot"
 # Adjust line thickness with the global line thickness parameter (default = 5)
 pcv.params.line_thickness = 3 
 
-sorted_ids = pcv.morphology.segment_ends(skel_img=skeleton,
+sorted_obs = pcv.morphology.segment_ends(skel_img=skeleton,
                                          leaf_objects=leaf_obj,
                                          mask=plant_mask,
                                          label="leaves")
 
 segmented_img, leaves_labeled = pcv.morphology.segment_id(skel_img=skeleton, 
                                                           objects=leaf_obj,
-                                                          mask=plant_mask,
-                                                          optimal_assignment=sorted_ids)
+                                                          mask=plant_mask
 # Without optimal assignment leaf tips are used by default
 segmented_img, leaves_labeled = pcv.morphology.segment_id(skel_img=skeleton, 
-                                                          objects=leaf_obj,
+                                                          objects=sorted_obs,
                                                           mask=plant_mask)
 
 ```
 
-*Input Segmented Image, Leaves Only with Mask*
+*Segment end points Debug*
 
-![Screenshot](img/documentation_images//.jpg)
-
-
-
-*Labeled Image, Leaves Only with Mask without Optimal Reassignment of segments*
-
-![Screenshot](img/documentation_images/segment_id/labeled_leaves_mask.jpg)
+![Screenshot](img/documentation_images/segment_ends/segment_end_pts.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/morphology/segment_ends.py)
