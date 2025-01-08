@@ -55,7 +55,6 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     labeled_img = segmented_img.copy()
     segment_slopes = []
     intersection_angles = []
-    all_intersection_angles = []
 
     # Create a color scale, use a previously stored scale if available
     rand_color = color_palette(num=len(insertion_segments), saved=True)
@@ -75,10 +74,10 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
 
     i = 0
     for t, segment in enumerate(leaf_objects):
-        print(pruned_away[t])
         if not pruned_away[t]:
             # Find line fit to each segment
             [vx, vy, x, y] = cv2.fitLine(insertion_segments[i], cv2.DIST_L2, 0, 0.01, 0.01)
+            # Increment the index up after plotting a valid segment
             i += 1
             slope = -vy / vx
             left_list = int(np.array((-x * vy / vx) + y).item())
@@ -93,7 +92,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
 
             # Store intersection angles between insertion segment and stem line
             intersection_angle = _slope_to_intesect_angle(slope[0], stem_slope)
-            # Function measures clockwise but we want the acute angle between stem and leaf insertion
+            # CV2 measures clockwise, we want the acute angle between stem and inner leaf
             if intersection_angle > 90:
                 intersection_angle = 180 - intersection_angle
             intersection_angles.append(intersection_angle)
@@ -104,11 +103,12 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
             cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                         fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
         else:
+            # If a segment is pruned away then add 'NA' to observations
             intersection_angles.append('NA')
-
+    # Save observations to Outputs class
     outputs.add_observation(sample=label, variable='segment_insertion_angle', trait='segment insertion angle',
                             method='plantcv.plantcv.morphology.segment_insertion_angle', scale='degrees', datatype=list,
-                            value=intersection_angles, label=range(len(intersection_angles)))
+                            value=intersection_angles, label=list(range(len(intersection_angles))))
 
     # Reset debug mode
     params.debug = debug
