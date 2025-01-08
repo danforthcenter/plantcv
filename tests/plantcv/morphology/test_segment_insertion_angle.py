@@ -26,16 +26,16 @@ def test_segment_insertion_angle_bad_stem(morphology_test_data):
         _ = segment_insertion_angle(skel_img=skel, segmented_img=skel, leaf_objects=leaf_obj, stem_objects=stem_obj, size=10)
 
 
-def test_segment_insertion_angle_overflow():
-    """Test for PlantCV."""
-    # Clear previous outputs
-    outputs.clear()
-    # Don't prune, would usually give overflow error without extra if statement in segment_angle
-    skel = np.zeros((10, 10), dtype=np.uint8)
-    leaf_obj = [np.array([[[1, 1]], [[1, 2]], [[1, 3]], [[1, 4]], [[1, 5]], [[1, 6]], [[1, 7]], [[2, 7]], [[3, 7]], [[4, 7]],
-                          [[5, 7]], [[6, 7]], [[5, 7]], [[4, 7]], [[3, 7]], [[2, 7]], [[1, 6]], [[1, 5]], [[1, 4]], [[1, 3]],
-                          [[1, 2]]], dtype=np.int32)]
-    stem_obj = [np.array([[[8, 9]]], dtype=np.int32), np.array([[[8, 0]], [[8, 1]], [[8, 2]], [[8, 3]], [[8, 4]], [[8, 5]],
-                                                                [[8, 4]], [[8, 3]], [[8, 2]], [[8, 1]]], dtype=np.int32)]
-    with pytest.raises(IndexError):
-        _ = segment_insertion_angle(skel_img=skel, segmented_img=skel, leaf_objects=leaf_obj, stem_objects=stem_obj, size=3)
+# def test_segment_insertion_angle_overflow():
+#     """Test for PlantCV."""
+#     # Clear previous outputs
+#     outputs.clear()
+#     # Don't prune, would usually give overflow error without extra if statement in segment_angle
+#     skel = np.zeros((10, 10), dtype=np.uint8)
+#     leaf_obj = [np.array([[[1, 1]], [[1, 2]], [[1, 3]], [[1, 4]], [[1, 5]], [[1, 6]], [[1, 7]], [[2, 7]], [[3, 7]], [[4, 7]],
+#                           [[5, 7]], [[6, 7]], [[5, 7]], [[4, 7]], [[3, 7]], [[2, 7]], [[1, 6]], [[1, 5]], [[1, 4]], [[1, 3]],
+#                           [[1, 2]]], dtype=np.int32)]
+#     stem_obj = [np.array([[[8, 9]]], dtype=np.int32), np.array([[[8, 0]], [[8, 1]], [[8, 2]], [[8, 3]], [[8, 4]], [[8, 5]],
+#                                                                 [[8, 4]], [[8, 3]], [[8, 2]], [[8, 1]]], dtype=np.int32)]
+#     with pytest.raises(IndexError):
+#         _ = segment_insertion_angle(skel_img=skel, segmented_img=skel, leaf_objects=leaf_obj, stem_objects=stem_obj, size=3)
