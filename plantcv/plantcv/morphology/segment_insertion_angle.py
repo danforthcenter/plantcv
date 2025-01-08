@@ -11,7 +11,7 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv import color_palette
 from plantcv.plantcv.morphology.segment_tangent_angle import _slope_to_intesect_angle
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _cv2_findcontours, _find_segment_ends
+from plantcv.plantcv._helpers import _cv2_findcontours, _find_tips, _iterative_prune 
 
 
 def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects, size, label=None):
@@ -48,17 +48,14 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     params.debug = None
     
     # Find and sort segment ends, and create debug image
-    _, _, insertion_segments, _ = _find_segment_ends(
-        skel_img=skel_img, leaf_objects=leaf_objects, plotting_img=skel_img, size=size)
+    insertion_segments, label_coord_x, label_coord_y, pruned_away = _segment_ends(
+        skel_img=skel_img, leaf_objects=leaf_objects, size=size)
 
     cols = segmented_img.shape[1]
     labeled_img = segmented_img.copy()
     segment_slopes = []
     intersection_angles = []
     all_intersection_angles = []
-    label_coord_x = []
-    label_coord_y = []
-    pruned_away = []
 
     # Create a color scale, use a previously stored scale if available
     rand_color = color_palette(num=len(insertion_segments), saved=True)
@@ -76,12 +73,13 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     righty = int(np.array(((cols - x) * vy / vx) + y).item())
     cv2.line(labeled_img, (cols - 1, righty), (0, lefty), (150, 150, 150), 3)
 
-    for t, segment in enumerate(insertion_segments):
-        print(len(segment))
-        if len(segment) <= size:
-            pruned_away.append(False)
+    i = 0
+    for t, segment in enumerate(leaf_objects):
+        print(pruned_away[t])
+        if not pruned_away[t]:
             # Find line fit to each segment
-            [vx, vy, x, y] = cv2.fitLine(segment, cv2.DIST_L2, 0, 0.01, 0.01)
+            [vx, vy, x, y] = cv2.fitLine(insertion_segments[i], cv2.DIST_L2, 0, 0.01, 0.01)
+            i += 1
             slope = -vy / vx
             left_list = int(np.array((-x * vy / vx) + y).item())
             right_list = int(np.array(((cols - x) * vy / vx) + y).item())
@@ -99,22 +97,14 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
             if intersection_angle > 90:
                 intersection_angle = 180 - intersection_angle
             intersection_angles.append(intersection_angle)
-        else:
-            pruned_away.append(True)
-            intersection_angles.append(0)
-
-    # Compile list of measurements where there is a 'NA' where pruned away segments would go.
-    for j, pruned in enumerate(pruned_away):
-        # Store coordinates for labels
-        w = leaf_objects[j][0][0][0]
-        h = leaf_objects[j][0][0][1]
-        if pruned:
-            all_intersection_angles.append('NA')
-        else:
-            text = f"{intersection_angles[j]:0,.2f}"
+            # Draw the angle on the debug img
+            w = segment[0][0][0]
+            h = segment[0][0][1]
+            text = f"{intersection_angle:0,.2f}"
             cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                    fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
-            all_intersection_angles.append(intersection_angles[j])
+                        fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
+        else:
+            intersection_angles.append('NA')
 
     outputs.add_observation(sample=label, variable='segment_insertion_angle', trait='segment insertion angle',
                             method='plantcv.plantcv.morphology.segment_insertion_angle', scale='degrees', datatype=list,
@@ -162,3 +152,68 @@ def _combine_stem_segments(segmented_img, stem_objects, debug):
         fatal_error('Unable to combine stem objects.')
     else:
         return combined_stem
+   
+def _segment_ends(skel_img, leaf_objects, size):
+    """
+    Groups stem objects into a single object.
+
+    Inputs:
+    skel_img  = Skeletonized image
+    leaf_objects   = Contours belonging to leaves most likely
+    size = size of segments to collect
+
+    Returns:
+    insertion_segments  = inner segments from each leaf
+    label_coord_x = x coordinate labels for debug image creation
+    label_coord_x = y coordinate labels for debug image creation
+    pruned_away = list of boolean statements, equal length to the leaf_objects list input
+
+    :param segmented_img: numpy.ndarray
+    :param stem_objects: list
+    :return insertion_segments: list
+    :return label_coord_x: list
+    :return label_coord_y: list
+    :return pruned_away: list
+    """   
+# Create a list of tip tuples to use for sorting
+    tips, _, _ = _find_tips(skel_img)
+    pruned_away = []
+    insertion_segments = []
+    label_coord_x = []
+    label_coord_y = []
+
+    for i in range(len(leaf_objects)):
+        # Draw leaf objects
+        find_segment_tangents = np.zeros(skel_img.shape[:2], np.uint8)
+        cv2.drawContours(find_segment_tangents, leaf_objects, i, 255, 1, lineType=8)
+
+        # Prune back ends of leaves
+        pruned_segment = _iterative_prune(find_segment_tangents, size)
+
+        # Segment ends are the portions pruned off
+        segment_ends = find_segment_tangents - pruned_segment
+        segment_end_obj, _ = _cv2_findcontours(bin_img=segment_ends)
+
+        if not len(segment_end_obj) == 2:
+            print("Size too large, contour with ID#", i, "got pruned away completely.")
+            pruned_away.append(True)
+        else:
+            # The contour can have insertion angle calculated
+            pruned_away.append(False)
+
+            # Determine if a segment is leaf end or leaf insertion segment
+            for j, obj in enumerate(segment_end_obj):
+
+                segment_plot = np.zeros(skel_img.shape[:2], np.uint8)
+                cv2.drawContours(segment_plot, obj, -1, 255, 1, lineType=8)
+                segment_plot = dilate(segment_plot, 3, 1)
+                overlap_img = logical_and(segment_plot, tips)
+
+                # If none of the tips are within a segment_end then it's an insertion segment
+                if np.sum(overlap_img) == 0:
+                    insertion_segments.append(segment_end_obj[j])
+
+            # Store coordinates for labels
+            label_coord_x.append(leaf_objects[i][0][0][0])
+            label_coord_y.append(leaf_objects[i][0][0][1])
+    return insertion_segments, label_coord_x, label_coord_y, pruned_away
