@@ -8,7 +8,7 @@ from plantcv.plantcv import image_subtract
 from plantcv.plantcv.morphology import segment_sort, find_branch_pts, segment_skeleton
 from plantcv.plantcv.morphology import _iterative_prune
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _cv2_findcontours
+from plantcv.plantcv._helpers import _cv2_findcontours, _iterative_prune
 
 
 def prune(skel_img, size=0, mask=None):

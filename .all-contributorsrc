@@ -627,7 +627,8 @@
       "profile": "https://github.com/jbraley1107",
       "contributions": [
         "review",
-        "userTesting"
+        "userTesting",
+        "bug"
       ]
     },
     {
@@ -637,6 +638,16 @@
       "profile": "https://github.com/hkmanching",
       "contributions": [
         "bug"
+      ]
+    },
+    {
+      "login": "mlohbihler",
+      "name": "Matthew Lohbihler",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1182059?v=4",
+      "profile": "https://github.com/mlohbihler",
+      "contributions": [
+        "bug",
+        "doc"
       ]
     }
   ],
