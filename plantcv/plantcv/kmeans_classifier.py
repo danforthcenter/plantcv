@@ -82,7 +82,7 @@ def mask_kmeans(labeled_img, k, cat_list=None):
         if idx == 0:
             mask_light = np.where(labeled_img == i, 255, 0).astype("uint8")
         else:
-            mask_light = pcv.logical_or(mask_light, np.where(labeled_img == i, 255, 0)).astype("uint8")
+            mask_light = pcv.logical_or(mask_light, np.where(labeled_img == i, 255, 0).astype("uint8"))
     params.debug = debug
     _debug(visual=mask_light, filename=os.path.join(params.debug_outdir, "_kmeans_combined_mask.png"))
     return mask_light
