@@ -5,6 +5,7 @@ import argparse
 import time
 import datetime
 import plantcv.parallel
+import plantcv.utils
 import tempfile
 import shutil
 
@@ -116,6 +117,15 @@ def main():
     print("Processing results... ", file=sys.stderr)
     plantcv.parallel.process_results(job_dir=config.tmp_dir, json_file=config.json)
     process_results_clock_time = time.time() - process_results_start_time
+    print(f"Processing results took {process_results_clock_time} seconds.", file=sys.stderr)
+    ###########################################
+
+    # Convert json results to csv files
+    ###########################################
+    # Convert results start time
+    process_results_start_time = time.time()
+    print("Converting json to csv... ", file=sys.stderr)
+    plantcv.utils.json2csv(config.json, config.json)
     print(f"Processing results took {process_results_clock_time} seconds.", file=sys.stderr)
     ###########################################
 
