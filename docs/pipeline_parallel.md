@@ -7,6 +7,10 @@
     has a specific file structure, which may be different than yours unless you are using our tool, but we also have instructions
     to run PlantCV over a flat file directory (just keep this in mind).
 
+### Workflow parallelization step-by-step guide <a name="Scribe Guide"></a>
+
+<iframe src="https://scribehow.com/embed/How_to_Parallelize_Your_Workflows_Using_PlantCV__GIx8o5YNRESjPjxMI_Sq0A" width="100%" height="640" allowfullscreen frameborder="0"></iframe>
+
 ### Running PlantCV workflows over a dataset
 
 We normally execute workflows in a shell script or in in a cluster scheduler job file. The parallelization tool
