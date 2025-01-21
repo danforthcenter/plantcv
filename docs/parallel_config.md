@@ -8,7 +8,7 @@ to run workflows in parallel.
 Create a configuration file from a template:
 
 ```bash
-plantcv-run-workflow --template my_config.txt
+plantcv-run-workflow --template my_config.json
 ```
 
 *class* **plantcv.parallel.WorkflowConfig**
