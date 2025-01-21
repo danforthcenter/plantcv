@@ -18,18 +18,19 @@
 - macOS x86 (Intel) and M (ARM) processors
 - Windows 64-bit, x86 processors
 
-!!!note
-    Once you have installed PlantCV, to get started see our [guide to using PlantCV with Jupyter Notebooks](https://plantcv.readthedocs.io/en/stable/jupyter/) 
-    and our [guide to developing workflows in PlantCV](https://plantcv.readthedocs.io/en/stable/analysis_approach/#developing-image-processing-workflows-workflow-development).
-
 
 ### Server/command line step-by-step guide <a name="cli"></a>
+
 Use the server/command line installation if you plan to create PlantCV workflows and run workflows in parallel. 
 Click through our step-by-step guide below to install PlantCV through conda.
 
 
 <iframe src="https://scribehow.com/embed/Installing_PlantCV__MacOSLinux__awAP9Xm2SgWV4SMZadm9CQ" width="640" height="640" allowfullscreen frameborder="0"></iframe>
 
+
+!!!note
+    Once you have installed PlantCV, to get started see our [guide to using PlantCV with Jupyter Notebooks](https://plantcv.readthedocs.io/en/stable/jupyter/) 
+    and our [guide to developing workflows in PlantCV](https://plantcv.readthedocs.io/en/stable/analysis_approach/#developing-image-processing-workflows-workflow-development).
 
 ---
 
