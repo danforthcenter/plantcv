@@ -180,7 +180,7 @@ of key-value pairs (e.g. `{"getenv": "true"}`).
 !!! note
     `n_workers` is the only parameter used by `LocalCluster`, all others are currently ignored. `n_workers`, `cores`,
     `memory`, and `disk` are required by the other clusters. All other parameters are optional. Additional parameters
-    defined in the [dask-jobqueu API](https://jobqueue.dask.org/en/latest/api.html) can be supplied.
+    defined in the [dask-jobqueue API](https://jobqueue.dask.org/en/latest/api.html) can be supplied.
 
 ### Example
 
