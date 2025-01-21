@@ -3,12 +3,14 @@
 import os
 import cv2
 import numpy as np
+import pandas as pd
 from sklearn.mixture import GaussianMixture
 from skimage.measure import label
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import color_palette
 from plantcv.plantcv._helpers import _cv2_findcontours
 from plantcv.plantcv._helpers import _roi_filter
+from plantcv.plantcv._helpers import _hough_circle
 from plantcv.plantcv import fatal_error, warn, params, Objects
 
 
@@ -523,6 +525,81 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
     # Draw the ROIs if requested
     _draw_roi(img=img, roi_contour=roi_objects)
     return roi_objects
+
+
+def auto_wells(gray_img, mindist, candec, accthresh, minradius, maxradius, nrows, ncols, radiusadjust=None):
+    """Hough Circle Well Detection.
+
+    Keyword inputs:
+    gray_img = gray image (np.ndarray)
+    mindist = minimum distance between detected circles
+    candec = higher threshold of canny edge detector
+    accthresh = accumulator threshold for the circle centers
+    minradius = minimum circle radius
+    maxradius = maximum circle radius
+    nrows = expected number of rows
+    ncols = expected number of columns
+    radiusadjust = amount to adjust the average radius, this can be desirable
+    if you want ROI to sit inside a well, for example (in that case you might
+    set it to a negative value).
+
+    :param gray_img: np.ndarray
+    :param mindist: int
+    :param candec: int
+    :param accthresh: int
+    :param minradius: int
+    :param maxradius: int
+    :param nrows = int
+    :param ncols = int
+    :return roi: plantcv.plantcv.classes.Objects
+    """
+    # Use hough circle helper function
+    maxfind = nrows * ncols
+    df, img = _hough_circle(gray_img, mindist, candec, accthresh, minradius,
+                            maxradius, maxfind)
+
+    _debug(img, filename=os.path.join(params.debug_outdir, str(params.device) + '_roi_houghcircle.png'), cmap='gray')
+
+    xlist = []
+    centers_x = df['x'].values.reshape(-1, 1)
+    centers_y = df['y'].values.reshape(-1, 1)
+    gm_x = GaussianMixture(n_components=ncols, random_state=0).fit(centers_x)
+    gm_y = GaussianMixture(n_components=nrows, random_state=0).fit(centers_y)
+    clusters_x = gm_x.means_[:, 0]
+    clusters_y = gm_y.means_[:, 0]
+
+    sorted_indicesx = np.argsort(clusters_x)
+    sorted_x = np.sort(clusters_x)
+    xlist = list(range(len(clusters_x)))
+    clusterxdf = {'clusters_x': sorted_x, 'sorted': sorted_indicesx,
+                  'xindex': [0]*len(clusters_x)}
+    xdf = pd.DataFrame(clusterxdf)
+    xdf = xdf.sort_values(by='clusters_x', ascending=True)
+    xdf['xindex'] = xlist
+
+    sorted_indicesy = np.argsort(clusters_y)
+    sorted_y = np.sort(clusters_y)
+    ylist = list(range(len(clusters_y)))
+    clusterydf = {'clusters_y': sorted_y, 'sorted': sorted_indicesy,
+                  'yindex': [0]*len(clusters_y)}
+    ydf = pd.DataFrame(clusterydf)
+    ydf = ydf.sort_values(by='clusters_y', ascending=True)
+    ydf['yindex'] = ylist
+
+    df['column'] = gm_x.predict(centers_x)
+    df['row'] = gm_y.predict(centers_y)
+
+    df['row'] = df['row'].replace(list(ydf['sorted']), list(ydf['yindex']))
+    df['column'] = df['column'].replace(list(xdf['sorted']), list(xdf['xindex']))
+
+    df = df.sort_values(by=['row', 'column'], ascending=[True, True])
+    df['xy'] = list(zip(df.x, df.y))
+
+    radiusfinal = int(np.mean(list(df['radius'])))+radiusadjust
+
+    rois = multi(gray_img, list(df['xy']), radius=radiusfinal)
+
+    return rois
 
 
 def custom(img, vertices):
