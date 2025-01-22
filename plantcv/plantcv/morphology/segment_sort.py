@@ -5,9 +5,8 @@ import cv2
 import numpy as np
 from plantcv.plantcv import dilate
 from plantcv.plantcv import params
-from plantcv.plantcv import outputs
 from plantcv.plantcv import logical_and
-from plantcv.plantcv.morphology import find_tips
+from plantcv.plantcv._helpers import _find_tips
 from plantcv.plantcv._debug import _debug
 
 
@@ -36,9 +35,6 @@ def segment_sort(skel_img, objects, mask=None, first_stem=True):
     debug = params.debug
     params.debug = None
 
-    # Store label
-    label = params.sample_label
-
     secondary_objects = []
     primary_objects = []
 
@@ -47,7 +43,7 @@ def segment_sort(skel_img, objects, mask=None, first_stem=True):
     else:
         labeled_img = mask.copy()
 
-    tips_img = find_tips(skel_img)
+    tips_img, _, _ = _find_tips(skel_img)
     tips_img = dilate(tips_img, 3, 1)
 
     # Loop through segment contours
@@ -59,10 +55,6 @@ def segment_sort(skel_img, objects, mask=None, first_stem=True):
         # The first contour is the base, and while it contains a tip, it isn't a leaf
         if i == 0 and first_stem:
             primary_objects.append(cnt)
-            # Remove the first "tip" since it corresponds to stem not leaf. This helps
-            # leaf number to match the number of "tips"
-            outputs.observations[label]["tips"]["value"] = outputs.observations[label]["tips"]["value"][1:]
-            outputs.observations[label]["tips"]["label"] = outputs.observations[label]["tips"]["label"][:-1]
 
         # Sort segments
         else:
