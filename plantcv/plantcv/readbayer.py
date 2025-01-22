@@ -39,33 +39,34 @@ def readbayer(filename, bayerpattern='BG', alg='default'):
     if image_raw is None:
         fatal_error("Failed to open " + filename)
 
-    if alg.upper() == 'DEFAULT':
-        if bayerpattern.upper() == 'BG':
-            img = cv2.cvtColor(image_raw, cv2.COLOR_BayerBG2BGR)
-        elif bayerpattern.upper() == 'GB':
-            img = cv2.cvtColor(image_raw, cv2.COLOR_BayerGB2BGR)
-        elif bayerpattern.upper() == 'RG':
-            img = cv2.cvtColor(image_raw, cv2.COLOR_BayerRG2BGR)
-        elif bayerpattern.upper() == 'GR':
-            img = cv2.cvtColor(image_raw, cv2.COLOR_BayerGR2BGR)
-    elif alg.upper() == 'EDGEAWARE':
-        if bayerpattern.upper() == 'BG':
-            img = cv2.cvtColor(image_raw, cv2.COLOR_BayerBG2BGR_EA)
-        elif bayerpattern.upper() == 'GB':
-            img = cv2.cvtColor(image_raw, cv2.COLOR_BayerGB2BGR_EA)
-        elif bayerpattern.upper() == 'RG':
-            img = cv2.cvtColor(image_raw, cv2.COLOR_BayerRG2BGR_EA)
-        elif bayerpattern.upper() == 'GR':
-            img = cv2.cvtColor(image_raw, cv2.COLOR_BayerGR2BGR_EA)
-    elif alg.upper() == 'VARIABLENUMBERGRADIENTS':
-        if bayerpattern.upper() == 'BG':
-            img = cv2.cvtColor(image_raw, cv2.COLOR_BayerBG2BGR_VNG)
-        elif bayerpattern.upper() == 'GB':
-            img = cv2.cvtColor(image_raw, cv2.COLOR_BayerGB2BGR_VNG)
-        elif bayerpattern.upper() == 'RG':
-            img = cv2.cvtColor(image_raw, cv2.COLOR_BayerRG2BGR_VNG)
-        elif bayerpattern.upper() == 'GR':
-            img = cv2.cvtColor(image_raw, cv2.COLOR_BayerGR2BGR_VNG)
+    conversion_codes = {
+        'DEFAULT': {
+            'BG': cv2.COLOR_BayerBG2BGR,
+            'GB': cv2.COLOR_BayerGB2BGR,
+            'RG': cv2.COLOR_BayerRG2BGR,
+            'GR': cv2.COLOR_BayerGR2BGR
+        },
+        'EDGEAWARE': {
+            'BG': cv2.COLOR_BayerBG2BGR_EA,
+            'GB': cv2.COLOR_BayerGB2BGR_EA,
+            'RG': cv2.COLOR_BayerRG2BGR_EA,
+            'GR': cv2.COLOR_BayerGR2BGR_EA
+        },
+        'VARIABLENUMBERGRADIENTS': {
+            'BG': cv2.COLOR_BayerBG2BGR_VNG,
+            'GB': cv2.COLOR_BayerGB2BGR_VNG,
+            'RG': cv2.COLOR_BayerRG2BGR_VNG,
+            'GR': cv2.COLOR_BayerGR2BGR_VNG
+        }
+    }
+
+    alg_upper = alg.upper()
+    bayerpattern_upper = bayerpattern.upper()
+
+    try:
+        img = cv2.cvtColor(image_raw, conversion_codes[alg_upper][bayerpattern_upper])
+    except KeyError:
+        raise RuntimeError("Invalid algorithm or Bayer pattern")
 
     # Split path from filename
     path, img_name = os.path.split(filename)

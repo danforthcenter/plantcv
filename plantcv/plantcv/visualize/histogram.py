@@ -108,25 +108,9 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, titl
             {'pixel intensity': bin_labels, 'proportion of pixels (%)': hist_percent, 'hist_count': hist_,
              'color channel': ['0' for _ in range(len(hist_percent))]})
     else:
-        # Assumption: RGB image
-        # Initialize dataframe column arrays
-        px_int = np.array([])
-        prop = np.array([])
-        hist_count = np.array([])
-        channel = []
-        for (b, b_name) in enumerate(b_names):
-            bin_labels, hist_percent, hist_ = _hist_gray(img[:, :, b], bins=bins, lower_bound=lower_bound,
-                                                         upper_bound=upper_bound, mask=mask)
-            # Append histogram data for each channel
-            px_int = np.append(px_int, bin_labels)
-            prop = np.append(prop, hist_percent)
-            hist_count = np.append(hist_count, hist_)
-            channel = channel + [b_name for _ in range(len(hist_percent))]
-        # Create dataframe
-        hist_df = pd.DataFrame(
-            {'pixel intensity': px_int, 'proportion of pixels (%)': prop, 'hist_count': hist_count,
-             'color channel': channel})
 
+        hist_df = _rgb_image_to_df(img, bins=bins, lower_bound=lower_bound, upper_bound=upper_bound, mask=mask,
+                                   b_names=b_names)
     # Create an altair chart
     chart = alt.Chart(hist_df).mark_line(point=True).encode(
         x="pixel intensity",
@@ -148,3 +132,24 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, titl
     if hist_data is True:
         return chart, hist_df
     return chart
+
+
+def _rgb_image_to_df(img, bins, lower_bound, upper_bound, mask, b_names):
+    """Helper method that converts an RGB image to a dataframe."""
+    # Assumption: RGB image
+    # Initialize dataframe column arrays
+    px_int = np.array([])
+    prop = np.array([])
+    hist_count = np.array([])
+    channel = []
+    for (b, b_name) in enumerate(b_names):
+        bin_labels, hist_percent, hist_ = _hist_gray(img[:, :, b], bins=bins, lower_bound=lower_bound, upper_bound=upper_bound,
+                                                     mask=mask)
+        # Append histogram data for each channel
+        px_int = np.append(px_int, bin_labels)
+        prop = np.append(prop, hist_percent)
+        hist_count = np.append(hist_count, hist_)
+        channel = channel + [b_name for _ in range(len(hist_percent))]
+    return pd.DataFrame(
+        {'pixel intensity': px_int, 'proportion of pixels (%)': prop, 'hist_count': hist_count,
+            'color channel': channel})
