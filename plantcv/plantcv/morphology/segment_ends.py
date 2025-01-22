@@ -55,10 +55,9 @@ def segment_ends(skel_img, leaf_objects, mask=None, label=None):
     # Determine optimal segment order by y-coordinate order
     d = {}
     for i, coord in enumerate(inner_list):
-        d[coord[1]] = leaf_objects[i]  # y-coord is the key and index the value
-    keys = list(d.keys())
+        d[i] = coord[1]  # y-coord is the key and index the value
     values = list(d.values())
-    sorted_key_index = np.argsort(keys)
-    sorted_objs = [values[i] for i in sorted_key_index[::-1]]
+    sorted_key_index = np.argsort(values)
+    sorted_objs = [leaf_objects[i] for i in sorted_key_index[::-1]]
 
     return sorted_objs
