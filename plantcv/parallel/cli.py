@@ -123,10 +123,11 @@ def main():
     # Convert json results to csv files
     ###########################################
     # Convert results start time
-    process_results_start_time = time.time()
+    convert_results_start_time = time.time()
     print("Converting json to csv... ", file=sys.stderr)
     plantcv.utils.json2csv(config.json, config.json)
-    print(f"Processing results took {process_results_clock_time} seconds.", file=sys.stderr)
+    convert_results_clock_time = time.time() - convert_results_start_time
+    print(f"Processing results took {convert_results_clock_time} seconds.", file=sys.stderr)
     ###########################################
 
     # Cleanup
