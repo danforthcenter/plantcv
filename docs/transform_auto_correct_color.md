@@ -5,13 +5,12 @@ in the RGB space after automatic detection of a color card within the image. A o
 [plantcv.transform.detect_color_card](transform_detect_color_card.md), [plantcv.transform.std_color_matrix](std_color_matrix.md),
 [plantcv.transform.get_color_matrix](get_color_matrix.md), and [plantcv.transform.affine_color_correction](transform_affine_color_correction.md).
 
-**plantcv.transform.auto_correct_color**(*rgb_img, label=None, \*\*kwargs*)
+**plantcv.transform.auto_correct_color**(*rgb_img, \*\*kwargs*)
 
 **returns** corrected_img
 
 - **Parameters**
     - rgb_img          - Input RGB image data containing a color card.
-    - label            - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
     - **kwargs         - Other keyword arguments passed to `cv2.adaptiveThreshold` and `cv2.circle`.
         - adaptive_method  - Adaptive threhold method. 0 (mean) or 1 (Gaussian) (default = 1).
         - block_size       - Size of a pixel neighborhood that is used to calculate a threshold value (default = 51). We suggest using 127 if using `adaptive_method=0`.
