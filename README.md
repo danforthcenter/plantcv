@@ -10,7 +10,7 @@
 [![license](https://img.shields.io/github/license/danforthcenter/plantcv.svg)](https://github.com/danforthcenter/plantcv/blob/main/LICENSE)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](docs/CODE_OF_CONDUCT.md)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-60-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-61-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 # PlantCV: Plant phenotyping using computer vision
@@ -144,6 +144,7 @@ issues have already been filed.
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/sdkenney42"><img src="https://avatars.githubusercontent.com/u/128510721?v=4?s=100" width="100px;" alt="sdkenney42"/><br /><sub><b>sdkenney42</b></sub></a><br /><a href="https://github.com/danforthcenter/plantcv/commits?author=sdkenney42" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/trogers623"><img src="https://avatars.githubusercontent.com/u/195968055?v=4?s=100" width="100px;" alt="trogers623"/><br /><sub><b>trogers623</b></sub></a><br /><a href="#tutorial-trogers623" title="Tutorials">✅</a> <a href="https://github.com/danforthcenter/plantcv/commits?author=trogers623" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/typelogic"><img src="https://avatars.githubusercontent.com/u/45341970?v=4?s=100" width="100px;" alt="typelogic"/><br /><sub><b>typelogic</b></sub></a><br /><a href="https://github.com/danforthcenter/plantcv/commits?author=typelogic" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/wurDevTim"><img src="https://avatars.githubusercontent.com/u/81219429?v=4?s=100" width="100px;" alt="wurDevTim"/><br /><sub><b>wurDevTim</b></sub></a><br /><a href="https://github.com/danforthcenter/plantcv/commits?author=wurDevTim" title="Code">💻</a> <a href="https://github.com/danforthcenter/plantcv/commits?author=wurDevTim" title="Documentation">📖</a> <a href="https://github.com/danforthcenter/plantcv/commits?author=wurDevTim" title="Tests">⚠️</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/zeeuqsze"><img src="https://avatars.githubusercontent.com/u/107494588?v=4?s=100" width="100px;" alt="zeeuqsze"/><br /><sub><b>zeeuqsze</b></sub></a><br /><a href="https://github.com/danforthcenter/plantcv/commits?author=zeeuqsze" title="Documentation">📖</a> <a href="#tutorial-zeeuqsze" title="Tutorials">✅</a> <a href="#talk-zeeuqsze" title="Talks">📢</a> <a href="#mentoring-zeeuqsze" title="Mentoring">🧑‍🏫</a></td>
