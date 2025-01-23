@@ -5,14 +5,12 @@ from plantcv.plantcv.transform.detect_color_card import detect_color_card
 from plantcv.plantcv.transform.color_correction import get_color_matrix, std_color_matrix, affine_color_correction
 
 
-def auto_correct_color(rgb_img, label=None, **kwargs):
+def auto_correct_color(rgb_img, **kwargs):
     """Automatically detect a color card.
     Parameters
     ----------
     rgb_img : numpy.ndarray
         Input RGB image data containing a color card.
-    label : str, optional
-        modifies the variable name of observations recorded (default = pcv.params.sample_label).
     **kwargs
         Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle.
         Valid keyword arguments:
@@ -25,10 +23,6 @@ def auto_correct_color(rgb_img, label=None, **kwargs):
     numpy.ndarray
         Color corrected image
     """
-    # Set lable to params.sample_label if None
-    if label is None:
-        label = params.sample_label
-
     # Get keyword arguments and set defaults if not set
     labeled_mask = detect_color_card(rgb_img=rgb_img, min_size=kwargs.get("min_size", 1000),
                                      radius=kwargs.get("radius", 20),
