@@ -1219,6 +1219,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.6: NA
 * post v4.6: corrected_img = **plantcv.transform.auto_correct_color**(*rgb_img, label=None, **kwargs*)
+* post v4.6.1: corrected_img = **plantcv.transform.auto_correct_color**(*rgb_img, **kwargs*)
 
 #### plantcv.transform.correct_color
 
@@ -1234,6 +1235,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.0.1: NA
 * post v4.0.1: labeled_mask = **plantcv.transform.detect_color_card**(*rgb_img, label=None, **kwargs*)
+* post v4.6.1: labeled_mask = **plantcv.transform.detect_color_card**(*rgb_img, **kwargs*)
 
 #### plantcv.transform.find_color_card
 
