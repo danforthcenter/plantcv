@@ -82,15 +82,13 @@ def _draw_color_chips(rgb_img, new_centers, radius):
     return labeled_mask, debug_img
 
 
-def detect_color_card(rgb_img, label=None, **kwargs):
+def detect_color_card(rgb_img, **kwargs):
     """Automatically detect a color card.
 
     Parameters
     ----------
     rgb_img : numpy.ndarray
         Input RGB image data containing a color card.
-    label : str, optional
-        modifies the variable name of observations recorded (default = pcv.params.sample_label).
     **kwargs
         Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle.
 
@@ -105,10 +103,6 @@ def detect_color_card(rgb_img, label=None, **kwargs):
     numpy.ndarray
         Labeled mask of chips.
     """
-    # Set lable to params.sample_label if None
-    if label is None:
-        label = params.sample_label
-
     # Get keyword arguments and set defaults if not set
     min_size = kwargs.get("min_size", 1000)  # Minimum size for _is_square chip filtering
     radius = kwargs.get("radius", 20)  # Radius of circles to draw on the color chips
