@@ -659,6 +659,27 @@
         "tutorial",
         "doc"
       ]
+    },
+    {
+      "login": "trogers623",
+      "name": "trogers623",
+      "avatar_url": "https://avatars.githubusercontent.com/u/195968055?v=4",
+      "profile": "https://github.com/trogers623",
+      "contributions": [
+        "tutorial",
+        "doc"
+      ]
+    },
+    {
+      "login": "eseigeldanf",
+      "name": "eseigeldanf",
+      "avatar_url": "https://avatars.githubusercontent.com/u/195968072?v=4",
+      "profile": "https://github.com/eseigeldanf",
+      "contributions": [
+        "bug",
+        "tutorial",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
