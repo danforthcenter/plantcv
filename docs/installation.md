@@ -7,8 +7,8 @@
 
 ### Table of contents
 1. [Supported platforms and dependencies](#dependencies)
-2. [Desktop installation step-by-step guide](#desktop)
-3. [Server/command-line step-by-step guide](#cli)
+2. [Server/command-line step-by-step guide](#cli)
+3. [Desktop installation step-by-step guide](#desktop)
 4. [Detailed installation instructions](#detailed)
     1. [Conda](#conda)
     2. [PyPI](#pypi)
@@ -18,13 +18,31 @@
 - macOS x86 (Intel) and M (ARM) processors
 - Windows 64-bit, x86 processors
 
+
+### Server/command line step-by-step guide <a name="cli"></a>
+
+Use the server/command line installation if you plan to create PlantCV workflows and run workflows in parallel. 
+Click through our step-by-step guide below to install PlantCV through conda.
+
+
+<iframe src="https://scribehow.com/embed/Installing_PlantCV__MacOSLinux__awAP9Xm2SgWV4SMZadm9CQ" width="640" height="640" allowfullscreen frameborder="0"></iframe>
+
+
+!!!note
+    Once you have installed PlantCV, to get started see our [guide to using PlantCV with Jupyter Notebooks](https://plantcv.readthedocs.io/en/stable/jupyter/) 
+    and our [guide to developing workflows in PlantCV](https://plantcv.readthedocs.io/en/stable/analysis_approach/#developing-image-processing-workflows-workflow-development).
+
+---
+
 ### Desktop installation step-by-step guide <a name="desktop"></a>
+This is a simple install option if you would just like to test out PlantCV.
+If you plan to use PlantCV for your analyses and run your workflows in parallel, we recommend using the command line installation above.
+
+Click through our step-by-step guide below to install PlantCV through the JupyterLab Desktop app.
 
 <iframe src="https://scribehow.com/embed/Install_PlantCV_via_Jupyter_Lab_Desktop__cS9d6VcxRcuDPGZxDfQycw" width="100%" height="640" allowfullscreen frameborder="0"></iframe>
 
-### Server/command-line step-by-step guide <a name="cli"></a>
-
-<iframe src="https://scribehow.com/embed/Installing_PlantCV__MacOSLinux__awAP9Xm2SgWV4SMZadm9CQ" width="640" height="640" allowfullscreen frameborder="0"></iframe>
+---
 
 ### Detailed installation instructions <a name="detailed"></a>
 
