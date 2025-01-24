@@ -670,6 +670,16 @@
         "tutorial",
         "doc"
       ]
+    },
+    {
+      "login": "clhendrikse",
+      "name": "Chloe Hendrikse",
+      "avatar_url": "https://avatars.githubusercontent.com/u/70405404?v=4",
+      "profile": "https://github.com/clhendrikse",
+      "contributions": [
+        "tutorial",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
