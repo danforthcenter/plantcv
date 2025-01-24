@@ -1,6 +1,5 @@
 # Automatically detect a color card and color correct to standard chip values
 
-from plantcv.plantcv import params
 from plantcv.plantcv.transform.detect_color_card import detect_color_card
 from plantcv.plantcv.transform.color_correction import get_color_matrix, std_color_matrix, affine_color_correction
 
