@@ -2,12 +2,13 @@
 
 Automatically detects a color card and creates a labeled mask. 
 
-**plantcv.transform.detect_color_card**(*rgb_img, \*\*kwargs*)
+**plantcv.transform.detect_color_card**(*rgb_img, label=None, \*\*kwargs*)
 
 **returns** labeled_mask
 
 - **Parameters**
     - rgb_img          - Input RGB image data containing a color card.
+    - label            - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
     - **kwargs         - Other keyword arguments passed to `cv2.adaptiveThreshold` and `cv2.circle`.
         - adaptive_method - Adaptive threhold method. 0 (mean) or 1 (Gaussian) (default = 1).
         - block_size      - Size of a pixel neighborhood that is used to calculate a threshold value (default = 51). We suggest using 127 if using `adaptive_method=0`.
