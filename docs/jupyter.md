@@ -19,7 +19,7 @@ over many images.
 
 <iframe src="https://scribehow.com/embed/Using_PlantCV_with_Jupyter_Notebooks__Jnhb53WlTtqohKYR8_UUfA" width="640" height="640" allowfullscreen frameborder="0"></iframe>
 
-
+---
 
 ### Example of PlantCV running in Jupyter
 
