@@ -64,8 +64,8 @@ Validate parameters/structure of configuration data.
 * **img_outdir**: (str, default = "."): path/name of output directory where images will be saved.
 
 
-* **tmp_dir**: (str, default = `None`): path/name of parent folder for the temporary directory, uses system default
-  temporary directory when `None`.
+* **tmp_dir**: (str, default = `"."`): path/name of parent folder for the temporary directory, defaults to the
+current working directory.
 
 
 * **start_date**: (str, default = `None`): start date used to filter images. Images will be analyzed that are newer 
@@ -107,15 +107,15 @@ for downstream analysis. The default, `filepath` will create groups of single im
 example of a multi-image group could be to pair VIS and NIR images (e.g. `["timestamp", "camera", "rotation"]`). Supported
 metadata terms are listed [here](pipeline_parallel.md).
 
-* **group_name** (str, default = `"imgtype"`): either a metadata term used to create a unique name for each image in an
+* **group_name** (str, default = `"auto"`): either a metadata term used to create a unique name for each image in an
 image group (created by `groupby`), or `"auto"` to generate a numbered image sequence `image1, image2, ...`. The resulting
 names are used to access individual image filepaths in a workflow.
 
 * **cleanup**: (bool, default =`True`): remove temporary job directory if `True`.
 
 
-* **append**: (bool, default = `True`): if `True` will append results to an existing json file. If `False`, will delete
-  previous results stored in the specified JSON file.
+* **append**: (bool, default = `False`): if `False`, will delete previous results stored in the specified JSON file.
+  If `True` will append results to an existing json file.
 
 
 * **cluster** (str, default = "LocalCluster"): LocalCluster will run PlantCV workflows on a single machine. All valid
