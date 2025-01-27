@@ -8,7 +8,7 @@ to run workflows in parallel.
 Create a configuration file from a template:
 
 ```bash
-plantcv-run-workflow --template my_config.txt
+plantcv-run-workflow --template my_config.json
 ```
 
 *class* **plantcv.parallel.WorkflowConfig**
@@ -155,32 +155,32 @@ After defining the cluster, parameters are used to define the size of and reques
 environment. These settings are defined in the `cluster_config` parameter. We define by default the following 
 parameters:
 
-**n_workers**: (int, required, default = 1): the number of workers/slots to request from the cluster. Because we 
+* **n_workers**: (int, required, default = 1): the number of workers/slots to request from the cluster. Because we 
 generally use 1 CPU per image analysis workflow, this is effectively the maximum number of concurrently running 
 workflows.
 
-**cores**: (int, required, default = 1): the number of compute cores per workflow. This should be left as 1 unless a 
+* **cores**: (int, required, default = 1): the number of compute cores per workflow. This should be left as 1 unless a 
 workflow is designed to use multiple CPUs/cores/threads.
 
-**memory**: (str, required, default = "1GB"): the amount of memory/RAM used per workflow. Can be set as a number plus 
+* **memory**: (str, required, default = "1GB"): the amount of memory/RAM used per workflow. Can be set as a number plus 
 units (KB, MB, GB, etc.).
 
-**disk**: (str, required, default = "1GB"): the amount of disk space used per workflow. Can be set as a number plus 
+* **disk**: (str, required, default = "1GB"): the amount of disk space used per workflow. Can be set as a number plus 
 units (KB, MB, GB, etc.).
 
-**log_directory**: (str, optional, default = `None`): directory where worker logs are stored. Can be set to a path or 
+* **log_directory**: (str, optional, default = `None`): directory where worker logs are stored. Can be set to a path or 
 environmental variable.
 
-**local_directory**: (str, optional, default = `None`): dask working directory location. Can be set to a path or 
+* **local_directory**: (str, optional, default = `None`): dask working directory location. Can be set to a path or 
 environmental variable.
 
-**job_extra_directives**: (dict, optional, default = `None`): extra parameters sent to the scheduler. Specified as a dictionary 
+* **job_extra_directives**: (dict, optional, default = `None`): extra parameters sent to the scheduler. Specified as a dictionary 
 of key-value pairs (e.g. `{"getenv": "true"}`).
 
 !!! note
     `n_workers` is the only parameter used by `LocalCluster`, all others are currently ignored. `n_workers`, `cores`,
     `memory`, and `disk` are required by the other clusters. All other parameters are optional. Additional parameters
-    defined in the [dask-jobqueu API](https://jobqueue.dask.org/en/latest/api.html) can be supplied.
+    defined in the [dask-jobqueue API](https://jobqueue.dask.org/en/latest/api.html) can be supplied.
 
 ### Example
 
