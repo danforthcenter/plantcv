@@ -6,7 +6,7 @@ import os
 import cv2
 import math
 import numpy as np
-from plantcv.plantcv import params, outputs, fatal_error
+from plantcv.plantcv import params, outputs, fatal_error, deprecation_warning
 from plantcv.plantcv._debug import _debug
 
 
@@ -108,7 +108,10 @@ def detect_color_card(rgb_img, label=None, **kwargs):
     # Set lable to params.sample_label if None
     if label is None:
         label = params.sample_label
-
+    deprecation_warning(
+        "The 'label' parameter is no longer utilized, since color chip size is now metadata. "
+        "It will be removed in PlantCV v5.0."
+        )
     # Get keyword arguments and set defaults if not set
     min_size = kwargs.get("min_size", 1000)  # Minimum size for _is_square chip filtering
     radius = kwargs.get("radius", 20)  # Radius of circles to draw on the color chips
