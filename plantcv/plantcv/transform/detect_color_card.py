@@ -109,7 +109,7 @@ def detect_color_card(rgb_img, label=None, **kwargs):
     if label is None:
         label = params.sample_label
     deprecation_warning(
-        "The 'label' parameter is no longer utilized, since color chip size is now metadata."
+        "The 'label' parameter is no longer utilized, since color chip size is now metadata. "
         "It will be removed in PlantCV v5.0."
         )
     # Get keyword arguments and set defaults if not set
