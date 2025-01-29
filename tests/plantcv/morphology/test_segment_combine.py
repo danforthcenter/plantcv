@@ -1,10 +1,12 @@
 import pytest
 import cv2
+from plantcv.plantcv import params
 from plantcv.plantcv.morphology import segment_combine
 
 
 def test_segment_combine(morphology_test_data):
     """Test for PlantCV."""
+    params.saved_color_scale = None
     skel = cv2.imread(morphology_test_data.skel_img, -1)
     edges = morphology_test_data.load_segments(morphology_test_data.segments_file, "edges")
     # Test with list of IDs input
