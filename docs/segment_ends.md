@@ -9,7 +9,7 @@ Find segment tip and inner branch-point coordinates, and sort them by the y-coor
 - **Parameters:**
     - skel_img - Skeleton image (output from [plantcv.morphology.skeletonize](skeletonize.md))
     - leaf_objects - Secondary segment objects (output from [plantcv.morphology.segment_sort](segment_sort.md)).
-    - mask - Binary mask for plotting. If provided, segmented and labeled image will be overlaid on the mask (optional).
+    - mask - Binary mask for plotting. If provided, the debugging image will be overlaid on the mask (optional).
     - label - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
 - **Context:**
     - Aims to sort leaf objects by biological age. This tends to work somewhat consistently for grass species that have leav
@@ -27,18 +27,18 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "plot"
 
-# Adjust line thickness with the global line thickness parameter (default = 5)
+# Adjust point thickness with the global line_thickness parameter (default = 5)
 pcv.params.line_thickness = 3 
 
 sorted_obs = pcv.morphology.segment_ends(skel_img=skeleton,
-                                         leaf_objects=leaf_obj,
+                                         leaf_objects=leaf_objs,
                                          mask=plant_mask,
                                          label="leaves")
 
 segmented_img, leaves_labeled = pcv.morphology.segment_id(skel_img=skeleton, 
-                                                          objects=leaf_obj,
+                                                          objects=leaf_objs,
                                                           mask=plant_mask
-# Without optimal assignment leaf tips are used by default
+# Without ID re-assignment
 segmented_img, leaves_labeled = pcv.morphology.segment_id(skel_img=skeleton, 
                                                           objects=sorted_obs,
                                                           mask=plant_mask)
