@@ -93,11 +93,11 @@ def prune_by_height(skel_img, line_position=None, mask=None, label=None):
     pruned skeleton.
 
     Inputs:
-    skel_img    = Skeletonized image
-    h           = Height below which to prune secondary segments 
-    mask        = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
-    label            = Optional label parameter, modifies the variable name of
-                       observations recorded (default = pcv.params.sample_label).
+    skel_img      = Skeletonized image
+    line_position = Height below which to prune secondary segments 
+    mask          = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
+    label         = Optional label parameter, modifies the variable name of
+                    observations recorded (default = pcv.params.sample_label).
 
     Returns:
     pruned_img      = Pruned image
