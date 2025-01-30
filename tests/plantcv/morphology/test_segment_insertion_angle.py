@@ -1,7 +1,7 @@
 import pytest
 import cv2
 import numpy as np
-from plantcv.plantcv import outputs
+from plantcv.plantcv import outputs, params
 from plantcv.plantcv.morphology import segment_insertion_angle
 
 
@@ -10,6 +10,7 @@ def test_segment_insertion_angle(size, morphology_test_data):
     """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
+    params.saved_color_scale = None
     skel = cv2.imread(morphology_test_data.skel_img, -1)
     leaf_obj = morphology_test_data.load_segments(morphology_test_data.segments_file, "leaves")
     stem_obj = morphology_test_data.load_segments(morphology_test_data.segments_file, "stem")
@@ -19,6 +20,8 @@ def test_segment_insertion_angle(size, morphology_test_data):
 
 def test_segment_insertion_angle_bad_stem(morphology_test_data):
     """Test for PlantCV."""
+    params.saved_color_scale = None
+
     skel = cv2.imread(morphology_test_data.skel_img, -1)
     leaf_obj = morphology_test_data.load_segments(morphology_test_data.segments_file, "leaves")
     stem_obj = [leaf_obj[0], np.array([[[0, 0]], [[1, 1]], [[2, 2]], [[3, 3]], [[4, 4]]], dtype=np.int32)]
