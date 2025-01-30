@@ -18,6 +18,7 @@ Find segment tip and inner branch-point coordinates, and sort them by the y-coor
 
 ![Screenshot](img/documentation_images/segment_ends/setaria_mask.png)
 
+
 ```python
 
 from plantcv import plantcv as pcv
