@@ -17,8 +17,8 @@ def test_crop_position_mask(v_pos, h_pos, test_data):
 def test_crop_position_rgb_inputs(test_data):
     """Test for PlantCV."""
     # Read in test data - mask is bigger than img and both are RGB
-    mask = cv2.imread(test_data.fmax)
-    img = cv2.imread(test_data.small_bin_img)
+    mask = cv2.imread(test_data.small_bin_img, -1)
+    img = cv2.imread(test_data.small_bin_img, -1)
     newmask = crop_position_mask(img=img, mask=mask, x=40, y=3, v_pos="top", h_pos="left")
     assert newmask.shape == img.shape[:2]
 
