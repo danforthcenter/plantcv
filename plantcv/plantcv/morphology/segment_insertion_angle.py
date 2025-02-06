@@ -182,7 +182,7 @@ def _inner_segments(skel_img, leaf_objects, size):
     label_coord_x = []
     label_coord_y = []
 
-    for i in range(len(leaf_objects)):
+    for i, _ in enumerate(leaf_objects):
         # Draw leaf objects
         find_segment_tangents = np.zeros(skel_img.shape[:2], np.uint8)
         cv2.drawContours(find_segment_tangents, leaf_objects, i, 255, 1, lineType=8)
