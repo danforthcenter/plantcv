@@ -48,7 +48,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     params.debug = None
     
     # Find and sort segment ends, and create debug image
-    insertion_segments, label_coord_x, label_coord_y, pruned_away = _segment_ends(
+    inner_segments, _, _, pruned_away = _inner_segments(
         skel_img=skel_img, leaf_objects=leaf_objects, size=size)
 
     cols = segmented_img.shape[1]
@@ -57,7 +57,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     intersection_angles = []
 
     # Create a color scale, use a previously stored scale if available
-    rand_color = color_palette(num=len(insertion_segments), saved=True)
+    rand_color = color_palette(num=len(inner_segments), saved=True)
 
     for i in range(len(leaf_objects)):
         cv2.drawContours(labeled_img, leaf_objects, i, rand_color[i], params.line_thickness, lineType=8)
@@ -76,7 +76,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     for t, segment in enumerate(leaf_objects):
         if not pruned_away[t]:
             # Find line fit to each segment
-            [vx, vy, x, y] = cv2.fitLine(insertion_segments[i], cv2.DIST_L2, 0, 0.01, 0.01)
+            [vx, vy, x, y] = cv2.fitLine(inner_segments[i], cv2.DIST_L2, 0, 0.01, 0.01)
             # Increment the index up after plotting a valid segment
             i += 1
             slope = -vy / vx
@@ -139,7 +139,7 @@ def _combine_stem_segments(segmented_img, stem_objects, debug):
     cv2.drawContours(stem_img, stem_objects, -1, 255, 2, lineType=8)
     stem_img = closing(stem_img)
     combined_stem, _ = _cv2_findcontours(bin_img=stem_img)
-# Make sure stem objects are a single contour
+    # Make sure stem objects are a single contour
     loop_count = 0
     while len(combined_stem) > 1 and loop_count < 50:
         loop_count += 1
@@ -153,7 +153,7 @@ def _combine_stem_segments(segmented_img, stem_objects, debug):
     else:
         return combined_stem
    
-def _segment_ends(skel_img, leaf_objects, size):
+def _inner_segments(skel_img, leaf_objects, size):
     """
     Groups stem objects into a single object.
 
@@ -163,22 +163,22 @@ def _segment_ends(skel_img, leaf_objects, size):
     size = size of segments to collect
 
     Returns:
-    insertion_segments  = inner segments from each leaf
+    inner_segments  = inner segments from each leaf
     label_coord_x = x coordinate labels for debug image creation
     label_coord_x = y coordinate labels for debug image creation
     pruned_away = list of boolean statements, equal length to the leaf_objects list input
 
     :param segmented_img: numpy.ndarray
     :param stem_objects: list
-    :return insertion_segments: list
+    :return inner_segments: list
     :return label_coord_x: list
     :return label_coord_y: list
     :return pruned_away: list
     """   
-# Create a list of tip tuples to use for sorting
+    # Create a list of tip tuples to use for sorting
     tips, _, _ = _find_tips(skel_img)
     pruned_away = []
-    insertion_segments = []
+    inner_segments = []
     label_coord_x = []
     label_coord_y = []
 
@@ -211,9 +211,9 @@ def _segment_ends(skel_img, leaf_objects, size):
 
                 # If none of the tips are within a segment_end then it's an insertion segment
                 if np.sum(overlap_img) == 0:
-                    insertion_segments.append(segment_end_obj[j])
+                    inner_segments.append(segment_end_obj[j])
 
             # Store coordinates for labels
             label_coord_x.append(leaf_objects[i][0][0][0])
             label_coord_y.append(leaf_objects[i][0][0][1])
-    return insertion_segments, label_coord_x, label_coord_y, pruned_away
+    return inner_segments, label_coord_x, label_coord_y, pruned_away
