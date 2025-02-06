@@ -11,7 +11,7 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv import color_palette
 from plantcv.plantcv.morphology.segment_tangent_angle import _slope_to_intesect_angle
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _cv2_findcontours, _find_tips, _iterative_prune 
+from plantcv.plantcv._helpers import _cv2_findcontours, _find_tips, _iterative_prune
 
 
 def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects, size, label=None):
@@ -46,7 +46,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     # Store debug
     debug = params.debug
     params.debug = None
-    
+
     # Find and sort segment ends, and create debug image
     inner_segments, _, _, pruned_away = _inner_segments(
         skel_img=skel_img, leaf_objects=leaf_objects, size=size)
@@ -150,9 +150,10 @@ def _combine_stem_segments(segmented_img, stem_objects, debug):
         # Reset debug mode
         params.debug = debug
         fatal_error('Unable to combine stem objects.')
-    else:
+    if len(combined_stem) == 1:
         return combined_stem
-   
+
+
 def _inner_segments(skel_img, leaf_objects, size):
     """
     Groups stem objects into a single object.
@@ -174,7 +175,7 @@ def _inner_segments(skel_img, leaf_objects, size):
     :return label_coord_x: list
     :return label_coord_y: list
     :return pruned_away: list
-    """   
+    """
     # Create a list of tip tuples to use for sorting
     tips, _, _ = _find_tips(skel_img)
     pruned_away = []
