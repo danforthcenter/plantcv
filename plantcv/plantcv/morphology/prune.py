@@ -87,14 +87,14 @@ def prune(skel_img, size=0, mask=None):
 
 def prune_by_height(skel_img, line_position=None, mask=None, label=None):
     """Prune the segments of a skeleton.
-    The pruning algorithm proposed by Renee Dale and implemented by Haley Schuhl. 
+    The pruning algorithm proposed by Renee Dale and implemented by Haley Schuhl.
     Segments a skeleton into discrete pieces, prunes off all below a height threshold.
     Returns the remaining objects as a list and the
     pruned skeleton.
 
     Inputs:
     skel_img      = Skeletonized image
-    line_position = Height below which to prune secondary segments 
+    line_position = Height below which to prune secondary segments
     mask          = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
     label         = Optional label parameter, modifies the variable name of
                     observations recorded (default = pcv.params.sample_label).
@@ -128,8 +128,8 @@ def prune_by_height(skel_img, line_position=None, mask=None, label=None):
         line_position = min_y[1]
     img_dims = np.shape(skel_img)[:2]
     h = img_dims[1] - line_position
-    h = line_position + 1 # Adjust by one pixel to shift from directly on the branch point 
-
+    # Adjust by one pixel to shift from directly on the branch point 
+    h = line_position + 1
     _, objects = segment_skeleton(skel_img)
     kept_segments = []
     removed_segments = []
@@ -142,8 +142,8 @@ def prune_by_height(skel_img, line_position=None, mask=None, label=None):
 
         # Keep segments longer than specified size
         for i in range(0, len(secondary_objects)):
-            _, y, _, h2 = cv2.boundingRect(secondary_objects[i]) # Let (x,y) be the top-left coordinate of the rectangle and (w,h) be its width and height 
-            
+            # y is the top-left y-coordinate of the bounding rectangle and h2 its height
+            _, y, _, h2 = cv2.boundingRect(secondary_objects[i])
             if y + h2 <= h:
                 kept_segments.append(secondary_objects[i])
             else:
@@ -167,10 +167,9 @@ def prune_by_height(skel_img, line_position=None, mask=None, label=None):
     pruned_obj, _ = _cv2_findcontours(bin_img=pruned_img)
     cv2.drawContours(pruned_plot, removed_segments, -1, (0, 0, 255), params.line_thickness, lineType=8)
     cv2.drawContours(pruned_plot, pruned_obj, -1, (150, 150, 150), params.line_thickness, lineType=8)
-    start_point = (0,h) 
+    start_point = (0, h)
     end_point = (img_dims[0], h)
     cv2.line(pruned_plot, start_point, end_point, color=(155, 0, 155), thickness=params.line_thickness, lineType=8)
-
 
     # Segment the pruned skeleton
     segmented_img, segment_objects = segment_skeleton(pruned_img, mask)
