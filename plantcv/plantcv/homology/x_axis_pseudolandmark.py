@@ -8,6 +8,33 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
+def _draw_circles_x(arr, img, color):
+    """Helper function to draw circles on an image."""
+    for i in arr:
+        x = i[0, 0]
+        y = i[0, 1]
+        cv2.circle(img, (int(x), int(y)), params.line_thickness, color, -1)
+
+
+def _calculate_centroids_x(largest, smallest, xval, y_centroids, x_centroids, s):
+    """Helper function to calculate centroids"""
+    # Centroid (center of mass x, center of mass y)
+    if largest - smallest > 3:
+        if s['m00'] > 0.001:
+            smx, smy = (s['m10'] / s['m00'], s['m01'] / s['m00'])
+            x_centroids.append(int(smx))
+            y_centroids.append(int(smy))
+        if s['m00'] < 0.001:
+            smx, smy = (s['m10'] / 0.001, s['m01'] / 0.001)
+            x_centroids.append(int(smx))
+            y_centroids.append(int(smy))
+    else:
+        smx = (largest + smallest) / 2
+        smy = xval
+        x_centroids.append(int(smx))
+        y_centroids.append(int(smy))
+
+
 def x_axis_pseudolandmarks(img, mask, label=None):
     """
     Divide up object contour into 20 equidistance segments and generate landmarks for each
@@ -124,22 +151,8 @@ def x_axis_pseudolandmarks(img, mask, label=None):
             window = np.copy(mask)
             window[:, :left_point] = 0
             window[:, right_point:] = 0
-            s = cv2.moments(window)
-            # Centroid (center of mass x, center of mass y)
-            if largest - smallest > 3:
-                if s['m00'] > 0.001:
-                    smx, smy = (s['m10'] / s['m00'], s['m01'] / s['m00'])
-                    x_centroids.append(int(smx))
-                    y_centroids.append(int(smy))
-                if s['m00'] < 0.001:
-                    smx, smy = (s['m10'] / 0.001, s['m01'] / 0.001)
-                    x_centroids.append(int(smx))
-                    y_centroids.append(int(smy))
-            else:
-                smx = (largest + smallest) / 2
-                smy = xval
-                x_centroids.append(int(smx))
-                y_centroids.append(int(smy))
+            _calculate_centroids_x(largest, smallest, xval, y_centroids, x_centroids, cv2.moments(window))
+
         # Get the indicie of the largest median/average y-axis value (if there is a tie it takes largest index)
         # indice_median = col_median.index(max(col_median))
         # indice_ave = col_ave.index(max(col_ave))
@@ -147,31 +160,8 @@ def x_axis_pseudolandmarks(img, mask, label=None):
         # ave_value = col_ave[indice_ave]
         # max_value = max_width[indice_ave]
         top = list(zip(x_vals, top_points))
-        top = np.array(top)
-        top.shape = (20, 1, 2)
         bottom = list(zip(x_vals, bottom_points))
-        bottom = np.array(bottom)
-        bottom.shape = (20, 1, 2)
         center_v = list(zip(x_centroids, y_centroids))
-        center_v = np.array(center_v)
-        center_v.shape = (20, 1, 2)
-
-        img2 = np.copy(img)
-        for i in top:
-            x = i[0, 0]
-            y = i[0, 1]
-            cv2.circle(img2, (int(x), int(y)), params.line_thickness, (255, 0, 0), -1)
-        for i in bottom:
-            x = i[0, 0]
-            y = i[0, 1]
-            cv2.circle(img2, (int(x), int(y)), params.line_thickness, (255, 0, 255), -1)
-        for i in center_v:
-            x = i[0, 0]
-            y = i[0, 1]
-            cv2.circle(img2, (int(x), int(y)), params.line_thickness, (0, 79, 255), -1)
-
-        _debug(visual=img2,
-               filename=os.path.join(params.debug_outdir, (str(params.device) + '_x_axis_pseudolandmarks.png')))
 
     elif extent < 21:
         # If the width of the object is less than 20 pixels just make the object a 20 pixel rectangle
@@ -179,36 +169,26 @@ def x_axis_pseudolandmarks(img, mask, label=None):
         x_coords = list(range(x, x + 20))
         u_points = [y] * 20
         top = list(zip(x_coords, u_points))
-        top = np.array(top)
-        top.shape = (20, 1, 2)
         b_points = [y + width] * 20
         bottom = list(zip(x_coords, b_points))
-        bottom = np.array(bottom)
-        bottom.shape = (20, 1, 2)
         m = cv2.moments(mask, binaryImage=True)
         # Centroid (center of mass x, center of mass y)
         _, cmy = (m['m10'] / m['m00'], m['m01'] / m['m00'])
         c_points = [cmy] * 20
         center_v = list(zip(x_coords, c_points))
-        center_v = np.array(center_v)
-        center_v.shape = (20, 1, 2)
 
-        img2 = np.copy(img)
-        for i in top:
-            x = i[0, 0]
-            y = i[0, 1]
-            cv2.circle(img2, (int(x), int(y)), params.line_thickness, (255, 0, 0), -1)
-        for i in bottom:
-            x = i[0, 0]
-            y = i[0, 1]
-            cv2.circle(img2, (int(x), int(y)), params.line_thickness, (255, 0, 255), -1)
-        for i in center_v:
-            x = i[0, 0]
-            y = i[0, 1]
-            cv2.circle(img2, (int(x), int(y)), params.line_thickness, (0, 79, 255), -1)
+    top = np.array(top)
+    top.shape = (20, 1, 2)
+    bottom = np.array(bottom)
+    bottom.shape = (20, 1, 2)
+    center_v = np.array(center_v)
+    center_v.shape = (20, 1, 2)
+    img2 = np.copy(img)
+    _draw_circles_x(top, img2, (255, 0, 0))
+    _draw_circles_x(bottom, img2, (255, 0, 255))
+    _draw_circles_x(center_v, img2, (0, 79, 255))
 
-        _debug(visual=img2,
-               filename=os.path.join(params.debug_outdir, (str(params.device) + '_x_axis_pseudolandmarks.png')))
+    _debug(visual=img2, filename=os.path.join(params.debug_outdir, (str(params.device) + '_x_axis_pseudolandmarks.png')))
 
     # Store into global measurements
     for pt in top:
