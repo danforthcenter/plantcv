@@ -1026,7 +1026,8 @@ def _package_index(hsi, raw_index, method):
                           lines=hsi.lines, interleave=hsi.interleave,
                           wavelength_units=hsi.wavelength_units,
                           array_type="index_" + method.lower(),
-                          pseudo_rgb=scaled, filename=hsi.filename, default_bands=None)
+                          pseudo_rgb=scaled, filename=hsi.filename, default_bands=None,
+                          metadata=hsi.metadata)
 
     # Restore debug mode
     params.debug = debug
