@@ -27,6 +27,8 @@ def _find_segment_ends(skel_img, leaf_objects, plotting_img, size):
     labels = []
     tip_list = []
     inner_list = []
+    remove = []
+    sortabled_objs = leaf_objects.copy()
 
     # Find segment end coordinates
     for i in range(len(leaf_objects)):
@@ -40,6 +42,7 @@ def _find_segment_ends(skel_img, leaf_objects, plotting_img, size):
         # Segment ends are the portions pruned off
         ends = find_segment_tangents - pruned_segment
         segment_end_obj, _ = _cv2_findcontours(bin_img=ends)
+        branch_pt_found = False
         # Determine if a segment is segment tip or branch point
         for j, obj in enumerate(segment_end_obj):
             segment_plot = np.zeros(skel_img.shape[:2], np.uint8)
@@ -52,11 +55,17 @@ def _find_segment_ends(skel_img, leaf_objects, plotting_img, size):
             if np.sum(overlap_img) == 0:
                 inner_list.append(coord)
                 cv2.circle(labeled_img, coord, params.line_thickness, (50, 0, 255), -1)  # Red auricles
+                branch_pt_found = True
             else:
                 tip_list.append(coord)
                 cv2.circle(labeled_img, coord, params.line_thickness, (0, 255, 0), -1)  # green tips
+        if not branch_pt_found:  # there is no branch point associated with a given segment and therefore it cannot be sorted 
+            remove.append(i)
+    # Remove the segments that cannot be resorted, since they do not have a branch point 
+    for k in remove:
+        sortabled_objs.remove(leaf_objects[k])
 
-    return labeled_img, tip_list, inner_list, labels
+    return labeled_img, tip_list, inner_list, labels, sortabled_objs
 
 
 def _iterative_prune(skel_img, size):
