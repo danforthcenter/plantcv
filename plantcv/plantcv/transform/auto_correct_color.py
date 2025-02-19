@@ -1,6 +1,6 @@
 # Automatically detect a color card and color correct to standard chip values
 
-from plantcv.plantcv import params
+from plantcv.plantcv import params, deprecation_warning
 from plantcv.plantcv.transform.detect_color_card import detect_color_card
 from plantcv.plantcv.transform.color_correction import get_color_matrix, std_color_matrix, affine_color_correction
 
@@ -28,7 +28,10 @@ def auto_correct_color(rgb_img, label=None, **kwargs):
     # Set lable to params.sample_label if None
     if label is None:
         label = params.sample_label
-
+    deprecation_warning(
+        "The 'label' parameter is no longer utilized, since color chip size is now metadata. "
+        "It will be removed in PlantCV v5.0."
+        )
     # Get keyword arguments and set defaults if not set
     labeled_mask = detect_color_card(rgb_img=rgb_img, min_size=kwargs.get("min_size", 1000),
                                      radius=kwargs.get("radius", 20),
