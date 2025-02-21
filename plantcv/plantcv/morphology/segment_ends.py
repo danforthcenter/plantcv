@@ -69,4 +69,4 @@ def segment_ends(skel_img, leaf_objects, mask=None, label=None):
     sorted_key_index = np.argsort(values)
     sorted_objs = [objs[i] for i in sorted_key_index[::-1]]
 
-    return sorted_objs
+    return labeled_img, sorted_objs
