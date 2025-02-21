@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import math
 from plantcv.plantcv.dilate import dilate
 from plantcv.plantcv.logical_and import logical_and
 from plantcv.plantcv.image_subtract import image_subtract
@@ -43,6 +44,7 @@ def _find_segment_ends(skel_img, leaf_objects, plotting_img, size):
         ends = find_segment_tangents - pruned_segment
         segment_end_obj, _ = _cv2_findcontours(bin_img=ends)
         branch_pt_found = False
+        coords = []
         # Determine if a segment is segment tip or branch point
         for j, obj in enumerate(segment_end_obj):
             segment_plot = np.zeros(skel_img.shape[:2], np.uint8)
@@ -51,6 +53,7 @@ def _find_segment_ends(skel_img, leaf_objects, plotting_img, size):
             overlap_img = logical_and(segment_plot, tips)
             x, y = segment_end_obj[j].ravel()[:2]
             coord = (int(x), int(y))
+            coords.append(coord)
             # If none of the tips are within a segment_end then it's an insertion segment
             if np.sum(overlap_img) == 0:
                 inner_list.append(coord)
@@ -61,6 +64,26 @@ def _find_segment_ends(skel_img, leaf_objects, plotting_img, size):
                 cv2.circle(labeled_img, coord, params.line_thickness, (0, 255, 0), -1)  # green tips
         if not branch_pt_found:  # there is no branch point associated with a given segment and therefore it cannot be sorted 
             remove.append(i)
+            # Plot the tip that is closest to the stem
+            x_min, y_min, w, h = cv2.boundingRect(skel_img)
+            cx = int((x_min + (w/ 2)))
+            cy = int(y_min + h)
+
+            dist0 = math.dist(coords[0], (cx, cy))
+            dist1 = math.dist(coords[1], (cx, cy))
+            
+            m = 1
+            if dist0 < dist1:
+                m = 0
+            
+            cv2.circle(labeled_img, (cx, cy), params.line_thickness + 10, (255, 0, 0), 5)  # estimated centroid point
+            cv2.circle(labeled_img, coords[m], params.line_thickness, (255, 20, 20), -1)  # estimated sorting point
+            cv2.putText(img=labeled_img, text=str(int(dist0)), org=coords[0], fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                    fontScale=params.text_size, color=(150,150,150), thickness=params.text_thickness)
+            cv2.putText(img=labeled_img, text=str(int(dist1)), org=coords[1], fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                    fontScale=params.text_size, color=(150,150,150), thickness=params.text_thickness)
+
+            
     # Remove the segments that cannot be resorted, since they do not have a branch point 
     for k in remove:
         sortabled_objs.remove(leaf_objects[k])

@@ -48,11 +48,19 @@ def segment_ends(skel_img, leaf_objects, mask=None, label=None):
                             trait='list of branch point coordinates identified from segments',
                             method='plantcv.plantcv.morphology.segment_ends', scale='None', datatype=list,
                             value=inner_list, label=labels)
+    # Were any segments missing a branch point?
+    if len(inner_list) != len(leaf_objects):
+        missing = True
+    else:
+        missing = False
+    outputs.add_observation(sample=label, variable='segment_unsortable',
+                            trait='one or more leaf segments are missing a branch point',
+                            method='plantcv.plantcv.morphology.segment_ends', scale='None', datatype=bool,
+                            value=missing, label="none")
     # Reset debug mode
     params.debug = debug
     _debug(visual=labeled_img, filename=os.path.join(params.debug_outdir, f"{params.device}_segment_ends.png"))
-    print("obj number: " + str(len(objs)))
-    print("inner_list number: " + str(len(inner_list)))
+
     # Determine optimal segment order by y-coordinate order
     d = {}
     for i, coord in enumerate(inner_list):
