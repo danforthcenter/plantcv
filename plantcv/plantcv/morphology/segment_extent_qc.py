@@ -1,4 +1,5 @@
 # Check if all segments were analyzed by comparing the extent of the mask and the segments analyzed
+import os
 import cv2
 import numpy as np
 from plantcv.plantcv import params, outputs
@@ -45,8 +46,11 @@ def segment_extent_qc(objects, mask, label=None):
                             value=(mask_h - skel_h)/mask_h, label="none")
 
     # Create debug image to visualize
-    image = cv2.rectangle(np.copy(mask), (mask_x, mask_y), (mask_x + mask_w, mask_y + mask_h),
-                          (0, 0, 128), params.line_thickness)
+    image = cv2.cvtColor(np.copy(mask), cv2.COLOR_GRAY2RGB)
+    # Draw the mask bounding box in maroon
+    image = cv2.rectangle(image, (mask_x, mask_y), (mask_x + mask_w, mask_y + mask_h),
+                          (0, 0, 128), params.line_thickness + 1)
+    # Draw the object bounding box in orange, slightly thinner than the masks' box
     image = cv2.rectangle(image, (obj_x, obj_y), (obj_x + skel_w, obj_y + skel_h),
                           (0, 165, 255), params.line_thickness)
     _debug(visual=image, filename=os.path.join(params.debug_outdir, f"{params.device}_segment_extent.png"))
