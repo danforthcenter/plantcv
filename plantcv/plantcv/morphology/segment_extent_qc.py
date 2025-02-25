@@ -39,10 +39,10 @@ def segment_extent_qc(objects, mask, label=None):
     # Save outputs about the ratio of height and width extent
     outputs.add_observation(sample=label, variable='width_percent_difference', trait='perfect difference in width extent',
                             method='plantcv.plantcv.morphology.segment_extent_qc', scale='none', datatype=float,
-                            value=(mask_w - skel_w)/mask_w, label="none"")
+                            value=(mask_w - skel_w)/mask_w, label="none")
     outputs.add_observation(sample=label, variable='height_percent_difference', trait='perfect difference in height extent',
                             method='plantcv.plantcv.morphology.segment_extent_qc', scale='none', datatype=float,
-                            value=(mask_h - skel_h)/mask_h, label="none"")
+                            value=(mask_h - skel_h)/mask_h, label="none")
 
     # Create debug image to visualize
     image = cv2.rectangle(np.copy(mask), (mask_x, mask_y), (mask_x + mask_w, mask_y + mask_h),
