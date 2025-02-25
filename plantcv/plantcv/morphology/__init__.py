@@ -16,9 +16,10 @@ from plantcv.plantcv.morphology.segment_combine import segment_combine
 from plantcv.plantcv.morphology.analyze_stem import analyze_stem
 from plantcv.plantcv.morphology.fill_segments import fill_segments
 from plantcv.plantcv.morphology.segment_ends import segment_ends
+from plantcv.plantcv.morphology.segment_extent_qc import segment_extent_qc
 
 __all__ = ["find_branch_pts", "find_tips", "prune", "prune_by_height",
            "skeletonize", "check_cycles", "segment_skeleton", "segment_angle",
            "segment_path_length", "segment_euclidean_length", "segment_curvature", "segment_sort", "segment_id",
            "segment_tangent_angle", "segment_insertion_angle", "segment_combine", "analyze_stem",
-           "fill_segments", "segment_ends"]
+           "fill_segments", "segment_ends", "segment_extent_qc"]
