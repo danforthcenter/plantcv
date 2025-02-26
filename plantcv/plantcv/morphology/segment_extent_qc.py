@@ -49,8 +49,8 @@ def segment_extent_qc(objects, mask, label=None):
     image = cv2.cvtColor(np.copy(mask), cv2.COLOR_GRAY2RGB)
     # Draw the mask bounding box in maroon
     image = cv2.rectangle(image, (mask_x, mask_y), (mask_x + mask_w, mask_y + mask_h),
-                          (0, 0, 128), params.line_thickness + 1)
-    # Draw the object bounding box in orange, slightly thinner than the masks' box
+                          (0, 0, 128), params.line_thickness)
+    # Draw the object bounding box in orange
     image = cv2.rectangle(image, (obj_x, obj_y), (obj_x + skel_w, obj_y + skel_h),
                           (0, 165, 255), params.line_thickness)
     _debug(visual=image, filename=os.path.join(params.debug_outdir, f"{params.device}_segment_extent.png"))
