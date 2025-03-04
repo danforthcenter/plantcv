@@ -64,10 +64,14 @@ def _find_segment_ends(skel_img, leaf_objects, plotting_img, size):
                 cv2.circle(labeled_img, coord, params.line_thickness, (0, 255, 0), -1)  # green tips
         if not branch_pt_found:  # there is no branch point associated with a given segment and therefore it cannot be sorted 
             remove.append(i)
-            # Plot the tip that is closest to the stem
+            # Plot the tip that is closest to the stem, bounding box around the skeleton
             x_min, y_min, w, h = cv2.boundingRect(skel_img)
             cx = int((x_min + (w/ 2)))
             cy = int(y_min + h)
+            # Alternative aapproach, use center of image 
+            img_x, img_y = skel_img.shape()
+            cx = img_x/2
+            cy = img_y/2
 
             dist0 = math.dist(coords[0], (cx, cy))
             dist1 = math.dist(coords[1], (cx, cy))
