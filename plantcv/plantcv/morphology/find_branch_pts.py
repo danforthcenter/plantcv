@@ -77,7 +77,7 @@ def find_branch_pts(skel_img, mask=None, label=None):
 
     # Make debugging image
     if mask is None:
-        dilated_skel = dilate(skel_img, params.line_thickness, 1)
+        dilated_skel = dilate(skel_img, params.line_thickness, 2)
         branch_plot = cv2.cvtColor(dilated_skel, cv2.COLOR_GRAY2RGB)
     else:
         # Make debugging image on mask
