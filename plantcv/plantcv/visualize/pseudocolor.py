@@ -19,7 +19,7 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", bg_image=Non
     cmap        = (optional) colormap. default is the matplotlib default, viridis
     background  = (optional) background color/type, options are "image", "white", or "black"
                   (requires a mask). default = 'image'
-    bg_image    = (optional) image which is used as a background. If background="image" and no bg_image is set, it 
+    bg_image    = (optional) image which is used as a background. If background="image" and no bg_image is set, it
                   defaults to the input grayscale image
     min_value   = (optional) minimum value for range of interest. default = 0
     max_value   = (optional) maximum value for range of interest. default = 255
