@@ -25,18 +25,23 @@ def test_pseudocolor(debug, axes, tmpdir, visualize_test_data):
     assert isinstance(pseudo_img, Figure)
 
 
-@pytest.mark.parametrize("bkgrd,axes", [["image", True], ["white", False], ["black", True]])
-def test_pseudocolor_mask(bkgrd, axes, visualize_test_data):
+@pytest.mark.parametrize("bkgrd,bkgrd_img,axes", [["image", False, True], ["image", True, True], ["white", False, False], ["black", False, True]])
+def test_pseudocolor_mask(bkgrd, bkgrd_img, axes, visualize_test_data):
     """Test for PlantCV."""
     # Input image
     img = cv2.imread(visualize_test_data.small_bin_img, -1)
     # Input mask
     mask = cv2.imread(visualize_test_data.small_bin_img, -1)
     r, c = img.shape
+    # Input background image
+    if bkgrd_img:
+        bkgrd_img = cv2.imread(visualize_test_data.small_rgb_img)
+    else:
+        bkgrd_img = None
     # generate "bad" pixels
     mask_bad = np.zeros((r, c), dtype=np.uint8)
     mask_bad[0:1, 0:1] = 255
-    pseudo_img = pseudocolor(gray_img=img, mask=mask, background=bkgrd, bad_mask=mask_bad,
+    pseudo_img = pseudocolor(gray_img=img, mask=mask, background=bkgrd, bg_image=bkgrd_img, bad_mask=mask_bad,
                              title="Pseudocolored image", axes=axes)
     # Assert the output is a matplotlib figure
     assert isinstance(pseudo_img, Figure)

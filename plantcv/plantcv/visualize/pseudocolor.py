@@ -2,13 +2,14 @@
 
 import os
 import numpy as np
+from cv2 import cvtColor, COLOR_BGR2RGB
 from matplotlib import pyplot as plt
 from plantcv.plantcv import params
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv.apply_mask import apply_mask
 
 
-def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0, max_value=255,
+def pseudocolor(gray_img, mask=None, cmap=None, background="image", bg_image=None, min_value=0, max_value=255,
                 axes=True, colorbar=True, title=None, bad_mask=None, bad_color="red"):
     """Pseudocolor any grayscale image to custom colormap
 
@@ -16,8 +17,10 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
     gray_img    = grayscale image data
     mask        = (optional) binary or labeled mask
     cmap        = (optional) colormap. default is the matplotlib default, viridis
-    background  = (optional) background color/type, options are "image" (gray_img), "white", or "black"
+    background  = (optional) background color/type, options are "image", "white", or "black"
                   (requires a mask). default = 'image'
+    bg_image    = (optional) image which is used as a background. If background="image" and no bg_image is set, it 
+                  defaults to the input grayscale image
     min_value   = (optional) minimum value for range of interest. default = 0
     max_value   = (optional) maximum value for range of interest. default = 255
     axes        = (optional) if False then x- and y-axis won't be displayed, nor will the title. default = True
@@ -34,6 +37,7 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
     :param cmap: str
     :param background: str
     :param min_value: numeric
+    :param bg_image: numpy.ndarray
     :param max_value: numeric
     :param axes: bool
     :param colorbar: bool
@@ -48,6 +52,13 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
     # Make copies of the gray image
     gray_img1 = np.copy(gray_img)
 
+    # Convert and make copy of background image if available
+    if bg_image is not None:
+        bg_image1 = np.copy(bg_image)
+        bg_image1 = cvtColor(bg_image1, COLOR_BGR2RGB)
+    else:
+        bg_image1 = None
+
     # Check if the image is grayscale
     if len(np.shape(gray_img)) != 2:
         fatal_error("Image must be grayscale.")
@@ -55,6 +66,8 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
     # Check if background is a supported type
     if background.upper() not in ["IMAGE", "WHITE", "BLACK"]:
         fatal_error(f"Background type {background} is not supported. Please use 'white', 'black', or 'image'.")
+
+    # Check
 
     bad_idx, bad_idy = [], []
 
@@ -83,8 +96,8 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
             "cmap": "gray_r"
             },
         "IMAGE": {
-            "image": gray_img1,
-            "cmap": "gray"
+            "image": bg_image1 if bg_image1 is not None else gray_img1,
+            "cmap": None if bg_image1 is not None else "gray"
             }
     }
     bkg_img = bkgd[background.upper()]["image"]
