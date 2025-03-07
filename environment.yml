@@ -28,4 +28,3 @@ dependencies:
 
 channels:
   - conda-forge
-  - defaults
