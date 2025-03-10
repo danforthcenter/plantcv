@@ -69,7 +69,7 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
 
     # Apply the mask
     masked_img = np.ma.array(gray_img1, mask=~mask.astype(bool))
-    
+
     # Set the background color or type
     bkgd = {
         "BLACK": {
@@ -85,7 +85,7 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
             "cmap": "gray"
             }
     }
-    
+
     # Check background types and proceed accordingly
     if isinstance(background, str) and background.upper() in ["IMAGE", "WHITE", "BLACK"]:
         bkg_img = bkgd[background.upper()]["image"]
