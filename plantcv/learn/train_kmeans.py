@@ -48,7 +48,7 @@ def train_kmeans(img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=1
         if prefix in img_name:
             img = cv2.imread(os.path.join(img_dir, img_name), -1)
             # Check to make sure no non-image files are in the directory
-            if isinstance(img, np.ndarray): 
+            if isinstance(img, np.ndarray):
                 if idx == 0:
                     # Getting info from first image
                     patches = patch_extract(img, patch_size=patch_size, sigma=sigma, sampling=sampling)
