@@ -35,13 +35,12 @@ def test_pseudocolor_mask(bkgrd, bkgrd_img, axes, visualize_test_data):
     r, c = img.shape
     # Input background image
     if bkgrd_img:
-        bkgrd_img = cv2.imread(visualize_test_data.small_rgb_img)
-    else:
-        bkgrd_img = None
+        bkgrd = cv2.imread(visualize_test_data.small_rgb_img)
+        
     # generate "bad" pixels
     mask_bad = np.zeros((r, c), dtype=np.uint8)
     mask_bad[0:1, 0:1] = 255
-    pseudo_img = pseudocolor(gray_img=img, mask=mask, background=bkgrd, bg_image=bkgrd_img, bad_mask=mask_bad,
+    pseudo_img = pseudocolor(gray_img=img, mask=mask, background=bkgrd, bad_mask=mask_bad,
                              title="Pseudocolored image", axes=axes)
     # Assert the output is a matplotlib figure
     assert isinstance(pseudo_img, Figure)
