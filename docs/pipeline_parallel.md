@@ -18,14 +18,15 @@ a configuration file can be edited and input.
 To create a configuration file, run the following:
 
 ```bash
-plantcv-run-workflow --template my_config.txt
+plantcv-run-workflow --template my_config.json
 
 ```
 
 The code above saves a text configuration file in JSON format using the built-in defaults for parameters. The parameters can be modified
 directly in Python as demonstrated in the [WorkflowConfig documentation](parallel_config.md). A configuration can be
 saved at any time using the `save_config` method to save for later use. Alternatively, open the saved config
-file with your favorite text editor and adjust the parameters as needed.
+file with your favorite text editor and adjust the parameters as needed (refer to the attributes section of
+[WorkflowConfig documentation](parallel_config.md) for details about each parameter).
 
 **Some notes on JSON format:**
 
