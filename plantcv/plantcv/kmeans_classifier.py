@@ -48,6 +48,7 @@ def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10):
     reshape_params = [[h - 2*mg + 1, w - 2*mg + 1], [h - 2*mg, w - 2*mg]]
     # Takes care of even vs odd numbered patch size reshaping
     labeled = train_labels.reshape(reshape_params[patch_size % 2][0], reshape_params[patch_size % 2][1])
+    labeled = labeled.astype("uint8")
     _debug(visual=labeled, filename=os.path.join(params.debug_outdir, "_labeled_img.png"))
     return labeled
 
@@ -70,7 +71,7 @@ def mask_kmeans(labeled_img, k, cat_list=None):
         mask_dict = {}
         L = [*range(k)]
         for i in L:
-            mask_light = np.where(labeled_img == i, 255, 0)
+            mask_light = np.where(labeled_img == i, 255, 0).astype("uint8")
             _debug(visual=mask_light, filename=os.path.join(params.debug_outdir, "_kmeans_mask_"+str(i)+".png"))
             mask_dict[str(i)] = mask_light
         return mask_dict
@@ -80,9 +81,9 @@ def mask_kmeans(labeled_img, k, cat_list=None):
     params.debug = None
     for idx, i in enumerate(cat_list):
         if idx == 0:
-            mask_light = np.where(labeled_img == i, 255, 0)
+            mask_light = np.where(labeled_img == i, 255, 0).astype("uint8")
         else:
-            mask_light = pcv.logical_or(mask_light, np.where(labeled_img == i, 255, 0))
+            mask_light = pcv.logical_or(mask_light, np.where(labeled_img == i, 255, 0).astype("uint8"))
     params.debug = debug
     _debug(visual=mask_light, filename=os.path.join(params.debug_outdir, "_kmeans_combined_mask.png"))
     return mask_light
