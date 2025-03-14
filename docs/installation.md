@@ -65,7 +65,7 @@ If you are new to conda environments, check out this [Getting Started with Conda
 !!! note 
     Additional instructions for Windows users:
 
-    Windows users will need to install a Linux terminal to install and use PlantCV. We recommend using Anaconda Prompt
+    Windows users will need to install a Linux terminal to install and use PlantCV. We recommend using Miniforge Prompt
     which comes with Miniforge.
     
     Alternatively, Windows users can download [Git for Windows](https://gitforwindows.org/). This option requires users to add conda to their `.bashrc` file. See this helpful [guide](https://discuss.codecademy.com/t/setting-up-conda-in-git-bash/534473) for setting up conda in Git Bash. 
