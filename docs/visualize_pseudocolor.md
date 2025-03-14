@@ -13,7 +13,7 @@ unaltered, the  matplotlib default DPI is 100 pixels per inch.
     - gray_img       - Grayscale image data
     - mask           - Binary mask made from selected contours (optional)
     - cmap           - Custom colormap, see [here](https://matplotlib.org/tutorials/colors/colormaps.html) for tips on how to choose a colormap in Matplotlib.
-    - background     - Background color/type. Options are "image" (default), "white", or "black". A mask must be supplied in order to utilize this parameter.
+    - background     - Background color/type. Options are "image" (default), "white", "black" or an array object (grayscale/RGB image). A mask must be supplied in order to utilize this parameter.
     - min_value      - Minimum value (optional) for range of the colorbar. Default: 0
     - max_value      - Maximum value (optional) for range of the colorbar. Default: 255
     - axes           - If False then the title, x-axis, and y-axis won't be displayed (default axes=True).
@@ -61,6 +61,10 @@ pcv.print_image(pseudo_img_masked, 'nir_tv_z300_L1_pseudocolored.png')
 # Pseudocolor the masked area and plot on the grayscale background
 pseudo_img_on_input = pcv.visualize.pseudocolor(gray_img=img, mask=mask,
                                                 background="image", cmap="viridis")
+                                                
+# Pseudocolor the masked area and plot on a RGB background image
+pseudo_img_on_rgb = pcv.visualize.pseudocolor(gray_img=img, mask=mask,
+                                              background=rgb_image, cmap="viridis")
 
 # Use a black background instead
 pseudo_img_black_bkgd = pcv.visualize.pseudocolor(gray_img=img, mask=mask,
@@ -88,6 +92,10 @@ pseudo_img_mask_obj_bad_mask = pcv.visualize.pseudocolor(gray_img=img, obj=obg, 
 **Pseudocolored, background="image"**
 
 ![Screenshot](img/documentation_images/pseudocolor/pseudo_onimage.jpg)
+
+**Pseudocolored, background="image", bg_image=rgb_img**
+
+![Screenshot](img/documentation_images/pseudocolor/pseudo_on_rgb_image.png)
 
 **Pseudocolored, background="black"**
 
