@@ -7,6 +7,10 @@
     has a specific file structure, which may be different than yours unless you are using our tool, but we also have instructions
     to run PlantCV over a flat file directory (just keep this in mind).
 
+### Workflow parallelization step-by-step guide <a name="Scribe Guide"></a>
+
+<iframe src="https://scribehow.com/embed/How_to_Parallelize_Your_Workflows_Using_PlantCV__GIx8o5YNRESjPjxMI_Sq0A" width="100%" height="640" allowfullscreen frameborder="0"></iframe>
+
 ### Running PlantCV workflows over a dataset
 
 We normally execute workflows in a shell script or in in a cluster scheduler job file. The parallelization tool
@@ -18,14 +22,15 @@ a configuration file can be edited and input.
 To create a configuration file, run the following:
 
 ```bash
-plantcv-run-workflow --template my_config.txt
+plantcv-run-workflow --template my_config.json
 
 ```
 
 The code above saves a text configuration file in JSON format using the built-in defaults for parameters. The parameters can be modified
 directly in Python as demonstrated in the [WorkflowConfig documentation](parallel_config.md). A configuration can be
 saved at any time using the `save_config` method to save for later use. Alternatively, open the saved config
-file with your favorite text editor and adjust the parameters as needed.
+file with your favorite text editor and adjust the parameters as needed (refer to the attributes section of
+[WorkflowConfig documentation](parallel_config.md) for details about each parameter).
 
 **Some notes on JSON format:**
 
