@@ -47,6 +47,6 @@ def test_crop_position_mask_bad_inputs(x, y, v_pos, h_pos, test_data):
     """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.fmax, -1)
-    mask = cv2.imread(test_data.small_bin_img, -1)
+    mask = cv2.imread(test_data.fmax, -1)
     with pytest.raises(RuntimeError):
         _ = crop_position_mask(img=img, mask=mask, x=x, y=y, v_pos=v_pos, h_pos=h_pos)
