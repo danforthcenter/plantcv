@@ -41,7 +41,8 @@ def test_crop_position_mask_size(v_pos, h_pos, r, c, test_data):
 @pytest.mark.parametrize("x,y,v_pos,h_pos", [
     [-1, -1, "top", "right"],  # Invalid x and y
     [40, 3, "below", "right"],  # Invalid v_pos
-    [40, 3, "top", "starboard"]  # Invalid h_pos
+    [40, 3, "top", "starboard"],  # Invalid h_pos
+    [40, 3, "top", "left"]  # Invalid dtype of mask
     ])
 def test_crop_position_mask_bad_inputs(x, y, v_pos, h_pos, test_data):
     """Test for PlantCV."""
