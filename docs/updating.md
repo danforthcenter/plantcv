@@ -688,7 +688,7 @@ pages for more details on the input and output variable types.
 #### plantcv.morphology.segment_ends 
 
 * pre v4.6: NA
-* post v4.6: **plantcv.morphology.segment_ends**(*skel_img, leaf_objects, mask=None, label=None*)
+* post v4.6: sorted_obs, debug, bp, tips = **plantcv.morphology.segment_ends**(*skel_img, leaf_objects, mask=None, label=None*)
 
 #### plantcv.morphology.segment_euclidean_length
 

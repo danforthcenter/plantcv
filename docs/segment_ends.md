@@ -4,7 +4,7 @@ Find segment tip and inner branch-point coordinates, and sort them by the y-coor
 
 **plantcv.morphology.segment_ends**(*skel_img, leaf_objects, mask=None, label=None*)
 
-**returns** Re-ordered leaf segments
+**returns** Re-ordered leaf segments, debug image, list of branch point coordinates, list of leaf tip coordinates
 
 - **Parameters:**
     - skel_img - Skeleton image (output from [plantcv.morphology.skeletonize](skeletonize.md))
@@ -29,7 +29,7 @@ pcv.params.debug = "plot"
 # Adjust point thickness with the global line_thickness parameter (default = 5)
 pcv.params.line_thickness = 3 
 
-sorted_obs = pcv.morphology.segment_ends(skel_img=skeleton,
+sorted_obs, debug, bp, tips = pcv.morphology.segment_ends(skel_img=skeleton,
                                          leaf_objects=leaf_objs,
                                          mask=plant_mask,
                                          label="leaves")
@@ -37,7 +37,7 @@ sorted_obs = pcv.morphology.segment_ends(skel_img=skeleton,
 segmented_img, leaves_labeled = pcv.morphology.segment_id(skel_img=skeleton, 
                                                           objects=leaf_objs,
                                                           mask=plant_mask
-# Without ID re-assignment
+# With ID re-assignment
 segmented_img, leaves_labeled = pcv.morphology.segment_id(skel_img=skeleton, 
                                                           objects=sorted_obs,
                                                           mask=plant_mask)
@@ -45,6 +45,8 @@ segmented_img, leaves_labeled = pcv.morphology.segment_id(skel_img=skeleton,
 ```
 
 *Segment end points Debug*
+
+Leaf tips are green, branch points are red. 
 
 ![Screenshot](img/documentation_images/segment_ends/segment_end_pts.png)
 
