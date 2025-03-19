@@ -92,6 +92,9 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
         bkg_cmap = bkgd[background.upper()]["cmap"]
     elif isinstance(background, np.ndarray):
         bkg_img = np.copy(background)
+        if bkg_img.shape[:2] != gray_img1.shape:
+            fatal_error(f"The dimensions of the background image ({bkg_img.shape}) and "
+                        f"the grayscale image ({gray_img1.shape}) are not the same.")
         # converting the array object to the correct color sequence
         bkg_img = cvtColor(bkg_img, COLOR_BGR2RGB)
         bkg_cmap = None
