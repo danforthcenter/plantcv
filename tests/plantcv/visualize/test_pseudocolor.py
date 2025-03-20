@@ -59,3 +59,11 @@ def test_pseudocolor_bad_background(visualize_test_data):
     mask = cv2.imread(visualize_test_data.small_bin_img, -1)
     with pytest.raises(RuntimeError):
         _ = pseudocolor(gray_img=img, mask=mask, background="pink")
+
+def test_pseudocolor_bad_background_image_dimensions(visualize_test_data):
+    """Test for PlantCV."""
+    img = cv2.imread(visualize_test_data.small_bin_img, -1)
+    bkgrd = cv2.imread(visualize_test_data.small_owl_rgb_img)
+    mask = cv2.imread(visualize_test_data.small_bin_img, -1)
+    with pytest.raises(RuntimeError):
+        _ = pseudocolor(gray_img=img, mask=mask, background=bkgrd)
