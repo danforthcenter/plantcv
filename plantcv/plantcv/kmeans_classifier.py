@@ -2,14 +2,14 @@
 
 import os
 import numpy as np
-import plantcv.plantcv as pcv
+from plantcv.plantcv import readimage
 from joblib import load
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
 from plantcv.learn.train_kmeans import patch_extract
 
 
-def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10):
+def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10, mode=None):
     """
     Uses a trained, patch-based kmeans clustering model to predict clusters from an input image.
     Inputs:
@@ -22,7 +22,11 @@ def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10):
     :return labeled: numpy.ndarray
     """
     kmeans = load(model_path)
-    train_img, _, _ = pcv.readimage(img)
+    if not mode:
+        train_img, _, _ = pcv.readimage(img)
+    elif mode=="spectral":
+        spec_obj = readimage(img, mode='envi')
+        train_img = spec_obj.array_data
 
     before = after = int((patch_size - 1)/2)   # odd
     if patch_size % 2 == 0:   # even
@@ -32,7 +36,7 @@ def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10):
     # Padding
     if len(train_img.shape) == 2:  # gray
         train_img = np.pad(train_img, pad_width=((before, after), (before, after)), mode="edge")
-    elif len(train_img.shape) == 3 and train_img.shape[2] == 3:  # rgb
+    elif len(train_img.shape) == 3 and train_img.shape[2] >= 3:  # rgb
         train_img = np.pad(train_img, pad_width=((before, after), (before, after), (0, 0)), mode="edge")
 
     # Shapes
