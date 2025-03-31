@@ -21,7 +21,7 @@ dependencies = [
     "scikit-learn",
     "dask",
     "dask-jobqueue",
-    "opencv-python",
+    "opencv-python-headless",
     "xarray >= 2022.11.0",
     "statsmodels",
     "altair",
