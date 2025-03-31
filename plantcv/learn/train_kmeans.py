@@ -10,8 +10,8 @@ from skimage.filters import gaussian
 from joblib import dump
 
 
-def train_kmeans(img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, sigma=5, sampling=None,
-                 seed=1, num_imgs=0, n_init=10):
+def train_kmeans(img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, mode=None,
+                 sigma=5, sampling=None, seed=1, num_imgs=0, n_init=10):
     """
     Trains a patch-based kmeans clustering model for identifying image features.
     Inputs:
@@ -38,7 +38,15 @@ def train_kmeans(img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=1
     :return fitted: sklearn.cluster._kmeans.MiniBatchKMeans
     """
     # Establish training set
-    file_names = sorted(os.listdir(img_dir))
+    exts = ["jpg", "png", "jpeg", "JPG", "PNG"]
+    file_names = []
+    for i in sorted(os.listdir(img_dir)):
+        if not mode:
+            if i.split(".")[-1] in exts:
+                file_names.append(i)
+        elif mode == "spectral":
+            if i.endswith(".raw"):
+                file_names.append(i)
     if num_imgs == 0:
         training_files = file_names
     else:
@@ -79,7 +87,7 @@ def patch_extract(img, patch_size=10, sigma=5, sampling=None, seed=1):
     # Gaussian blur
     if len(img.shape) == 2:
         img_blur = np.round(gaussian(img, sigma=sigma)*255).astype(np.uint16)
-    elif len(img.shape) == 3 and img.shape[2] == 3:
+    elif len(img.shape) == 3 and img.shape[2] >= 3:
         img_blur = np.round(gaussian(img, sigma=sigma, channel_axis=2)*255).astype(np.uint16)
 
     # Extract patches
