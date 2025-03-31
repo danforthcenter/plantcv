@@ -43,7 +43,7 @@ def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10, mode=None):
     mg = np.floor(patch_size / 2).astype(np.int32)
     if len(train_img.shape) == 2:
         h, w = train_img.shape
-    elif len(train_img.shape) == 3 and train_img.shape[2] == 3:
+    elif len(train_img.shape) == 3 and train_img.shape[2] >= 3:
         h, w, _ = train_img.shape
 
     # Do the prediction
