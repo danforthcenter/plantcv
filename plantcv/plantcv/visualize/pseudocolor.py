@@ -35,7 +35,6 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
     :param cmap: str
     :param background: str, numpy.ndarray
     :param min_value: numeric
-    :param bg_image: numpy.ndarray
     :param max_value: numeric
     :param axes: bool
     :param colorbar: bool
