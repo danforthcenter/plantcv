@@ -5,7 +5,7 @@ import numpy as np
 import cv2
 import random
 from plantcv.plantcv import readimage
-from plantcv.plantcv.params import debug
+from plantcv.plantcv import params
 from sklearn.cluster import MiniBatchKMeans
 from sklearn.feature_extraction import image
 from skimage.filters import gaussian
