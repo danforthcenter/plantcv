@@ -5,6 +5,7 @@ import numpy as np
 import cv2
 import random
 from plantcv.plantcv import readimage
+from plantcv.plantcv.params import debug
 from sklearn.cluster import MiniBatchKMeans
 from sklearn.feature_extraction import image
 from skimage.filters import gaussian
@@ -58,8 +59,11 @@ def train_kmeans(img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=1
             if not mode:
                 img = cv2.imread(os.path.join(img_dir, img_name), -1)
             elif mode == "spectral":
+                debug = params.debug
+                params.debug = None
                 spec_obj = readimage(filename=os.path.join(img_dir, img_name), mode='envi')
                 img = spec_obj.array_data
+                params.debug = debug
             if idx == 0:
                 # Getting info from first image
                 patches = patch_extract(img, patch_size=patch_size, sigma=sigma, sampling=sampling)
