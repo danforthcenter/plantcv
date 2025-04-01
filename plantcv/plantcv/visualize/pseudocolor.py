@@ -2,6 +2,7 @@
 
 import os
 import numpy as np
+from cv2 import cvtColor, COLOR_BGR2RGB
 from matplotlib import pyplot as plt
 from plantcv.plantcv import params
 from plantcv.plantcv import fatal_error
@@ -16,7 +17,7 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
     gray_img    = grayscale image data
     mask        = (optional) binary or labeled mask
     cmap        = (optional) colormap. default is the matplotlib default, viridis
-    background  = (optional) background color/type, options are "image" (gray_img), "white", or "black"
+    background  = (optional) background color/type, options are "image", "white", "black", or an array object (image)
                   (requires a mask). default = 'image'
     min_value   = (optional) minimum value for range of interest. default = 0
     max_value   = (optional) maximum value for range of interest. default = 255
@@ -32,7 +33,7 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
     :param gray_img: numpy.ndarray
     :param mask: numpy.ndarray
     :param cmap: str
-    :param background: str
+    :param background: str, numpy.ndarray
     :param min_value: numeric
     :param max_value: numeric
     :param axes: bool
@@ -51,10 +52,6 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
     # Check if the image is grayscale
     if len(np.shape(gray_img)) != 2:
         fatal_error("Image must be grayscale.")
-
-    # Check if background is a supported type
-    if background.upper() not in ["IMAGE", "WHITE", "BLACK"]:
-        fatal_error(f"Background type {background} is not supported. Please use 'white', 'black', or 'image'.")
 
     bad_idx, bad_idy = [], []
 
@@ -87,8 +84,21 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
             "cmap": "gray"
             }
     }
-    bkg_img = bkgd[background.upper()]["image"]
-    bkg_cmap = bkgd[background.upper()]["cmap"]
+
+    # Check background types and proceed accordingly
+    if isinstance(background, str) and background.upper() in ["IMAGE", "WHITE", "BLACK"]:
+        bkg_img = bkgd[background.upper()]["image"]
+        bkg_cmap = bkgd[background.upper()]["cmap"]
+    elif isinstance(background, np.ndarray):
+        bkg_img = np.copy(background)
+        if bkg_img.shape[:2] != gray_img1.shape:
+            fatal_error(f"The dimensions of the background image ({bkg_img.shape}) and "
+                        f"the grayscale image ({gray_img1.shape}) are not the same.")
+        # converting the array object to the correct color sequence
+        bkg_img = cvtColor(bkg_img, COLOR_BGR2RGB)
+        bkg_cmap = None
+    else:
+        fatal_error(f"Background type {background} is not supported. Please use 'white', 'black', 'image' or an array object.")
 
     if bad_mask is not None:
         debug_mode = params.debug
