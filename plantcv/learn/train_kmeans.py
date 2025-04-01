@@ -22,6 +22,7 @@ def train_kmeans(img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=1
     out_path = Path to directory where the model output should be stored
     prefix = Keyword for target images. Anything in img_dir without the prefix will be skipped
     patch_size = Size of the NxN neighborhood around each pixel
+    mode = Either None (default) denoting an RGB or grayscale image, or "spectral" for multispectral images
     sigma = Gaussian blur sigma. Denotes severity of gaussian blur performed before patch identification
     sampling = Fraction of image from which patches are identified
     seed = Seed for determinism of random elements like sampling of patches
@@ -32,6 +33,7 @@ def train_kmeans(img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=1
     :param out_path: str
     :param prefix: str
     :param patch_size: positive non-zero integer
+    :param mode: str
     :param sigma: positive real number or sequence of positive real numbers
     :param sampling: float (0,1]
     :param seed: positive integer

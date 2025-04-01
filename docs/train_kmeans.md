@@ -1,8 +1,8 @@
 ## Kmeans clustering training 
 
-This function takes in a collection of training images and fits a patch-based kmeans cluster model for later use in classifying cluster assignment in a target image. The target and training images may be in grayscale or RGB image format.
+This function takes in a collection of training images and fits a patch-based kmeans cluster model for later use in classifying cluster assignment in a target image. The target and training images may be in grayscale, RGB, or multispectral image format.
 
-**plantcv.learn.train_kmeans**(img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, sigma=5, sampling=None, seed=1, num_imgs=0, n_init=10)
+**plantcv.learn.train_kmeans**(img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, mode=None, sigma=5, sampling=None, seed=1, num_imgs=0, n_init=10)
 
 **outputs** A model fit file
 
@@ -12,6 +12,7 @@ This function takes in a collection of training images and fits a patch-based km
     - out_path = Path to directory where the model output should be stored
     - prefix = Keyword for target images. Anything in img_dir without the prefix will be skipped
     - patch_size = Size of the NxN neighborhood around each pixel
+    - mode = Either None (default) for RGB image input or "spectral" for multispectral images
     - sigma = Gaussian blur sigma. Denotes severity of gaussian blur performed before patch identification
     - sampling = Fraction of image from which patches are identified
     - seed = Seed for determinism of random elements like sampling of patches 

@@ -605,6 +605,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.3: NA 
 * post v4.3: **plantcv.learn.train_kmeans**(*img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, sigma=5, sampling=None, seed=1, num_imgs=0, n_init=10*)
+* post v4.6: **plantcv.learn.train_kmeans**(*img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, mode=None, sigma=5, sampling=None, seed=1, num_imgs=0, n_init=10*)
 
 #### plantcv.logical_and
 
@@ -813,6 +814,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.3: NA
 * post v4.3: **plantcv.predict_kmeans**(*img, model_path="./kmeansout.fit", patch_size=10*)
+* post v4.6: **plantcv.predict_kmeans**(*img, model_path="./kmeansout.fit", patch_size=10, mode=None*)
 
 #### plantcv.print_image
 

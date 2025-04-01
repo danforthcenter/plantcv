@@ -16,9 +16,11 @@ def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10, mode=None):
     img = An image on which to predict clusters
     model_path = Path to directory where the trained model output is stored
     patch_size = Size of the NxN neighborhood around each pixel
+    mode = either None (default) for RGB or grayscale images, or "spectral" for multispectral images
     :param img: numpy.ndarray
     :param model_path: str
     :param patch_size: positive non-zero integer
+    :param mode: str
     :return labeled: numpy.ndarray
     """
     kmeans = load(model_path)
