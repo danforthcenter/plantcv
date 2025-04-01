@@ -47,13 +47,15 @@ def train_kmeans(img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=1
     for idx, img_name in enumerate(training_files):
         if prefix in img_name:
             img = cv2.imread(os.path.join(img_dir, img_name), -1)
-            if idx == 0:
-                # Getting info from first image
-                patches = patch_extract(img, patch_size=patch_size, sigma=sigma, sampling=sampling)
-            else:
-                # Concatenating each additional image
-                patches = np.vstack((patches, patch_extract(img, patch_size=patch_size, sigma=sigma, sampling=sampling)))
-
+            # Check to make sure non-image files in the directory are not included
+            if isinstance(img, np.ndarray):
+                if idx == 0:
+                    # Getting info from first image
+                    patches = patch_extract(img, patch_size=patch_size, sigma=sigma, sampling=sampling)
+                else:
+                    # Concatenating each additional image
+                    patches = np.vstack((patches, patch_extract(img, patch_size=patch_size, sigma=sigma,
+                                                                sampling=sampling)))
     kmeans = MiniBatchKMeans(n_clusters=k, n_init=n_init, random_state=seed)
     fitted = kmeans.fit(patches)
     dump(fitted, out_path)
