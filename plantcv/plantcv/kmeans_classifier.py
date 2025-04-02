@@ -2,11 +2,10 @@
 
 import os
 import numpy as np
-from plantcv.plantcv import readimage
 from joblib import load
-from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import params
 from plantcv.learn.train_kmeans import patch_extract
+from plantcv.plantcv import readimage, params
+from plantcv.plantcv._debug import _debug
 
 
 def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10, mode=None):
@@ -26,7 +25,7 @@ def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10, mode=None):
     kmeans = load(model_path)
     if not mode:
         train_img, _, _ = pcv.readimage(img)
-    elif mode=="spectral":
+    elif mode == "spectral":
         spec_obj = readimage(img, mode='envi')
         train_img = spec_obj.array_data
 
