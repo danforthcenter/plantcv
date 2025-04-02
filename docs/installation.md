@@ -6,14 +6,14 @@
     Please see our [Contributing Guide](#CONTRIBUTING.md) for more information.
 
 ### Table of contents
-1. [Supported platforms and dependencies](#dependencies)
+1. [Supported platforms](#OS)
 2. [Server/command-line step-by-step guide](#cli)
 3. [Desktop installation step-by-step guide](#desktop)
 4. [Detailed installation instructions](#detailed)
     1. [Conda](#conda)
     2. [PyPI](#pypi)
 
-### Supported platforms and dependencies <a name="dependencies"></a>
+### Supported platforms <a name="OS"></a>
 - Linux 64-bit, x86 processors
 - macOS x86 (Intel) and M (ARM) processors
 - Windows 64-bit, x86 processors
