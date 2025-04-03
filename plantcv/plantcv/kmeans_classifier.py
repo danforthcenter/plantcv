@@ -3,8 +3,8 @@
 import os
 import numpy as np
 from joblib import load
-from plantcv.learn.train_kmeans import patch_extract
-from plantcv.plantcv import readimage, params
+from plantcv.learn.train_kmeans import _patch_extract
+from plantcv.plantcv import readimage, params, logical_or
 from plantcv.plantcv._debug import _debug
 
 
@@ -24,7 +24,7 @@ def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10, mode=None):
     """
     kmeans = load(model_path)
     if not mode:
-        train_img, _, _ = pcv.readimage(img)
+        train_img, _, _ = readimage(img)
     elif mode == "spectral":
         spec_obj = readimage(img, mode='envi')
         train_img = spec_obj.array_data
@@ -48,7 +48,7 @@ def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10, mode=None):
         h, w, _ = train_img.shape
 
     # Do the prediction
-    train_patches = patch_extract(train_img, patch_size=patch_size)
+    train_patches = _patch_extract(train_img, patch_size=patch_size)
     train_labels = kmeans.predict(train_patches)
     reshape_params = [[h - 2*mg + 1, w - 2*mg + 1], [h - 2*mg, w - 2*mg]]
     # Takes care of even vs odd numbered patch size reshaping
@@ -88,7 +88,7 @@ def mask_kmeans(labeled_img, k, cat_list=None):
         if idx == 0:
             mask_light = np.where(labeled_img == i, 255, 0).astype("uint8")
         else:
-            mask_light = pcv.logical_or(mask_light, np.where(labeled_img == i, 255, 0).astype("uint8"))
+            mask_light = logical_or(mask_light, np.where(labeled_img == i, 255, 0).astype("uint8"))
     params.debug = debug
     _debug(visual=mask_light, filename=os.path.join(params.debug_outdir, "_kmeans_combined_mask.png"))
     return mask_light

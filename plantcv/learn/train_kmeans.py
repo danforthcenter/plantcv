@@ -67,10 +67,10 @@ def train_kmeans(img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=1
                 params.debug = debug
             if idx == 0:
                 # Getting info from first image
-                patches = patch_extract(img, patch_size=patch_size, sigma=sigma, sampling=sampling)
+                patches = _patch_extract(img, patch_size=patch_size, sigma=sigma, sampling=sampling)
             else:
                 # Concatenating each additional image
-                patches = np.vstack((patches, patch_extract(img, patch_size=patch_size, sigma=sigma, sampling=sampling)))
+                patches = np.vstack((patches, _patch_extract(img, patch_size=patch_size, sigma=sigma, sampling=sampling)))
 
     kmeans = MiniBatchKMeans(n_clusters=k, n_init=n_init, random_state=seed)
     fitted = kmeans.fit(patches)
@@ -78,7 +78,7 @@ def train_kmeans(img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=1
     return fitted
 
 
-def patch_extract(img, patch_size=10, sigma=5, sampling=None, seed=1):
+def _patch_extract(img, patch_size=10, sigma=5, sampling=None, seed=1):
     """
     Extracts patches from an image.
     Inputs:
