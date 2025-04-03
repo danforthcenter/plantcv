@@ -2,7 +2,7 @@ import pytest
 import cv2
 import numpy as np
 from plantcv.plantcv import Objects
-from plantcv.plantcv.roi import from_binary_image, rectangle, circle, ellipse, auto_grid, multi, custom, filter
+from plantcv.plantcv.roi import from_binary_image, rectangle, circle, ellipse, auto_grid, multi, auto_wells, custom, filter
 
 
 def test_from_binary_image(roi_test_data):
@@ -172,6 +172,13 @@ def test_multi(roi_test_data):
     rois = multi(rgb_img, coord=(10, 10), radius=10, spacing=(10, 10), nrows=2, ncols=2)
     # Assert the contours has 18 ROIs
     assert len(rois.hierarchy) == 4
+
+
+def test_auto_wells(test_data):
+    """Test for PlantCV."""
+    img = cv2.imread(test_data.hough_circle, -1)
+    rois = auto_wells(img, 20, 50, 30, 40, 50, 4, 6, -10)
+    assert len(rois.hierarchy) == 24
 
 
 def test_multi_input_coords(roi_test_data):

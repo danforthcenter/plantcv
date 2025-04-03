@@ -145,7 +145,7 @@ roi = pcv.roi.rectangle(img=img, x=100, y=100, h=100, w=100)
 
 # Filter binary image to make a clean mask based on ROI 
 # (no longer needs `pcv.find_objects` or `pcv.object_composition`)
-mask = pcv.roi.filter(mask=bin_img, roi=roi, roi_type="partial")
+mask = pcv.roi.filter(mask=bin_mask, roi=roi, roi_type="partial")
 
 # Extract shape traits from plant
 shape_img = pcv.analyze.size(img=img,labeled_mask=mask, n_labels=1)
@@ -832,6 +832,11 @@ pages for more details on the input and output variable types.
 * post v3.2: Deprecated, see:
     * pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, axes=True, colorbar=True*)
 
+#### plantcv.qc.exposure
+
+* pre v4.3.1: NA
+* post v4.3.1: chart = **plantcv.qc.exposure**(*rgb_img, warning_threshold=0.05*)
+
 #### plantcv.readbayer
 
 * pre v3.0: NA
@@ -929,6 +934,11 @@ pages for more details on the input and output variable types.
 * pre v4.0: NA
 * post v4.0: roi_objects = **pcv.roi.auto_grid**(*mask, nrows, ncols, radius=None, img=None*)
 
+#### plantcv.roi.auto_wells
+
+* pre v4.6: NA
+* post v4.6: roi_objects = **pcv.roi.auto_wells**(*gray_img, mindist, candec, accthresh, minradius, maxradius, nrows, ncols, radiusadjust=None*)
+
 #### plantcv.roi.multi
 
 * pre v3.1: NA
@@ -1012,115 +1022,124 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: sb_img = **plantcv.sobel_filter**(*gray_img, dx, dy, k*)
 * post v3.2: sb_img = **plantcv.sobel_filer**(*gray_img, dx, dy, ksize*)
 
-#### plantcv.spectral_index.ndvi(hsi, distance=20)
-
-* post v3.8: array = plantcv.spectral_index.ndvi(hsi, distance=20)
-
-#### plantcv.spectral_index.gdvi(hsi, distance=20)
-
-* post v3.8: array = **plantcv.spectral_index.gdvi**(*hsi, distance=20*)
-
-#### plantcv.spectral_index.savi(hsi, distance=20)
-
-* post v3.8: array = **plantcv.spectral_index.savi**(*hsi, distance=20*)
-
-#### plantcv.spectral_index.pri(hsi, distance=20)
-
-* post v3.8: array = **plantcv.spectral_index.pri**(*hsi, distance=20*)
-
-#### plantcv.spectral_index.ari(hsi, distance=20)
+#### plantcv.spectral_index.ari
 
 * post v3.8: array = **plantcv.spectral_index.ari**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.ci_rededge(hsi, distance=20)
+#### plantcv.spectral_index.ci_rededge
 
 * post v3.8: array = **plantcv.spectral_index.ci_rededge**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.cri550(hsi, distance=20)
+#### plantcv.spectral_index.cri550
 
 * post v3.8: array = **plantcv.spectral_index.cri550**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.cri700(hsi, distance=20)
+#### plantcv.spectral_index.cri700
 
 * post v3.8: array = **plantcv.spectral_index.cri700**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.egi(rgb_img)
+#### plantcv.spectral_index.egi
 
 * post v3.8: array = **plantcv.spectral_index.egi**(*rgb_img*)
+* post v4.4: array = **plantcv.spectral_index.egi**(*rgb_img, distance=40*)
 
-#### plantcv.spectral_index.evi(hsi, distance=20)
+#### plantcv.spectral_index.evi
 
 * post v3.8: array = **plantcv.spectral_index.evi**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.mari(hsi, distance=20)
+#### plantcv.spectral_index.gdvi
+
+* post v3.8: array = **plantcv.spectral_index.gdvi**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.gli
+
+* post v4.4: array = **plantcv.spectral_index.gli**(*img, distance=20*)
+
+#### plantcv.spectral_index.mari
 
 * post v3.8: array = **plantcv.spectral_index.mari**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.mcari(hsi, distance=20)
+#### plantcv.spectral_index.mcari
 
 * post v3.8: array = **plantcv.spectral_index.mcari**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.mtci(hsi, distance=20)
+#### plantcv.spectral_index.mtci
 
 * post v3.8: array = **plantcv.spectral_index.mtci**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.ndre(hsi, distance=20)
+#### plantcv.spectral_index.ndre
 
 * post v3.8: array = **plantcv.spectral_index.ndre**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.psnd_chla(hsi, distance=20)
+#### plantcv.spectral_index.ndvi
 
-* post v3.8: array = **plantcv.spectral_index.psnd_chla**(*hsi, distance=20*)
+* post v3.8: array = **plantcv.spectral_index.ndvi**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.psnd_chlb(hsi, distance=20)
+#### plantcv.spectral_index.npci
 
-* post v3.8: array = **plantcv.spectral_index.psnd_chlb**(*hsi, distance=20*)
+* post v4.4: array = **plantcv.spectral_index.npci**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.psnd_car(hsi, distance=20)
+#### plantcv.spectral_index.pri
+
+* post v3.8: array = **plantcv.spectral_index.pri**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.psnd_car
 
 * post v3.8: array = **plantcv.spectral_index.psnd_car**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.psri(hsi, distance=20)
+#### plantcv.spectral_index.psnd_chla
+
+* post v3.8: array = **plantcv.spectral_index.psnd_chla**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.psnd_chlb
+
+* post v3.8: array = **plantcv.spectral_index.psnd_chlb**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.psri
 
 * post v3.8: array = **plantcv.spectral_index.psri**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.pssr_chla(hsi, distance=20)
-
-* post v3.8: array = **plantcv.spectral_index.pssr_chla**(*hsi, distance=20*)
-
-#### plantcv.spectral_index.pssr_chlb(hsi, distance=20)
-
-* post v3.8: array = **plantcv.spectral_index.pssr_chlb**(*hsi, distance=20*)
-
-#### plantcv.spectral_index.pssr_car(hsi, distance=20)
+#### plantcv.spectral_index.pssr_car
 
 * post v3.8: array = **plantcv.spectral_index.pssr_car**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.rgri(hsi, distance=20)
+#### plantcv.spectral_index.pssr_chla
+
+* post v3.8: array = **plantcv.spectral_index.pssr_chla**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.pssr_chlb
+
+* post v3.8: array = **plantcv.spectral_index.pssr_chlb**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.rgri
 
 * post v3.8: array = **plantcv.spectral_index.rgri**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.rvsi(hsi, distance=20)
+#### plantcv.spectral_index.rvsi
 
 * post v3.8: array = **plantcv.spectral_index.rvsi**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.sipi(hsi, distance=20)
+#### plantcv.spectral_index.savi
+
+* post v3.8: array = **plantcv.spectral_index.savi**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.sipi
 
 * post v3.8: array = **plantcv.spectral_index.sipi**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.sr(hsi, distance=20)
+#### plantcv.spectral_index.sr
 
 * post v3.8: array = **plantcv.spectral_index.sr**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.vari(hsi, distance=20)
+#### plantcv.spectral_index.vari
 
 * post v3.8: array = **plantcv.spectral_index.vari**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.vi_green(hsi, distance=20)
+#### plantcv.spectral_index.vi_green
 
 * post v3.8: array = **plantcv.spectral_index.vi_green**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.wi(hsi, distance=20)
+#### plantcv.spectral_index.wi
 
 * post v3.8: array = **plantcv.spectral_index.wi**(*hsi, distance=20*)
 
@@ -1195,6 +1214,11 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev1: NA
 * post v3.0dev2: determinant, transformation_matrix = **plantcv.transform.calc_transformation_matrix**(*matrix_m, matrix_b*)
+
+#### plantcv.transform.auto_correct_color
+
+* pre v4.6: NA
+* post v4.6: corrected_img = **plantcv.transform.auto_correct_color**(*rgb_img, label=None, **kwargs*)
 
 #### plantcv.transform.correct_color
 
@@ -1320,6 +1344,12 @@ pages for more details on the input and output variable types.
 
 * pre v3.13: NA
 * post v3.13: fig_ecdf = **plantcv.visualize.obj_size_ecdf**(*mask, title=None*)
+* post v4.0: fig_ecdf = **plantcv.visualize.obj_size_ecdf**(*mask*)
+
+#### plantcv.visualize.obj_sizes
+
+* pre v3.13: NA
+* post v3.13: plotting_img = **pcv.visualize.obj_sizes**(*img, mask, num_objects=100*)
 
 #### plantcv.visualize.pseudocolor
 
@@ -1329,15 +1359,15 @@ pages for more details on the input and output variable types.
 * post v3.12: pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, axes=True, colorbar=True, obj_padding="auto", title=None*)
 * post v4.0: pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, mask=None, cmap=None, background="image", min_value=0, max_value=255, axes=True, colorbar=True, title=None*)
 
-#### plantcv.visualize.obj_sizes
-
-* pre v3.13: NA
-* post v3.13: plotting_img = **pcv.visualize.obj_sizes**(*img, mask, num_objects=100*)
-
 #### plantcv.visualize.pixel_scatter_plot
 
 * pre v4.0: NA
 * post v4.0: fig, ax = **pcv.visualize.pixel_scatter_plot**(*paths_to_imgs, x_channel, y_channel*)
+
+#### plantcv.visualize.tile
+
+* pre v4.4: NA
+* post v4.4: tile_img = **pcv.visualize.tile**(*img_list, ncol*)
 
 #### plantcv.visualize.time_lapse_video
 

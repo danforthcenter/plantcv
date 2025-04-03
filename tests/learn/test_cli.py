@@ -83,3 +83,31 @@ def test_run_naive_bayes_multiclass_bad_file():
                 "--plots"]
     with pytest.raises(IOError):
         main()
+
+
+def test_run_kmeans_bad_imgdir():
+    """Test for PlantCV."""
+    # Mock ARGV
+    import sys
+    sys.argv = ["plantcv-train", "kmeans",
+                "--imgdir", "does-not-exist",
+                "--categories", "3",
+                "--out", "does-not-exist"]
+    with pytest.raises(IOError):
+        main()
+
+
+def test_run_kmeans(tmpdir, learn_test_data):
+    """Test for PlantCV."""
+    # Temp directory
+    tmp_dir = tmpdir.mkdir("sub")
+    # Define input and output files
+    imgdir = learn_test_data.kmeans_train_dir
+    outfile = os.path.join(str(tmp_dir), "kmeans.fit")
+    # Mock ARGV
+    import sys
+    sys.argv = ["plantcv-train", "kmeans",
+                "--imgdir", imgdir,
+                "--categories", "3",
+                "--out", outfile]
+    assert main() is None

@@ -3,11 +3,14 @@
 import os
 import cv2
 import numpy as np
+import pandas as pd
 from sklearn.mixture import GaussianMixture
+from skimage.measure import label
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import color_palette
 from plantcv.plantcv._helpers import _cv2_findcontours
 from plantcv.plantcv._helpers import _roi_filter
+from plantcv.plantcv._helpers import _hough_circle
 from plantcv.plantcv import fatal_error, warn, params, Objects
 
 
@@ -351,17 +354,15 @@ def _rois_from_coordinates(img, coord=None, radius=None):
 
     Returns
     -------
-    plantcv.plantcv.classes.Objects, numpy.ndarray, numpy.ndarray
-        A dataclass with roi objects and hierarchies, A binary image with overlapping ROIs, A binary image with all ROIs
+    plantcv.plantcv.classes.Objects, numpy.ndarray
+        A dataclass with roi objects and hierarchies, A binary image with overlapping ROIs
     """
     if radius is None:
         fatal_error("Specify a radius if creating rois from a list of coordinates")
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
     radius = _adjust_radius_coord(height, width, coord, radius)
-    overlap_img = np.zeros((height, width))
-    # Initialize a binary image of the circle that will contain all ROI
-    all_roi_img = np.zeros((height, width), dtype=np.uint8)
+    overlap_img = np.zeros((height, width), dtype=np.uint8)
     roi_objects = Objects()
     for i in range(0, len(coord)):
         # Initialize a binary image for each circle
@@ -369,15 +370,13 @@ def _rois_from_coordinates(img, coord=None, radius=None):
         y = int(coord[i][1])
         x = int(coord[i][0])
         # Draw the circle on the binary image
-        # Keep track of all roi
-        all_roi_img = cv2.circle(all_roi_img, (x, y), radius, 255, -1)
         # Keep track of each roi individually to check overlapping
         circle_img = cv2.circle(bin_img, (x, y), radius, 255, -1)
-        overlap_img = overlap_img + circle_img
+        overlap_img = cv2.circle(overlap_img, (x, y), radius, 255, -1)
         # Make a list of contours and hierarchies
         rc, rh = cv2.findContours(circle_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[-2:]
         roi_objects.append(rc, rh)
-    return roi_objects, overlap_img, all_roi_img
+    return roi_objects, overlap_img
 
 
 def _grid_roi(img, nrows, ncols, coord=None, radius=None, spacing=None):
@@ -400,8 +399,8 @@ def _grid_roi(img, nrows, ncols, coord=None, radius=None, spacing=None):
 
     Returns
     -------
-    plantcv.plantcv.classes.Objects, numpy.ndarray, numpy.ndarray
-        A dataclass with roi objects and hierarchies, A binary image with overlapping ROIs, A binary image with all ROIs
+    plantcv.plantcv.classes.Objects, numpy.ndarray
+        A dataclass with roi objects and hierarchies, A binary image with overlapping ROIs
     """
     if radius is None:
         RADIUS_RATIO = 0.325
@@ -414,9 +413,7 @@ def _grid_roi(img, nrows, ncols, coord=None, radius=None, spacing=None):
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
     radius = _adjust_radius_grid(height, width, coord, radius, spacing, nrows, ncols)
-    overlap_img = np.zeros((height, width))
-    # Initialize a binary image of the circle that will contain all ROI
-    all_roi_img = np.zeros((height, width), dtype=np.uint8)
+    overlap_img = np.zeros((height, width), dtype=np.uint8)
     roi_objects = Objects()
     # Loop over each row
     for i in range(0, nrows):
@@ -430,15 +427,14 @@ def _grid_roi(img, nrows, ncols, coord=None, radius=None, spacing=None):
             # horizontal spacing between chips
             x = coord[0] + j * spacing[0]
             # Draw the circle on the binary images
-            # Keep track of all roi
-            all_roi_img = cv2.circle(all_roi_img, (x, y), radius, 255, -1)
             # Keep track of each roi individually to check overlapping
             circle_img = cv2.circle(bin_img, (x, y), radius, 255, -1)
-            overlap_img = overlap_img + circle_img
+            # Draw the circle on the overall mask
+            overlap_img = cv2.circle(overlap_img, (x, y), radius, 255, -1)
             # Make a list of contours and hierarchies
             rc, rh = cv2.findContours(circle_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[-2:]
             roi_objects.append(rc, rh)
-    return roi_objects, overlap_img, all_roi_img
+    return roi_objects, overlap_img
 
 
 def auto_grid(mask, nrows, ncols, radius=None, img=None):
@@ -466,9 +462,11 @@ def auto_grid(mask, nrows, ncols, radius=None, img=None):
     coord, spacing = _calculate_grid(mask, nrows, ncols)
     if img is None:
         img = mask
-    roi_objects, overlap_img, _ = _grid_roi(img, nrows, ncols,
-                                            coord, radius, spacing)
-    if np.amax(overlap_img) > 255:
+    roi_objects, overlap_img = _grid_roi(img, nrows, ncols, coord, radius, spacing)
+    # Label the ROIs to check for overlap
+    _, num_labels = label(overlap_img, return_num=True)
+    # Check for overlapping ROIs where the number of labels is not equal to the number of expected ROIs
+    if num_labels != nrows * ncols:
         warn("Two or more of the user defined regions of interest overlap! "
              "If you only see one ROI then they may overlap exactly.")
     # Draw the ROIs if requested
@@ -502,24 +500,106 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
     :return roi_objects: plantcv.plantcv.classes.Objects
     """
     # Grid of ROIs
+    num_rois = 0
     if (isinstance(coord, tuple)) and ((nrows and ncols) is not None) and (isinstance(spacing, tuple)):
-        roi_objects, overlap_img, _ = _grid_roi(img, nrows, ncols, coord,
-                                                radius, spacing)
+        roi_objects, overlap_img = _grid_roi(img, nrows, ncols, coord, radius, spacing)
+        # The number of ROIs is the product of the number of rows and columns
+        num_rois = nrows * ncols
     # User specified ROI centers
     elif (isinstance(coord, list)) and ((nrows and ncols) is None) and (spacing is None):
-        roi_objects, overlap_img, _ = _rois_from_coordinates(img=img, coord=coord, radius=radius)
+        roi_objects, overlap_img = _rois_from_coordinates(img=img, coord=coord, radius=radius)
+        # The number of ROIs is the length of the list of coordinates
+        num_rois = len(coord)
     else:
         fatal_error("Function can either make a grid of ROIs (user must provide nrows, ncols, spacing, and coord) "
                     "or take custom ROI coordinates (user must provide only a list of tuples to 'coord' parameter). "
                     "For automatic detection of a grid layout from just nrows, ncols, and a binary mask, use auto_grid")
 
-    if np.amax(overlap_img) > 255:
+    # Label the ROIs to check for overlap
+    _, num_labels = label(overlap_img, return_num=True)
+    # Check for overlapping ROIs where the number of labels is not equal to the number of expected ROIs
+    if num_labels != num_rois:
         warn("Two or more of the user defined regions of interest overlap! "
              "If you only see one ROI then they may overlap exactly.")
 
     # Draw the ROIs if requested
     _draw_roi(img=img, roi_contour=roi_objects)
     return roi_objects
+
+
+def auto_wells(gray_img, mindist, candec, accthresh, minradius, maxradius, nrows, ncols, radiusadjust=None):
+    """Hough Circle Well Detection.
+
+    Keyword inputs:
+    gray_img = gray image (np.ndarray)
+    mindist = minimum distance between detected circles
+    candec = higher threshold of canny edge detector
+    accthresh = accumulator threshold for the circle centers
+    minradius = minimum circle radius
+    maxradius = maximum circle radius
+    nrows = expected number of rows
+    ncols = expected number of columns
+    radiusadjust = amount to adjust the average radius, this can be desirable
+    if you want ROI to sit inside a well, for example (in that case you might
+    set it to a negative value).
+
+    :param gray_img: np.ndarray
+    :param mindist: int
+    :param candec: int
+    :param accthresh: int
+    :param minradius: int
+    :param maxradius: int
+    :param nrows = int
+    :param ncols = int
+    :return roi: plantcv.plantcv.classes.Objects
+    """
+    # Use hough circle helper function
+    maxfind = nrows * ncols
+    df, img = _hough_circle(gray_img, mindist, candec, accthresh, minradius,
+                            maxradius, maxfind)
+
+    _debug(img, filename=os.path.join(params.debug_outdir, str(params.device) + '_roi_houghcircle.png'), cmap='gray')
+
+    xlist = []
+    centers_x = df['x'].values.reshape(-1, 1)
+    centers_y = df['y'].values.reshape(-1, 1)
+    gm_x = GaussianMixture(n_components=ncols, random_state=0).fit(centers_x)
+    gm_y = GaussianMixture(n_components=nrows, random_state=0).fit(centers_y)
+    clusters_x = gm_x.means_[:, 0]
+    clusters_y = gm_y.means_[:, 0]
+
+    sorted_indicesx = np.argsort(clusters_x)
+    sorted_x = np.sort(clusters_x)
+    xlist = list(range(len(clusters_x)))
+    clusterxdf = {'clusters_x': sorted_x, 'sorted': sorted_indicesx,
+                  'xindex': [0]*len(clusters_x)}
+    xdf = pd.DataFrame(clusterxdf)
+    xdf = xdf.sort_values(by='clusters_x', ascending=True)
+    xdf['xindex'] = xlist
+
+    sorted_indicesy = np.argsort(clusters_y)
+    sorted_y = np.sort(clusters_y)
+    ylist = list(range(len(clusters_y)))
+    clusterydf = {'clusters_y': sorted_y, 'sorted': sorted_indicesy,
+                  'yindex': [0]*len(clusters_y)}
+    ydf = pd.DataFrame(clusterydf)
+    ydf = ydf.sort_values(by='clusters_y', ascending=True)
+    ydf['yindex'] = ylist
+
+    df['column'] = gm_x.predict(centers_x)
+    df['row'] = gm_y.predict(centers_y)
+
+    df['row'] = df['row'].replace(list(ydf['sorted']), list(ydf['yindex']))
+    df['column'] = df['column'].replace(list(xdf['sorted']), list(xdf['xindex']))
+
+    df = df.sort_values(by=['row', 'column'], ascending=[True, True])
+    df['xy'] = list(zip(df.x, df.y))
+
+    radiusfinal = int(np.mean(list(df['radius'])))+radiusadjust
+
+    rois = multi(gray_img, list(df['xy']), radius=radiusfinal)
+
+    return rois
 
 
 def custom(img, vertices):

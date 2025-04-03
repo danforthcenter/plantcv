@@ -10,18 +10,23 @@ languages. See [http://jupyter.org/](http://jupyter.org/).
 
 ### How to use PlantCV with Jupyter
 
-In previous versions of PlantCV, debugging image analysis workflows
-required running scripts with debug mode enabled so that intermediate
-output images would be created for each step. In the latest versions
-of PlantCV, analysis workflow scripts can be developed in Jupyter
-Notebooks so that the input and output images of each step in a workflow
-can be visualized instantly within the notebook. 
+Using PlantCV with Jupyter Notebooks allows users to develop analysis workflows 
+with instant visualization of input and output images of each step. 
+Jupyter Notebooks are a great way to develop an analysis workflow before running PlantCV workflows 
+over many images.
 
-**Example of PlantCV running in Jupyter**
+**Step-by-step guide to using PlantCV in Jupyter Notebooks**
+
+<iframe src="https://scribehow.com/embed/Using_PlantCV_with_Jupyter_Notebooks__Jnhb53WlTtqohKYR8_UUfA" width="640" height="640" allowfullscreen frameborder="0"></iframe>
+
+---
+
+### Example of PlantCV running in Jupyter
 
 ![Screenshot](img/documentation_images/jupyter/jupyter_screenshot.jpg)
 
-PlantCV is automatically set up to run in Jupyter Notebook but you will need to install Jupyter.
+PlantCV is automatically set up to run in Jupyter Notebook but you will need to install Jupyter in your 
+environment if you have not already.
 For example, with `conda`:
 
 ```bash

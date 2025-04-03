@@ -6,7 +6,7 @@ import os
 import cv2
 import math
 import numpy as np
-from plantcv.plantcv import params, outputs, fatal_error
+from plantcv.plantcv import params, outputs, fatal_error, deprecation_warning
 from plantcv.plantcv._debug import _debug
 
 
@@ -108,7 +108,10 @@ def detect_color_card(rgb_img, label=None, **kwargs):
     # Set lable to params.sample_label if None
     if label is None:
         label = params.sample_label
-
+    deprecation_warning(
+        "The 'label' parameter is no longer utilized, since color chip size is now metadata. "
+        "It will be removed in PlantCV v5.0."
+        )
     # Get keyword arguments and set defaults if not set
     min_size = kwargs.get("min_size", 1000)  # Minimum size for _is_square chip filtering
     radius = kwargs.get("radius", 20)  # Radius of circles to draw on the color chips
@@ -142,6 +145,9 @@ def detect_color_card(rgb_img, label=None, **kwargs):
     if len(filtered_contours) == 0:
         fatal_error('No color card found')
 
+    # Draw filtered contours on debug img
+    debug_img = np.copy(rgb_img)
+    cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
     # Initialize chip shape lists
     marea, mwidth, mheight = _get_contour_sizes(filtered_contours)
 
@@ -172,18 +178,12 @@ def detect_color_card(rgb_img, label=None, **kwargs):
     new_centers = cv2.transform(np.array([centers]), m_transform)[0][:, 0:2]
 
     # Create labeled mask and debug image of color chips
-    labeled_mask, debug_img = _draw_color_chips(rgb_img, new_centers, radius)
+    labeled_mask, debug_img = _draw_color_chips(debug_img, new_centers, radius)
 
     # Save out chip size for pixel to cm standardization
-    outputs.add_observation(sample=label, variable='median_color_chip_size', trait='size of color card chips identified',
-                            method='plantcv.plantcv.transform.detect_color_card', scale='square pixels',
-                            datatype=float, value=chip_size, label="median")
-    outputs.add_observation(sample=label, variable='median_color_chip_width', trait='width of color card chips identified',
-                            method='plantcv.plantcv.transform.detect_color_card', scale='pixels',
-                            datatype=float, value=chip_width, label="width")
-    outputs.add_observation(sample=label, variable='median_color_chip_height', trait='height of color card chips identified',
-                            method='plantcv.plantcv.transform.detect_color_card', scale='pixels',
-                            datatype=float, value=chip_height, label="height")
+    outputs.add_metadata(term="median_color_chip_size", datatype=float, value=chip_size)
+    outputs.add_metadata(term="median_color_chip_width", datatype=float, value=chip_width)
+    outputs.add_metadata(term="median_color_chip_height", datatype=float, value=chip_height)
 
     # Debugging
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))

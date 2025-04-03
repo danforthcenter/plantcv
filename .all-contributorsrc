@@ -609,6 +609,87 @@
         "code",
         "doc"
       ]
+    },
+    {
+      "login": "emmanuel-ferdman",
+      "name": "Emmanuel Ferdman",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35470921?v=4",
+      "profile": "https://github.com/emmanuel-ferdman",
+      "contributions": [
+        "bug",
+        "doc"
+      ]
+    },
+    {
+      "login": "jbraley1107",
+      "name": "jbraley1107",
+      "avatar_url": "https://avatars.githubusercontent.com/u/186077704?v=4",
+      "profile": "https://github.com/jbraley1107",
+      "contributions": [
+        "review",
+        "userTesting",
+        "bug"
+      ]
+    },
+    {
+      "login": "hkmanching",
+      "name": "Heather Manching",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8751385?v=4",
+      "profile": "https://github.com/hkmanching",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "mlohbihler",
+      "name": "Matthew Lohbihler",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1182059?v=4",
+      "profile": "https://github.com/mlohbihler",
+      "contributions": [
+        "bug",
+        "doc"
+      ]
+    },
+    {
+      "login": "Sunitalama2",
+      "name": "Sunitalama2",
+      "avatar_url": "https://avatars.githubusercontent.com/u/195969937?v=4",
+      "profile": "https://github.com/Sunitalama2",
+      "contributions": [
+        "tutorial",
+        "doc"
+      ]
+    },
+    {
+      "login": "trogers623",
+      "name": "trogers623",
+      "avatar_url": "https://avatars.githubusercontent.com/u/195968055?v=4",
+      "profile": "https://github.com/trogers623",
+      "contributions": [
+        "tutorial",
+        "doc"
+      ]
+    },
+    {
+      "login": "eseigeldanf",
+      "name": "eseigeldanf",
+      "avatar_url": "https://avatars.githubusercontent.com/u/195968072?v=4",
+      "profile": "https://github.com/eseigeldanf",
+      "contributions": [
+        "bug",
+        "tutorial",
+        "doc"
+      ]
+    },
+    {
+      "login": "clhendrikse",
+      "name": "Chloe Hendrikse",
+      "avatar_url": "https://avatars.githubusercontent.com/u/70405404?v=4",
+      "profile": "https://github.com/clhendrikse",
+      "contributions": [
+        "tutorial",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

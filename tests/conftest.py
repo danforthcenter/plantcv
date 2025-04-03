@@ -82,6 +82,10 @@ class TestData:
         self.cluster_names_too_many = os.path.join(self.datadir, "cluster_names_too_many.txt")
         # Kmeans classifier directory
         self.kmeans_classifier_dir = os.path.join(self.datadir, "kmeans_classifier_dir")
+        # Circle Wells for Hough Circle
+        self.hough_circle = os.path.join(self.datadir, "circle-wells.png")
+        # Kmeans classifier grayscale directory
+        self.kmeans_classifier_gray_dir = os.path.join(self.datadir, "kmeans_classifier_gray_dir")
 
     @staticmethod
     def load_hsi(pkl_file):

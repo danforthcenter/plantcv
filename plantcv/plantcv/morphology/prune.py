@@ -68,9 +68,6 @@ def prune(skel_img, size=0, mask=None):
         pruned_img = image_subtract(pruned_img, removed_barbs)
         pruned_img = _iterative_prune(pruned_img, 1)
 
-    # Reset debug mode
-    params.debug = debug
-
     # Make debugging image
     if mask is None:
         pruned_plot = np.zeros(skel_img.shape[:2], np.uint8)
@@ -81,10 +78,13 @@ def prune(skel_img, size=0, mask=None):
     cv2.drawContours(pruned_plot, removed_segments, -1, (0, 0, 255), params.line_thickness, lineType=8)
     cv2.drawContours(pruned_plot, pruned_obj, -1, (150, 150, 150), params.line_thickness, lineType=8)
 
-    _debug(visual=pruned_img, filename=os.path.join(params.debug_outdir, f"{params.device}_pruned.png"))
-    _debug(visual=pruned_img, filename=os.path.join(params.debug_outdir, f"{params.device}_pruned_debug.png"))
-
     # Segment the pruned skeleton
     segmented_img, segment_objects = segment_skeleton(pruned_img, mask)
+
+    # Reset debug mode
+    params.debug = debug
+
+    _debug(visual=pruned_img, filename=os.path.join(params.debug_outdir, f"{params.device}_pruned.png"))
+    _debug(visual=pruned_plot, filename=os.path.join(params.debug_outdir, f"{params.device}_pruned_debug.png"))
 
     return pruned_img, segmented_img, segment_objects
