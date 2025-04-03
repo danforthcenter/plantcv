@@ -2,27 +2,32 @@
 
 import os
 import numpy as np
-import plantcv.plantcv as pcv
 from joblib import load
+from plantcv.learn.train_kmeans import _patch_extract
+from plantcv.plantcv import readimage, params, logical_or
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import params
-from plantcv.learn.train_kmeans import patch_extract
 
 
-def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10):
+def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10, mode=None):
     """
     Uses a trained, patch-based kmeans clustering model to predict clusters from an input image.
     Inputs:
     img = An image on which to predict clusters
     model_path = Path to directory where the trained model output is stored
     patch_size = Size of the NxN neighborhood around each pixel
+    mode = either None (default) for RGB or grayscale images, or "spectral" for multispectral images
     :param img: numpy.ndarray
     :param model_path: str
     :param patch_size: positive non-zero integer
+    :param mode: str
     :return labeled: numpy.ndarray
     """
     kmeans = load(model_path)
-    train_img, _, _ = pcv.readimage(img)
+    if not mode:
+        train_img, _, _ = readimage(img)
+    elif mode == "spectral":
+        spec_obj = readimage(img, mode='envi')
+        train_img = spec_obj.array_data
 
     before = after = int((patch_size - 1)/2)   # odd
     if patch_size % 2 == 0:   # even
@@ -32,18 +37,18 @@ def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10):
     # Padding
     if len(train_img.shape) == 2:  # gray
         train_img = np.pad(train_img, pad_width=((before, after), (before, after)), mode="edge")
-    elif len(train_img.shape) == 3 and train_img.shape[2] == 3:  # rgb
+    elif len(train_img.shape) == 3 and train_img.shape[2] >= 3:  # rgb
         train_img = np.pad(train_img, pad_width=((before, after), (before, after), (0, 0)), mode="edge")
 
     # Shapes
     mg = np.floor(patch_size / 2).astype(np.int32)
     if len(train_img.shape) == 2:
         h, w = train_img.shape
-    elif len(train_img.shape) == 3 and train_img.shape[2] == 3:
+    elif len(train_img.shape) == 3 and train_img.shape[2] >= 3:
         h, w, _ = train_img.shape
 
     # Do the prediction
-    train_patches = patch_extract(train_img, patch_size=patch_size)
+    train_patches = _patch_extract(train_img, patch_size=patch_size)
     train_labels = kmeans.predict(train_patches)
     reshape_params = [[h - 2*mg + 1, w - 2*mg + 1], [h - 2*mg, w - 2*mg]]
     # Takes care of even vs odd numbered patch size reshaping
@@ -83,7 +88,7 @@ def mask_kmeans(labeled_img, k, cat_list=None):
         if idx == 0:
             mask_light = np.where(labeled_img == i, 255, 0).astype("uint8")
         else:
-            mask_light = pcv.logical_or(mask_light, np.where(labeled_img == i, 255, 0).astype("uint8"))
+            mask_light = logical_or(mask_light, np.where(labeled_img == i, 255, 0).astype("uint8"))
     params.debug = debug
     _debug(visual=mask_light, filename=os.path.join(params.debug_outdir, "_kmeans_combined_mask.png"))
     return mask_light
