@@ -141,7 +141,9 @@ def _color_card_detection(rgb_img, **kwargs):
     # Draw filtered contours on debug img
     debug_img = np.copy(rgb_img)
     cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
-    convex_hull_mask = cv2.convexHull(filtered_contours)
+    # Find the convex hull of the detected chips
+    convexHull = cv2.convexHull(np.vstack(filtered_contours))
+    convex_hull_mask = cv2.drawContours(np.zeros(rgb_img.shape[0:2]), [convexHull], -1, (255), cv2.FILLED)
     
     # Initialize chip shape lists
     marea, mwidth, mheight = _get_contour_sizes(filtered_contours)
