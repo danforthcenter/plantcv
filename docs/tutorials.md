@@ -330,6 +330,19 @@
     </div>
 </div>
 
+<!--Geospatial Plant Height-->
+<div class="card" style="display:block">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/geospatial-plant-height');return false;">
+        <img src="https://github.com/danforthcenter/plantcv-geospatial-tutorial-plant-height/blob/main/tutorial_card.png?raw=true" alt="Geospatial plant height tutorial" width="600" height="auto">
+    </a>
+    <div class="card-title">
+        <h6>Geospatial plant height</h6>
+    </div>
+    <div class="card-tags">
+        <span><strong>Tags</strong>: geospatial, plant, height</span>
+    </div>
+</div>
+
 <script type="text/javascript">
     function getTags() {
         var tag_list = [];
