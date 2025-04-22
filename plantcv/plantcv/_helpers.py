@@ -86,7 +86,7 @@ def _find_segment_ends(skel_img, leaf_objects, plotting_img, size):
             
     # Remove the segments that cannot be resorted, since they do not have a branch point 
     for k in remove:
-        sortabled_objs.remove(leaf_objects[k])
+        sortabled_objs.pop(k)
 
     return labeled_img, tip_list, inner_list, labels, sortabled_objs
 
