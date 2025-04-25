@@ -41,7 +41,7 @@ def segment_ends(skel_img, leaf_objects, mask=None, label=None):
     else:
         labeled_img = mask.copy()
     # Find and sort segment ends, and create debug image
-    labeled_img, tip_list, inner_list, _ = _find_segment_ends(
+    labeled_img, tip_list, inner_list, _, objs = _find_segment_ends(
         skel_img=skel_img, leaf_objects=leaf_objects, plotting_img=labeled_img, size=1)
     # Set lable to params.sample_label if None
     if label is None:
@@ -57,6 +57,6 @@ def segment_ends(skel_img, leaf_objects, mask=None, label=None):
         d[i] = coord[1]  # y-coord is the key and index the value
     values = list(d.values())
     sorted_key_index = np.argsort(values)
-    sorted_objs = [leaf_objects[i] for i in sorted_key_index[::-1]]
+    sorted_objs = [objs[i] for i in sorted_key_index[::-1]]
 
     return sorted_objs, labeled_img, inner_list, tip_list
