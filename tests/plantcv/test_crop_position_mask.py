@@ -17,8 +17,8 @@ def test_crop_position_mask(v_pos, h_pos, test_data):
 def test_crop_position_rgb_inputs(test_data):
     """Test for PlantCV."""
     # Read in test data - mask is bigger than img and both are RGB
-    mask = cv2.imread(test_data.fmax)
-    img = cv2.imread(test_data.small_bin_img)
+    mask = cv2.imread(test_data.small_bin_img, -1)
+    img = cv2.imread(test_data.small_bin_img, -1)
     newmask = crop_position_mask(img=img, mask=mask, x=40, y=3, v_pos="top", h_pos="left")
     assert newmask.shape == img.shape[:2]
 
@@ -41,12 +41,13 @@ def test_crop_position_mask_size(v_pos, h_pos, r, c, test_data):
 @pytest.mark.parametrize("x,y,v_pos,h_pos", [
     [-1, -1, "top", "right"],  # Invalid x and y
     [40, 3, "below", "right"],  # Invalid v_pos
-    [40, 3, "top", "starboard"]  # Invalid h_pos
+    [40, 3, "top", "starboard"],  # Invalid h_pos
+    [40, 3, "top", "left"]  # Invalid dtype of mask
     ])
 def test_crop_position_mask_bad_inputs(x, y, v_pos, h_pos, test_data):
     """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.fmax, -1)
-    mask = cv2.imread(test_data.small_bin_img, -1)
+    mask = cv2.imread(test_data.fmax, -1)
     with pytest.raises(RuntimeError):
         _ = crop_position_mask(img=img, mask=mask, x=x, y=y, v_pos=v_pos, h_pos=h_pos)

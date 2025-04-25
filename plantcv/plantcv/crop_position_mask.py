@@ -50,11 +50,11 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
     ori_img = _grayscale_to_rgb(img)
 
     # Image shape
-    ix, iy = np.shape(img)[0:2]
+    ix, iy = np.shape(ori_img)[0:2]
 
     # Convert mask to grayscale if needed and get its shape
-    if len(np.shape(mask)) == 3:
-        mask = mask[0]
+    if len(np.shape(mask)) > 2 or len(np.unique(mask)) > 2:
+        fatal_error("Mask should be a binary image")
     mx, my = np.shape(mask)
 
     # resize the images so they are equal in size and centered
