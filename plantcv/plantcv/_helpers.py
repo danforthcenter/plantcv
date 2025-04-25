@@ -54,7 +54,7 @@ def _find_segment_ends(skel_img, leaf_objects, plotting_img, size):
             # If none of the tips are within a segment_end then it's an insertion segment
             if np.sum(overlap_img) == 0:
                 inner_list.append(coord)
-                cv2.circle(labeled_img, coord, params.line_thickness, (50, 0, 255), -1)  # Red auricles
+                cv2.circle(labeled_img, coord, params.line_thickness, (50, 0, 255), -1)  # Red auricles/branch points
                 branch_pt_found = True
             else:
                 tip_list.append(coord)
