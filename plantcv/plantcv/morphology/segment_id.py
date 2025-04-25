@@ -7,14 +7,13 @@ from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 
 
-def segment_id(skel_img, objects, mask=None, optimal_assignment=None):
+def segment_id(skel_img, objects, mask=None):
     """Plot segment IDs.
 
     Inputs:
     skel_img      = Skeletonized image
     objects       = List of contours
     mask          = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
-    optimal_assignment = functions similar to the "label" parameter where it replaces the unique labels
 
     Returns:
     segmented_img = Segmented image
@@ -41,30 +40,20 @@ def segment_id(skel_img, objects, mask=None, optimal_assignment=None):
 
     # Plot all segment contours
     for i, cnt in enumerate(objects):
-        if optimal_assignment is not None:
-            color_index = optimal_assignment[i]
-        else:
-            color_index = i
         cv2.drawContours(segmented_img, cnt, -1, rand_color[i], params.line_thickness, lineType=8)
         # Store coordinates for labels
-        label_coord_x.append(objects[color_index][0][0][0])
-        label_coord_y.append(objects[color_index][0][0][1])
+        label_coord_x.append(objects[i][0][0][0])
+        label_coord_y.append(objects[i][0][0][1])
 
     labeled_img = segmented_img.copy()
 
     for i, cnt in enumerate(objects):
-        if optimal_assignment is not None:
-            # relabel IDs
-            text = f"{optimal_assignment[i]}"
-            color_index = optimal_assignment[i]
-        else:
-            text = f"{i}"
-            color_index = i
-        # Label segments
-        w = label_coord_x[color_index]
-        h = label_coord_y[color_index]
+        # Label slope lines
+        w = label_coord_x[i]
+        h = label_coord_y[i]
+        text = f"{i}"
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                    fontScale=params.text_size, color=rand_color[color_index], thickness=params.text_thickness)
+                    fontScale=params.text_size, color=rand_color[i], thickness=params.text_thickness)
 
     _debug(visual=labeled_img, filename=os.path.join(params.debug_outdir, f"{params.device}_segmented_ids.png"))
 
