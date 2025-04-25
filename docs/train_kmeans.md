@@ -2,7 +2,7 @@
 
 This function takes in a collection of training images and fits a patch-based kmeans cluster model for later use in classifying cluster assignment in a target image. The target and training images may be in grayscale or RGB image format.
 
-**plantcv.learn.train_kmeans**(img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, sigma=5, sampling=None, seed=1, num_imgs=0, n_init=10)
+**plantcv.learn.train_kmeans**(*img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, sigma=5, sampling=None, seed=1, num_imgs=0, n_init=10*)
 
 **outputs** A model fit file
 
