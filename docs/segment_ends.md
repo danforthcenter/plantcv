@@ -12,7 +12,7 @@ Find segment tip and inner branch-point coordinates, and sort them by the y-coor
     - mask - Binary mask for plotting. If provided, the debugging image will be overlaid on the mask (optional).
     - label - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
 - **Context:**
-    - Aims to sort leaf objects by biological age. This tends to work somewhat consistently for grass species that have leav
+    - Aims to sort leaf objects by biological age. This tends to work somewhat consistently for grass species that have the youngest leaves emerge at the top of the plant.
 
 **Reference Images**
 
@@ -36,7 +36,7 @@ sorted_obs, debug, bp, tips = pcv.morphology.segment_ends(skel_img=skeleton,
 
 segmented_img, leaves_labeled = pcv.morphology.segment_id(skel_img=skeleton, 
                                                           objects=leaf_objs,
-                                                          mask=plant_mask
+                                                          mask=plant_mask)
 # With ID re-assignment
 segmented_img, leaves_labeled = pcv.morphology.segment_id(skel_img=skeleton, 
                                                           objects=sorted_obs,
@@ -44,7 +44,7 @@ segmented_img, leaves_labeled = pcv.morphology.segment_id(skel_img=skeleton,
 
 ```
 
-*Segment end points Debug*
+**Segment End points Debug**
 
 Leaf tips are green, branch points are red. 
 
