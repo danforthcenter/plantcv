@@ -20,7 +20,7 @@ def segment_ends(skel_img, leaf_objects, mask=None, label=None):
     sorted_obs       = Reordered segments based on segment branch point y-coordinates
     labeled_img      = Debug image with segments ends drawn on
     inner_list       = List of branch point coordinates of the input leaf_objects
-    tip_list         = List of leaf tip coordinates of the input leaf_objects 
+    tip_list         = List of leaf tip coordinates of the input leaf_objects
     
 
     :param segmented_img: numpy.ndarray
@@ -46,7 +46,7 @@ def segment_ends(skel_img, leaf_objects, mask=None, label=None):
     # Set lable to params.sample_label if None
     if label is None:
         label = params.sample_label
-    
+
     # Reset debug mode
     params.debug = debug
     _debug(visual=labeled_img, filename=os.path.join(params.debug_outdir, f"{params.device}_segment_ends.png"))

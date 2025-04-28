@@ -59,10 +59,10 @@ def _find_segment_ends(skel_img, leaf_objects, plotting_img, size):
             else:
                 tip_list.append(coord)
                 cv2.circle(labeled_img, coord, params.line_thickness, (0, 255, 0), -1)  # green tips
-        if not branch_pt_found:  # there is no branch point associated with a given segment and therefore it cannot be sorted 
+        if not branch_pt_found:  # there is no branch point associated with a given segment and therefore it cannot be sorted
             remove.append(i)
 
-    # Remove the segments that cannot be resorted, since they do not have a branch point 
+    # Remove the segments that cannot be resorted, since they do not have a branch point
     for k in remove:
         sortabled_objs.pop(k)
 
