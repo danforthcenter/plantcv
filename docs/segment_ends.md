@@ -1,10 +1,10 @@
 ## Identify Segment Ends
 
-Find segment tip and inner branch-point coordinates, and sort them by the y-coordinates of the branch points
+Find segment tip and inner branch-point coordinates, and sort segments by the y-coordinates of the branch points
 
 **plantcv.morphology.segment_ends**(*skel_img, leaf_objects, mask=None, label=None*)
 
-**returns** Re-ordered leaf segments, debug image, list of branch point coordinates, list of leaf tip coordinates
+**returns** Re-ordered leaf segments, list of branch point coordinates, list of leaf tip coordinates
 
 - **Parameters:**
     - skel_img - Skeleton image (output from [plantcv.morphology.skeletonize](skeletonize.md))
@@ -29,7 +29,7 @@ pcv.params.debug = "plot"
 # Adjust point thickness with the global line_thickness parameter (default = 5)
 pcv.params.line_thickness = 3 
 
-sorted_obs, debug, bp, tips = pcv.morphology.segment_ends(skel_img=skeleton,
+sorted_obs, bp, tips = pcv.morphology.segment_ends(skel_img=skeleton,
                                          leaf_objects=leaf_objs,
                                          mask=plant_mask,
                                          label="leaves")

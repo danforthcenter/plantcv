@@ -18,7 +18,6 @@ def segment_ends(skel_img, leaf_objects, mask=None, label=None):
 
     Returns:
     sorted_obs       = Reordered segments based on segment branch point y-coordinates
-    labeled_img      = Debug image with segments ends drawn on
     inner_list       = List of branch point coordinates of the input leaf_objects
     tip_list         = List of leaf tip coordinates of the input leaf_object
 
@@ -27,7 +26,6 @@ def segment_ends(skel_img, leaf_objects, mask=None, label=None):
     :param mask: numpy.ndarray
     :param label: str
     :return sorted_ids: list
-    :return labeled_img: numpy.ndarray
     :return inner_list: list
     :return tip_list: list
     """
@@ -58,4 +56,4 @@ def segment_ends(skel_img, leaf_objects, mask=None, label=None):
     sorted_key_index = np.argsort(values)
     sorted_objs = [objs[i] for i in sorted_key_index[::-1]]
 
-    return sorted_objs, labeled_img, inner_list, tip_list
+    return sorted_objs, inner_list, tip_list
