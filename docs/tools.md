@@ -63,7 +63,7 @@ Subcommands:
 
 `plantcv-utils json2csv` is a command-line tool for converting the output JSON files from `plantcv-run-workflow` to
 CSV-formatted tables for downstream analysis in [R](https://www.r-project.org/), 
-[MVApp](http://mvapp.kaust.edu.sa/MVApp/), or other programs.
+[MVApp](https://mvapp.kaust.edu.sa/), or other programs. For example, [pcvr](https://danforthcenter.github.io/pcvr/) provides R functions for use with PlantCV output or other phenotype data for Bayesian statistics and non-linear modeling.
 
 ```
 usage: plantcv-utils json2csv [-h] -j JSON -c CSV
