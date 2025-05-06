@@ -12,9 +12,7 @@ from plantcv.plantcv.visualize.hyper_histogram import hyper_histogram
 from plantcv.plantcv.visualize.pixel_scatter_vis import pixel_scatter_plot
 from plantcv.plantcv.visualize.chlorophyll_fluorescence import chlorophyll_fluorescence
 from plantcv.plantcv.visualize.tile import tile
-from plantcv.plantcv.visualize.color_card_detection import color_card_detection
 
 __all__ = ["pseudocolor", "colorize_masks", "histogram", "colorspaces", "auto_threshold_methods",
            "overlay_two_imgs", "colorize_label_img", "obj_size_ecdf", "obj_sizes", "hyper_histogram",
-           "pixel_scatter_plot", "time_lapse_video", "chlorophyll_fluorescence", "tile",
-           "color_card_detection"]
+           "pixel_scatter_plot", "time_lapse_video", "chlorophyll_fluorescence", "tile"]
