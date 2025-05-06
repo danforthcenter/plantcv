@@ -1,11 +1,11 @@
-# Visualize the results of the color card detection algorithm
+# Filter the results of the color card detection algorithm
 
 from plantcv.plantcv.transform.detect_color_card import _color_card_detection 
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
 import os
 
-def color_card_detection(rgb_img, **kwargs):
+def color_card(rgb_img, **kwargs):
     """Automatically detect a color card and visualizes the chips detected.
 
     Parameters
@@ -23,16 +23,13 @@ def color_card_detection(rgb_img, **kwargs):
 
     Returns
     -------
+
     numpy.ndarray
-        Labeled mask of chips.
-    numpy.ndarray
-        Debug image of color card detection
-    numpy.ndarray
-        Binary convex hull mask of the detected color card chips
+        Binary bounding box mask of the detected color card chips
     """
-    labeled_mask, debug_img, convex_hull_mask, _, _, _ = _color_card_detection(rgb_img, **kwargs)
+    _, _, bounding_mask, _, _, _ = _color_card_detection(rgb_img, **kwargs)
 
     # Debugging
-    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
+    _debug(visual=bounding_mask, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
 
-    return labeled_mask, debug_img, convex_hull_mask
+    return bounding_mask
