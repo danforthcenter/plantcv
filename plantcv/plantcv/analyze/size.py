@@ -123,7 +123,7 @@ def _analyze_size(img, mask, label):
         cv2.line(plt_img, (int(cmx), y), (int(cmx), y + height), (255, 0, 255), params.line_thickness)
         cv2.circle(plt_img, (int(cmx), int(cmy)), 10, (255, 0, 255), params.line_thickness)
         cv2.line(plt_img, (tuple(caliper_transpose[caliper_length - 1])), (tuple(caliper_transpose[0])),
-                 (255, 255, 255), params.line_thickness)
+                 (255, 0, 255), params.line_thickness)
 
     # Store outputs
     outputs.add_metadata(term="image_height", datatype=int, value=np.shape(img)[0])
