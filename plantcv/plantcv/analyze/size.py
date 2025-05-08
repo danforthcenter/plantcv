@@ -62,6 +62,7 @@ def _analyze_size(img, mask, label):
     width = 0
     height = 0
     caliper_length = 0
+    longest_path = 0
     cmx = 0
     cmy = 0
     hull_vertices = 0
