@@ -64,7 +64,8 @@ def segment_angle(segmented_img, objects, label=None):
         label_coord_y.append(objects[i][0][0][1])
 
         # Calculate degrees from slopes
-        segment_angles.append(np.arctan(slope[0]) * 180 / np.pi)
+        angle_value = (np.arctan(slope[0]) * 180 / np.pi).astype(np.float64)
+        segment_angles.append(angle_value)
 
     segment_ids = []
     for i, cnt in enumerate(objects):

@@ -25,7 +25,7 @@ def _slope_to_intesect_angle(m1, m2):
     :param m2: float
     :return angle: float
     """
-    angle = (np.pi - np.absolute(np.arctan(m1) - np.arctan(m2))) * 180 / np.pi
+    angle = ((np.pi - np.absolute(np.arctan(m1) - np.arctan(m2))) * 180 / np.pi).astype(np.float64)
     return angle
 
 
