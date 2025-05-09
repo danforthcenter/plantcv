@@ -20,7 +20,10 @@ class MorphologyTestData:
         self.segments_file = os.path.join(self.datadir, "morphology_segments.npz")
         # Mask image
         self.ps_mask = os.path.join(self.datadir, "FLUO_TV_MASK.png")
-
+        # Disconnected leaf skeleton
+        self.disconnected_segment_file = os.path.join(self.datadir, "morphology_disconnected_leaf.npz")
+        # Disconnected leaf obj
+        self.disconnected_skel_img = os.path.join(self.datadir, "morphology_disconnected_leaf_skel.png")
     @staticmethod
     def load_segments(npz_file, segment):
         """Load data saved in a NumPy .npz file."""
