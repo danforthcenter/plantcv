@@ -16,6 +16,7 @@ dependencies:
   - statsmodels
   - xarray>=2022.11.0
   - mkdocs
+  - nd2
   - pytest
   - pytest-cov
   - flake8
