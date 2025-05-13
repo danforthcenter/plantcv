@@ -235,8 +235,10 @@ def get_matrix_m(target_matrix, source_matrix):
     """
     # if the number of chips in source_img match the number of chips in target_matrix
     if np.shape(target_matrix) == np.shape(source_matrix):
-        _, t_r, t_g, t_b = np.split(target_matrix, 4, 1)
-        _, s_r, s_g, s_b = np.split(source_matrix, 4, 1)
+        t_mats = np.split(target_matrix, 4, 1)
+        t_r, t_g, t_b = t_mats[1], t_mats[2], t_mats[3]
+        s_mats = np.split(source_matrix, 4, 1)
+        s_r, s_g, s_b = s_mats[1], s_mats[2], s_mats[3]
     else:
         combined_matrix = np.zeros((np.ma.size(source_matrix, 0), 7))
         row_count = 0
@@ -251,7 +253,8 @@ def get_matrix_m(target_matrix, source_matrix):
                     combined_matrix[row_count][5] = source_matrix[i][2]
                     combined_matrix[row_count][6] = source_matrix[i][3]
                     row_count += 1
-        _, t_r, t_g, t_b, s_r, s_g, s_b = np.split(combined_matrix, 7, 1)
+        rgb_mats = np.split(combined_matrix, 7, 1)
+        t_r, t_g, t_b, s_r, s_g, s_b = rgb_mats[1], rgb_mats[2], rgb_mats[3], rgb_mats[4], rgb_mats[5], rgb_mats[6]
     t_r2 = np.square(t_r)
     t_r3 = np.power(t_r, 3)
     t_g2 = np.square(t_g)
@@ -305,8 +308,10 @@ def calc_transformation_matrix(matrix_m, matrix_b):
     if np.shape(matrix_m)[0] != np.shape(matrix_b)[1] or np.shape(matrix_m)[1] != np.shape(matrix_b)[0]:
         fatal_error("Cannot multiply matrices.")
 
-    t_r, t_r2, t_r3, t_g, t_g2, t_g3, t_b, t_b2, t_b3 = np.split(matrix_b, 9, 1)
-
+    t_mats = np.split(matrix_b, 9, 1)
+    t_r, t_r2, t_r3 = t_mats[0], t_mats[1], t_mats[2]
+    t_g, t_g2, t_g3 = t_mats[3], t_mats[4], t_mats[5]
+    t_b, t_b2, t_b3 = t_mats[6], t_mats[7], t_mats[8]
     # multiply each 22x1 matrix from target color space by matrix_m
     red = np.matmul(matrix_m, t_r)
     green = np.matmul(matrix_m, t_g)
@@ -353,7 +358,8 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
         fatal_error("Source_img is not an RGB image.")
 
     # split transformation_matrix
-    red, green, blue, _, _, _, _, _, _ = np.split(transformation_matrix, 9, 1)
+    channels = np.split(transformation_matrix, 9, 1)
+    red, green, blue = channels[0], channels[1], channels[2]
 
     source_dtype = source_img.dtype
     # normalization value as max number if the type is unsigned int
