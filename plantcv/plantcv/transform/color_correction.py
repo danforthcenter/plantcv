@@ -395,7 +395,7 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
     out_img = ((255.0/max_val)*out_img).astype(np.uint8)
     _debug(visual=out_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_corrected.png'))
 
-    # return corrected_img
+    # return the corrected image
     return corrected_img
 
 
