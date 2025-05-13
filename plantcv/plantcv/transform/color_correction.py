@@ -545,7 +545,7 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
     for chip in exclude:
         del chips[chip]
     # Create mask
-    mask = np.zeros(shape=np.shape(rgb_img)[:2], dtype=np.uint8())
+    mask = np.zeros(shape=np.shape(rgb_img)[:2], dtype=np.uint8)
     # Mask label index
     i = 1
     # Draw labeled chip boxes on the mask
