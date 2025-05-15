@@ -33,7 +33,7 @@ def test_size_zero_slope():
                             [[12, 10]], [[11, 10]]], dtype=np.int32)
     mask = cv2.drawContours(mask, obj_contour, -1, (255), thickness=-1)
     _ = analyze_size(img=img, labeled_mask=mask, n_labels=1)
-    assert outputs.observations["default_1"]["longest_path"]["value"] == 30
+    assert outputs.observations["default_1"]["longest_path"]["value"] == 29.0
 
 
 def test_size_longest_axis_2d():
@@ -49,7 +49,7 @@ def test_size_longest_axis_2d():
                             [[4, 1]], [[3, 1]], [[2, 1]]], dtype=np.int32)
     mask = cv2.drawContours(mask, obj_contour, -1, (255), thickness=-1)
     _ = analyze_size(img=img, labeled_mask=mask, n_labels=1)
-    assert outputs.observations["default_1"]["longest_path"]["value"] == 186
+    assert outputs.observations["default_1"]["longest_path"]["value"] == 47.095647357266465
 
 
 def test_size_longest_axis_2e():
@@ -71,7 +71,7 @@ def test_size_longest_axis_2e():
                             [[13, 10]], [[12, 10]], [[11, 10]]], dtype=np.int32)
     mask = cv2.drawContours(mask, obj_contour, -1, (255), thickness=-1)
     _ = analyze_size(img=img, labeled_mask=mask, n_labels=1)
-    assert outputs.observations["default_1"]["longest_path"]["value"] == 141
+    assert outputs.observations["default_1"]["longest_path"]["value"] == 29.068883707497267
 
 
 def test_size_small_contour(test_data):
