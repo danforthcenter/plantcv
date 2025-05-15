@@ -1,9 +1,11 @@
 import cv2
+from plantcv.plantcv import params
 from plantcv.plantcv.morphology import segment_id
 
 
 def test_segment_id(morphology_test_data):
     """Test for PlantCV."""
+    params.saved_color_scale = None
     skel = cv2.imread(morphology_test_data.skel_img, -1)
     leaf_obj = morphology_test_data.load_segments(morphology_test_data.segments_file, "leaves")
     _, labeled_img = segment_id(skel_img=skel, objects=leaf_obj, mask=skel)
@@ -12,6 +14,7 @@ def test_segment_id(morphology_test_data):
 
 def test_segment_id_no_mask(morphology_test_data):
     """Test for PlantCV."""
+    params.saved_color_scale = None    
     skel = cv2.imread(morphology_test_data.skel_img, -1)
     leaf_obj = morphology_test_data.load_segments(morphology_test_data.segments_file, "leaves")
     _, labeled_img = segment_id(skel_img=skel, objects=leaf_obj)

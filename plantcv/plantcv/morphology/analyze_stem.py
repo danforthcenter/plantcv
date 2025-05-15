@@ -43,13 +43,13 @@ def analyze_stem(rgb_img, stem_objects, label=None):
 
     outputs.add_observation(sample=label, variable='stem_height', trait='vertical length of stem segments',
                             method='plantcv.plantcv.morphology.analyze_stem', scale='pixels', datatype=float,
-                            value=height, label=None)
+                            value=height, label='none')
     outputs.add_observation(sample=label, variable='stem_angle', trait='angle of combined stem object',
                             method='plantcv.plantcv.morphology.analyze_stem', scale='degrees', datatype=float,
-                            value=float(slope.item()), label=None)
+                            value=float(slope.item()), label='none')
     outputs.add_observation(sample=label, variable='stem_length', trait='path length of combined stem object',
                             method='plantcv.plantcv.morphology.analyze_stem', scale='None', datatype=float,
-                            value=stem_length, label=None)
+                            value=stem_length, label='none')
 
     # Draw culm_height
     cv2.line(labeled_img, (int(stem_x), stem_y), (int(stem_x), stem_y + height), (0, 255, 0), params.line_thickness)
