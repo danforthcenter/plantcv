@@ -2,6 +2,7 @@
 import os
 import cv2
 import numpy as np
+from scipy.spatial.distance import euclidean
 from plantcv.plantcv._helpers import _iterate_analysis, _cv2_findcontours, _object_composition, _grayscale_to_rgb
 from plantcv.plantcv import outputs, within_frame
 from plantcv.plantcv import params
@@ -61,6 +62,7 @@ def _analyze_size(img, mask, label):
     width = 0
     height = 0
     caliper_length = 0
+    longest_path = 0
     cmx = 0
     cmy = 0
     hull_vertices = 0
@@ -114,6 +116,7 @@ def _analyze_size(img, mask, label):
         # Caliper length
         caliper_length, caliper_transpose = _longest_axis(height=img.shape[0], width=img.shape[1],
                                                           hull=hull, cmx=cmx, cmy=cmy)
+        longest_path = euclidean(tuple(caliper_transpose[caliper_length - 1]), tuple(caliper_transpose[0]))
         # Debugging output
         cv2.drawContours(plt_img, obj, -1, (255, 0, 0), params.line_thickness)
         cv2.drawContours(plt_img, [hull], -1, (255, 0, 255), params.line_thickness)
@@ -146,7 +149,7 @@ def _analyze_size(img, mask, label):
                             value=height, label='pixels')
     outputs.add_observation(sample=label, variable='longest_path', trait='longest path',
                             method='plantcv.plantcv.analyze.size', scale='pixels', datatype=int,
-                            value=caliper_length, label='pixels')
+                            value=float(longest_path), label='pixels')
     outputs.add_observation(sample=label, variable='center_of_mass', trait='center of mass',
                             method='plantcv.plantcv.analyze.size', scale='none', datatype=tuple,
                             value=(cmx, cmy), label=("x", "y"))
