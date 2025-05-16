@@ -67,7 +67,7 @@ def pixel_scatter_plot(paths_to_imgs, x_channel, y_channel):
     fig = matplotlib pyplot Figure object of the visualization
     ax  = matplotlib pyplot Axes object of the visualization
 
-    :param paths_to_imgs: str
+    :param paths_to_imgs: list of str
     :param x_channel: str
     :param y_channel: str
     :return fig: matplotlib.pyplot Figure object
