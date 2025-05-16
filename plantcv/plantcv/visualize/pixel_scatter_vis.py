@@ -6,6 +6,7 @@ from matplotlib import pyplot as plt
 from plantcv.plantcv import rgb2gray
 from plantcv.plantcv import rgb2gray_hsv
 from plantcv.plantcv import rgb2gray_lab
+from plantcv.plantcv import rgb2gray_cmyk
 from plantcv.plantcv import readimage
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
@@ -16,7 +17,7 @@ IMG_WIDTH = 128
 
 
 # functions to get a given channel with parameters compatible
-# with rgb2gray_lab and rgb2gray_hsv to use in the dict
+# with rgb2gray_lab, rgb2gray_hsv, and rgb2gray_cmyk to use in the dict
 def _get_R(rgb_img, _):
     """Get the red channel from a RGB image."""
     return rgb_img[:, :, 2]
@@ -45,7 +46,7 @@ def _get_index(rgb_img, _):
 
 def _not_valid(*args):
     """Error for a non valid channel."""
-    return fatal_error("channel not valid, use R, G, B, l, a, b, h, s, v, gray, or index")
+    return fatal_error("channel not valid, use R, G, B, l, a, b, h, s, v, c, m, y, k, gray, or index")
 
 
 def pixel_scatter_plot(paths_to_imgs, x_channel, y_channel):
@@ -58,9 +59,9 @@ def pixel_scatter_plot(paths_to_imgs, x_channel, y_channel):
     Inputs:
     paths_to_imgs  = List of paths to the images
     x_channel      = Channel to use for the horizontal coordinate of the scatter plot.
-                     Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'gray', and 'index'
+                     Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'c', 'm', 'y', 'k', 'gray', and 'index'
     y_channel      = Channel to use for the vertical coordinate of the scatter plot.
-                     Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'gray', and 'index'
+                     Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'c', 'm', 'y', 'k', 'gray', and 'index'
 
     Returns:
     fig = matplotlib pyplot Figure object of the visualization
@@ -85,6 +86,10 @@ def pixel_scatter_plot(paths_to_imgs, x_channel, y_channel):
         's': rgb2gray_hsv,
         'v': rgb2gray_hsv,
         'index': _get_index,
+        'c': rgb2gray_cmyk,
+        'm': rgb2gray_cmyk,
+        'y': rgb2gray_cmyk,
+        'k': rgb2gray_cmyk
     }
 
     # store debug mode
