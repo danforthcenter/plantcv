@@ -1,7 +1,7 @@
 # Visualize a scatter plot of pixels
 
 import numpy as np
-import cv2 as cv
+import cv2
 from matplotlib import pyplot as plt
 from plantcv.plantcv import rgb2gray
 from plantcv.plantcv import rgb2gray_hsv
@@ -108,10 +108,10 @@ def pixel_scatter_plot(paths_to_imgs, x_channel, y_channel):
         ratio = h/IMG_WIDTH
         img_height = int(IMG_WIDTH*ratio)
         # nearest interpolation avoids mixing pixel values
-        sub_img = cv.resize(img, (IMG_WIDTH, img_height), interpolation=cv.INTER_NEAREST)
+        sub_img = cv2.resize(img, (IMG_WIDTH, img_height), interpolation=cv2.INTER_NEAREST)
 
         # organize the channels as RGB to use as facecolor for the markers
-        sub_img_rgb = cv.cvtColor(sub_img, cv.COLOR_BGR2RGB)
+        sub_img_rgb = cv2.cvtColor(sub_img, cv2.COLOR_BGR2RGB)
         fcolors = sub_img_rgb.reshape(img_height*IMG_WIDTH, c)/255
 
         # get channels
