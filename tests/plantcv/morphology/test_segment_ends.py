@@ -22,8 +22,8 @@ def test_segment_ends_no_mask(morphology_test_data):
     skeleton = cv2.imread(morphology_test_data.skel_img, -1)
     _, _, tips = segment_ends(skel_img=skeleton, leaf_objects=leaf_obj, mask=None)
     assert len(tips) == 4
-    
-    
+
+
 def test_segment_ends_unsortable(morphology_test_data):
     """Test for PlantCV."""
     # Clear previous outputs
