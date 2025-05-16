@@ -3,7 +3,10 @@
 import numpy as np
 import cv2 as cv
 from matplotlib import pyplot as plt
-from plantcv import plantcv as pcv
+from plantcv.plantcv import rgb2gray
+from plantcv.plantcv import rgb2gray_hsv
+from plantcv.plantcv import rgb2gray_lab
+from plantcv.plantcv import readimage
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 
@@ -31,7 +34,7 @@ def _get_B(rgb_img, _):
 
 def _get_gray(rgb_img, _):
     """Get the gray scale transformation of a RGB image."""
-    return pcv.rgb2gray(rgb_img=rgb_img)
+    return rgb2gray(rgb_img=rgb_img)
 
 
 def _get_index(rgb_img, _):
@@ -74,13 +77,13 @@ def pixel_scatter_plot(paths_to_imgs, x_channel, y_channel):
         'R': _get_R,
         'G': _get_G,
         'B': _get_B,
-        'l': pcv.rgb2gray_lab,
-        'a': pcv.rgb2gray_lab,
-        'b': pcv.rgb2gray_lab,
+        'l': rgb2gray_lab,
+        'a': rgb2gray_lab,
+        'b': rgb2gray_lab,
         'gray': _get_gray,
-        'h': pcv.rgb2gray_hsv,
-        's': pcv.rgb2gray_hsv,
-        'v': pcv.rgb2gray_hsv,
+        'h': rgb2gray_hsv,
+        's': rgb2gray_hsv,
+        'v': rgb2gray_hsv,
         'index': _get_index,
     }
 
@@ -93,7 +96,7 @@ def pixel_scatter_plot(paths_to_imgs, x_channel, y_channel):
     fig, ax = plt.subplots()
     # load and plot the set of images sequentially
     for p in paths_to_imgs:
-        img, _, _ = pcv.readimage(filename=p, mode="native")
+        img, _, _ = readimage(filename=p, mode="native")
         h, _, c = img.shape
 
         # resizing to predetermined width to reduce the number of pixels
