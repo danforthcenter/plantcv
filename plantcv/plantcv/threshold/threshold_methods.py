@@ -831,20 +831,23 @@ def _not_valid(*args):
 
 
 def dual_channels(rgb_img, x_channel, y_channel, points, above=True):
-    """Create a binary image from an RGB image based on the pixels values in two channels.
+    """
+    Create a binary image from an RGB image based on the pixels values in two channels.
     The x and y channels define a 2D plane and the two input points define a straight line.
     Pixels in the plane above and below the straight line are assigned two different values.
+
     Inputs:
     rgb_img   = RGB image
-    ch_x      = Channel to use for the horizontal coordinate.
-    ch_y      = Channel to use for the vertical coordinate.
+    x_channel = Channel to use for the horizontal coordinate.
                 Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'c', 'm', 'y', 'k', 'gray', and 'index'
+    y_channel = Channel to use for the vertical coordinate.
                 Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'c', 'm', 'y', 'k', 'gray', and 'index'
     points    = List containing two points as tuples defining the segmenting straight line
     above     = Whether the pixels above the line are given the value of 0 or max_value
 
     Returns:
-    bin_img      = Thresholded, binary image
+    bin_img = Thresholded, binary image
+
     :param rgb_img: numpy.ndarray
     :param x_channel: str
     :param y_channel: str
