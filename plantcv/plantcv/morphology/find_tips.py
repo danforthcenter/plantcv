@@ -1,12 +1,9 @@
 """Find tips from skeleton image."""
 import os
-import cv2
-import numpy as np
 from plantcv.plantcv import params
-from plantcv.plantcv import dilate
 from plantcv.plantcv import outputs
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _cv2_findcontours
+from plantcv.plantcv._helpers import _find_tips
 
 
 def find_tips(skel_img, mask=None, label=None):
@@ -26,65 +23,16 @@ def find_tips(skel_img, mask=None, label=None):
     :param label: str
     :return tip_img: numpy.ndarray
     """
+    tip_img, tip_list, tip_labels = _find_tips(skel_img=skel_img, mask=mask)
+
+    _debug(visual=tip_img, filename=os.path.join(params.debug_outdir, f"{params.device}_skeleton_tips.png"))
+
     # Set lable to params.sample_label if None
     if label is None:
         label = params.sample_label
-
-    # In a kernel: 1 values line up with 255s, -1s line up with 0s, and 0s correspond to dont care
-    endpoint1 = np.array([[-1, -1, -1],
-                          [-1, 1, -1],
-                          [0, 1,  0]])
-    endpoint2 = np.array([[-1, -1, -1],
-                          [-1, 1, 0],
-                          [-1, 0, 1]])
-
-    endpoint3 = np.rot90(endpoint1)
-    endpoint4 = np.rot90(endpoint2)
-    endpoint5 = np.rot90(endpoint3)
-    endpoint6 = np.rot90(endpoint4)
-    endpoint7 = np.rot90(endpoint5)
-    endpoint8 = np.rot90(endpoint6)
-
-    endpoints = [endpoint1, endpoint2, endpoint3, endpoint4, endpoint5, endpoint6, endpoint7, endpoint8]
-    tip_img = np.zeros(skel_img.shape[:2], dtype=int)
-    for endpoint in endpoints:
-        tip_img = np.logical_or(cv2.morphologyEx(skel_img, op=cv2.MORPH_HITMISS, kernel=endpoint,
-                                                 borderType=cv2.BORDER_CONSTANT, borderValue=0), tip_img)
-    tip_img = tip_img.astype(np.uint8) * 255
-    # Store debug
-    debug = params.debug
-    params.debug = None
-    tip_objects, _ = _cv2_findcontours(bin_img=tip_img)
-
-    if mask is None:
-        # Make debugging image
-        dilated_skel = dilate(skel_img, params.line_thickness, 1)
-        tip_plot = cv2.cvtColor(dilated_skel, cv2.COLOR_GRAY2RGB)
-
-    else:
-        # Make debugging image on mask
-        mask_copy = mask.copy()
-        tip_plot = cv2.cvtColor(mask_copy, cv2.COLOR_GRAY2RGB)
-        skel_obj, skel_hier = _cv2_findcontours(bin_img=skel_img)
-        cv2.drawContours(tip_plot, skel_obj, -1, (150, 150, 150), params.line_thickness,
-                         lineType=8, hierarchy=skel_hier)
-
-    # Initialize list of tip data points
-    tip_list = []
-    tip_labels = []
-    for i, tip in enumerate(tip_objects):
-        x, y = tip.ravel()[:2]
-        coord = (int(x), int(y))
-        tip_list.append(coord)
-        tip_labels.append(i)
-        cv2.circle(tip_plot, (x, y), params.line_thickness, (0, 255, 0), -1)
-
+    # Save coordinates to Outputs
     outputs.add_observation(sample=label, variable='tips', trait='list of tip coordinates identified from a skeleton',
                             method='plantcv.plantcv.morphology.find_tips', scale='pixels', datatype=list,
                             value=tip_list, label=tip_labels)
-
-    # Reset debug mode
-    params.debug = debug
-    _debug(visual=tip_plot, filename=os.path.join(params.debug_outdir, f"{params.device}_skeleton_tips.png"))
 
     return tip_img

@@ -685,6 +685,11 @@ pages for more details on the input and output variable types.
 * post v3.11: labeled_img = **plantcv.morphology.segment_curvature**(*segmented_img, objects, label="default"*)
 * post v4.0: labeled_img = **plantcv.morphology.segment_curvature**(*segmented_img, objects, label=None*)
 
+#### plantcv.morphology.segment_ends 
+
+* pre v4.8: NA
+* post v4.8: sorted_obs, branch_pts, tips = **plantcv.morphology.segment_ends**(*skel_img, leaf_objects, mask=None, label=None*)
+
 #### plantcv.morphology.segment_euclidean_length
 
 * pre v3.3: NA
