@@ -39,18 +39,7 @@ We primarily use [Jupyter](jupyter.md) notebooks for workflow development.
 Once a workflow has been developed for one image, it's best to test it on other images in
 the dataset to determine how robust the workflow will be. Example workflows and tutorials are available and are meant 
 to demonstrate how modules can be used. Keep in mind that modules can be linked together in a variety of different 
-configurations to meet image processing goals so the tutorials simply examples of a few approaches:
-
-*  [VIS Image Workflow](tutorials/vis_tutorial.md)
-*  [Grayscale Image processing](tutorials/grayscale_tutorial.md)
-*  [PSII Workflow](tutorials/psII_tutorial.md)
-*  [VIS / NIR Dual Workflow](tutorials/vis_nir_tutorial.md)
-*  [Multi Plant Tutorial](tutorials/multi-plant_tutorial.md)
-*  [Morphology Tutorial](tutorials/morphology_tutorial.md) 
-*  [Machine Learning Tutorial](tutorials/machine_learning_tutorial.md)
-*  [Color Correction Tutorial](tutorials/transform_color_correction_tutorial.md)
-*  [Hyperspectral Image Processing](tutorials/hyperspectral_tutorial.md)
-*  [Thermal Image Processing](tutorials/thermal_tutorial.md)
+configurations to meet image processing goals so the tutorials simply examples of a few approaches. Our tutorial gallery is located [here](https://plantcv.org/tutorials).
 
 ####**1. Methods of Isolating Target Objects**
 
@@ -75,7 +64,7 @@ selecting a channel of an image for thresholding likely involves conversion from
 It's best to select a channel that maximizes contrast between the target object and the background. When thresholding 
 an image to segment a target object, it may not be possible to isolate just the target object. Multiple thresholding 
 steps on various channels may be necessary as well as downstream noise reduction steps. For an example of this approach 
-see the [VIS Image Workflow](tutorials/vis_tutorial.md). 
+see the [VIS Image Workflow](https://plantcv.org/tutorials/simple-rgb-workflow). 
 
 *  Background subtraction method - This approach can be used if there are 'null' images (images with everything but the 
 object in them). The null image can be a single image, or an averaged background image. For more information on 
@@ -85,7 +74,7 @@ noise reduction steps following the background subtraction method.
 *  Machine Learning (classification) methods - For these approaches, target objects can be segmented after a training 
 set is built (the training set might need to be built using background subtraction or thresholding methods). Once the 
 training set is built, the trained classifier is used to segment the features of interest. See the 
-[machine learning tutorial](tutorials/machine_learning_tutorial.md) and the [naive Bayes function](naive_bayes.md) for more
+[naive Bayes tutorial](https://plantcv.org/tutorials/naive-bayes) and the [naive Bayes function](naive_bayes.md) for more
 information. There still may need to be noise reduction steps following machine learning-based segmentation.
 
 #####Noise Reduction 
@@ -106,7 +95,7 @@ the objects that are  within, touching, or outside of the region of interest wit
 objects.
 *  If there are multiple plants in an object and you would like to analyze them individually (get shape parameters for 
 each plant for example) then there are functions in PlantCV to split the image apart so there is a single target object 
-in each sub-image. For more information on this process see the [Multi Plant Tutorial](tutorials/multi-plant_tutorial.md). 
+in each sub-image. For more information on this process see the [Multi Plant Tutorial](https://plantcv.org/tutorials/arabidopsis-tray). 
 
 ####**2. Object Analysis in PlantCV**
     
@@ -120,7 +109,7 @@ and [analyze.yii](analyze_yii.md) functions.
 *  Object classification (For example, classification of disease symptoms, identification of organ structures 
 [naive-bayesian multiclass mode](naive_bayes_multiclass.md)).
 *  Object hyperspectral parameters: see the [analyze.spectral_reflectance](analyze_spectral_reflectance.md) and [analyze.spectral_index](analyze_spectral_index.md) functions.
-*  Morphological parameters: see the [morphology tutorial](tutorials/morphology_tutorial.md) for examples of characteristics such as stem height,
+*  Morphological parameters: see the [morphology tutorial](https://plantcv.org/tutorials/morphology-workflow) for examples of characteristics such as stem height,
 leaf length, and leaf angle. 
 
 For a detailed list of types of PlantCV measurement outputs see 
