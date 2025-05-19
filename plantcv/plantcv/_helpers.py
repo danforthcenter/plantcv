@@ -486,3 +486,33 @@ def _rgb2lab(rgb_img, channel):
     # Create a channel dictionaries for lookups by a channel name index
     channels = {"l": l, "a": a, "b": b}
     return channels[channel]
+
+
+def _rgb2hsv(rgb_img, channel):
+    """Convert image from RGB colorspace to HSV colorspace. Returns the specified subchannel as a gray image.
+
+    Parameters
+    ----------
+    rgb_img : numpy.ndarray
+        RGB image data
+    channel : str
+        color subchannel (h = hue, s = saturation, v = value/intensity/brightness)
+
+    Returns
+    -------
+    numpy.ndarray
+        grayscale image from one HSV color channel
+    """
+    # The allowable channel inputs are h, s or v
+    channel = channel.lower()
+    if channel not in ["h", "s", "v"]:
+        fatal_error("Channel " + str(channel) + " is not h, s or v!")
+
+    # Convert the input BGR image to HSV colorspace
+    hsv = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2HSV)
+    # Split HSV channels
+    h, s, v = cv2.split(hsv)
+    # Create a channel dictionaries for lookups by a channel name index
+    channels = {"h": h, "s": s, "v": v}
+
+    return channels[channel]
