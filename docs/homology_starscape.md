@@ -14,7 +14,7 @@ Principal Component Analysis on pseudo-landmark data between two timepoints
 - **Context:**
     - Used to do Principal Component Analysis on pseudo-landmark data between two timepoints
 - **Example use:**
-    - [Use In Homology Tutorial](tutorials/homology_tutorial.md)
+    - [Use In Homology Tutorial](https://mybinder.org/v2/gh/danforthcenter/plantcv-homology-tutorials/HEAD?filepath=index.ipynb)
 
 
 ```python
