@@ -5,7 +5,7 @@ import cv2 as cv
 from matplotlib import pyplot as plt
 from plantcv import plantcv as pcv
 from plantcv.plantcv import fatal_error, params
-from plantcv.plantcv._helpers import _rgb2lab, _rgb2hsv
+from plantcv.plantcv._helpers import _rgb2lab, _rgb2hsv, _rgb2gray
 
 
 MAX_MARKER_SIZE = 20
@@ -31,7 +31,7 @@ def _get_B(rgb_img, _):
 
 def _get_gray(rgb_img, _):
     """Get the gray scale transformation of a RGB image."""
-    return pcv.rgb2gray(rgb_img=rgb_img)
+    return _rgb2gray(rgb_img=rgb_img)
 
 
 def _get_index(rgb_img, _):
