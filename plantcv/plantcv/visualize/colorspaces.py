@@ -6,9 +6,8 @@ import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv.transform import resize_factor
 from plantcv.plantcv import fatal_error
-from plantcv.plantcv import rgb2gray_cmyk
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _rgb2lab, _rgb2hsv
+from plantcv.plantcv._helpers import _rgb2lab, _rgb2hsv, _rgb2cmyk
 
 
 def colorspaces(rgb_img, original_img=True):
@@ -48,7 +47,7 @@ def colorspaces(rgb_img, original_img=True):
         all_colorspaces.append(_rgb2lab(rgb_img=rgb_img, channel=channel))
     for i in range(6, 10):
         channel = colorspace_names[i]
-        all_colorspaces.append(rgb2gray_cmyk(rgb_img=rgb_img, channel=channel))
+        all_colorspaces.append(_rgb2cmyk(rgb_img=rgb_img, channel=channel))
 
     # Plot labels of each colorspace on the corresponding img
     for i, colorspace in enumerate(all_colorspaces):
