@@ -457,3 +457,32 @@ def _grayscale_to_rgb(img):
         img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
 
     return img
+
+
+def _rgb2lab(rgb_img, channel):
+    """Convert image from RGB colorspace to LAB colorspace. Returns the specified subchannel as a gray image.
+
+    Parameters
+    ----------
+    rgb_img : numpy.ndarray
+        RGB image data
+    channel : str
+        color subchannel (l = lightness, a = green-magenta, b = blue-yellow)
+
+    Returns
+    -------
+    numpy.ndarray
+        grayscale image from one LAB color channel
+    """
+    # The allowable channel inputs are l, a or b
+    channel = channel.lower()
+    if channel not in ["l", "a", "b"]:
+        fatal_error("Channel " + str(channel) + " is not l, a or b!")
+
+    # Convert the input BGR image to LAB colorspace
+    lab = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2LAB)
+    # Split LAB channels
+    l, a, b = cv2.split(lab)
+    # Create a channel dictionaries for lookups by a channel name index
+    channels = {"l": l, "a": a, "b": b}
+    return channels[channel]
