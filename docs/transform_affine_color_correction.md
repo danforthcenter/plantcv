@@ -2,7 +2,7 @@
 
 Corrects the color of the input image based on the target color matrix using an affine transformation
 in the RGB space. The vector containing the regression coefficients is calculated as the one that minimizes the
-Euclidean distance between the transformed source color values and the target color values.
+Euclidean distance between the transformed source color values and the target color values. The functionality was recently implemented into the simplified [`pcv.transform.auto_correct_color`](transform_auto_correct_color.md). 
 
 **plantcv.transform.affine_color_correction**(*rgb_img, source_matrix, target_matrix*)
 
@@ -16,7 +16,7 @@ Euclidean distance between the transformed source color values and the target co
     - source_matrix - array of RGB color values (intensity in the range [0-1]) from the image to be corrected where each row is one color reference and the columns are organized as index,R,G,B; likely created with [plantcv.transform.get_color_matrix](get_color_matrix.md).
     - target_matrix - array of target RGB color values (intensity in the range [0-1]) where each row is one color reference and the columns are organized as index,R,G,B; likely created with [plantcv.transform.std_color_matrix](std_color_matrix.md). 
 - **Example use:**
-    - [Color Correction Tutorial](tutorials/transform_color_correction_tutorial.md)
+    - [Color Correction Tutorial](https://plantcv.org/tutorials/color-correction)
 
 **Reference Images**
 

@@ -19,8 +19,8 @@ Pixels in the plane above and below the straight line are assigned two different
 
 - **Context:**
     - Used to help differentiate plant and background
-- **Example use:**
-    <!-- - [Use In VIS Tutorial](tutorials/vis_tutorial.md) -->
+    - Helpful in maize images, shown in the [single plant tutorial](https://plantcv.org/tutorials/single-plant-rgb-workflow), or in other plants with purple hues. 
+- **Example use below:**
 
 **Original image**
 
