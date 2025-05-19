@@ -563,3 +563,21 @@ def _rgb2cmyk(rgb_img, channel):
     channels = {"c": c, "m": m, "y": y, "k": k}
 
     return channels[channel]
+
+
+def _rgb2gray(rgb_img):
+    """Convert image from RGB colorspace to Gray.
+
+    Parameters
+    ----------
+    rgb_img : numpy.ndarray
+        RGB image data
+
+    Returns
+    -------
+    numpy.ndarray
+        grayscale image
+    """
+    gray = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
+
+    return gray
