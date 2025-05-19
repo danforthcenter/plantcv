@@ -3,7 +3,7 @@
 Creates a binary image of edges from an RGB or grayscale image using a Canny filter from [skimage](http://scikit-image.org/docs/dev/index.html).
 
 
-**plantcv.canny_edge_detect(*img, mask=None, sigma=1.0, low_thresh=None, high_thresh=None, thickness=1, mask_color=None, use_quantiles=False*)**
+**plantcv.canny_edge_detect**(*img, mask=None, sigma=1.0, low_thresh=None, high_thresh=None, thickness=1, mask_color=None, use_quantiles=False*)
 
 **returns** binary image
 
@@ -23,7 +23,7 @@ Creates a binary image of edges from an RGB or grayscale image using a Canny fil
 - **Context:**
     - Edge filter using the Canny algorithm
 - **Example use:**
-    - [Interactive Documentation](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks%2Fthreshold.ipynb)
+    - Below
 
 **Original image**
 
