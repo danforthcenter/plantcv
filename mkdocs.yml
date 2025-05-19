@@ -66,6 +66,7 @@ nav:
       - 'Flood Fill': floodfill.md
       - 'Flip Image': flip.md
       - 'Filters':
+        - 'Color Card Filter': filters_color_card.md
         - 'Eccentricity Filter': filters_eccentricity.md
         - 'Object Filter': filters_obj_props.md
         - 'Laplace Filter': laplace_filter.md
