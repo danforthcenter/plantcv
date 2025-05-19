@@ -1,6 +1,6 @@
 ## Canny Edge Detection
 
-Creates a binary image of edges from an RGB or grayscale image using a Canny filter from [skimage](http://scikit-image.org/docs/dev/index.html).
+Creates a binary image of edges from an RGB or grayscale image using a Canny filter from [skimage](https://scikit-image.org/docs/stable/index.html).
 
 
 **plantcv.canny_edge_detect**(*img, mask=None, sigma=1.0, low_thresh=None, high_thresh=None, thickness=1, mask_color=None, use_quantiles=False*)
