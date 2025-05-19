@@ -516,3 +516,50 @@ def _rgb2hsv(rgb_img, channel):
     channels = {"h": h, "s": s, "v": v}
 
     return channels[channel]
+
+
+def _rgb2cmyk(rgb_img, channel):
+    """Convert image from RGB colorspace to CMYK colorspace. Returns the specified subchannel as a gray image.
+
+    Parameters
+    ----------
+    rgb_img : numpy.ndarray
+        RGB image data
+    channel : str
+        color subchannel (c = cyan, m = magenta, y = yellow, k=black)
+
+    Returns
+    -------
+    numpy.ndarray
+        grayscale image from one CMYK color channel
+    """
+    # Set NumPy to ignore divide by zero errors
+    _ = np.seterr(divide='ignore', invalid='ignore')
+    # The allowable channel inputs are c, m , y or k
+    channel = channel.lower()
+    if channel not in ["c", "m", "y", "k"]:
+        fatal_error("Channel " + str(channel) + " is not c, m, y or k!")
+
+    # Create float
+    bgr = rgb_img.astype(float)/255.
+
+    # K channel
+    k = 1 - np.max(bgr, axis=2)
+
+    # C Channel
+    c = (1 - bgr[..., 2] - k) / (1 - k)
+
+    # M Channel
+    m = (1 - bgr[..., 1] - k) / (1 - k)
+
+    # Y Channel
+    y = (1 - bgr[..., 0] - k) / (1 - k)
+
+    # Convert the input BGR image to LAB colorspace
+    cmyk = (np.dstack((c, m, y, k)) * 255).astype(np.uint8)
+    # Split CMYK channels
+    y, m, c, k = cv2.split(cmyk)
+    # Create a channel dictionaries for lookups by a channel name index
+    channels = {"c": c, "m": m, "y": y, "k": k}
+
+    return channels[channel]
