@@ -331,18 +331,7 @@ that might break wth new versions of PlantCV.
 
 #### Add Your Tutorial To the PlantCV Tutorial Gallery <a name="gallery"></a>
 
-1. In your PlantCV repo make a new branch (make sure your branch is based off the version you are working on e.g. release-4.0)
-
-2. Go to `/plantcv/docs/tutorials.md`, add a section for your new tutorial or update the binder links and link to your tutorial wall image
-
-3. Either go to `/plantcv/docs/tutorials/'yourtutorialname'` and update the binder links and nb viewer links for your tutorial or go to `/plantcv/docs/tutorials/`
-and add a doc with your tutorial name (use an exisiting tutorial as an example)
-
-4. While in your plantcv directory check the build of the documentation on the command line by the command: 
- ```
- mkdocs serve --theme readthedocs
-```
-5. If everything looks okay then commit changes and make a pull request (make sure that pull request is for the for version you are working on).
+1. Email the dev team at plantcv@danforthcenter.org, or open an issue [here](https://github.com/danforthcenter/plantcv/issues). 
 
 ### Thanks
 
