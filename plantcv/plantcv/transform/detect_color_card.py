@@ -145,7 +145,7 @@ def _color_card_detection(rgb_img, **kwargs):
     x, y, w, h = cv2.boundingRect(np.vstack(filtered_contours))
 
     # Draw the bound box rectangle
-    boundind_mask = cv2.rectangle(np.zeros(rgb_img.shape[0:2], dtype=np.uint8), (x, y), (x + w, y + h), (255), -1) 
+    boundind_mask = cv2.rectangle(np.zeros(rgb_img.shape[0:2]), (x, y), (x + w, y + h), (255), -1).astype(np.uint8) 
     
     # Initialize chip shape lists
     marea, mwidth, mheight = _get_contour_sizes(filtered_contours)
