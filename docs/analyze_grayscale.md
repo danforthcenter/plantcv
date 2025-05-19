@@ -16,7 +16,7 @@ the values out to the [Outputs class](outputs.md). Can also return/plot/print ou
 - **Context:**
     - Grayscale pixel values within a masked area of an image. 
 - **Example use:**
-    * [Grayscale Image Tutorial](tutorials/grayscale_tutorial.md)
+    * [Grayscale Image Tutorial](https://plantcv.org/tutorials/grayscale)
 
 - **Output data stored:** Data ('gray_frequencies', 'gray_mean', 'gray_median', 'gray_stdev') automatically gets stored to
 the [`Outputs` class](outputs.md) when this function is ran. These data can always get accessed during a workflow (example
