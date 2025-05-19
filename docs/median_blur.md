@@ -13,8 +13,7 @@ The function is a wrapper for the SciPy function [median filter](https://docs.sc
 - **Context:**
     - Used to reduce image noise
 - **Example use:**
-    - [Use In VIS Tutorial](tutorials/vis_tutorial.md)
-    - [Use In PSII Tutorial](tutorials/psII_tutorial.md)
+    - Below
 
 **Thresholded image**
 
