@@ -7,7 +7,7 @@ from plantcv.plantcv import rgb2gray
 from plantcv.plantcv import rgb2gray_hsv
 from plantcv.plantcv import rgb2gray_lab
 from plantcv.plantcv import rgb2gray_cmyk
-from plantcv.plantcv import readimage
+from plantcv.plantcv.readimage import readimage
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 
@@ -101,7 +101,7 @@ def pixel_scatter_plot(paths_to_imgs, x_channel, y_channel):
     fig, ax = plt.subplots()
     # load and plot the set of images sequentially
     for p in paths_to_imgs:
-        img, _, _ = readimage(filename=p, mode="native")
+        img, _, _ = readimage(filename=p)
         h, _, c = img.shape
 
         # resizing to predetermined width to reduce the number of pixels
