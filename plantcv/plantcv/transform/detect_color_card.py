@@ -145,8 +145,8 @@ def _color_card_detection(rgb_img, **kwargs):
     x, y, w, h = cv2.boundingRect(np.vstack(filtered_contours))
 
     # Draw the bound box rectangle
-    boundind_mask = cv2.rectangle(np.zeros(rgb_img.shape[0:2]), (x, y), (x + w, y + h), (255), -1).astype(np.uint8) 
-    
+    boundind_mask = cv2.rectangle(np.zeros(rgb_img.shape[0:2]), (x, y), (x + w, y + h), (255), -1).astype(np.uint8)
+
     # Initialize chip shape lists
     marea, mwidth, mheight = _get_contour_sizes(filtered_contours)
 
@@ -173,7 +173,7 @@ def _color_card_detection(rgb_img, **kwargs):
 
     # Create labeled mask and debug image of color chips
     labeled_mask, debug_img = _draw_color_chips(debug_img, new_centers, radius)
-    
+
     return labeled_mask, debug_img, boundind_mask, marea, mheight, mwidth
 
 
@@ -207,7 +207,7 @@ def detect_color_card(rgb_img, label=None, **kwargs):
         "The 'label' parameter is no longer utilized, since color chip size is now metadata. "
         "It will be removed in PlantCV v5.0."
         )
-    
+
     labeled_mask, debug_img, _, marea, mheight, mwidth = _color_card_detection(rgb_img, **kwargs)
     # Create dataframe for easy summary stats
     chip_size = np.median(marea)

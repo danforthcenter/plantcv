@@ -1,12 +1,13 @@
 # Filter the results of the color card detection algorithm
 
 from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
-from plantcv.plantcv.transform.detect_color_card import _color_card_detection 
+from plantcv.plantcv.transform.detect_color_card import _color_card_detection
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
 import numpy as np
 import cv2
 import os
+
 
 def color_card(rgb_img, **kwargs):
     """Automatically detect a color card and visualizes the chips detected.
@@ -31,7 +32,7 @@ def color_card(rgb_img, **kwargs):
         Binary bounding box mask of the detected color card chips
     """
     _, _, bounding_mask, _, _, _ = _color_card_detection(rgb_img, **kwargs)
-    
+
     # Find contours
     cnt, cnt_str = _cv2_findcontours(bin_img=bounding_mask)
 
