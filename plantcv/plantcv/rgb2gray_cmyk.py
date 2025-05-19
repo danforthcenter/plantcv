@@ -28,7 +28,7 @@ def rgb2gray_cmyk(rgb_img, channel):
     names = {"c": "cyan", "m": "magenta", "y": "yellow", "k": "black"}
 
     # Save or display the grayscale image
-    _debug(visual=gray_img, filename=os.path.join(params.debug_outdir,
-                                                  str(params.device) + "_cmyk_" + names[channel.lower()] + ".png"))
+    _debug(visual=gray_img,
+           filename=os.path.join(params.debug_outdir, f"{params.device}_cmyk_{names[channel.lower()]}.png"), cmap="gray")
 
     return gray_img

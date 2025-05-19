@@ -28,7 +28,6 @@ def rgb2gray_hsv(rgb_img, channel):
     names = {"h": "hue", "s": "saturation", "v": "value"}
 
     _debug(visual=gray_img,
-           filename=os.path.join(params.debug_outdir,
-                                 str(params.device) + "_hsv_" + names[channel.lower()] + ".png"), cmap='gray')
+           filename=os.path.join(params.debug_outdir, f"{params.device}_hsv_{names[channel.lower()]}.png"), cmap='gray')
 
     return gray_img

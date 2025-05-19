@@ -29,7 +29,6 @@ def rgb2gray_lab(rgb_img, channel):
 
     # Display debug image
     _debug(visual=gray_img,
-           filename=os.path.join(params.debug_outdir,
-                                 str(params.device) + "_lab_" + names[channel.lower()] + ".png"), cmap="gray")
+           filename=os.path.join(params.debug_outdir, f"{params.device}_lab_{names[channel.lower()]}.png"), cmap="gray")
 
     return gray_img
