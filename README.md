@@ -34,10 +34,10 @@ links to recorded presentations, and publications using PlantCV, please visit ou
 ### Quick Links
 
 * [Documentation](http://plantcv.readthedocs.io/)
-* [Interactive Documentation](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=index.ipynb)
+* [Tutorial Gallery](https://plantcv.org/tutorials)
 * [Installation Instructions](https://plantcv.readthedocs.io/en/stable/installation/)
 * [Updating/Changelog](https://plantcv.readthedocs.io/en/stable/updating/)
-* [Public Image Datasets](http://plantcv.danforthcenter.org/pages/data.html)
+* [Public Image Datasets](https://datasci.danforthcenter.org/data/)
 * [Contribution Guide](https://plantcv.readthedocs.io/en/stable/CONTRIBUTING/)
 * [Code of Conduct](https://plantcv.readthedocs.io/en/stable/CODE_OF_CONDUCT/)
 * Downloads
