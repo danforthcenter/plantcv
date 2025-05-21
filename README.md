@@ -2,8 +2,6 @@
 [![DeepSource](https://app.deepsource.com/gh/danforthcenter/plantcv.svg/?label=code+coverage&show_trend=true&token=og8rSyKxywOCGkIk8UNiF7B_)](https://app.deepsource.com/gh/danforthcenter/plantcv/)
 [![DeepSource](https://app.deepsource.com/gh/danforthcenter/plantcv.svg/?label=active+issues&show_trend=true&token=og8rSyKxywOCGkIk8UNiF7B_)](https://app.deepsource.com/gh/danforthcenter/plantcv/)
 [![Documentation Status](https://readthedocs.org/projects/plantcv/badge/?version=stable)](https://plantcv.readthedocs.io/en/stable/?badge=stable)
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=index.ipynb)
-[![Docker Pulls](https://img.shields.io/docker/pulls/danforthcenter/plantcv.svg)](https://hub.docker.com/r/danforthcenter/plantcv/)
 [![GitHub release](https://img.shields.io/github/release/danforthcenter/plantcv.svg)](https://github.com/danforthcenter/plantcv/releases)
 [![PyPI version](https://badge.fury.io/py/plantcv.svg)](https://badge.fury.io/py/plantcv)
 ![Conda](https://img.shields.io/conda/v/conda-forge/plantcv)
@@ -44,7 +42,6 @@ links to recorded presentations, and publications using PlantCV, please visit ou
   * [GitHub](https://github.com/danforthcenter/plantcv)
   * [PyPI](https://pypi.org/project/plantcv/)
   * [Conda-forge](https://anaconda.org/conda-forge/plantcv)
-  * [Docker](https://hub.docker.com/r/danforthcenter/plantcv)
   * [Zenodo](https://doi.org/10.5281/zenodo.595522)
 
 ### Citing PlantCV
