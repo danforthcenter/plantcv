@@ -2,6 +2,7 @@
 import os
 import cv2
 import numpy as np
+from scipy.spatial.distance import euclidean
 from plantcv.plantcv._helpers import _iterate_analysis, _cv2_findcontours, _object_composition, _grayscale_to_rgb
 from plantcv.plantcv import outputs, within_frame
 from plantcv.plantcv import params
@@ -114,6 +115,7 @@ def _analyze_size(img, mask, label):
         # Caliper length
         caliper_length, caliper_transpose = _longest_axis(height=img.shape[0], width=img.shape[1],
                                                           hull=hull, cmx=cmx, cmy=cmy)
+        longest_path = euclidean(tuple(caliper_transpose[caliper_length - 1]), tuple(caliper_transpose[0]))
         # Debugging output
         cv2.drawContours(plt_img, obj, -1, (255, 0, 0), params.line_thickness)
         cv2.drawContours(plt_img, [hull], -1, (255, 0, 255), params.line_thickness)
@@ -121,7 +123,7 @@ def _analyze_size(img, mask, label):
         cv2.line(plt_img, (int(cmx), y), (int(cmx), y + height), (255, 0, 255), params.line_thickness)
         cv2.circle(plt_img, (int(cmx), int(cmy)), 10, (255, 0, 255), params.line_thickness)
         cv2.line(plt_img, (tuple(caliper_transpose[caliper_length - 1])), (tuple(caliper_transpose[0])),
-                 (255, 0, 255), params.line_thickness)
+                 (255, 255, 255), params.line_thickness)
 
     # Store outputs
     outputs.add_metadata(term="image_height", datatype=int, value=np.shape(img)[0])
@@ -145,8 +147,8 @@ def _analyze_size(img, mask, label):
                             method='plantcv.plantcv.analyze.size', scale='pixels', datatype=int,
                             value=height, label='pixels')
     outputs.add_observation(sample=label, variable='longest_path', trait='longest path',
-                            method='plantcv.plantcv.analyze.size', scale='pixels', datatype=int,
-                            value=caliper_length, label='pixels')
+                            method='plantcv.plantcv.analyze.size', scale='pixels', datatype=float,
+                            value=float(longest_path), label='pixels')
     outputs.add_observation(sample=label, variable='center_of_mass', trait='center of mass',
                             method='plantcv.plantcv.analyze.size', scale='none', datatype=tuple,
                             value=(cmx, cmy), label=("x", "y"))
