@@ -1,8 +1,8 @@
-## Segment out Color Card
+## Mask out Color Card
 
 Automatically detects a color card and creates a bounding box mask. 
 
-**plantcv.filters.color_card**(*rgb_img, \*\*kwargs*)
+**plantcv.transform.mask_color_card**(*rgb_img, \*\*kwargs*)
 
 **returns** color_card_mask
 
@@ -22,18 +22,18 @@ Automatically detects a color card and creates a bounding box mask.
 
 **RGB Image**
 
-![Screenshot](img/documentation_images/filters_color_card/seedhead-rgb.jpg)
+![Screenshot](img/documentation_images/transform_mask_color_card/seedhead-rgb.jpg)
 
 **Seed head mask**
 
-![Screenshot](img/documentation_images/filters_color_card/seedhead-with-cc.png)
+![Screenshot](img/documentation_images/transform_mask_color_card/seedhead-with-cc.png)
 
 ```python
 
 from plantcv import plantcv as pcv
 
 # Detect and mask the color card in the image
-cc_mask = pcv.filters.color_card(rgb_img=img)
+cc_mask = pcv.transform.mask_color_card(rgb_img=img)
 
 # Remove color card chips from the plant mask with image subtract
 cleaned_mask = pcv.image_subtract(gray_img1=plant_mask, gray_img2=cc_mask)
@@ -42,6 +42,6 @@ cleaned_mask = pcv.image_subtract(gray_img1=plant_mask, gray_img2=cc_mask)
 
 **Cleaned mask**
 
-![Screenshot](img/documentation_images/filters_color_card/seedhead-cleaned.png)
+![Screenshot](img/documentation_images/transform_mask_color_card/seedhead-cleaned.png)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/filters/color_card.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/transform/mask_color_card.py)

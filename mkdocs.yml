@@ -66,7 +66,6 @@ nav:
       - 'Flood Fill': floodfill.md
       - 'Flip Image': flip.md
       - 'Filters':
-        - 'Color Card Filter': filters_color_card.md
         - 'Eccentricity Filter': filters_eccentricity.md
         - 'Object Filter': filters_obj_props.md
         - 'Laplace Filter': laplace_filter.md
@@ -168,6 +167,7 @@ nav:
         - 'Custom Range Threshold': custom_range_threshold.md
         - 'Gaussian Adaptive Threshold': gaussian_threshold.md
         - 'Mask Bad Threshold': mask_bad_threshold.md
+        - 'Mask Color Card': transform_mask_color_card.md
         - 'Mean Adaptive Threshold': mean_threshold.md
         - 'Otsu Auto Threshold': otsu_threshold.md
         - 'Saturation Threshold': saturation_threshold.md
