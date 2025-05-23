@@ -15,6 +15,8 @@ class FiltersTestData:
         self.small_bin_fill = os.path.join(self.datadir, "floodfill.png")
         # Binary mask for object filter
         self.barley_example = os.path.join(self.datadir, "example_barley_mask.png")
+        # Color card image
+        self.colorcard_img = os.path.join(self.datadir, "colorcard_img.png")
 
 
 @pytest.fixture(scope="session")
