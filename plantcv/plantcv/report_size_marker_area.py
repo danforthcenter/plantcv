@@ -2,10 +2,10 @@
 import cv2
 import numpy as np
 import os
-from plantcv.plantcv import params, outputs, fatal_error, apply_mask, rgb2gray_hsv
+from plantcv.plantcv import params, outputs, fatal_error, apply_mask
 from plantcv.plantcv.threshold import binary as binary_threshold
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition, _roi_filter
+from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition, _roi_filter, _rgb2hsv
 
 
 def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_channel=None,
@@ -66,7 +66,7 @@ def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_c
             # Mask the input image
             masked = apply_mask(img=ref_img, mask=roi_mask, mask_color="black")
             # Convert the masked image to hue, saturation, or value
-            marker_hsv = rgb2gray_hsv(rgb_img=masked, channel=thresh_channel)
+            marker_hsv = _rgb2hsv(rgb_img=masked, channel=thresh_channel)
             # Threshold the HSV image
             marker_bin = binary_threshold(gray_img=marker_hsv, threshold=thresh, object_type=objcolor)
             # Identify contours in the masked image

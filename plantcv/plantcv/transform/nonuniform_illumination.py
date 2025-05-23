@@ -4,10 +4,10 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv import params
-from plantcv.plantcv import rgb2gray
 from plantcv.plantcv import gaussian_blur
 from plantcv.plantcv.transform import rescale
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _rgb2gray
 
 
 def nonuniform_illumination(img, ksize):
@@ -25,7 +25,7 @@ def nonuniform_illumination(img, ksize):
     :return corrected_img: numpy.ndarray
     """
     if len(np.shape(img)) == 3:
-        img = rgb2gray(img)
+        img = _rgb2gray(img)
 
     # Fill foreground objects
     kernel = np.ones((ksize, ksize), np.uint8)

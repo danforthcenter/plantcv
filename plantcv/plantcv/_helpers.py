@@ -457,3 +457,127 @@ def _grayscale_to_rgb(img):
         img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
 
     return img
+
+
+def _rgb2lab(rgb_img, channel):
+    """Convert image from RGB colorspace to LAB colorspace. Returns the specified subchannel as a gray image.
+
+    Parameters
+    ----------
+    rgb_img : numpy.ndarray
+        RGB image data
+    channel : str
+        color subchannel (l = lightness, a = green-magenta, b = blue-yellow)
+
+    Returns
+    -------
+    numpy.ndarray
+        grayscale image from one LAB color channel
+    """
+    # The allowable channel inputs are l, a or b
+    channel = channel.lower()
+    if channel not in ["l", "a", "b"]:
+        fatal_error("Channel " + str(channel) + " is not l, a or b!")
+
+    # Convert the input BGR image to LAB colorspace
+    lab = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2LAB)
+    # Split LAB channels
+    l, a, b = cv2.split(lab)
+    # Create a channel dictionaries for lookups by a channel name index
+    channels = {"l": l, "a": a, "b": b}
+    return channels[channel]
+
+
+def _rgb2hsv(rgb_img, channel):
+    """Convert image from RGB colorspace to HSV colorspace. Returns the specified subchannel as a gray image.
+
+    Parameters
+    ----------
+    rgb_img : numpy.ndarray
+        RGB image data
+    channel : str
+        color subchannel (h = hue, s = saturation, v = value/intensity/brightness)
+
+    Returns
+    -------
+    numpy.ndarray
+        grayscale image from one HSV color channel
+    """
+    # The allowable channel inputs are h, s or v
+    channel = channel.lower()
+    if channel not in ["h", "s", "v"]:
+        fatal_error("Channel " + str(channel) + " is not h, s or v!")
+
+    # Convert the input BGR image to HSV colorspace
+    hsv = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2HSV)
+    # Split HSV channels
+    h, s, v = cv2.split(hsv)
+    # Create a channel dictionaries for lookups by a channel name index
+    channels = {"h": h, "s": s, "v": v}
+
+    return channels[channel]
+
+
+def _rgb2cmyk(rgb_img, channel):
+    """Convert image from RGB colorspace to CMYK colorspace. Returns the specified subchannel as a gray image.
+
+    Parameters
+    ----------
+    rgb_img : numpy.ndarray
+        RGB image data
+    channel : str
+        color subchannel (c = cyan, m = magenta, y = yellow, k=black)
+
+    Returns
+    -------
+    numpy.ndarray
+        grayscale image from one CMYK color channel
+    """
+    # Set NumPy to ignore divide by zero errors
+    _ = np.seterr(divide='ignore', invalid='ignore')
+    # The allowable channel inputs are c, m , y or k
+    channel = channel.lower()
+    if channel not in ["c", "m", "y", "k"]:
+        fatal_error("Channel " + str(channel) + " is not c, m, y or k!")
+
+    # Create float
+    bgr = rgb_img.astype(float)/255.
+
+    # K channel
+    k = 1 - np.max(bgr, axis=2)
+
+    # C Channel
+    c = (1 - bgr[..., 2] - k) / (1 - k)
+
+    # M Channel
+    m = (1 - bgr[..., 1] - k) / (1 - k)
+
+    # Y Channel
+    y = (1 - bgr[..., 0] - k) / (1 - k)
+
+    # Convert the input BGR image to LAB colorspace
+    cmyk = (np.dstack((c, m, y, k)) * 255).astype(np.uint8)
+    # Split CMYK channels
+    y, m, c, k = cv2.split(cmyk)
+    # Create a channel dictionaries for lookups by a channel name index
+    channels = {"c": c, "m": m, "y": y, "k": k}
+
+    return channels[channel]
+
+
+def _rgb2gray(rgb_img):
+    """Convert image from RGB colorspace to Gray.
+
+    Parameters
+    ----------
+    rgb_img : numpy.ndarray
+        RGB image data
+
+    Returns
+    -------
+    numpy.ndarray
+        grayscale image
+    """
+    gray = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
+
+    return gray
