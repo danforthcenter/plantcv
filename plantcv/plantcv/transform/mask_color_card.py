@@ -9,7 +9,7 @@ import cv2
 import os
 
 
-def color_card(rgb_img, **kwargs):
+def mask_color_card(rgb_img, **kwargs):
     """Automatically detect a color card and visualizes the chips detected.
 
     Parameters
