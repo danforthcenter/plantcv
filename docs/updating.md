@@ -422,11 +422,6 @@ pages for more details on the input and output variable types.
 * pre v3.3: NA
 * post v3.3: filtered_img = **plantcv.fill**(*bin_img*)
 
-#### plantcv.filters.color_card 
-
-* pre v4.8:  NA 
-* post v4.8: color_card_mask = **plantcv.filters.color_card**(*rgb_img, **kwargs*)
-
 #### plantcv.filters.eccentricity 
 
 * pre v4.3:  NA 
@@ -977,6 +972,11 @@ pages for more details on the input and output variable types.
 
 * pre v4.2.1: NA
 * post v4.2.1: mtx, dist = **plantcv.transform.checkerboard_calib**(*img_path, col_corners, row_corners, out_dir*)
+
+#### plantcv.transform.mask_color_card 
+
+* pre v4.8:  NA 
+* post v4.8: color_card_mask = **plantcv.transform.mask_color_card**(*rgb_img, **kwargs*)
 
 #### plantcv.transform.rotate
 
