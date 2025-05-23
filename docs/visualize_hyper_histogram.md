@@ -21,9 +21,6 @@ specific wavelengths. This function is an application of the [histogram](visuali
     - If the provided wavelength is in the range of visible spectrum, the color corresponds to the wavelength would be used as the histogram color
     
 - **Example use:**
-<!---
-    - [Use In NIR Tutorial](nir_tutorial.md)
-  --->
 
 **Hyperspectral image**
 

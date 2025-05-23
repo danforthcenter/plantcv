@@ -14,7 +14,7 @@ Group pseudo-landmarks into homology groupings
 - **Context:**
     - Used to group pseudo-landmarks into homology groupings
 - **Example use:**
-    - [Use In Homology Tutorial](tutorials/homology_tutorial.md)
+    - [Use In Homology Tutorial](https://github.com/danforthcenter/plantcv-homology-tutorials/blob/main/README.md)
 
 
 ```python

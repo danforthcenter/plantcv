@@ -3,7 +3,7 @@
 Returns a list of RGB color values, equally spaced across a color map. The color map used is configurable and colors
 can either be returned in sequential or randomized order.
 
-**plantcv.color_palette(*num, saved=False*)**
+**plantcv.color_palette**(*num, saved=False*)
 
 **returns** colors
 
@@ -12,8 +12,6 @@ can either be returned in sequential or randomized order.
     - saved - True/False whether a previously saved color scale should be used. Default = False
 - **Context:**
     - Used when a set of colors is needed.
-    - See: [Multi-plant tutorial](tutorials/multi-plant_tutorial.md), [Morphology tutorial](tutorials/morphology_tutorial.md),
-    [Spatial clustering](spatial_clustering.md), and [Watershed segmentation](watershed.md).
     - Visit the [Matplotlib](https://matplotlib.org/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py) website for a list of available colormaps.
 
 ```python

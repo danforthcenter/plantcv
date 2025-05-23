@@ -17,7 +17,7 @@ HSV (Hue, Saturation, Value) and LAB (Lightness, Green-Magenta, Blue Yellow) cha
     - Used to extract color data from RGB, LAB, and HSV color channels.
     - Generates histogram of color channel data. 
 - **Example use:**
-    - [Use In VIS Tutorial](tutorials/vis_tutorial.md)
+    - [Use In Seed Analysis Tutorial](https://plantcv.org/tutorials/seed-analysis-workflow)
 - **Output data stored:**  Data ('blue_frequencies', 'green_frequencies', 'red_frequencies', 'lightness_frequencies', 'green-magenta_frequencies', 
     'blue-yellow_frequencies', 'hue_frequencies', 'saturation_frequencies', 'value_frequencies', 'hue_circular_mean', 'hue_circular_std', 'hue_median') 
     automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 

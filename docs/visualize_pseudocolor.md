@@ -25,7 +25,7 @@ unaltered, the  matplotlib default DPI is 100 pixels per inch.
 - **Context:**
     - Used to pseudocolor any grayscale image to custom colormap
 - **Example use:**
-    - [Interactive Documentation](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks%2FpsII_tutorial.ipynb)
+    - [Use in PSII tutorial](https://plantcv.org/tutorials/photosynthesis)
 
 **Original grayscale image**
 

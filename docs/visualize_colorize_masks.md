@@ -12,8 +12,7 @@ This is a plotting method used to color masks.
 - **Context:**
     - This function was written to allow users to plot masks returned by [naive bayes multiclass](naive_bayes_multiclass.md) but can be used with any mask. 
     The number of masks much match the number of colors. 
-- **Example use:**
-    - [Use In Machine Learning Tutorial](tutorials/machine_learning_tutorial.md)
+- **Example use below:**
 
 **Named Colors**
 

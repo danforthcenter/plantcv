@@ -17,7 +17,7 @@ and altair charts (like the histograms returned in [pcv.analyze.grayscale](analy
     - Often used to debug new image processing workflows
     - Used to write out final results images  
 - **Example use:**
-    - [Use In VIS Tutorial](tutorials/vis_tutorial.md)  
+    - [Use In Color Correction Tutorial](https://plantcv.org/tutorials/color-correction)  
 
 ```python
 

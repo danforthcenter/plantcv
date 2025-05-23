@@ -2,7 +2,7 @@
 
 Calibrate a raw hyperspectral image using white and dark reference images. 
 
-**plantcv.hyperspectral.calibrate(*raw_data, white_reference, dark_reference*)**
+**plantcv.hyperspectral.calibrate**(*raw_data, white_reference, dark_reference*)
 
 **returns** calibrated [`Spectral_data` class instance](Spectral_data.md) 
 

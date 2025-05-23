@@ -18,7 +18,7 @@ best if the pot size/position of the plant remains relatively constant.
     - Used to define a boundary line for the image, to find the height above and below as well as area above and below a
     boundary line.
 - **Example use:**
-    - [Use In VIS Tutorial](tutorials/vis_tutorial.md)
+    - [Use In VIS Tutorial](https://plantcv.org/tutorials/single-plant-rgb-workflow)
 - **Output data stored:** Data ('horizontal_reference_position', 'height_above_reference', 'height_below_reference',
 'area_above_reference', 'percent_area_above_reference', 'area_below_reference', 'percent_area_below_reference') automatically
 gets stored to the [`Outputs` class](outputs.md) when this function is ran. These data can always get accessed during a

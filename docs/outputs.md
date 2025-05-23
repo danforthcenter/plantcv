@@ -10,17 +10,19 @@ functions:
 * `analyze.bound_horizontal`
 * `analyze.bound_vertical`
 * `analyze.color`
+* `analyze.distribution`
 * `analyze.grayscale`
+* `analyze.npq`
 * `analyze.size`
 * `analyze.thermal` 
-* `fluor_fvfm`
-* `hyperspectral.analyze_spectral`
 * `analyze.spectral_index`
+* `analyze.spectral_reflectance`
+* `analyze.yii`
 * `report_size_marker_area`
 * `morphology.check_cycles`
+* `morphology.euclidean_length`
 * `morphology.segment_angle`
 * `morphology.segment_curvature`
-* `morphology.euclidean_length`
 * `morphology.segment_insertion_angle`
 * `morphology.segment_path_length`
 * `morphology.segment_tangent_angle` 
@@ -72,7 +74,7 @@ Methods are accessed as plantcv.outputs.*method*.
     Supported data types for JSON output are: int, float, str, list, bool, tuple, dict, NoneType, numpy.float64.
 
 **Example use:**
-    - [Use In VIS/NIR Tutorial](tutorials/vis_nir_tutorial.md)
+    - [Use In Seed Analysis Tutorial](https://plantcv.org/tutorials/seed-analysis-workflow)
 
 ### Examples
 

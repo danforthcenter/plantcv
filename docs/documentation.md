@@ -31,7 +31,7 @@ general style guidelines. Finally, new documentation files need to be
 referenced in the `mkdocs.yml` file in the main repository folder. This
 is done by adding the new file as a node in the table of contents tree.
 In the example below a new documentation file was added to the
-Documentation, Tutorials, and PlantCV Namespace sections.
+Documentation and PlantCV Namespace sections.
 
 ```
 nav:
@@ -39,9 +39,6 @@ nav:
 - Documentation:
   - Installation: installation.md
   - 'New general documentation': new_doc.md
-  - Tutorials:
-    - 'VIS workflow': vis_tutorial.md
-    - 'New tutorial': new_tutorial.md
   - - 'PlantCV Namespace':
     - 'Analyze color': analyze_color.md
     - 'New function': new_function.md

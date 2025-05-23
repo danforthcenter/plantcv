@@ -140,17 +140,3 @@ img, imgpath, imgname = pcv.readimage(filename=args.image)
 pcv.outputs.save_results(filename=args.result, outformat="json")
     
 ```
-
-There are examples of full Python scripts found at the bottom of each tutorial.
-
-*  [VIS Image Workflow](tutorials/vis_tutorial.md)
-*  [Grayscale Image Workflow](tutorials/grayscale_tutorial.md)
-*  [PSII Workflow](tutorials/psII_tutorial.md)
-*  [VIS / NIR Dual Workflow](tutorials/vis_nir_tutorial.md)
-*  [Multi Plant Tutorial](tutorials/multi-plant_tutorial.md)
-*  [Morphology Tutorial](tutorials/morphology_tutorial.md) 
-*  [Machine Learning Tutorial](tutorials/machine_learning_tutorial.md)
-*  [Color Correction Tutorial](tutorials/transform_color_correction_tutorial.md)
-*  [Morphology Tutorial](tutorials/morphology_tutorial.md) 
-*  [Thermal Tutorial](tutorials/thermal_tutorial.md) 
-*  [Hyperspectral Tutorial](tutorials/hyperspectral_tutorial.md)

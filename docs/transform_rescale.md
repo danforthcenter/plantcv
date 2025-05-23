@@ -13,8 +13,7 @@ Rescales grayscale images to user input minimum and maximum values.
    
 - **Context:**
     - Rescales pixel values in grayscale images.
-- **Example use:**
-    - [Use In Thermal Tutorial](tutorials/thermal_tutorial.md)
+- **Example use below:**
     
 **Input image**
 

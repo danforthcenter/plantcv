@@ -20,7 +20,7 @@ The photosynthesis subpackage is dependent on a PSII_Data instance file structur
     - Generates histograms of Fv/Fm, Fv'/Fm' or Fq'/Fm' data.
     - Generates an Fv/Fm, Fv'/Fm' or Fq'/Fm' DataArray.
 - **Example use:**
-    - [Use In PSII Tutorial](tutorials/psII_tutorial.md)
+    - [Use In PSII Tutorial](https://plantcv.org/tutorials/photosynthesis-multiobject)
 - **Output data stored:** Data ('yii_hist_{measurement_label}', 'yii_max_{measurement_label}', 'yii_median_{measurement_label}' automatically gets stored to the 
   [`Outputs` class](outputs.md) when this function is run. These data can always get accessed during a workflow 
   (example below). [Summary of Output Observations](output_measurements.md#summary-of-output-observations)

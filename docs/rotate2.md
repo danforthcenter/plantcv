@@ -12,8 +12,7 @@ Rotates image without changing the dimensions of the image.
     - crop - if crop is set to True, image will be cropped to original image dimensions, if set to False, the image size will be adjusted to accommodate new image dimensions.
 - **Context:**
     - Rotates image, sometimes it is necessary to rotate an image, especially when clustering objects.
-- **Example use:**
-    - [Use In Multi-Plant Tutorial](tutorials/multi-plant_tutorial.md)
+- **Example use below:**
     
 **Input image**
 
