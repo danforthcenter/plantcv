@@ -4,12 +4,10 @@ import cv2
 import math
 import numpy as np
 from matplotlib import pyplot as plt
-from plantcv.plantcv import rgb2gray
-from plantcv.plantcv import rgb2gray_hsv
-from plantcv.plantcv import rgb2gray_lab
 from plantcv.plantcv import fatal_error, warn
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _rgb2lab, _rgb2hsv, _rgb2gray
 from skimage.feature import graycomatrix, graycoprops
 from scipy.ndimage import generic_filter
 
@@ -797,7 +795,7 @@ def mask_bad(float_img, bad_type='native'):
 
 
 # functions to get a given channel with parameters compatible
-# with rgb2gray_lab and rgb2gray_hsv to use in the dict
+# with _rgb2lab and _rgb2hsv to use in the dict
 def _get_R(rgb_img, _):
     """Get the red channel from a RGB image"""
     return rgb_img[:, :, 2]
@@ -815,7 +813,7 @@ def _get_B(rgb_img, _):
 
 def _get_gray(rgb_img, _):
     """Get the gray scale transformation of a RGB image"""
-    return rgb2gray(rgb_img=rgb_img)
+    return _rgb2gray(rgb_img=rgb_img)
 
 
 def _get_index(rgb_img, _):
@@ -856,13 +854,13 @@ def dual_channels(rgb_img, x_channel, y_channel, points, above=True):
         'R': _get_R,
         'G': _get_G,
         'B': _get_B,
-        'l': rgb2gray_lab,
-        'a': rgb2gray_lab,
-        'b': rgb2gray_lab,
+        'l': _rgb2lab,
+        'a': _rgb2lab,
+        'b': _rgb2lab,
         'gray': _get_gray,
-        'h': rgb2gray_hsv,
-        's': rgb2gray_hsv,
-        'v': rgb2gray_hsv,
+        'h': _rgb2hsv,
+        's': _rgb2hsv,
+        'v': _rgb2hsv,
         'index': _get_index,
     }
 

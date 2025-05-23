@@ -6,9 +6,8 @@ import pandas as pd
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 from plantcv.plantcv import color_palette
-from plantcv.plantcv.morphology import _iterative_prune
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _cv2_findcontours
+from plantcv.plantcv._helpers import _cv2_findcontours, _iterative_prune
 
 
 def _slope_to_intesect_angle(m1, m2):
@@ -25,7 +24,7 @@ def _slope_to_intesect_angle(m1, m2):
     :param m2: float
     :return angle: float
     """
-    angle = (np.pi - np.absolute(np.arctan(m1) - np.arctan(m2))) * 180 / np.pi
+    angle = ((np.pi - np.absolute(np.arctan(m1) - np.arctan(m2))) * 180 / np.pi).astype(np.float64)
     return angle
 
 

@@ -118,6 +118,7 @@ nav:
         - 'Segment Angles': segment_angle.md
         - 'Combine Segments': segment_combine.md
         - 'Segment Curvature': segment_curvature.md
+        - 'Segment Ends': segment_ends.md
         - 'Segment Euclidean Length': segment_euclidean_length.md
         - 'Segment ID': segment_id.md
         - 'Segment Insertion Angle': segment_insertion_angle.md
