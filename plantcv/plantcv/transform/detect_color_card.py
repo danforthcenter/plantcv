@@ -179,7 +179,7 @@ def _color_card_detection(rgb_img, **kwargs):
 
 
 def mask_color_card(rgb_img, **kwargs):
-    """Automatically detect a color card and visualizes the chips detected.
+    """Automatically detect a color card and create bounding box mask of the chips detected.
 
     Parameters
     ----------
@@ -200,7 +200,7 @@ def mask_color_card(rgb_img, **kwargs):
     numpy.ndarray
         Binary bounding box mask of the detected color card chips
     """
-    _, _, bounding_mask, _, _, _ = _color_card_detection(rgb_img, **kwargs)
+    _, _, _, _, _, bounding_mask = _color_card_detection(rgb_img, **kwargs)
 
     if params.debug is not None:
         # Find contours
@@ -214,6 +214,7 @@ def mask_color_card(rgb_img, **kwargs):
         _debug(visual=bb_debug, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
 
     return bounding_mask
+
 
 def detect_color_card(rgb_img, label=None, **kwargs):
     """Automatically detect a color card.
