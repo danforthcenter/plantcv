@@ -1,7 +1,7 @@
 """Tests for filters.color_card."""
 import cv2
 import numpy as np
-from plantcv.plantcv.transform import mask_color_card
+from plantcv.plantcv.transform.detect_color_card import mask_color_card
 
 
 def test_mask_color_card(transform_test_data):

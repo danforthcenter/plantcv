@@ -44,4 +44,4 @@ cleaned_mask = pcv.image_subtract(gray_img1=plant_mask, gray_img2=cc_mask)
 
 ![Screenshot](img/documentation_images/transform_mask_color_card/seedhead-cleaned.png)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/transform/mask_color_card.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/transform/detect_color_card.py)
