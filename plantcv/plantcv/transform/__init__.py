@@ -20,7 +20,7 @@ from plantcv.plantcv.transform.gamma_correct import gamma_correct
 from plantcv.plantcv.transform.checkerboard_calib import checkerboard_calib, calibrate_camera
 from plantcv.plantcv.transform.merge_images import merge_images
 from plantcv.plantcv.transform.auto_correct_color import auto_correct_color
-from plantcv.plantcv.transform.mask_color_card import mask_color_card
+from plantcv.plantcv.transform.detect_color_card import mask_color_card
 
 __all__ = ["get_color_matrix", "get_matrix_m", "calc_transformation_matrix", "apply_transformation_matrix",
            "save_matrix", "load_matrix", "correct_color", "create_color_card_mask", "quick_color_check",

@@ -8,7 +8,7 @@ import math
 import numpy as np
 from plantcv.plantcv import params, outputs, fatal_error, deprecation_warning
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _rgb2gray
+from plantcv.plantcv._helpers import _rgb2gray, _cv2_findcontours, _object_composition
 
 
 def _is_square(contour, min_size):
@@ -104,7 +104,7 @@ def _color_card_detection(rgb_img, **kwargs):
     Returns
     -------
     list
-        Labeled mask of chips, debug img, convex hull mask, detected chip areas, chip heights, chip widths
+        Labeled mask of chips, debug img, detected chip areas, chip heights, chip widths, bounding box mask
     """
     # Get keyword arguments and set defaults if not set
     min_size = kwargs.get("min_size", 1000)  # Minimum size for _is_square chip filtering
@@ -175,8 +175,45 @@ def _color_card_detection(rgb_img, **kwargs):
     # Create labeled mask and debug image of color chips
     labeled_mask, debug_img = _draw_color_chips(debug_img, new_centers, radius)
 
-    return labeled_mask, debug_img, boundind_mask, marea, mheight, mwidth
+    return labeled_mask, debug_img, marea, mheight, mwidth, boundind_mask
 
+
+def mask_color_card(rgb_img, **kwargs):
+    """Automatically detect a color card and visualizes the chips detected.
+
+    Parameters
+    ----------
+    rgb_img : numpy.ndarray
+        Input RGB image data containing a color card.
+    **kwargs
+        Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle.
+
+        Valid keyword arguments:
+        adaptive_method: 0 (mean) or 1 (Gaussian) (default = 1)
+        block_size: int (default = 51)
+        radius: int (default = 20)
+        min_size: int (default = 1000)
+
+    Returns
+    -------
+
+    numpy.ndarray
+        Binary bounding box mask of the detected color card chips
+    """
+    _, _, bounding_mask, _, _, _ = _color_card_detection(rgb_img, **kwargs)
+
+    if params.debug is not None:
+        # Find contours
+        cnt, cnt_str = _cv2_findcontours(bin_img=bounding_mask)
+
+        # Consolidate contours
+        obj = _object_composition(contours=cnt, hierarchy=cnt_str)
+        bb_debug = cv2.drawContours(np.copy(rgb_img), [obj], -1, (255, 0, 255), params.line_thickness)
+
+        # Debug image handling
+        _debug(visual=bb_debug, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
+
+    return bounding_mask
 
 def detect_color_card(rgb_img, label=None, **kwargs):
     """Automatically detect a color card.
@@ -209,7 +246,7 @@ def detect_color_card(rgb_img, label=None, **kwargs):
         "It will be removed in PlantCV v5.0."
         )
 
-    labeled_mask, debug_img, _, marea, mheight, mwidth = _color_card_detection(rgb_img, **kwargs)
+    labeled_mask, debug_img, marea, mheight, mwidth, _ = _color_card_detection(rgb_img, **kwargs)
     # Create dataframe for easy summary stats
     chip_size = np.median(marea)
     chip_height = np.median(mheight)
