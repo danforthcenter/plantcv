@@ -51,6 +51,12 @@ the morphology sub-package. Default = 2.
 **saved_color_scale**: Using the `color_palette` function will save the color scale here for reuse in downstream functions. Set to `None` to remove. Default = `None`.
 
 **verbose**: Set the status of verboseness. When in "verbose" mode, the deprecation warning will always be printed once triggered. Default: `True`. Users can turn off deprecation warnings by setting `verbose=False`.
+
+**unit**: Set the units of the size outputs. Users can scale size measurements by updating the `unit`, `px_height` and `px_width` Default: `pixels`
+
+**px_height** Set the size scaling factor to enable automatic conversion between pixels and a real world unit, such as centimeters. Users can scale size measurements by updating the `unit`, `px_height` and `px_width` Default: `1`
+
+**px_width** Set the size scaling factor to enable automatic conversion between pixels and a real world unit, such as centimeters. Users can scale size measurements by updating the `unit`, `px_height` and `px_width` Default: `1`
 ### Example
 
 Updated PlantCV functions use `params` implicitly, so overriding the `params` defaults will alter the behavior of
