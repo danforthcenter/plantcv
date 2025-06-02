@@ -976,7 +976,7 @@ pages for more details on the input and output variable types.
 #### plantcv.transform.mask_color_card 
 
 * pre v4.8:  NA 
-* post v4.8: color_card_mask = **plantcv.transform.mask_color_card**(*rgb_img, **kwargs*)
+* post v4.8: color_card_mask = **plantcv.transform.mask_color_card**(*rgb_img, \*\*kwargs*)
 
 #### plantcv.transform.rotate
 
@@ -1228,7 +1228,7 @@ pages for more details on the input and output variable types.
 #### plantcv.transform.auto_correct_color
 
 * pre v4.6: NA
-* post v4.6: corrected_img = **plantcv.transform.auto_correct_color**(*rgb_img, label=None, **kwargs*)
+* post v4.6: corrected_img = **plantcv.transform.auto_correct_color**(*rgb_img, label=None, \*\*kwargs*)
 
 #### plantcv.transform.correct_color
 
@@ -1243,7 +1243,7 @@ pages for more details on the input and output variable types.
 #### plantcv.transform.detect_color_card
 
 * pre v4.0.1: NA
-* post v4.0.1: labeled_mask = **plantcv.transform.detect_color_card**(*rgb_img, label=None, **kwargs*)
+* post v4.0.1: labeled_mask = **plantcv.transform.detect_color_card**(*rgb_img, label=None, \*\*kwargs*)
 
 #### plantcv.transform.find_color_card
 
