@@ -28,7 +28,7 @@ landmark cluster edges, and angle score for entire contour.  Used in troubleshoo
 - **Context:**
     - Used to identify pseudo-landmark positions along the contour of a plant for morphometric analysis 
 - **Example use:**
-    - [Use In Homology Tutorial](tutorials/homology_tutorial.md)
+    - [Use In Homology Tutorial](https://github.com/danforthcenter/plantcv-homology-tutorials/blob/main/README.md)
 
 **Original image**
 

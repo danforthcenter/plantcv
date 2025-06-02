@@ -17,7 +17,7 @@
 
 1. Read through the steps of the [contributing guide](CONTRIBUTING.md).
 2. Email plantcv@danforthcenter.org to get added as a contributor.
-3. [Install PlantCV from the source code](installation.md#installation-from-the-source-code)
+3. [Install PlantCV from the source code](installation.md)
 4. Activate the plantcv environment, then change the current directory to the location where plantcv is installed.  Then, run `git checkout <pull-request-branch>` to navigate to the branch to be reviewed.
 
 ### Step 1: Familiarize yourself with the PR

@@ -32,17 +32,17 @@ Other useful reference pages:
 
 ## Tutorials 
 
-Check out our tutorials below or in our [Tutorial Gallery](tutorials.md) to learn how to analyze different types of images: 
+Check out our tutorials in our [Tutorial Gallery](https://plantcv.org/tutorials) to learn how to analyze different types of images: 
 
-* [VIS/RGB Image Processing](tutorials/vis_tutorial.md)
-* [Grayscale Image Processing](tutorials/grayscale_tutorial.md)
-* [PSII Image Processing](tutorials/psII_tutorial.md)
-* [VIS / NIR Dual Workflows](tutorials/vis_nir_tutorial.md)
-* [Multi Plant Image Processing](tutorials/multi-plant_tutorial.md)
-* [Morphology Package](tutorials/morphology_tutorial.md) 
-* [Thermal Image Processing](tutorials/thermal_tutorial.md)
-* [Hyperspectral Image Processing](tutorials/hyperspectral_tutorial.md)
-* [Machine Learning Tutorial](tutorials/machine_learning_tutorial.md)
+* [VIS/RGB Single Plant Image Processing](https://plantcv.org/tutorials/single-plant-rgb-workflow)
+* [Grayscale Image Processing](https://plantcv.org/tutorials/grayscale)
+* [PSII Image Processing](https://plantcv.org/tutorials/photosynthesis-multiobject)
+* [VIS / NIR Dual Workflows](https://plantcv.org/tutorials/dual-rgb-nir-workflow)
+* [Multi Plant Image Processing](https://plantcv.org/tutorials/arabidopsis-tray)
+* [Morphology Package](https://plantcv.org/tutorials/morphology-workflow)
+* [Thermal Image Processing](https://plantcv.org/tutorials/thermal)
+* [Hyperspectral Image Processing](https://plantcv.org/tutorials/hyperspectral)
+* [Machine Learning Tutorial](https://plantcv.org/tutorials/naive-bayes)
 * [Parallel Image Processing](pipeline_parallel.md)
 * [Exporting Data for Downstream Analysis](db-exporter.md)
 

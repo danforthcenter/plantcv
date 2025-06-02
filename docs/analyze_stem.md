@@ -1,6 +1,6 @@
 ## Analyze Stem Objects
 
-Primary, or stem, objects identified during workflows that examine the [morphology](tutorials/morphology_tutorial.md) of 
+Primary, or stem, objects identified during workflows that examine the [morphology](https://plantcv.org/tutorials/morphology-workflow) of 
 plants or plant organs can have specific characteristics measured about the stem segments of a skeleton.
 
 **plantcv.morphology.analyze_stem**(*rgb_img, stem_objects, label=None*)
@@ -14,7 +14,7 @@ plants or plant organs can have specific characteristics measured about the stem
 - **Context:**
     - Used to output stem morphological characteristics, including height, angle, and length.
 - **Example use:**
-    - [Use In Morphology Tutorial](tutorials/morphology_tutorial.md)
+    - [Use In Morphology Tutorial](https://plantcv.org/tutorials/morphology-workflow)
 
 
 - **Output data stored:** Data ('stem_angle', 'stem_height', and 'stem_length') 

@@ -26,10 +26,7 @@ Source: [https://en.wikipedia.org/wiki/ColorChecker](https://en.wikipedia.org/wi
     - color_matrix - a *n* x 4 matrix containing the standard red, green, and blue
     values for each color chip
 
-
-
-- **Example use:**
-    - Tutorial in progress
+- **Example use below:**
 
 ```python
 
