@@ -18,7 +18,7 @@ Reads image into numpy ndarray and splits the path and image filename (*see note
     default settings (`mode="native"`). However, if the alpha channel is needed users must specify `mode="rgba"`. 
     - Comma separated data can be read in with `mode="csv"` so that, for example, [thermal](tutorials/thermal_tutorial.md) data can 
     be used in downstream analysis, such as [`pcv.analyze.thermal`](analyze_thermal.md).
-    - Nikon microscope images can be read in using the `mode="nd2"`. 
+    - Nikon microscope images can be read in using `mode="nd2"`. 
     - Hyperspectral data can be read in with `mode="envi"` where the filename parameter is the raw data file. There is also support for 
     ArcGis style hyperspectral images (`mode="arcgis"`). These modes of 
     reading in data expects a `filename`.hdr file which gets used for shaping the hyperspectral datacube and labeling bands of data
