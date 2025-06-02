@@ -39,7 +39,7 @@ class Params:
         verbose           = Whether or not in verbose mode. (default: True)
         unit              = Units of size trait outputs. (default: "pixels")
         px_height         = Size scaling information about pixel height (default: 1)
-        px_width          = Size scaling information about pixel height (default: 1)
+        px_width          = Size scaling information about pixel width (default: 1)
 
 
         :param device: int
