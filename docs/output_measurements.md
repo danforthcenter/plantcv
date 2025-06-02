@@ -143,7 +143,7 @@ suggestions for additional metadata we should track that would be useful to you,
 | other            | other information                                     |
 
 
-## Output Observations
+## Output Observations <a name="summary-of-output-observations"></a>
 
 Functions that automatically store data to the [`Outputs` class](outputs.md) are
 [analyze.bound_horizontal](analyze_bound_horizontal2.md), 

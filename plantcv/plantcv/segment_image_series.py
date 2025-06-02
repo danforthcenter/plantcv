@@ -8,10 +8,10 @@ from scipy import ndimage as ndi
 from skimage.segmentation import watershed
 from skimage.color import label2rgb
 from plantcv.plantcv import readimage
-from plantcv.plantcv import rgb2gray
 from plantcv.plantcv import fill_holes
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _rgb2gray
 
 
 def segment_image_series(imgs_paths, masks_paths, rois, save_labels=True, ksize=3):
@@ -84,7 +84,7 @@ def segment_image_series(imgs_paths, masks_paths, rois, save_labels=True, ksize=
             frame = min(N-1, max(n+m, 0))  # border handling
 
             img, _, _ = readimage(filename=imgs_paths[frame])
-            img_stack[:, :, stack_idx] = rgb2gray(rgb_img=img)
+            img_stack[:, :, stack_idx] = _rgb2gray(rgb_img=img)
             mask, _, _ = readimage(filename=masks_paths[frame], mode='gray')
             mask_stack[:, :, stack_idx] = mask
 

@@ -30,17 +30,17 @@ def colorize_masks(masks, colors):
 
     # Dictionary of colors and the BGR values, based on some of the colors listed here:
     # https://en.wikipedia.org/wiki/X11_color_names
-    color_dict = {'white': (255, 255, 255), 'black': (0, 0, 0), 'aqua': (0, 255, 255), 'blue': (255, 0, 0),
+    color_dict = {'white': (255, 255, 255), 'black': (0, 0, 0), 'aqua': (255, 255, 0), 'blue': (255, 0, 0),
                   'blue violet': (228, 44, 138), 'brown': (41, 41, 168), 'chartreuse': (0, 255, 128),
-                  'dark blue': (140, 0, 0), 'gray': (169, 169, 169), 'yellow': (0, 255, 255),
-                  'turquoise': (210, 210, 64), 'red': (0, 0, 255), 'purple': (241, 33, 161), 'orange red': (0, 69, 255),
+                  'dark blue': (140, 0, 0), 'gray': (192, 192, 192), 'yellow': (0, 255, 255),
+                  'turquoise': (210, 225, 64), 'red': (0, 0, 255), 'purple': (241, 33, 161), 'orange red': (0, 69, 255),
                   'orange': (0, 166, 255), 'lime': (0, 255, 0), 'lime green': (52, 205, 52), 'fuchsia': (255, 0, 255),
-                  'crimson': (61, 20, 220), 'beige': (197, 220, 246), 'chocolate': (31, 105, 210),
-                  'coral': (79, 128, 255), 'dark green': (0, 100, 0), 'dark orange': (0, 140, 255),
+                  'crimson': (61, 20, 220), 'beige': (246, 246, 220), 'chocolate': (31, 105, 210),
+                  'coral': (79, 128, 255), 'dark green': (0, 100, 0), 'dark orange': (0, 141, 255),
                   'green yellow': (46, 255, 174), 'light blue': (230, 218, 174), 'tomato': (72, 100, 255),
                   'slate gray': (143, 128, 113), 'gold': (0, 215, 255), 'goldenrod': (33, 166, 218),
-                  'light green': (143, 238, 143), 'sea green': (77, 141, 46), 'dark red': (0, 0, 141),
-                  'pink': (204, 192, 255), 'dark yellow': (0, 205, 255), 'green': (0, 255, 0)}
+                  'light green': (143, 238, 143), 'sea green': (87, 141, 46), 'dark red': (0, 0, 141),
+                  'pink': (205, 192, 255), 'dark yellow': (0, 205, 255), 'green': (0, 255, 0)}
 
     ix, iy = np.shape(masks[0])
     colored_img = np.zeros((ix, iy, 3), dtype=np.uint8)

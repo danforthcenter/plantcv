@@ -158,7 +158,7 @@ In the case of a single plant workflow, users will likely create their `labeled_
 with the [`pcv.roi.filter`](roi_filter.md) function but multi-object workflows
 will want to use the [`pcv.create_labels`](create_labels.md) function. We've updated PlantCV
 analysis functions to work iteratively over multiple objects without needed to write a Python 
-`for` loop. See the [multi-plant tutorial](tutorials/multi-plant_tutorial.md) to see an 
+`for` loop. See the [multi-plant tutorial](https://plantcv.org/tutorials/arabidopsis-tray) to see an 
 example workflow for datasets where there are more than one distinct object of interest
 per image (e.g. top down tray of plants). 
 
@@ -685,6 +685,11 @@ pages for more details on the input and output variable types.
 * post v3.11: labeled_img = **plantcv.morphology.segment_curvature**(*segmented_img, objects, label="default"*)
 * post v4.0: labeled_img = **plantcv.morphology.segment_curvature**(*segmented_img, objects, label=None*)
 
+#### plantcv.morphology.segment_ends 
+
+* pre v4.8: NA
+* post v4.8: sorted_obs, branch_pts, tips = **plantcv.morphology.segment_ends**(*skel_img, leaf_objects, mask=None, label=None*)
+
 #### plantcv.morphology.segment_euclidean_length
 
 * pre v3.3: NA
@@ -968,6 +973,11 @@ pages for more details on the input and output variable types.
 * pre v4.2.1: NA
 * post v4.2.1: mtx, dist = **plantcv.transform.checkerboard_calib**(*img_path, col_corners, row_corners, out_dir*)
 
+#### plantcv.transform.mask_color_card 
+
+* pre v4.8:  NA 
+* post v4.8: color_card_mask = **plantcv.transform.mask_color_card**(*rgb_img, \*\*kwargs*)
+
 #### plantcv.transform.rotate
 
 * post v3.12.0: rotated_img = **plantcv.transform.rotate**(*img, rotation_deg, crop*)
@@ -1218,7 +1228,7 @@ pages for more details on the input and output variable types.
 #### plantcv.transform.auto_correct_color
 
 * pre v4.6: NA
-* post v4.6: corrected_img = **plantcv.transform.auto_correct_color**(*rgb_img, label=None, **kwargs*)
+* post v4.6: corrected_img = **plantcv.transform.auto_correct_color**(*rgb_img, label=None, \*\*kwargs*)
 
 #### plantcv.transform.correct_color
 
@@ -1233,7 +1243,7 @@ pages for more details on the input and output variable types.
 #### plantcv.transform.detect_color_card
 
 * pre v4.0.1: NA
-* post v4.0.1: labeled_mask = **plantcv.transform.detect_color_card**(*rgb_img, label=None, **kwargs*)
+* post v4.0.1: labeled_mask = **plantcv.transform.detect_color_card**(*rgb_img, label=None, \*\*kwargs*)
 
 #### plantcv.transform.find_color_card
 
