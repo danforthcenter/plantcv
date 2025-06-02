@@ -2,7 +2,7 @@
 
 !!! warning
     Workflows should be optimized to an image test-set before running a whole dataset.
-    See the [VIS workflow tutorial](tutorials/vis_tutorial.md) or [VIS/NIR tutorial](tutorials/vis_nir_tutorial.md).
+    See the [VIS workflow tutorial](https://plantcv.org/tutorials/simple-rgb-workflow) or [VIS/NIR tutorial](https://plantcv.org/tutorials/dual-rgb-nir-workflow).
     Our [download tool](https://github.com/danforthcenter/pheno-data-service), which talks to a LemnaTec database system,
     has a specific file structure, which may be different than yours unless you are using our tool, but we also have instructions
     to run PlantCV over a flat file directory (just keep this in mind).

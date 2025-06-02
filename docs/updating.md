@@ -158,7 +158,7 @@ In the case of a single plant workflow, users will likely create their `labeled_
 with the [`pcv.roi.filter`](roi_filter.md) function but multi-object workflows
 will want to use the [`pcv.create_labels`](create_labels.md) function. We've updated PlantCV
 analysis functions to work iteratively over multiple objects without needed to write a Python 
-`for` loop. See the [multi-plant tutorial](tutorials/multi-plant_tutorial.md) to see an 
+`for` loop. See the [multi-plant tutorial](https://plantcv.org/tutorials/arabidopsis-tray) to see an 
 example workflow for datasets where there are more than one distinct object of interest
 per image (e.g. top down tray of plants). 
 

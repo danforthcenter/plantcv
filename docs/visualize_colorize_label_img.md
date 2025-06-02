@@ -10,8 +10,7 @@ This is a plotting method used to visualize labeled images.
     - label_img - A labeled image, i.e. a 2d image with unique integer values at every pixel, where the values represent for the class the pixel belongs to
 - **Context:**
     - Visualize different class labels in one image
-- **Example use:**
-    - [Use In Morphology Tutorial](tutorials/morphology_tutorial.md)
+- **Example use below:**
 
 **Original image**
 

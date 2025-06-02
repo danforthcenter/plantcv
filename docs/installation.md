@@ -3,7 +3,7 @@
 !!!note
     This guide describes typical installations of PlantCV.
     PlantCV can be installed from source for developers or users who want to test the latest features.
-    Please see our [Contributing Guide](#CONTRIBUTING.md) for more information.
+    Please see our [Contributing Guide](CONTRIBUTING.md) for more information.
 
 ### Table of contents
 1. [Supported platforms](#OS)

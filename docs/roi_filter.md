@@ -22,8 +22,8 @@ completely within the image.
     - Using `roi_type='largest'` will only keep the largest outer connected region of non-zero pixels.
 
 - **Example use:**
-    - [Use In VIS Tutorial](tutorials/vis_tutorial.md)
-    - [Use In PSII Tutorial](tutorials/psII_tutorial.md)
+    - [Use In VIS Tutorial](https://plantcv.org/tutorials/simple-rgb-workflow)
+    - [Use In PSII Tutorial](https://plantcv.org/tutorials/photosynthesis)
 
 **RGB image**
 
