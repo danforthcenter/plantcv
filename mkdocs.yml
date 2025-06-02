@@ -187,6 +187,7 @@ nav:
           - 'Affine Color Correction': transform_affine_color_correction.md
           - 'Standard Color Matrix': std_color_matrix.md
           - 'Gamma Correction': transform_gamma_correct.md
+          - 'Mask Color Card': transform_mask_color_card.md
           - 'Merge Images': transform_merge_images.md
           - 'Nonuniform Illumination Correction': nonuniform_illumination.md
           - 'Perspective warp': transform_warp.md

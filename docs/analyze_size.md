@@ -14,8 +14,7 @@ Size and shape analysis outputs numeric properties for individual plants, seeds,
 - **Context:**
     - Used to output size and shape characteristics of individual objects (labeled regions). 
 - **Example use:**
-    - [Use In VIS Tutorial](tutorials/vis_tutorial.md)
-    - [Use In PSII Tutorial](tutorials/psII_tutorial.md)
+    - [Use In Seed Analysis Tutorial](https://plantcv.org/tutorials/seed-analysis-workflow)
 - **Output data stored:** Data ('area', 'convex_hull_area', 'solidity', 'perimeter', 'width', 'height', 'longest_path',
 'center_of_mass, 'convex_hull_vertices', 'object_in_frame', 'ellipse_center', 'ellipse_major_axis', 'ellipse_minor_axis',
 'ellipse_angle', 'ellipse_eccentricity') automatically gets stored to the [`Outputs` class](outputs.md) when this function is

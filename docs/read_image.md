@@ -16,7 +16,7 @@ Reads image into numpy ndarray and splits the path and image filename (*see note
     - In most cases, the alpha channel in RGBA image data is unused (and causes issue when used as RGB image data),
     so unless specificed, the `pcv.readimage()` function will read RGBA data in as an RGB image under
     default settings (`mode="native"`). However, if the alpha channel is needed users must specify `mode="rgba"`. 
-    - Comma separated data can be read in with `mode="csv"` so that, for example, [thermal](tutorials/thermal_tutorial.md) data can 
+    - Comma separated data can be read in with `mode="csv"` so that, for example, thermal data can 
     be used in downstream analysis, such as [`pcv.analyze.thermal`](analyze_thermal.md).
     - Hyperspectral data can be read in with `mode="envi"` where the filename parameter is the raw data file. There is also support for 
     ArcGis style hyperspectral images (`mode="arcgis"`). These modes of 
@@ -26,9 +26,8 @@ Reads image into numpy ndarray and splits the path and image filename (*see note
     in formats of images supported but encourage people to reach out on [GitHub](https://github.com/danforthcenter/plantcv/issues) and collaborate with the
     PlantCV community to expand our support. 
 - **Example use:**
-    - [Use In VIS Tutorial](tutorials/vis_tutorial.md) 
-    - [Use In Thermal Tutorial](tutorials/thermal_tutorial.md)
-    - [Use In Hyperspectral Tutorial](tutorials/hyperspectral_tutorial.md)
+    - [Use In Color Correction Tutorial](https://plantcv.org/tutorials/color-correction) 
+    - [Use In Grayscale Tutorial](https://plantcv.org/tutorials/grayscale)
 
 !!! note
   ENVI mode currently supports Band Interleaved by Line (BIL), Band Interleaved by Pixel (BIP) Band Sequential (BSQ) raw data formats.

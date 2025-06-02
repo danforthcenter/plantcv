@@ -23,7 +23,7 @@ This function takes in a collection of training images and fits a patch-based km
     and `pcv.mask_kmeans` downstream, which are documented [here](kmeans_classifier.md). 
 
 - **Example use:**
-    - Below 
+    - [Use in kmeans tutorial](https://plantcv.org/tutorials/kmeans-clustering) 
 
 ```python
 

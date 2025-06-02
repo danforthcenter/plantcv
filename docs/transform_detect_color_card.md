@@ -20,7 +20,7 @@ Automatically detects a color card and creates a labeled mask.
 - **Context**
     - This mask output will be consistent in chip order regardless of orientation, where the white chip is detected and labeled first with index=0. In the case of `affine_color_correction` one will make a target color matrix.  
 - **Example use:**
-    - [Color Correction Tutorial](tutorials/transform_color_correction_tutorial.md)
+    - [Color Correction Tutorial](https://plantcv.org/tutorials/color-correction) since this function is called during [`pcv.transform.auto_correct_color`](transform_auto_correct_color.md). 
 
 !!! note
     Color chip size can only be used reasonably as a scaling factor (converting pixels to a known real world scale like cms)
