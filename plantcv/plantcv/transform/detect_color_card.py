@@ -8,6 +8,7 @@ import math
 import numpy as np
 from plantcv.plantcv import params, outputs, fatal_error, deprecation_warning
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _rgb2gray
 
 
 def _is_square(contour, min_size):
@@ -127,7 +128,7 @@ def detect_color_card(rgb_img, label=None, **kwargs):
     ncols = 4
 
     # Convert to grayscale, threshold, and findContours
-    imgray = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
+    imgray = _rgb2gray(rgb_img=rgb_img)
     gaussian = cv2.GaussianBlur(imgray, (11, 11), 0)
     thresh = cv2.adaptiveThreshold(gaussian, 255, adaptive_method,
                                    cv2.THRESH_BINARY_INV, block_size, 2)

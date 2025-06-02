@@ -4,8 +4,8 @@ import numpy as np
 import cv2 as cv
 from matplotlib import pyplot as plt
 from plantcv import plantcv as pcv
-from plantcv.plantcv import fatal_error
-from plantcv.plantcv import params
+from plantcv.plantcv import fatal_error, params
+from plantcv.plantcv._helpers import _rgb2lab, _rgb2hsv, _rgb2gray
 
 
 MAX_MARKER_SIZE = 20
@@ -13,7 +13,7 @@ IMG_WIDTH = 128
 
 
 # functions to get a given channel with parameters compatible
-# with rgb2gray_lab and rgb2gray_hsv to use in the dict
+# with _rgb2lab and _rgb2hsv to use in the dict
 def _get_R(rgb_img, _):
     """Get the red channel from a RGB image."""
     return rgb_img[:, :, 2]
@@ -31,7 +31,7 @@ def _get_B(rgb_img, _):
 
 def _get_gray(rgb_img, _):
     """Get the gray scale transformation of a RGB image."""
-    return pcv.rgb2gray(rgb_img=rgb_img)
+    return _rgb2gray(rgb_img=rgb_img)
 
 
 def _get_index(rgb_img, _):
@@ -74,13 +74,13 @@ def pixel_scatter_plot(paths_to_imgs, x_channel, y_channel):
         'R': _get_R,
         'G': _get_G,
         'B': _get_B,
-        'l': pcv.rgb2gray_lab,
-        'a': pcv.rgb2gray_lab,
-        'b': pcv.rgb2gray_lab,
+        'l': _rgb2lab,
+        'a': _rgb2lab,
+        'b': _rgb2lab,
         'gray': _get_gray,
-        'h': pcv.rgb2gray_hsv,
-        's': pcv.rgb2gray_hsv,
-        'v': pcv.rgb2gray_hsv,
+        'h': _rgb2hsv,
+        's': _rgb2hsv,
+        'v': _rgb2hsv,
         'index': _get_index,
     }
 
