@@ -11,7 +11,7 @@
     * [Testing and documenting your code](#testdoc)
     * [Publish and Create Pull Request](#publish)
 4. [Guidelines for New Features](#newfeatures)
-    * [New Function Style Guide](#style)
+    * [New Function Style Guide](#styleguide)
 5. [Instructions for Adding A New Tutorial](#tutorial)
     * [Create Your Tutorial Repository](#repo)
     * [Add Your Tutorial to the Gallery Wall](#gallery)
@@ -102,7 +102,7 @@ using one of the methods described in the
 #### Install PlantCV Dependencies <a name="install"></a>
 
 We recommend using `conda` to set up a virtual environment for developing PlantCV. Instructions can be found in the
-[installation documentation](installation.md#installation-from-the-source-code).
+[installation documentation](installation.md).
 
 #### Create A Branch To Do Your Work <a name="branch"></a>
 
