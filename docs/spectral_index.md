@@ -236,6 +236,26 @@ Index range: -∞, ∞
     - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
     - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
 
+### NDCI
+
+Calculates the Normalized Difference Chlorophyll Edge index using reflectance values ([Mishra & Mishra, 2012](#references)):
+
+```
+NDCI = (R708 - R665) / (R708 + R665)
+
+```
+
+Index range: -1.0, 1.0
+
+**plantcv.spectral_index.ndci**(*hsi, distance=20*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
+    - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
+
+
 ### NDRE
 
 Calculates the Normalized Difference Red Edge index using reflectance values ([Barnes et al., 2000](#references)):
