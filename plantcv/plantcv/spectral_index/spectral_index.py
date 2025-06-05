@@ -522,6 +522,7 @@ def ndci(hsi, distance=20):
     warn("Available wavelengths are not suitable for calculating NDCI. Try increasing distance.")
     return None
 
+
 def ndre(hsi, distance=20):
     """Normalized Difference Red Edge.
 

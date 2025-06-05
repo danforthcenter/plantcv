@@ -386,4 +386,4 @@ def test_ndci(spectral_index_test_data):
 def test_ndci_bad_input(spectral_index_test_data):
     """Test for PlantCV."""
     index_array = spectral_index.ndci(spectral_index_test_data.load_hsi(), distance=20)
-    assert spectral_index.wi(hsi=index_array, distance=20) is None
+    assert spectral_index.ndci(hsi=index_array, distance=20) is None
