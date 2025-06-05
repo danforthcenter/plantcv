@@ -2,7 +2,7 @@
 
 Creates a uniquely labeled mask for each color chip based on user-defined positioning.
 
-**plantcv.transform.create_color_card_mask**(*(rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=[]*)
+**plantcv.transform.create_color_card_mask**(*rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=[]*)
 
 **returns** mask
 

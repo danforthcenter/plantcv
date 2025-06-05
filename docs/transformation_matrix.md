@@ -14,9 +14,6 @@ Computes the transformation matrix for application to a source image to transfor
     - 1-t_det               - "deviance" the measure of how greatly the source image deviates from the target image's color space. Two images of the same color space should have a deviance of ~0.
     - transformation_matrix - a 9x9 matrix of linear, square, and cubic transformation coefficients
 
-- **Example use:**
-    - [Color Correction Tutorial](tutorials/transform_color_correction_tutorial.md)
-    
 ```python
 
 from plantcv import plantcv as pcv

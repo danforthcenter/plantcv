@@ -3,13 +3,8 @@
 import numpy as np
 import cv2
 from matplotlib import pyplot as plt
-from plantcv.plantcv import rgb2gray
-from plantcv.plantcv import rgb2gray_hsv
-from plantcv.plantcv import rgb2gray_lab
-from plantcv.plantcv import rgb2gray_cmyk
-from plantcv.plantcv.readimage import readimage
-from plantcv.plantcv import fatal_error
-from plantcv.plantcv import params
+from plantcv.plantcv import fatal_error, params, readimage
+from plantcv.plantcv._helpers import _rgb2lab, _rgb2hsv, _rgb2cmyk, _rgb2gray
 
 
 MAX_MARKER_SIZE = 20
@@ -35,7 +30,7 @@ def _get_B(rgb_img, _):
 
 def _get_gray(rgb_img, _):
     """Get the gray scale transformation of a RGB image."""
-    return rgb2gray(rgb_img=rgb_img)
+    return _rgb2gray(rgb_img=rgb_img)
 
 
 def _get_index(rgb_img, _):
@@ -78,18 +73,18 @@ def pixel_scatter_plot(paths_to_imgs, x_channel, y_channel):
         'R': _get_R,
         'G': _get_G,
         'B': _get_B,
-        'l': rgb2gray_lab,
-        'a': rgb2gray_lab,
-        'b': rgb2gray_lab,
+        'l': _rgb2lab,
+        'a': _rgb2lab,
+        'b': _rgb2lab,
         'gray': _get_gray,
-        'h': rgb2gray_hsv,
-        's': rgb2gray_hsv,
-        'v': rgb2gray_hsv,
+        'h': _rgb2hsv,
+        's': _rgb2hsv,
+        'v': _rgb2hsv,
         'index': _get_index,
-        'c': rgb2gray_cmyk,
-        'm': rgb2gray_cmyk,
-        'y': rgb2gray_cmyk,
-        'k': rgb2gray_cmyk
+        'c': _rgb2cmyk,
+        'm': _rgb2cmyk,
+        'y': _rgb2cmyk,
+        'k': _rgb2cmyk
     }
 
     # store debug mode

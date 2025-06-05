@@ -86,6 +86,8 @@ class TestData:
         self.hough_circle = os.path.join(self.datadir, "circle-wells.png")
         # Kmeans classifier grayscale directory
         self.kmeans_classifier_gray_dir = os.path.join(self.datadir, "kmeans_classifier_gray_dir")
+        # nd2 file
+        self.nd2_img = os.path.join(self.datadir, "test_nd2_img.nd2")
 
     @staticmethod
     def load_hsi(pkl_file):

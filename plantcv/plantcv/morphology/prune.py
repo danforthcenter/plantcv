@@ -5,11 +5,9 @@ import cv2
 import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import image_subtract
-from plantcv.plantcv.morphology import segment_sort
-from plantcv.plantcv.morphology import segment_skeleton
-from plantcv.plantcv.morphology import _iterative_prune
+from plantcv.plantcv.morphology import segment_sort, segment_skeleton
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _cv2_findcontours
+from plantcv.plantcv._helpers import _cv2_findcontours, _iterative_prune
 
 
 def prune(skel_img, size=0, mask=None):
