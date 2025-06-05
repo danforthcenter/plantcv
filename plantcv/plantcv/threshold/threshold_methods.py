@@ -4,10 +4,9 @@ import cv2
 import math
 import numpy as np
 from matplotlib import pyplot as plt
-from plantcv.plantcv import fatal_error, warn
-from plantcv.plantcv import params
+from plantcv.plantcv import fatal_error, warn, params
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _rgb2lab, _rgb2hsv, _rgb2gray
+from plantcv.plantcv._helpers import _rgb2lab, _rgb2hsv, _rgb2gray, _rgb2cmyk
 from skimage.feature import graycomatrix, graycoprops
 from scipy.ndimage import generic_filter
 
@@ -865,10 +864,10 @@ def dual_channels(rgb_img, x_channel, y_channel, points, above=True):
         's': _rgb2hsv,
         'v': _rgb2hsv,
         'index': _get_index,
-        'c': rgb2gray_cmyk,
-        'm': rgb2gray_cmyk,
-        'y': rgb2gray_cmyk,
-        'k': rgb2gray_cmyk
+        'c': _rgb2cmyk,
+        'm': _rgb2cmyk,
+        'y': _rgb2cmyk,
+        'k': _rgb2cmyk
     }
 
     debug = params.debug
