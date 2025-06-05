@@ -492,6 +492,36 @@ def mtci(hsi, distance=20):
     return None
 
 
+def ndci(hsi, distance=20):
+    """Normalized Difference Chlorophyll Difference.
+
+    NDCI = (R708 - R665) / (R708 + R665)
+
+    The theoretical range for NDCI is [-1.0, 1.0].
+
+    Inputs:
+    hsi         = hyperspectral image (PlantCV Spectral_data instance)
+    distance    = how lenient to be if the required wavelengths are not available
+
+    Returns:
+    index_array = Index data as a Spectral_data instance
+
+    :param hsi: __main__.Spectral_data
+    :param distance: int
+    :return index_array: __main__.Spectral_data
+    """
+    if (float(hsi.max_wavelength) + distance) >= 708 and (float(hsi.min_wavelength) - distance) <= 665:
+        r708_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 708)
+        r665_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 665)
+        r708 = (hsi.array_data[:, :, r708_index])
+        r665 = (hsi.array_data[:, :, r665_index])
+        # Naturally ranges from -1 to 1
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = (r708 - r665) / (r708 + r665)
+        return _package_index(hsi=hsi, raw_index=index_array_raw, method="NDCI")
+    warn("Available wavelengths are not suitable for calculating NDCI. Try increasing distance.")
+    return None
+
 def ndre(hsi, distance=20):
     """Normalized Difference Red Edge.
 
