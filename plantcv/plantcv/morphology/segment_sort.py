@@ -5,8 +5,7 @@ import cv2
 import numpy as np
 from plantcv.plantcv import dilate
 from plantcv.plantcv import params
-from plantcv.plantcv import logical_and
-from plantcv.plantcv._helpers import _find_tips
+from plantcv.plantcv._helpers import _find_tips, _logical_operation
 from plantcv.plantcv._debug import _debug
 
 
@@ -50,7 +49,7 @@ def segment_sort(skel_img, objects, mask=None, first_stem=True):
     for i, cnt in enumerate(objects):
         segment_plot = np.zeros(skel_img.shape[:2], np.uint8)
         cv2.drawContours(segment_plot, objects, i, 255, 1, lineType=8)
-        overlap_img = logical_and(segment_plot, tips_img)
+        overlap_img = _logical_operation(segment_plot, tips_img, "and")
 
         # The first contour is the base, and while it contains a tip, it isn't a leaf
         if i == 0 and first_stem:
