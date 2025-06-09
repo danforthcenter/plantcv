@@ -236,6 +236,26 @@ Index range: -∞, ∞
     - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
     - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
 
+### NDCI
+
+Calculates the Normalized Difference Chlorophyll Edge index using reflectance values ([Mishra & Mishra, 2012](#references)):
+
+```
+NDCI = (R708 - R665) / (R708 + R665)
+
+```
+
+Index range: -1.0, 1.0
+
+**plantcv.spectral_index.ndci**(*hsi, distance=20*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
+    - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
+
+
 ### NDRE
 
 Calculates the Normalized Difference Red Edge index using reflectance values ([Barnes et al., 2000](#references)):
@@ -821,6 +841,8 @@ research derived from AVIRIS. [LINK](https://aviris.jpl.nasa.gov/proceedings/wor
 Merzlyak MN, Gitelson AA, Chivkunova OB, Rakitin VYU. 1999. Non-destructive optical detection of pigment changes during 
 leaf senescence and fruit ripening. Physiologia Plantarum 106:135–141. DOI: 
 [10.1034/j.1399-3054.1999.106119.x](https://doi.org/10.1034/j.1399-3054.1999.106119.x).
+
+Mishra, S. and Mishra, D.R., 2012. Normalized difference chlorophyll index: A novel model for remote estimation of chlorophyll-a concentration in turbid productive waters. Remote Sensing of Environment, 117, pp.394-406. DOI: [10.1016/j.rse.2011.10.016](https://doi.org/10.1016/j.rse.2011.10.016)
 
 Penuelas, J., Gamon, J.A., Fredeen, A.L., Merino, J., Field, C.B., 1994. Reflectance
 indices associated with physiological changes in nitrogen and water limited
