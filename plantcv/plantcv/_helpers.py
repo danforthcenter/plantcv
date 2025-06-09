@@ -581,3 +581,24 @@ def _rgb2gray(rgb_img):
     gray = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
 
     return gray
+
+
+def _scale_size(value, type="linear"):
+    """Convert size measurements to known scale parameter
+
+    Parameters
+    ----------
+    value : float
+        unscaled size value
+    type : str
+        type of size measurement, either "linear" or "area"
+
+    Returns
+    -------
+    float
+        scaled trait value
+    """
+    conversion_rate = params.px_width
+    if type is not "linear":
+        conversion_rate = params.px_width * params.px_height
+    return value * conversion_rate
