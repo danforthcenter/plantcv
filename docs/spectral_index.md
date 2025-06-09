@@ -842,6 +842,8 @@ Merzlyak MN, Gitelson AA, Chivkunova OB, Rakitin VYU. 1999. Non-destructive opti
 leaf senescence and fruit ripening. Physiologia Plantarum 106:135–141. DOI: 
 [10.1034/j.1399-3054.1999.106119.x](https://doi.org/10.1034/j.1399-3054.1999.106119.x).
 
+Mishra, S. and Mishra, D.R., 2012. Normalized difference chlorophyll index: A novel model for remote estimation of chlorophyll-a concentration in turbid productive waters. Remote Sensing of Environment, 117, pp.394-406. DOI: [10.1016/j.rse.2011.10.016](https://doi.org/10.1016/j.rse.2011.10.016)
+
 Penuelas, J., Gamon, J.A., Fredeen, A.L., Merino, J., Field, C.B., 1994. Reflectance
 indices associated with physiological changes in nitrogen and water limited
 sunflower leaves. Remote Sensing of Environment 48 (2), 135–146. DOI:
