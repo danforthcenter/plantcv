@@ -592,7 +592,7 @@ def _logical_operation(bin_img1, bin_img2, operation):
     bin_img2 : numpy.ndarray
         Second binary image
     operation : str
-        Logical operation to perform ('and', 'or', 'xor', 'not')
+        Logical operation to perform ('and', 'or', or 'xor')
 
     Returns
     -------
