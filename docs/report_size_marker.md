@@ -21,7 +21,7 @@ Get and record the size of a size marker or set an area as a size marker.
 - **Output data stored:** Data ('marker_area', 'marker_ellipse_major_axis', 'marker_ellipse_minor_axis', 'marker_ellipse_eccentricity') 
     automatically gets stored to the 
     [`Outputs` class](outputs.md) when this function is ran. 
-    These data can always get accessed during a workflow (example below). [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
+    These data can always get accessed during a workflow (example below). These measurements can be used with known size of the marker and the `unit`, `px_height`, and `px_width` [parameters](params.md) to scale length and area outputs to real world units (e.g. cm and cm^2). [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 **Object (green) that is identified as partially inside ROI**
 
@@ -48,6 +48,12 @@ image = pcv.report_size_marker_area(img=img1, roi=roi, marker='detect',
 
 # Access data stored out from report_size_marker_area
 marker_area = pcv.outputs.observations['marker']['marker_area']['value']
+
+# Scale length & area Outputs collected downstream
+# by updating size scaling parameters
+pcv.params.px_width = marker_area**(1/2)
+pcv.params.px_height = marker_area**(1/2)
+pcv.params.unit = "cm"
 
 ```
 
