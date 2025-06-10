@@ -583,22 +583,29 @@ def _rgb2gray(rgb_img):
     return gray
 
 
-def _scale_size(value, type="linear"):
+def _scale_size(value, trait_type="linear"):
     """Convert size measurements to known scale parameter
 
     Parameters
     ----------
-    value : float
-        unscaled size value
-    type : str
-        type of size measurement, either "linear" or "area"
+    value : float, list
+        unscaled size value(s)
+    trait_type : str
+        type of size measurement, either "linear" (default) or "area"
 
     Returns
     -------
-    float
-        scaled trait value
+    float, list
+        scaled trait value(s)
     """
-    conversion_rate = params.px_width
-    if type is not "linear":
-        conversion_rate = params.px_width * params.px_height
-    return value * conversion_rate
+    # Set the linear conversion rate
+    conversion_rate = 1 / params.px_width
+    # Update conversion rate if trait is per unit ^ 2
+    if trait_type == "area":
+        conversion_rate = 1 / (params.px_width * params.px_height)
+    # Simple multiplication for size scaling a single value
+    if type(value) is not list:
+        return value*conversion_rate
+    # Multiplication with list comprehension for lists of values
+    else:
+        return [x*conversion_rate for x in value]
