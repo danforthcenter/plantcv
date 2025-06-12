@@ -30,7 +30,7 @@ from plantcv.plantcv import transform
 from plantcv.plantcv import hyperspectral
 from plantcv.plantcv import spectral_index
 from plantcv.plantcv.apply_mask import apply_mask
-from plantcv.plantcv.readimage import readimage
+from plantcv.plantcv.readimage import read_image
 from plantcv.plantcv.readbayer import readbayer
 from plantcv.plantcv.laplace_filter import laplace_filter
 from plantcv.plantcv.sobel_filter import sobel_filter
@@ -107,7 +107,7 @@ __all__ = [
     "hyperspectral",
     "spectral_index",
     "apply_mask",
-    "readimage",
+    "read_image",
     "readbayer",
     "laplace_filter",
     "sobel_filter",

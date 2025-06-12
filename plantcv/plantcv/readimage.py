@@ -11,7 +11,7 @@ from plantcv.plantcv.hyperspectral import read_data
 from plantcv.plantcv._debug import _debug
 
 
-def readimage(filename, mode="native"):
+def read_image(filename, mode="native"):
     """Read image from file.
 
     Inputs:
