@@ -76,15 +76,12 @@ def mask_kmeans(labeled_img, k, cat_list=None):
             _debug(visual=mask_light, filename=os.path.join(params.debug_outdir, "_kmeans_mask_"+str(i)+".png"))
             mask_dict[str(i)] = mask_light
         return mask_dict
-    # Store debug
-    debug = params.debug
-    # Change to None so that logical_or does not plot each stepwise addition
-    params.debug = None
+
     for idx, i in enumerate(cat_list):
         if idx == 0:
             mask_light = np.where(labeled_img == i, 255, 0).astype("uint8")
         else:
             mask_light = _logical_operation(mask_light, np.where(labeled_img == i, 255, 0).astype("uint8"), "or")
-    params.debug = debug
+
     _debug(visual=mask_light, filename=os.path.join(params.debug_outdir, "_kmeans_combined_mask.png"))
     return mask_light
