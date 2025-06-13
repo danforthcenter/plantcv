@@ -3,7 +3,7 @@
 import cv2 as cv
 import os
 import numpy as np
-from plantcv.plantcv import read_image
+from plantcv.plantcv import readimage
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv.transform.color_correction import save_matrix
@@ -35,7 +35,7 @@ def checkerboard_calib(img_path, col_corners, row_corners, out_dir):
     imgpoints = []  # 2d points in image plane
 
     for fname in images:
-        img, _, _ = read_image(filename=os.path.join(img_path, fname), mode="native")
+        img, _, _ = readimage(filename=os.path.join(img_path, fname), mode="native")
         img1 = np.copy(img)
         gray_img = _rgb2gray(img1)
         ret, corners = cv.findChessboardCorners(gray_img, (col_corners, row_corners))

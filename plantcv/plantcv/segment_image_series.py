@@ -7,7 +7,7 @@ import cv2 as cv
 from scipy import ndimage as ndi
 from skimage.segmentation import watershed
 from skimage.color import label2rgb
-from plantcv.plantcv import read_image
+from plantcv.plantcv import readimage
 from plantcv.plantcv import fill_holes
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
@@ -47,7 +47,7 @@ def segment_image_series(imgs_paths, masks_paths, rois, save_labels=True, ksize=
     image_names = [os.path.basename(img_path) for img_path in imgs_paths]
 
     # get the size of the images
-    tmp, _, _ = read_image(filename=masks_paths[0])
+    tmp, _, _ = readimage(filename=masks_paths[0])
     h, w = tmp.shape[0], tmp.shape[1]
 
     # create an image where all the pixels inside each roi have the roi label
@@ -83,9 +83,9 @@ def segment_image_series(imgs_paths, masks_paths, rois, save_labels=True, ksize=
         for m in range(-half_k, half_k+1):
             frame = min(N-1, max(n+m, 0))  # border handling
 
-            img, _, _ = read_image(filename=imgs_paths[frame])
+            img, _, _ = readimage(filename=imgs_paths[frame])
             img_stack[:, :, stack_idx] = _rgb2gray(rgb_img=img)
-            mask, _, _ = read_image(filename=masks_paths[frame], mode='gray')
+            mask, _, _ = readimage(filename=masks_paths[frame], mode='gray')
             mask_stack[:, :, stack_idx] = mask
 
             if m == 0:

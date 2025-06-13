@@ -26,7 +26,7 @@ from plantcv.plantcv.rgb2gray_hsv import rgb2gray_hsv
 from plantcv.plantcv.rgb2gray_lab import rgb2gray_lab
 from plantcv.plantcv.rgb2gray_cmyk import rgb2gray_cmyk
 from plantcv.plantcv.gaussian_blur import gaussian_blur
-from plantcv.plantcv.read_image import read_image
+from plantcv.plantcv.readimage import readimage
 from plantcv.plantcv import transform
 from plantcv.plantcv import hyperspectral
 from plantcv.plantcv import spectral_index
@@ -107,7 +107,7 @@ __all__ = [
     "hyperspectral",
     "spectral_index",
     "apply_mask",
-    "read_image",
+    "readimage",
     "readbayer",
     "laplace_filter",
     "sobel_filter",

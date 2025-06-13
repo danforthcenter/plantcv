@@ -244,7 +244,7 @@ def _read_hyper(filename, mode="ENVI"):
     return spectral_array
 
 
-def read_image(filename, mode="native"):
+def readimage(filename, mode="native"):
     """Read image from file.
 
     Inputs:
