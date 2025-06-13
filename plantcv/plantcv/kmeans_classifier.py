@@ -2,10 +2,10 @@
 
 import os
 import numpy as np
-import plantcv.plantcv as pcv
 from joblib import load
-from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
+from plantcv.plantcv import read_image, logical_or
+from plantcv.plantcv._debug import _debug
 from plantcv.learn.train_kmeans import patch_extract
 
 
@@ -22,7 +22,7 @@ def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10):
     :return labeled: numpy.ndarray
     """
     kmeans = load(model_path)
-    train_img, _, _ = pcv.readimage(img)
+    train_img, _, _ = read_image(img)
 
     before = after = int((patch_size - 1)/2)   # odd
     if patch_size % 2 == 0:   # even
@@ -83,7 +83,7 @@ def mask_kmeans(labeled_img, k, cat_list=None):
         if idx == 0:
             mask_light = np.where(labeled_img == i, 255, 0).astype("uint8")
         else:
-            mask_light = pcv.logical_or(mask_light, np.where(labeled_img == i, 255, 0).astype("uint8"))
+            mask_light = logical_or(mask_light, np.where(labeled_img == i, 255, 0).astype("uint8"))
     params.debug = debug
     _debug(visual=mask_light, filename=os.path.join(params.debug_outdir, "_kmeans_combined_mask.png"))
     return mask_light
