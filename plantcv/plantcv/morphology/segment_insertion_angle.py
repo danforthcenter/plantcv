@@ -6,12 +6,11 @@ from plantcv.plantcv import params
 from plantcv.plantcv import dilate
 from plantcv.plantcv import closing
 from plantcv.plantcv import outputs
-from plantcv.plantcv import logical_and
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import color_palette
 from plantcv.plantcv.morphology.segment_tangent_angle import _slope_to_intesect_angle
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _cv2_findcontours, _find_tips, _iterative_prune
+from plantcv.plantcv._helpers import _cv2_findcontours, _find_tips, _iterative_prune, _logical_operation
 
 
 def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects, size, label=None):
@@ -88,7 +87,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
                 segment_plot = np.zeros(segmented_img.shape[:2], np.uint8)
                 cv2.drawContours(segment_plot, obj, -1, 255, 1, lineType=8)
                 segment_plot = dilate(segment_plot, 3, 1)
-                overlap_img = logical_and(segment_plot, tips)
+                overlap_img = _logical_operation(segment_plot, tips, "and")
 
                 # If none of the tips are within a segment_end then it's an insertion segment
                 if np.sum(overlap_img) == 0:

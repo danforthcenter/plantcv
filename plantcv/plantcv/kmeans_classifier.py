@@ -7,6 +7,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import read_image, logical_or
 from plantcv.plantcv._debug import _debug
 from plantcv.learn.train_kmeans import patch_extract
+from plantcv.plantcv._helpers import _logical_operation
 
 
 def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10):
@@ -83,7 +84,7 @@ def mask_kmeans(labeled_img, k, cat_list=None):
         if idx == 0:
             mask_light = np.where(labeled_img == i, 255, 0).astype("uint8")
         else:
-            mask_light = logical_or(mask_light, np.where(labeled_img == i, 255, 0).astype("uint8"))
+            mask_light = _logical_operation(mask_light, np.where(labeled_img == i, 255, 0).astype("uint8"), "or")
     params.debug = debug
     _debug(visual=mask_light, filename=os.path.join(params.debug_outdir, "_kmeans_combined_mask.png"))
     return mask_light

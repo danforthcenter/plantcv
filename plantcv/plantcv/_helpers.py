@@ -3,7 +3,6 @@ import numpy as np
 import pandas as pd
 from plantcv.plantcv import params, fatal_error, warn
 from plantcv.plantcv.dilate import dilate
-from plantcv.plantcv.logical_and import logical_and
 from plantcv.plantcv.image_subtract import image_subtract
 
 
@@ -46,7 +45,7 @@ def _find_segment_ends(skel_img, leaf_objects, plotting_img, size):
             segment_plot = np.zeros(skel_img.shape[:2], np.uint8)
             cv2.drawContours(segment_plot, obj, -1, 255, 1, lineType=8)
             segment_plot = dilate(segment_plot, 3, 1)
-            overlap_img = logical_and(segment_plot, tips)
+            overlap_img = _logical_operation(segment_plot, tips, 'and')
             x, y = segment_end_obj[j].ravel()[:2]
             coord = (int(x), int(y))
             coords.append(coord)
@@ -338,7 +337,7 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
         for c, _ in enumerate(object_contour):
             filtering_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
             cv2.fillPoly(filtering_mask, [np.vstack(object_contour[c])], (255))
-            overlap_img = logical_and(filtering_mask, roi_mask)
+            overlap_img = _logical_operation(filtering_mask, roi_mask, 'and')
             # Delete contours that do not overlap at all with the ROI
             if np.sum(overlap_img) == 0:
                 cv2.drawContours(mask, object_contour, c, (0), -1, lineType=8, hierarchy=obj_hierarchy)
@@ -580,6 +579,37 @@ def _rgb2gray(rgb_img):
     gray = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
 
     return gray
+
+
+def _logical_operation(bin_img1, bin_img2, operation):
+    """Perform a logical operation on two binary images.
+
+    Parameters
+    ----------
+    bin_img1 : numpy.ndarray
+        First binary image
+    bin_img2 : numpy.ndarray
+        Second binary image
+    operation : str
+        Logical operation to perform ('and', 'or', or 'xor')
+
+    Returns
+    -------
+    numpy.ndarray
+        Resulting binary image after the logical operation
+    """
+    # Dictionary of operations
+    operations = {
+        'and': cv2.bitwise_and,
+        'or': cv2.bitwise_or,
+        'xor': cv2.bitwise_xor
+    }
+    # Check if the operation is valid
+    if operation.lower() not in operations:
+        fatal_error(f"Operation '{operation}' is not supported. Use 'and', 'or', or 'xor'.")
+    # Perform the logical operation
+    mask = operations[operation.lower()](bin_img1, bin_img2)
+    return mask
 
 
 def _find_closest(spectral_array, target):
