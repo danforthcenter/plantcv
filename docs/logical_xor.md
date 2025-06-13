@@ -32,8 +32,8 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 # Combine two images that have had different thresholds applied to them.
-# For logical 'and' operation object pixel must be in both images 
-# to be included in 'and' image.
+# For logical 'xor' operation object pixel must be in either images 
+# but not both to be included in 'xor' image.
 xor_image = pcv.logical_xor(s_threshold, b_threshold)
 
 ```
