@@ -6,7 +6,7 @@ from skimage import img_as_ubyte
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import Spectral_data
 from plantcv.plantcv import params
-from plantcv.plantcv.hyperspectral.read_data import _make_pseudo_rgb
+from plantcv.plantcv._helpers import _make_pseudo_rgb
 from plantcv.plantcv._debug import _debug
 
 
