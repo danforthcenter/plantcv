@@ -1,10 +1,9 @@
 import cv2
 import numpy as np
+import pandas as pd
+from plantcv.plantcv import params, fatal_error, warn
 from plantcv.plantcv.dilate import dilate
 from plantcv.plantcv.image_subtract import image_subtract
-from plantcv.plantcv import fatal_error, warn
-from plantcv.plantcv import params
-import pandas as pd
 
 
 def _find_segment_ends(skel_img, leaf_objects, plotting_img, size):
@@ -611,3 +610,108 @@ def _logical_operation(bin_img1, bin_img2, operation):
     # Perform the logical operation
     mask = operations[operation.lower()](bin_img1, bin_img2)
     return mask
+
+
+def _find_closest(spectral_array, target):
+    """Find index of a target wavelength band in a hyperspectral data instance.
+
+    Inputs:
+        spectral_array = Hyperspectral data instance
+        target         = Target wavelength value
+
+    Returns:
+        idx            = Index
+
+    :param spectral_array: __main__.Spectral_data
+    :param target: float
+    :return spectral_array: __main__.Spectral_data
+    """
+    # Array must be sorted
+    idx = spectral_array.searchsorted(target)
+    idx = np.clip(idx, 1, len(spectral_array) - 1)
+    left = spectral_array[idx - 1]
+    right = spectral_array[idx]
+    idx -= target - left < right - target
+    return idx
+
+
+def _make_pseudo_rgb(spectral_array):
+    """Create the best pseudo-rgb image possible from a hyperspectral datacube
+
+    Inputs:
+        spectral_array = Hyperspectral data instance
+
+    Returns:
+        pseudo_rgb     = Pseudo-rgb image
+
+    :param spectral_array: __main__.Spectral_data
+    :return pseudo_rgb: numpy.ndarray
+    """
+    # Make shorter variable names for data from the spectral class instance object
+    array_data = spectral_array.array_data
+    default_bands = spectral_array.default_bands
+    wl_keys = spectral_array.wavelength_dict.keys()
+
+    if default_bands is not None:
+        pseudo_rgb = cv2.merge((array_data[:, :, int(default_bands[0])],
+                                array_data[:, :, int(default_bands[1])],
+                                array_data[:, :, int(default_bands[2])]))
+
+    else:
+        max_wavelength = max(float(i) for i in wl_keys)
+        min_wavelength = min(float(i) for i in wl_keys)
+        # Check range of available wavelength
+        if max_wavelength >= 600 and min_wavelength <= 490:
+            id_red = _find_closest(spectral_array=np.array([float(i) for i in wl_keys]), target=630)
+            id_green = _find_closest(spectral_array=np.array([float(i) for i in wl_keys]), target=540)
+            id_blue = _find_closest(spectral_array=np.array([float(i) for i in wl_keys]), target=480)
+
+            pseudo_rgb = cv2.merge((array_data[:, :, [id_blue]],
+                                    array_data[:, :, [id_green]],
+                                    array_data[:, :, [id_red]]))
+        else:
+            # Otherwise take 3 wavelengths, first, middle and last available wavelength
+            id_red = int(len(spectral_array.wavelength_dict)) - 1
+            id_green = int(id_red / 2)
+            pseudo_rgb = cv2.merge((array_data[:, :, [0]],
+                                    array_data[:, :, [id_green]],
+                                    array_data[:, :, [id_red]]))
+
+    # Gamma correct pseudo_rgb image
+    pseudo_rgb = pseudo_rgb ** (1 / 2.2)
+    # Scale each of the channels up to 255
+    debug = params.debug
+    params.debug = None
+    pseudo_rgb = cv2.merge((_rescale(pseudo_rgb[:, :, 0]),
+                            _rescale(pseudo_rgb[:, :, 1]),
+                            _rescale(pseudo_rgb[:, :, 2])))
+
+    # Reset debugging mode
+    params.debug = debug
+
+    return pseudo_rgb
+
+
+def _rescale(gray_img, min_value=0, max_value=255):
+    """Rescale image.
+
+    Inputs:
+    gray_img  = Grayscale image data
+    min_value = (optional) new minimum value for range of interest. default = 0
+    max_value = (optional) new maximum value for range of interest. default = 255
+
+    Returns:
+    rescaled_img = rescaled image
+
+    :param gray_img: numpy.ndarray
+    :param min_value: int
+    :param max_value: int
+    :return c: numpy.ndarray
+    """
+    if len(np.shape(gray_img)) != 2:
+        fatal_error("Image is not grayscale")
+
+    rescaled_img = np.interp(gray_img, (np.nanmin(gray_img), np.nanmax(gray_img)), (min_value, max_value))
+    rescaled_img = (rescaled_img).astype('uint8')
+
+    return rescaled_img

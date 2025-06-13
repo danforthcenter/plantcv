@@ -3,12 +3,11 @@
 import cv2
 import os
 import numpy as np
-from plantcv.plantcv import params
-from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv import params, fatal_error
 from plantcv.plantcv import color_palette
+from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _rescale
 from plantcv.plantcv.visualize import overlay_two_imgs
-from plantcv.plantcv.transform import rescale
 from skimage import img_as_ubyte
 
 
@@ -20,7 +19,7 @@ def _preprocess_img_dtype(img):
     debug_mode = params.debug
     params.debug = None
     try:
-        img_ = rescale(img)
+        img_ = _rescale(img)
     except RuntimeError:
         img_ = img_as_ubyte(img)
     params.debug = debug_mode

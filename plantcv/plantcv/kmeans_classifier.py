@@ -2,10 +2,10 @@
 
 import os
 import numpy as np
-import plantcv.plantcv as pcv
 from joblib import load
-from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
+from plantcv.plantcv import readimage, logical_or
+from plantcv.plantcv._debug import _debug
 from plantcv.learn.train_kmeans import patch_extract
 from plantcv.plantcv._helpers import _logical_operation
 
@@ -23,7 +23,7 @@ def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10):
     :return labeled: numpy.ndarray
     """
     kmeans = load(model_path)
-    train_img, _, _ = pcv.readimage(img)
+    train_img, _, _ = readimage(img)
 
     before = after = int((patch_size - 1)/2)   # odd
     if patch_size % 2 == 0:   # even
@@ -76,15 +76,12 @@ def mask_kmeans(labeled_img, k, cat_list=None):
             _debug(visual=mask_light, filename=os.path.join(params.debug_outdir, "_kmeans_mask_"+str(i)+".png"))
             mask_dict[str(i)] = mask_light
         return mask_dict
-    # Store debug
-    debug = params.debug
-    # Change to None so that logical_or does not plot each stepwise addition
-    params.debug = None
+
     for idx, i in enumerate(cat_list):
         if idx == 0:
             mask_light = np.where(labeled_img == i, 255, 0).astype("uint8")
         else:
             mask_light = _logical_operation(mask_light, np.where(labeled_img == i, 255, 0).astype("uint8"), "or")
-    params.debug = debug
+
     _debug(visual=mask_light, filename=os.path.join(params.debug_outdir, "_kmeans_combined_mask.png"))
     return mask_light

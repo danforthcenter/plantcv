@@ -4,7 +4,7 @@ import numpy as np
 import cv2
 from matplotlib import pyplot as plt
 from plantcv.plantcv import fatal_error, params
-from plantcv.plantcv.readimage import readimage
+from plantcv.plantcv import readimage
 from plantcv.plantcv._helpers import _rgb2lab, _rgb2hsv, _rgb2cmyk, _rgb2gray
 
 
