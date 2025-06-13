@@ -607,5 +607,4 @@ def _scale_size(value, trait_type="linear"):
     if type(value) is not list:
         return value*conversion_rate
     # Multiplication with list comprehension for lists of values
-    else:
-        return [x*conversion_rate for x in value]
+    return [x*conversion_rate for x in value]
