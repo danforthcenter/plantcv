@@ -7,8 +7,7 @@ import nd2
 import numpy as np
 import pandas as pd
 from plantcv.plantcv import Spectral_data
-from plantcv.plantcv import fatal_error
-from plantcv.plantcv import params
+from plantcv.plantcv import fatal_error, params
 from plantcv.plantcv._helpers import _make_pseudo_rgb
 from plantcv.plantcv._debug import _debug
 

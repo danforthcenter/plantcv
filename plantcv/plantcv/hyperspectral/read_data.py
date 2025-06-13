@@ -3,7 +3,7 @@
 import os
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv.readimage import _read_hyper
+from plantcv.plantcv.read_image import _read_hyper
 
 
 def read_data(filename, mode="ENVI"):
