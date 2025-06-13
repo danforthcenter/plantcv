@@ -3,10 +3,9 @@
 import os
 import cv2
 import numpy as np
-from plantcv.plantcv import params
+from plantcv.plantcv import params, fatal_error
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import fatal_error
-from plantcv.plantcv.transform import rescale
+from plantcv.plantcv._helpers import _rescale
 
 
 def apply_mask(img, mask, mask_color):
@@ -44,9 +43,9 @@ def apply_mask(img, mask, mask_color):
         med_band = int(num_bands / 2)
         debug = params.debug
         params.debug = None
-        pseudo_rgb = cv2.merge((rescale(array_data[:, :, 0]),
-                                rescale(array_data[:, :, med_band]),
-                                rescale(array_data[:, :, num_bands - 1])))
+        pseudo_rgb = cv2.merge((_rescale(array_data[:, :, 0]),
+                                _rescale(array_data[:, :, med_band]),
+                                _rescale(array_data[:, :, num_bands - 1])))
         params.debug = debug
 
         _debug(visual=pseudo_rgb,

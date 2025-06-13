@@ -3,12 +3,10 @@
 import os
 import numpy as np
 import cv2
-from plantcv.plantcv import params
-from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import warn
 from plantcv.plantcv import Spectral_data
-from plantcv.plantcv.transform import rescale
-from plantcv.plantcv._helpers import _find_closest
+from plantcv.plantcv import params, warn
+from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _find_closest, _rescale
 
 
 def ndvi(hsi, distance=20):
@@ -1044,7 +1042,7 @@ def _package_index(hsi, raw_index, method):
 
     # Resulting array is float 32 from varying natural ranges, transform into uint8 for plotting
     all_positive = np.add(raw_index, 2 * np.ones(np.shape(raw_index)))
-    scaled = rescale(all_positive)
+    scaled = _rescale(all_positive)
 
     # Find array min and max values
     obs_max_pixel = float(np.nanmax(raw_index))
