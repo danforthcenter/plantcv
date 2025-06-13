@@ -581,3 +581,27 @@ def _rgb2gray(rgb_img):
     gray = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
 
     return gray
+
+
+def _find_closest(spectral_array, target):
+    """Find index of a target wavelength band in a hyperspectral data instance.
+
+    Inputs:
+        spectral_array = Hyperspectral data instance
+        target         = Target wavelength value
+
+    Returns:
+        idx            = Index
+
+    :param spectral_array: __main__.Spectral_data
+    :param target: float
+    :return spectral_array: __main__.Spectral_data
+    """
+    # Array must be sorted
+    idx = spectral_array.searchsorted(target)
+    idx = np.clip(idx, 1, len(spectral_array) - 1)
+    left = spectral_array[idx - 1]
+    right = spectral_array[idx]
+    idx -= target - left < right - target
+    return idx
+

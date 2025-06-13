@@ -7,30 +7,6 @@ from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv.readimage import _read_hyper
 from plantcv.plantcv.transform import rescale
-from plantcv.plantcv import fatal_error
-
-
-def _find_closest(spectral_array, target):
-    """Find index of a target wavelength band in a hyperspectral data instance.
-
-    Inputs:
-        spectral_array = Hyperspectral data instance
-        target         = Target wavelength value
-
-    Returns:
-        idx            = Index
-
-    :param spectral_array: __main__.Spectral_data
-    :param target: float
-    :return spectral_array: __main__.Spectral_data
-    """
-    # Array must be sorted
-    idx = spectral_array.searchsorted(target)
-    idx = np.clip(idx, 1, len(spectral_array) - 1)
-    left = spectral_array[idx - 1]
-    right = spectral_array[idx]
-    idx -= target - left < right - target
-    return idx
 
 
 def _make_pseudo_rgb(spectral_array):

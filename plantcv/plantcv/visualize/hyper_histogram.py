@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import fatal_error, params, color_palette
-from plantcv.plantcv.hyperspectral import _find_closest
+from plantcv.plantcv._helpers import _find_closest
 from plantcv.plantcv.visualize import histogram
 import altair as alt
 import math

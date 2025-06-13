@@ -8,7 +8,7 @@ from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import warn
 from plantcv.plantcv import Spectral_data
 from plantcv.plantcv.transform import rescale
-from plantcv.plantcv.hyperspectral import _find_closest
+from plantcv.plantcv._helpers import _find_closest
 
 
 def ndvi(hsi, distance=20):
