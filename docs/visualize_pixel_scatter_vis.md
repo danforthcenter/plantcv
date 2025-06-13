@@ -9,9 +9,9 @@ This function plots a 2D pixel scatter plot visualization for a dataset of image
 - **Parameters:**
     - paths_to_imgs   - List of paths to the images.
     - x_channel       - Channel to use for the horizontal coordinate of the scatter plot.
-    Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'gray', and 'index'.
+    Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'c', 'm', 'y', 'k', 'gray', and 'index'.
     - y_channel       - Channel to use for the vertical coordinate of the scatter plot.
-    Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'gray', and 'index'.
+    Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'c', 'm', 'y', 'k', 'gray', and 'index'.
 
 
 - **Context:**
