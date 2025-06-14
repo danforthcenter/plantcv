@@ -629,10 +629,10 @@ def _scale_size(value, trait_type="linear"):
         scaled trait value(s)
     """
     # Set the linear conversion rate
-    conversion_rate = 1 / params.px_width
+    conversion_rate = params.px_width
     # Update conversion rate if trait is per unit ^ 2
     if trait_type == "area":
-        conversion_rate = 1 / (params.px_width * params.px_height)
+        conversion_rate = (params.px_width * params.px_height)
     # Simple multiplication for size scaling a single value
     if type(value) is not list:
         return value*conversion_rate
