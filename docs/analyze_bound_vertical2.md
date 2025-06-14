@@ -21,7 +21,7 @@ best if the pot size/position of the plant remains relatively constant.
     - [Use of horizontal companion tool in In VIS Tutorial](https://plantcv.org/tutorials/single-plant-rgb-workflow)
 - **Output data stored:** Data ('vertical_reference_position', 'width_left_reference', 'width_right_reference',
 'area_left_reference', 'percent_area_left_reference', 'area_right_reference', 'percent_area_right_reference') automatically
-gets stored to the [`Outputs` class](outputs.md) when this function is ran. These data can always get accessed during a
+gets stored to the [`Outputs` class](outputs.md) when this function is ran. Width and area type measurements can be scaled to real world units (e.g. cm and cm^2) using the `unit`, `px_height`, and `px_width` [parameters](params.md). These data can always get accessed during a
 workflow (example below). For more detail about data output see
 [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 

@@ -18,7 +18,8 @@ plants or plant organs can have specific characteristics measured about the stem
 
 
 - **Output data stored:** Data ('stem_angle', 'stem_height', and 'stem_length') 
-    automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
+    automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran.
+    Length and area type measurements can be scaled to real world units (e.g. cm and cm^2) using the `unit`, `px_height`, and `px_width` [parameters](params.md).
     All data stored in the Outputs class gets printed out while running [pcv.outputs.save_results](outputs.md) but
     these data can always get accessed during a workflow. For more detail about data output see 
     [Summary of Output Observations](output_measurements.md#summary-of-output-observations)

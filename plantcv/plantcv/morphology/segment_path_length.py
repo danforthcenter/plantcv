@@ -1,9 +1,9 @@
 """Find geodesic lengths of skeleton segments."""
 import os
 import cv2
-from plantcv.plantcv import params
-from plantcv.plantcv import outputs
+from plantcv.plantcv import params, outputs
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _scale_size
 
 
 def segment_path_length(segmented_img, objects, label=None):
@@ -50,8 +50,8 @@ def segment_path_length(segmented_img, objects, label=None):
         segment_ids.append(c)
 
     outputs.add_observation(sample=label, variable='segment_path_length', trait='segment path length',
-                            method='plantcv.plantcv.morphology.segment_path_length', scale='pixels', datatype=list,
-                            value=segment_lengths, label=segment_ids)
+                            method='plantcv.plantcv.morphology.segment_path_length', scale=params.unit, datatype=list,
+                            value=_scale_size(segment_lengths), label=segment_ids)
 
     _debug(visual=labeled_img, filename=os.path.join(params.debug_outdir, f"{params.device}_segment_path_lengths.png"))
 

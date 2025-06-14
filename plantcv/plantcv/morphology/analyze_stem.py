@@ -5,6 +5,7 @@ import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _scale_size
 
 
 def analyze_stem(rgb_img, stem_objects, label=None):
@@ -42,14 +43,14 @@ def analyze_stem(rgb_img, stem_objects, label=None):
     stem_length = cv2.arcLength(grouped_stem, False) / 2
 
     outputs.add_observation(sample=label, variable='stem_height', trait='vertical length of stem segments',
-                            method='plantcv.plantcv.morphology.analyze_stem', scale='pixels', datatype=float,
-                            value=height, label='pixels')
+                            method='plantcv.plantcv.morphology.analyze_stem', scale=params.unit, datatype=float,
+                            value=_scale_size(height), label=params.unit)
     outputs.add_observation(sample=label, variable='stem_angle', trait='angle of combined stem object',
                             method='plantcv.plantcv.morphology.analyze_stem', scale='degrees', datatype=float,
                             value=float(slope.item()), label='degrees')
     outputs.add_observation(sample=label, variable='stem_length', trait='path length of combined stem object',
-                            method='plantcv.plantcv.morphology.analyze_stem', scale='pixels', datatype=float,
-                            value=stem_length, label='pixels')
+                            method='plantcv.plantcv.morphology.analyze_stem', scale=params.unit, datatype=float,
+                            value=_scale_size(stem_length), label=params.unit)
 
     # Draw culm_height
     cv2.line(labeled_img, (int(stem_x), stem_y), (int(stem_x), stem_y + height), (0, 255, 0), params.line_thickness)
