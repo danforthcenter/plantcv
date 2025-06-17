@@ -30,6 +30,13 @@ from plantcv import plantcv as pcv
 rgb_img, imgpath, imgname = pcv.readimage(filename="top_view_plant.png")
 
 corrected_rgb = pcv.transform.auto_correct_color(rgb_img=old_card)
+
+# Scale length & area Outputs collected downstream
+# by updating size scaling parameters
+pcv.params.unit = "mm"
+# E.G. Given a square color card chips, (11mm x 11mm) in size
+pcv.params.px_width = 11 /  pcv.outputs.metadata['median_color_chip_width']['value'][0]
+pcv.params.px_height = 11 /  pcv.outputs.metadata['median_color_chip_height']['value'][0]
 ```
 
 **Debug Image: automatically detected and masked the color card**

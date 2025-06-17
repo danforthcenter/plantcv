@@ -53,8 +53,8 @@ marker_area = pcv.outputs.observations['marker']['marker_area']['value']
 # by updating size scaling parameters
 pcv.params.unit = "cm"
 # E.G. Given a square size marker, (3cm x 3cm) in size
-pcv.params.px_width = marker_area**(1/2) / 3
-pcv.params.px_height = marker_area**(1/2) / 3
+pcv.params.px_width = 3 / marker_area**(1/2) 
+pcv.params.px_height = 3 / marker_area**(1/2)
 
 ```
 
