@@ -8,25 +8,25 @@ from plantcv.plantcv import params
 
 
 def readbayer(filename, bayerpattern='BG', alg='default'):
-    """
-    Read image from file that has a Bayer mosaic.
+    """Read image from file that has a Bayer mosaic.
 
-    Inputs:
-    filename = name of image file
-    bayerpattern = arrangement of the pixels. Often found by trial and error. ("BG","GB","RG","GR")
-    alg = algorithm with which to demosaic the image. ("default","EdgeAware","VariableNumberGradients")
+    Parameters
+    ----------
+    filename : str
+        Name of image file
+    bayerpattern : str, optional
+        Arrangement of the pixels. ("BG","GB","RG","GR"), by default 'BG'
+    alg : str, optional
+        Algorithm with which to demosaic the image ("default","EdgeAware","VariableNumberGradients"), by default 'default'
 
-    Returns:
-    img      = image object as numpy array
-    path     = path to image file
-    img_name = name of image file
-
-    :param filename: str
-    :param alg: str
-    :param bayerpattern: str
-    :return img: numpy.ndarray
-    :return path: str
-    :return img_name: str
+    Returns
+    -------
+    numpy.ndarray
+        Image with Bayer mosaic demosaiced
+    str
+        Path to the image file
+    str
+        Name of the image file
     """
     # bayerpattern is defined as the colors of the pixels in the 2nd and 3rd column of the 2nd row.
     # see https://docs.opencv.org/3.2.0/de/d25/imgproc_color_conversions.html
