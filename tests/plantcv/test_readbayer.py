@@ -24,3 +24,15 @@ def test_readbayer_default_bad_input():
     """Test for PlantCV."""
     with pytest.raises(RuntimeError):
         _, _, _ = readbayer(filename="no-image.png", bayerpattern="GR", alg="default")
+
+
+def test_readbayer_bad_algorithm(test_data):
+    """Test for PlantCV."""
+    with pytest.raises(ValueError):
+        _, _, _ = readbayer(filename=test_data.bayer_img, bayerpattern="GR", alg="bad_algorithm")
+
+
+def test_readbayer_bad_bayerpattern(test_data):
+    """Test for PlantCV."""
+    with pytest.raises(ValueError):
+        _, _, _ = readbayer(filename=test_data.bayer_img, bayerpattern="bad_bayerpattern", alg="default")
