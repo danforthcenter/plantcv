@@ -37,7 +37,7 @@ def readbayer(filename, bayerpattern='BG', alg='default'):
     image_raw = cv2.imread(filename, flags=-1)
 
     if image_raw is None:
-        fatal_error("Failed to open " + filename)
+        fatal_error(f"Failed to open {filename}")
 
     # Itemize the Bayer pattern and algorithm
     converters = {
