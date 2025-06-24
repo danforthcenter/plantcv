@@ -16,7 +16,7 @@ dependencies = [
     "numpy >= 2",
     "pandas",
     "python-dateutil",
-    "scipy",
+    "scipy <1.16",
     "scikit-image >= 0.19",
     "scikit-learn",
     "dask",
