@@ -166,7 +166,7 @@ def _analyze_size(img, mask, label):
                             method='plantcv.plantcv.analyze.size', scale=params.unit, datatype=int,
                             value=_scale_size(ellipse_major_axis), label=params.unit)
     outputs.add_observation(sample=label, variable='ellipse_minor_axis', trait='ellipse minor axis length',
-                            method='plantcv.plantcv.analyze.size', scale='pixels', datatype=int,
+                            method='plantcv.plantcv.analyze.size', scale=params.unit, datatype=int,
                             value=_scale_size(ellipse_minor_axis), label=params.unit)
     outputs.add_observation(sample=label, variable='ellipse_angle', trait='ellipse major axis angle',
                             method='plantcv.plantcv.analyze.size', scale='degrees', datatype=float,
