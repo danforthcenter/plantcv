@@ -178,6 +178,46 @@ def _color_card_detection(rgb_img, **kwargs):
     return labeled_mask, debug_img, marea, mheight, mwidth, boundind_mask
 
 
+def _set_size_scale_from_chip(color_chip_width, color_chip_height, card_type):
+    """Set the size scaling factors in Params from the known size of a given color card target.
+
+   Parameters
+    ----------
+        color_chip_width (float): Width in pixels of the detected color chips
+        color_chip_height (float): Height in pixels of the detected color chips
+        card_type (str): Type of supported color card target ("classic", "passport", or "cameratrax")
+
+    Returns
+    -------
+     None
+        Function does not return anything.
+    """
+    # Define known color chip dimensions, all in milimeters
+    card_types = {
+        "CLASSIC": {
+            "chip_width": 40,
+            "chip_height": 40
+        },
+        "PASSPORT": {
+            "chip_width": 12,
+            "chip_height": 12
+        },
+        "CAMERATRAX": {
+            "chip_width": 11,
+            "chip_height": 11
+        }
+    }
+    
+    # Check if the card type is valid
+    if card_type.upper() not in card_types:
+        fatal_error(f"Invalid algorithm '{card_type}'. Choose from {list(card_types.keys())}.")
+
+    # Set size scaling factor
+    params.unit = "mm"
+    params.px_width = card_types[card_type.upper()]["chip_width"] / color_chip_width
+    params.px_height = card_types[card_type.upper()]["chip_height"] / color_chip_height
+
+
 def mask_color_card(rgb_img, **kwargs):
     """Automatically detect a color card and create bounding box mask of the chips detected.
 
@@ -233,6 +273,7 @@ def detect_color_card(rgb_img, label=None, **kwargs):
         block_size: int (default = 51)
         radius: int (default = 20)
         min_size: int (default = 1000)
+        card_type: str (default = None)
 
     Returns
     -------
@@ -257,6 +298,11 @@ def detect_color_card(rgb_img, label=None, **kwargs):
     outputs.add_metadata(term="median_color_chip_size", datatype=float, value=chip_size)
     outputs.add_metadata(term="median_color_chip_width", datatype=float, value=chip_width)
     outputs.add_metadata(term="median_color_chip_height", datatype=float, value=chip_height)
+    
+    # Set size scaling factor if card type is provided
+    card_type = kwargs.get("card_type", None)
+    if card_type:
+        _set_size_scale_from_chip(color_chip_height=chip_height, color_chip_width=chip_width, card_type=card_type)
 
     # Debugging
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
