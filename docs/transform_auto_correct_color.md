@@ -17,6 +17,7 @@ in the RGB space after automatic detection of a color card within the image. A o
         - block_size       - Size of a pixel neighborhood that is used to calculate a threshold value (default = 51). We suggest using 127 if using `adaptive_method=0`.
         - radius           - Radius of circle to make the color card labeled mask (default = 20).
         - min_size         - Minimum chip size for filtering objects after edge detection (default = 1000)
+        - card_type  - Type of color card to be detected, (case insensitive, either "classic", "passport", or "cameratrax", by default `None`). If set then size scalings parameters `pcv.params.unit`, `pcv.params.px_width`, and `pcv.params.px_height` are automatically set, and utilized throughout linear and area type measurements stored to `Outputs`. 
 - **Returns**
     - corrected_img    - Color corrected image
 
@@ -29,8 +30,9 @@ from plantcv import plantcv as pcv
 
 rgb_img, imgpath, imgname = pcv.readimage(filename="top_view_plant.png")
 
-corrected_rgb = pcv.transform.auto_correct_color(rgb_img=old_card)
+corrected_rgb = pcv.transform.auto_correct_color(rgb_img=rgb_img, card_type="CameraTrax")
 
+## If `card_type` is not set, then size scaling can be done by setting the following parameters:
 # Scale length & area Outputs collected downstream
 # by updating size scaling parameters
 pcv.params.unit = "mm"

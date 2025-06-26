@@ -14,11 +14,15 @@ Automatically detects a color card and creates a labeled mask.
         - block_size      - Size of a pixel neighborhood that is used to calculate a threshold value (default = 51). We suggest using 127 if using `adaptive_method=0`.
         - radius         - Radius of circle to make the color card labeled mask (default = 20).
         - min_size         - Minimum chip size for filtering objects after edge detection (default = 1000)
+        - card_type - Type of color card to be detected, ("classic", "passport", or "cameratrax", by default `None`). If set then size scalings parameters `pcv.params.unit`, `pcv.params.px_width`, and `pcv.params.px_height`
+            are automatically set, and utilized throughout linear and area type measurements stored to `Outputs`. 
 - **Returns**
     - labeled_mask     - Labeled color card mask (useful downstream of this step in [`pcv.transform.get_color_matrix`](get_color_matrix.md) and [`pcv.transform.correct_color`](transform_correct_color.md) and [`pcv.transform.affine_color_correction`](transform_affine_color_correction.md)).
     
 - **Context**
-    - This mask output will be consistent in chip order regardless of orientation, where the white chip is detected and labeled first with index=0. In the case of `affine_color_correction` one will make a target color matrix.  
+    - If the goal is to color correct the image colorspace to the standard color card values, consider using [`pcv.transform.auto_correct_color`](transform_auto_correct_color.md) since this new function is a one-step wrapper of plantcv.transform.detect_color_card, [plantcv.transform.std_color_matrix](std_color_matrix.md),
+    and [plantcv.transform.affine_color_correction](transform_affine_color_correction.md).
+    - This mask output will be consistent in chip order regardless of orientation, where the white chip is detected and labeled first with index=0.
 - **Example use:**
     - [Color Correction Tutorial](https://plantcv.org/tutorials/color-correction) since this function is called during [`pcv.transform.auto_correct_color`](transform_auto_correct_color.md). 
 
