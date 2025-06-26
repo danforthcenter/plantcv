@@ -181,11 +181,14 @@ def _color_card_detection(rgb_img, **kwargs):
 def _set_size_scale_from_chip(color_chip_width, color_chip_height, card_type):
     """Set the size scaling factors in Params from the known size of a given color card target.
 
-   Parameters
+    Parameters
     ----------
-        color_chip_width (float): Width in pixels of the detected color chips
-        color_chip_height (float): Height in pixels of the detected color chips
-        card_type (str): Type of supported color card target ("classic", "passport", or "cameratrax")
+        color_chip_width : float
+            Width in pixels of the detected color chips
+        color_chip_height : float
+            Height in pixels of the detected color chips
+        card_type: str
+            Type of supported color card target ("classic", "passport", or "cameratrax")
 
     Returns
     -------
@@ -207,7 +210,7 @@ def _set_size_scale_from_chip(color_chip_width, color_chip_height, card_type):
             "chip_height": 11
         }
     }
-    
+
     # Check if the card type is valid
     if card_type.upper() not in card_types:
         fatal_error(f"Invalid algorithm '{card_type}'. Choose from {list(card_types.keys())}.")
@@ -298,9 +301,9 @@ def detect_color_card(rgb_img, label=None, **kwargs):
     outputs.add_metadata(term="median_color_chip_size", datatype=float, value=chip_size)
     outputs.add_metadata(term="median_color_chip_width", datatype=float, value=chip_width)
     outputs.add_metadata(term="median_color_chip_height", datatype=float, value=chip_height)
-    
+
     # Set size scaling factor if card type is provided
-    card_type = kwargs.get("card_type", None)
+    card_type = kwargs.get("card_type")
     if card_type:
         _set_size_scale_from_chip(color_chip_height=chip_height, color_chip_width=chip_width, card_type=card_type)
 
