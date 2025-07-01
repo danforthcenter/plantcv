@@ -58,4 +58,4 @@ def segment_skeleton(skel_img, mask=None):
 
     _debug(visual=segmented_img, filename=os.path.join(params.debug_outdir, f"{params.device}_segmented.png"))
 
-    return segmented_img, segment_objects
+    return segmented_img, list(segment_objects)
