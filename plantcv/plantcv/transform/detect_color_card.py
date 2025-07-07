@@ -178,7 +178,7 @@ def _color_card_detection(rgb_img, **kwargs):
     return labeled_mask, debug_img, marea, mheight, mwidth, boundind_mask
 
 
-def _set_size_scale_from_chip(color_chip_width, color_chip_height, card_type):
+def _set_size_scale_from_chip(color_chip_width, color_chip_height, chip_dims):
     """Set the size scaling factors in Params from the known size of a given color card target.
 
     Parameters
@@ -187,8 +187,9 @@ def _set_size_scale_from_chip(color_chip_width, color_chip_height, card_type):
             Width in pixels of the detected color chips
         color_chip_height : float
             Height in pixels of the detected color chips
-        card_type: str
-            Type of supported color card target ("classic", "passport", or "cameratrax")
+        chip_dims: str, tuple
+            Type of supported color card target ("classic", "passport", or "cameratrax"), or a tuple of
+            (width, height) of the color card chip real-world dimensions. Must provide dimensions in milimeters. 
 
     Returns
     -------
@@ -210,16 +211,30 @@ def _set_size_scale_from_chip(color_chip_width, color_chip_height, card_type):
             "chip_height": 11
         }
     }
-
-    # Check if the card type is valid
-    if card_type.upper() not in card_types:
-        fatal_error(f"Invalid algorithm '{card_type}'. Choose from {list(card_types.keys())}.")
-
-    # Set size scaling factor
+    # Set size scaling units
+    units = params.unit
     params.unit = "mm"
-    params.px_width = card_types[card_type.upper()]["chip_width"] / color_chip_width
-    params.px_height = card_types[card_type.upper()]["chip_height"] / color_chip_height
+    
+    # Check the type of input, card type or tuple of dimensions
+    if type(chip_dims) is str: 
+        # Check if the card type is valid
+        if chip_dims.upper() not in card_types:
+            # Restore units
+            params.unit = units
+            fatal_error(f"Invalid algorithm '{chip_dims}'. Choose from {list(card_types.keys())}\
+                        or provide your color card chip dimensions explicitly.")
+            
 
+        # Set size scaling parameters
+        params.px_width = card_types[chip_dims.upper()]["chip_width"] / color_chip_width
+        params.px_height = card_types[chip_dims.upper()]["chip_height"] / color_chip_height
+    elif type(chip_dims) is tuple:
+        params.px_width = chip_dims[0] / color_chip_width
+        params.px_height = chip_dims[1] / color_chip_height
+    else: 
+        params.unit = units
+        fatal_error(f"Invalid input '{chip_dims}'. Choose from {list(card_types.keys())}\
+                        or provide your color card chip dimensions explicitly.")
 
 def mask_color_card(rgb_img, **kwargs):
     """Automatically detect a color card and create bounding box mask of the chips detected.
@@ -276,7 +291,7 @@ def detect_color_card(rgb_img, label=None, **kwargs):
         block_size: int (default = 51)
         radius: int (default = 20)
         min_size: int (default = 1000)
-        card_type: str (default = None)
+        chip_dims: str (default = None)
 
     Returns
     -------
@@ -304,8 +319,8 @@ def detect_color_card(rgb_img, label=None, **kwargs):
 
     # Set size scaling factor if card type is provided
     card_type = kwargs.get("card_type")
-    if card_type:
-        _set_size_scale_from_chip(color_chip_height=chip_height, color_chip_width=chip_width, card_type=card_type)
+    if chip_dims:
+        _set_size_scale_from_chip(color_chip_height=chip_height, color_chip_width=chip_width, chip_dims=chip_dims)
 
     # Debugging
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
