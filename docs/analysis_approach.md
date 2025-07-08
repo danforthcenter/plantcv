@@ -50,9 +50,10 @@ of different ways in PlantCV.
 ##### Image Normalization
 
 *  [White balancing](white_balance.md) an image can help to reduce variation between images due to overall lighting changes. This may help 
-downstream image processing steps like thresholding to be the same between images. Normalizing color across a dataset using a reference
-color card with [color correction](https://plantcv.org/tutorials/color-correction) is also recommended, especially when color analysis is one 
-of the analysis objectives. 
+downstream image processing steps like thresholding to be the same between images. 
+* Normalizing color across a dataset using a reference
+color card with [color correction](https://plantcv.org/tutorials/color-correction) is highly recommended, especially when color analysis is one 
+of the analysis objectives. See the [detect color card documentation](transform_detect_color_card.md) for more detail.
 
 #####Object Segmentation Approaches
 
