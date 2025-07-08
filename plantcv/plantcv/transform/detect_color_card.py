@@ -189,7 +189,7 @@ def _set_size_scale_from_chip(color_chip_width, color_chip_height, color_chip_si
             Height in pixels of the detected color chips
         color_chip_size: str, tuple
             Type of supported color card target ("classic", "passport", or "cameratrax"), or a tuple of
-            (width, height) of the color card chip real-world dimensions. Must provide dimensions in milimeters.
+            (width, height) of the color card chip real-world dimensions in milimeters.
 
     Returns
     -------
@@ -222,6 +222,7 @@ def _set_size_scale_from_chip(color_chip_width, color_chip_height, color_chip_si
         # Set size scaling parameters
         params.px_width = card_types[color_chip_size.upper()]["chip_width"] / color_chip_width
         params.px_height = card_types[color_chip_size.upper()]["chip_height"] / color_chip_height
+    # Parse and set dimension if input is tuple
     elif type(color_chip_size) is tuple:
         params.px_width = float(color_chip_size[0]) / color_chip_width
         params.px_height = float(color_chip_size[1]) / color_chip_height
@@ -229,7 +230,7 @@ def _set_size_scale_from_chip(color_chip_width, color_chip_height, color_chip_si
         fatal_error(f"Invalid input '{color_chip_size}'. Choose from {list(card_types.keys())}\
                         or provide your color card chip dimensions explicitly.")
 
-    # If size scaling successful, set units to milimeters
+    # If size scaling successful, set units to millimeters
     params.unit = "mm"
 
 
@@ -288,7 +289,8 @@ def detect_color_card(rgb_img, label=None, **kwargs):
         block_size: int (default = 51)
         radius: int (default = 20)
         min_size: int (default = 1000)
-        color_chip_size: "passport", "classic", "cameratrax", or tuple formatted (width, height) (default = None)
+        color_chip_size: "passport", "classic", "cameratrax"; or tuple formatted (width, height)
+            in millimeters (default = None)
 
     Returns
     -------
@@ -309,7 +311,7 @@ def detect_color_card(rgb_img, label=None, **kwargs):
     chip_height = np.median(mheight)
     chip_width = np.median(mwidth)
 
-    # Save out chip size for pixel to cm standardization
+    # Save out chip size for pixel to mm standardization
     outputs.add_metadata(term="median_color_chip_size", datatype=float, value=chip_size)
     outputs.add_metadata(term="median_color_chip_width", datatype=float, value=chip_width)
     outputs.add_metadata(term="median_color_chip_height", datatype=float, value=chip_height)

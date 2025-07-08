@@ -20,7 +20,8 @@ def auto_correct_color(rgb_img, label=None, **kwargs):
         block_size: int (default = 51)
         radius: int (default = 20)
         min_size: int (default = 1000)
-        color_chip_size: "passport", "classic", "cameratrax", or tuple formatted (width, height) (default = None)
+        color_chip_size: "passport", "classic", "cameratrax", or tuple formatted (width, height)
+            in millimeters (default = None)
     Returns
     -------
     numpy.ndarray

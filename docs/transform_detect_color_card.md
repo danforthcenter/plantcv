@@ -14,7 +14,7 @@ Automatically detects a color card and creates a labeled mask.
         - block_size      - Size of a pixel neighborhood that is used to calculate a threshold value (default = 51). We suggest using 127 if using `adaptive_method=0`.
         - radius         - Radius of circle to make the color card labeled mask (default = 20).
         - min_size         - Minimum chip size for filtering objects after edge detection (default = 1000)
-        - color_chip_size - Type of color card to be detected, ("classic", "passport", or "cameratrax", by default `None`) or a tuple of the `(width, height)` dimensions of the color card chips. If set then size scalings parameters `pcv.params.unit`, `pcv.params.px_width`, and `pcv.params.px_height`
+        - color_chip_size - Type of color card to be detected, ("classic", "passport", or "cameratrax", by default `None`) or a tuple of the `(width, height)` dimensions of the color card chips in millimeters. If set then size scalings parameters `pcv.params.unit`, `pcv.params.px_width`, and `pcv.params.px_height`
             are automatically set, and utilized throughout linear and area type measurements stored to `Outputs`. 
 - **Returns**
     - labeled_mask     - Labeled color card mask (useful downstream of this step in [`pcv.transform.get_color_matrix`](get_color_matrix.md) and [`pcv.transform.correct_color`](transform_correct_color.md) and [`pcv.transform.affine_color_correction`](transform_affine_color_correction.md)).
@@ -32,7 +32,7 @@ Automatically detects a color card and creates a labeled mask.
     There are a few important assumptions that must be met in order to automatically detect color cards:
     
     - There is only one color card in the image.
-    - Color card should be 4x6 [Macbeth ColorChecker](https://en.wikipedia.org/wiki/ColorChecker) (like an [ColorChecker Passport Photo 2](https://calibrite.com/us/product/colorchecker-passport-photo-2/)). 
+    - Color card should be 4x6 [Macbeth ColorChecker](https://en.wikipedia.org/wiki/ColorChecker) like one of the supported color cards described below. 
 
 ```python
 
@@ -40,7 +40,7 @@ from plantcv import plantcv as pcv
 rgb_img, path, filename = pcv.readimage("target_img.png")
 # Using a supported color card size will automatically set size scaling parameters
 cc_mask = pcv.transform.detect_color_card(rgb_img=rgb_img, color_chip_size="passport")
-# Or if using another Macbeth ColorChecker you can explicitly set the color chip size (in milimeters)
+# Or if using another Macbeth ColorChecker you can explicitly set the color chip size (in millimeters)
 cc_mask = pcv.transform.detect_color_card(rgb_img=rgb_img, color_chip_size=(12, 12))
 
 avg_chip_size = pcv.outputs.metadata['median_color_chip_size']['value'][0]
