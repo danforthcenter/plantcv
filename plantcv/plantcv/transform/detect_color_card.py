@@ -211,16 +211,11 @@ def _set_size_scale_from_chip(color_chip_width, color_chip_height, color_chip_si
             "chip_height": 11
         }
     }
-    # Set size scaling units
-    units = params.unit
-    params.unit = "mm"
-    
+
     # Check the type of input, card type or tuple of dimensions
     if type(color_chip_size) is str: 
         # Check if the card type is valid
         if color_chip_size.upper() not in card_types:
-            # Restore units
-            params.unit = units
             fatal_error(f"Invalid algorithm '{color_chip_size}'. Choose from {list(card_types.keys())}\
                         or provide your color card chip dimensions explicitly.")
 
@@ -230,10 +225,12 @@ def _set_size_scale_from_chip(color_chip_width, color_chip_height, color_chip_si
     elif type(color_chip_size) is tuple:
         params.px_width = float(color_chip_size[0]) / color_chip_width
         params.px_height = float(color_chip_size[1]) / color_chip_height
-    else: 
-        params.unit = units
+    else:
         fatal_error(f"Invalid input '{color_chip_size}'. Choose from {list(card_types.keys())}\
                         or provide your color card chip dimensions explicitly.")
+    
+    # If size scaling successful, set units to milimeters
+    params.unit = "mm"
 
 def mask_color_card(rgb_img, **kwargs):
     """Automatically detect a color card and create bounding box mask of the chips detected.
