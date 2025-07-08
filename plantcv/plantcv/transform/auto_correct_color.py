@@ -38,7 +38,7 @@ def auto_correct_color(rgb_img, label=None, **kwargs):
                                      radius=kwargs.get("radius", 20),
                                      adaptive_method=kwargs.get("adaptive_method", 1),
                                      block_size=kwargs.get("block_size", 51),
-                                     color_chip_size=kwargs.get("color_chip_size", None))
+                                     color_chip_size=kwargs.get("color_chip_size"))
     _, card_matrix = get_color_matrix(rgb_img=rgb_img, mask=labeled_mask)
     std_matrix = std_color_matrix(pos=3)
     return affine_color_correction(rgb_img=rgb_img, source_matrix=card_matrix,

@@ -228,7 +228,7 @@ def _set_size_scale_from_chip(color_chip_width, color_chip_height, color_chip_si
     else:
         fatal_error(f"Invalid input '{color_chip_size}'. Choose from {list(card_types.keys())}\
                         or provide your color card chip dimensions explicitly.")
-    
+
     # If size scaling successful, set units to milimeters
     params.unit = "mm"
 
@@ -288,7 +288,7 @@ def detect_color_card(rgb_img, label=None, **kwargs):
         block_size: int (default = 51)
         radius: int (default = 20)
         min_size: int (default = 1000)
-        color_chip_size: str, tuple (default = None)
+        color_chip_size: "passport", "classic", "cameratrax", or tuple formatted (width, height) (default = None)
 
     Returns
     -------
