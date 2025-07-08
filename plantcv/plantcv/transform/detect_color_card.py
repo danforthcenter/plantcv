@@ -189,7 +189,7 @@ def _set_size_scale_from_chip(color_chip_width, color_chip_height, color_chip_si
             Height in pixels of the detected color chips
         color_chip_size: str, tuple
             Type of supported color card target ("classic", "passport", or "cameratrax"), or a tuple of
-            (width, height) of the color card chip real-world dimensions. Must provide dimensions in milimeters. 
+            (width, height) of the color card chip real-world dimensions. Must provide dimensions in milimeters.
 
     Returns
     -------
@@ -213,7 +213,7 @@ def _set_size_scale_from_chip(color_chip_width, color_chip_height, color_chip_si
     }
 
     # Check the type of input, card type or tuple of dimensions
-    if type(color_chip_size) is str: 
+    if type(color_chip_size) is str:
         # Check if the card type is valid
         if color_chip_size.upper() not in card_types:
             fatal_error(f"Invalid algorithm '{color_chip_size}'. Choose from {list(card_types.keys())}\
@@ -231,6 +231,7 @@ def _set_size_scale_from_chip(color_chip_width, color_chip_height, color_chip_si
     
     # If size scaling successful, set units to milimeters
     params.unit = "mm"
+
 
 def mask_color_card(rgb_img, **kwargs):
     """Automatically detect a color card and create bounding box mask of the chips detected.

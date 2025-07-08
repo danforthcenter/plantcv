@@ -14,13 +14,13 @@ def auto_correct_color(rgb_img, label=None, **kwargs):
     label : str, optional
         modifies the variable name of observations recorded (default = pcv.params.sample_label).
     **kwargs
-        Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle.
+        Other keyword arguments passed to pcv.transform.detect_color_card.
         Valid keyword arguments:
         adaptive_method: 0 (mean) or 1 (Gaussian) (default = 1)
         block_size: int (default = 51)
         radius: int (default = 20)
         min_size: int (default = 1000)
-        color_chip_size : 
+        color_chip_size: "passport", "classic", "cameratrax", or tuple formatted (width, height) (default = None)
     Returns
     -------
     numpy.ndarray
@@ -38,7 +38,7 @@ def auto_correct_color(rgb_img, label=None, **kwargs):
                                      radius=kwargs.get("radius", 20),
                                      adaptive_method=kwargs.get("adaptive_method", 1),
                                      block_size=kwargs.get("block_size", 51),
-                                     color_chip_size=kwargs.get("color_chip_size"))
+                                     color_chip_size=kwargs.get("color_chip_size", None))
     _, card_matrix = get_color_matrix(rgb_img=rgb_img, mask=labeled_mask)
     std_matrix = std_color_matrix(pos=3)
     return affine_color_correction(rgb_img=rgb_img, source_matrix=card_matrix,
