@@ -212,24 +212,22 @@ def _set_size_scale_from_chip(color_chip_width, color_chip_height, color_chip_si
         }
     }
 
-    # Check the type of input, card type or tuple of dimensions
-    if type(color_chip_size) is str:
-        # Check if the card type is valid
-        if color_chip_size.upper() not in card_types:
-            fatal_error(f"Invalid algorithm '{color_chip_size}'. Choose from {list(card_types.keys())}\
-                        or provide your color card chip dimensions explicitly.")
-
+    # Check if user provided a valid color card type
+    if type(color_chip_size) == str and color_chip_size.upper() in card_types:
         # Set size scaling parameters
         params.px_width = card_types[color_chip_size.upper()]["chip_width"] / color_chip_width
         params.px_height = card_types[color_chip_size.upper()]["chip_height"] / color_chip_height
-    # Parse and set dimension if input is tuple
-    elif type(color_chip_size) is tuple:
-        params.px_width = float(color_chip_size[0]) / color_chip_width
-        params.px_height = float(color_chip_size[1]) / color_chip_height
+    # If not, check to make sure custom dimensions provided are numeric
     else:
-        fatal_error(f"Invalid input '{color_chip_size}'. Choose from {list(card_types.keys())}\
-                        or provide your color card chip dimensions explicitly.")
-
+        try:
+            # Set size scaling parameters
+            params.px_width = float(color_chip_size[0]) / color_chip_width
+            params.px_height = float(color_chip_size[1]) / color_chip_height
+    # Fail if provided color_chip_size is not valid
+        except ValueError:
+            fatal_error(f"Invalid input '{color_chip_size}'. Choose from {list(card_types.keys())}\
+            or provide your color card chip dimensions explicitly.")
+    
     # If size scaling successful, set units to millimeters
     params.unit = "mm"
 
