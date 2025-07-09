@@ -88,6 +88,8 @@ class TestData:
         self.kmeans_classifier_gray_dir = os.path.join(self.datadir, "kmeans_classifier_gray_dir")
         # nd2 file
         self.nd2_img = os.path.join(self.datadir, "test_nd2_img.nd2")
+        # flir thermal img
+        self.flir_img = os.path.join(self.datadir, "FLIR_test.jpg")
 
     @staticmethod
     def load_hsi(pkl_file):
