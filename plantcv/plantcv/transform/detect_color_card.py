@@ -6,7 +6,7 @@ import os
 import cv2
 import math
 import numpy as np
-from plantcv.plantcv import params, outputs, fatal_error, deprecation_warning
+from plantcv.plantcv import params, outputs, fatal_error, deprecation_warning, warn
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _rgb2gray, _cv2_findcontours, _object_composition
 
@@ -83,7 +83,7 @@ def _draw_color_chips(rgb_img, new_centers, radius):
     return labeled_mask, debug_img
 
 
-def _color_card_detection(rgb_img, **kwargs):
+def _calibrite_card_detection(rgb_img, **kwargs):
     """Algorithm to automatically detect a color card.
 
     Parameters
@@ -116,15 +116,13 @@ def _color_card_detection(rgb_img, **kwargs):
     if not (block_size % 2 == 1 and block_size > 1):
         fatal_error('block_size parameter must be an odd int greater than 1.')
 
-    # Hard code since we don't currently support other color cards
     nrows = 6
     ncols = 4
 
     # Convert to grayscale, threshold, and findContours
     imgray = _rgb2gray(rgb_img=rgb_img)
     gaussian = cv2.GaussianBlur(imgray, (11, 11), 0)
-    thresh = cv2.adaptiveThreshold(gaussian, 255, adaptive_method,
-                                   cv2.THRESH_BINARY_INV, block_size, 2)
+    thresh = cv2.adaptiveThreshold(gaussian, 255, adaptive_method, cv2.THRESH_BINARY_INV, block_size, 2)
     contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     # Filter contours, keep only square-shaped ones
@@ -146,7 +144,7 @@ def _color_card_detection(rgb_img, **kwargs):
     x, y, w, h = cv2.boundingRect(np.vstack(filtered_contours))
 
     # Draw the bound box rectangle
-    boundind_mask = cv2.rectangle(np.zeros(rgb_img.shape[0:2]), (x, y), (x + w, y + h), (255), -1).astype(np.uint8)
+    bounding_mask = cv2.rectangle(np.zeros(rgb_img.shape[0:2]), (x, y), (x + w, y + h), (255), -1).astype(np.uint8)
 
     # Initialize chip shape lists
     marea, mwidth, mheight = _get_contour_sizes(filtered_contours)
@@ -175,16 +173,19 @@ def _color_card_detection(rgb_img, **kwargs):
     # Create labeled mask and debug image of color chips
     labeled_mask, debug_img = _draw_color_chips(debug_img, new_centers, radius)
 
-    return labeled_mask, debug_img, marea, mheight, mwidth, boundind_mask
+    return labeled_mask, debug_img, marea, mheight, mwidth, bounding_mask
 
 
-def mask_color_card(rgb_img, **kwargs):
+def mask_color_card(rgb_img, card_type=0, **kwargs):
     """Automatically detect a color card and create bounding box mask of the chips detected.
 
     Parameters
     ----------
     rgb_img : numpy.ndarray
         Input RGB image data containing a color card.
+    card_type : int
+        reference value indicating the type of card being used for correction:
+                card_type = 0: calibrite color card (default)
     **kwargs
         Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle.
 
@@ -196,11 +197,13 @@ def mask_color_card(rgb_img, **kwargs):
 
     Returns
     -------
-
     numpy.ndarray
         Binary bounding box mask of the detected color card chips
     """
-    _, _, _, _, _, bounding_mask = _color_card_detection(rgb_img, **kwargs)
+    if card_type == 0:
+        _, _, _, _, _, bounding_mask = _calibrite_card_detection(rgb_img, **kwargs)
+    else:
+        fatal_error("Invalid option passed to <card_type>. Options are 0 (Calibrite) or 1 (Astrobotany)")
 
     if params.debug is not None:
         # Find contours
@@ -216,7 +219,7 @@ def mask_color_card(rgb_img, **kwargs):
     return bounding_mask
 
 
-def detect_color_card(rgb_img, label=None, **kwargs):
+def detect_color_card(rgb_img, label=None, card_type=0, **kwargs):
     """Automatically detect a color card.
 
     Parameters
@@ -225,6 +228,9 @@ def detect_color_card(rgb_img, label=None, **kwargs):
         Input RGB image data containing a color card.
     label : str, optional
         modifies the variable name of observations recorded (default = pcv.params.sample_label).
+    card_type : int
+        reference value indicating the type of card being used for correction:
+                card_type = 0: calibrite color card (default)
     **kwargs
         Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle.
 
@@ -247,16 +253,24 @@ def detect_color_card(rgb_img, label=None, **kwargs):
         "It will be removed in PlantCV v5.0."
         )
 
-    labeled_mask, debug_img, marea, mheight, mwidth, _ = _color_card_detection(rgb_img, **kwargs)
-    # Create dataframe for easy summary stats
-    chip_size = np.median(marea)
-    chip_height = np.median(mheight)
-    chip_width = np.median(mwidth)
+    if card_type == 0:
+        # Search image for a Calibrite color card grid
+        labeled_mask, debug_img, marea, mheight, mwidth, _ = _calibrite_card_detection(rgb_img, **kwargs)
 
-    # Save out chip size for pixel to cm standardization
-    outputs.add_metadata(term="median_color_chip_size", datatype=float, value=chip_size)
-    outputs.add_metadata(term="median_color_chip_width", datatype=float, value=chip_width)
-    outputs.add_metadata(term="median_color_chip_height", datatype=float, value=chip_height)
+        # Create dataframe for easy summary stats
+        chip_size = np.median(marea)
+        chip_height = np.median(mheight)
+        chip_width = np.median(mwidth)
+
+        # Save out chip size for pixel to cm standardization
+        outputs.add_metadata(term="median_color_chip_size", datatype=float, value=chip_size)
+        outputs.add_metadata(term="median_color_chip_width", datatype=float, value=chip_width)
+        outputs.add_metadata(term="median_color_chip_height", datatype=float, value=chip_height)
+
+
+    else:
+        # Throw a fatal error if an invalid value was passed for card_type, and it could not be determined
+        fatal_error("Could not automatically determine the type of color card. Specify with the <card_type> parameter.")
 
     # Debugging
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
