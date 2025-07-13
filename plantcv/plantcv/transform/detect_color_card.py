@@ -272,7 +272,7 @@ def _astrobotany_card_detection(rgb_img, **kwargs):
     Returns
     -------
     list
-        Labeled mask of chips, debug img, aligned card image, detected chip areas, 
+        Labeled mask of chips, debug img, aligned card image, detected chip areas,
             chip heights, chip widths, and bounding box mask
     """
     # Convert to grayscale and search for aruco tags
@@ -362,6 +362,7 @@ def mask_color_card(rgb_img, card_type=0, **kwargs):
     card_type : int
         reference value indicating the type of card being used for correction:
                 card_type = 0: calibrite color card (default)
+                card_type = 1: astrobotany.com AIRI calibration sticker
     **kwargs
         Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle.
 
@@ -377,7 +378,9 @@ def mask_color_card(rgb_img, card_type=0, **kwargs):
         Binary bounding box mask of the detected color card chips
     """
     if card_type == 0:
-        _, _, _, _, _, bounding_mask = _calibrite_card_detection(rgb_img, **kwargs)
+        *_, bounding_mask = _calibrite_card_detection(rgb_img, **kwargs)
+    elif card_type == 1:
+        *_, bounding_mask = _astrobotany_card_detection(rgb_img, **kwargs)
     else:
         fatal_error("Invalid option passed to <card_type>. Options are 0 (Calibrite) or 1 (Astrobotany)")
 
@@ -407,6 +410,7 @@ def detect_color_card(rgb_img, label=None, card_type=0, **kwargs):
     card_type : int
         reference value indicating the type of card being used for correction:
                 card_type = 0: calibrite color card (default)
+                card_type = 1: astrobotany.com AIRI calibration sticker
     **kwargs
         Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle.
 
@@ -429,6 +433,9 @@ def detect_color_card(rgb_img, label=None, card_type=0, **kwargs):
         "It will be removed in PlantCV v5.0."
         )
 
+    if (card_type != 0) or (card_type != 1):
+        # TODO: Check for aruco tags and set card_type accordingly.
+        warn("Invalid option for arg:card_type, attempting to automatically determine card type.")
     if card_type == 0:
         # Search image for a Calibrite color card grid
         labeled_mask, debug_img, marea, mheight, mwidth, _ = _calibrite_card_detection(rgb_img, **kwargs)
@@ -443,6 +450,14 @@ def detect_color_card(rgb_img, label=None, card_type=0, **kwargs):
         outputs.add_metadata(term="median_color_chip_width", datatype=float, value=chip_width)
         outputs.add_metadata(term="median_color_chip_height", datatype=float, value=chip_height)
 
+    elif card_type == 1:
+        # Search image for an astrobotany.com color card
+        labeled_mask, debug_img, card_img, *_ = _astrobotany_card_detection(rgb_img, **kwargs)
+
+        # TODO: Add metadata outputs for size calibration
+
+        # Second debug image of transformed color card
+        _debug(visual=card_img, filename=os.path.join(params.debug_outdir, f'{params.device}_reference_color_card.png'))
 
     else:
         # Throw a fatal error if an invalid value was passed for card_type, and it could not be determined
