@@ -192,6 +192,166 @@ def _calibrite_card_detection(rgb_img, **kwargs):
     return labeled_mask, debug_img, marea, mheight, mwidth, bounding_mask
 
 
+def _find_aruco_tags(img, aruco_dict):
+    """Search for aruco tags in a specified tag dictionary
+
+    Parameters
+    ----------
+    img : np.ndarray
+        Input RGB or Grayscale image data containing aruco tags.
+    aruco_dict : cv2.aruco.Dictionary
+        CV2 Aruco Dictionary containing tags to be located.
+
+    Returns
+    -------
+    list
+        tag bounding boxes, tag IDs, rejected tag bounding boxes
+    """
+    # TODO: Not needed for current implementation of helper, but might want **kwargs to pass to cv2.aruco.DetectorParameters
+    aruco_params = cv2.aruco.DetectorParameters()
+    detector = cv2.aruco.ArucoDetector(dictionary=aruco_dict, detectorParams=aruco_params)
+    tag_bboxes, tag_ids, rejects = detector.detectMarkers(img)
+
+    # Sort bounding boxes by tag ID
+    tag_ids, tag_bboxes = zip(*sorted(zip(tag_ids, tag_bboxes), key=lambda x: x[0]))
+
+    return tag_bboxes, tag_ids, rejects
+
+
+def _get_astro_std_mask():
+    """Define reference centers of chips on a 600x700 px astrobotany color card
+
+    Returns
+    -------
+    numpy.ndarray
+        Standard perspective mask of astrobotany color card chips
+    """
+    # Define center and radii to draw on chps
+    centers = [[94, 271],   # Blue
+               [222, 271],  # Green
+               [350, 271],  # Red
+               [478, 271],  # Yellow
+               [606, 271],  # Black
+               # Gray chips
+               [62, 371],   # Value 100 (White)
+               [127, 371],  # Value 92
+               [192, 371],  # Value 77
+               [257, 371],  # Value 67
+               [322, 371],  # Value 58
+               [387, 371],  # Value 48
+               [452, 371],  # Value 36
+               [517, 371],  # Value 28
+               [582, 371],  # Value 22
+               [647, 371]]  # Value 17 (Black)
+    radii = [40 if y == 271 else 20 for _, y in centers]
+
+    std_mask = np.zeros(shape=(600, 700), dtype=np.uint8)
+    std_mask, _ = _draw_color_chips(std_mask, centers, radii)
+
+    return std_mask
+
+
+def _astrobotany_card_detection(rgb_img, **kwargs):
+    """Algorithm to automatically detect a color card.
+
+    Parameters
+    ----------
+    rgb_img : numpy.ndarray
+        Input RGB image data containing a color card.
+    label : str, optional
+        modifies the variable name of observations recorded (default = pcv.params.sample_label).
+    **kwargs : optional
+        Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle.
+
+        Valid keyword arguments:
+        adaptive_method: 0 (mean) or 1 (Gaussian) (default = 1)
+        block_size: int (default = 51)
+        radius: int (default = 20)
+        min_size: int (default = 1000)
+
+    Returns
+    -------
+    list
+        Labeled mask of chips, debug img, aligned card image, detected chip areas, 
+            chip heights, chip widths, and bounding box mask
+    """
+    # Convert to grayscale and search for aruco tags
+    imgray = _rgb2gray(rgb_img=rgb_img)
+    aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
+    tag_bboxes, tag_ids, _ = _find_aruco_tags(imgray, aruco_dict)
+
+    # Check contents of tag_ids against expected tags
+    expected_ids = [46, 47, 48, 49]
+    missing_ids = []
+    for id in expected_ids:
+        id_count = tag_ids.count(id)
+        if id_count == 0:
+            missing_ids.append(id)
+        elif id_count > 1:
+            fatal_error(f"Expected ArUco tag (ID = {id}) occurs more than once in image. Can not locate color card.")
+    # Warn user if some expected tags are not present in image and attempt color correction
+    if len(missing_ids) > 3:
+        fatal_error("No expected ArUco tags were found in image. Can not locate color card.")
+    # Throw a fatal error if none were found
+    elif len(missing_ids) > 0:
+        warn(f"Missing {len(missing_ids)} aruco tags in image. Attempting color correction, check card alignment!")
+
+    # Generate debug image
+    debug_img = np.copy(rgb_img)
+    # Dict of pt indices for outer corner of each of glyph ID
+    outer_corners = {46: 3, 47: 0, 48: 1, 49: 2}
+    corner_pts = []
+    for id, bbox in zip(tag_ids, tag_bboxes):
+        id = id[0]
+        # Draw tags on debug img
+        bbox = np.array(bbox.reshape(-1, 2), dtype=np.int32)
+        cv2.polylines(debug_img, [bbox], True, (255, 50, 250), thickness=params.line_thickness)
+        # Label tags on debug image (centering text)
+        text_size, _ = cv2.getTextSize(str(id), cv2.FONT_HERSHEY_SIMPLEX, params.text_size, params.text_thickness)
+        center = np.mean(bbox, axis=0)
+        offset_dir = np.array([-1, 1])
+        text_pos = (center + text_size*offset_dir/2).astype(int)
+        cv2.putText(debug_img, str(id), text_pos, cv2.FONT_HERSHEY_SIMPLEX, params.text_size, (255, 50, 250), params.text_thickness)
+
+        # Get outer corner points for bounding mask
+        corner_pts.append(bbox[outer_corners[id]])
+
+    # Draw the bounding mask
+    bounding_mask = cv2.fillPoly(np.zeros(rgb_img.shape[:2]), np.array([corner_pts]), 255).astype(np.uint8)
+
+    # Build paired lists of points for aligning color card
+    tag_topleft = {46: (0, 495), 47: (0, 0), 48: (595, 0), 48: (595, 495)}
+    img_pts = []
+    ref_pts = []
+    for id, bbox in zip(tag_ids, tag_bboxes):
+        # Do nothing if not a color card tag ID
+        if id not in expected_ids:
+            continue
+
+        img_pts.extend(bbox)
+
+        x, y = tag_topleft[id]
+        ref_bbox = [[x, y], [x+105, y], [x+105, y+105], [x, y+105]]
+        ref_pts.extend(ref_bbox)
+
+    img_pts = np.array(img_pts)
+    ref_pts = np.array(ref_pts)
+    # Calculate matrix to transform reference chip centers to image
+    mat, _ = cv2.findHomography(ref_pts, img_pts, method=0)
+    if mat is None:
+        fatal_error("Cannot calculate a robust model with given corresponding coordinates!")
+
+    # Apply inverse matrix generate image of aligned color card
+    inv_mat = np.linalg.inv(mat)
+    card_img = cv2.warpPerspective(rgb_img, M=inv_mat, dsize=(700, 600))
+
+    # Get reference card mask and transform to image position
+    std_mask = _get_astro_std_mask()
+    img_mask = cv2.warpPerspective(std_mask, mat, dsize=rgb_img.shape[:2])
+
+    return img_mask, debug_img, card_img, marea, mheight, mwidth, bounding_mask
+
+
 def mask_color_card(rgb_img, card_type=0, **kwargs):
     """Automatically detect a color card and create bounding box mask of the chips detected.
 
