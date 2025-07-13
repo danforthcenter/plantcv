@@ -315,10 +315,17 @@ def _astrobotany_card_detection(rgb_img, **kwargs):
     # Coordinates for top-left corner of each aruco tag in a standard-sized 600x700 image
     tag_topleft = {46: (0, 495), 47: (0, 0), 48: (595, 0), 49: (595, 495)}
     img_pts, ref_pts = [], []
+    areas, heights, widths = [], [], []
     for id, bbox in zip(tag_ids, tag_bboxes):
         # Do nothing if not a color card tag ID
         if id not in expected_ids:
             continue
+        # Measure area, height, and width of tag in pixels
+        area, height, width = _get_contour_sizes(bbox)
+        # Convert measurements to px/sq-cm (area) or px/cm (h/w)
+        areas.append(area)
+        heights.append(height)         # Tag height is 0.7975 cm
+        widths.append(width)           # Tag width is 0.7975 cm
         # Add coordinates of tag corners in image
         img_pts.extend(bbox)
         # Add coordinates of tag corners on a standard-size color card
@@ -350,6 +357,11 @@ def _astrobotany_card_detection(rgb_img, **kwargs):
 
     # Generate color card bounding mask
     bounding_mask = cv2.warpPerspective(np.ones(shape=(600, 700))*255, mat, dsize=rgb_img.shape[:2])
+
+    # Take average area, height, and width of aruco tags
+    marea = np.mean(areas)
+    mheight = np.mean(heights)
+    mwidth = np.mean(widths)
 
     return img_mask, debug_img, card_img, marea, mheight, mwidth, bounding_mask
 
@@ -453,10 +465,16 @@ def detect_color_card(rgb_img, label=None, card_type=0, **kwargs):
         outputs.add_metadata(term="median_color_chip_height", datatype=float, value=chip_height)
 
     elif card_type == 1:
-        # TODO: Add metadata outputs for size calibration
-
         # Search image for astrobotany.com color card aruco tags
         labeled_mask, debug_img, card_img, marea, mheight, mwidth, _ = _astrobotany_card_detection(rgb_img, **kwargs)
+
+        # Save out conversion value for pixel to cm standardization
+        outputs.add_metadata(term="mean_aruco_tag_area_px", datatype=float, value=marea)
+        outputs.add_metadata(term="aruco_tag_area_sq-cm", datatype=float, value=0.7975*0.7975)
+        outputs.add_metadata(term="mean_aruco_tag_width_px", datatype=float, value=mwidth)
+        outputs.add_metadata(term="aruco_tag_width_cm", datatype=float, value=0.7975)
+        outputs.add_metadata(term="mean_aruco_tag_height_px", datatype=float, value=mheight)
+        outputs.add_metadata(term="aruco_tag_height_cm", datatype=float, value=0.7975)
 
         # Save or plot debug image of color card transformed to standard size
         _debug(visual=card_img, filename=os.path.join(params.debug_outdir, f'{params.device}_reference_color_card.png'))
