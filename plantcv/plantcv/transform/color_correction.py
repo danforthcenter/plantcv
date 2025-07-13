@@ -31,8 +31,8 @@ def affine_color_correction(rgb_img, source_matrix, target_matrix):
 
 
     :param rgb_img: numpy.ndarray
-    :return source_matrix: numpy.ndarray
-    :return target_matrix: numpy.ndarray
+    :param source_matrix: numpy.ndarray
+    :param target_matrix: numpy.ndarray
     :return corrected_img: numpy.ndarray
     """
     # matrices must have the same number of color references
@@ -89,21 +89,19 @@ def std_color_matrix(pos=0):
     ColorChecker Mini, and ColorChecker Passport targets.
     Source: https://en.wikipedia.org/wiki/ColorChecker
 
-    Inputs:
-    pos     = reference value indicating orientation of the color card. The reference
-                is based on the position of the white chip:
-
-                pos = 0: bottom-left corner
+    Parameters
+    ----------
+    pos : int
+        reference value indicating orientation of the color card. The reference is based on the position of the white chip:
+                pos = 0: bottom-left corner (default)
                 pos = 1: bottom-right corner
                 pos = 2: top-right corner
                 pos = 3: top-left corner
 
-    Outputs:
-    color_matrix    = matrix containing the standard red, green, and blue
-                        values for each color chip
-
-    :param pos: int
-    :return color_matrix: numpy.ndarray
+    Returns
+    -------
+    color_matrix
+        matrix containing the standard red, green, and blue values for each color chip
     """
     # list of rgb values as indicated in the color card specs. They need to be
     # arranged depending on the orientation of the color card of reference in the
@@ -156,23 +154,25 @@ def std_color_matrix(pos=0):
     return color_matrix
 
 
+
+
+
 def get_color_matrix(rgb_img, mask):
     """Calculate the average value of pixels in each color chip for each color channel.
 
-    Inputs:
-    rgb_img         = RGB image with color chips visualized
-    mask        = a gray-scale img with unique values for each segmented space, representing unique, discrete
-                    color chips.
+    Parameters
+    ----------
+    rgb_img : numpy.ndarray
+        an RGB image with color chips visualized
+    mask : numpy.ndarray
+        a gray-scale img with unique values for each segmented space, representing unique, discrete color chips.
 
-    Outputs:
-    color_matrix        = a 22x4 matrix containing the average red value, average green value, and average blue value
-                            for each color chip.
-    headers             = a list of 4 headers corresponding to the 4 columns of color_matrix respectively
-
-    :param rgb_img: numpy.ndarray
-    :param mask: numpy.ndarray
-    :return headers: string array
-    :return color_matrix: numpy.ndarray
+    Returns
+    -------
+    color_matrix
+        a 22x4 matrix containing the average red value, average green value, and average blue value for each color chip.
+    headers
+        a list of 4 headers corresponding to the 4 columns of color_matrix respectively
     """
     # Check for RGB input
     if len(np.shape(rgb_img)) != 3:
@@ -203,7 +203,7 @@ def get_color_matrix(rgb_img, mask):
     for i in np.unique(mask):
         if i != 0:
             chip = rgb_img[np.where(mask == i)]
-            color_matrix[row_counter][0] = i
+            color_matrix[row_counter][0] = (i / 10) - 1
             color_matrix[row_counter][1] = np.mean(chip[:, 2])
             color_matrix[row_counter][2] = np.mean(chip[:, 1])
             color_matrix[row_counter][3] = np.mean(chip[:, 0])
@@ -450,8 +450,9 @@ def correct_color(target_img, target_mask, source_img, source_mask, output_direc
     target_img          = an RGB image with color chips visualized
     source_img          = an RGB image with color chips visualized
     target_mask         = a gray-scale image with color chips and background each represented with unique values
-    target_mask         = a gray-scale image with color chips and background each represented as unique values
+    source_mask         = a gray-scale image with color chips and background each represented as unique values
     output_directory    = a file path to which outputs will be saved
+
     Outputs:
     target_matrix   = saved in .npz file, a 22x4 matrix containing the average red value, average green value, and
                             average blue value for each color chip.
@@ -496,7 +497,7 @@ def correct_color(target_img, target_mask, source_img, source_mask, output_direc
     return target_matrix, source_matrix, transformation_matrix, corrected_img
 
 
-def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=[]):
+def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=None):
     """Create a labeled mask for color card chips.
 
     Inputs:
@@ -539,18 +540,19 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
             chips.append(circle(img=rgb_img, x=x, y=y, r=radius))
     # Restore debug parameter
     params.debug = debug
-    # Sort excluded chips from largest to smallest
-    exclude.sort(reverse=True)
-    # Remove any excluded chips
-    for chip in exclude:
-        del chips[chip]
+    if exclude is not None:
+        # Sort excluded chips from largest to smallest
+        exclude.sort(reverse=True)
+        # Remove any excluded chips
+        for chip in exclude:
+            del chips[chip]
     # Create mask
     mask = np.zeros(shape=np.shape(rgb_img)[:2], dtype=np.uint8)
     # Mask label index
     i = 1
     # Draw labeled chip boxes on the mask
     for chip in chips:
-        mask = cv2.drawContours(mask, chip.contours[0], -1, (i * 10), -1)
+        mask = cv2.drawContours(mask, chip.contours[0], -1, [i * 10], -1)
         i += 1
     # Create a copy of the input image for plotting
     canvas = np.copy(rgb_img)
