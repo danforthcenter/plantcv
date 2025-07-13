@@ -53,7 +53,7 @@ def _get_contour_sizes(contours):
     return marea, mwidth, mheight
 
 
-def _draw_color_chips(rgb_img, new_centers, radius):
+def _draw_color_chips(rgb_img, centers, radius):
     """Create labeled mask and debug image of color chips.
 
     Parameters
@@ -62,7 +62,7 @@ def _draw_color_chips(rgb_img, new_centers, radius):
         Input RGB image data containing a color card.
     new_centers : numpy.array
         Chip centers after transformation.
-    radius : int
+    radius : int or list
         Radius of circles to draw on the color chips.
 
     Returns
@@ -74,12 +74,30 @@ def _draw_color_chips(rgb_img, new_centers, radius):
     labeled_mask = np.zeros(rgb_img.shape[0:2])
     debug_img = np.copy(rgb_img)
 
+    # Calculate the offset for centering text positions
+    text_size, _ = cv2.getTextSize(str(id), cv2.FONT_HERSHEY_SIMPLEX, params.text_size, params.text_thickness)
+    offset_dir = np.array([-1, 1])
+
     # Loop over the new chip centers and draw them on the RGB image and labeled mask
-    for i, pt in enumerate(new_centers):
-        cv2.circle(labeled_mask, new_centers[i], radius, (i + 1) * 10, -1)
-        cv2.circle(debug_img, new_centers[i], radius, (255, 255, 0), -1)
-        cv2.putText(debug_img, text=str(i), org=pt, fontScale=params.text_size, color=(0, 0, 0),
-                    fontFace=cv2.FONT_HERSHEY_SIMPLEX, thickness=params.text_thickness)
+    if type(radius) is int:
+        for i, pt in enumerate(centers):
+            cv2.circle(labeled_mask, centers[i], radius, [(i + 1) * 10], -1)
+            cv2.circle(debug_img, centers[i], radius, (255, 255, 0), -1)
+
+            text_pos = (pt + text_size*offset_dir/2).astype(int)
+            cv2.putText(debug_img, text=str(i), org=text_pos, fontScale=params.text_size, color=(0, 0, 0),
+                        fontFace=cv2.FONT_HERSHEY_SIMPLEX, thickness=params.text_thickness)
+    elif len(radius) == len(centers):
+        for i, pt in enumerate(centers):
+            cv2.circle(labeled_mask,  centers[i], radius[i], [(i + 1) * 10], -1)
+            cv2.circle(debug_img, centers[i], radius[i], (255, 255, 0), -1)
+
+            text_pos = (pt + text_size*offset_dir/2).astype(int)
+            cv2.putText(debug_img, text=str(i), org=text_pos, fontScale=params.text_size, color=(0, 0, 0),
+                        fontFace=cv2.FONT_HERSHEY_SIMPLEX, thickness=params.text_thickness)
+    else:
+        fatal_error(f"Radius must be int or list with same length as centers, not: {radius}")
+
     return labeled_mask, debug_img
 
 
@@ -90,8 +108,6 @@ def _calibrite_card_detection(rgb_img, **kwargs):
     ----------
     rgb_img : numpy.ndarray
         Input RGB image data containing a color card.
-    label : str, optional
-        modifies the variable name of observations recorded (default = pcv.params.sample_label).
     **kwargs
         Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle.
 
