@@ -1,8 +1,8 @@
 # Automatically detect a color card and color correct to standard chip values
 
 from plantcv.plantcv import params, deprecation_warning
-from plantcv.plantcv.transform.detect_color_card import detect_color_card
-from plantcv.plantcv.transform.color_correction import get_color_matrix, std_color_matrix, affine_color_correction
+from plantcv.plantcv.transform import detect_color_card
+from plantcv.plantcv.transform import get_color_matrix, std_color_matrix, affine_color_correction, astro_color_matrix
 
 
 def auto_correct_color(rgb_img, label=None, card_type=0, **kwargs):
@@ -44,8 +44,12 @@ def auto_correct_color(rgb_img, label=None, card_type=0, **kwargs):
                                      radius=kwargs.get("radius", 20),
                                      adaptive_method=kwargs.get("adaptive_method", 1),
                                      block_size=kwargs.get("block_size", 51))
-    _, card_matrix = get_color_matrix(rgb_img=rgb_img, mask=labeled_mask, card_type=card_type)
-    std_matrix = std_color_matrix(pos=3, card_type=card_type)
+    _, card_matrix = get_color_matrix(rgb_img=rgb_img, mask=labeled_mask)
+    if card_type == 0:
+        std_matrix = std_color_matrix(pos=3)
+    elif card_type == 1:
+        std_matrix = astro_color_matrix()
 
-    return affine_color_correction(rgb_img=rgb_img, source_matrix=card_matrix,
-                                   target_matrix=std_matrix)
+    corr_img = affine_color_correction(rgb_img=rgb_img, source_matrix=card_matrix, target_matrix=std_matrix)
+
+    return corr_img
