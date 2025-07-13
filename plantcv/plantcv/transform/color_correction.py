@@ -154,7 +154,42 @@ def std_color_matrix(pos=0):
     return color_matrix
 
 
+def astro_color_matrix():
+    """Create a standard color matrix for astrobotany calibration stickers
 
+    Returns
+    -------
+    color_matrix
+        matrix containing the standard red, green, and blue values for each color chip
+    """
+    # list of rgb values as average measurement of 103 imaged with a flatbed scanner
+    values_list = np.array([[28, 43, 111],      # Blue
+                            [79, 152, 52],      # Green
+                            [183, 45, 38],      # Red
+                            [244, 206, 49],     # Yellow
+                            [37, 37, 37],       # Black
+                            # Grayscale chips
+                            [254, 254, 254],    # Value 100 (White)
+                            [232, 232, 232],    # V92
+                            [196, 196, 196],    # V77
+                            [169, 169, 169],    # V67
+                            [145, 145, 145],    # V58
+                            [120, 120, 120],    # V48
+                            [92, 92, 92],       # V36
+                            [69, 69, 69],       # V28
+                            [56, 56, 56],       # V22
+                            [43, 43, 43]], dtype=np.float64)  # V17 (Black)
+
+    # Convert RGB values to float
+    color_matrix = values_list/255.
+
+    # Add chip number to be compatible with other PlantCV functions
+    chip_nb = np.arange(values_list.shape[0])
+    chip_nb = np.reshape(chip_nb, shape=(-1, 1))
+
+    color_matrix = np.concatenate((chip_nb, color_matrix), axis=1)
+
+    return color_matrix
 
 
 def get_color_matrix(rgb_img, mask):
