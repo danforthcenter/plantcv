@@ -45,6 +45,7 @@ def auto_correct_color(rgb_img, label=None, card_type=0, **kwargs):
                                      adaptive_method=kwargs.get("adaptive_method", 1),
                                      block_size=kwargs.get("block_size", 51))
     _, card_matrix = get_color_matrix(rgb_img=rgb_img, mask=labeled_mask)
+
     if card_type == 0:
         std_matrix = std_color_matrix(pos=3)
     elif card_type == 1:

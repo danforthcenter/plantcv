@@ -317,6 +317,7 @@ def _astrobotany_card_detection(rgb_img, **kwargs):
     img_pts, ref_pts = [], []
     areas, heights, widths = [], [], []
     for id, bbox in zip(tag_ids, tag_bboxes):
+        id = id[0]
         # Do nothing if not a color card tag ID
         if id not in expected_ids:
             continue
@@ -327,7 +328,7 @@ def _astrobotany_card_detection(rgb_img, **kwargs):
         heights.append(height)         # Tag height is 0.7975 cm
         widths.append(width)           # Tag width is 0.7975 cm
         # Add coordinates of tag corners in image
-        img_pts.extend(bbox)
+        img_pts.extend(*bbox)
         # Add coordinates of tag corners on a standard-size color card
         x, y = tag_topleft[id]
         ref_bbox = [[x, y], [x+105, y], [x+105, y+105], [x, y+105]]
@@ -347,13 +348,13 @@ def _astrobotany_card_detection(rgb_img, **kwargs):
     card_img = cv2.warpPerspective(rgb_img, M=inv_mat, dsize=(700, 600))
 
     # Get reference card mask and transform to image position
-    std_mask = _get_astro_std_mask()
-    img_mask = cv2.warpPerspective(std_mask, mat, dsize=rgb_img.shape[:2])
+    standard_mask = _get_astro_std_mask()
+    labeled_mask = cv2.warpPerspective(standard_mask, M=mat, dsize=rgb_img.shape[1::-1], flags=cv2.INTER_NEAREST)
 
     # Draw transformed chips on debug image
-    for i in np.unique(img_mask):
+    for i in np.unique(labeled_mask):
         if i != 0:
-            debug_img[np.where(img_mask == i)] = [255, 255, 0]
+            debug_img[np.where(labeled_mask == i)] = [255, 255, 0]
 
     # Generate color card bounding mask
     bounding_mask = cv2.warpPerspective(np.ones(shape=(600, 700))*255, mat, dsize=rgb_img.shape[:2])
@@ -363,7 +364,7 @@ def _astrobotany_card_detection(rgb_img, **kwargs):
     mheight = np.mean(heights)
     mwidth = np.mean(widths)
 
-    return img_mask, debug_img, card_img, marea, mheight, mwidth, bounding_mask
+    return labeled_mask, debug_img, card_img, marea, mheight, mwidth, bounding_mask
 
 
 def mask_color_card(rgb_img, card_type=0, **kwargs):
@@ -447,7 +448,7 @@ def detect_color_card(rgb_img, label=None, card_type=0, **kwargs):
         "It will be removed in PlantCV v5.0."
         )
 
-    if (card_type != 0) or (card_type != 1):
+    if card_type not in [0, 1]:
         # TODO: Check for aruco tags and set card_type accordingly.
         warn("Invalid option for arg:card_type, attempting to automatically determine card type.")
     if card_type == 0:
