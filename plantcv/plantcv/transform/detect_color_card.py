@@ -218,16 +218,19 @@ def _set_size_scale_from_chip(color_chip_width, color_chip_height, color_chip_si
         params.px_width = card_types[color_chip_size.upper()]["chip_width"] / color_chip_width
         params.px_height = card_types[color_chip_size.upper()]["chip_height"] / color_chip_height
     # If not, check to make sure custom dimensions provided are numeric
-    elif len(color_chip_size) == 2:
+    else:
         try:
             # Set size scaling parameters
             params.px_width = float(color_chip_size[0]) / color_chip_width
             params.px_height = float(color_chip_size[1]) / color_chip_height
-    # Fail if provided color_chip_size is not valid
+        # Fail if provided color_chip_size is not supported
         except ValueError:
             fatal_error(f"Invalid input '{color_chip_size}'. Choose from {list(card_types.keys())}\
-            or provide your color card chip dimensions explicitly.")
-
+            or provide your color card chip dimensions explicitly")
+        # Fail if provided color_chip_size is integer rather than tuple
+        except TypeError:
+            fatal_error(f"Invalid input '{color_chip_size}'. Choose from {list(card_types.keys())}\
+            or provide your color card chip dimensions explicitly as a tuple e.g. color_chip_size=(10,10).")
     # If size scaling successful, set units to millimeters
     params.unit = "mm"
 
