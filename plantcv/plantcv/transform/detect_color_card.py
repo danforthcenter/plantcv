@@ -279,22 +279,6 @@ def _astrobotany_card_detection(rgb_img, **kwargs):
     aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
     tag_bboxes, tag_ids, _ = _find_aruco_tags(imgray, aruco_dict)
 
-    # Check contents of tag_ids for absence and duplication
-    expected_ids = [46, 47, 48, 49]
-    missing_ids = []
-    for id in expected_ids:
-        id_count = tag_ids.count(id)
-        if id_count == 0:
-            missing_ids.append(id)
-        elif id_count > 1:
-            fatal_error(f"Expected ArUco tag (ID = {id}) occurs more than once in image. Can not locate color card.")
-    # Warn user if some expected tags are not present in image and attempt color correction
-    if len(missing_ids) > 3:
-        fatal_error("No expected ArUco tags were found in image. Can not locate color card.")
-    # Throw a fatal error if none were found
-    elif len(missing_ids) > 0:
-        warn(f"Missing {len(missing_ids)} aruco tags in image. Attempting color correction, check card alignment!")
-
     # Generate debug image with all aruco tags
     debug_img = np.copy(rgb_img)
     for id, bbox in zip(tag_ids, tag_bboxes):
@@ -311,6 +295,26 @@ def _astrobotany_card_detection(rgb_img, **kwargs):
         # Label aruco tags on debug image
         cv2.putText(debug_img, str(id), text_pos, cv2.FONT_HERSHEY_SIMPLEX, params.text_size, (255, 50, 250),
                     params.text_thickness)
+
+    # Check contents of tag_ids for absence and duplication
+    expected_ids = [46, 47, 48, 49]
+    missing_ids = []
+    for id in expected_ids:
+        id_count = tag_ids.count(id)
+        if id_count == 0:
+            missing_ids.append(id)
+        elif id_count > 1:
+            # Show or save debug plot
+            _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_duplicate_aruco.png'))
+            fatal_error(f"Expected ArUco tag (ID = {id}) occurs more than once in image. Can not locate color card.")
+    # Warn user if some expected tags are not present in image and attempt color correction
+    if len(missing_ids) > 3:
+        # Show or save debug plot
+        _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_no_card.png'))
+        fatal_error("No expected ArUco tags were found in image. Can not locate color card.")
+    # Throw a fatal error if none were found
+    elif len(missing_ids) > 0:
+        warn(f"Missing {len(missing_ids)} aruco tag(s) in image. Attempting color correction, check warp alignment!")
 
     # Coordinates for top-left corner of each aruco tag in a standard-sized 600x700 image
     tag_topleft = {46: (0, 495), 47: (0, 0), 48: (595, 0), 49: (595, 495)}
@@ -349,7 +353,7 @@ def _astrobotany_card_detection(rgb_img, **kwargs):
 
     # Get reference card mask and transform to image position
     standard_mask = _get_astro_std_mask()
-    labeled_mask = cv2.warpPerspective(standard_mask, M=mat, dsize=rgb_img.shape[1::-1], flags=cv2.INTER_NEAREST)
+    labeled_mask = cv2.warpPerspective(standard_mask, mat, dsize=rgb_img.shape[1::-1], flags=cv2.INTER_NEAREST)
 
     # Draw transformed chips on debug image
     for i in np.unique(labeled_mask):
@@ -357,7 +361,8 @@ def _astrobotany_card_detection(rgb_img, **kwargs):
             debug_img[np.where(labeled_mask == i)] = [255, 255, 0]
 
     # Generate color card bounding mask
-    bounding_mask = cv2.warpPerspective(np.ones(shape=(600, 700))*255, mat, dsize=rgb_img.shape[:2])
+    bounding_mask = cv2.warpPerspective(np.ones(shape=(600, 700), dtype=np.uint8)*255, mat, dsize=rgb_img.shape[1::-1],
+                                        flags=cv2.INTER_NEAREST)
 
     # Take average area, height, and width of aruco tags
     marea = np.mean(areas)
