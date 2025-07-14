@@ -118,7 +118,7 @@ def acute(img, mask, win, threshold):
 
         if len(isle) > 1:
             if (isle[0][0] == 0) & (isle[-1][-1] == (len(chain)-1)):
-                if params.debug is not None:
+                if params.verbose:
                     print('Fusing contour edges')
                 island = isle[-1]+isle[0]  # Fuse overlapping ends of contour
                 # Delete islands to be spliced if start-end fusion required
@@ -126,7 +126,7 @@ def acute(img, mask, win, threshold):
                 del isle[-1]
                 isle.insert(0, island)      # Prepend island to isle
         else:
-            if params.debug is not None:
+            if params.verbose:
                 print('Microcontour...')
 
         # Homologous point maximum distance method
@@ -155,7 +155,7 @@ def acute(img, mask, win, threshold):
                 ptvals.append('NaN')        # If no values can be retrieved (small/collapsed contours)
                 vals = []
             if len(island) >= 3:               # If landmark is multiple points (distance scan for position)
-                if params.debug is not None:
+                if params.verbose:
                     print('route C')
                 ss = obj[island[0]]            # Store isle "x" start site
                 ts = obj[island[-1]]           # Store isle "x" termination site
@@ -171,14 +171,14 @@ def acute(img, mask, win, threshold):
                         pt = d
                         dist_1 = dist_2                          # Current mean becomes new best mean
                 # print pt
-                if params.debug is not None:
+                if params.verbose:
                     print(f"Landmark site: {pt}, Start site: {island[0]}, Term. site: {island[-1]}")
 
                 maxpts.append(pt)           # Empty 'pts' prior to next mean distance scan
                 ss_pts.append(island[0])
                 ts_pts.append(island[-1])
 
-            if params.debug is not None:
+            if params.verbose:
                 print(f'Landmark point indices: {maxpts}')
                 print(f'Starting site indices: {ss_pts}')
                 print(f'Termination site indices: {ts_pts}')
