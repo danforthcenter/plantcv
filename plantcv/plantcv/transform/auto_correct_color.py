@@ -3,7 +3,8 @@
 from plantcv.plantcv import params, deprecation_warning
 from plantcv.plantcv.transform.detect_color_card import detect_color_card
 from plantcv.plantcv.transform.color_correction import get_color_matrix, std_color_matrix, affine_color_correction
-
+from plantcv.plantcv._helpers import _rect_filter
+import numpy as np
 
 def auto_correct_color(rgb_img, label=None, **kwargs):
     """Automatically detect a color card.
@@ -39,11 +40,11 @@ def auto_correct_color(rgb_img, label=None, **kwargs):
     # if x, y, h, w in kwargs then get color matrix from subset of image
     if any(pt in ["x", "y", "h", "w"] for pt in kwargs.keys()):
         labeled_mask = _rect_filter(rgb_img,
-                                    x=kwargs.get("x", 0),
-                                    y=kwargs.get("y", 0),
-                                    h=kwargs.get("h", np.shape(rgb_img)[0]),
-                                    w=kwargs.get("w", np.shape(rgb_img)[1]),
-                                    detect_color_card,
+                                    xstart=kwargs.get("x", 0),
+                                    ystart=kwargs.get("y", 0),
+                                    height=kwargs.get("h", np.shape(rgb_img)[0]),
+                                    width=kwargs.get("w", np.shape(rgb_img)[1]),
+                                    function=detect_color_card,
                                     **kwargs
                                     )
         # calls _rect_filter twice but I am not seeing a clear way around that without

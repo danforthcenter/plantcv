@@ -1,9 +1,11 @@
 import cv2
+import os
 import numpy as np
 from plantcv.plantcv.dilate import dilate
 from plantcv.plantcv.image_subtract import image_subtract
 from plantcv.plantcv import fatal_error, warn
 from plantcv.plantcv import params
+from plantcv.plantcv._debug import _debug
 import pandas as pd
 
 
@@ -639,16 +641,42 @@ def _scale_size(value, trait_type="linear"):
     # Multiplication with list comprehension for lists of values
     return [x*conversion_rate for x in value]
 
-def _rect_filter(img, x=0, y=0, h=None, w=None, function=None, **kwargs):
+def _rect_filter(img, xstart=0, ystart=0, height=None, width=None, function=None, **kwargs):
+    """Subset a rectangular section of image to apply function to
+
+    Parameters
+    ----------
+    img : numpy.ndarray
+        An image
+    xstart : int
+        Left-most x position of rectangle to use.
+    ystart : int
+        Top-most y position of rectangle to use.
+    height : int
+        Height of rectangle
+    width : int
+        Width of rectangle
+    function : function
+        analysis function to apply to each submask
+    **kwargs
+        Other keyword arguments to pass to the analysis function. 
+
+    Returns
+    -------
+    any
+        Return value depends on the function that is called. If no function is called then this is a numpy.ndarray.      
+    """
     # if height/width are undefined then use entire image
-    if w is None:
-        w = np.shape(img)[1]
-    if h is None:
-        h = np.shape(img)[0]
-    xend = x + w - 1
-    yend = y + h - 1
+    if width is None:
+        width = np.shape(img)[1]
+    if height is None:
+        height = np.shape(img)[0]
+    xend = xstart + width - 1
+    yend = ystart + height - 1
     # slice image to subset rectangle
-    sub_img = img[y:yend, x:xend]
+    sub_img = img[ystart:yend, xstart:xend]
+    # debug
+    _debug(visual=sub_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
     # apply function
     if function is not None:
         sub_img = function(img, **kwargs)
