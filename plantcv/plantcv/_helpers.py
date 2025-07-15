@@ -638,3 +638,18 @@ def _scale_size(value, trait_type="linear"):
         return value * conversion_rate
     # Multiplication with list comprehension for lists of values
     return [x*conversion_rate for x in value]
+
+def _rect_filter(img, x=0, y=0, h=None, w=None, function=None, **kwargs):
+    # if height/width are undefined then use entire image
+    if w is None:
+        w = np.shape(img)[1]
+    if h is None:
+        h = np.shape(img)[0]
+    xend = x + w - 1
+    yend = y + h - 1
+    # slice image to subset rectangle
+    sub_img = img[y:yend, x:xend]
+    # apply function
+    if function is not None:
+        sub_img = function(img, **kwargs)
+    return sub_img
