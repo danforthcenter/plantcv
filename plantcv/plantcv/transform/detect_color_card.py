@@ -11,13 +11,19 @@ from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _rgb2gray, _cv2_findcontours, _object_composition
 
 
-def _is_square(contour, min_size):
+def _is_square(contour, min_size, aspect_ratio=1.27, solidity=.8):
     """Determine if a contour is square or not.
 
     Parameters
     ----------
     contour : list
         OpenCV contour.
+    min_size : int
+        Minimum object size to be considered
+    aspect_ratio : float
+         below a given aspect ratio
+    solidity : float
+        Filter contours below a given solidity
 
     Returns
     -------
@@ -25,8 +31,13 @@ def _is_square(contour, min_size):
         True if the contour is square, False otherwise.
     """
     return (cv2.contourArea(contour) > min_size and
-            max(cv2.minAreaRect(contour)[1]) / min(cv2.minAreaRect(contour)[1]) < 1.27 and
-            (cv2.contourArea(contour) / np.prod(cv2.minAreaRect(contour)[1])) > 0.8)
+            # Test that the Aspect Ratio (default 1.27) 
+            ## ratio between the width and height of minAreaRect 
+            ## (which is like a bounding box but will consider rotation) ^
+            max(cv2.minAreaRect(contour)[1]) / min(cv2.minAreaRect(contour)[1]) < aspect_ratio and
+            # Test that the Solidity (default 0.8) 
+            ## Compare minAreaRect area to the actual contour area, a chip should be mostly solid 
+            (cv2.contourArea(contour) / np.prod(cv2.minAreaRect(contour)[1])) > solidity)
 
 
 def _get_contour_sizes(contours):
@@ -100,7 +111,10 @@ def _color_card_detection(rgb_img, **kwargs):
         block_size: int (default = 51)
         radius: int (default = 20)
         min_size: int (default = 1000)
-
+        aspect_ratio: countour squareness filters (default 1.27)
+        solidity: contour squareness filters (default 0.8) 
+        verbose_debug = bool (default = False)
+    
     Returns
     -------
     list
@@ -111,6 +125,9 @@ def _color_card_detection(rgb_img, **kwargs):
     radius = kwargs.get("radius", 20)  # Radius of circles to draw on the color chips
     adaptive_method = kwargs.get("adaptive_method", 1)  # cv2.adaptiveThreshold method
     block_size = kwargs.get("block_size", 51)  # cv2.adaptiveThreshold block size
+    aspect_ratio = kwargs.get("aspect_ratio", 1.27)  # _is_square aspect-ratio filtering
+    solidity = kwargs.get("solidity", 0.8)  # _is_square solidity filtering
+    verbose_debug = kwargs.get("verbose_debug", False)  # _is_square solidity filtering
 
     # Throw a fatal error if block_size is not odd or greater than 1
     if not (block_size % 2 == 1 and block_size > 1):
@@ -128,34 +145,49 @@ def _color_card_detection(rgb_img, **kwargs):
     contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     # Filter contours, keep only square-shaped ones
-    filtered_contours = [contour for contour in contours if _is_square(contour, min_size)]
+    filtered_contours = [contour for contour in contours if _is_square(contour, min_size, aspect_ratio, solidity)]
     # Calculate median area of square contours
     target_square_area = np.median([cv2.contourArea(cnt) for cnt in filtered_contours])
     # Filter contours again, keep only those within 20% of median area
     filtered_contours = [contour for contour in filtered_contours if
                          (0.8 < (cv2.contourArea(contour) / target_square_area) < 1.2)]
 
-    # Throw a fatal error if no color card found
-    if len(filtered_contours) == 0:
-        fatal_error('No color card found')
-
     # Draw filtered contours on debug img
     debug_img = np.copy(rgb_img)
+
+    # Throw a fatal error if no color card found
+    if len(filtered_contours) == 0:
+        if verbose_debug:
+            print("Objects found through edge detection (parameterizes with adaptive_method and block_size)")
+            cv2.drawContours(debug_img, contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
+            _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
+        fatal_error('No color card found')
+
     cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
-    # Find the bounding box of the detected chips
-    x, y, w, h = cv2.boundingRect(np.vstack(filtered_contours))
+    # # Find the bounding box of the detected chips
+    # x, y, w, h = cv2.boundingRect(np.vstack(filtered_contours))
 
-    # Draw the bound box rectangle
-    boundind_mask = cv2.rectangle(np.zeros(rgb_img.shape[0:2]), (x, y), (x + w, y + h), (255), -1).astype(np.uint8)
+    # # Draw the bound box rectangle
+    # boundind_mask = cv2.rectangle(np.zeros(rgb_img.shape[0:2]), (x, y), (x + w, y + h), (255), -1).astype(np.uint8)
 
-    # Initialize chip shape lists
-    marea, mwidth, mheight = _get_contour_sizes(filtered_contours)
+    # # Initialize chip shape lists
+    # marea, mwidth, mheight = _get_contour_sizes(filtered_contours)
 
-    # Concatenate all contours into one array and find the minimum area rectangle
-    rect = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
-    rect = cv2.minAreaRect(rect)
-    # Get the corners of the rectangle
-    corners = np.array(np.intp(cv2.boxPoints(rect)))
+    # # Concatenate all contours into one array and find the minimum area rectangle
+    # rect = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
+    # rect = cv2.minAreaRect(rect)
+    # # Get the corners of the rectangle
+    # corners = np.array(np.intp(cv2.boxPoints(rect)))
+    
+    # Use the convex hull of detected contours (as opposed to minAreaRect)
+    group = np.vstack(filtered_contours)
+    corners = cv2.convexHull(group)
+    print(corners)
+    if verbose_debug:
+        print("Identified color card corners)")
+        debug_img = np.copy(rgb_img)
+        _, debug_img = _draw_color_chips(debug_img, corners, radius)
+        _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
     # Determine which corner most likely contains the white chip
     white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0], :], (255, 255, 255))) for corner in corners])
     corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])[[0, 1, 3, 2]]]
@@ -233,6 +265,9 @@ def detect_color_card(rgb_img, label=None, **kwargs):
         block_size: int (default = 51)
         radius: int (default = 20)
         min_size: int (default = 1000)
+        aspect_ratio: float (default = 1.27)
+        solidity: float (default = 0.8)
+        verbose_debug = bool (default = False)
 
     Returns
     -------
@@ -253,7 +288,7 @@ def detect_color_card(rgb_img, label=None, **kwargs):
     chip_height = np.median(mheight)
     chip_width = np.median(mwidth)
 
-    # Save out chip size for pixel to cm standardization
+    # Save out chip size for pixel to mm standardization
     outputs.add_metadata(term="median_color_chip_size", datatype=float, value=chip_size)
     outputs.add_metadata(term="median_color_chip_width", datatype=float, value=chip_width)
     outputs.add_metadata(term="median_color_chip_height", datatype=float, value=chip_height)
