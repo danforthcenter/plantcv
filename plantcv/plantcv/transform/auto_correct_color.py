@@ -47,7 +47,8 @@ def auto_correct_color(rgb_img, label=None, **kwargs):
                                     **kwargs
                                     )
         # calls _rect_filter twice but I am not seeing a clear way around that without
-        # changing detect_color_card to return the color matrix instead of a mask.
+        # changing plantcv/transform/detect_color_card to return the color matrix instead of a mask.
+        # that seems easy but I don't know how much stuff that would break.
         _, card_matrix = get_color_matrix(rgb_img=_rect_filter(rgb_img,
                                                                x=kwargs.get("x", 0),
                                                                y=kwargs.get("y", 0),
