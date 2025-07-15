@@ -6,6 +6,7 @@ from plantcv.plantcv.transform.color_correction import get_color_matrix, std_col
 from plantcv.plantcv._helpers import _rect_filter
 import numpy as np
 
+
 def auto_correct_color(rgb_img, label=None, **kwargs):
     """Automatically detect a color card.
     Parameters
@@ -38,7 +39,7 @@ def auto_correct_color(rgb_img, label=None, **kwargs):
         "It will be removed in PlantCV v5.0."
         )
     # if x, y, h, w in kwargs then get color matrix from subset of image
-    if any(pt in ["x", "y", "h", "w"] for pt in kwargs.keys()):
+    if any(key in ["x", "y", "h", "w"] for key in kwargs):
         labeled_mask = _rect_filter(rgb_img,
                                     xstart=kwargs.get("x", 0),
                                     ystart=kwargs.get("y", 0),
@@ -56,7 +57,7 @@ def auto_correct_color(rgb_img, label=None, **kwargs):
                                                                h=kwargs.get("h", np.shape(rgb_img)[0]),
                                                                w=kwargs.get("w", np.shape(rgb_img)[1])),
                                           mask=labeled_mask)
-    else: # else, use entire image (the default)
+    else:
         # Get keyword arguments and set defaults if not set
         labeled_mask = detect_color_card(rgb_img=rgb_img, min_size=kwargs.get("min_size", 1000),
                                          radius=kwargs.get("radius", 20),

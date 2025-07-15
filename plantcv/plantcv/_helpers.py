@@ -641,6 +641,7 @@ def _scale_size(value, trait_type="linear"):
     # Multiplication with list comprehension for lists of values
     return [x*conversion_rate for x in value]
 
+
 def _rect_filter(img, xstart=0, ystart=0, height=None, width=None, function=None, **kwargs):
     """Subset a rectangular section of image to apply function to
 
@@ -659,12 +660,11 @@ def _rect_filter(img, xstart=0, ystart=0, height=None, width=None, function=None
     function : function
         analysis function to apply to each submask
     **kwargs
-        Other keyword arguments to pass to the analysis function. 
-
+        Other keyword arguments to pass to the analysis function.
     Returns
     -------
     any
-        Return value depends on the function that is called. If no function is called then this is a numpy.ndarray.      
+        Return value depends on the function that is called. If no function is called then this is a numpy.ndarray.
     """
     # if height/width are undefined then use entire image
     if width is None:
