@@ -46,15 +46,14 @@ def auto_correct_color(rgb_img, label=None, **kwargs):
                                 height=kwargs.get("h", np.shape(rgb_img)[0]),
                                 width=kwargs.get("w", np.shape(rgb_img)[1]),
                                 function=detect_color_card,
-                                **kwargs
-                               )
+                                **kwargs)
         # make empty mask in shape of image
         labeled_mask = np.zeros((np.shape(rgb_img)[0], np.shape(rgb_img)[1]))
         # replace slice of empty mask with the subset labeled_mask
         # note that this is a little weird because get_color_matrix still has to be called.
         # once get_color_matrix is called by detect_color_card this can be simplified
         labeled_mask[kwargs.get("y", 0):kwargs.get("y", 0) + kwargs.get("h", np.shape(rgb_img)[0]) - 1,
-            kwargs.get("x", 0):kwargs.get("x", 0) + kwargs.get("w", np.shape(rgb_img)[1]) - 1] = sub_mask
+                     kwargs.get("x", 0):kwargs.get("x", 0) + kwargs.get("w", np.shape(rgb_img)[1]) - 1] = sub_mask
     else:
         # Get keyword arguments and set defaults if not set
         labeled_mask = detect_color_card(rgb_img=rgb_img, min_size=kwargs.get("min_size", 1000),
