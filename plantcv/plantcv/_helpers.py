@@ -644,7 +644,6 @@ def _scale_size(value, trait_type="linear"):
 
 def _rect_filter(img, xstart=0, ystart=0, height=None, width=None, function=None, **kwargs):
     """Subset a rectangular section of image to apply function to
-
     Parameters
     ----------
     img : numpy.ndarray
