@@ -40,30 +40,28 @@ def auto_correct_color(rgb_img, label=None, **kwargs):
         )
     # if x, y, h, w in kwargs then get color matrix from subset of image
     if any(key in ["x", "y", "h", "w"] for key in kwargs):
-        labeled_mask = _rect_filter(rgb_img,
-                                    xstart=kwargs.get("x", 0),
-                                    ystart=kwargs.get("y", 0),
-                                    height=kwargs.get("h", np.shape(rgb_img)[0]),
-                                    width=kwargs.get("w", np.shape(rgb_img)[1]),
-                                    function=detect_color_card,
-                                    **kwargs
-                                    )
-        # calls _rect_filter twice but I am not seeing a clear way around that without
-        # changing plantcv/transform/detect_color_card to return the color matrix instead of a mask.
-        # that seems easy but I don't know how much stuff that would break.
-        _, card_matrix = get_color_matrix(rgb_img=_rect_filter(rgb_img,
-                                                               x=kwargs.get("x", 0),
-                                                               y=kwargs.get("y", 0),
-                                                               h=kwargs.get("h", np.shape(rgb_img)[0]),
-                                                               w=kwargs.get("w", np.shape(rgb_img)[1])),
-                                          mask=labeled_mask)
+        sub_mask = _rect_filter(rgb_img,
+                                xstart=kwargs.get("x", 0),
+                                ystart=kwargs.get("y", 0),
+                                height=kwargs.get("h", np.shape(rgb_img)[0]),
+                                width=kwargs.get("w", np.shape(rgb_img)[1]),
+                                function=detect_color_card,
+                                **kwargs
+                               )
+        # make empty mask in shape of image
+        labeled_mask = np.zeros((np.shape(rgb_img)[0], np.shape(rgb_img)[1]))
+        # replace slice of empty mask with the subset labeled_mask
+        # note that this is a little weird because get_color_matrix still has to be called.
+        # once get_color_matrix is called by detect_color_card this can be simplified
+        labeled_mask[kwargs.get("y", 0):kwargs.get("y", 0) + kwargs.get("h", np.shape(rgb_img)[0]) - 1,
+            kwargs.get("x", 0):kwargs.get("x", 0) + kwargs.get("w", np.shape(rgb_img)[1]) - 1] = sub_mask
     else:
         # Get keyword arguments and set defaults if not set
         labeled_mask = detect_color_card(rgb_img=rgb_img, min_size=kwargs.get("min_size", 1000),
                                          radius=kwargs.get("radius", 20),
                                          adaptive_method=kwargs.get("adaptive_method", 1),
                                          block_size=kwargs.get("block_size", 51))
-        _, card_matrix = get_color_matrix(rgb_img=rgb_img, mask=labeled_mask)
+    _, card_matrix = get_color_matrix(rgb_img=rgb_img, mask=labeled_mask)
     std_matrix = std_color_matrix(pos=3)
     return affine_color_correction(rgb_img=rgb_img, source_matrix=card_matrix,
                                    target_matrix=std_matrix)
