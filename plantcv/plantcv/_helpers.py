@@ -665,7 +665,7 @@ def _rect_filter(img, xstart=0, ystart=0, height=None, width=None, function=None
     any
         Return value depends on the function that is called. If no function is called then this is a numpy.ndarray.
     """
-
+    # set xend and yend
     xend = xstart + width - 1
     yend = ystart + height - 1
     # slice image to subset rectangle
