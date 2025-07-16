@@ -679,5 +679,5 @@ def _rect_filter(img, xstart=0, ystart=0, height=None, width=None, function=None
     _debug(visual=sub_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
     # apply function
     if function is not None:
-        sub_img = function(img, **kwargs)
+        sub_img = function(sub_img, **kwargs)
     return sub_img
