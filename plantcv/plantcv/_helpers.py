@@ -666,11 +666,7 @@ def _rect_filter(img, xstart=0, ystart=0, height=None, width=None, function=None
     any
         Return value depends on the function that is called. If no function is called then this is a numpy.ndarray.
     """
-    # if height/width are undefined then use entire image
-    if width is None:
-        width = np.shape(img)[1]
-    if height is None:
-        height = np.shape(img)[0]
+
     xend = xstart + width - 1
     yend = ystart + height - 1
     # slice image to subset rectangle
