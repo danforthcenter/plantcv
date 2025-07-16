@@ -19,7 +19,7 @@ def test_report_size_marker(marker, exp, test_data):
     roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
     _ = report_size_marker_area(img=img, roi=roi, marker=marker,
                                 objcolor='light', thresh_channel='s', thresh=120)
-    assert int(outputs.metadata["marker_area"]["value"]) == exp
+    assert int(outputs.metadata["marker_area"]["value"][0]) == exp
 
 
 def test_report_size_marker_grayscale_input(test_data):
@@ -34,7 +34,7 @@ def test_report_size_marker_grayscale_input(test_data):
     roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
     _ = report_size_marker_area(img=img, roi=roi, marker='define',
                                 objcolor='light', thresh_channel='s', thresh=120)
-    assert int(outputs.metadata["marker_area"]["value"]) == 2601
+    assert int(outputs.metadata["marker_area"]["value"][0]) == 2601
 
 
 @pytest.mark.parametrize("marker,channel", [
@@ -65,5 +65,5 @@ def test_report_size_marker_no_detection(test_data):
     roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
     _ = report_size_marker_area(img=img, roi=roi, marker='define',
                                 objcolor='light', thresh_channel='s', thresh=120)
-    assert outputs.metadata["marker_area"]["value"] == 'none'
+    assert outputs.metadata["marker_area"]["value"][0] == 'none'
 
