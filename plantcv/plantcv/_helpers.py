@@ -642,6 +642,20 @@ def _scale_size(value, trait_type="linear"):
     return [x*conversion_rate for x in value]
 
 
+def _identity(x, **kwargs):
+    """Identity function for use in _rect_filter
+    This may be useful if there are several outputs from a function passed to _rect_filter
+    which would otherwise be difficult to manage
+    Parameters
+    ----------
+    x : any
+      An object
+    **kwargs
+      Other keyword arguments, ignored.
+    """
+    return x
+
+
 def _rect_filter(img, xstart=0, ystart=0, height=None, width=None, function=None, **kwargs):
     """Subset a rectangular section of image to apply function to
     Parameters
@@ -674,7 +688,7 @@ def _rect_filter(img, xstart=0, ystart=0, height=None, width=None, function=None
     _debug(visual=sub_img, filename=os.path.join(params.debug_outdir, f'{params.device}_rect_filter.png'))
     # apply function
     if function is None:
-        def identity(x, **kwargs):
-            return(x)
-        function = identity
+        function = _identity
+
     return function(sub_img, **kwargs)
+
