@@ -3,7 +3,6 @@
 from plantcv.plantcv import params, deprecation_warning
 from plantcv.plantcv.transform.detect_color_card import detect_color_card
 from plantcv.plantcv.transform.color_correction import get_color_matrix, std_color_matrix, affine_color_correction
-import numpy as np
 
 
 def auto_correct_color(rgb_img, label=None, **kwargs):
