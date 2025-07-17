@@ -17,7 +17,7 @@ useful in parsing homolog_pts in downstream analyses
 
 chain       = raw angle scores for entire contour, used to visualize landmark clusters
 
-verbose_out = supplemental list which stores coordinates, distance from
+max_dist    = supplemental list which stores coordinates, distance from
 landmark cluster edges, and angle score for entire contour.  Used in troubleshooting.
 
 - **Parameters:**
@@ -50,7 +50,7 @@ pcv.params.debug = "plot"
 
 # Given an image, mask, and object contours, identify pseudo-landmarks with acute
 
-homolog_pts, start_pts, stop_pts, ptvals, chain, verbose_out = pcv.homology.acute(img=img, mask=mask, win=25, threshold=90)
+homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = pcv.homology.acute(img=img, mask=mask, win=25, threshold=90)
 
 ```
 
