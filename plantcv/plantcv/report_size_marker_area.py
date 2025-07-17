@@ -36,12 +36,11 @@ def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_c
     :param label: str
     :return: analysis_images: list
     """
-
     deprecation_warning(
         "the 'label' parameter is no longer utilized, since size marker is now metadata. "
         "It will be removed in PlantCV 5.0."
         )
-    
+
     # Store debug
     debug = params.debug
     params.debug = None
@@ -119,7 +118,7 @@ def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_c
         # Reset debug mode
         params.debug = debug
 
-        _debug(visual=ref_img, 
+        _debug(visual=ref_img,
                filename=os.path.join(params.debug_outdir, str(params.device) + '_marker_shape.png'))
 
         # Store size marker values as metadata
