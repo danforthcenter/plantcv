@@ -558,7 +558,12 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/156026125?v=4",
       "profile": "https://github.com/k034b363",
       "contributions": [
-        "code"
+        "code",
+        "doc",
+        "test",
+        "tutorial",
+        "ideas",
+        "mentoring"
       ]
     },
     {
