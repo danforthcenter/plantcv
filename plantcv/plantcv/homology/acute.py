@@ -136,7 +136,7 @@ def acute(img, mask, win, threshold):
         ss_pts = []
         ts_pts = []
         ptvals = []
-        max_chain = [['cont_pos', 'max_dist', 'angle']]
+        max_dist = [['cont_pos', 'max_dist', 'angle']]
         for island in isle:
 
             # Identify if contour is concavity/convexity using image mask
@@ -166,7 +166,7 @@ def acute(img, mask, win, threshold):
                     ts_d = np.sqrt(np.square(ts[0][0] - site[0][0][0]) + np.square(ts[0][1] - site[0][0][1]))
                     # Current mean distance of 'd' to 'ss' & 'ts'
                     dist_2 = np.mean([np.abs(ss_d), np.abs(ts_d)])
-                    max_chain.append([d, dist_2, chain[d]])
+                    max_dist.append([d, dist_2, chain[d]])
                     if dist_2 > dist_1:                          # Current mean distance better fit that previous best?
                         pt = d
                         dist_1 = dist_2                          # Current mean becomes new best mean
@@ -196,5 +196,5 @@ def acute(img, mask, win, threshold):
         # print/plot debug image
         _debug(visual=ori_img, filename=f"{params.device}_acute_plms.png")
 
-        return homolog_pts, start_pts, stop_pts, ptvals, chain, max_chain
+        return homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist
     return [], [], [], [], [], []
