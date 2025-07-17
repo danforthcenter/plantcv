@@ -2,7 +2,7 @@
 import cv2
 import numpy as np
 import os
-from plantcv.plantcv import params, outputs, fatal_error, apply_mask, warn
+from plantcv.plantcv import params, outputs, fatal_error, apply_mask, warn, deprecation_warning
 from plantcv.plantcv.threshold import binary as binary_threshold
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition, _roi_filter, _rgb2hsv
@@ -36,6 +36,12 @@ def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_c
     :param label: str
     :return: analysis_images: list
     """
+
+    deprecation_warning(
+        "the 'label' parameter is no longer utilized, since size marker is now metadata. "
+        "It will be removed in PlantCV 5.0."
+        )
+    
     # Store debug
     debug = params.debug
     params.debug = None
@@ -113,8 +119,8 @@ def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_c
         # Reset debug mode
         params.debug = debug
 
-        _debug(visual=ref_img,
-            filename=os.path.join(params.debug_outdir, str(params.device) + '_marker_shape.png'))
+        _debug(visual=ref_img, 
+               filename=os.path.join(params.debug_outdir, str(params.device) + '_marker_shape.png'))
 
         # Store size marker values as metadata
         outputs.add_metadata(term="marker_area", datatype=int, value=marker_area)
@@ -123,14 +129,13 @@ def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_c
         outputs.add_metadata(term="marker_ellipse_eccentricity", datatype=float, value=eccentricity)
 
         return analysis_image
-    
-    else:
-        # Store size marker values as metadata
-        outputs.add_metadata(term="marker_area", datatype=str, value='none')
-        outputs.add_metadata(term="marker_ellipse_major_axis", datatype=str, value='none')
-        outputs.add_metadata(term="marker_ellipse_minor_axis", datatype=str, value='none')
-        outputs.add_metadata(term="marker_ellipse_eccentricity", datatype=str, value='none')
 
-        warn("Size marker is not detectable.")
+    # Store size marker values as metadata
+    outputs.add_metadata(term="marker_area", datatype=str, value='none')
+    outputs.add_metadata(term="marker_ellipse_major_axis", datatype=str, value='none')
+    outputs.add_metadata(term="marker_ellipse_minor_axis", datatype=str, value='none')
+    outputs.add_metadata(term="marker_ellipse_eccentricity", datatype=str, value='none')
 
+    warn("Size marker is not detectable.")
 
+    return None

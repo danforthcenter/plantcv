@@ -66,4 +66,3 @@ def test_report_size_marker_no_detection(test_data):
     _ = report_size_marker_area(img=img, roi=roi, marker='define',
                                 objcolor='light', thresh_channel='s', thresh=120)
     assert outputs.metadata["marker_area"]["value"][0] == 'none'
-
