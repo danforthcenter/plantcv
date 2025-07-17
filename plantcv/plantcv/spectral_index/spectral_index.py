@@ -11,7 +11,7 @@ from plantcv.plantcv.transform import rescale
 from plantcv.plantcv.hyperspectral import _find_closest
 
 
-def ndvi(hsi, distance=20):
+def ndvi(hsi, distance=30):
     """Normalized Difference Vegetation Index.
 
     NDVI = (R800 - R670) / (R800 + R670)
@@ -43,7 +43,7 @@ def ndvi(hsi, distance=20):
     return None
 
 
-def gdvi(hsi, distance=20):
+def gdvi(hsi, distance=30):
     """Green Difference Vegetation Index.
 
     GDVI = R800 - R550
@@ -73,7 +73,7 @@ def gdvi(hsi, distance=20):
     return None
 
 
-def savi(hsi, distance=20):
+def savi(hsi, distance=30):
     """Soil Adjusted Vegetation Index.
 
     SAVI = (1.5 * (R800 - R680)) / (R800 + R680 + 0.5)
@@ -104,7 +104,7 @@ def savi(hsi, distance=20):
     return None
 
 
-def pri(hsi, distance=20):
+def pri(hsi, distance=30):
     """Photochemical Reflectance Index.
 
     PRI = (R531 - R570) / (R531 + R570)
@@ -135,7 +135,7 @@ def pri(hsi, distance=20):
     return None
 
 
-def ari(hsi, distance=20):
+def ari(hsi, distance=30):
     """Anthocyanin Reflectance Index.
 
     ARI = (1 / R550) - (1 / R700)
@@ -165,7 +165,7 @@ def ari(hsi, distance=20):
     return None
 
 
-def ci_rededge(hsi, distance=20):
+def ci_rededge(hsi, distance=30):
     """Chlorophyll Index Red Edge.
 
     CI_REDEDGE = (R800 / R700) - 1
@@ -196,7 +196,7 @@ def ci_rededge(hsi, distance=20):
     return None
 
 
-def cri550(hsi, distance=20):
+def cri550(hsi, distance=30):
     """Carotenoid Reflectance Index 550.
 
     CRI550 = (1 / R510) - (1 / R550)
@@ -227,7 +227,7 @@ def cri550(hsi, distance=20):
     return None
 
 
-def cri700(hsi, distance=20):
+def cri700(hsi, distance=30):
     """Carotenoid Reflectance Index 700.
 
     CRI700 = (1 / R510) - (1 / R700)
@@ -258,7 +258,7 @@ def cri700(hsi, distance=20):
     return None
 
 
-def egi(rgb_img, distance=40):
+def egi(rgb_img, distance=30):
     """Excess Green Index.
 
     r = R / (R + G + B)
@@ -311,7 +311,7 @@ def egi(rgb_img, distance=40):
     return _package_index(hsi=hsi, raw_index=index_array_raw, method="EGI")
 
 
-def evi(hsi, distance=20):
+def evi(hsi, distance=30):
     """Enhanced Vegetation index.
 
     EVI = (2.5 * (R800 - R670)) / (1 + R800 + (6 * R670) - (7.5 * R480))
@@ -344,7 +344,7 @@ def evi(hsi, distance=20):
     return None
 
 
-def gli(img, distance=20):
+def gli(img, distance=30):
     """Green leave index
 
     GLI = (2 * R530 - R670 - R480) / (2 * R530 + R670 + R480)
@@ -393,7 +393,7 @@ def gli(img, distance=20):
     return _package_index(hsi=hsi, raw_index=index_array_raw, method="GLI")
 
 
-def mari(hsi, distance=20):
+def mari(hsi, distance=30):
     """Modified Anthocyanin Reflectance Index.
 
     MARI = ((1 / R550) - (1 / R700)) * R800
@@ -426,7 +426,7 @@ def mari(hsi, distance=20):
     return None
 
 
-def mcari(hsi, distance=20):
+def mcari(hsi, distance=30):
     """Modified Chlorophyll Absorption in Reflectance Index.
 
     MCARI = ((R700 - R670) - 0.2 * (R700 - R550)) * (R700 / R670)
@@ -459,7 +459,7 @@ def mcari(hsi, distance=20):
     return None
 
 
-def mtci(hsi, distance=20):
+def mtci(hsi, distance=30):
     """MERIS Terrestrial Chlorophyll Index.
 
     MTCI = (R753.75 - R708.75) / (R708.75 - R681.25)
@@ -492,7 +492,7 @@ def mtci(hsi, distance=20):
     return None
 
 
-def ndci(hsi, distance=20):
+def ndci(hsi, distance=30):
     """Normalized Difference Chlorophyll Difference.
 
     NDCI = (R708 - R665) / (R708 + R665)
@@ -523,7 +523,7 @@ def ndci(hsi, distance=20):
     return None
 
 
-def ndre(hsi, distance=20):
+def ndre(hsi, distance=30):
     """Normalized Difference Red Edge.
 
     NDRE = (R790 - R720) / (R790 + R720)
@@ -554,7 +554,7 @@ def ndre(hsi, distance=20):
     return None
 
 
-def npci(hsi, distance=20):
+def npci(hsi, distance=30):
     """Normalized Pigment Chlorophyll Index.
 
     NPCI = (R680 - R430) / (R680 + R430)
@@ -585,7 +585,7 @@ def npci(hsi, distance=20):
     return None
 
 
-def psnd_chla(hsi, distance=20):
+def psnd_chla(hsi, distance=30):
     """Pigment Specific Normalized Difference for Chlorophyll a.
 
     PSND_CHLA = (R800 - R680) / (R800 + R680)
@@ -616,7 +616,7 @@ def psnd_chla(hsi, distance=20):
     return None
 
 
-def psnd_chlb(hsi, distance=20):
+def psnd_chlb(hsi, distance=30):
     """Pigment Specific Normalized Difference for Chlorophyll b.
 
     PSND_CHLB = (R800 - R635) / (R800 + R635)
@@ -647,7 +647,7 @@ def psnd_chlb(hsi, distance=20):
     return None
 
 
-def psnd_car(hsi, distance=20):
+def psnd_car(hsi, distance=30):
     """Pigment Specific Normalized Difference for Caroteniods.
 
     PSND_CAR = (R800 - R470) / (R800 + R470)
@@ -678,7 +678,7 @@ def psnd_car(hsi, distance=20):
     return None
 
 
-def psri(hsi, distance=20):
+def psri(hsi, distance=30):
     """Plant Senescence Reflectance Index.
 
     PSRI = (R678 - R500) / R750
@@ -711,7 +711,7 @@ def psri(hsi, distance=20):
     return None
 
 
-def pssr_chla(hsi, distance=20):
+def pssr_chla(hsi, distance=30):
     """Pigment Specific Simple Ratio for Chlorophyll a.
 
     PSSR_CHLA = R800 / R680
@@ -742,7 +742,7 @@ def pssr_chla(hsi, distance=20):
     return None
 
 
-def pssr_chlb(hsi, distance=20):
+def pssr_chlb(hsi, distance=30):
     """Pigment Specific Simple Ratio for Chlorophyll b.
 
     PSSR_CHLB = R800 / R635
@@ -773,7 +773,7 @@ def pssr_chlb(hsi, distance=20):
     return None
 
 
-def pssr_car(hsi, distance=20):
+def pssr_car(hsi, distance=30):
     """Pigment Specific Simple Ratio for Caroteniods.
 
     PSSR_CAR = R800 / R470
@@ -804,7 +804,7 @@ def pssr_car(hsi, distance=20):
     return None
 
 
-def rgri(hsi, distance=20):
+def rgri(hsi, distance=30):
     """Red/green ratio index (Gamon and Surfus, 1999)
     The theoretical range for RGRI is [0.0, Inf).
 
@@ -832,7 +832,7 @@ def rgri(hsi, distance=20):
     return None
 
 
-def rvsi(hsi, distance=20):
+def rvsi(hsi, distance=30):
     """Red-Edge Vegetation Stress Index.
 
     RVSI = ((R714 + R752) / 2) - R733
@@ -864,7 +864,7 @@ def rvsi(hsi, distance=20):
     return None
 
 
-def sipi(hsi, distance=20):
+def sipi(hsi, distance=30):
     """Structure-Independent Pigment Index.
 
     SIPI = (R800 - R670) / (R800 - R480)
@@ -897,7 +897,7 @@ def sipi(hsi, distance=20):
     return None
 
 
-def sr(hsi, distance=20):
+def sr(hsi, distance=30):
     """Simple Ratio.
 
     SR = R800 / R670
@@ -928,7 +928,7 @@ def sr(hsi, distance=20):
     return None
 
 
-def vari(hsi, distance=20):
+def vari(hsi, distance=30):
     """Visible Atmospherically Resistant Index.
 
     VARI = (R550 - R670) / (R550 + R670 - R480)
@@ -961,7 +961,7 @@ def vari(hsi, distance=20):
     return None
 
 
-def vi_green(hsi, distance=20):
+def vi_green(hsi, distance=30):
     """Vegetation Index using green bands.
 
     VIgreen = (R550 - R670) / (R550 + R670)
@@ -992,7 +992,7 @@ def vi_green(hsi, distance=20):
     return None
 
 
-def wi(hsi, distance=20):
+def wi(hsi, distance=30):
     """Water Index.
 
     WI = R900 / R970

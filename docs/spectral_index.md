@@ -21,7 +21,7 @@ ARI = (1 / R550) - (1 / R700)
 
 Index range: -∞, ∞
 
-**plantcv.spectral_index.ari**(*hsi, distance=20*)
+**plantcv.spectral_index.ari**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -39,7 +39,7 @@ CI_REDEDGE = (R800 / R700) - 1
 
 Index range: -1.0, ∞
 
-**plantcv.spectral_index.ci_rededge**(*hsi, distance=20*)
+**plantcv.spectral_index.ci_rededge**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -57,7 +57,7 @@ CRI550 = (1 / R510) - (1 / R550)
 
 Index range: -∞, ∞
 
-**plantcv.spectral_index.cri550**(*hsi, distance=20*)
+**plantcv.spectral_index.cri550**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -75,7 +75,7 @@ CRI700 = (1 / R510) - (1 / R700)
 
 Index range: -∞, ∞
 
-**plantcv.spectral_index.cri700**(*hsi, distance=20*)
+**plantcv.spectral_index.cri700**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -127,7 +127,7 @@ EVI = (2.5 * (R800 - R670)) / (1 + R800 + (6 * R670) - (7.5 * R480))
 
 Index range: -∞, ∞
 
-**plantcv.spectral_index.evi**(*hsi, distance=20*)
+**plantcv.spectral_index.evi**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -150,7 +150,7 @@ GLI = (2 * R530 - R670 - R480) / (2 * R530 + R670 + R480)
 
 Index range: -1, 1
 
-**plantcv.spectral_index.gli**(*img, distance=20*)
+**plantcv.spectral_index.gli**(*img, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -174,7 +174,7 @@ GDVI = (R800 - R550) / (R800 + R550)
 
 Index range: -2.0, 2.0
 
-**plantcv.spectral_index.gdvi**(*hsi, distance=20*)
+**plantcv.spectral_index.gdvi**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -192,7 +192,7 @@ MARI = ((1 / R550) - (1 / R700)) * R800
 
 Index range: -∞, ∞
 
-**plantcv.spectral_index.mari**(*hsi, distance=20*)
+**plantcv.spectral_index.mari**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -210,7 +210,7 @@ MCARI = ((R700 - R670) - 0.2 * (R700 - R550)) * (R700 / R670)
 
 Index range: -∞, ∞
 
-**plantcv.spectral_index.mcari**(*hsi, distance=20*)
+**plantcv.spectral_index.mcari**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -228,7 +228,7 @@ MTCI = (R753.75 - R708.75) / (R708.75 - R681.25)
 
 Index range: -∞, ∞
 
-**plantcv.spectral_index.mtci**(*hsi, distance=20*)
+**plantcv.spectral_index.mtci**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -247,7 +247,7 @@ NDCI = (R708 - R665) / (R708 + R665)
 
 Index range: -1.0, 1.0
 
-**plantcv.spectral_index.ndci**(*hsi, distance=20*)
+**plantcv.spectral_index.ndci**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -266,7 +266,7 @@ NDRE = (R790 - R720) / (R790 + R720)
 
 Index range: -1.0, 1.0
 
-**plantcv.spectral_index.ndre**(*hsi, distance=20*)
+**plantcv.spectral_index.ndre**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -290,7 +290,7 @@ NDVI = (R800 - R670) / (R800 + R670)
 
 Index range: -1.0, 1.0
 
-**plantcv.spectral_index.ndvi**(*hsi, distance=20*)
+**plantcv.spectral_index.ndvi**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -309,7 +309,7 @@ NPCI = (R680 - R430) / (R680 + R430)
 
 Index range: -1.0, 1.0
 
-**plantcv.spectral_index.npci**(*hsi, distance=20*)
+**plantcv.spectral_index.npci**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -327,7 +327,7 @@ PRI = (R531 - R570) / (R531 + R570)
 
 Index range: -1.0, 1.0
 
-**plantcv.spectral_index.pri**(*hsi, distance=20*)
+**plantcv.spectral_index.pri**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -346,7 +346,7 @@ PSND_CHLA = (R800 - R680) / (R800 + R680)
 
 Index range: -1.0, 1.0
 
-**plantcv.spectral_index.psnd_chla**(*hsi, distance=20*)
+**plantcv.spectral_index.psnd_chla**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -365,7 +365,7 @@ PSND_CHLB = (R800 - R635) / (R800 + R635)
 
 Index range: -1.0, 1.0
 
-**plantcv.spectral_index.psnd_chlb**(*hsi, distance=20*)
+**plantcv.spectral_index.psnd_chlb**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -384,7 +384,7 @@ PSND_CAR = (R800 - R470) / (R800 + R470)
 
 Index range: -1.0, 1.0
 
-**plantcv.spectral_index.psnd_car**(*hsi, distance=20*)
+**plantcv.spectral_index.psnd_car**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -402,7 +402,7 @@ PSRI = (R678 - R500) / R750
 
 Index range: -∞, ∞
 
-**plantcv.spectral_index.psri**(*hsi, distance=20*)
+**plantcv.spectral_index.psri**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -421,7 +421,7 @@ PSSR_CHLA = R800 / R680
 
 Index range: -1.0, 1.0
 
-**plantcv.spectral_index.pssr_chla**(*hsi, distance=20*)
+**plantcv.spectral_index.pssr_chla**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -440,7 +440,7 @@ PSSR_CHLB = R800 / R635
 
 Index range: -1.0, 1.0
 
-**plantcv.spectral_index.pssr_chlb**(*hsi, distance=20*)
+**plantcv.spectral_index.pssr_chlb**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -459,7 +459,7 @@ PSSR_CAR = R800 / R470
 
 Index range: -1.0, 1.0
 
-**plantcv.spectral_index.pssr_car**(*hsi, distance=20*)
+**plantcv.spectral_index.pssr_car**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -483,7 +483,7 @@ RGRI = R670 / R560
 
 Index range: 0.0, ∞
 
-**plantcv.spectral_index.rgri**(*hsi, distance=20*)
+**plantcv.spectral_index.rgri**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -501,7 +501,7 @@ RVSI = ((R714 + R752) / 2) - R733
 
 Index range: -1.0, 1.0
 
-**plantcv.spectral_index.rvsi**(*hsi, distance=20*)
+**plantcv.spectral_index.rvsi**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -525,7 +525,7 @@ SAVI = (1.5 * (R800 - R680)) / (R800 + R680 + 0.5)
 
 Index range: -1.2, 1.2
 
-**plantcv.spectral_index.savi**(*hsi, distance=20*)
+**plantcv.spectral_index.savi**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -549,7 +549,7 @@ SIPI = (R800 - R680) / (R800 - R480)
 
 Index range: -∞, ∞
 
-**plantcv.spectral_index.sipi**(*hsi, distance=20*)
+**plantcv.spectral_index.sipi**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -573,7 +573,7 @@ SR = R800 / R670
 
 Index range: 0.0, ∞
 
-**plantcv.spectral_index.sr**(*hsi, distance=20*)
+**plantcv.spectral_index.sr**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -597,7 +597,7 @@ VARI = (R550 - R670) / (R550 + R670 - R480)
 
 Index range: -∞, ∞
 
-**plantcv.spectral_index.vari**(*hsi, distance=20*)
+**plantcv.spectral_index.vari**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -621,7 +621,7 @@ VIgreen = (R550 - R670) / (R550 + R670)
 
 Index range: -1.0, 1.0
 
-**plantcv.spectral_index.vi_green**(*hsi, distance=20*)
+**plantcv.spectral_index.vi_green**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -639,7 +639,7 @@ WI = R900 / R970
 
 Index range: 0.0, ∞
 
-**plantcv.spectral_index.wi**(*hsi, distance=20*)
+**plantcv.spectral_index.wi**(*hsi, distance=30*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -658,91 +658,91 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 # Extract NDVI index from the datacube 
-ndvi_array = pcv.spectral_index.ndvi(hsi=spectral_data, distance=20)
+ndvi_array = pcv.spectral_index.ndvi(hsi=spectral_data, distance=30)
 
 # Extract GDVI index from the datacube
-gdvi_array = pcv.spectral_index.gdvi(hsi=spectral_data, distance=20)
+gdvi_array = pcv.spectral_index.gdvi(hsi=spectral_data, distance=30)
 
 # Extract SAVI index from the datacube
-savi_array = pcv.spectral_index.savi(hsi=spectral_data, distance=20)
+savi_array = pcv.spectral_index.savi(hsi=spectral_data, distance=30)
 
 # Extract ARI index from the datacube
-ari_array = pcv.spectral_index.ari(hsi=spectral_data, distance=20)
+ari_array = pcv.spectral_index.ari(hsi=spectral_data, distance=30)
 
 # Extract CI_REDEDGE index from the datacube 
-ci_rededge_array = pcv.spectral_index.ci_rededge(hsi=spectral_data, distance=20)
+ci_rededge_array = pcv.spectral_index.ci_rededge(hsi=spectral_data, distance=30)
 
 # Extract CRI550 index from the datacube 
-cri550_array = pcv.spectral_index.cri550(hsi=spectral_data, distance=20)
+cri550_array = pcv.spectral_index.cri550(hsi=spectral_data, distance=30)
 
 # Extract CRI700 index from the datacube 
-cri700_array = pcv.spectral_index.cri700(hsi=spectral_data, distance=20)
+cri700_array = pcv.spectral_index.cri700(hsi=spectral_data, distance=30)
 
 # Extract EGI index from the datacube 
 egi_array = pcv.spectral_index.egi(rgb_img=spectral_data, distance=40)
 
 # Extract EVI index from the datacube 
-evi_array = pcv.spectral_index.evi(hsi=spectral_data, distance=20)
+evi_array = pcv.spectral_index.evi(hsi=spectral_data, distance=30)
 
 # Extract GLI index from the datacube 
-gli_array = pcv.spectral_index.gli(img=spectral_data, distance=20)
+gli_array = pcv.spectral_index.gli(img=spectral_data, distance=30)
 
 # Extract MARI index from the datacube 
-mari_array = pcv.spectral_index.mari(hsi=spectral_data, distance=20)
+mari_array = pcv.spectral_index.mari(hsi=spectral_data, distance=30)
 
 # Extract MCARI index from the datacube 
-mcari_array = pcv.spectral_index.mcari(hsi=spectral_data, distance=20)
+mcari_array = pcv.spectral_index.mcari(hsi=spectral_data, distance=30)
 
 # Extract MTCI index from the datacube 
-mtci_array = pcv.spectral_index.mtci(hsi=spectral_data, distance=20)
+mtci_array = pcv.spectral_index.mtci(hsi=spectral_data, distance=30)
 
 # Extract NDRE index from the datacube 
-ndre_array = pcv.spectral_index.ndre(hsi=spectral_data, distance=20)
+ndre_array = pcv.spectral_index.ndre(hsi=spectral_data, distance=30)
 
 # Extract NPCI index from the datacube 
-npci_array = pcv.spectral_index.npci(hsi=spectral_data, distance=20)
+npci_array = pcv.spectral_index.npci(hsi=spectral_data, distance=30)
 
 # Extract PSND_CHLA index from the datacube 
-psnd_chla_array = pcv.spectral_index.psnd_chla(hsi=spectral_data, distance=20)
+psnd_chla_array = pcv.spectral_index.psnd_chla(hsi=spectral_data, distance=30)
 
 # Extract PSND_CHLB index from the datacube 
-psnd_chlb_array = pcv.spectral_index.psnd_chlb(hsi=spectral_data, distance=20)
+psnd_chlb_array = pcv.spectral_index.psnd_chlb(hsi=spectral_data, distance=30)
 
 # Extract PSND_CAR index from the datacube 
-psnd_car_array = pcv.spectral_index.psnd_car(hsi=spectral_data, distance=20)
+psnd_car_array = pcv.spectral_index.psnd_car(hsi=spectral_data, distance=30)
 
 # Extract PSRI index from the datacube 
-psri_array = pcv.spectral_index.psri(hsi=spectral_data, distance=20)
+psri_array = pcv.spectral_index.psri(hsi=spectral_data, distance=30)
 
 # Extract PSSR_CHLA index from the datacube 
-pssr_chla_array = pcv.spectral_index.pssr_chla(hsi=spectral_data, distance=20)
+pssr_chla_array = pcv.spectral_index.pssr_chla(hsi=spectral_data, distance=30)
 
 # Extract PSSR_CHLB index from the datacube 
-pssr_chlb_array = pcv.spectral_index.pssr_chlb(hsi=spectral_data, distance=20)
+pssr_chlb_array = pcv.spectral_index.pssr_chlb(hsi=spectral_data, distance=30)
 
 # Extract PSSR_CAR index from the datacube 
-pssr_car_array = pcv.spectral_index.pssr_car(hsi=spectral_data, distance=20)
+pssr_car_array = pcv.spectral_index.pssr_car(hsi=spectral_data, distance=30)
 
 # Extract RGRI index from the datacube 
-rgri_array = pcv.spectral_index.rgri(hsi=spectral_data, distance=20)
+rgri_array = pcv.spectral_index.rgri(hsi=spectral_data, distance=30)
 
 # Extract RVSI index from the datacube 
-rvsi_array = pcv.spectral_index.rvsi(hsi=spectral_data, distance=20)
+rvsi_array = pcv.spectral_index.rvsi(hsi=spectral_data, distance=30)
 
 # Extract SIPI index from the datacube 
-sipi_array = pcv.spectral_index.sipi(hsi=spectral_data, distance=20)
+sipi_array = pcv.spectral_index.sipi(hsi=spectral_data, distance=30)
 
 # Extract SR index from the datacube 
-sr_array = pcv.spectral_index.sr(hsi=spectral_data, distance=20)
+sr_array = pcv.spectral_index.sr(hsi=spectral_data, distance=30)
 
 # Extract VARI index from the datacube 
-vari_array = pcv.spectral_index.vari(hsi=spectral_data, distance=20)
+vari_array = pcv.spectral_index.vari(hsi=spectral_data, distance=30)
 
 # Extract VI_GREEN index from the datacube 
-vi_green_array = pcv.spectral_index.vi_green(hsi=spectral_data, distance=20)
+vi_green_array = pcv.spectral_index.vi_green(hsi=spectral_data, distance=30)
 
 # Extract WI index from the datacube 
-wi_array = pcv.spectral_index.wi(hsi=spectral_data, distance=20)
+wi_array = pcv.spectral_index.wi(hsi=spectral_data, distance=30)
 
 ```
 
