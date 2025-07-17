@@ -27,7 +27,7 @@ def acute(img, mask, win, threshold):
                      useful in parsing homolog_pts in downstream analyses
     chain          = raw angle scores for entire contour, used to visualize landmark
                      clusters
-    verbose_out   = supplemental file which stores coordinates, distance from
+    max_dist       = supplemental list which stores coordinates, distance from
                      landmark cluster edges, and angle score for entire contour.  Used
                      in troubleshooting.
 
@@ -40,7 +40,7 @@ def acute(img, mask, win, threshold):
     :return stop_pts: numpy.ndarray
     :return ptvals: list
     :return chain: list
-    :return verbose_out: list
+    :return max_dist: list
     """
     # Find contours
     contours, hierarchy = _cv2_findcontours(bin_img=mask)
@@ -136,7 +136,7 @@ def acute(img, mask, win, threshold):
         ss_pts = []
         ts_pts = []
         ptvals = []
-        verbose_out = [['cont_pos', 'max_dist', 'angle']]
+        max_chain = [['cont_pos', 'max_dist', 'angle']]
         for island in isle:
 
             # Identify if contour is concavity/convexity using image mask
@@ -166,7 +166,7 @@ def acute(img, mask, win, threshold):
                     ts_d = np.sqrt(np.square(ts[0][0] - site[0][0][0]) + np.square(ts[0][1] - site[0][0][1]))
                     # Current mean distance of 'd' to 'ss' & 'ts'
                     dist_2 = np.mean([np.abs(ss_d), np.abs(ts_d)])
-                    verbose_out.append([d, dist_2, chain[d]])
+                    max_chain.append([d, dist_2, chain[d]])
                     if dist_2 > dist_1:                          # Current mean distance better fit that previous best?
                         pt = d
                         dist_1 = dist_2                          # Current mean becomes new best mean
@@ -196,5 +196,5 @@ def acute(img, mask, win, threshold):
         # print/plot debug image
         _debug(visual=ori_img, filename=f"{params.device}_acute_plms.png")
 
-        return homolog_pts, start_pts, stop_pts, ptvals, chain, verbose_out
+        return homolog_pts, start_pts, stop_pts, ptvals, chain, max_chain
     return [], [], [], [], [], []
