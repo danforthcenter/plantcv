@@ -17,7 +17,7 @@ useful in parsing homolog_pts in downstream analyses
 
 chain       = raw angle scores for entire contour, used to visualize landmark clusters
 
-verbose     = supplemental file which stores coordinates, distance from
+max_dist    = supplemental list which stores coordinates, distance from
 landmark cluster edges, and angle score for entire contour.  Used in troubleshooting.
 
 - **Parameters:**
@@ -26,7 +26,8 @@ landmark cluster edges, and angle score for entire contour.  Used in troubleshoo
     - win - The maximum cumulative pixel distance window for calculating angle score; 1 cm in pixels often works well
     - thresh - Angle score threshold to be applied for mapping out landmark coordinate clusters within each contour
 - **Context:**
-    - Used to identify pseudo-landmark positions along the contour of a plant for morphometric analysis 
+    - Used to identify pseudo-landmark positions along the contour of a plant for morphometric analysis
+    - Use `pcv.params.verbose = False` to quiet print statements
 - **Example use:**
     - [Use In Homology Tutorial](https://github.com/danforthcenter/plantcv-homology-tutorials/blob/main/README.md)
 
