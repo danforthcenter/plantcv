@@ -47,7 +47,7 @@ image = pcv.report_size_marker_area(img=img1, roi=roi, marker='detect',
                                     thresh=120)
 
 # Access data stored out from report_size_marker_area
-marker_area = pcv.outputs.observations['marker']['marker_area']['value']
+marker_area = pcv.outputs.metadata['marker_area']['value']
 
 # Scale length & area Outputs collected downstream
 # by updating size scaling parameters
