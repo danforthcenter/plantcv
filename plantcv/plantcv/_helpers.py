@@ -671,8 +671,10 @@ def _rect_filter(img, xstart=0, ystart=0, height=None, width=None, function=None
     # slice image to subset rectangle
     sub_img = img[ystart:yend, xstart:xend]
     # debug
-    _debug(visual=sub_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
+    _debug(visual=sub_img, filename=os.path.join(params.debug_outdir, f'{params.device}_rect_filter.png'))
     # apply function
-    if function is not None:
-        sub_img = function(sub_img, **kwargs)
-    return sub_img
+    if function is None:
+        def identity(x, **kwargs):
+            return(x)
+        function = identity
+    return function(sub_img, **kwargs)
