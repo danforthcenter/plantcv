@@ -17,6 +17,10 @@ in the RGB space after automatic detection of a color card within the image. A o
         - block_size       - Size of a pixel neighborhood that is used to calculate a threshold value (default = 51). We suggest using 127 if using `adaptive_method=0`.
         - radius           - Radius of circle to make the color card labeled mask (default = 20).
         - min_size         - Minimum chip size for filtering objects after edge detection (default = 1000)
+        - x                - Optional left-most position of a rectangular subset of the image to use (default = 0).
+        - y                - Optional top-most position of a rectangular subset of the image to use (default = 0).
+        - h                - Height of rectangle if using a subset of the image (default = np.shape(rgb_img)[0]).
+        - w                - Width of rectangle if using a subset of the image (default = np.shape(rgb_img)[1]).
 - **Returns**
     - corrected_img    - Color corrected image
 

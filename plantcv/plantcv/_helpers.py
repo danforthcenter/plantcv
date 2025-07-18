@@ -1,9 +1,11 @@
 import cv2
+import os
 import numpy as np
 from plantcv.plantcv.dilate import dilate
 from plantcv.plantcv.image_subtract import image_subtract
 from plantcv.plantcv import fatal_error, warn
 from plantcv.plantcv import params
+from plantcv.plantcv._debug import _debug
 import pandas as pd
 
 
@@ -638,3 +640,54 @@ def _scale_size(value, trait_type="linear"):
         return value * conversion_rate
     # Multiplication with list comprehension for lists of values
     return [x*conversion_rate for x in value]
+
+
+def _identity(x, **kwargs):
+    """Identity function for use in _rect_filter
+    This may be useful if there are several outputs from a function passed to _rect_filter
+    which would otherwise be difficult to manage
+    Parameters
+    ----------
+    x : any
+      An object
+    **kwargs
+      Other keyword arguments, ignored.
+    """
+    return x
+
+
+def _rect_filter(img, xstart=0, ystart=0, height=None, width=None, function=None, **kwargs):
+    """Subset a rectangular section of image to apply function to
+    Parameters
+    ----------
+    img : numpy.ndarray
+        An image
+    xstart : int
+        Left-most x position of rectangle to use.
+    ystart : int
+        Top-most y position of rectangle to use.
+    height : int
+        Height of rectangle
+    width : int
+        Width of rectangle
+    function : function
+        analysis function to apply to each submask
+    **kwargs
+        Other keyword arguments to pass to the analysis function.
+    Returns
+    -------
+    any
+        Return value depends on the function that is called. If no function is called then this is a numpy.ndarray.
+    """
+    # set xend and yend
+    xend = xstart + width - 1
+    yend = ystart + height - 1
+    # slice image to subset rectangle
+    sub_img = img[ystart:yend, xstart:xend]
+    # debug
+    _debug(visual=sub_img, filename=os.path.join(params.debug_outdir, f'{params.device}_rect_filter.png'))
+    # apply function
+    if function is None:
+        function = _identity
+
+    return function(sub_img, **kwargs)

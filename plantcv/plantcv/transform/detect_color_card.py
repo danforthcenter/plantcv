@@ -8,7 +8,7 @@ import math
 import numpy as np
 from plantcv.plantcv import params, outputs, fatal_error, deprecation_warning
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _rgb2gray, _cv2_findcontours, _object_composition
+from plantcv.plantcv._helpers import _rgb2gray, _cv2_findcontours, _object_composition, _rect_filter
 
 
 def _is_square(contour, min_size):
@@ -233,6 +233,10 @@ def detect_color_card(rgb_img, label=None, **kwargs):
         block_size: int (default = 51)
         radius: int (default = 20)
         min_size: int (default = 1000)
+        x: int (default = 0)
+        y: int (default = 0)
+        h: int (default = np.shape(rgb_img)[0])
+        w: int (default = np.shape(rgb_img)[1])
 
     Returns
     -------
@@ -246,8 +250,23 @@ def detect_color_card(rgb_img, label=None, **kwargs):
         "The 'label' parameter is no longer utilized, since color chip size is now metadata. "
         "It will be removed in PlantCV v5.0."
         )
+    # get kwargs for _rect_filter to make code easier to read later
+    x = kwargs.get("x", 0)
+    y = kwargs.get("y", 0)
+    h = kwargs.get("h", np.shape(rgb_img)[0])
+    w = kwargs.get("w", np.shape(rgb_img)[1])
+    # apply _color_card_detection within bounding box
+    sub_mask, debug_img, marea, mheight, mwidth, _ = _rect_filter(rgb_img,
+                                                                  xstart=x,
+                                                                  ystart=y,
+                                                                  height=h,
+                                                                  width=w,
+                                                                  function=_color_card_detection,
+                                                                  **kwargs)
+    # slice sub_mask from bounding box into mask of original image size
+    labeled_mask = np.zeros((np.shape(rgb_img)[0], np.shape(rgb_img)[1]))
+    labeled_mask[y:y+h-1, x:x+w-1] = sub_mask
 
-    labeled_mask, debug_img, marea, mheight, mwidth, _ = _color_card_detection(rgb_img, **kwargs)
     # Create dataframe for easy summary stats
     chip_size = np.median(marea)
     chip_height = np.median(mheight)
