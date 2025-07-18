@@ -721,3 +721,12 @@ def _rect_replace(img, sub_img, roi):
     yend = roi.contours[0][0][2][0][1].astype("int32")
     img[ystart:yend, xstart:xend] = sub_img
     return img
+    out = function(sub_img, **kwargs)
+    # note that if out is length 1 then I don't need to mess with the tuples and it wouldn't work to anyway.
+    # if replace then put the subset section back into the original image
+    if replace:
+        full_img = img
+        full_img[ystart:yend, xstart:xend] = out[0]
+        out[0] = full_img
+
+    return *out,
