@@ -1,4 +1,3 @@
-import pytest
 import cv2
 import numpy as np
 from plantcv.plantcv._helpers import _rect_filter

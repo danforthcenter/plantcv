@@ -691,4 +691,3 @@ def _rect_filter(img, xstart=0, ystart=0, height=None, width=None, function=None
         function = _identity
 
     return function(sub_img, **kwargs)
-
