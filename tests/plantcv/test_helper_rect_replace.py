@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-import plantcv as pcv
+from plantcv.plantcv.roi import rectangle
 from plantcv.plantcv._helpers import _rect_filter, _rect_replace
 
 def test_rect_replace(test_data):
