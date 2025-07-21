@@ -273,7 +273,7 @@ def mask_color_card(rgb_img, **kwargs):
     return bounding_mask
 
 
-def detect_color_card(rgb_img, label=None, **kwargs):
+def detect_color_card(rgb_img, label=None, color_chip_size=None, **kwargs):
     """Automatically detect a color card.
 
     Parameters
@@ -282,6 +282,9 @@ def detect_color_card(rgb_img, label=None, **kwargs):
         Input RGB image data containing a color card.
     label : str, optional
         modifies the variable name of observations recorded (default = pcv.params.sample_label).
+    color_chip_size: str, tuple, optional
+        "passport", "classic", "cameratrax"; or tuple formatted (width, height)
+        in millimeters (default = None)
     **kwargs
         Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle.
 
@@ -290,8 +293,7 @@ def detect_color_card(rgb_img, label=None, **kwargs):
         block_size: int (default = 51)
         radius: int (default = 20)
         min_size: int (default = 1000)
-        color_chip_size: "passport", "classic", "cameratrax"; or tuple formatted (width, height)
-            in millimeters (default = None)
+        
 
     Returns
     -------
@@ -318,7 +320,6 @@ def detect_color_card(rgb_img, label=None, **kwargs):
     outputs.add_metadata(term="median_color_chip_height", datatype=float, value=chip_height)
 
     # Set size scaling factor if card type is provided
-    color_chip_size = kwargs.get("color_chip_size")
     if color_chip_size:
         _set_size_scale_from_chip(color_chip_height=chip_height, color_chip_width=chip_width, color_chip_size=color_chip_size)
 
