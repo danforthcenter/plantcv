@@ -722,11 +722,22 @@ def _rect_replace(img, sub_img, roi):
     img[ystart:yend, xstart:xend] = sub_img
     return img
     out = function(sub_img, **kwargs)
-    # note that if out is length 1 then I don't need to mess with the tuples and it wouldn't work to anyway.
-    # if replace then put the subset section back into the original image
-    if replace:
-        full_img = img
-        full_img[ystart:yend, xstart:xend] = out[0]
-        out[0] = full_img
 
-    return *out,
+    # some functions for _rect_filter may return multiple objects
+    if type(out) is tuple:
+        # to slice the subset image back into the main image, use the first object
+        # if there were functions that returned the image at a different place than
+        # first position... don't use those? could do which(unlist(lapply(x, is.np.array)))[1]?
+        if replace:
+            full_img = img
+            full_img[ystart:yend, xstart:xend] = out[0]
+            out[0] = full_img
+        # return all objects unpacked
+        return *out,
+    # if slicing a single subset back into the image do this 
+    elif replace:
+        full_img = img
+        full_img[ystart:yend, xstart:xend] = out
+        out = full_img
+    # final return for single outputs from function call
+    return out
