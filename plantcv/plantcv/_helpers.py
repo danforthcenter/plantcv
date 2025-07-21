@@ -666,8 +666,6 @@ def _rect_filter(img, roi=None, function=None, **kwargs):
         A rectangular ROI as returned by plantcv.roi.rectangle
     function : function
         analysis function to apply to each submask
-    replace: boolean
-        should the subset rectangle be replaced back into the original image before results are returned
     **kwargs
         Other keyword arguments to pass to the analysis function.
     Returns
