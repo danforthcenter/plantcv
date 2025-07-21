@@ -18,7 +18,7 @@ Size and shape analysis outputs numeric properties for individual plants, seeds,
 - **Output data stored:** Data ('area', 'convex_hull_area', 'solidity', 'perimeter', 'width', 'height', 'longest_path',
 'center_of_mass, 'convex_hull_vertices', 'object_in_frame', 'ellipse_center', 'ellipse_major_axis', 'ellipse_minor_axis',
 'ellipse_angle', 'ellipse_eccentricity') automatically gets stored to the [`Outputs` class](outputs.md) when this function is
-run. These data can be accessed during a workflow (example below). Length and area type measurements can be scaled to real world units (e.g. cm and cm^2) using the `unit`, `px_height`, and `px_width` [parameters](params.md). For more detail about data output see
+run. These data can be accessed during a workflow (example below). Length and area type measurements can be scaled to real world units (e.g. mm and mm<sup>2</sup> using the `unit`, `px_height`, and `px_width` [parameters](params.md). For more detail about data output see
 [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
     
 **Original image**
