@@ -5,18 +5,18 @@ import os
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
-from plantcv.plantcv._helpers import _rect_filter
+from plantcv.plantcv._helpers import _rect_filter, _rect_replace
 from scipy.ndimage import binary_fill_holes
 
 
-def fill_holes(bin_img, **kwargs):
+def fill_holes(bin_img, roi = None):
     """
     Flood fills holes in a binary mask
 
     Inputs:
     bin_img      = Binary image data
-    **kwargs     = other keyword arguments, namely x/y/h/w for rectangle subsetting
-
+    roi          = plantcv Objects class rectangular ROI
+    
     Returns:
     filtered_img = image with objects filled
 
@@ -29,21 +29,15 @@ def fill_holes(bin_img, **kwargs):
 
     # Cast binary image to boolean
     bool_img = bin_img.astype(bool)
-
     # Flood fill holes
-    bool_img = _rect_filter(bool_img,
-                            xstart=kwargs.get("x", 0),
-                            ystart=kwargs.get("y", 0),
-                            height=kwargs.get("h", np.shape(bool_img)[0]),
-                            width=kwargs.get("w", np.shape(bool_img)[1]),
-                            function=binary_fill_holes,
-                            replace=kwargs.get("replace", True))
-
+    bool_img = _rect_filter(bool_img, roi = roi, function=binary_fill_holes)
     # Cast boolean image to binary and make a copy of the binary image for returning
     filtered_img = np.copy(bool_img.astype(np.uint8) * 255)
+    # put subset back into original size image
+    replaced_img = _rect_replace(bin_img.astype(bool) * 255, filtered_img, roi)
 
-    _debug(visual=filtered_img,
+    _debug(visual=replaced_img,
            filename=os.path.join(params.debug_outdir, str(params.device) + '_fill_holes' + '.png'),
            cmap='gray')
 
-    return filtered_img
+    return replaced_img
