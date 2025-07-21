@@ -558,7 +558,12 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/156026125?v=4",
       "profile": "https://github.com/k034b363",
       "contributions": [
-        "code"
+        "code",
+        "doc",
+        "test",
+        "tutorial",
+        "ideas",
+        "mentoring"
       ]
     },
     {
@@ -707,6 +712,26 @@
       "profile": "https://github.com/NMiklave",
       "contributions": [
         "code"
+      ]
+    },
+    {
+      "login": "caitlynelliott56",
+      "name": "Caitlyn Elliott",
+      "avatar_url": "https://avatars.githubusercontent.com/u/214695433?v=4",
+      "profile": "https://github.com/caitlynelliott56",
+      "contributions": [
+        "code",
+        "ideas",
+        "tutorial"
+      ]
+    },
+    {
+      "login": "zhaYdamenaceee",
+      "name": "ZhakeYa D'Nai Hawkins",
+      "avatar_url": "https://avatars.githubusercontent.com/u/114114550?v=4",
+      "profile": "https://onlinegdb.com/h-5zNv0Dz",
+      "contributions": [
+        "tutorial"
       ]
     }
   ],
