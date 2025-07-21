@@ -5,18 +5,18 @@ import os
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _rect_filter
+from plantcv.plantcv._helpers import _rect_filter, _rect_replace
 from skimage.morphology import remove_small_objects
 
 
-def fill(bin_img, size, **kwargs):
+def fill(bin_img, size, roi = None):
     """
     Identifies objects and fills objects that are less than size.
 
     Inputs:
     bin_img      = Binary image data
     size         = minimum object area size in pixels (integer)
-    **kwargs     = other keyword arguments, namely x/y/h/w for rectangle subsetting
+    roi          = optional Objects class rectangular ROI
 
     Returns:
     filtered_img = image with objects filled
@@ -34,17 +34,15 @@ def fill(bin_img, size, **kwargs):
 
     # Find and fill contours, possibly within bounding rectangle
     bool_img = _rect_filter(bool_img,
-                            xstart=kwargs.get("x", 0),
-                            ystart=kwargs.get("y", 0),
-                            height=kwargs.get("h", np.shape(bool_img)[0]),
-                            width=kwargs.get("w", np.shape(bool_img)[1]),
+                            roi = roi,
                             function=remove_small_objects,
-                            replace=kwargs.get("replace", True),
                             **{"min_size" : size})
     # Cast boolean image to binary and make a copy of the binary image for returning
     filtered_img = np.copy(bool_img.astype(np.uint8) * 255)
+    # slice the subset image back into full size binary image
+    replaced_img = _rect_replace(bin_img.astype(bool) * 255, filtered_img, roi)
 
-    _debug(visual=filtered_img,
+    _debug(visual=replaced_img,
            filename=os.path.join(params.debug_outdir, str(params.device) + "_fill" + str(size) + '.png'))
 
-    return filtered_img
+    return replaced_img
