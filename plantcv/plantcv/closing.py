@@ -33,7 +33,7 @@ def closing(gray_img, kernel=None, **kwargs):
                             function=binary_closing,
                             replace=kwargs.get("replace", True),
                             **{"footprint" : kernel})
-        filtered_img = np.copy(bool_img.astype(np.uint8) * 255)
+        filtered_img = bool_img.astype(np.uint8) * 255
     # Otherwise use method appropriate for grayscale images
     else:
         filtered_img = _rect_filter(gray_img,
@@ -41,7 +41,7 @@ def closing(gray_img, kernel=None, **kwargs):
                             ystart=kwargs.get("y", 0),
                             height=kwargs.get("h", np.shape(gray_img)[0]),
                             width=kwargs.get("w", np.shape(gray_img)[1]),
-                            function=binary_closing,
+                            function=closing,
                             replace=kwargs.get("replace", True),
                             **{"footprint" : kernel})
 
