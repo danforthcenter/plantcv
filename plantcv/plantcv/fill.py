@@ -39,7 +39,7 @@ def fill(bin_img, size, **kwargs):
                             height=kwargs.get("h", np.shape(bool_img)[0]),
                             width=kwargs.get("w", np.shape(bool_img)[1]),
                             function=remove_small_objects,
-                            replace=True,
+                            replace=kwargs.get("replace", True),
                             **{"min_size" : size})
     # Cast boolean image to binary and make a copy of the binary image for returning
     filtered_img = np.copy(bool_img.astype(np.uint8) * 255)
