@@ -693,6 +693,7 @@ def _rect_filter(img, roi=None, function=None, **kwargs):
 
     return function(sub_img, **kwargs)
 
+
 def _rect_replace(img, sub_img, roi):
     """
     Parameters
@@ -710,11 +711,11 @@ def _rect_replace(img, sub_img, roi):
     if roi is None:
         # if no ROI then no subsetting was done, just return sub_img
         return sub_img
-    else:
-        # if subsetting was done then get coordinates, slice into main image, and return
-        xstart = roi.contours[0][0][0][0][0].astype("int32")
-        ystart = roi.contours[0][0][0][0][1].astype("int32")
-        xend = roi.contours[0][0][2][0][0].astype("int32")
-        yend = roi.contours[0][0][2][0][1].astype("int32")
-        img[ystart:yend, xstart:xend] = sub_img
-        return img
+
+    # if subsetting was done then get coordinates, slice into main image, and return
+    xstart = roi.contours[0][0][0][0][0].astype("int32")
+    ystart = roi.contours[0][0][0][0][1].astype("int32")
+    xend = roi.contours[0][0][2][0][0].astype("int32")
+    yend = roi.contours[0][0][2][0][1].astype("int32")
+    img[ystart:yend, xstart:xend] = sub_img
+    return img
