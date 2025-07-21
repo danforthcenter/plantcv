@@ -293,7 +293,6 @@ def detect_color_card(rgb_img, label=None, color_chip_size=None, **kwargs):
         block_size: int (default = 51)
         radius: int (default = 20)
         min_size: int (default = 1000)
-        
 
     Returns
     -------
