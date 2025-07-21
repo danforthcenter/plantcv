@@ -20,10 +20,7 @@ def auto_correct_color(rgb_img, label=None, **kwargs):
         block_size: int (default = 51)
         radius: int (default = 20)
         min_size: int (default = 1000)
-        x: int (default = 0)
-        y: int (default = 0)
-        h: int (default = np.shape(rgb_img)[0])
-        w: int (default = np.shape(rgb_img)[1])
+        roi: Objects class rectangular ROI passed to detect_color_card (default None)
     Returns
     -------
     numpy.ndarray
