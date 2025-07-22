@@ -1,8 +1,41 @@
 import cv2
 import numpy as np
+from skimage import morphology
 from plantcv.plantcv import fatal_error, warn
 from plantcv.plantcv import params
 import pandas as pd
+
+
+def _closing(gray_img, kernel=None):
+    """Wrapper for scikit-image closing functions.
+
+    Opening can remove small dark spots (i.e. pepper).
+
+    Parameters
+    ----------
+    gray_img = numpy.ndarray
+             input image (grayscale or binary)
+    kernel   = numpy.ndarray
+             optional neighborhood, expressed as an array of 1s and 0s. If None, use cross-shaped structuring element.
+
+    Returns
+    -------
+    numpy.ndarray
+         filtered (holes closed) image
+    """
+    # Make sure the image is binary/grayscale
+    if len(np.shape(gray_img)) != 2:
+        fatal_error("Input image must be grayscale or binary")
+
+    # If image is binary use the faster method
+    if len(np.unique(gray_img)) <= 2:
+        bool_img = morphology.binary_closing(gray_img, kernel)
+        filtered_img = np.copy(bool_img.astype(np.uint8) * 255)
+    # Otherwise use method appropriate for grayscale images
+    else:
+        filtered_img = morphology.closing(gray_img, kernel)
+
+    return filtered_img
 
 
 def _image_subtract(gray_img1, gray_img2):
