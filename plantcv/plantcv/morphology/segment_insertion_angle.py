@@ -109,12 +109,11 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     loop_count = 0
     while len(combined_stem) > 1 and loop_count < 50:
         loop_count += 1
-        stem_img = dilate(stem_img, 2, 1)
+        stem_img = _dilate(stem_img, 2, 1)
         stem_img = closing(stem_img)
         combined_stem, _ = _cv2_findcontours(bin_img=stem_img)
     if len(combined_stem) > 1:
         # Reset debug mode
-        params.debug = debug
         fatal_error('Unable to combine stem objects.')
 
     # Find slope of the stem

@@ -1,6 +1,5 @@
 # Dilation filter
 
-import numpy as np
 import os
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _dilate

@@ -5,6 +5,7 @@ from plantcv.plantcv import fatal_error, warn
 from plantcv.plantcv import params
 import pandas as pd
 
+
 def _dilate(gray_img, ksize, i):
     """
     Performs morphological 'dilation' filtering. Adds pixel to center of kernel if conditions set in kernel are true.
