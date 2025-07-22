@@ -685,8 +685,6 @@ def _rect_filter(img, roi=None, function=None, **kwargs):
         yend = roi.contours[0][0][2][0][1].astype("int32")
     # slice image to subset rectangle
     sub_img = img[ystart:yend, xstart:xend]
-    # debug
-    _debug(visual=sub_img, filename=os.path.join(params.debug_outdir, f'{params.device}_rect_filter.png'))
     # apply function
     if function is None:
         function = _identity
