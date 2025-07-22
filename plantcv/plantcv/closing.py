@@ -2,7 +2,6 @@ import os
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _closing
-from plantcv.plantcv import fatal_error
 
 
 def closing(gray_img, kernel=None):

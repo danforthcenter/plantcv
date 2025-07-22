@@ -3,7 +3,6 @@
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _image_subtract
 from plantcv.plantcv import params
-from plantcv.plantcv import fatal_error
 import os
 
 
