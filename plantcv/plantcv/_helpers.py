@@ -1,9 +1,42 @@
 import cv2
 import numpy as np
-from plantcv.plantcv.image_subtract import image_subtract
 from plantcv.plantcv import fatal_error, warn
 from plantcv.plantcv import params
 import pandas as pd
+
+
+def _image_subtract(gray_img1, gray_img2):
+    """Subtract values of one gray-scale image array from another gray-scale image array.
+
+    The
+    resulting gray-scale image array has a minimum element value of zero. That is all negative values resulting from the
+    subtraction are forced to zero.
+
+    Parameters
+    ----------
+    gray_img1 : numpy.ndarray
+              Grayscale image data from which gray_img2 will be subtracted
+    gray_img2 : numpy.ndarray
+              Grayscale image data which will be subtracted from gray_img1
+
+    Returns
+    -------
+    new_img = subtracted image
+
+    Raises
+    ------
+    fatal_error
+         If input image is not gray scale
+    """
+    # check inputs for gray-scale
+    if len(np.shape(gray_img1)) != 2 or len(np.shape(gray_img2)) != 2:
+        fatal_error("Input image is not gray-scale")
+
+    new_img = gray_img1.astype(np.float64) - gray_img2.astype(np.float64)  # subtract values
+    new_img[np.where(new_img < 0)] = 0  # force negative array values to zero
+    new_img = new_img.astype(np.uint8)  # typecast image to 8-bit image
+
+    return new_img  # return
 
 
 def _erode(gray_img, ksize, i):
@@ -155,7 +188,7 @@ def _iterative_prune(skel_img, size):
     # Iteratively remove endpoints (tips) from a skeleton
     for _ in range(0, size):
         endpoints, _, _ = _find_tips(pruned_img)
-        pruned_img = image_subtract(pruned_img, endpoints)
+        pruned_img = _image_subtract(pruned_img, endpoints)
 
     # Make debugging image
     pruned_plot = np.zeros(skel_img.shape[:2], np.uint8)
