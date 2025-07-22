@@ -2,14 +2,15 @@
 
 Fills based on a starting point with a user specified value
 
-**plantcv.floodfill**(*bin_img, points, value=0*)
+**plantcv.floodfill**(*bin_img, points, value=0, roi=None*)
 
 **returns** filled_image
 
 - **Parameters:**
     - bin_img - Binary image data or Gray image
-    - points - list of seed points to start flood fill (e.g. `points=[(x,y)]`) 
-    - value - value from 0-255 
+    - points - list of seed points to start flood fill (e.g. `points=[(x,y)]`)
+    - value - value from 0-255
+	- roi - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to apply this function. (default = None, which uses the entire image)
   - **Context:**
     - Used to fill in object 
 - **Example use:**

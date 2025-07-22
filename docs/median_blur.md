@@ -3,13 +3,14 @@
 Applies a median blur filter. Applies median value to central pixel within a kernel size. 
 The function is a wrapper for the SciPy function [median filter](https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.ndimage.filters.median_filter.html).
 
-**plantcv.median_blur**(*gray_img, ksize*)**
+**plantcv.median_blur**(*gray_img, ksize, roi=None*)**
 
 **returns** blurred image
 
 - **Parameters:**
     - gray_img - Grayscale image data
-    - ksize - kernel size => integer or tuple, `ksize` x `ksize` box if integer, (n, m) size box if tuple 
+    - ksize - kernel size => integer or tuple, `ksize` x `ksize` box if integer, (n, m) size box if tuple
+	- roi - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to apply this function. (default = None, which uses the entire image)
 - **Context:**
     - Used to reduce image noise
 - **Example use:**
