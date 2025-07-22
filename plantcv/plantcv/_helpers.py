@@ -1,11 +1,9 @@
 import cv2
-import os
 import numpy as np
 from plantcv.plantcv.dilate import dilate
 from plantcv.plantcv.image_subtract import image_subtract
 from plantcv.plantcv import fatal_error, warn
 from plantcv.plantcv import params
-from plantcv.plantcv._debug import _debug
 import pandas as pd
 
 
