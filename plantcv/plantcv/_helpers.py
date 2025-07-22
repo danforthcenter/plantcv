@@ -6,6 +6,41 @@ from plantcv.plantcv import params
 import pandas as pd
 
 
+def _erode(gray_img, ksize, i):
+    """Perform morphological 'erosion' filtering.
+
+    Keeps pixel in center of the kernel if conditions set in kernel are
+       true, otherwise removes pixel.
+
+    Parameters
+    ----------
+    gray_img : numpy.ndarray
+             Grayscale (usually binary) image data
+    ksize : int
+             Kernel size (int). A ksize x ksize kernel will be built. Must be greater than 1 to have an effect.
+    i : int
+             interations, i.e. number of consecutive filtering passes
+
+    Returns
+    -------
+    numpy.ndarray
+         Eroded result image
+
+    Raises
+    ------
+    ValueError
+        If ksize is less than or equal to 1.
+    """
+    if ksize <= 1:
+        raise ValueError('ksize needs to be greater than 1 for the function to have an effect')
+
+    kernel1 = int(ksize)
+    kernel2 = np.ones((kernel1, kernel1), np.uint8)
+    er_img = cv2.erode(src=gray_img, kernel=kernel2, iterations=i)
+
+    return er_img
+    
+
 def _dilate(gray_img, ksize, i):
     """Performs morphological 'dilation' filtering.
 
