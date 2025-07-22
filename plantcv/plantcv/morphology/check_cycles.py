@@ -3,11 +3,10 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv import params
-from plantcv.plantcv import erode
 from plantcv.plantcv import outputs
 from plantcv.plantcv import color_palette
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _cv2_findcontours, _dilate
+from plantcv.plantcv._helpers import _cv2_findcontours, _dilate, _erode
 
 
 def check_cycles(skel_img, label=None):
@@ -41,7 +40,7 @@ def check_cycles(skel_img, label=None):
     just_cycles = cv2.bitwise_not(skel_copy)
 
     # Erode slightly so that cv2.findContours doesn't think diagonal pixels are separate contours
-    just_cycles = erode(just_cycles, 2, 1)
+    just_cycles = _erode(just_cycles, 2, 1)
 
     # Use pcv.find_objects to turn plots of holes into countable contours
     cycle_objects, cycle_hierarchies = _cv2_findcontours(bin_img=just_cycles)
