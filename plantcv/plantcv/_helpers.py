@@ -713,6 +713,6 @@ def _rect_replace(img, sub_img, roi):
     ystart = roi.contours[0][0][0][0][1].astype("int32")
     xend = roi.contours[0][0][2][0][0].astype("int32")
     yend = roi.contours[0][0][2][0][1].astype("int32")
-    full_image = np.copy(img)
+    full_img = np.copy(img)
     full_img[ystart:yend, xstart:xend] = sub_img
     return full_img
