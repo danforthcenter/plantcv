@@ -16,7 +16,7 @@ def fill_holes(bin_img, roi = None):
     Inputs:
     bin_img      = Binary image data
     roi          = plantcv Objects class rectangular ROI
-    
+
     Returns:
     filtered_img = image with objects filled
 
