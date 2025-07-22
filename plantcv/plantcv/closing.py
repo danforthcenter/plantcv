@@ -1,6 +1,6 @@
 import os
 import numpy as np
-from skimage.morphology import binary_closing, closing
+from skimage import morphology
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _rect_filter, _rect_replace
@@ -28,7 +28,7 @@ def closing(gray_img, kernel=None, roi = None):
         bool_img = gray_img.astype(bool)
         sub_img = _rect_filter(bool_img,
                                roi = roi,
-                            function=binary_closing,
+                            function=morphology.binary_closing,
                             **{"footprint" : kernel})
         filtered_img = sub_img.astype(np.uint8) * 255
         replaced_img = _rect_replace(bool_img.astype(np.uint8) * 255, filtered_img, roi)
@@ -36,7 +36,7 @@ def closing(gray_img, kernel=None, roi = None):
     else:
         filtered_img = _rect_filter(gray_img,
                                     roi = roi,
-                            function=closing,
+                            function=morphology.closing,
                             **{"footprint" : kernel})
         replaced_img = _rect_replace(gray_img, filtered_img, roi)
         
