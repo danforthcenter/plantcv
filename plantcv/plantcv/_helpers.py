@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-from plantcv.plantcv.dilate import dilate
 from plantcv.plantcv.image_subtract import image_subtract
 from plantcv.plantcv import fatal_error, warn
 from plantcv.plantcv import params
@@ -18,6 +17,7 @@ def _find_segment_ends(skel_img, leaf_objects, plotting_img, size):
     :param leaf_objects: list
     :param plotting_img: numpy.ndarray
     """
+    from plantcv.plantcv.dilate import dilate
     labeled_img = cv2.cvtColor(plotting_img, cv2.COLOR_GRAY2RGB)
     tips, _, _ = _find_tips(skel_img)
     # Initialize list of tip data points
@@ -125,6 +125,7 @@ def _find_tips(skel_img, mask=None):
     :param label: str
     :return tip_img: numpy.ndarray
     """
+    from plantcv.plantcv.dilate import dilate
     # In a kernel: 1 values line up with 255s, -1s line up with 0s, and 0s correspond to dont care
     endpoint1 = np.array([[-1, -1, -1],
                           [-1, 1, -1],
