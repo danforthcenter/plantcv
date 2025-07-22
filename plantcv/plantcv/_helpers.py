@@ -39,7 +39,7 @@ def _erode(gray_img, ksize, i):
     er_img = cv2.erode(src=gray_img, kernel=kernel2, iterations=i)
 
     return er_img
-    
+
 
 def _dilate(gray_img, ksize, i):
     """Performs morphological 'dilation' filtering.
