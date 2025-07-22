@@ -7,7 +7,7 @@ from plantcv.plantcv._helpers import _rect_filter, _rect_replace
 from plantcv.plantcv import fatal_error
 
 
-def closing(gray_img, kernel=None, roi = None):
+def closing(gray_img, kernel=None, roi=None):
     """Wrapper for scikit-image closing functions. Opening can remove small dark spots (i.e. pepper).
 
     Inputs:
