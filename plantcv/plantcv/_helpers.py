@@ -1,10 +1,35 @@
 import cv2
 import numpy as np
-from plantcv.plantcv.dilate import dilate
 from plantcv.plantcv.image_subtract import image_subtract
 from plantcv.plantcv import fatal_error, warn
 from plantcv.plantcv import params
 import pandas as pd
+
+def _dilate(gray_img, ksize, i):
+    """
+    Performs morphological 'dilation' filtering. Adds pixel to center of kernel if conditions set in kernel are true.
+
+    Inputs:
+    gray_img = Grayscale (usually binary) image data
+    ksize   = Kernel size (int). A k x k kernel will be built. Must be greater than 1 to have an effect.
+    i        = iterations, i.e. number of consecutive filtering passes
+
+    Returns:
+    dil_img = dilated image
+
+    :param gray_img: numpy.ndarray
+    :param ksize: int
+    :param i: int
+    :return dil_img: numpy.ndarray
+    """
+    if ksize <= 1:
+        raise ValueError('ksize needs to be greater than 1 for the function to have an effect')
+
+    kernel1 = int(ksize)
+    kernel2 = np.ones((kernel1, kernel1), np.uint8)
+    dil_img = cv2.dilate(src=gray_img, kernel=kernel2, iterations=i)
+
+    return dil_img
 
 
 def _find_segment_ends(skel_img, leaf_objects, plotting_img, size):
@@ -45,7 +70,7 @@ def _find_segment_ends(skel_img, leaf_objects, plotting_img, size):
         for j, obj in enumerate(segment_end_obj):
             segment_plot = np.zeros(skel_img.shape[:2], np.uint8)
             cv2.drawContours(segment_plot, obj, -1, 255, 1, lineType=8)
-            segment_plot = dilate(segment_plot, 3, 1)
+            segment_plot = _dilate(segment_plot, 3, 1)
             overlap_img = _logical_operation(segment_plot, tips, 'and')
             x, y = segment_end_obj[j].ravel()[:2]
             coord = (int(x), int(y))
@@ -153,7 +178,7 @@ def _find_tips(skel_img, mask=None):
 
     if mask is None:
         # Make debugging image
-        dilated_skel = dilate(skel_img, params.line_thickness, 1)
+        dilated_skel = _dilate(skel_img, params.line_thickness, 1)
         tip_plot = cv2.cvtColor(dilated_skel, cv2.COLOR_GRAY2RGB)
 
     else:
