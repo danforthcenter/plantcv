@@ -31,7 +31,7 @@ def median_blur(gray_img, ksize, roi=None):
         fatal_error("Invalid ksize, must be integer or tuple")
 
     sub_img_mblur = _rect_filter(gray_img, roi, median_filter,
-                                 **{"size":ksize})
+                                 **{"size": ksize})
     img_mblur = _rect_replace(gray_img, sub_img_mblur, roi)
 
     _debug(img_mblur,

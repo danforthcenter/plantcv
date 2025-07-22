@@ -6,6 +6,7 @@ import cv2
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
 
+
 def dilate(gray_img, ksize, i, roi=None):
     """
     Performs morphological 'dilation' filtering. Adds pixel to center of kernel if conditions set in kernel are true.
@@ -25,16 +26,14 @@ def dilate(gray_img, ksize, i, roi=None):
     :param roi: Objects
     :return dil_img: numpy.ndarray
     """
-    from  plantcv.plantcv._helpers import _rect_filter, _rect_replace
+    from plantcv.plantcv._helpers import _rect_filter, _rect_replace
     if ksize <= 1:
         raise ValueError('ksize needs to be greater than 1 for the function to have an effect')
 
     kernel1 = int(ksize)
     kernel2 = np.ones((kernel1, kernel1), np.uint8)
-    sub_dil_img = _rect_filter(img = gray_img,
-                           roi=roi,
-                           function=cv2.dilate,
-                           **{"kernel":kernel2, "iterations":i})
+    sub_dil_img = _rect_filter(img=gray_img, roi=roi, function=cv2.dilate,
+                               **{"kernel": kernel2, "iterations": i})
     dil_img = _rect_replace(gray_img, sub_dil_img, roi)
 
     _debug(visual=dil_img,

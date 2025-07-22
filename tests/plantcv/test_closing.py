@@ -40,7 +40,7 @@ def test_closing_grayscale_roi(test_data):
     roi_con = [np.array([[[0, 0]], [[0, 400]], [[355, 400]], [[355, 0]]], dtype=np.int32)]
     roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     roi = Objects(contours=[roi_con], hierarchy=[roi_str])
-    filtered_img = closing(gray_img=gray_img, kernel=np.ones((4, 4), np.uint8))
+    filtered_img = closing(gray_img=gray_img, kernel=np.ones((4, 4), np.uint8), roi=roi)
     assert np.sum(filtered_img) > np.sum(gray_img)
 
 

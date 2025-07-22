@@ -32,7 +32,7 @@ def sobel_filter(gray_img, dx, dy, ksize, roi=None):
     :return sb_img: numpy.ndarray
     """
     sub_sb_img = _rect_filter(gray_img, roi, function=cv2.Sobel,
-                              **{"ddepth":-1, "dx":dx, "dy":dy, "ksize":ksize})
+                              **{"ddepth": -1, "dx": dx, "dy": dy, "ksize": ksize})
     sb_img = _rect_replace(gray_img, sub_sb_img, roi)
 
     fname = str(params.device) + '_sb_img_dx' + str(dx) + '_dy' + str(dy) + '_kernel' + str(ksize) + '.png'

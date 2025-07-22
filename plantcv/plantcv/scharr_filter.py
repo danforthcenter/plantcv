@@ -32,7 +32,7 @@ def scharr_filter(img, dx, dy, scale, roi=None):
     :return sr_img: numpy.ndarray
     """
     sub_sr_img = _rect_filter(img, roi, function=cv2.Scharr,
-                          **{"ddepth":-1, "dx":dx, "dy":dy, "scale":scale})
+                              **{"ddepth": -1, "dx": dx, "dy": dy, "scale": scale})
     sr_img = _rect_replace(img, sub_sr_img, roi)
     name = os.path.join(params.debug_outdir, str(params.device))
     name += '_sr_img_dx' + str(dx) + '_dy' + str(dy) + '_scale' + str(scale) + '.png'

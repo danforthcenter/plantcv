@@ -9,7 +9,7 @@ from plantcv.plantcv._helpers import _rect_filter, _rect_replace
 from skimage.morphology import remove_small_objects
 
 
-def fill(bin_img, size, roi = None):
+def fill(bin_img, size, roi=None):
     """
     Identifies objects and fills objects that are less than size.
 
@@ -34,7 +34,7 @@ def fill(bin_img, size, roi = None):
 
     # Find and fill contours, possibly within bounding rectangle
     bool_img = _rect_filter(bool_img,
-                            roi = roi,
+                            roi=roi,
                             function=remove_small_objects,
                             **{"min_size" : size})
     # Cast boolean image to binary and make a copy of the binary image for returning

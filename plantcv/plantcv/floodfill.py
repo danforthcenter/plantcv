@@ -40,7 +40,7 @@ def floodfill(bin_img, points, value=0, roi=None):
 
     for x in points1:
         sub_bool_img = _rect_filter(bool_img, roi=roi, function=flood_fill,
-                                    **{"seed_point":x, "new_value":value})
+                                    **{"seed_point": x, "new_value": value})
         bool_img = _rect_replace(bool_img, sub_bool_img, roi)
 
     # Cast boolean image to binary and make a copy of the binary image for returning

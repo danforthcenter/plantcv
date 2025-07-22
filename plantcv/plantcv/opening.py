@@ -30,14 +30,14 @@ def opening(gray_img, kernel=None, roi=None):
     # If image is binary use the faster method
     if len(np.unique(gray_img)) == 2:
         bool_img = gray_img.astype(bool)
-        sub_img = _rect_filter(bool_img, roi, function = morphology.binary_opening,
-                               **{"footprint":kernel})
+        sub_img = _rect_filter(bool_img, roi, function=morphology.binary_opening,
+                               **{"footprint": kernel})
         filtered_img = sub_img.astype(np.uint8) * 255
         replaced_img = _rect_replace(bool_img.astype(np.uint8) * 255, filtered_img, roi)
     # Otherwise use method appropriate for grayscale images
     else:
-        filtered_img = _rect_filter(gray_img, roi = roi, function=morphology.opening,
-                            **{"footprint" : kernel})
+        filtered_img = _rect_filter(gray_img, roi=roi, function=morphology.opening,
+                                    **{"footprint": kernel})
         replaced_img = _rect_replace(gray_img, filtered_img, roi)
 
     _debug(visual=replaced_img,

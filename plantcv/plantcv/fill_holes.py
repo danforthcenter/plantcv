@@ -9,7 +9,7 @@ from plantcv.plantcv._helpers import _rect_filter, _rect_replace
 from scipy.ndimage import binary_fill_holes
 
 
-def fill_holes(bin_img, roi = None):
+def fill_holes(bin_img, roi=None):
     """
     Flood fills holes in a binary mask
 
@@ -30,7 +30,7 @@ def fill_holes(bin_img, roi = None):
     # Cast binary image to boolean
     bool_img = bin_img.astype(bool)
     # Flood fill holes
-    bool_img = _rect_filter(bool_img, roi = roi, function=binary_fill_holes)
+    bool_img = _rect_filter(bool_img, roi=roi, function=binary_fill_holes)
     # Cast boolean image to binary and make a copy of the binary image for returning
     filtered_img = np.copy(bool_img.astype(np.uint8) * 255)
     # put subset back into original size image

@@ -30,7 +30,7 @@ def laplace_filter(gray_img, ksize, scale, roi=None):
     :return lp_filtered: numpy.ndarray
     """
     sub_lp_filtered = _rect_filter(gray_img, roi, cv2.Laplacian,
-                                   **{"ddepth":-1, "ksize":ksize, "scale":scale})
+                                   **{"ddepth": -1, "ksize": ksize, "scale": scale})
     lp_filtered = _rect_replace(gray_img, sub_lp_filtered, roi)
 
     _debug(visual=lp_filtered,

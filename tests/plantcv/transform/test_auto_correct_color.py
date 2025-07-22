@@ -1,6 +1,6 @@
 """Tests for auto_correct_color."""
-import cv2
 import numpy as np
+import cv2
 from plantcv.plantcv.transform import auto_correct_color
 from plantcv.plantcv import Objects
 

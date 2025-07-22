@@ -30,7 +30,7 @@ def gaussian_blur(img, ksize, sigma_x=0, sigma_y=None, roi=None):
     :return img_gblur: numpy.ndarray
     """
     sub_img_gblur = _rect_filter(img, roi, cv2.GaussianBlur,
-                             **{"ksize":ksize, "sigmaX":sigma_x, "sigmaY":sigma_y})
+                                 **{"ksize": ksize, "sigmaX": sigma_x, "sigmaY": sigma_y})
     img_gblur = _rect_replace(img, sub_img_gblur, roi)
     if len(np.shape(img_gblur)) == 3:
         cmap = None

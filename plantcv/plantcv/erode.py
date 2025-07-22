@@ -33,12 +33,10 @@ def erode(gray_img, ksize, i, roi=None):
 
     kernel1 = int(ksize)
     kernel2 = np.ones((kernel1, kernel1), np.uint8)
-    sub_er_img = _rect_filter(img = gray_img,
-                           roi=roi,
-                           function=cv2.erode,
-                           **{"kernel":kernel2, "iterations":i})
+    sub_er_img = _rect_filter(img=gray_img, roi=roi, function=cv2.erode,
+                              **{"kernel": kernel2, "iterations": i})
     er_img = _rect_replace(gray_img, sub_er_img, roi)
-    
+
     _debug(er_img,
            filename=os.path.join(params.debug_outdir,
                                  str(params.device) + '_er_image' + str(ksize) + '_itr_' + str(i) + '.png'),

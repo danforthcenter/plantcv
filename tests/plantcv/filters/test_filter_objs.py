@@ -27,7 +27,7 @@ def test_filter_objs_lower_thresh(filters_test_data):
     assert nobjs == 11
 
 
-def test_filter_objs_lower_thresh(filters_test_data):
+def test_filter_objs_lower_thresh_roi(filters_test_data):
     """Test for PlantCV."""
     # Read in test data
     mask = cv2.imread(filters_test_data.barley_example)
