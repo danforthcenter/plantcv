@@ -4,10 +4,11 @@ import cv2
 import os
 import numpy as np
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _rect_filter, _rect_replace
 from plantcv.plantcv import params
 
 
-def gaussian_blur(img, ksize, sigma_x=0, sigma_y=None):
+def gaussian_blur(img, ksize, sigma_x=0, sigma_y=None, roi=None):
     """
     Applies a Gaussian blur filter.
 
@@ -16,6 +17,7 @@ def gaussian_blur(img, ksize, sigma_x=0, sigma_y=None):
     # ksize   = Tuple of kernel dimensions, e.g. (5, 5)
     # sigmax  = standard deviation in X direction; if 0, calculated from kernel size
     # sigmay  = standard deviation in Y direction; if sigmaY is None, sigmaY is taken to equal sigmaX
+    # roi     = Optional rectangular ROI to apply gaussian blur in
 
     Returns:
     img_gblur = blurred image
@@ -24,10 +26,12 @@ def gaussian_blur(img, ksize, sigma_x=0, sigma_y=None):
     :param ksize: tuple
     :param sigma_x: int
     :param sigma_y: str or int
+    :param roi: Objects class
     :return img_gblur: numpy.ndarray
     """
-    img_gblur = cv2.GaussianBlur(img, ksize, sigma_x, sigma_y)
-
+    sub_img_gblur = _rect_filter(img, roi, cv2.GaussianBlur,
+                             **{"ksize":ksize, "sigmaX":sigma_x, "sigmaY":sigma_y})
+    img_gblur = _rect_replace(img, sub_img_gblur, roi)
     if len(np.shape(img_gblur)) == 3:
         cmap = None
     else:
