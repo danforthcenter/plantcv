@@ -2,9 +2,9 @@
 
 import numpy as np
 import os
+import cv2
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
-from cv2 import dilate
 
 def dilate(gray_img, ksize, i, roi=None):
     """
@@ -33,9 +33,9 @@ def dilate(gray_img, ksize, i, roi=None):
     kernel2 = np.ones((kernel1, kernel1), np.uint8)
     sub_dil_img = _rect_filter(img = gray_img,
                            roi=roi,
-                           function=dilate,
+                           function=cv2.dilate,
                            **{"kernel":kernel2, "iterations":i})
-    dil_img =  plantcv.plantcv._helpers._rect_replace(gray_img, sub_dil_img, roi)
+    dil_img = _rect_replace(gray_img, sub_dil_img, roi)
 
     _debug(visual=dil_img,
            filename=os.path.join(params.debug_outdir,

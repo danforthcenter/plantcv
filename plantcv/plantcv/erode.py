@@ -2,10 +2,10 @@
 
 import numpy as np
 import os
+import cv2
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _rect_filter, _rect_replace
 from plantcv.plantcv import params
-from cv2 import erode
 
 
 def erode(gray_img, ksize, i, roi=None):
@@ -35,7 +35,7 @@ def erode(gray_img, ksize, i, roi=None):
     kernel2 = np.ones((kernel1, kernel1), np.uint8)
     sub_er_img = _rect_filter(img = gray_img,
                            roi=roi,
-                           function=erode,
+                           function=cv2.erode,
                            **{"kernel":kernel2, "iterations":i})
     er_img = _rect_replace(gray_img, sub_er_img, roi)
     
