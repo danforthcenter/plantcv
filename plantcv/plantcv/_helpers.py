@@ -7,21 +7,26 @@ import pandas as pd
 
 
 def _dilate(gray_img, ksize, i):
-    """
-    Performs morphological 'dilation' filtering. Adds pixel to center of kernel if conditions set in kernel are true.
+    """Performs morphological 'dilation' filtering.
 
-    Inputs:
-    gray_img = Grayscale (usually binary) image data
-    ksize   = Kernel size (int). A k x k kernel will be built. Must be greater than 1 to have an effect.
-    i        = iterations, i.e. number of consecutive filtering passes
+    Parameters
+    ----------
+    gray_img : numpy.ndarray
+        Grayscale image data to be dilated
+    ksize : int
+        Kernel size (int). A k x k kernel will be built. Must be greater than 1 to have an effect.
+    i : int
+        Number of iterations (i.e. how many times to apply the dilation).
 
-    Returns:
-    dil_img = dilated image
+    Returns
+    -------
+    numpy.ndarray
+        Dilation result image
 
-    :param gray_img: numpy.ndarray
-    :param ksize: int
-    :param i: int
-    :return dil_img: numpy.ndarray
+    Raises
+    ------
+    ValueError
+        If ksize is less than or equal to 1.
     """
     if ksize <= 1:
         raise ValueError('ksize needs to be greater than 1 for the function to have an effect')
