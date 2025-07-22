@@ -1,9 +1,9 @@
 # Dilation filter
 
-import cv2
 import numpy as np
 import os
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _dilate
 from plantcv.plantcv import params
 
 
@@ -24,12 +24,7 @@ def dilate(gray_img, ksize, i):
     :param i: int
     :return dil_img: numpy.ndarray
     """
-    if ksize <= 1:
-        raise ValueError('ksize needs to be greater than 1 for the function to have an effect')
-
-    kernel1 = int(ksize)
-    kernel2 = np.ones((kernel1, kernel1), np.uint8)
-    dil_img = cv2.dilate(src=gray_img, kernel=kernel2, iterations=i)
+    dil_img = _dilate(gray_img, ksize, i)
 
     _debug(visual=dil_img,
            filename=os.path.join(params.debug_outdir,
