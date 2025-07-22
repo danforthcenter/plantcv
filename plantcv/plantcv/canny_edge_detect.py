@@ -1,7 +1,7 @@
 # Canny edge detection
 
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import dilate
+from plantcv.plantcv._helpers import _dilate
 from plantcv.plantcv import params
 from plantcv.plantcv import fatal_error
 from skimage import feature
@@ -74,10 +74,7 @@ def canny_edge_detect(img, mask=None, sigma=1.0, low_thresh=None, high_thresh=No
 
     # Adjust line thickness
     if thickness != 1:
-        debug = params.debug
-        params.debug = None
-        bin_img = dilate(bin_img, thickness, 1)
-        params.debug = debug
+        bin_img = _dilate(bin_img, thickness, 1)
 
     # Print or plot the binary image
     _debug(visual=bin_img,

@@ -4,11 +4,10 @@ import cv2
 import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import erode
-from plantcv.plantcv import dilate
 from plantcv.plantcv import outputs
 from plantcv.plantcv import color_palette
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _cv2_findcontours
+from plantcv.plantcv._helpers import _cv2_findcontours, _dilate
 
 
 def check_cycles(skel_img, label=None):
@@ -41,10 +40,6 @@ def check_cycles(skel_img, label=None):
     # Invert so the holes are white and background black
     just_cycles = cv2.bitwise_not(skel_copy)
 
-    # Store debug
-    debug = params.debug
-    params.debug = None
-
     # Erode slightly so that cv2.findContours doesn't think diagonal pixels are separate contours
     just_cycles = erode(just_cycles, 2, 1)
 
@@ -56,7 +51,7 @@ def check_cycles(skel_img, label=None):
 
     # Make debugging image
     cycle_img = skel_img.copy()
-    cycle_img = dilate(cycle_img, params.line_thickness, 1)
+    cycle_img = _dilate(cycle_img, params.line_thickness, 1)
     cycle_img = cv2.cvtColor(cycle_img, cv2.COLOR_GRAY2RGB)
     if num_cycles > 0:
         # Get a new color scale
@@ -69,9 +64,6 @@ def check_cycles(skel_img, label=None):
     outputs.add_observation(sample=label, variable='num_cycles', trait='number of cycles',
                             method='plantcv.plantcv.morphology.check_cycles', scale='none', datatype=int,
                             value=int(num_cycles), label='none')
-
-    # Reset debug mode
-    params.debug = debug
 
     _debug(visual=cycle_img, filename=os.path.join(params.debug_outdir, f"{params.device}_cycles.png"))
 
