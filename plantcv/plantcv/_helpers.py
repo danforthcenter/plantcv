@@ -6,7 +6,7 @@ from plantcv.plantcv import params
 import pandas as pd
 
 
-def _closing(gray_img, kernel=None):
+def _closing(gray_img, kernel=None, roi=None):
     """Wrapper for scikit-image closing functions.
 
     Opening can remove small dark spots (i.e. pepper).
@@ -17,6 +17,8 @@ def _closing(gray_img, kernel=None):
              input image (grayscale or binary)
     kernel   = numpy.ndarray
              optional neighborhood, expressed as an array of 1s and 0s. If None, use cross-shaped structuring element.
+    roi : Objects class
+             Optional rectangular ROI to erode within
 
     Returns
     -------
@@ -32,15 +34,21 @@ def _closing(gray_img, kernel=None):
     if len(np.shape(gray_img)) != 2:
         fatal_error("Input image must be grayscale or binary")
 
-    # If image is binary use the faster method
     if len(np.unique(gray_img)) <= 2:
-        bool_img = morphology.binary_closing(gray_img, kernel)
-        filtered_img = np.copy(bool_img.astype(np.uint8) * 255)
+        bool_img = gray_img.astype(bool)
+        sub_img = _rect_filter(bool_img, roi=roi, function=morphology.binary_closing,
+                               **{"footprint" : kernel})
+        filtered_img = sub_img.astype(np.uint8) * 255
+        replaced_img = _rect_replace(bool_img.astype(np.uint8) * 255, filtered_img, roi)
     # Otherwise use method appropriate for grayscale images
     else:
-        filtered_img = morphology.closing(gray_img, kernel)
+        filtered_img = _rect_filter(gray_img,
+                                    roi=roi,
+                                    function=morphology.closing,
+                                    **{"footprint" : kernel})
+        replaced_img = _rect_replace(gray_img, filtered_img, roi)
 
-    return filtered_img
+    return replaced_img
 
 
 def _image_subtract(gray_img1, gray_img2):
@@ -77,7 +85,7 @@ def _image_subtract(gray_img1, gray_img2):
     return new_img  # return
 
 
-def _erode(gray_img, ksize, i):
+def _erode(gray_img, ksize, i, roi=None):
     """Perform morphological 'erosion' filtering.
 
     Keeps pixel in center of the kernel if conditions set in kernel are
@@ -91,6 +99,8 @@ def _erode(gray_img, ksize, i):
              Kernel size (int). A ksize x ksize kernel will be built. Must be greater than 1 to have an effect.
     i : int
              interations, i.e. number of consecutive filtering passes
+    roi : Objects class
+             Optional rectangular ROI to erode within
 
     Returns
     -------
@@ -107,12 +117,14 @@ def _erode(gray_img, ksize, i):
 
     kernel1 = int(ksize)
     kernel2 = np.ones((kernel1, kernel1), np.uint8)
-    er_img = cv2.erode(src=gray_img, kernel=kernel2, iterations=i)
+    sub_er_img = _rect_filter(img=gray_img, roi=roi, function=cv2.erode,
+                              **{"kernel": kernel2, "iterations": i})
+    er_img = _rect_replace(gray_img, sub_er_img, roi)
 
     return er_img
 
 
-def _dilate(gray_img, ksize, i):
+def _dilate(gray_img, ksize, i, roi=None):
     """Performs morphological 'dilation' filtering.
 
     Parameters
@@ -123,6 +135,8 @@ def _dilate(gray_img, ksize, i):
         Kernel size (int). A k x k kernel will be built. Must be greater than 1 to have an effect.
     i : int
         Number of iterations (i.e. how many times to apply the dilation).
+    roi : Objects class
+        Optional rectangular ROI to erode within
 
     Returns
     -------
@@ -139,7 +153,9 @@ def _dilate(gray_img, ksize, i):
 
     kernel1 = int(ksize)
     kernel2 = np.ones((kernel1, kernel1), np.uint8)
-    dil_img = cv2.dilate(src=gray_img, kernel=kernel2, iterations=i)
+    sub_dil_img = _rect_filter(img=gray_img, roi=roi, function=cv2.dilate,
+                               **{"kernel": kernel2, "iterations": i})
+    dil_img = _rect_replace(gray_img, sub_dil_img, roi)
 
     return dil_img
 
