@@ -94,6 +94,19 @@ def _draw_color_chips(rgb_img, new_centers, radius):
     return labeled_mask, debug_img
 
 
+def _scale_contour(cnt, scale):
+    M = cv2.moments(cnt)
+    cx = int(M['m10']/M['m00'])
+    cy = int(M['m01']/M['m00'])
+
+    cnt_norm = cnt - [cx, cy]
+    cnt_scaled = cnt_norm * scale
+    cnt_scaled = cnt_scaled + [cx, cy]
+    cnt_scaled = cnt_scaled.astype(np.int32)
+
+    return cnt_scaled
+
+
 def _color_card_detection(rgb_img, **kwargs):
     """Algorithm to automatically detect a color card.
 
@@ -165,23 +178,34 @@ def _color_card_detection(rgb_img, **kwargs):
 
     cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
     # # Find the bounding box of the detected chips
-    # x, y, w, h = cv2.boundingRect(np.vstack(filtered_contours))
+    x, y, w, h = cv2.boundingRect(np.vstack(filtered_contours))
 
-    # # Draw the bound box rectangle
-    # boundind_mask = cv2.rectangle(np.zeros(rgb_img.shape[0:2]), (x, y), (x + w, y + h), (255), -1).astype(np.uint8)
+    # Draw the bound box rectangle
+    boundind_mask = cv2.rectangle(np.zeros(rgb_img.shape[0:2]), (x, y), (x + w, y + h), (255), -1).astype(np.uint8)
 
-    # # Initialize chip shape lists
-    # marea, mwidth, mheight = _get_contour_sizes(filtered_contours)
+    # Initialize chip shape lists
+    marea, mwidth, mheight = _get_contour_sizes(filtered_contours)
 
-    # # Concatenate all contours into one array and find the minimum area rectangle
-    # rect = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
-    # rect = cv2.minAreaRect(rect)
-    # # Get the corners of the rectangle
-    # corners = np.array(np.intp(cv2.boxPoints(rect)))
-    
+    # Concatenate all contours into one array and find the minimum area rectangle
+    rect = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
+    rect = cv2.minAreaRect(rect)
+    # Get the corners of the rectangle
+    corners = np.array(np.intp(cv2.boxPoints(rect)))
+    print("Old format:")
+    print(corners)
     # Use the convex hull of detected contours (as opposed to minAreaRect)
-    group = np.vstack(filtered_contours)
-    corners = cv2.convexHull(group)
+    curve = np.vstack(filtered_contours)
+    #edge_contours = cv2.convexHull(curve)
+    corners = cv2.approxPolyN(curve=curve, nsides=4, ensure_convex=True)
+    cv2.drawContours(debug_img, [corners], -1, (0, 255, 0), params.line_thickness + 3)
+    corners = _scale_contour(corners, .85)
+    cv2.drawContours(debug_img, [corners], -1, (255, 0, 0), params.line_thickness + 3)
+    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
+
+    corners = corners[0]
+    # corners = corners.reshape(-1, 1, 2)
+    # corners = np.array(np.intp(corners))
+    print("New format:")
     print(corners)
     if verbose_debug:
         print("Identified color card corners)")
@@ -199,6 +223,13 @@ def _color_card_detection(rgb_img, **kwargs):
     new_rect = cv2.minAreaRect(np.array(centers))
     # Get the corners of the rectangle
     box_points = cv2.boxPoints(new_rect).astype("float32")
+    box_points_int = np.int_(box_points) 
+    # Plot box points
+    debug_img = np.copy(rgb_img)
+    cv2.drawContours(debug_img, [corners], -1, (255, 0, 0), params.line_thickness + 3)
+    cv2.drawContours(debug_img, [box_points_int], -1, (255, 0, 0), params.line_thickness + 3)
+    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
+
     # Calculate the perspective transform matrix from the minimum area rectangle
     m_transform = cv2.getPerspectiveTransform(box_points, corners.astype("float32"))
     # Transform the chip centers using the perspective transform matrix
