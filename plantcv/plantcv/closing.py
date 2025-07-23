@@ -4,7 +4,7 @@ from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _closing
 
 
-def closing(gray_img, kernel=None):
+def closing(gray_img, kernel=None, roi=None):
     """Closes holes, removing small dark spots (i.e. pepper).
 
     Inputs:
@@ -18,8 +18,8 @@ def closing(gray_img, kernel=None):
     """
     filtered_img = _closing(gray_img, kernel)
 
-    _debug(visual=replaced_img,
+    _debug(visual=filtered_img,
            filename=os.path.join(params.debug_outdir, str(params.device) + '_opening' + '.png'),
            cmap='gray')
 
-    return replaced_img
+    return filtered_img
