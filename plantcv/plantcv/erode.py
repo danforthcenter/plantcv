@@ -1,36 +1,37 @@
 # Erosion filter
 
-import cv2
-import numpy as np
 import os
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _erode
 from plantcv.plantcv import params
 
 
 def erode(gray_img, ksize, i):
-    """
-    Perform morphological 'erosion' filtering. Keeps pixel in center of the kernel if conditions set in kernel are
+    """Perform morphological 'erosion' filtering.
+
+    Keeps pixel in center of the kernel if conditions set in kernel are
        true, otherwise removes pixel.
 
-    Inputs:
-    gray_img = Grayscale (usually binary) image data
-    ksize   = Kernel size (int). A ksize x ksize kernel will be built. Must be greater than 1 to have an effect.
-    i        = interations, i.e. number of consecutive filtering passes
+    Parameters
+    ----------
+    gray_img : numpy.ndarray
+             Grayscale (usually binary) image data
+    ksize : int
+             Kernel size (int). A ksize x ksize kernel will be built. Must be greater than 1 to have an effect.
+    i : int
+             interations, i.e. number of consecutive filtering passes
 
-    Returns:
-    er_img = eroded image
+    Returns
+    -------
+    numpy.ndarray
+         Eroded result image
 
-    :param gray_img: numpy.ndarray
-    :param ksize: int
-    :param i: int
-    :return er_img: numpy.ndarray
+    Raises
+    ------
+    ValueError
+        If ksize is less than or equal to 1.
     """
-    if ksize <= 1:
-        raise ValueError('ksize needs to be greater than 1 for the function to have an effect')
-
-    kernel1 = int(ksize)
-    kernel2 = np.ones((kernel1, kernel1), np.uint8)
-    er_img = cv2.erode(src=gray_img, kernel=kernel2, iterations=i)
+    er_img = _erode(gray_img, ksize, i)
 
     _debug(er_img,
            filename=os.path.join(params.debug_outdir,
