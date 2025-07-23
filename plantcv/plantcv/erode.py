@@ -7,7 +7,7 @@ from plantcv.plantcv._helpers import _erode
 from plantcv.plantcv import params
 
 
-def erode(gray_img, ksize, i):
+def erode(gray_img, ksize, i, roi=None):
     """Perform morphological 'erosion' filtering.
 
     Keeps pixel in center of the kernel if conditions set in kernel are
@@ -21,6 +21,8 @@ def erode(gray_img, ksize, i):
              Kernel size (int). A ksize x ksize kernel will be built. Must be greater than 1 to have an effect.
     i : int
              interations, i.e. number of consecutive filtering passes
+    roi : Objects class
+             Optional rectangular ROI to erode within
 
     Returns
     -------
