@@ -1,7 +1,6 @@
 # Dilation filter
 
 import os
-import cv2
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _dilate
 from plantcv.plantcv import params
@@ -26,7 +25,7 @@ def dilate(gray_img, ksize, i, roi=None):
     :param roi: Objects
     :return dil_img: numpy.ndarray
     """
-    dil_img = _dilate(gray_img, ksize, i)
+    dil_img = _dilate(gray_img, ksize, i, roi=roi)
 
     _debug(visual=dil_img,
            filename=os.path.join(params.debug_outdir,
