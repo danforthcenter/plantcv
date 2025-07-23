@@ -775,3 +775,80 @@ def _scale_size(value, trait_type="linear"):
         return value * conversion_rate
     # Multiplication with list comprehension for lists of values
     return [x*conversion_rate for x in value]
+
+
+def _identity(x, **kwargs):
+    """Identity function for use in _rect_filter
+    This may be useful if there are several outputs from a function passed to _rect_filter
+    which would otherwise be difficult to manage
+    Parameters
+    ----------
+    x : any
+      An object
+    **kwargs
+      Other keyword arguments, ignored.
+    """
+    return x
+
+
+def _rect_filter(img, roi=None, function=None, **kwargs):
+    """Subset a rectangular section of image to apply function to
+    Parameters
+    ----------
+    img : numpy.ndarray
+        An image
+    roi : plantcv Objects class
+        A rectangular ROI as returned by plantcv.roi.rectangle
+    function : function
+        analysis function to apply to each submask
+    **kwargs
+        Other keyword arguments to pass to the analysis function.
+    Returns
+    -------
+    any
+        Return value depends on the function that is called. If no function is called then this is a numpy.ndarray.
+    """
+    if roi is None:
+        xstart = 0
+        ystart = 0
+        xend = np.shape(img)[1]
+        yend = np.shape(img)[0]
+    else:
+        xstart = roi.contours[0][0][0][0][0].astype("int32")
+        ystart = roi.contours[0][0][0][0][1].astype("int32")
+        xend = roi.contours[0][0][2][0][0].astype("int32")
+        yend = roi.contours[0][0][2][0][1].astype("int32")
+    # slice image to subset rectangle
+    sub_img = img[ystart:yend, xstart:xend]
+    # apply function
+    if function is None:
+        function = _identity
+
+    return function(sub_img, **kwargs)
+
+
+def _rect_replace(img, sub_img, roi):
+    """
+    Parameters
+    ----------
+    img : numpy.ndarray
+        Full sized image
+    sub_img : numpy.ndarray
+        output from _rect_filter
+    roi : plantcv Objects class
+        A rectangular ROI as returned by plantcv.roi.rectangle
+    Returns
+    -------
+    numpy.ndarray
+    """
+    if roi is None:
+        # if no ROI then no subsetting was done, just return sub_img
+        return sub_img
+
+    # if subsetting was done then get coordinates, slice into main image, and return
+    xstart = roi.contours[0][0][0][0][0].astype("int32")
+    ystart = roi.contours[0][0][0][0][1].astype("int32")
+    xend = roi.contours[0][0][2][0][0].astype("int32")
+    yend = roi.contours[0][0][2][0][1].astype("int32")
+    img[ystart:yend, xstart:xend] = sub_img
+    return img
