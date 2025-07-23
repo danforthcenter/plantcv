@@ -5,7 +5,7 @@ from plantcv.plantcv._helpers import _closing
 
 
 def closing(gray_img, kernel=None):
-    """Wrapper for scikit-image closing functions. Opening can remove small dark spots (i.e. pepper).
+    """Closes holes, removing small dark spots (i.e. pepper).
 
     Inputs:
     gray_img = input image (grayscale or binary)
