@@ -22,6 +22,11 @@ def _closing(gray_img, kernel=None):
     -------
     numpy.ndarray
          filtered (holes closed) image
+
+    Raises
+    ------
+    ValueError
+        If input image is not gray-scale
     """
     # Make sure the image is binary/grayscale
     if len(np.shape(gray_img)) != 2:
@@ -58,7 +63,7 @@ def _image_subtract(gray_img1, gray_img2):
 
     Raises
     ------
-    fatal_error
+    ValueError
          If input image is not gray scale
     """
     # check inputs for gray-scale
