@@ -3,10 +3,9 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv import params
-from plantcv.plantcv import dilate
 from plantcv.plantcv import outputs
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _cv2_findcontours
+from plantcv.plantcv._helpers import _cv2_findcontours, _dilate
 
 
 def find_branch_pts(skel_img, mask=None, label=None):
@@ -71,13 +70,9 @@ def find_branch_pts(skel_img, mask=None, label=None):
     # Switch type to uint8 rather than bool
     branch_pts_img = branch_pts_img.astype(np.uint8) * 255
 
-    # Store debug
-    debug = params.debug
-    params.debug = None
-
     # Make debugging image
     if mask is None:
-        dilated_skel = dilate(skel_img, params.line_thickness, 1)
+        dilated_skel = _dilate(skel_img, params.line_thickness, 1)
         branch_plot = cv2.cvtColor(dilated_skel, cv2.COLOR_GRAY2RGB)
     else:
         # Make debugging image on mask
@@ -103,9 +98,6 @@ def find_branch_pts(skel_img, mask=None, label=None):
                             trait='list of branch-point coordinates identified from a skeleton',
                             method='plantcv.plantcv.morphology.find_branch_pts', scale='pixels', datatype=list,
                             value=branch_list, label=branch_labels)
-
-    # Reset debug mode
-    params.debug = debug
 
     _debug(visual=branch_plot, filename=os.path.join(params.debug_outdir, f"{params.device}_branch_pts.png"))
 

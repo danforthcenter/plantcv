@@ -1,14 +1,11 @@
 import os
-import numpy as np
-from skimage import morphology
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _rect_filter, _rect_replace
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv._helpers import _closing
 
 
-def closing(gray_img, kernel=None, roi=None):
-    """Wrapper for scikit-image closing functions. Opening can remove small dark spots (i.e. pepper).
+def closing(gray_img, kernel=None):
+    """Closes holes, removing small dark spots (i.e. pepper).
 
     Inputs:
     gray_img = input image (grayscale or binary)
@@ -19,24 +16,7 @@ def closing(gray_img, kernel=None, roi=None):
     :param kernel = ndarray
     :return filtered_img: ndarray
     """
-    # Make sure the image is binary/grayscale
-    if len(np.shape(gray_img)) != 2:
-        fatal_error("Input image must be grayscale or binary")
-
-    # If image is binary use the faster method
-    if len(np.unique(gray_img)) <= 2:
-        bool_img = gray_img.astype(bool)
-        sub_img = _rect_filter(bool_img, roi=roi, function=morphology.binary_closing,
-                               **{"footprint" : kernel})
-        filtered_img = sub_img.astype(np.uint8) * 255
-        replaced_img = _rect_replace(bool_img.astype(np.uint8) * 255, filtered_img, roi)
-    # Otherwise use method appropriate for grayscale images
-    else:
-        filtered_img = _rect_filter(gray_img,
-                                    roi=roi,
-                                    function=morphology.closing,
-                                    **{"footprint" : kernel})
-        replaced_img = _rect_replace(gray_img, filtered_img, roi)
+    filtered_img = _closing(gray_img, kernel)
 
     _debug(visual=replaced_img,
            filename=os.path.join(params.debug_outdir, str(params.device) + '_opening' + '.png'),

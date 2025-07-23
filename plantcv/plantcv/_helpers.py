@@ -1,9 +1,147 @@
 import cv2
 import numpy as np
-from plantcv.plantcv.image_subtract import image_subtract
+from skimage import morphology
 from plantcv.plantcv import fatal_error, warn
 from plantcv.plantcv import params
 import pandas as pd
+
+
+def _closing(gray_img, kernel=None):
+    """Wrapper for scikit-image closing functions.
+
+    Opening can remove small dark spots (i.e. pepper).
+
+    Parameters
+    ----------
+    gray_img = numpy.ndarray
+             input image (grayscale or binary)
+    kernel   = numpy.ndarray
+             optional neighborhood, expressed as an array of 1s and 0s. If None, use cross-shaped structuring element.
+
+    Returns
+    -------
+    numpy.ndarray
+         filtered (holes closed) image
+
+    Raises
+    ------
+    ValueError
+        If input image is not gray-scale
+    """
+    # Make sure the image is binary/grayscale
+    if len(np.shape(gray_img)) != 2:
+        fatal_error("Input image must be grayscale or binary")
+
+    # If image is binary use the faster method
+    if len(np.unique(gray_img)) <= 2:
+        bool_img = morphology.binary_closing(gray_img, kernel)
+        filtered_img = np.copy(bool_img.astype(np.uint8) * 255)
+    # Otherwise use method appropriate for grayscale images
+    else:
+        filtered_img = morphology.closing(gray_img, kernel)
+
+    return filtered_img
+
+
+def _image_subtract(gray_img1, gray_img2):
+    """Subtract values of one gray-scale image array from another gray-scale image array.
+
+    The
+    resulting gray-scale image array has a minimum element value of zero. That is all negative values resulting from the
+    subtraction are forced to zero.
+
+    Parameters
+    ----------
+    gray_img1 : numpy.ndarray
+              Grayscale image data from which gray_img2 will be subtracted
+    gray_img2 : numpy.ndarray
+              Grayscale image data which will be subtracted from gray_img1
+
+    Returns
+    -------
+    new_img = subtracted image
+
+    Raises
+    ------
+    ValueError
+         If input image is not gray scale
+    """
+    # check inputs for gray-scale
+    if len(np.shape(gray_img1)) != 2 or len(np.shape(gray_img2)) != 2:
+        fatal_error("Input image is not gray-scale")
+
+    new_img = gray_img1.astype(np.float64) - gray_img2.astype(np.float64)  # subtract values
+    new_img[np.where(new_img < 0)] = 0  # force negative array values to zero
+    new_img = new_img.astype(np.uint8)  # typecast image to 8-bit image
+
+    return new_img  # return
+
+
+def _erode(gray_img, ksize, i):
+    """Perform morphological 'erosion' filtering.
+
+    Keeps pixel in center of the kernel if conditions set in kernel are
+       true, otherwise removes pixel.
+
+    Parameters
+    ----------
+    gray_img : numpy.ndarray
+             Grayscale (usually binary) image data
+    ksize : int
+             Kernel size (int). A ksize x ksize kernel will be built. Must be greater than 1 to have an effect.
+    i : int
+             interations, i.e. number of consecutive filtering passes
+
+    Returns
+    -------
+    numpy.ndarray
+         Eroded result image
+
+    Raises
+    ------
+    ValueError
+        If ksize is less than or equal to 1.
+    """
+    if ksize <= 1:
+        raise ValueError('ksize needs to be greater than 1 for the function to have an effect')
+
+    kernel1 = int(ksize)
+    kernel2 = np.ones((kernel1, kernel1), np.uint8)
+    er_img = cv2.erode(src=gray_img, kernel=kernel2, iterations=i)
+
+    return er_img
+
+
+def _dilate(gray_img, ksize, i):
+    """Performs morphological 'dilation' filtering.
+
+    Parameters
+    ----------
+    gray_img : numpy.ndarray
+        Grayscale image data to be dilated
+    ksize : int
+        Kernel size (int). A k x k kernel will be built. Must be greater than 1 to have an effect.
+    i : int
+        Number of iterations (i.e. how many times to apply the dilation).
+
+    Returns
+    -------
+    numpy.ndarray
+        Dilation result image
+
+    Raises
+    ------
+    ValueError
+        If ksize is less than or equal to 1.
+    """
+    if ksize <= 1:
+        raise ValueError('ksize needs to be greater than 1 for the function to have an effect')
+
+    kernel1 = int(ksize)
+    kernel2 = np.ones((kernel1, kernel1), np.uint8)
+    dil_img = cv2.dilate(src=gray_img, kernel=kernel2, iterations=i)
+
+    return dil_img
 
 
 def _find_segment_ends(skel_img, leaf_objects, plotting_img, size):
@@ -45,7 +183,7 @@ def _find_segment_ends(skel_img, leaf_objects, plotting_img, size):
         for j, obj in enumerate(segment_end_obj):
             segment_plot = np.zeros(skel_img.shape[:2], np.uint8)
             cv2.drawContours(segment_plot, obj, -1, 255, 1, lineType=8)
-            segment_plot = dilate(segment_plot, 3, 1)
+            segment_plot = _dilate(segment_plot, 3, 1)
             overlap_img = _logical_operation(segment_plot, tips, 'and')
             x, y = segment_end_obj[j].ravel()[:2]
             coord = (int(x), int(y))
@@ -89,7 +227,7 @@ def _iterative_prune(skel_img, size):
     # Iteratively remove endpoints (tips) from a skeleton
     for _ in range(0, size):
         endpoints, _, _ = _find_tips(pruned_img)
-        pruned_img = image_subtract(pruned_img, endpoints)
+        pruned_img = _image_subtract(pruned_img, endpoints)
 
     # Make debugging image
     pruned_plot = np.zeros(skel_img.shape[:2], np.uint8)
@@ -154,7 +292,7 @@ def _find_tips(skel_img, mask=None):
 
     if mask is None:
         # Make debugging image
-        dilated_skel = dilate(skel_img, params.line_thickness, 1)
+        dilated_skel = _dilate(skel_img, params.line_thickness, 1)
         tip_plot = cv2.cvtColor(dilated_skel, cv2.COLOR_GRAY2RGB)
 
     else:
