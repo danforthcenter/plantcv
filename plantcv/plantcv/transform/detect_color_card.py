@@ -156,6 +156,11 @@ def _color_card_detection(rgb_img, **kwargs):
     rect = cv2.minAreaRect(rect)
     # Get the corners of the rectangle
     corners = np.array(np.intp(cv2.boxPoints(rect)))
+    # Check that corners are in image
+    dim = np.shape(imgray)
+    for pt in corners:
+        if pt[0] > dim[1] or pt[1] > dim[0]:
+            fatal_error('Color card corners could not be detected accurately')
     # Determine which corner most likely contains the white chip
     white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0], :], (255, 255, 255))) for corner in corners])
     corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])[[0, 1, 3, 2]]]
