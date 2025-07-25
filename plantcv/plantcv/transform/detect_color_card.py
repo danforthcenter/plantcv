@@ -191,30 +191,36 @@ def _color_card_detection(rgb_img, **kwargs):
     rect = cv2.minAreaRect(rect)
     # Get the corners of the rectangle
     corners = np.array(np.intp(cv2.boxPoints(rect)))
-    print("Old format:")
-    print(corners)
+    # Draw the corners as WHITE contour
+    print("boundingRect outline:")
+    cv2.drawContours(debug_img, [corners], -1, (255, 255, 255), params.line_thickness + 3)
+    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
+    debug_img = np.copy(rgb_img)
+    
     # Use the convex hull of detected contours (as opposed to minAreaRect)
     curve = np.vstack(filtered_contours)
     #edge_contours = cv2.convexHull(curve)
     corners = cv2.approxPolyN(curve=curve, nsides=4, ensure_convex=True)
+    # Draw the approximated polygon (quadrilateral) in GREEN 
     cv2.drawContours(debug_img, [corners], -1, (0, 255, 0), params.line_thickness + 3)
+    # Shrink the polygon
     corners = _scale_contour(corners, .85)
-    cv2.drawContours(debug_img, [corners], -1, (255, 0, 0), params.line_thickness + 3)
-    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
-
     corners = corners[0]
-    # corners = corners.reshape(-1, 1, 2)
-    # corners = np.array(np.intp(corners))
-    print("New format:")
-    print(corners)
     if verbose_debug:
         print("Identified color card corners)")
-        debug_img = np.copy(rgb_img)
         _, debug_img = _draw_color_chips(debug_img, corners, radius)
         _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
+        debug_img = np.copy(rgb_img)
     # Determine which corner most likely contains the white chip
     white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0], :], (255, 255, 255))) for corner in corners])
     corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])[[0, 1, 3, 2]]]
+    
+    # Draw the corners as BLUE contour 
+    print("approxPolyN outline:")
+    cv2.drawContours(debug_img, [corners], -1, (255, 0, 0), params.line_thickness + 3)
+    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
+    debug_img = np.copy(rgb_img)
+
     # Increment amount is arbitrary, cell distances rescaled during perspective transform
     increment = 100
     centers = [[int(0 + i * increment), int(0 + j * increment)] for j in range(nrows) for i in range(ncols)]
@@ -224,18 +230,17 @@ def _color_card_detection(rgb_img, **kwargs):
     # Get the corners of the rectangle
     box_points = cv2.boxPoints(new_rect).astype("float32")
     box_points_int = np.int_(box_points) 
-    # Plot box points
-    debug_img = np.copy(rgb_img)
-    cv2.drawContours(debug_img, [corners], -1, (255, 0, 0), params.line_thickness + 3)
-    cv2.drawContours(debug_img, [box_points_int], -1, (255, 0, 0), params.line_thickness + 3)
-    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
-
     # Calculate the perspective transform matrix from the minimum area rectangle
     m_transform = cv2.getPerspectiveTransform(box_points, corners.astype("float32"))
     # Transform the chip centers using the perspective transform matrix
     new_centers = cv2.transform(np.array([centers]), m_transform)[0][:, 0:2]
 
     # Create labeled mask and debug image of color chips
+    debug_img = np.copy(rgb_img)
+    # Plot box points
+    cv2.drawContours(debug_img, [corners], -1, (255, 0, 0), params.line_thickness + 3)
+    cv2.drawContours(debug_img, [box_points_int], -1, (255, 0, 0), params.line_thickness + 3)
+    labeled_mask, debug_img = _draw_color_chips(debug_img, centers, radius)
     labeled_mask, debug_img = _draw_color_chips(debug_img, new_centers, radius)
 
     return labeled_mask, debug_img, marea, mheight, mwidth, boundind_mask
