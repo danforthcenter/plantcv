@@ -38,7 +38,7 @@ def stdev_filter(img, ksize, borders='nearest', roi=None):
     # Apply the texture function over the subset image
     generic_filter(sub_img, np.std, size=ksize, output=sub_zeros, mode=borders)
     # re-insert the subset into the full size mask
-    replaced = _rect_replace(output, sub_zeros, roi)
+    replaced = _rect_replace(img, sub_zeros, roi)
 
     _debug(visual=replaced,
            filename=os.path.join(params.debug_outdir, str(params.device) + "_variance.png"))
