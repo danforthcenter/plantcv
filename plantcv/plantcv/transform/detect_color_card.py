@@ -103,7 +103,6 @@ def _check_point_per_chip(contours, centers, debug_img):
     ------
     fatal_error
           If any contour does not have exactly 1 mask center inside it (not on edge)
-    
     """
     contour_has_n_points = []
     for cont in contours:
@@ -113,7 +112,7 @@ def _check_point_per_chip(contours, centers, debug_img):
             bools.append(cv2.pointPolygonTest(cont, (int(pt[0]), int(pt[1])), False) == 1)
         contour_has_n_points.append(sum(bools))
 
-    if (any(n != 1 for n in contour_has_n_points)):
+    if any(n != 1 for n in contour_has_n_points):
         _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
         fatal_error("Centers do not map 1 to 1 with detected color chips")
 
