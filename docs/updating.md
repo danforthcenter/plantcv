@@ -349,6 +349,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.3: NA
 * post v3.3: filtered_img = **plantcv.closing**(*gray_img, kernel=None*)
+* post v4.9: filtered_img = **plantcv.closing**(*gray_img, kernel=None, roi=None*)
 
 
 #### plantcv.cluster_contour_splitimg
@@ -400,6 +401,7 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, dil_img = **plantcv.dilate**(*img, kernel, i, device, debug=None*)
 * post v3.0dev2: dil_img = **plantcv.dilate**(*gray_img, kernel, i*)
 * post v3.2: dil_img = **plantcv.dilate**(*gray_img, ksize, i*)
+* post v4.9: dil_img = **plantcv.dilate**(*gray_img, ksize, i, roi=None*)
 
 #### plantcv.distance_transform
 
@@ -411,16 +413,19 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, er_img = **plantcv.erode**(*img, kernel, i, device, debug=None*)
 * post v3.0dev2: er_img = **plantcv.erode**(*gray_img, kernel, i*)
 * post v3.2: er_img = **plantcv.erode**(*gray_img, ksize, i*)
+* post v4.9: er_img = **plantcv.erode**(*gray_img, ksize, i, roi=None*)
 
 #### plantcv.fill
 
 * pre v3.0dev2: device, filtered_img = **plantcv.fill**(*img, mask, size, device, debug=None*)
 * post v3.0dev2: filtered_img = **plantcv.fill**(*bin_img, size*)
+* post v4.9: filtered_img = **plantcv.fill**(*bin_img, size, roi=None*)
 
 #### plantcv.fill_holes
 
 * pre v3.3: NA
 * post v3.3: filtered_img = **plantcv.fill**(*bin_img*)
+* post v4.9: filtered_img = **plantcv.fill**(*bin_img, roi=None*)
 
 #### plantcv.filters.eccentricity 
 
@@ -431,13 +436,13 @@ pages for more details on the input and output variable types.
 
 * pre v4.4:  NA 
 * post v4.4: filtered_mask = **plantcv.filters.obj_props**(*bin_img, cut_side = "upper", thresh=0, regprop="area"*)
+* post v4.9: filtered_mask = **plantcv.filters.obj_props**(*bin_img, cut_side = "upper", thresh=0, regprop="area", roi=None*)
 
 #### plantcv.find_objects
 
 * pre v3.0dev2: device, objects, hierarchy = **plantcv.find_objects**(*img, mask, device, debug=None*)
 * post v3.0dev2: objects, hierarchy = **plantcv.find_objects**(*img, mask*)
 * post v4.0: Deprecated
-
 
 #### plantcv.flip
 
@@ -448,6 +453,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.1: NA
 * post v4.1: filled_image = **plantcv.flood_fill**(*bin_img, points, value=0*)
+* post v4.9: filled_image = **plantcv.flood_fill**(*bin_img, points, value=0, roi=None*)
 
 #### plantcv.fluor_fvfm
 
@@ -462,6 +468,7 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, img_gblur = **plantcv.gaussian_blur**(*device, img, ksize, sigmax=0, sigmay=None, debug=None*)
 * post v3.0dev2: img_gblur = **plantcv.gaussian_blur**(*img, ksize, sigmax=0, sigmay=None*)
 * post v3.2: img_gblur = **plantcv.gaussian_blur**(*img, ksize, sigma_x=0, sigma_y=None*)
+* post v4.9: img_gblur = **plantcv.gaussian_blur**(*img, ksize, sigma_x=0, sigma_y=None, roi=None*)
 
 #### plantcv.get_nir
 
@@ -600,6 +607,7 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, lp_filtered = **plantcv.laplace_filter**(*img, k, scale, device, debug=None*)
 * post v3.0dev2: lp_filtered = **plantcv.laplace_filter**(*gray_img, k, scale*)
 * post v3.2: lp_filtered = **plantcv.laplace_filter**(*gray_img, ksize, scale*)
+* post v4.9: lp_filtered = **plantcv.laplace_filter**(*gray_img, ksize, scale, roi=None*)
 
 #### plantcv.learn.train_kmeans
 
@@ -631,6 +639,7 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, img_mblur = **plantcv.median_blur**(*img, ksize, device, debug=None*)
 * post v3.0dev2: img_mblur = **plantcv.median_blur**(*gray_img, ksize*)
 * post v3.2: img_blur = **plantcv.median_blur**(*gray_img, ksize*) OR img_blur = **plantcv.median_blur**(*gray_img, (ksize1, ksize2)*)
+* post v4.9: img_blur = **plantcv.median_blur**(*gray_img, ksize, roi=None*) OR img_blur = **plantcv.median_blur**(*gray_img, (ksize1, ksize2), roi=None*)
 
 #### plantcv.morphology.analyze_stem
 
@@ -746,6 +755,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.3: NA
 * post v3.3: filtered_img = **plantcv.opening**(*gray_img, kernel=None*)
+* post v4.9: filtered_img = **plantcv.opening**(*gray_img, kernel=None, roi=None*)
 
 #### plantcv.otsu_auto_threshold
 
@@ -1015,6 +1025,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, sr_img = **plantcv.scharr_filter**(*img, dX, dY, scale, device, debug=None*)
 * post v3.0dev2: sr_img = **plantcv.scharr_filter**(*gray_img, dx, dy, scale*)
+* post v4.9: sr_img = **plantcv.scharr_filter**(*gray_img, dx, dy, scale, roi=None*)
 
 #### plantcv.shift_img
 
@@ -1031,6 +1042,7 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, sb_img = **plantcv.sobel_filter**(*img, dx, dy, k, device, debug=None*)
 * post v3.0dev2: sb_img = **plantcv.sobel_filter**(*gray_img, dx, dy, k*)
 * post v3.2: sb_img = **plantcv.sobel_filer**(*gray_img, dx, dy, ksize*)
+* post v4.9: sb_img = **plantcv.sobel_filer**(*gray_img, dx, dy, ksize, roi=None*)
 
 #### plantcv.spectral_index.ari
 
@@ -1157,6 +1169,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.9: NA
 * post v3.9: filtered_img = **plantcv.stdev_filter**(*img, kszie, borders="nearest"*)
+* post v4.9: filtered_img = **plantcv.stdev_filter**(*img, kszie, borders="nearest", roi=None*)
 
 #### plantcv.threshold.dual_channels
 
@@ -1229,6 +1242,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.6: NA
 * post v4.6: corrected_img = **plantcv.transform.auto_correct_color**(*rgb_img, label=None, \*\*kwargs*)
+* post v4.9: corrected_img = **plantcv.transform.auto_correct_color**(*rgb_img, label=None, roi=None, \*\*kwargs*)
 
 #### plantcv.transform.correct_color
 
