@@ -16,6 +16,8 @@ class TransformTestData:
         self.small_rgb_img = os.path.join(self.datadir, "setaria_small_plant_rgb.png")
         # Gray image
         self.small_gray_img = os.path.join(self.datadir, "setaria_small_plant_gray.png")
+        # RGB image with partial cover card
+        self.partial_card_rgb_img = os.path.join(self.datadir, "partial_card_rgb.png")
         # Target RGB image
         self.target_img = os.path.join(self.datadir, "target_img.png")
         # Target matrix file
