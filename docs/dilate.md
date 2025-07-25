@@ -3,7 +3,7 @@
 Perform morphological 'dilation' filtering. Adds pixel in center of the kernel if 
 conditions set in kernel are true.
 
-**plantcv.dilate**(*gray_img, ksize, i*)
+**plantcv.dilate**(*gray_img, ksize, i, roi=None*)
 
 **returns** image after dilation
 
@@ -11,6 +11,7 @@ conditions set in kernel are true.
     - gray_img - Grayscale (usually binary) image data.
     - ksize - An odd integer that is used to build a ksize x ksize matrix using np.ones. Must be greater than 1 to have an effect.
     - i - An integer for number of iterations, i.e. the number of consecutive filtering passes.
+	- roi - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to apply this function. (default = None, which uses the entire image)
 - **Context:**
     - Used to perform morphological dilation filtering. Helps expand objects at the edges, particularly after erosion.
 - **Example use:**

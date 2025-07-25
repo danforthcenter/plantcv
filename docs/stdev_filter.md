@@ -3,7 +3,7 @@
 Creates a grayscale image of pixelwise standard deviation from a grayscale image.
 
 
-**plantcv.stdev_filter**(*img, ksize, borders='nearest'*)
+**plantcv.stdev_filter**(*img, ksize, borders='nearest', roi=None*)
 
 **returns** stdev image
 
@@ -11,6 +11,7 @@ Creates a grayscale image of pixelwise standard deviation from a grayscale image
     - img - Grayscale or RGB image data
     - ksize - Kernel size for texture measure calculation
     - borders - How the array borders are handled, either ‘reflect’, ‘constant’, ‘nearest’ (default), ‘mirror’, or ‘wrap’
+	- roi - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to apply this function. (default = None, which uses the entire image)
 - **Note:**
     - This function is computationally expensive than other filters and will likely take several moments to run (even longer if images are large).
 - **Example use:**

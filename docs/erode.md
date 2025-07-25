@@ -3,7 +3,7 @@
 Perform morphological 'erosion' filtering. Keeps pixel in center of the kernel if 
 conditions set in kernel are true, otherwise removes pixel.
 
-**plantcv.erode**(*gray_img, ksize, i*)
+**plantcv.erode**(*gray_img, ksize, i, roi=None*)
 
 **returns** image after erosion
 
@@ -11,6 +11,7 @@ conditions set in kernel are true, otherwise removes pixel.
     - gray_img - Grayscale (usually binary) image data
     - ksize - Kernel size, an odd integer that is used to build a ksize x ksize matrix using np.ones. Must be greater than 1 to have an effect
     - i - An integer for number of iterations, i.e. the number of consecutive filtering passes
+	- roi - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to apply this function. (default = None, which uses the entire image)
    
 - **Context:**
     - Used to perform morphological erosion filtering. Helps remove isolated noise pixels or remove boundary of objects.

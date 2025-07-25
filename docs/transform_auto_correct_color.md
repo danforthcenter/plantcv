@@ -17,6 +17,7 @@ in the RGB space after automatic detection of a color card within the image. A o
         - block_size       - Size of a pixel neighborhood that is used to calculate a threshold value (default = 51). We suggest using 127 if using `adaptive_method=0`.
         - radius           - Radius of circle to make the color card labeled mask (default = 20).
         - min_size         - Minimum chip size for filtering objects after edge detection (default = 1000)
+        - roi              - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to look for the color card. (default = None)
 - **Returns**
     - corrected_img    - Color corrected image
 

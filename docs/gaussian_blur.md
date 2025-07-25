@@ -3,7 +3,7 @@
 Applies a gaussian blur filter. Applies median value to central pixel within a kernel size (ksize x ksize). 
 The function is a wrapper for the OpenCV function [gaussian blur](http://docs.opencv.org/2.4/modules/imgproc/doc/filtering.html?highlight=gaussianblur#gaussianblur).  
 
-**plantcv.gaussian_blur**(*img, ksize, sigma_x=0, sigma_y=None*)
+**plantcv.gaussian_blur**(*img, ksize, sigma_x=0, sigma_y=None, roi=None*)
 
 **returns** blurred image
 
@@ -12,6 +12,7 @@ The function is a wrapper for the OpenCV function [gaussian blur](http://docs.op
     - ksize - Tuple of kernel dimensions, e.g. (5, 5). Must be odd integers.
     - sigma_x - standard deviation in X direction; if 0 (default), calculated from kernel size
     - sigma_y - standard deviation in Y direction; if sigma_Y is None (default), sigma_Y is taken to equal sigma_X
+	- roi - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to apply this function. (default = None, which uses the entire image)
 - **Context:**
     - Used to reduce image noise
 

@@ -2,15 +2,16 @@
 
 This is a filtering method used to identify and highlight fine edges based on the 2nd derivative.
 
-**plantcv.laplace_filter**(*gray_img, ksize, scale*)
+**plantcv.laplace_filter**(*gray_img, ksize, scale, roi=None*)
 
 **returns** filtered image
 
 - **Parameters:**
     - gray_img - Grayscale image data
     - ksize - apertures size used to calculate 2nd derivative filter, specifies the size of the kernel (must be an odd integer: 1,3,5...)
-    - scale - scaling factor applied (multiplied) to computed Laplacian values (scale = 1 is unscaled) 
-    
+    - scale - scaling factor applied (multiplied) to computed Laplacian values (scale = 1 is unscaled)
+	- roi - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to apply this function. (default = None, which uses the entire image)
+
 - **Context:**
     - Used to define edges around objects
 - **Example use:**

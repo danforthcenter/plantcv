@@ -2,12 +2,13 @@
 
 Cleans pepper noise (black holes) by doing a flood fill 
 
-**plantcv.fill_holes**(*bin_img*)
+**plantcv.fill_holes**(*bin_img, roi=None*)
 
 **returns** fill_image
 
 - **Parameters:**
     - bin_img - Binary image data
+	- roi - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to apply this function. (default = None, which uses the entire image)
   - **Context:**
     - Used to reduce image noise
 - **Example use:**
