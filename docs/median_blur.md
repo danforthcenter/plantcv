@@ -3,7 +3,7 @@
 Applies a median blur filter. Applies median value to central pixel within a kernel size. 
 The function is a wrapper for the SciPy function [median filter](https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.ndimage.filters.median_filter.html).
 
-**plantcv.median_blur**(*gray_img, ksize, roi=None*)**
+**plantcv.median_blur**(*gray_img, ksize, roi=None*)
 
 **returns** blurred image
 
