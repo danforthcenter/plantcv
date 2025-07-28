@@ -188,23 +188,34 @@ def _color_card_detection(rgb_img, **kwargs):
 
     # Concatenate all contours into one array and find the minimum area rectangle
     rect = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
+    _, debug_img = _draw_color_chips(debug_img, rect, radius)
+    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
+    debug_img = np.copy(rgb_img)
     rect = cv2.minAreaRect(rect)
+    
     # Get the corners of the rectangle
     corners = np.array(np.intp(cv2.boxPoints(rect)))
+    ## Find white chip and reorder 
+    # Determine which corner most likely contains the white chip
+    white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0], :], (255, 255, 255))) for corner in corners])
+    corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])[[0, 1, 3, 2]]]
     # Draw the corners as WHITE contour
     print("boundingRect outline:")
+    _, debug_img = _draw_color_chips(debug_img, corners, radius)
     cv2.drawContours(debug_img, [corners], -1, (255, 255, 255), params.line_thickness + 3)
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
     debug_img = np.copy(rgb_img)
     
     # Use the convex hull of detected contours (as opposed to minAreaRect)
     curve = np.vstack(filtered_contours)
-    #edge_contours = cv2.convexHull(curve)
-    corners = cv2.approxPolyN(curve=curve, nsides=4, ensure_convex=True)
+    # Take centers from each detected color chip
+    rect = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
+    # Find four-sided polygon to describe the skewed color card 
+    corners = cv2.approxPolyN(curve=rect, nsides=4, ensure_convex=True)
     # Draw the approximated polygon (quadrilateral) in GREEN 
     cv2.drawContours(debug_img, [corners], -1, (0, 255, 0), params.line_thickness + 3)
     # Shrink the polygon
-    corners = _scale_contour(corners, .85)
+    #corners = _scale_contour(corners, .85)
     corners = corners[0]
     if verbose_debug:
         print("Identified color card corners)")
@@ -217,6 +228,7 @@ def _color_card_detection(rgb_img, **kwargs):
     
     # Draw the corners as BLUE contour 
     print("approxPolyN outline:")
+    _, debug_img = _draw_color_chips(debug_img, corners, radius)
     cv2.drawContours(debug_img, [corners], -1, (255, 0, 0), params.line_thickness + 3)
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
     debug_img = np.copy(rgb_img)
@@ -240,7 +252,11 @@ def _color_card_detection(rgb_img, **kwargs):
     # Plot box points
     cv2.drawContours(debug_img, [corners], -1, (255, 0, 0), params.line_thickness + 3)
     cv2.drawContours(debug_img, [box_points_int], -1, (255, 0, 0), params.line_thickness + 3)
-    labeled_mask, debug_img = _draw_color_chips(debug_img, centers, radius)
+    _, debug_img = _draw_color_chips(debug_img, corners, radius)
+    _, debug_img = _draw_color_chips(debug_img, box_points_int, int(radius*1.6))
+    debug_img = np.copy(rgb_img)
+    cv2.drawContours(debug_img, [corners], -1, (255, 0, 0), params.line_thickness + 3)
+    #labeled_mask, debug_img = _draw_color_chips(debug_img, centers, radius)
     labeled_mask, debug_img = _draw_color_chips(debug_img, new_centers, radius)
 
     return labeled_mask, debug_img, marea, mheight, mwidth, boundind_mask
