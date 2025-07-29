@@ -64,7 +64,7 @@ def _get_contour_sizes(contours):
     return marea, mwidth, mheight
 
 
-def _draw_color_chips(rgb_img, new_centers, radius):
+def _draw_color_chips(rgb_img, new_centers, radius, color=(255, 255, 0)):
     """Create labeled mask and debug image of color chips.
 
     Parameters
@@ -88,7 +88,7 @@ def _draw_color_chips(rgb_img, new_centers, radius):
     # Loop over the new chip centers and draw them on the RGB image and labeled mask
     for i, pt in enumerate(new_centers):
         cv2.circle(labeled_mask, new_centers[i], radius, (i + 1) * 10, -1)
-        cv2.circle(debug_img, new_centers[i], radius, (255, 255, 0), -1)
+        cv2.circle(debug_img, new_centers[i], radius, color, -1)
         cv2.putText(debug_img, text=str(i), org=pt, fontScale=params.text_size, color=(0, 0, 0),
                     fontFace=cv2.FONT_HERSHEY_SIMPLEX, thickness=params.text_thickness)
     return labeled_mask, debug_img
@@ -167,6 +167,9 @@ def _color_card_detection(rgb_img, **kwargs):
 
     # Draw filtered contours on debug img
     debug_img = np.copy(rgb_img)
+    
+    # Draw detected corners on debug img
+    corners_debug_img = np.copy(rgb_img)
 
     # Throw a fatal error if no color card found
     if len(filtered_contours) == 0:
@@ -221,10 +224,15 @@ def _color_card_detection(rgb_img, **kwargs):
     cv2.drawContours(debug_img, [corners], -1, (255, 255, 255), params.line_thickness + 3)
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
     debug_img = np.copy(rgb_img)
+    
     # Calculate the perspective transform matrix from the minimum area rectangle
     m_transform = cv2.getPerspectiveTransform(box_points, corners.astype("float32"))
     # Transform the chip centers using the perspective transform matrix
     new_centers = cv2.transform(np.array([centers]), m_transform)[0][:, 0:2]
+    _, corners_debug_img = _draw_color_chips(corners_debug_img, corners, 3, (255,255,255))
+
+    corners_debug_img
+    
     # Draw detected and utilized contours
     cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
     # Plot box points
@@ -262,6 +270,10 @@ def _color_card_detection(rgb_img, **kwargs):
     m_transform = cv2.getPerspectiveTransform(box_points, corners.astype("float32"))
     # Transform the chip centers using the perspective transform matrix
     new_centers = cv2.transform(np.array([centers]), m_transform)[0][:, 0:2]
+    # Plot and compare corners used in both algorithms
+    _, corners_debug_img = _draw_color_chips(corners_debug_img, corners, 2)
+    print("Corners used (white for rectangle method, blue for polygon method)")
+    _debug(visual=corners_debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
 
     # Create labeled mask and debug image of color chips
     debug_img = np.copy(rgb_img)
