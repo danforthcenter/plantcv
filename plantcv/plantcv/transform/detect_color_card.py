@@ -269,7 +269,7 @@ def mask_color_card(rgb_img, **kwargs):
 
 
 def detect_color_card(rgb_img, label=None, color_chip_size=None, **kwargs):
-    """Automatically detect a color card.
+    """Automatically detect a Macbeth ColorChecker style color card.
 
     Parameters
     ----------
