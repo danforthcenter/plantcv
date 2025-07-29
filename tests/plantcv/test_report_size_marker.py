@@ -53,6 +53,7 @@ def test_report_size_marker_bad_inputs(marker, channel, test_data):
         _ = report_size_marker_area(img=img, roi=roi, marker=marker,
                                     objcolor='light', thresh_channel=channel, thresh=120)
 
+
 def test_report_size_marker_no_detection(test_data):
     """Test for PlantCV."""
     # Clear outputs
