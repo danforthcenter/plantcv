@@ -183,18 +183,13 @@ def _set_size_scale_from_chip(color_chip_width, color_chip_height, color_chip_si
 
     Parameters
     ----------
-        color_chip_width : float
-            Width in pixels of the detected color chips
-        color_chip_height : float
-            Height in pixels of the detected color chips
-        color_chip_size: str, tuple
-            Type of supported color card target ("classic", "passport", or "cameratrax"), or a tuple of
-            (width, height) of the color card chip real-world dimensions in milimeters.
-
-    Returns
-    -------
-     None
-        Function does not return anything.
+    color_chip_width : float
+        Width in pixels of the detected color chips
+    color_chip_height : float
+        Height in pixels of the detected color chips
+    color_chip_size : str, tuple
+        Type of supported color card target ("classic", "passport", or "cameratrax"), or a tuple of
+        (width, height) of the color card chip real-world dimensions in milimeters.
     """
     # Define known color chip dimensions, all in milimeters
     card_types = {
