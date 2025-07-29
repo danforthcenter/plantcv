@@ -188,7 +188,8 @@ def _color_card_detection(rgb_img, **kwargs):
 
     # Concatenate all contours into one array and find the minimum area rectangle
     rect = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
-    _, debug_img = _draw_color_chips(debug_img, rect, radius)
+    ## Plot the centers of each detected chip contour 
+    #_, debug_img = _draw_color_chips(debug_img, rect, radius)
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
     debug_img = np.copy(rgb_img)
     rect = cv2.minAreaRect(rect)
@@ -250,11 +251,14 @@ def _color_card_detection(rgb_img, **kwargs):
     # Create labeled mask and debug image of color chips
     debug_img = np.copy(rgb_img)
     # Plot box points
-    cv2.drawContours(debug_img, [corners], -1, (255, 0, 0), params.line_thickness + 3)
-    cv2.drawContours(debug_img, [box_points_int], -1, (255, 0, 0), params.line_thickness + 3)
+    cv2.drawContours(debug_img, [corners], -1, (255, 0, 0), params.line_thickness)
+    cv2.drawContours(debug_img, [box_points_int], -1, (255, 0, 0), params.line_thickness + 5)
     _, debug_img = _draw_color_chips(debug_img, corners, radius)
     _, debug_img = _draw_color_chips(debug_img, box_points_int, int(radius*1.6))
     debug_img = np.copy(rgb_img)
+    # Draw detected and utilized contours
+    cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
+    # Draw the polygon used to calculate transformation
     cv2.drawContours(debug_img, [corners], -1, (255, 0, 0), params.line_thickness + 3)
     #labeled_mask, debug_img = _draw_color_chips(debug_img, centers, radius)
     labeled_mask, debug_img = _draw_color_chips(debug_img, new_centers, radius)
