@@ -49,16 +49,17 @@ marker_area = pcv.outputs.metadata['marker_area']['value']
 
 # Scale length & area Outputs collected downstream by
 # updating size scaling parameters if the marker is detected
-if image: # function returns None if no marker detected
-    pcv.params.unit = "cm"
 # E.G. Given a square size marker, (3cm x 3cm) in size
 if image: # function returns None if no marker detected
+    pcv.params.unit = "cm"
     pcv.params.px_width = 3 / marker_area**(1/2) 
     pcv.params.px_height = 3 / marker_area**(1/2)
+
 # E.G. Given a circular size marker, 2cm in Diameter 
 # by averaging ellipse axis lengths detetcted
 marker_diameter_cm = 2
 if image: # function returns None if no marker detected
+    pcv.params.unit = "cm"
     marker_diameter_px = (pcv.outputs.metadata['marker_ellipse_major_axis']['value'] + \
         pcv.outputs.metadata['marker_ellipse_minor_axis']['value']) / 2 
     pcv.params.px_width = marker_diameter_cm / marker_diameter_px
