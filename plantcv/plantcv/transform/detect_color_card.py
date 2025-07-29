@@ -178,6 +178,58 @@ def _color_card_detection(rgb_img, **kwargs):
     return labeled_mask, debug_img, marea, mheight, mwidth, boundind_mask
 
 
+def _set_size_scale_from_chip(color_chip_width, color_chip_height, color_chip_size):
+    """Set the size scaling factors in Params from the known size of a given color card target.
+
+    Parameters
+    ----------
+    color_chip_width : float
+        Width in pixels of the detected color chips
+    color_chip_height : float
+        Height in pixels of the detected color chips
+    color_chip_size : str, tuple
+        Type of supported color card target ("classic", "passport", or "cameratrax"), or a tuple of
+        (width, height) of the color card chip real-world dimensions in milimeters.
+    """
+    # Define known color chip dimensions, all in milimeters
+    card_types = {
+        "CLASSIC": {
+            "chip_width": 40,
+            "chip_height": 40
+        },
+        "PASSPORT": {
+            "chip_width": 12,
+            "chip_height": 12
+        },
+        "CAMERATRAX": {
+            "chip_width": 11,
+            "chip_height": 11
+        }
+    }
+
+    # Check if user provided a valid color card type
+    if type(color_chip_size) is str and color_chip_size.upper() in card_types:
+        # Set size scaling parameters
+        params.px_width = card_types[color_chip_size.upper()]["chip_width"] / color_chip_width
+        params.px_height = card_types[color_chip_size.upper()]["chip_height"] / color_chip_height
+    # If not, check to make sure custom dimensions provided are numeric
+    else:
+        try:
+            # Set size scaling parameters
+            params.px_width = float(color_chip_size[0]) / color_chip_width
+            params.px_height = float(color_chip_size[1]) / color_chip_height
+        # Fail if provided color_chip_size is not supported
+        except ValueError:
+            fatal_error(f"Invalid input '{color_chip_size}'. Choose from {list(card_types.keys())}\
+            or provide your color card chip dimensions explicitly")
+        # Fail if provided color_chip_size is integer rather than tuple
+        except TypeError:
+            fatal_error(f"Invalid input '{color_chip_size}'. Choose from {list(card_types.keys())}\
+            or provide your color card chip dimensions explicitly as a tuple e.g. color_chip_size=(10,10).")
+    # If size scaling successful, set units to millimeters
+    params.unit = "mm"
+
+
 def mask_color_card(rgb_img, **kwargs):
     """Automatically detect a color card and create bounding box mask of the chips detected.
 
@@ -216,8 +268,8 @@ def mask_color_card(rgb_img, **kwargs):
     return bounding_mask
 
 
-def detect_color_card(rgb_img, label=None, **kwargs):
-    """Automatically detect a color card.
+def detect_color_card(rgb_img, label=None, color_chip_size=None, **kwargs):
+    """Automatically detect a Macbeth ColorChecker style color card.
 
     Parameters
     ----------
@@ -225,6 +277,9 @@ def detect_color_card(rgb_img, label=None, **kwargs):
         Input RGB image data containing a color card.
     label : str, optional
         modifies the variable name of observations recorded (default = pcv.params.sample_label).
+    color_chip_size: str, tuple, optional
+        "passport", "classic", "cameratrax"; or tuple formatted (width, height)
+        in millimeters (default = None)
     **kwargs
         Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle.
 
@@ -253,10 +308,14 @@ def detect_color_card(rgb_img, label=None, **kwargs):
     chip_height = np.median(mheight)
     chip_width = np.median(mwidth)
 
-    # Save out chip size for pixel to cm standardization
+    # Save out chip size for pixel to mm standardization
     outputs.add_metadata(term="median_color_chip_size", datatype=float, value=chip_size)
     outputs.add_metadata(term="median_color_chip_width", datatype=float, value=chip_width)
     outputs.add_metadata(term="median_color_chip_height", datatype=float, value=chip_height)
+
+    # Set size scaling factor if card type is provided
+    if color_chip_size:
+        _set_size_scale_from_chip(color_chip_height=chip_height, color_chip_width=chip_width, color_chip_size=color_chip_size)
 
     # Debugging
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
