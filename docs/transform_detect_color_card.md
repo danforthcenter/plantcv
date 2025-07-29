@@ -1,6 +1,6 @@
 ## Automatically Detect a Color Card
 
-Automatically detects a color card and creates a labeled mask. 
+Automatically detects a Macbeth ColorChecker style color card and creates a labeled mask. 
 
 **plantcv.transform.detect_color_card**(*rgb_img, label=None, color_chip_size=None, \*\*kwargs*)
 
