@@ -62,20 +62,19 @@ corrected_img = pcv.transform.affine_color_correction(rgb_img=rgb_img,
 
 ### Suppored Color Cards
 
-**[Xrite/Calibrite Passport Color Photo](https://calibrite.com/us/product/colorchecker-passport-photo-2/)** 
+**[Calibrite ColorChecker Passport](https://calibrite.com/us/product/colorchecker-passport-photo-2/)** 
 
 ![Screenshot](img/documentation_images/correct_color_imgs/calibrite-passport.png)
-![Screenshot](img/documentation_images/correct_color_imgs/xrite-passport.png)
 
 Chip dimensions: 12mm x 12mm
 
-**[Classic](https://calibrite.com/us/product/colorchecker-classic/)** 
+**[Calibrite ColorChecker Classic](https://calibrite.com/us/product/colorchecker-classic/)** 
 
 ![Screenshot](img/documentation_images/correct_color_imgs/classic.png)
 
 Chip dimensions: 40mm x 40mm
 
-**[CameraTrax](https://www.cameratrax.com/cardorder.php)** 
+**[CameraTrax 24ColorCard-2x3](https://www.cameratrax.com/cardorder.php)** 
 
 ![Screenshot](img/documentation_images/correct_color_imgs/camera-trax.png)
 
