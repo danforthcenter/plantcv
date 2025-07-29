@@ -176,43 +176,67 @@ def _color_card_detection(rgb_img, **kwargs):
             _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
         fatal_error('No color card found')
 
-    cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
-    # # Find the bounding box of the detected chips
-    x, y, w, h = cv2.boundingRect(np.vstack(filtered_contours))
-
-    # Draw the bound box rectangle
-    boundind_mask = cv2.rectangle(np.zeros(rgb_img.shape[0:2]), (x, y), (x + w, y + h), (255), -1).astype(np.uint8)
-
-    # Initialize chip shape lists
+    # Initialize chip size & dimension lists
     marea, mwidth, mheight = _get_contour_sizes(filtered_contours)
+    boundind_mask = np.zeros(rgb_img.shape[0:2])
 
-    # Concatenate all contours into one array and find the minimum area rectangle
-    rect = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
+    # # # Find the bounding box of the detected chips
+    # x, y, w, h = cv2.boundingRect(np.vstack(filtered_contours))
+
+    # # Draw the bound box rectangle
+    # boundind_mask = cv2.rectangle(np.zeros(rgb_img.shape[0:2]), (x, y), (x + w, y + h), (255), -1).astype(np.uint8)
+
+    # Concatenate all detected centers into one array (minimum area rectangle used to find chip centers)
+    square_centroids = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
+
+    # Increment amount is arbitrary, cell distances rescaled during perspective transform
+    increment = 100
+    centers = [[int(0 + i * increment), int(0 + j * increment)] for j in range(nrows) for i in range(ncols)]
+
+    # Find the minimum area rectangle of the hypothetical labeled mask
+    new_rect = cv2.minAreaRect(np.array(centers))
+    # Get the corners of the rectangle
+    box_points = cv2.boxPoints(new_rect).astype("float32")
+    box_points_int = np.int_(box_points)
+
+    ### This is where the algorithm *might* split ###
+    #########################################################################################################
     ## Plot the centers of each detected chip contour 
     #_, debug_img = _draw_color_chips(debug_img, rect, radius)
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
     debug_img = np.copy(rgb_img)
-    rect = cv2.minAreaRect(rect)
+    rect = cv2.minAreaRect(square_centroids) ########## handles rotation but not skew 
     
     # Get the corners of the rectangle
     corners = np.array(np.intp(cv2.boxPoints(rect)))
     ## Find white chip and reorder 
     # Determine which corner most likely contains the white chip
     white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0], :], (255, 255, 255))) for corner in corners])
+    # Sort color chips based on detected card orientation
     corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])[[0, 1, 3, 2]]]
+    
     # Draw the corners as WHITE contour
     print("boundingRect outline:")
     _, debug_img = _draw_color_chips(debug_img, corners, radius)
     cv2.drawContours(debug_img, [corners], -1, (255, 255, 255), params.line_thickness + 3)
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
     debug_img = np.copy(rgb_img)
-    
-    # Use the convex hull of detected contours (as opposed to minAreaRect)
-    curve = np.vstack(filtered_contours)
-    # Take centers from each detected color chip
-    rect = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
+    # Calculate the perspective transform matrix from the minimum area rectangle
+    m_transform = cv2.getPerspectiveTransform(box_points, corners.astype("float32"))
+    # Transform the chip centers using the perspective transform matrix
+    new_centers = cv2.transform(np.array([centers]), m_transform)[0][:, 0:2]
+    # Draw detected and utilized contours
+    cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
+    # Plot box points
+    cv2.drawContours(debug_img, [corners], -1, (255, 0, 0), params.line_thickness)
+    cv2.drawContours(debug_img, [box_points_int], -1, (255, 0, 0), params.line_thickness + 5)
+    labeled_mask, debug_img = _draw_color_chips(debug_img, new_centers, radius)
+    print("boundingRect algorithm results:")
+    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
+    debug_img = np.copy(rgb_img)
+    #########################################################################################################
     # Find four-sided polygon to describe the skewed color card 
-    corners = cv2.approxPolyN(curve=rect, nsides=4, ensure_convex=True)
+    corners = cv2.approxPolyN(curve=square_centroids, nsides=4, ensure_convex=True)
     # Draw the approximated polygon (quadrilateral) in GREEN 
     cv2.drawContours(debug_img, [corners], -1, (0, 255, 0), params.line_thickness + 3)
     # Shrink the polygon
@@ -233,16 +257,7 @@ def _color_card_detection(rgb_img, **kwargs):
     cv2.drawContours(debug_img, [corners], -1, (255, 0, 0), params.line_thickness + 3)
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
     debug_img = np.copy(rgb_img)
-
-    # Increment amount is arbitrary, cell distances rescaled during perspective transform
-    increment = 100
-    centers = [[int(0 + i * increment), int(0 + j * increment)] for j in range(nrows) for i in range(ncols)]
-
-    # Find the minimum area rectangle of the chip centers
-    new_rect = cv2.minAreaRect(np.array(centers))
-    # Get the corners of the rectangle
-    box_points = cv2.boxPoints(new_rect).astype("float32")
-    box_points_int = np.int_(box_points) 
+    
     # Calculate the perspective transform matrix from the minimum area rectangle
     m_transform = cv2.getPerspectiveTransform(box_points, corners.astype("float32"))
     # Transform the chip centers using the perspective transform matrix
@@ -262,6 +277,7 @@ def _color_card_detection(rgb_img, **kwargs):
     cv2.drawContours(debug_img, [corners], -1, (255, 0, 0), params.line_thickness + 3)
     #labeled_mask, debug_img = _draw_color_chips(debug_img, centers, radius)
     labeled_mask, debug_img = _draw_color_chips(debug_img, new_centers, radius)
+    print("approxPolyN algorithm results:")
 
     return labeled_mask, debug_img, marea, mheight, mwidth, boundind_mask
 
