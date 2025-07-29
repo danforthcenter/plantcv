@@ -35,8 +35,6 @@ from plantcv import plantcv as pcv
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "plot"
-# Optionally, set a sample label name
-pcv.params.sample_label = "marker"
 
 # Define an ROI for the marker
 roi = pcv.roi.rectangle(img=img1, x=3550, y=850, h=500, w=500)
