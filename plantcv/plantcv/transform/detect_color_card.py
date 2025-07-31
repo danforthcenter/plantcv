@@ -204,14 +204,19 @@ def _set_size_scale_from_chip(color_chip_width, color_chip_height, color_chip_si
         "CAMERATRAX": {
             "chip_width": 11,
             "chip_height": 11
+        },
+        "NANO": {
+            "chip_width": 4,
+            "chip_height": 3
         }
     }
 
     # Check if user provided a valid color card type
     if type(color_chip_size) is str and color_chip_size.upper() in card_types:
         # Set size scaling parameters
-        params.px_width = card_types[color_chip_size.upper()]["chip_width"] / color_chip_width
-        params.px_height = card_types[color_chip_size.upper()]["chip_height"] / color_chip_height
+        chip_dims = [color_chip_width, color_chip_height]
+        params.px_width = card_types[color_chip_size.upper()]["chip_width"] / max(chip_dims)
+        params.px_height = card_types[color_chip_size.upper()]["chip_height"] / min(chip_dims)
     # If not, check to make sure custom dimensions provided are numeric
     else:
         try:
