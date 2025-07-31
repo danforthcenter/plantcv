@@ -37,4 +37,4 @@ pcv.learn.train_kmeans(img_dir="./silphium_integrifolium_root_images",
 ```
 
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/learn/train_kmeans.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/learn/train_kmeans.py)

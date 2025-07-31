@@ -20,16 +20,16 @@ def acute(img, mask, win, threshold):
                   coordinate clusters within each contour
 
     Outputs:
-    homolog_pts = pseudo-landmarks selected from each landmark cluster
-    start_pts   = pseudo-landmark island starting position; useful in parsing homolog_pts in downstream analyses
-    stop_pts    = pseudo-landmark island end position ; useful in parsing homolog_pts in downstream analyses
-    ptvals      = average values of pixel intensity from the mask used to generate cont;
-                  useful in parsing homolog_pts in downstream analyses
-    chain       = raw angle scores for entire contour, used to visualize landmark
-                  clusters
-    verbose_out = supplemental file which stores coordinates, distance from
-                  landmark cluster edges, and angle score for entire contour.  Used
-                  in troubleshooting.
+    homolog_pts    = pseudo-landmarks selected from each landmark cluster
+    start_pts      = pseudo-landmark island starting position; useful in parsing homolog_pts in downstream analyses
+    stop_pts       = pseudo-landmark island end position ; useful in parsing homolog_pts in downstream analyses
+    ptvals         = average values of pixel intensity from the mask used to generate cont;
+                     useful in parsing homolog_pts in downstream analyses
+    chain          = raw angle scores for entire contour, used to visualize landmark
+                     clusters
+    max_dist       = supplemental list which stores coordinates, distance from
+                     landmark cluster edges, and angle score for entire contour.  Used
+                     in troubleshooting.
 
     :param img: numpy.ndarray
     :param mask: numpy.ndarray
@@ -39,8 +39,8 @@ def acute(img, mask, win, threshold):
     :return start_pts: numpy.ndarray
     :return stop_pts: numpy.ndarray
     :return ptvals: list
-    :return chain: lsit
-    :return verbose_out: list
+    :return chain: list
+    :return max_dist: list
     """
     # Find contours
     contours, hierarchy = _cv2_findcontours(bin_img=mask)
@@ -118,7 +118,7 @@ def acute(img, mask, win, threshold):
 
         if len(isle) > 1:
             if (isle[0][0] == 0) & (isle[-1][-1] == (len(chain)-1)):
-                if params.debug is not None:
+                if params.verbose:
                     print('Fusing contour edges')
                 island = isle[-1]+isle[0]  # Fuse overlapping ends of contour
                 # Delete islands to be spliced if start-end fusion required
@@ -126,7 +126,7 @@ def acute(img, mask, win, threshold):
                 del isle[-1]
                 isle.insert(0, island)      # Prepend island to isle
         else:
-            if params.debug is not None:
+            if params.verbose:
                 print('Microcontour...')
 
         # Homologous point maximum distance method
@@ -155,7 +155,7 @@ def acute(img, mask, win, threshold):
                 ptvals.append('NaN')        # If no values can be retrieved (small/collapsed contours)
                 vals = []
             if len(island) >= 3:               # If landmark is multiple points (distance scan for position)
-                if params.debug is not None:
+                if params.verbose:
                     print('route C')
                 ss = obj[island[0]]            # Store isle "x" start site
                 ts = obj[island[-1]]           # Store isle "x" termination site
@@ -171,14 +171,14 @@ def acute(img, mask, win, threshold):
                         pt = d
                         dist_1 = dist_2                          # Current mean becomes new best mean
                 # print pt
-                if params.debug is not None:
+                if params.verbose:
                     print(f"Landmark site: {pt}, Start site: {island[0]}, Term. site: {island[-1]}")
 
                 maxpts.append(pt)           # Empty 'pts' prior to next mean distance scan
                 ss_pts.append(island[0])
                 ts_pts.append(island[-1])
 
-            if params.debug is not None:
+            if params.verbose:
                 print(f'Landmark point indices: {maxpts}')
                 print(f'Starting site indices: {ss_pts}')
                 print(f'Termination site indices: {ts_pts}')
