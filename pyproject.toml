@@ -26,7 +26,8 @@ dependencies = [
     "statsmodels",
     "altair",
     "vl-convert-python",
-    "nd2"
+    "nd2",
+    "flyr"
 ]
 requires-python = ">=3.8"
 authors = [
