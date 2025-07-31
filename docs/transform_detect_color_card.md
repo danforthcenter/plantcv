@@ -9,7 +9,7 @@ Automatically detects a Macbeth ColorChecker style color card and creates a labe
 - **Parameters**
     - rgb_img          - Input RGB image data containing a color card.
     - label            - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
-    - color_chip_size - Type of color card to be detected, ("classic", "passport", or "cameratrax", by default `None`) or a tuple of the `(width, height)` dimensions of the color card chips in millimeters. If set then size scalings parameters `pcv.params.unit`, `pcv.params.px_width`, and `pcv.params.px_height`
+    - color_chip_size - Type of color card to be detected, ("classic", "passport", "nano", or "cameratrax", by default `None`) or a tuple of the `(width, height)` dimensions of the color card chips in millimeters. If set then size scalings parameters `pcv.params.unit`, `pcv.params.px_width`, and `pcv.params.px_height`
             are automatically set, and utilized throughout linear and area type measurements stored to `Outputs`. 
     - **kwargs         - Other keyword arguments passed to `cv2.adaptiveThreshold` and `cv2.circle`.
         - adaptive_method - Adaptive threhold method. 0 (mean) or 1 (Gaussian) (default = 1).
@@ -79,5 +79,11 @@ Chip dimensions: 40mm x 40mm
 ![Screenshot](img/documentation_images/correct_color_imgs/camera-trax.png)
 
 Chip dimensions: 11mm x 11mm
+
+**[ColorChecker Classic Nano](https://calibrite.com/us/product/colorchecker-classic-nano/)** 
+
+![Screenshot](img/documentation_images/correct_color_imgs/nano.jpeg)
+
+Chip dimensions: 3mm x 4mm
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/transform/detect_color_card.py)
