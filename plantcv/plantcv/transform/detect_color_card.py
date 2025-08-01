@@ -8,7 +8,7 @@ import math
 import numpy as np
 from plantcv.plantcv import params, outputs, fatal_error, deprecation_warning
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _rgb2gray, _cv2_findcontours, _object_composition
+from plantcv.plantcv._helpers import _rgb2gray, _rgb2hsv, _cv2_findcontours, _object_composition
 
 
 def _is_square(contour, min_size, aspect_ratio=1.27, solidity=.8):
@@ -151,22 +151,26 @@ def _color_card_detection(rgb_img, **kwargs):
     ncols = 4
 
     # Convert to grayscale, threshold, and findContours
-    imgray = _rgb2gray(rgb_img=rgb_img)
+    imgray = _rgb2hsv(rgb_img=rgb_img, channel="v")
     gaussian = cv2.GaussianBlur(imgray, (11, 11), 0)
     thresh = cv2.adaptiveThreshold(gaussian, 255, adaptive_method,
                                    cv2.THRESH_BINARY_INV, block_size, 2)
+    print("auto_threshold results:")
+    _debug(visual=thresh, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
     contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     # Filter contours, keep only square-shaped ones
     filtered_contours = [contour for contour in contours if _is_square(contour, min_size, aspect_ratio, solidity)]
+    debug_img = np.copy(rgb_img)
+    print("square-like contours:")
+    cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
+    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
+    debug_img = np.copy(rgb_img)
     # Calculate median area of square contours
     target_square_area = np.median([cv2.contourArea(cnt) for cnt in filtered_contours])
     # Filter contours again, keep only those within 20% of median area
     filtered_contours = [contour for contour in filtered_contours if
                          (0.8 < (cv2.contourArea(contour) / target_square_area) < 1.2)]
-
-    # Draw filtered contours on debug img
-    debug_img = np.copy(rgb_img)
     
     # Draw detected corners on debug img
     corners_debug_img = np.copy(rgb_img)
@@ -182,12 +186,6 @@ def _color_card_detection(rgb_img, **kwargs):
     # Initialize chip size & dimension lists
     marea, mwidth, mheight = _get_contour_sizes(filtered_contours)
     boundind_mask = np.zeros(rgb_img.shape[0:2])
-
-    # # # Find the bounding box of the detected chips
-    # x, y, w, h = cv2.boundingRect(np.vstack(filtered_contours))
-
-    # # Draw the bound box rectangle
-    # boundind_mask = cv2.rectangle(np.zeros(rgb_img.shape[0:2]), (x, y), (x + w, y + h), (255), -1).astype(np.uint8)
 
     # Concatenate all detected centers into one array (minimum area rectangle used to find chip centers)
     square_centroids = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
@@ -205,9 +203,6 @@ def _color_card_detection(rgb_img, **kwargs):
     ### This is where the algorithm *might* split ###
     #########################################################################################################
     ## Plot the centers of each detected chip contour 
-    #_, debug_img = _draw_color_chips(debug_img, rect, radius)
-    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
-    debug_img = np.copy(rgb_img)
     rect = cv2.minAreaRect(square_centroids) ########## handles rotation but not skew 
     
     # Get the corners of the rectangle
@@ -230,14 +225,11 @@ def _color_card_detection(rgb_img, **kwargs):
     # Transform the chip centers using the perspective transform matrix
     new_centers = cv2.transform(np.array([centers]), m_transform)[0][:, 0:2]
     _, corners_debug_img = _draw_color_chips(corners_debug_img, corners, 3, (255,255,255))
-
-    corners_debug_img
     
     # Draw detected and utilized contours
     cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
     # Plot box points
     cv2.drawContours(debug_img, [corners], -1, (255, 0, 0), params.line_thickness)
-    cv2.drawContours(debug_img, [box_points_int], -1, (255, 0, 0), params.line_thickness + 5)
     labeled_mask, debug_img = _draw_color_chips(debug_img, new_centers, radius)
     print("boundingRect algorithm results:")
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
