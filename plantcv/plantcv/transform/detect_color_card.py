@@ -64,7 +64,7 @@ def _get_contour_sizes(contours):
     return marea, mwidth, mheight
 
 
-def _draw_color_chips(rgb_img, new_centers, radius, color=(255, 255, 0)):
+def _draw_color_chips(rgb_img, new_centers, radius):
     """Create labeled mask and debug image of color chips.
 
     Parameters
@@ -88,7 +88,7 @@ def _draw_color_chips(rgb_img, new_centers, radius, color=(255, 255, 0)):
     # Loop over the new chip centers and draw them on the RGB image and labeled mask
     for i, pt in enumerate(new_centers):
         cv2.circle(labeled_mask, new_centers[i], radius, (i + 1) * 10, -1)
-        cv2.circle(debug_img, new_centers[i], radius, color, -1)
+        cv2.circle(debug_img, new_centers[i], radius, (255, 255, 0), -1)
         cv2.putText(debug_img, text=str(i), org=pt, fontScale=params.text_size, color=(0, 0, 0),
                     fontFace=cv2.FONT_HERSHEY_SIMPLEX, thickness=params.text_thickness)
     return labeled_mask, debug_img
@@ -126,8 +126,7 @@ def _color_card_detection(rgb_img, **kwargs):
         min_size: int (default = 1000)
         aspect_ratio: countour squareness filters (default 1.27)
         solidity: contour squareness filters (default 0.8) 
-        verbose_debug = bool (default = False)
-    
+
     Returns
     -------
     list
@@ -140,7 +139,6 @@ def _color_card_detection(rgb_img, **kwargs):
     block_size = kwargs.get("block_size", 51)  # cv2.adaptiveThreshold block size
     aspect_ratio = kwargs.get("aspect_ratio", 1.27)  # _is_square aspect-ratio filtering
     solidity = kwargs.get("solidity", 0.8)  # _is_square solidity filtering
-    verbose_debug = kwargs.get("verbose_debug", False)  # _is_square solidity filtering
 
     # Throw a fatal error if block_size is not odd or greater than 1
     if not (block_size % 2 == 1 and block_size > 1):
@@ -165,185 +163,47 @@ def _color_card_detection(rgb_img, **kwargs):
     filtered_contours = [contour for contour in filtered_contours if
                          (0.8 < (cv2.contourArea(contour) / target_square_area) < 1.2)]
 
-    # Draw filtered contours on debug img
-    debug_img = np.copy(rgb_img)
-    
-    # Draw detected corners on debug img
-    corners_debug_img = np.copy(rgb_img)
-
     # Throw a fatal error if no color card found
     if len(filtered_contours) == 0:
-        if verbose_debug:
-            print("Objects found through edge detection (parameterizes with adaptive_method and block_size)")
-            cv2.drawContours(debug_img, contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
-            _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
         fatal_error('No color card found')
 
-    # Initialize chip size & dimension lists
+    # Draw filtered contours on debug img
+    debug_img = np.copy(rgb_img)
+    cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
+    # Find the bounding box of the detected chips
+    x, y, w, h = cv2.boundingRect(np.vstack(filtered_contours))
+
+    # Draw the bound box rectangle
+    boundind_mask = cv2.rectangle(np.zeros(rgb_img.shape[0:2]), (x, y), (x + w, y + h), (255), -1).astype(np.uint8)
+
+    # Initialize chip shape lists
     marea, mwidth, mheight = _get_contour_sizes(filtered_contours)
-    boundind_mask = np.zeros(rgb_img.shape[0:2])
 
-    # # # Find the bounding box of the detected chips
-    # x, y, w, h = cv2.boundingRect(np.vstack(filtered_contours))
-
-    # # Draw the bound box rectangle
-    # boundind_mask = cv2.rectangle(np.zeros(rgb_img.shape[0:2]), (x, y), (x + w, y + h), (255), -1).astype(np.uint8)
-
-    # Concatenate all detected centers into one array (minimum area rectangle used to find chip centers)
-    square_centroids = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
-
+    # Concatenate all contours into one array and find the minimum area rectangle
+    rect = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
+    rect = cv2.minAreaRect(rect)
+    # Get the corners of the rectangle
+    corners = np.array(np.intp(cv2.boxPoints(rect)))
+    # Determine which corner most likely contains the white chip
+    white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0], :], (255, 255, 255))) for corner in corners])
+    corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])[[0, 1, 3, 2]]]
     # Increment amount is arbitrary, cell distances rescaled during perspective transform
     increment = 100
     centers = [[int(0 + i * increment), int(0 + j * increment)] for j in range(nrows) for i in range(ncols)]
 
-    # Find the minimum area rectangle of the hypothetical labeled mask
+    # Find the minimum area rectangle of the chip centers
     new_rect = cv2.minAreaRect(np.array(centers))
     # Get the corners of the rectangle
     box_points = cv2.boxPoints(new_rect).astype("float32")
-    box_points_int = np.int_(box_points)
-
-    ### This is where the algorithm *might* split ###
-    #########################################################################################################
-    ## Plot the centers of each detected chip contour 
-    #_, debug_img = _draw_color_chips(debug_img, rect, radius)
-    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
-    debug_img = np.copy(rgb_img)
-    rect = cv2.minAreaRect(square_centroids) ########## handles rotation but not skew 
-    
-    # Get the corners of the rectangle
-    corners = np.array(np.intp(cv2.boxPoints(rect)))
-    ## Find white chip and reorder 
-    # Determine which corner most likely contains the white chip
-    white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0], :], (255, 255, 255))) for corner in corners])
-    # Sort color chips based on detected card orientation
-    corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])[[0, 1, 3, 2]]]
-    
-    # Draw the corners as WHITE contour
-    print("boundingRect outline:")
-    _, debug_img = _draw_color_chips(debug_img, corners, radius)
-    cv2.drawContours(debug_img, [corners], -1, (255, 255, 255), params.line_thickness + 3)
-    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
-    debug_img = np.copy(rgb_img)
-    
     # Calculate the perspective transform matrix from the minimum area rectangle
     m_transform = cv2.getPerspectiveTransform(box_points, corners.astype("float32"))
     # Transform the chip centers using the perspective transform matrix
     new_centers = cv2.transform(np.array([centers]), m_transform)[0][:, 0:2]
-    _, corners_debug_img = _draw_color_chips(corners_debug_img, corners, 3, (255,255,255))
-
-    corners_debug_img
-    
-    # Draw detected and utilized contours
-    cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
-    # Plot box points
-    cv2.drawContours(debug_img, [corners], -1, (255, 0, 0), params.line_thickness)
-    cv2.drawContours(debug_img, [box_points_int], -1, (255, 0, 0), params.line_thickness + 5)
-    labeled_mask, debug_img = _draw_color_chips(debug_img, new_centers, radius)
-    print("boundingRect algorithm results:")
-    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
-    debug_img = np.copy(rgb_img)
-    #########################################################################################################
-    # Find four-sided polygon to describe the skewed color card 
-    corners = cv2.approxPolyN(curve=square_centroids, nsides=4, ensure_convex=True)
-    # Draw the approximated polygon (quadrilateral) in GREEN 
-    cv2.drawContours(debug_img, [corners], -1, (0, 255, 0), params.line_thickness + 3)
-    # Shrink the polygon
-    #corners = _scale_contour(corners, .85)
-    corners = corners[0]
-    if verbose_debug:
-        print("Identified color card corners)")
-        _, debug_img = _draw_color_chips(debug_img, corners, radius)
-        _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
-        debug_img = np.copy(rgb_img)
-    # Determine which corner most likely contains the white chip
-    white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0], :], (255, 255, 255))) for corner in corners])
-    corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])[[0, 1, 3, 2]]]
-    
-    # Draw the corners as BLUE contour 
-    print("approxPolyN outline:")
-    _, debug_img = _draw_color_chips(debug_img, corners, radius)
-    cv2.drawContours(debug_img, [corners], -1, (255, 0, 0), params.line_thickness + 3)
-    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
-    debug_img = np.copy(rgb_img)
-    
-    # Calculate the perspective transform matrix from the minimum area rectangle
-    m_transform = cv2.getPerspectiveTransform(box_points, corners.astype("float32"))
-    # Transform the chip centers using the perspective transform matrix
-    new_centers = cv2.transform(np.array([centers]), m_transform)[0][:, 0:2]
-    # Plot and compare corners used in both algorithms
-    _, corners_debug_img = _draw_color_chips(corners_debug_img, corners, 2)
-    print("Corners used (white for rectangle method, blue for polygon method)")
-    _debug(visual=corners_debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
 
     # Create labeled mask and debug image of color chips
-    debug_img = np.copy(rgb_img)
-    # Plot box points
-    cv2.drawContours(debug_img, [corners], -1, (255, 0, 0), params.line_thickness)
-    cv2.drawContours(debug_img, [box_points_int], -1, (255, 0, 0), params.line_thickness + 5)
-    _, debug_img = _draw_color_chips(debug_img, corners, radius)
-    _, debug_img = _draw_color_chips(debug_img, box_points_int, int(radius*1.6))
-    debug_img = np.copy(rgb_img)
-    # Draw detected and utilized contours
-    cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
-    # Draw the polygon used to calculate transformation
-    cv2.drawContours(debug_img, [corners], -1, (255, 0, 0), params.line_thickness + 3)
-    #labeled_mask, debug_img = _draw_color_chips(debug_img, centers, radius)
     labeled_mask, debug_img = _draw_color_chips(debug_img, new_centers, radius)
-    print("approxPolyN algorithm results:")
 
     return labeled_mask, debug_img, marea, mheight, mwidth, boundind_mask
-
-
-def _set_size_scale_from_chip(color_chip_width, color_chip_height, color_chip_size):
-    """Set the size scaling factors in Params from the known size of a given color card target.
-
-    Parameters
-    ----------
-    color_chip_width : float
-        Width in pixels of the detected color chips
-    color_chip_height : float
-        Height in pixels of the detected color chips
-    color_chip_size : str, tuple
-        Type of supported color card target ("classic", "passport", or "cameratrax"), or a tuple of
-        (width, height) of the color card chip real-world dimensions in milimeters.
-    """
-    # Define known color chip dimensions, all in milimeters
-    card_types = {
-        "CLASSIC": {
-            "chip_width": 40,
-            "chip_height": 40
-        },
-        "PASSPORT": {
-            "chip_width": 12,
-            "chip_height": 12
-        },
-        "CAMERATRAX": {
-            "chip_width": 11,
-            "chip_height": 11
-        }
-    }
-
-    # Check if user provided a valid color card type
-    if type(color_chip_size) is str and color_chip_size.upper() in card_types:
-        # Set size scaling parameters
-        params.px_width = card_types[color_chip_size.upper()]["chip_width"] / color_chip_width
-        params.px_height = card_types[color_chip_size.upper()]["chip_height"] / color_chip_height
-    # If not, check to make sure custom dimensions provided are numeric
-    else:
-        try:
-            # Set size scaling parameters
-            params.px_width = float(color_chip_size[0]) / color_chip_width
-            params.px_height = float(color_chip_size[1]) / color_chip_height
-        # Fail if provided color_chip_size is not supported
-        except ValueError:
-            fatal_error(f"Invalid input '{color_chip_size}'. Choose from {list(card_types.keys())}\
-            or provide your color card chip dimensions explicitly")
-        # Fail if provided color_chip_size is integer rather than tuple
-        except TypeError:
-            fatal_error(f"Invalid input '{color_chip_size}'. Choose from {list(card_types.keys())}\
-            or provide your color card chip dimensions explicitly as a tuple e.g. color_chip_size=(10,10).")
-    # If size scaling successful, set units to millimeters
-    params.unit = "mm"
 
 
 def mask_color_card(rgb_img, **kwargs):
@@ -384,8 +244,8 @@ def mask_color_card(rgb_img, **kwargs):
     return bounding_mask
 
 
-def detect_color_card(rgb_img, label=None, color_chip_size=None, **kwargs):
-    """Automatically detect a Macbeth ColorChecker style color card.
+def detect_color_card(rgb_img, label=None, **kwargs):
+    """Automatically detect a color card.
 
     Parameters
     ----------
@@ -393,9 +253,6 @@ def detect_color_card(rgb_img, label=None, color_chip_size=None, **kwargs):
         Input RGB image data containing a color card.
     label : str, optional
         modifies the variable name of observations recorded (default = pcv.params.sample_label).
-    color_chip_size: str, tuple, optional
-        "passport", "classic", "cameratrax"; or tuple formatted (width, height)
-        in millimeters (default = None)
     **kwargs
         Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle.
 
@@ -405,8 +262,7 @@ def detect_color_card(rgb_img, label=None, color_chip_size=None, **kwargs):
         radius: int (default = 20)
         min_size: int (default = 1000)
         aspect_ratio: float (default = 1.27)
-        solidity: float (default = 0.8)
-        verbose_debug = bool (default = False)
+        solidity: float (default = 0.8) 
 
     Returns
     -------
@@ -431,10 +287,6 @@ def detect_color_card(rgb_img, label=None, color_chip_size=None, **kwargs):
     outputs.add_metadata(term="median_color_chip_size", datatype=float, value=chip_size)
     outputs.add_metadata(term="median_color_chip_width", datatype=float, value=chip_width)
     outputs.add_metadata(term="median_color_chip_height", datatype=float, value=chip_height)
-
-    # Set size scaling factor if card type is provided
-    if color_chip_size:
-        _set_size_scale_from_chip(color_chip_height=chip_height, color_chip_width=chip_width, color_chip_size=color_chip_size)
 
     # Debugging
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
