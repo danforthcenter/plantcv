@@ -94,19 +94,6 @@ def _draw_color_chips(rgb_img, new_centers, radius):
     return labeled_mask, debug_img
 
 
-def _scale_contour(cnt, scale):
-    M = cv2.moments(cnt)
-    cx = int(M['m10']/M['m00'])
-    cy = int(M['m01']/M['m00'])
-
-    cnt_norm = cnt - [cx, cy]
-    cnt_scaled = cnt_norm * scale
-    cnt_scaled = cnt_scaled + [cx, cy]
-    cnt_scaled = cnt_scaled.astype(np.int32)
-
-    return cnt_scaled
-
-
 def _color_card_detection(rgb_img, **kwargs):
     """Algorithm to automatically detect a color card.
 
