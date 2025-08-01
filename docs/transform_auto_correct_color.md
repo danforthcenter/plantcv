@@ -17,7 +17,9 @@ in the RGB space after automatic detection of a color card within the image. A o
         - adaptive_method  - Adaptive threhold method. 0 (mean) or 1 (Gaussian) (default = 1).
         - block_size       - Size of a pixel neighborhood that is used to calculate a threshold value (default = 51). We suggest using 127 if using `adaptive_method=0`.
         - radius           - Radius of circle to make the color card labeled mask (default = 20).
-        - min_size         - Minimum chip size for filtering objects after edge detection (default = 1000) 
+        - min_size         - Minimum chip size for filtering objects after edge detection (default = 1000)
+        - aspect_ratio   - Optional aspect ratio below which objects will get removed (default = 1.27)
+        - solidity - Optional solidity filter (default = 0.8) 
 - **Returns**
     - corrected_img    - Color corrected image
 
