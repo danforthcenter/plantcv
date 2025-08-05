@@ -12,7 +12,7 @@ from plantcv.plantcv._helpers import _rgb2gray, _cv2_findcontours, _object_compo
 
 
 def _is_square(contour, min_size, aspect_ratio=1.27, solidity=.8):
-    """Determine if a contour is square or not.
+    """Return list of contours, based on aspect ratio and solidity.
 
     Parameters
     ----------
@@ -31,12 +31,12 @@ def _is_square(contour, min_size, aspect_ratio=1.27, solidity=.8):
         True if the contour is square, False otherwise.
     """
     return (cv2.contourArea(contour) > min_size and
-            # Test that the Aspect Ratio (default 1.27) 
-            ## ratio between the width and height of minAreaRect 
-            ## (which is like a bounding box but will consider rotation) ^
+            # Test that the Aspect Ratio (default 1.27)
+            # ratio between the width and height of minAreaRect
+            # (which is like a bounding box but will consider rotation) ^
             max(cv2.minAreaRect(contour)[1]) / min(cv2.minAreaRect(contour)[1]) < aspect_ratio and
-            # Test that the Solidity (default 0.8) 
-            ## Compare minAreaRect area to the actual contour area, a chip should be mostly solid 
+            # Test that the Solidity (default 0.8)
+            # Compare minAreaRect area to the actual contour area, a chip should be mostly solid
             (cv2.contourArea(contour) / np.prod(cv2.minAreaRect(contour)[1])) > solidity)
 
 
@@ -112,7 +112,7 @@ def _color_card_detection(rgb_img, **kwargs):
         radius: int (default = 20)
         min_size: int (default = 1000)
         aspect_ratio: countour squareness filters (default 1.27)
-        solidity: contour squareness filters (default 0.8) 
+        solidity: contour squareness filters (default 0.8)
 
     Returns
     -------
@@ -304,7 +304,7 @@ def detect_color_card(rgb_img, label=None, color_chip_size=None, **kwargs):
         radius: int (default = 20)
         min_size: int (default = 1000)
         aspect_ratio: float (default = 1.27)
-        solidity: float (default = 0.8) 
+        solidity: float (default = 0.8)
 
 
     Returns
