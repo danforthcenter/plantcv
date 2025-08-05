@@ -280,8 +280,8 @@ def detect_color_card(rgb_img, label=None, color_chip_size=None, roi=None, **kwa
     color_chip_size: str, tuple, optional
         "passport", "classic", "cameratrax"; or tuple formatted (width, height)
         in millimeters (default = None)
-    roi : a rectangular ROI, optional
-        Uses a rectangular ROI as returned from pcv.roi.rectangle and detects color cards in that region.
+    roi : plantcv.plantcv.Objects
+        A rectangular ROI as returned from pcv.roi.rectangle to detect a color card only in that region.
     **kwargs
         Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle.
 

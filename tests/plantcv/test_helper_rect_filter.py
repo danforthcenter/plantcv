@@ -3,6 +3,7 @@ import numpy as np
 from plantcv.plantcv import Objects
 from plantcv.plantcv._helpers import _rect_filter
 
+
 def test_rect_filter(test_data):
     """Test for PlantCV."""
     # Load rgb image

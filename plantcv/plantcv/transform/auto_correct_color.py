@@ -5,7 +5,7 @@ from plantcv.plantcv.transform.detect_color_card import detect_color_card
 from plantcv.plantcv.transform.color_correction import get_color_matrix, std_color_matrix, affine_color_correction
 
 
-def auto_correct_color(rgb_img, label=None, color_chip_size=None, **kwargs):
+def auto_correct_color(rgb_img, label=None, color_chip_size=None, roi=None, **kwargs):
     """Automatically detect a color card.
     Parameters
     ----------
@@ -16,6 +16,8 @@ def auto_correct_color(rgb_img, label=None, color_chip_size=None, **kwargs):
     color_chip_size: str, tuple, optional
         "passport", "classic", "cameratrax"; or tuple formatted (width, height)
         in millimeters (default = None)
+    roi: plantcv.plantcv.Objects
+        Objects class rectangular ROI passed to detect_color_card (default None)
     **kwargs
         Other keyword arguments passed to cv2.adaptiveThreshold, cv2.circle and _rect_filter.
         Valid keyword arguments:
@@ -23,7 +25,6 @@ def auto_correct_color(rgb_img, label=None, color_chip_size=None, **kwargs):
         block_size: int (default = 51)
         radius: int (default = 20)
         min_size: int (default = 1000)
-        roi: Objects class rectangular ROI passed to detect_color_card (default None)
     Returns
     -------
     numpy.ndarray
