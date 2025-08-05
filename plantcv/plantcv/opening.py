@@ -20,7 +20,7 @@ def opening(gray_img, kernel=None, roi=None):
 
     :param gray_img: ndarray
     :param kernel: ndarray
-    :param roi: Objects class
+    :param roi: plantcv.plantcv.Objects
     :return filtered_img: ndarray
     """
     # Make sure the image is binary/grayscale

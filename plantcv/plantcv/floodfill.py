@@ -25,7 +25,7 @@ def floodfill(bin_img, points, value=0, roi=None):
     :param bin_img: numpy.ndarray
     :param points: list
     :param value: float
-    :param roi: Objects class
+    :param roi: plantcv.plantcv.Objects
     :return filled_img: numpy.ndarray
     """
     # Make sure the image is binary

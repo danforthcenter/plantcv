@@ -21,7 +21,7 @@ def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area", roi=None):
     regprop : str, default: "area"
         Region property to filter on. Can choose from "area" or other int and float properties calculated by
         skimage.measure.regionprops.
-    roi : Objects class, default None
+    roi : plantcv.plantcv.Objects, default None
         Optional region of interest to apply the object property filter within
 
     Returns:

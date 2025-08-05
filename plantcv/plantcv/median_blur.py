@@ -23,7 +23,7 @@ def median_blur(gray_img, ksize, roi=None):
 
     :param gray_img: numpy.ndarray
     :param ksize: int or tuple
-    :param roi: Objects class
+    :param roi: plantcv.plantcv.Objects
     :return img_mblur: numpy.ndarray
     """
     # Make sure ksize is valid

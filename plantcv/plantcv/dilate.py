@@ -22,7 +22,7 @@ def dilate(gray_img, ksize, i, roi=None):
     :param gray_img: numpy.ndarray
     :param ksize: int
     :param i: int
-    :param roi: Objects
+    :param roi: plantcv.plantcv.Objects
     :return dil_img: numpy.ndarray
     """
     dil_img = _dilate(gray_img, ksize, i, roi=roi)

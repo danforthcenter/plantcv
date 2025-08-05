@@ -28,7 +28,7 @@ def scharr_filter(img, dx, dy, scale, roi=None):
     :param dx: int
     :param dy: int
     :param scale: int
-    :param roi: Objects class
+    :param roi: plantcv.plantcv.Objects
     :return sr_img: numpy.ndarray
     """
     sub_sr_img = _rect_filter(img, roi, function=cv2.Scharr,

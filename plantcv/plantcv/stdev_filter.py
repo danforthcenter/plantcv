@@ -27,7 +27,7 @@ def stdev_filter(img, ksize, borders='nearest', roi=None):
     :param img: numpy.ndarray
     :param ksize: int
     :param borders: str
-    :param roi: Objects class
+    :param roi: plantcv.plantcv.Objects
     :return output: numpy.ndarray
     """
     # Make an array the same size as the original image

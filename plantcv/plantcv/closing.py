@@ -12,9 +12,10 @@ def closing(gray_img, kernel=None, roi=None):
     kernel   = optional neighborhood, expressed as an array of 1s and 0s. If None, use cross-shaped structuring element.
     roi      = optional rectangular ROI to apply closing within a region
 
-    :param gray_img: ndarray
-    :param kernel = ndarray
-    :return filtered_img: ndarray
+    :param gray_img: np.ndarray
+    :param kernel = np.ndarray
+    :param roi: plantcv.plantcv.Objects
+    :return filtered_img: np.ndarray
     """
     filtered_img = _closing(gray_img, kernel, roi=roi)
 

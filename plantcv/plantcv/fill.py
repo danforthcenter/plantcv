@@ -23,6 +23,7 @@ def fill(bin_img, size, roi=None):
 
     :param bin_img: numpy.ndarray
     :param size: int
+    :param roi: plantcv.plantcv.Objects
     :return filtered_img: numpy.ndarray
     """
     # Make sure the image is binary

@@ -28,7 +28,7 @@ def sobel_filter(gray_img, dx, dy, ksize, roi=None):
     :param dx: int
     :param dy: int
     :param ksize: int
-    :param roi: Objects class
+    :param roi: plantcv.plantcv.Objects
     :return sb_img: numpy.ndarray
     """
     sub_sb_img = _rect_filter(gray_img, roi, function=cv2.Sobel,

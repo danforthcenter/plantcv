@@ -26,7 +26,7 @@ def gaussian_blur(img, ksize, sigma_x=0, sigma_y=None, roi=None):
     :param ksize: tuple
     :param sigma_x: int
     :param sigma_y: str or int
-    :param roi: Objects class
+    :param roi: plantcv.plantcv.Objects
     :return img_gblur: numpy.ndarray
     """
     sub_img_gblur = _rect_filter(img, roi, cv2.GaussianBlur,

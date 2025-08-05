@@ -26,7 +26,7 @@ def laplace_filter(gray_img, ksize, scale, roi=None):
     :param gray_img: numpy.ndarray
     :param ksize: int
     :param scale: int
-    :param roi: Objects class
+    :param roi: plantcv.plantcv.Objects
     :return lp_filtered: numpy.ndarray
     """
     sub_lp_filtered = _rect_filter(gray_img, roi, cv2.Laplacian,

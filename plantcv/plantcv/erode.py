@@ -20,7 +20,7 @@ def erode(gray_img, ksize, i, roi=None):
              Kernel size (int). A ksize x ksize kernel will be built. Must be greater than 1 to have an effect.
     i : int
              interations, i.e. number of consecutive filtering passes
-    roi : Objects class
+    roi : plantcv.plantcv.Objects
              Optional rectangular ROI to erode within
 
     Returns

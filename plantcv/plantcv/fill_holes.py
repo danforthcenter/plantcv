@@ -21,6 +21,7 @@ def fill_holes(bin_img, roi=None):
     filtered_img = image with objects filled
 
     :param bin_img: numpy.ndarray
+    :param roi: plantcv.plantcv.Objects
     :return filtered_img: numpy.ndarray
     """
     # Make sure the image is binary
