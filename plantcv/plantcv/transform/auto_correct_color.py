@@ -24,6 +24,8 @@ def auto_correct_color(rgb_img, label=None, color_chip_size=None, **kwargs):
         block_size: int (default = 51)
         radius: int (default = 20)
         min_size: int (default = 1000)
+        aspect_ratio: float (default = 1.27)
+        solidity: float (default = 0.8)
     Returns
     -------
     numpy.ndarray
@@ -41,7 +43,9 @@ def auto_correct_color(rgb_img, label=None, color_chip_size=None, **kwargs):
                                      min_size=kwargs.get("min_size", 1000),
                                      radius=kwargs.get("radius", 20),
                                      adaptive_method=kwargs.get("adaptive_method", 1),
-                                     block_size=kwargs.get("block_size", 51))
+                                     block_size=kwargs.get("block_size", 51),
+                                     aspect_ratio=kwargs.get("aspect_ratio", 1.27),
+                                     solidity=kwargs.get("solidity", 0.8))
     _, card_matrix = get_color_matrix(rgb_img=rgb_img, mask=labeled_mask)
     std_matrix = std_color_matrix(pos=3)
     return affine_color_correction(rgb_img=rgb_img, source_matrix=card_matrix,
