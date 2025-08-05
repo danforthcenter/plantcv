@@ -12,6 +12,7 @@ def test_auto_correct_color(transform_test_data):
     corrected_img = auto_correct_color(rgb_img=rgb_img)
     assert np.shape(corrected_img) == np.shape(rgb_img) and np.sum(corrected_img) != np.sum(rgb_img)
 
+
 def test_auto_correct_color_subset(transform_test_data):
     """Test for PlantCV."""
     # Load rgb image

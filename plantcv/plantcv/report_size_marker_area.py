@@ -2,7 +2,7 @@
 import cv2
 import numpy as np
 import os
-from plantcv.plantcv import params, outputs, fatal_error, apply_mask
+from plantcv.plantcv import params, outputs, fatal_error, apply_mask, warn, deprecation_warning
 from plantcv.plantcv.threshold import binary as binary_threshold
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition, _roi_filter, _rgb2hsv
@@ -36,6 +36,11 @@ def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_c
     :param label: str
     :return: analysis_images: list
     """
+    deprecation_warning(
+        "the 'label' parameter is no longer utilized, since size marker is now metadata. "
+        "It will be removed in PlantCV 5.0."
+        )
+
     # Store debug
     debug = params.debug
     params.debug = None
@@ -97,40 +102,39 @@ def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_c
     # Calculate the marker area
     marker_area = m['m00']
 
-    # Fit a bounding ellipse to the marker
-    _, axes, _ = cv2.fitEllipse(marker_contour)
-    major_axis = np.argmax(axes)
-    minor_axis = 1 - major_axis
-    major_axis_length = axes[major_axis]
-    minor_axis_length = axes[minor_axis]
-    # Calculate the bounding ellipse eccentricity
-    eccentricity = np.sqrt(1 - (axes[minor_axis] / axes[major_axis]) ** 2)
+    if len(marker_contour) > 5:
+        # Fit a bounding ellipse to the marker
+        _, axes, _ = cv2.fitEllipse(marker_contour)
+        major_axis = np.argmax(axes)
+        minor_axis = 1 - major_axis
+        major_axis_length = axes[major_axis]
+        minor_axis_length = axes[minor_axis]
+        # Calculate the bounding ellipse eccentricity
+        eccentricity = np.sqrt(1 - (axes[minor_axis] / axes[major_axis]) ** 2)
 
-    cv2.drawContours(ref_img, marker_contour, -1, (255, 0, 0), 5)
-    analysis_image = ref_img
+        cv2.drawContours(ref_img, marker_contour, -1, (255, 0, 0), 5)
+        analysis_image = ref_img
 
-    # Reset debug mode
-    params.debug = debug
+        # Reset debug mode
+        params.debug = debug
 
-    _debug(visual=ref_img,
-           filename=os.path.join(params.debug_outdir, str(params.device) + '_marker_shape.png'))
+        _debug(visual=ref_img,
+               filename=os.path.join(params.debug_outdir, str(params.device) + '_marker_shape.png'))
 
-    outputs.add_observation(sample=label, variable='marker_area', trait='marker area',
-                            method='plantcv.plantcv.report_size_marker_area', scale='pixels', datatype=int,
-                            value=marker_area, label='pixels')
-    outputs.add_observation(sample=label, variable='marker_ellipse_major_axis',
-                            trait='marker ellipse major axis length',
-                            method='plantcv.plantcv.report_size_marker_area', scale='pixels', datatype=int,
-                            value=major_axis_length, label='pixels')
-    outputs.add_observation(sample=label, variable='marker_ellipse_minor_axis',
-                            trait='marker ellipse minor axis length',
-                            method='plantcv.plantcv.report_size_marker_area', scale='pixels', datatype=int,
-                            value=minor_axis_length, label='pixels')
-    outputs.add_observation(sample=label, variable='marker_ellipse_eccentricity', trait='marker ellipse eccentricity',
-                            method='plantcv.plantcv.report_size_marker_area', scale='none', datatype=float,
-                            value=eccentricity, label='none')
+        # Store size marker values as metadata
+        outputs.add_metadata(term="marker_area", datatype=int, value=marker_area)
+        outputs.add_metadata(term="marker_ellipse_major_axis", datatype=int, value=major_axis_length)
+        outputs.add_metadata(term="marker_ellipse_minor_axis", datatype=int, value=minor_axis_length)
+        outputs.add_metadata(term="marker_ellipse_eccentricity", datatype=float, value=eccentricity)
 
-    # Store images
-    outputs.images.append(analysis_image)
+        return analysis_image
 
-    return analysis_image
+    # Store size marker values as metadata
+    outputs.add_metadata(term="marker_area", datatype=str, value='none')
+    outputs.add_metadata(term="marker_ellipse_major_axis", datatype=str, value='none')
+    outputs.add_metadata(term="marker_ellipse_minor_axis", datatype=str, value='none')
+    outputs.add_metadata(term="marker_ellipse_eccentricity", datatype=str, value='none')
+
+    warn("Size marker is not detectable.")
+
+    return None

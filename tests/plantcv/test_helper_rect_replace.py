@@ -3,6 +3,7 @@ import numpy as np
 from plantcv.plantcv import Objects
 from plantcv.plantcv._helpers import _rect_filter, _rect_replace
 
+
 def test_rect_replace(test_data):
     """Test for PlantCV."""
     # Load rgb image
@@ -13,6 +14,7 @@ def test_rect_replace(test_data):
     sub_img = _rect_filter(img=rgb_img, roi = roi_obj)
     new_img = _rect_replace(rgb_img, sub_img, roi = roi_obj)
     assert np.shape(new_img) == np.shape(rgb_img)
+
 
 def test_rect_replace_no_change(test_data):
     """Test for PlantCV."""
