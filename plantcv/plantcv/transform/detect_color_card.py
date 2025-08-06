@@ -30,6 +30,9 @@ def _is_square(contour, min_size, aspect_ratio=1.27, solidity=.8):
     bool
         True if the contour is square, False otherwise.
     """
+    # Take reciprocal if aspect_ratio is smaller than 1
+    aspect_ratio = max([aspect_ratio, 1]) / min([aspect_ratio, 1])
+
     return (cv2.contourArea(contour) > min_size and
             # Test that the Aspect Ratio (default 1.27)
             # ratio between the width and height of minAreaRect
