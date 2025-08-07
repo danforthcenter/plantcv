@@ -8,7 +8,7 @@ import math
 import numpy as np
 from plantcv.plantcv import params, outputs, fatal_error, deprecation_warning
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _rgb2gray, _cv2_findcontours, _object_composition
+from plantcv.plantcv._helpers import _rgb2gray, _cv2_findcontours, _object_composition, _rect_filter, _rect_replace
 
 
 def _is_square(contour, min_size):
@@ -268,7 +268,7 @@ def mask_color_card(rgb_img, **kwargs):
     return bounding_mask
 
 
-def detect_color_card(rgb_img, label=None, color_chip_size=None, **kwargs):
+def detect_color_card(rgb_img, label=None, color_chip_size=None, roi=None, **kwargs):
     """Automatically detect a Macbeth ColorChecker style color card.
 
     Parameters
@@ -280,6 +280,8 @@ def detect_color_card(rgb_img, label=None, color_chip_size=None, **kwargs):
     color_chip_size: str, tuple, optional
         "passport", "classic", "cameratrax"; or tuple formatted (width, height)
         in millimeters (default = None)
+    roi : plantcv.plantcv.Objects, optional
+        A rectangular ROI as returned from pcv.roi.rectangle to detect a color card only in that region.
     **kwargs
         Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle.
 
@@ -301,8 +303,15 @@ def detect_color_card(rgb_img, label=None, color_chip_size=None, **kwargs):
         "The 'label' parameter is no longer utilized, since color chip size is now metadata. "
         "It will be removed in PlantCV v5.0."
         )
+    # apply _color_card_detection within bounding box
+    sub_mask, debug_img, marea, mheight, mwidth, _ = _rect_filter(rgb_img,
+                                                                  roi,
+                                                                  function=_color_card_detection,
+                                                                  **kwargs)
+    # slice sub_mask from bounding box into mask of original image size
+    empty_mask = np.zeros((np.shape(rgb_img)[0], np.shape(rgb_img)[1]))
+    labeled_mask = _rect_replace(empty_mask, sub_mask, roi)
 
-    labeled_mask, debug_img, marea, mheight, mwidth, _ = _color_card_detection(rgb_img, **kwargs)
     # Create dataframe for easy summary stats
     chip_size = np.median(marea)
     chip_height = np.median(mheight)
