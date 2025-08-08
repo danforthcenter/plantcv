@@ -5,7 +5,7 @@ in the RGB space after automatic detection of a color card within the image. A o
 [plantcv.transform.detect_color_card](transform_detect_color_card.md), [plantcv.transform.std_color_matrix](std_color_matrix.md),
 [plantcv.transform.get_color_matrix](get_color_matrix.md), and [plantcv.transform.affine_color_correction](transform_affine_color_correction.md).
 
-**plantcv.transform.auto_correct_color**(*rgb_img, label=None, color_chip_size=None, \*\*kwargs*)
+**plantcv.transform.auto_correct_color**(*rgb_img, label=None, color_chip_size=None, roi=None, \*\*kwargs*)
 
 **returns** corrected_img
 
