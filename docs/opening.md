@@ -2,7 +2,7 @@
 
 Filters out bright noise from an image.
 
-**plantcv.opening**(*gray_img, kernel=None*)
+**plantcv.opening**(*gray_img, kernel=None, roi=None*)
 
 **returns** filtered_img
 
@@ -10,6 +10,7 @@ Filters out bright noise from an image.
     - gray_img - Grayscale or binary image data
     - kernel - Optional neighborhood, expressed as an array of 1's and 0's. See the [kernel making](get_kernel.md) function. If None, 
     use cross-shaped structuring element.
+	- roi - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to apply this function. (default = None, which uses the entire image)
   - **Context:**
     - Used to reduce image noise, specifically small bright spots (i.e. "salt").
 - **Example use:**
