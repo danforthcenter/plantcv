@@ -94,7 +94,7 @@ def _check_corners(img, corners):
     """
     dim = np.shape(img)
     for pt in corners:
-        if pt[0] > dim[1] or pt[1] > dim[0]:
+        if pt[0] > dim[1] or pt[1] > dim[0] or pt[0] < 0 or pt[1] < 0:
             fatal_error('Color card corners could not be detected accurately')
 
 
