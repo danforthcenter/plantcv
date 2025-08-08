@@ -21,7 +21,7 @@ def test_gaussian_blur_roi(test_data):
     gaussian_img = gaussian_blur(img=img, ksize=(5, 5), sigma_x=0, sigma_y=None, roi=roi)
     assert np.average(img) == np.average(gaussian_img)
 
-    
+
 def test_gaussian_blur_grayscale(test_data):
     """Test for PlantCV."""
     # Read in test data

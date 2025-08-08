@@ -28,6 +28,6 @@ def test_fill_holes_roi(test_data):
     roi_con = [np.array([[[10, 20]], [[10, 39]], [[29, 39]], [[29, 20]]], dtype=np.int32)]
     roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     roi = Objects(contours=[roi_con], hierarchy=[roi_str])
-    fill_img = fill_holes(bin_img=img, roi = roi)
+    fill_img = fill_holes(bin_img=img, roi=roi)
     # Assert that the output image has the dimensions of the input image and is binary
     assert img.shape == fill_img.shape and np.array_equal(np.unique(fill_img), np.array([0, 255]))
