@@ -424,8 +424,8 @@ pages for more details on the input and output variable types.
 #### plantcv.fill_holes
 
 * pre v3.3: NA
-* post v3.3: filtered_img = **plantcv.fill**(*bin_img*)
-* post v4.9: filtered_img = **plantcv.fill**(*bin_img, roi=None*)
+* post v3.3: filtered_img = **plantcv.fill_holes**(*bin_img*)
+* post v4.9: filtered_img = **plantcv.fill_holes**(*bin_img, roi=None*)
 
 #### plantcv.filters.eccentricity 
 
