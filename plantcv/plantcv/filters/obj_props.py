@@ -4,9 +4,10 @@ import numpy as np
 from skimage.measure import label, regionprops
 from plantcv.plantcv import params, fatal_error
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _rect_filter, _rect_replace
 
 
-def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area"):
+def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area", roi=None):
     """Detect/filter regions in a binary image based on calculated properties.
 
     Parameters:
@@ -20,6 +21,8 @@ def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area"):
     regprop : str, default: "area"
         Region property to filter on. Can choose from "area" or other int and float properties calculated by
         skimage.measure.regionprops.
+    roi : plantcv.plantcv.Objects, default None
+        Optional region of interest to apply the object property filter within
 
     Returns:
     -------
@@ -31,8 +34,10 @@ def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area"):
     # Check if cut_side is valid
     if cut_side not in ("upper", "lower"):
         fatal_error("Must specify either 'upper' or 'lower' for cut_side")
-    # label connected regions
-    labeled_img = label(bin_img)
+    # subset binary image for ROI
+    sub_bin_img = _rect_filter(bin_img, roi=roi)
+    # label connected regions in ROI
+    labeled_img = label(sub_bin_img)
     # measure region properties
     obj_measures = regionprops(labeled_img)
     # list of correct data types
@@ -42,7 +47,7 @@ def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area"):
         fatal_error(f"Property {regprop} is not an integer or float type.")
 
     # blank mask to draw discs onto
-    filtered_mask = np.zeros(labeled_img.shape, dtype=np.uint8)
+    sub_filtered_mask = np.zeros(labeled_img.shape, dtype=np.uint8)
     # Pull all values and calculate the mean
     valueslist = []
     # Store the list of coordinates (row,col) for the objects that pass
@@ -58,7 +63,9 @@ def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area"):
         elif cut_side == "lower":
             gray_val = 255 if getattr(obj, regprop) < thresh else 0
         # Add the object to the filtered mask (255 if it passes, 0 if it does not)
-        filtered_mask += np.where(labeled_img == obj.label, gray_val, 0).astype(np.uint8)
+        sub_filtered_mask += np.where(labeled_img == obj.label, gray_val, 0).astype(np.uint8)
+    # slice subset back into full size binary image
+    filtered_mask = _rect_replace(bin_img, sub_filtered_mask, roi)
 
     if params.debug == "plot":
         print(f"Min value = {min(valueslist)}")
