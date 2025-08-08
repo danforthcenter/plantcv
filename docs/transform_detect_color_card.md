@@ -18,7 +18,7 @@ Automatically detects a Macbeth ColorChecker style color card and creates a labe
         - radius         - Radius of circle to make the color card labeled mask (default = 20).
         - min_size         - Minimum chip size for filtering objects after edge detection (default = 1000)
         - aspect_ratio   - Optional aspect ratio (width / height) below which objects will get removed. Orientation agnogstic since automatically set to the reciprocal if <1 (default = 1.27)
-        - solidity - Optional solidity (object area / convex hull area) filter (default = 0.8) 
+        - solidity - Optional solidity (object area / convex hull area) filter (default = 0.8)
 
 - **Returns**
     - labeled_mask     - Labeled color card mask (useful downstream of this step in [`pcv.transform.get_color_matrix`](get_color_matrix.md) and [`pcv.transform.correct_color`](transform_correct_color.md) and [`pcv.transform.affine_color_correction`](transform_affine_color_correction.md)).
