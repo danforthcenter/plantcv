@@ -25,6 +25,8 @@ def auto_correct_color(rgb_img, label=None, color_chip_size=None, roi=None, **kw
         block_size: int (default = 51)
         radius: int (default = 20)
         min_size: int (default = 1000)
+        aspect_ratio: float (default = 1.27)
+        solidity: float (default = 0.8)
     Returns
     -------
     numpy.ndarray
