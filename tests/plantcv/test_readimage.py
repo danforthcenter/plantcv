@@ -51,6 +51,12 @@ def test_readimage_nd2(test_data):
     assert len(img.shape) == 3
 
 
+def test_readimage_thermal(test_data):
+    """Test for PlantCV."""
+    img, _, _ = readimage(filename=test_data.flir_img, mode="thermal")
+    assert len(img.shape) == 2
+
+
 def test_readimage_bad_file():
     """Test for PlantCV."""
     with pytest.raises(RuntimeError):
