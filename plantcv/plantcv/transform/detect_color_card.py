@@ -8,25 +8,39 @@ import math
 import numpy as np
 from plantcv.plantcv import params, outputs, fatal_error, deprecation_warning
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _rgb2gray, _cv2_findcontours, _object_composition
+from plantcv.plantcv._helpers import _rgb2gray, _cv2_findcontours, _object_composition, _rect_filter, _rect_replace
 
 
-def _is_square(contour, min_size):
-    """Determine if a contour is square or not.
+def _is_square(contour, min_size, aspect_ratio=1.27, solidity=.8):
+    """Return list of contours, based on aspect ratio and solidity.
 
     Parameters
     ----------
     contour : list
         OpenCV contour.
+    min_size : int
+        Minimum object size to be considered
+    aspect_ratio : float
+        Filter contours below a given aspect ratio
+    solidity : float
+        Filter contours below a given solidity
 
     Returns
     -------
     bool
         True if the contour is square, False otherwise.
     """
+    # Take reciprocal if aspect_ratio is smaller than 1
+    aspect_ratio = max([aspect_ratio, 1]) / min([aspect_ratio, 1])
+
     return (cv2.contourArea(contour) > min_size and
-            max(cv2.minAreaRect(contour)[1]) / min(cv2.minAreaRect(contour)[1]) < 1.27 and
-            (cv2.contourArea(contour) / np.prod(cv2.minAreaRect(contour)[1])) > 0.8)
+            # Test that the Aspect Ratio (default 1.27)
+            # ratio between the width and height of minAreaRect
+            # (which is like a bounding box but will consider rotation) ^
+            max(cv2.minAreaRect(contour)[1]) / min(cv2.minAreaRect(contour)[1]) < aspect_ratio and
+            # Test that the Solidity (default 0.8)
+            # Compare minAreaRect area to the actual contour area, a chip should be mostly solid
+            (cv2.contourArea(contour) / np.prod(cv2.minAreaRect(contour)[1])) > solidity)
 
 
 def _get_contour_sizes(contours):
@@ -115,6 +129,8 @@ def _color_card_detection(rgb_img, **kwargs):
         block_size: int (default = 51)
         radius: int (default = 20)
         min_size: int (default = 1000)
+        aspect_ratio: countour squareness filters (default 1.27)
+        solidity: contour squareness filters (default 0.8)
 
     Returns
     -------
@@ -126,6 +142,8 @@ def _color_card_detection(rgb_img, **kwargs):
     radius = kwargs.get("radius", 20)  # Radius of circles to draw on the color chips
     adaptive_method = kwargs.get("adaptive_method", 1)  # cv2.adaptiveThreshold method
     block_size = kwargs.get("block_size", 51)  # cv2.adaptiveThreshold block size
+    aspect_ratio = kwargs.get("aspect_ratio", 1.27)  # _is_square aspect-ratio filtering
+    solidity = kwargs.get("solidity", 0.8)  # _is_square solidity filtering
 
     # Throw a fatal error if block_size is not odd or greater than 1
     if not (block_size % 2 == 1 and block_size > 1):
@@ -143,7 +161,7 @@ def _color_card_detection(rgb_img, **kwargs):
     contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     # Filter contours, keep only square-shaped ones
-    filtered_contours = [contour for contour in contours if _is_square(contour, min_size)]
+    filtered_contours = [contour for contour in contours if _is_square(contour, min_size, aspect_ratio, solidity)]
     # Calculate median area of square contours
     target_square_area = np.median([cv2.contourArea(cnt) for cnt in filtered_contours])
     # Filter contours again, keep only those within 20% of median area
@@ -195,6 +213,58 @@ def _color_card_detection(rgb_img, **kwargs):
     return labeled_mask, debug_img, marea, mheight, mwidth, boundind_mask
 
 
+def _set_size_scale_from_chip(color_chip_width, color_chip_height, color_chip_size):
+    """Set the size scaling factors in Params from the known size of a given color card target.
+
+    Parameters
+    ----------
+    color_chip_width : float
+        Width in pixels of the detected color chips
+    color_chip_height : float
+        Height in pixels of the detected color chips
+    color_chip_size : str, tuple
+        Type of supported color card target ("classic", "passport", or "cameratrax"), or a tuple of
+        (width, height) of the color card chip real-world dimensions in milimeters.
+    """
+    # Define known color chip dimensions, all in milimeters
+    card_types = {
+        "CLASSIC": {
+            "chip_width": 40,
+            "chip_height": 40
+        },
+        "PASSPORT": {
+            "chip_width": 12,
+            "chip_height": 12
+        },
+        "CAMERATRAX": {
+            "chip_width": 11,
+            "chip_height": 11
+        }
+    }
+
+    # Check if user provided a valid color card type
+    if type(color_chip_size) is str and color_chip_size.upper() in card_types:
+        # Set size scaling parameters
+        params.px_width = card_types[color_chip_size.upper()]["chip_width"] / color_chip_width
+        params.px_height = card_types[color_chip_size.upper()]["chip_height"] / color_chip_height
+    # If not, check to make sure custom dimensions provided are numeric
+    else:
+        try:
+            # Set size scaling parameters
+            params.px_width = float(color_chip_size[0]) / color_chip_width
+            params.px_height = float(color_chip_size[1]) / color_chip_height
+        # Fail if provided color_chip_size is not supported
+        except ValueError:
+            fatal_error(f"Invalid input '{color_chip_size}'. Choose from {list(card_types.keys())}\
+            or provide your color card chip dimensions explicitly")
+        # Fail if provided color_chip_size is integer rather than tuple
+        except TypeError:
+            fatal_error(f"Invalid input '{color_chip_size}'. Choose from {list(card_types.keys())}\
+            or provide your color card chip dimensions explicitly as a tuple e.g. color_chip_size=(10,10).")
+    # If size scaling successful, set units to millimeters
+    params.unit = "mm"
+
+
 def mask_color_card(rgb_img, **kwargs):
     """Automatically detect a color card and create bounding box mask of the chips detected.
 
@@ -233,8 +303,8 @@ def mask_color_card(rgb_img, **kwargs):
     return bounding_mask
 
 
-def detect_color_card(rgb_img, label=None, **kwargs):
-    """Automatically detect a color card.
+def detect_color_card(rgb_img, label=None, color_chip_size=None, roi=None, **kwargs):
+    """Automatically detect a Macbeth ColorChecker style color card.
 
     Parameters
     ----------
@@ -242,6 +312,11 @@ def detect_color_card(rgb_img, label=None, **kwargs):
         Input RGB image data containing a color card.
     label : str, optional
         modifies the variable name of observations recorded (default = pcv.params.sample_label).
+    color_chip_size: str, tuple, optional
+        "passport", "classic", "cameratrax"; or tuple formatted (width, height)
+        in millimeters (default = None)
+    roi : plantcv.plantcv.Objects, optional
+        A rectangular ROI as returned from pcv.roi.rectangle to detect a color card only in that region.
     **kwargs
         Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle.
 
@@ -250,6 +325,9 @@ def detect_color_card(rgb_img, label=None, **kwargs):
         block_size: int (default = 51)
         radius: int (default = 20)
         min_size: int (default = 1000)
+        aspect_ratio: float (default = 1.27)
+        solidity: float (default = 0.8)
+
 
     Returns
     -------
@@ -263,17 +341,28 @@ def detect_color_card(rgb_img, label=None, **kwargs):
         "The 'label' parameter is no longer utilized, since color chip size is now metadata. "
         "It will be removed in PlantCV v5.0."
         )
+    # apply _color_card_detection within bounding box
+    sub_mask, debug_img, marea, mheight, mwidth, _ = _rect_filter(rgb_img,
+                                                                  roi,
+                                                                  function=_color_card_detection,
+                                                                  **kwargs)
+    # slice sub_mask from bounding box into mask of original image size
+    empty_mask = np.zeros((np.shape(rgb_img)[0], np.shape(rgb_img)[1]))
+    labeled_mask = _rect_replace(empty_mask, sub_mask, roi)
 
-    labeled_mask, debug_img, marea, mheight, mwidth, _ = _color_card_detection(rgb_img, **kwargs)
     # Create dataframe for easy summary stats
     chip_size = np.median(marea)
     chip_height = np.median(mheight)
     chip_width = np.median(mwidth)
 
-    # Save out chip size for pixel to cm standardization
+    # Save out chip size for pixel to mm standardization
     outputs.add_metadata(term="median_color_chip_size", datatype=float, value=chip_size)
     outputs.add_metadata(term="median_color_chip_width", datatype=float, value=chip_width)
     outputs.add_metadata(term="median_color_chip_height", datatype=float, value=chip_height)
+
+    # Set size scaling factor if card type is provided
+    if color_chip_size:
+        _set_size_scale_from_chip(color_chip_height=chip_height, color_chip_width=chip_width, color_chip_size=color_chip_size)
 
     # Debugging
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
