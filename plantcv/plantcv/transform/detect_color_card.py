@@ -97,6 +97,21 @@ def _draw_color_chips(rgb_img, new_centers, radius):
     return labeled_mask, debug_img
 
 
+def _check_corners(img, corners):
+    """Check that corners are within an image
+    Parameters
+    ----------
+    img: numpy.ndarray
+         An image
+    corners: numpy.ndarray
+         Corners for some object
+    """
+    dim = np.shape(img)
+    for pt in corners:
+        if pt[0] > dim[1] or pt[1] > dim[0] or pt[0] < 0 or pt[1] < 0:
+            fatal_error('Color card corners could not be detected accurately')
+
+
 def _color_card_detection(rgb_img, **kwargs):
     """Algorithm to automatically detect a color card.
 
@@ -174,6 +189,8 @@ def _color_card_detection(rgb_img, **kwargs):
     rect = cv2.minAreaRect(rect)
     # Get the corners of the rectangle
     corners = np.array(np.intp(cv2.boxPoints(rect)))
+    # Check that corners are in image
+    _check_corners(imgray, corners)
     # Determine which corner most likely contains the white chip
     white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0], :], (255, 255, 255))) for corner in corners])
     corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])[[0, 1, 3, 2]]]
