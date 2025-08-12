@@ -2,7 +2,6 @@
 
 import os
 import numpy as np
-import plantcv.plantcv as pcv
 from joblib import load
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
@@ -23,7 +22,7 @@ def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10):
     :return labeled: numpy.ndarray
     """
     kmeans = load(model_path)
-    train_img, _, _ = pcv.readimage(img)
+    train_img = img.copy()
 
     before = after = int((patch_size - 1)/2)   # odd
     if patch_size % 2 == 0:   # even
