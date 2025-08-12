@@ -36,7 +36,7 @@ def _is_square(contour, min_size, aspect_ratio=1.27, solidity=.8):
     return (cv2.contourArea(contour) > min_size and
             # Test that the Aspect Ratio (default 1.27)
             # ratio between the width and height of minAreaRect
-            # (which is like a bounding box but will consider rotation) ^
+            # which is like a bounding box but will consider rotation
             max(cv2.minAreaRect(contour)[1]) / min(cv2.minAreaRect(contour)[1]) < aspect_ratio and
             # Test that the Solidity (default 0.8)
             # Compare minAreaRect area to the actual contour area, a chip should be mostly solid
@@ -274,14 +274,21 @@ def _set_size_scale_from_chip(color_chip_width, color_chip_height, color_chip_si
         "CAMERATRAX": {
             "chip_width": 11,
             "chip_height": 11
+        },
+        "NANO": {
+            "chip_width": 4,
+            "chip_height": 3
         }
     }
 
     # Check if user provided a valid color card type
     if type(color_chip_size) is str and color_chip_size.upper() in card_types:
-        # Set size scaling parameters
-        params.px_width = card_types[color_chip_size.upper()]["chip_width"] / color_chip_width
-        params.px_height = card_types[color_chip_size.upper()]["chip_height"] / color_chip_height
+        # Set size scaling parameters, match larger dimensions with each other
+        obs_chip_dims = [color_chip_width, color_chip_height]
+        known_chip_dims = [card_types[color_chip_size.upper()]["chip_width"],
+                           card_types[color_chip_size.upper()]["chip_height"]]
+        params.px_width = max(known_chip_dims) / max(obs_chip_dims)
+        params.px_height = min(known_chip_dims) / min(obs_chip_dims)
     # If not, check to make sure custom dimensions provided are numeric
     else:
         try:
