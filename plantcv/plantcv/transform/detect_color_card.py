@@ -97,6 +97,40 @@ def _draw_color_chips(rgb_img, new_centers, radius):
     return labeled_mask, debug_img
 
 
+def _check_point_per_chip(contours, centers, debug_img):
+    """Check that each detected chip ends up with exactly 1 mask inside it
+
+    Parameters
+    ----------
+    contours : list
+             OpenCV contour
+    centers : numpy.ndarray
+             (X, Y) points of the center of each prospective mask to make
+    debug_img : numpy.ndarray
+             Debug image to show the problem if a fatal error is generated
+
+    Returns
+    -------
+    No returns
+
+    Raises
+    ------
+    fatal_error
+          If any contour does not have exactly 1 mask center inside it (not on edge)
+    """
+    contour_has_n_points = []
+    for cont in contours:
+        bools = []
+        for pt in centers:
+            # -1 is outside, 0 is on line, 1 is inside
+            bools.append(cv2.pointPolygonTest(cont, (int(pt[0]), int(pt[1])), False) == 1)
+        contour_has_n_points.append(sum(bools))
+
+    if any(n != 1 for n in contour_has_n_points):
+        _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
+        fatal_error("Centers do not map 1 to 1 with detected color chips")
+
+
 def _check_corners(img, corners):
     """Check that corners are within an image
     Parameters
@@ -206,9 +240,10 @@ def _color_card_detection(rgb_img, **kwargs):
     m_transform = cv2.getPerspectiveTransform(box_points, corners.astype("float32"))
     # Transform the chip centers using the perspective transform matrix
     new_centers = cv2.transform(np.array([centers]), m_transform)[0][:, 0:2]
-
     # Create labeled mask and debug image of color chips
     labeled_mask, debug_img = _draw_color_chips(debug_img, new_centers, radius)
+    # Check that new centers are inside each unique filtered_contour
+    _check_point_per_chip(filtered_contours, new_centers, debug_img)
 
     return labeled_mask, debug_img, marea, mheight, mwidth, boundind_mask
 
