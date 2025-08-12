@@ -10,16 +10,21 @@ from plantcv.plantcv._helpers import _logical_operation
 
 
 def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10):
-    """
-    Uses a trained, patch-based kmeans clustering model to predict clusters from an input image.
-    Inputs:
-    img = An image on which to predict clusters
-    model_path = Path to directory where the trained model output is stored
-    patch_size = Size of the NxN neighborhood around each pixel
-    :param img: numpy.ndarray
-    :param model_path: str
-    :param patch_size: positive non-zero integer
-    :return labeled: numpy.ndarray
+    """Uses a trained, patch-based kmeans clustering model to predict clusters from an input image.
+
+    Parameters
+    ----------
+    img : numpy.ndarray
+        An image on which to predict clusters
+    model_path : str, optional
+        Path to directory where the trained model output is stored, by default "./kmeansout.fit"
+    patch_size : int, optional
+        Size of the NxN neighborhood around each pixel, by default 10
+
+    Returns
+    -------
+    numpy.ndarray
+        An labeled mask with the predicted clusters
     """
     kmeans = load(model_path)
     train_img = img.copy()
@@ -54,18 +59,22 @@ def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10):
 
 
 def mask_kmeans(labeled_img, k, cat_list=None):
-    """
-    Uses the predicted clusters from a target image to generate a binary mask.
-    Inputs:
-    labeled_img = An image with predicted clusters
-    K = Number of clusters to fit
-    patch_size = Size of the NxN neighborhood around each pixel
-    cat_list = A list of the numeric classes for composing a combined mask.
-               If empty, function prints all classes as separate masks.
-    :param labeled_img: numpy.ndarray
-    :param K: positive non-zero integer
-    :param patch_size: positive non-zero integer
-    :param cat_list: list of positive non-zero integers
+    """Uses the predicted clusters from a target image to generate a binary mask.
+
+    Parameters
+    ----------
+    labeled_img : numpy.ndarray
+        An labeled mask with the predicted clusters
+    k : int
+        The number of clusters
+    cat_list : list, optional
+        A list of the numeric classes for composing a combined mask, by default None
+        If empty, function prints all classes as separate masks
+
+    Returns
+    -------
+    numpy.ndarray
+        A binary mask with the specified clusters
     """
     if cat_list is None:
         mask_dict = {}
