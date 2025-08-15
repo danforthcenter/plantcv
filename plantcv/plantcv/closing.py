@@ -20,7 +20,7 @@ def closing(gray_img, kernel=None, roi=None):
     filtered_img = _closing(gray_img, kernel, roi=roi)
 
     _debug(visual=filtered_img,
-           filename=os.path.join(params.debug_outdir, str(params.device) + '_opening' + '.png'),
+           filename=os.path.join(params.debug_outdir, str(params.device) + '_closing' + '.png'),
            cmap='gray')
 
     return filtered_img
