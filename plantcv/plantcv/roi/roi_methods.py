@@ -560,8 +560,8 @@ def auto_wells(gray_img, mindist, candec, accthresh, minradius, maxradius, nrows
     maxfind = nrows * ncols
     df, sub_img = _rect_filter(gray_img, roi, _hough_circle,
                                **{"mindist": mindist, "candec": candec,
-                               "accthresh": accthresh, "minradius": minradius,
-                               "maxradius": maxradius, "maxfound": maxfind})
+                                  "accthresh": accthresh, "minradius": minradius,
+                                  "maxradius": maxradius, "maxfound": maxfind})
     # cast gray image to color
     cimg = cv2.cvtColor(gray_img, cv2.COLOR_GRAY2BGR)
     # slice ROI back into original image
