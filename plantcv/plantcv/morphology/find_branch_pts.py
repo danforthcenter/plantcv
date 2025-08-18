@@ -58,7 +58,15 @@ def find_branch_pts(skel_img, mask=None, label=None):
     y6 = np.rot90(y4)
     y7 = np.rot90(y5)
     y8 = np.rot90(y6)
-    kernels = [t1, t2, t3, t4, t5, t6, t7, t8, y1, y2, y3, y4, y5, y6, y7, y8]
+    
+    # X like branch points 
+    x1 = np.array([[0, 1, 0],
+                   [1, 1, 1],
+                   [0, 1, 0]])
+    x2 = np.array([[1, 0, 1],
+                   [0, 1, 0],
+                   [1, 0, 1]])
+    kernels = [t1, t2, t3, t4, t5, t6, t7, t8, y1, y2, y3, y4, y5, y6, y7, y8, x1, x2]
 
     branch_pts_img = np.zeros(skel_img.shape[:2], dtype=int)
 
