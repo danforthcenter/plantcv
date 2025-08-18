@@ -44,7 +44,7 @@ def acute(img, mask, win, threshold, label=None):
     :return chain: list
     :return max_dist: list
     """
-     # Set lable to params.sample_label if None
+    # Set lable to params.sample_label if None
     if label is None:
         label = params.sample_label
 
@@ -201,9 +201,10 @@ def acute(img, mask, win, threshold, label=None):
         cv2.drawContours(ori_img, homolog_pts, -1, (255, 255, 255), params.line_thickness)
         # print/plot debug image
         _debug(visual=ori_img, filename=f"{params.device}_acute_plms.png")
+        # Store number of acute points IDed to Outputs
         outputs.add_observation(sample=label, variable='num_acute_pts', trait='number of acute points',
-                            method='plantcv.plantcv.homology.acute', scale='none', datatype=int,
-                            value=len(homolog_pts), label='none')
+                                method='plantcv.plantcv.homology.acute', scale='none', datatype=int,
+                                value=len(homolog_pts), label='none')
 
         return homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist
     outputs.add_observation(sample=label, variable='num_acute_pts', trait='number of acute points',
