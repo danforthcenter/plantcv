@@ -37,9 +37,9 @@ def color_correction_plot(color_matrix, std_matrix, corrected_matrix=None):
     panel_titles = ["Red", "Green", "Blue", "Grayscale"]
     fig.suptitle("Standard vs Observed Color Card")
     # for each panel, make a plot
-    for p in range(0, len(panels) - 1, 1):
+    for p in range(0, len(panels) - 1):
         c = p + 1
-        for i in range(0, len(std_matrix), 1):
+        for i in range(0, len(std_matrix)):
             axs[*panels[p]].plot(
                 [255 * std_matrix[i, c], 255 * std_matrix[i, c]],
                 [255 * std_matrix[i, c], 255 * color_matrix[1][i, c]],
@@ -104,7 +104,7 @@ def color_correction_plot(color_matrix, std_matrix, corrected_matrix=None):
             ).astype("float32")
         )
     )
-    for i in range(0, len(graystd), 1):
+    for i in range(0, len(graystd)):
         axs[*panels[3]].plot(
             [255 * graystd[i], 255 * graystd[i]],
             [255 * graystd[i], 255 * graymat[i]],
