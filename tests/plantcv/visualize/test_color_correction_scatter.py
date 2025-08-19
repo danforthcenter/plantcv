@@ -1,4 +1,3 @@
-import pytest
 import numpy as np
 from matplotlib import figure as mpfig
 from plantcv.plantcv.visualize import color_correction_plot
@@ -82,5 +81,5 @@ def test_color_correction_scatter():
                     [2.20000000e+02, 2.58311885e-01, 4.74656434e-01, 6.44640991e-01],
                     [2.30000000e+02, 8.47342724e-01, 5.78276943e-01, 1.85583478e-01],
                     [2.40000000e+02, 3.40649227e-01, 6.31110487e-01, 5.56800349e-01]]))
-    fig, axs = color_correction_plot(colmat, stdmat, ccmat)
+    fig, _ = color_correction_plot(colmat, stdmat, ccmat)
     assert isinstance(fig, mpfig.Figure)

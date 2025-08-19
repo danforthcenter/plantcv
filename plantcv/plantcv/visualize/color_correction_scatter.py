@@ -1,6 +1,5 @@
 # Visualize a scatter plot representation of color correction
 
-import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 from plantcv.plantcv._helpers import _rgb2gray
@@ -137,5 +136,5 @@ def color_correction_plot(color_matrix, std_matrix, corrected_matrix=None):
         axs[*panels[3]].set_title(panel_titles[3])
     # layout panels
     fig.tight_layout()
-    # return
+
     return fig, axs
