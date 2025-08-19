@@ -40,17 +40,17 @@ def color_correction_plot(color_matrix, std_matrix, corrected_matrix=None):
     for p in range(0, len(panels) - 1):
         c = p + 1
         for i in range(0, len(std_matrix)):
-            axs[*panels[p]].plot(
+            axs[panels[p][0], panels[p][1]].plot(
                 [255 * std_matrix[i, c], 255 * std_matrix[i, c]],
                 [255 * std_matrix[i, c], 255 * color_matrix[1][i, c]],
                 linestyle="--",
                 linewidth=0.5,
                 c="#666666",
             )
-        axs[*panels[p]].plot(
+        axs[panels[p][0], panels[p][1]].plot(
             [0, 255], [0, 255], c="#666666", linewidth=1, linestyle="--"
         )
-        axs[*panels[p]].scatter(
+        axs[panels[p][0], panels[p][1]].scatter(
             255 * std_matrix[:, c],
             255 * color_matrix[1][:, c],
             c=color_matrix[1][:, 1:4],
@@ -58,7 +58,7 @@ def color_correction_plot(color_matrix, std_matrix, corrected_matrix=None):
             s=8,
         )
         if use_corrected:
-            axs[*panels[p]].scatter(
+            axs[panels[p][0], panels[p][1]].scatter(
                 255 * std_matrix[:, c],
                 255 * corrected_matrix[1][:, c],
                 c=corrected_matrix[1][:, 1:4],
@@ -66,14 +66,14 @@ def color_correction_plot(color_matrix, std_matrix, corrected_matrix=None):
                 s=8,
                 marker="*",
             )
-        axs[*panels[p]].scatter(
+        axs[panels[p][0], panels[p][1]].scatter(
             255 * std_matrix[:, c],
             255 * std_matrix[:, c],
             c=std_matrix[:, 1:4],
             s=8,
         )
-        axs[*panels[p]].set(xlabel="Expected", ylabel="Observed")
-        axs[*panels[p]].set_title(panel_titles[p])
+        axs[panels[p][0], panels[p][1]].set(xlabel="Expected", ylabel="Observed")
+        axs[panels[p][0], panels[p][1]].set_title(panel_titles[p])
     # grayscale panel
     graystd = _rgb2gray(
         np.transpose(
@@ -105,17 +105,17 @@ def color_correction_plot(color_matrix, std_matrix, corrected_matrix=None):
         )
     )
     for i in range(0, len(graystd)):
-        axs[*panels[3]].plot(
+        axs[1, 1].plot(
             [255 * graystd[i], 255 * graystd[i]],
             [255 * graystd[i], 255 * graymat[i]],
             linestyle="--",
             linewidth=0.5,
             c="#666666",
         )
-        axs[*panels[3]].plot(
+        axs[1, 1].plot(
             [0, 255], [0, 255], c="#666666", linewidth=1, linestyle="--"
         )
-        axs[*panels[3]].scatter(
+        axs[1, 1].scatter(
             255 * graystd,
             255 * graymat,
             c=color_matrix[1][:, 1:4],
@@ -123,7 +123,7 @@ def color_correction_plot(color_matrix, std_matrix, corrected_matrix=None):
             s=8,
         )
         if use_corrected:
-            axs[*panels[3]].scatter(
+            axs[1, 1].scatter(
                 255 * graystd,
                 255 * graycc,
                 c=corrected_matrix[1][:, 1:4],
@@ -131,9 +131,9 @@ def color_correction_plot(color_matrix, std_matrix, corrected_matrix=None):
                 s=8,
                 marker="*",
             )
-        axs[*panels[3]].scatter(255 * graystd, 255 * graystd, c=std_matrix[:, 1:4], s=8)
-        axs[*panels[3]].set(xlabel="Expected", ylabel="Observed")
-        axs[*panels[3]].set_title(panel_titles[3])
+        axs[1, 1].scatter(255 * graystd, 255 * graystd, c=std_matrix[:, 1:4], s=8)
+        axs[1, 1].set(xlabel="Expected", ylabel="Observed")
+        axs[1, 1].set_title(panel_titles[3])
     # layout panels
     fig.tight_layout()
 
