@@ -11,6 +11,7 @@ from plantcv.plantcv import color_palette
 from plantcv.plantcv._helpers import _cv2_findcontours
 from plantcv.plantcv._helpers import _roi_filter
 from plantcv.plantcv._helpers import _hough_circle
+from plantcv.plantcv._helpers import _rect_filter, _rect_replace
 from plantcv.plantcv import fatal_error, warn, params, Objects
 
 
@@ -527,7 +528,7 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
     return roi_objects
 
 
-def auto_wells(gray_img, mindist, candec, accthresh, minradius, maxradius, nrows, ncols, radiusadjust=None):
+def auto_wells(gray_img, mindist, candec, accthresh, minradius, maxradius, nrows, ncols, radiusadjust=None, roi=None):
     """Hough Circle Well Detection.
 
     Keyword inputs:
@@ -542,6 +543,7 @@ def auto_wells(gray_img, mindist, candec, accthresh, minradius, maxradius, nrows
     radiusadjust = amount to adjust the average radius, this can be desirable
     if you want ROI to sit inside a well, for example (in that case you might
     set it to a negative value).
+    roi = optional rectangular ROI to find wells within.
 
     :param gray_img: np.ndarray
     :param mindist: int
@@ -551,12 +553,25 @@ def auto_wells(gray_img, mindist, candec, accthresh, minradius, maxradius, nrows
     :param maxradius: int
     :param nrows = int
     :param ncols = int
+    :param roi = plantcv.plantcv.classes.Objects
     :return roi: plantcv.plantcv.classes.Objects
     """
     # Use hough circle helper function
     maxfind = nrows * ncols
-    df, img = _hough_circle(gray_img, mindist, candec, accthresh, minradius,
-                            maxradius, maxfind)
+    df, sub_img = _rect_filter(gray_img, roi, _hough_circle,
+                               **{"mindist": mindist, "candec": candec,
+                                  "accthresh": accthresh, "minradius": minradius,
+                                  "maxradius": maxradius, "maxfound": maxfind})
+    # cast gray image to color
+    cimg = cv2.cvtColor(gray_img, cv2.COLOR_GRAY2BGR)
+    # slice ROI back into original image
+    img = _rect_replace(cimg, sub_img, roi)
+    # adjust data.frame x/y points to match full scale image if ROI was used
+    if roi is not None:
+        xstart = roi.contours[0][0][0][0][0].astype("int32")
+        ystart = roi.contours[0][0][0][0][1].astype("int32")
+        df['x'] = df['x'] + xstart
+        df['y'] = df['y'] + ystart
 
     _debug(img, filename=os.path.join(params.debug_outdir, str(params.device) + '_roi_houghcircle.png'), cmap='gray')
 
