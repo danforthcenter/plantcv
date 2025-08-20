@@ -219,13 +219,13 @@ def x_axis_pseudolandmarks(img, mask, label=None):
         center_v_list.append(pt[0].tolist())
 
     outputs.add_observation(sample=label, variable='top_lmk', trait='top landmark coordinates',
-                            method='plantcv.plantcv.x_axis_pseudolandmarks', scale='none', datatype=tuple,
+                            method='plantcv.plantcv.homology.x_axis_pseudolandmarks', scale='none', datatype=tuple,
                             value=tuple(top_list), label='none')
     outputs.add_observation(sample=label, variable='bottom_lmk', trait='bottom landmark coordinates',
-                            method='plantcv.plantcv.x_axis_pseudolandmarks', scale='none', datatype=tuple,
+                            method='plantcv.plantcv.homology.x_axis_pseudolandmarks', scale='none', datatype=tuple,
                             value=tuple(bottom_list), label='none')
     outputs.add_observation(sample=label, variable='center_v_lmk', trait='center vertical landmark coordinates',
-                            method='plantcv.plantcv.x_axis_pseudolandmarks', scale='none', datatype=tuple,
+                            method='plantcv.plantcv.homology.x_axis_pseudolandmarks', scale='none', datatype=tuple,
                             value=tuple(center_v_list), label='none')
 
     return top, bottom, center_v

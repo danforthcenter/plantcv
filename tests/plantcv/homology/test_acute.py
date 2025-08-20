@@ -12,7 +12,7 @@ def test_acute(win, exp, homology_test_data):
     # Read in test data
     img = cv2.imread(homology_test_data.small_rgb_img)
     mask = cv2.imread(homology_test_data.small_bin_img, -1)
-    homology_pts, _, _, _, _, _ = acute(img=img, mask=mask, win=win, threshold=15)
+    homology_pts, _, _, _, _, _ = acute(img=img, mask=mask, win=win, threshold=15, label="plant")
     params.debug = None
     assert len(homology_pts) == exp
 
