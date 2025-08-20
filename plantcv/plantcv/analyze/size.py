@@ -118,13 +118,17 @@ def _analyze_size(img, mask, label):
                                                           hull=hull, cmx=cmx, cmy=cmy)
         longest_path = euclidean(tuple(caliper_transpose[caliper_length - 1]), tuple(caliper_transpose[0]))
         # Debugging output
-        cv2.drawContours(plt_img, obj, -1, (255, 0, 0), params.line_thickness)
+        # Draw object outline (used to only draw perimeter in v4.9 and earlier)
+        cv2.drawContours(plt_img, cnt, -1, (255, 0, 0), params.line_thickness)
         cv2.drawContours(plt_img, [hull], -1, (255, 0, 255), params.line_thickness)
         cv2.line(plt_img, (x, y), (x + width, y), (255, 0, 255), params.line_thickness)
         cv2.line(plt_img, (int(cmx), y), (int(cmx), y + height), (255, 0, 255), params.line_thickness)
         cv2.circle(plt_img, (int(cmx), int(cmy)), 10, (255, 0, 255), params.line_thickness)
         cv2.line(plt_img, (tuple(caliper_transpose[caliper_length - 1])), (tuple(caliper_transpose[0])),
                  (255, 0, 255), params.line_thickness)
+        # Label the object with object label
+        cv2.putText(img=plt_img, text=label, org=(int(cmx), int(cmy)), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                    fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
 
     # Store outputs
     outputs.add_metadata(term="image_height", datatype=int, value=np.shape(img)[0])
