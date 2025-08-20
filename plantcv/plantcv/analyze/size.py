@@ -126,9 +126,10 @@ def _analyze_size(img, mask, label):
         cv2.circle(plt_img, (int(cmx), int(cmy)), 10, (255, 0, 255), params.line_thickness)
         cv2.line(plt_img, (tuple(caliper_transpose[caliper_length - 1])), (tuple(caliper_transpose[0])),
                  (255, 0, 255), params.line_thickness)
-        # Label the object with object label
-        cv2.putText(img=plt_img, text=label, org=(int(cmx), int(cmy)), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                    fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
+        if params.verbose:
+            # Label the object with object label
+            cv2.putText(img=plt_img, text=label, org=(int(cmx), int(cmy)), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                        fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
 
     # Store outputs
     outputs.add_metadata(term="image_height", datatype=int, value=np.shape(img)[0])
