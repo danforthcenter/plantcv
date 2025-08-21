@@ -34,7 +34,7 @@ Automatically detects a Macbeth ColorChecker style color card and creates a labe
 
 !!! note
     Color chip size can only be used reasonably as a scaling factor (converting pixels to a known real world scale like cms)
-    only when the color card is on a consistent plane relative to the subject AND the color card is parallel to the camera. 
+    only when the color card is on a consistent plane relative to the subject AND the color card is parallel to the camera. It's a good idea to test your image capture protocol and color card detection before collecting a dataset.
     There are a few important assumptions that must be met in order to automatically detect color cards:
     
     - There is only one color card in the image.
