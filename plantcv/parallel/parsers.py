@@ -140,7 +140,7 @@ def _apply_metadata_filters(df, config):
     # if there are regex filters then find the True indicies for each and only return those from the merged dataframe
     if bool(config.metadata_regex):
         for key, value in config.metadata_regex.items():
-            bools = np.array([bool(re.search(value, x)) for x in df[key]])
+            bools = [bool(re.search(value, x)) for x in df[key]]
             df = df.loc[bools]
     return df
 ###########################################
@@ -307,9 +307,9 @@ def _parse_filepath(df, config):
     :return meta2: pandas.dataframe
     """
     # remove extraneous config.input_dir from file path
-    df["filepath"] = df["filepath"].map(lambda st: st.replace(config.input_dir, ""))
+    paths_after_input = df["filepath"].map(lambda st: st.replace(config.input_dir, ""))
     path_metadata = []
-    for i, fp in enumerate(df["filepath"]):
+    for i, fp in enumerate(paths_after_input):
         # for every file path, split it and add the elements to a list
         splits = fp.split(os.sep)
         path_metadata.append(splits[0:len(splits) - 1])
