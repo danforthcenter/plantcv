@@ -27,11 +27,6 @@ def metadata_parser(config):
     meta = _dataset2dataframe(dataset=dataset, config=config)
 
     # Split file paths into metadata terms 0:N-1
-    # NOTE this could be done here or in _read_filenames
-    # if here then it needs dataset, config inputs
-    # if in _read_filenames then it would be rowwise.
-    # problem with doing it in _read_filenames is that it
-    # would not allow for filepath regex if there is a metadata.json/snapshot.csv file?
     meta = _parse_filepath(df=meta, config=config)
 
     # Apply user-supplied metadata filters
@@ -141,8 +136,12 @@ def _apply_metadata_filters(df, config):
                                    columns=config.metadata_filters.keys(), dtype="object")
     # If there are no filters provide the metadata_filter dataframe will be empty and we can return the input dataframe
     if not metadata_filter.empty:
-        filtered_df = df.merge(metadata_filter, how="inner")
-        return filtered_df
+        df = df.merge(metadata_filter, how="inner")
+    # if there are regex filters then find the True indicies for each and only return those from the merged dataframe
+    if bool(config.metadata_regex):
+        for key, value in config.metadata_regex.items():
+            bools = np.array([bool(re.search(value, x)) for x in df[key]])
+            df = df.loc[bools]
     return df
 ###########################################
 
@@ -308,7 +307,7 @@ def _parse_filepath(df, config):
     :return meta2: pandas.dataframe
     """
     # remove extraneous config.input_dir from file path
-    meta["filepath"] = df["filepath"].map(lambda st: st.replace(config.input_dir, ""))
+    df["filepath"] = df["filepath"].map(lambda st: st.replace(config.input_dir, ""))
     path_metadata = []
     for i, fp in enumerate(df["filepath"]):
         # for every file path, split it and add the elements to a list
