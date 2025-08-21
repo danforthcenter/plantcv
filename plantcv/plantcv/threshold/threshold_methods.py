@@ -368,10 +368,7 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
     if channel.upper() == 'HSV':
 
         # Check threshold inputs
-        if not (len(lower_thresh) == 3 and len(upper_thresh) == 3):
-            fatal_error("If using the HSV colorspace, 3 thresholds are needed for both lower_thresh and " +
-                        "upper_thresh. If thresholding isn't needed for a channel, set lower_thresh=0 and " +
-                        "upper_thresh=255")
+        _check_threshold_inputs(3, lower_thresh, upper_thresh)
 
         # Convert the RGB image to HSV colorspace
         hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
@@ -397,10 +394,7 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
     elif channel.upper() == 'RGB':
 
         # Check threshold inputs
-        if not (len(lower_thresh) == 3 and len(upper_thresh) == 3):
-            fatal_error("If using the RGB colorspace, 3 thresholds are needed for both lower_thresh and " +
-                        "upper_thresh. If thresholding isn't needed for a channel, set lower_thresh=0 and " +
-                        "upper_thresh=255")
+        _check_threshold_inputs(3, lower_thresh, upper_thresh)
 
         # Separate channels (pcv.readimage reads RGB images in as BGR)
         blue = img[:, :, 0]
@@ -423,10 +417,7 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
     elif channel.upper() == 'LAB':
 
         # Check threshold inputs
-        if not (len(lower_thresh) == 3 and len(upper_thresh) == 3):
-            fatal_error("If using the LAB colorspace, 3 thresholds are needed for both lower_thresh and " +
-                        "upper_thresh. If thresholding isn't needed for a channel, set lower_thresh=0 and " +
-                        "upper_thresh=255")
+        _check_threshold_inputs(3, lower_thresh, upper_thresh)
 
         # Convert the RGB image to LAB colorspace
         lab_img = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
@@ -481,9 +472,8 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
     elif channel.upper() in ('GRAY', 'GREY'):
 
         # Check threshold input
-        if not (len(lower_thresh) == 1 and len(upper_thresh) == 1):
-            fatal_error("If useing a grayscale colorspace, 1 threshold is needed for both the " +
-                        "lower_thresh and upper_thresh.")
+        _check_threshold_inputs(1, lower_thresh, upper_thresh)
+    
         if len(np.shape(img)) == 3:
             # Convert RGB image to grayscale colorspace
             gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -533,6 +523,28 @@ def _call_inrange(gray_imgs_list, lower_thresh, upper_thresh):
         mask = cv2.inRange(array, lower_thresh[i], upper_thresh[i])
         out_masks.append(mask)
     return out_masks
+
+
+# Internal method for checking threshold inputs to reduce code duplication
+def _check_threshold_inputs(required_length, lower_thresh, upper_thresh):
+    """Checks threshold inputs for correct number of inputs
+
+    Parameters
+    ----------
+    required_length : int
+        Number of required inputs
+    lower_thresh : list
+        List of lower threshold values (0-255)
+    upper_thresh : list
+        List of upper threshold values (0-255)
+
+    Returns
+    -------
+    """
+    if not (len(lower_thresh) == required_length and len(upper_thresh) == required_length):
+        fatal_error(f"{required_length} threshold inputs are needed for both lower_thresh and " +
+                    "upper_thresh for the given channel. If thresholding isn't needed for a channel, set lower_thresh=0 and " +
+                    "upper_thresh=255")
 
 
 # Internal method for calling the OpenCV threshold function to reduce code duplication
