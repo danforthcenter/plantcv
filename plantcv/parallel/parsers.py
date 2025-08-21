@@ -286,14 +286,6 @@ def _parse_filename(filename, config, metadata_index):
 ###########################################
 def _parse_filepath(df, config):
     """Parse metadata from a filename.
-    
-    # NOTE this could be done here or in _read_filenames
-    # if here then it needs dataset, config inputs
-    # if in _read_filenames then it would be rowwise.
-    # problem with doing it in _read_filenames is that it
-    # would not allow for filepath regex if there is a metadata.json/snapshot.csv file
-    # maybe that is okay, but for now I think I'd like to have it happen on
-    # everything so it is available even if the job builder isn't parsing the basenames.
 
     Keyword arguments:
     df = pandas.dataframe of metadata
