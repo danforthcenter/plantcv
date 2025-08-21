@@ -27,12 +27,14 @@ Automatically detects a Macbeth ColorChecker style color card and creates a labe
     - If the goal is to color correct the image colorspace to the standard color card values, consider using [`pcv.transform.auto_correct_color`](transform_auto_correct_color.md) since this new function is a one-step wrapper of plantcv.transform.detect_color_card, [plantcv.transform.std_color_matrix](std_color_matrix.md),
     and [plantcv.transform.affine_color_correction](transform_affine_color_correction.md).
     - This mask output will be consistent in chip order regardless of orientation, where the white chip is detected and labeled first with index=0.
+    - This algorithm uses an adaptive edge detection, and filters objects based on their size, apparent aspect ratio, and solidity.
+    - QR codes are often falsely detected by this algorithm, but can be ignored during detection if the optional `roi` parameter is used.
 - **Example use:**
     - [Color Correction Tutorial](https://plantcv.org/tutorials/color-correction) since this function is called during [`pcv.transform.auto_correct_color`](transform_auto_correct_color.md). 
 
 !!! note
     Color chip size can only be used reasonably as a scaling factor (converting pixels to a known real world scale like cms)
-    only when the color card is on a consistent plane relative to the subject AND the color card is parallel to the camera. 
+    only when the color card is on a consistent plane relative to the subject AND the color card is parallel to the camera. It's a good idea to test your image capture protocol and color card detection before collecting a dataset.
     There are a few important assumptions that must be met in order to automatically detect color cards:
     
     - There is only one color card in the image.
