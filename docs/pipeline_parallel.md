@@ -89,6 +89,10 @@ Valid metadata that can be collected from filenames (basenames) are `camera`, `i
 `lifter`, `timestamp`, `id`, `barcode`, `treatment`, `cartag`, `measurementlabel`, and `other`. Additionally, the file path starting from
 the `input_dir` can be used as `filepath` or individual components of it as `filepath{1:N}`, which may be useful for regex based filtering.
 
+Note that if a `metadata.json` or `SnapshotInfo.csv` file exists in your `config.input_dir` directory then that file will be used to supply
+metadata instead of any parsing specified in the `metadata` key. If one of those files exists the `filepath` and `filepath{1:N}` keys are
+still available to filter your data.
+
 To correctly process timestamps, you need to specify the timestamp format (`timestampformat` configuration
 parameter) code for the
 [strptime C library](https://docs.python.org/3.7/library/datetime.html#strftime-and-strptime-behavior).
