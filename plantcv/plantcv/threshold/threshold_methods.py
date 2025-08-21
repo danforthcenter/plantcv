@@ -382,9 +382,8 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         value = hsv_img[:, :, 2]
 
         # Make a mask for each channel
-        h_mask = cv2.inRange(hue, lower_thresh[0], upper_thresh[0])
-        s_mask = cv2.inRange(sat, lower_thresh[1], upper_thresh[1])
-        v_mask = cv2.inRange(value, lower_thresh[2], upper_thresh[2])
+        h_mask, s_mask, v_mask = _call_inrange(gray_imgs_list=[hue, sat, value],
+                                               lower_thresh=lower_thresh, upper_thresh=upper_thresh)
 
         # Apply the masks to the image
         result = cv2.bitwise_and(img, img, mask=h_mask)
@@ -409,9 +408,8 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         red = img[:, :, 2]
 
         # Make a mask for each channel
-        b_mask = cv2.inRange(blue, lower_thresh[2], upper_thresh[2])
-        g_mask = cv2.inRange(green, lower_thresh[1], upper_thresh[1])
-        r_mask = cv2.inRange(red, lower_thresh[0], upper_thresh[0])
+        b_mask, g_mask, r_mask = _call_inrange(gray_imgs_list=[blue, green, red],
+                                               lower_thresh=lower_thresh, upper_thresh=upper_thresh)
 
         # Apply the masks to the image
         result = cv2.bitwise_and(img, img, mask=b_mask)
@@ -439,9 +437,8 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         blue_yellow = lab_img[:, :, 2]
 
         # Make a mask for each channel
-        l_mask = cv2.inRange(lightness, lower_thresh[0], upper_thresh[0])
-        gm_mask = cv2.inRange(green_magenta, lower_thresh[1], upper_thresh[1])
-        by_mask = cv2.inRange(blue_yellow, lower_thresh[2], upper_thresh[2])
+        l_mask, gm_mask, by_mask = _call_inrange(gray_imgs_list=[lightness, green_magenta, blue_yellow],
+                                                 lower_thresh=lower_thresh, upper_thresh=upper_thresh)
 
         # Apply the masks to the image
         result = cv2.bitwise_and(img, img, mask=l_mask)
@@ -451,6 +448,35 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         # Combine masks
         mask = cv2.bitwise_and(l_mask, gm_mask)
         mask = cv2.bitwise_and(mask, by_mask)
+        
+    elif channel.upper() == 'CMYK':
+
+        # Check threshold inputs
+        if not (len(lower_thresh) == 4 and len(upper_thresh) == 4):
+            fatal_error("If using the CYMK colorspace, 4 thresholds are needed for both lower_thresh and " +
+                        "upper_thresh. If thresholding isn't needed for a channel, set lower_thresh=0 and " +
+                        "upper_thresh=255")
+
+        # Convert the RGB image to LAB colorspace
+        c = _rgb2cmyk(rgb_img=img, channel="c")
+        m = _rgb2cmyk(rgb_img=img, channel="m")
+        y = _rgb2cmyk(rgb_img=img, channel="y")
+        k = _rgb2cmyk(rgb_img=img, channel="k")
+
+        # Make a mask for each channel
+        out_masks = _call_inrange(gray_imgs_list=[c, m, y, k], lower_thresh=lower_thresh, upper_thresh=upper_thresh)
+        c_mask, m_mask, y_mask, k_mask = out_masks
+        
+        # Apply the masks to the image
+        result = cv2.bitwise_and(img, img, mask=c_mask)
+        result = cv2.bitwise_and(result, result, mask=m_mask)
+        result = cv2.bitwise_and(result, result, mask=y_mask)
+        masked_img = cv2.bitwise_and(result, result, mask=k_mask)
+
+        # Combine masks
+        mask = cv2.bitwise_and(c_mask, m_mask)
+        mask2 = cv2.bitwise_and(y_mask, k_mask)
+        mask = cv2.bitwise_and(mask, mask2)
 
     elif channel.upper() in ('GRAY', 'GREY'):
 
@@ -471,7 +497,7 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         masked_img = cv2.bitwise_and(img, img, mask=mask)
 
     else:
-        fatal_error(str(channel) + " is not a valid colorspace. Channel must be either 'RGB', 'HSV', or 'gray'.")
+        fatal_error(str(channel) + " is not a valid colorspace. Channel must be either 'RGB', 'HSV', 'CMYK', or 'gray'.")
 
     # Auto-increment the device counter
 
@@ -481,6 +507,32 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
     _debug(visual=mask, filename=os.path.join(params.debug_outdir,
                                               str(params.device) + channel + 'custom_thresh_mask.png'))
     return mask, masked_img
+
+
+# Internal method for calling the OpenCV inRange function to reduce code duplication
+def _call_inrange(gray_imgs_list, lower_thresh, upper_thresh):
+    """Calls the OpenCV threshold function to reduce code duplication
+
+    Parameters
+    ----------
+    gray_imgs_list : list
+        List containing grayscale arrays
+    lower_thresh : list
+        List of lower threshold values (0-255)
+    upper_thresh : list
+        List of upper threshold values (0-255)
+
+    Returns
+    -------
+    list
+        Thresholded, binary images
+    """
+    out_masks = []
+    # Apply inRange to each array in the list 
+    for i, array in enumerate(gray_imgs_list):
+        mask = cv2.inRange(array, lower_thresh[i], upper_thresh[i])
+        out_masks.append(mask)
+    return out_masks
 
 
 # Internal method for calling the OpenCV threshold function to reduce code duplication
