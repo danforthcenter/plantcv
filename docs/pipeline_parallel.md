@@ -85,8 +85,9 @@ AABA002948_2014-03-14 03-29-45_Pilot-031014_VIS_TV_z3500.png
 
 **Valid Metadata**
 
-Valid metadata that can be collected from filenames are `camera`, `imgtype`, `zoom`, `exposure`, `gain`, `frame`, `rotation`,
-`lifter`, `timestamp`, `id`, `barcode`, `treatment`, `cartag`, `measurementlabel`, and `other`.
+Valid metadata that can be collected from filenames (basenames) are `camera`, `imgtype`, `zoom`, `exposure`, `gain`, `frame`, `rotation`,
+`lifter`, `timestamp`, `id`, `barcode`, `treatment`, `cartag`, `measurementlabel`, and `other`. Additionally, the file path starting from
+the `input_dir` can be used as `filepath` or individual components of it as `filepath{1:N}`, which may be useful for regex based filtering.
 
 To correctly process timestamps, you need to specify the timestamp format (`timestampformat` configuration
 parameter) code for the
@@ -110,6 +111,7 @@ Sample image filename: `cam1_16-08-06-16:45_el1100s1_p19.jpg`
     "imgformat": "jpg",
     "delimiter": "_",
     "metadata_filters": {"camera": "cam1"},
+	"metadata_regex": {},
     "timestampformat": "%y-%m-%d-%H:%M",
     "writeimg": true,
     "other_args": {},
@@ -186,6 +188,7 @@ in a list to the `filename_metadata` parameter.
     "imgformat": "jpg",
     "delimiter": '(.{3})_(.+)_(\d{4}-\d{2}-\d{2} \d{2}_\d{2}_\d{2})',
     "metadata_filters": {},
+	"metadata_regex": {},
     "timestampformat": "%Y-%m-%d %H_%M_%S",
     "writeimg": true,
     "other_args": {},
@@ -212,6 +215,15 @@ in a list to the `filename_metadata` parameter.
 
 If you need help building a regular expression, https://regexr.com/ is a useful site to help build and interpret
 patterns. Also feel free to post an [issue](https://github.com/danforthcenter/plantcv/issues).
+
+#### Using a pattern matching-based filename metadata filter
+
+Regex patterns can be supplied as dictionaries to the `metadata_regex` key of the configuration json.
+
+The `filepath` key will search for a regex pattern anywhere in the absolute path to an image.
+The `filepath1` key will search for a regex pattern in the first directory starting from the `input_dir`.
+Additional keys up to `filepathN` (the max depth directory containing an image in `input_dir`) are available.
+
 
 #### Grouping images for multi-image workflows
 
