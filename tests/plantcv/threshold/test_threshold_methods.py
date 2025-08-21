@@ -89,6 +89,7 @@ def test_otsu_incorrect_object_type(threshold_test_data):
 @pytest.mark.parametrize("channel,lower_thresh,upper_thresh", [["HSV", [0, 0, 0], [100, 100, 100]],
                                                                ["LAB", [100, 100, 100], [255, 255, 255]],
                                                                ["RGB", [0, 0, 0], [100, 100, 100]],
+                                                                ["CMYK", [0, 0, 0, 0], [2, 100, 100, 100]],
                                                                ["GRAY", [0], [100]]])
 def test_custom_range_rgb(channel, lower_thresh, upper_thresh, threshold_test_data):
     """Test for PlantCV."""
@@ -113,6 +114,7 @@ def test_custom_range_grayscale(threshold_test_data):
                                                                ["LAB", [0, 0], [2, 2, 2, 2]],
                                                                ["RGB", [0, 0], [2, 2, 2, 2]],
                                                                ["GRAY", [0, 0], [2]],
+                                                               ["YIQ", [0], [2]],
                                                                ["CMYK", [0], [2]]])
 def test_custom_range_bad_input(channel, lower_thresh, upper_thresh, threshold_test_data):
     """Test for PlantCV."""
