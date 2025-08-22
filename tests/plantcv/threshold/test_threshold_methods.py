@@ -224,6 +224,7 @@ def test_mask_bad_input_color_img(threshold_test_data):
     ['R', True, 255], ['G', True, 0], ['l', True, 255], ['a', True, 255], ['b', True, 255], ['h', False, 0],
     ['s', False, 0], ['v', False, 0], ['gray', True, 255], ['index', True, 0]])
 def test_dual_channels(y_ch, abv, expected):
+    """Test for PlantCV."""
     # Create a synthetic RGB image containing a single pixel
     img = np.array([100, 50, 200], dtype=np.uint8).reshape((1, 1, 3))
     # first two points for a straight line of slope 1 and y-intercept of 0
@@ -235,6 +236,7 @@ def test_dual_channels(y_ch, abv, expected):
 
 
 def test_dual_channels_bad_points():
+    """Test for PlantCV."""
     # Create a synthetic RGB image containing a single pixel
     img = np.array([100, 50, 200], dtype=np.uint8).reshape((1, 1, 3))
     # only one point given
@@ -246,6 +248,7 @@ def test_dual_channels_bad_points():
 
 
 def test_dual_channels_bad_channel():
+    """Test for PlantCV."""
     # Create a synthetic RGB image containing a single pixel
     img = np.array([100, 50, 200], dtype=np.uint8).reshape((1, 1, 3))
     # only one point given
