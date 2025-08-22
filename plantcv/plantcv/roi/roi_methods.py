@@ -646,7 +646,7 @@ def multi_rect(img, coord, h=None, w=None, spacing=None, nrows=None, ncols=None)
     :param ncols: int
     :return roi_objects: plantcv.plantcv.classes.Objects
     """
-     # Grid of ROIs
+    # Grid of ROIs
     num_rois = 0
     if (isinstance(coord, tuple)) and ((nrows and ncols) is not None) and (isinstance(spacing, tuple)):
         roi_objects, overlap_img = _grid_roi_rect(img, nrows, ncols, h, w, coord, spacing)
@@ -672,7 +672,6 @@ def multi_rect(img, coord, h=None, w=None, spacing=None, nrows=None, ncols=None)
     # Draw the ROIs if requested
     _draw_roi(img=img, roi_contour=roi_objects)
     return roi_objects
-
 
 
 def auto_wells(gray_img, mindist, candec, accthresh, minradius, maxradius, nrows, ncols, radiusadjust=None, roi=None):

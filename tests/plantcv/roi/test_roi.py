@@ -228,6 +228,16 @@ def test_multi_bad_input(roi_test_data):
         _ = multi(rgb_img, coord=[(25, 120), (100, 100)], radius=20, spacing=(10, 10), nrows=3, ncols=6)
 
 
+def test_multi_rect_bad_input(roi_test_data):
+    """Test for PlantCV."""
+    # Read in test RGB image
+    rgb_img = cv2.imread(roi_test_data.small_rgb_img)
+    # The user must input a list of custom coordinates OR inputs to make a grid. Not both
+    with pytest.raises(RuntimeError):
+        _ = multi_rect(rgb_img, coord=[(25, 120), (100, 100)],
+                       h=10, w=10, spacing=(10, 10), nrows=3, ncols=6)
+
+
 def test_multi_bad_input_no_radius(roi_test_data):
     """Test for PlantCV."""
     # Read in test RGB image
