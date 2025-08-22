@@ -307,8 +307,9 @@ def _parse_filepath(df, config):
         path_metadata.append(splits[0:len(splits) - 1])
     # bind list into a dataframe
     path_metadata_df = pd.DataFrame(path_metadata)
-    # rename columns to filepath1:N
+    # rename columns to filepath1:N, basename
     path_metadata_df.columns = ["filepath"+str(i + 1) for i in range(len(path_metadata_df.columns))]
+    path_metadata_df.rename(columns={path_metadata_df.columns[-1]: "basename"}, inplace=True)
     # bind new columns onto existing metadata
     meta2 = df.reset_index(drop=True).join(path_metadata_df)
     return meta2
