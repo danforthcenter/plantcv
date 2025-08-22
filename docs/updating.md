@@ -961,6 +961,10 @@ pages for more details on the input and output variable types.
 * post v3.1: roi_contours, roi_hierarchies = **plantcv.roi.multi**(*img, coord, radius, spacing=None, nrows=None, ncols=None*)
 * post v4.0: roi_objects = **plantcv.roi.multi**(*img, coord, radius=None, spacing=None, nrows=None, ncols=None*)
 
+#### plantcv.roi.multi_rect
+* pre v4.10: NA
+* post v4.10: roi_objects = **plantcv.roi.multi_rect**(*img, coord, h, w, spacing=None, nrows=None, ncols=None*)
+
 #### plantcv.roi.quick_filter
 
 * pre v4.2.1: NA
