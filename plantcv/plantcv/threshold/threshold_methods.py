@@ -378,18 +378,18 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         sat = hsv_img[:, :, 1]
         value = hsv_img[:, :, 2]
 
-        # Make a mask for each channel
-        h_mask, s_mask, *v_mask = _call_inrange(gray_imgs_list=[hue, sat, value],
-                                               lower_thresh=lower_thresh, upper_thresh=upper_thresh)
+        # Make a mask for each channel (Use '*' to avoid linter error about unbalanced value unpacking)
+        *out_masks, = _call_inrange(gray_imgs_list=[hue, sat, value],
+                                    lower_thresh=lower_thresh, upper_thresh=upper_thresh)
 
         # Apply the masks to the image
-        result = cv2.bitwise_and(img, img, mask=h_mask)
-        result = cv2.bitwise_and(result, result, mask=s_mask)
-        masked_img = cv2.bitwise_and(result, result, mask=v_mask)
+        result = cv2.bitwise_and(img, img, mask=out_masks[0])
+        result = cv2.bitwise_and(result, result, mask=out_masks[1])
+        masked_img = cv2.bitwise_and(result, result, mask=out_masks[2])
 
         # Combine masks
-        mask = cv2.bitwise_and(s_mask, h_mask)
-        mask = cv2.bitwise_and(mask, v_mask)
+        mask = cv2.bitwise_and(out_masks[0], out_masks[1])
+        mask = cv2.bitwise_and(mask, out_masks[2])
 
     elif channel.upper() == 'RGB':
 
@@ -401,18 +401,18 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         green = img[:, :, 1]
         red = img[:, :, 2]
 
-        # Make a mask for each channel
-        b_mask, g_mask, *r_mask = _call_inrange(gray_imgs_list=[blue, green, red],
-                                               lower_thresh=lower_thresh, upper_thresh=upper_thresh)
+        # Make a mask for each channel (Use '*' to avoid linter error about unbalanced value unpacking)
+        *out_masks, = _call_inrange(gray_imgs_list=[blue, green, red],
+                                    lower_thresh=lower_thresh, upper_thresh=upper_thresh)
 
         # Apply the masks to the image
-        result = cv2.bitwise_and(img, img, mask=b_mask)
-        result = cv2.bitwise_and(result, result, mask=g_mask)
-        masked_img = cv2.bitwise_and(result, result, mask=r_mask)
+        result = cv2.bitwise_and(img, img, mask=out_masks[0])
+        result = cv2.bitwise_and(result, result, mask=out_masks[1])
+        masked_img = cv2.bitwise_and(result, result, mask=out_masks[2])
 
         # Combine masks
-        mask = cv2.bitwise_and(b_mask, g_mask)
-        mask = cv2.bitwise_and(mask, r_mask)
+        mask = cv2.bitwise_and(out_masks[0], out_masks[1])
+        mask = cv2.bitwise_and(mask, out_masks[2])
 
     elif channel.upper() == 'LAB':
 
@@ -427,18 +427,18 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         green_magenta = lab_img[:, :, 1]
         blue_yellow = lab_img[:, :, 2]
 
-        # Make a mask for each channel
-        l_mask, gm_mask, *by_mask = _call_inrange(gray_imgs_list=[lightness, green_magenta, blue_yellow],
-                                  lower_thresh=lower_thresh, upper_thresh=upper_thresh)
+        # Make a mask for each channel (Use '*' to avoid linter error about unbalanced value unpacking)
+        *out_masks, = _call_inrange(gray_imgs_list=[lightness, green_magenta, blue_yellow],
+                                    lower_thresh=lower_thresh, upper_thresh=upper_thresh)
 
         # Apply the masks to the image
-        result = cv2.bitwise_and(img, img, mask=l_mask)
-        result = cv2.bitwise_and(result, result, mask=gm_mask)
-        masked_img = cv2.bitwise_and(result, result, mask=by_mask)
+        result = cv2.bitwise_and(img, img, mask=out_masks[0])
+        result = cv2.bitwise_and(result, result, mask=out_masks[1])
+        masked_img = cv2.bitwise_and(result, result, mask=out_masks[2])
 
         # Combine masks
-        mask = cv2.bitwise_and(l_mask, gm_mask)
-        mask = cv2.bitwise_and(mask, by_mask)
+        mask = cv2.bitwise_and(out_masks[0], out_masks[1])
+        mask = cv2.bitwise_and(mask, out_masks[2])
 
     elif channel.upper() == 'CMYK':
 
@@ -455,18 +455,18 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         k = _rgb2cmyk(rgb_img=img, channel="k")
 
         # Make a mask for each channel
-        out_masks = _call_inrange(gray_imgs_list=[c, m, y, k], lower_thresh=lower_thresh, upper_thresh=upper_thresh)
-        c_mask, m_mask, y_mask, *k_mask = out_masks
+        *out_masks, = _call_inrange(gray_imgs_list=[c, m, y, k], lower_thresh=lower_thresh, upper_thresh=upper_thresh)
+        # Use '*' to avoid linter error about unbalanced value unpacking
 
         # Apply the masks to the image
-        result = cv2.bitwise_and(img, img, mask=c_mask)
-        result = cv2.bitwise_and(result, result, mask=m_mask)
-        result = cv2.bitwise_and(result, result, mask=y_mask)
-        masked_img = cv2.bitwise_and(result, result, mask=k_mask)
+        result = cv2.bitwise_and(img, img, mask=out_masks[0])
+        result = cv2.bitwise_and(result, result, mask=out_masks[1])
+        result = cv2.bitwise_and(result, result, mask=out_masks[2])
+        masked_img = cv2.bitwise_and(result, result, mask=out_masks[3])
 
         # Combine masks
-        mask = cv2.bitwise_and(c_mask, m_mask)
-        mask2 = cv2.bitwise_and(y_mask, k_mask)
+        mask = cv2.bitwise_and(out_masks[0], out_masks[1])
+        mask2 = cv2.bitwise_and(out_masks[2], out_masks[3])
         mask = cv2.bitwise_and(mask, mask2)
 
     elif channel.upper() in ('GRAY', 'GREY'):
