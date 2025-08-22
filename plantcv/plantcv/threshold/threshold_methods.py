@@ -379,7 +379,7 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         value = hsv_img[:, :, 2]
 
         # Make a mask for each channel
-        h_mask, s_mask, v_mask = _call_inrange(gray_imgs_list=[hue, sat, value],
+        h_mask, s_mask, *v_mask = _call_inrange(gray_imgs_list=[hue, sat, value],
                                                lower_thresh=lower_thresh, upper_thresh=upper_thresh)
 
         # Apply the masks to the image
@@ -402,7 +402,7 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         red = img[:, :, 2]
 
         # Make a mask for each channel
-        b_mask, g_mask, r_mask = _call_inrange(gray_imgs_list=[blue, green, red],
+        b_mask, g_mask, *r_mask = _call_inrange(gray_imgs_list=[blue, green, red],
                                                lower_thresh=lower_thresh, upper_thresh=upper_thresh)
 
         # Apply the masks to the image
@@ -428,8 +428,8 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         blue_yellow = lab_img[:, :, 2]
 
         # Make a mask for each channel
-        l_mask, gm_mask, by_mask = _call_inrange(gray_imgs_list=[lightness, green_magenta, blue_yellow],
-                                                 lower_thresh=lower_thresh, upper_thresh=upper_thresh)
+        l_mask, gm_mask, *by_mask = _call_inrange(gray_imgs_list=[lightness, green_magenta, blue_yellow],
+                                  lower_thresh=lower_thresh, upper_thresh=upper_thresh)
 
         # Apply the masks to the image
         result = cv2.bitwise_and(img, img, mask=l_mask)
@@ -439,7 +439,7 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         # Combine masks
         mask = cv2.bitwise_and(l_mask, gm_mask)
         mask = cv2.bitwise_and(mask, by_mask)
-        
+
     elif channel.upper() == 'CMYK':
 
         # Check threshold inputs
@@ -456,8 +456,8 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
 
         # Make a mask for each channel
         out_masks = _call_inrange(gray_imgs_list=[c, m, y, k], lower_thresh=lower_thresh, upper_thresh=upper_thresh)
-        c_mask, m_mask, y_mask, k_mask = out_masks
-        
+        c_mask, m_mask, y_mask, *k_mask = out_masks
+
         # Apply the masks to the image
         result = cv2.bitwise_and(img, img, mask=c_mask)
         result = cv2.bitwise_and(result, result, mask=m_mask)
@@ -473,7 +473,7 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
 
         # Check threshold input
         _check_threshold_inputs(1, lower_thresh, upper_thresh)
-    
+
         if len(np.shape(img)) == 3:
             # Convert RGB image to grayscale colorspace
             gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -518,7 +518,7 @@ def _call_inrange(gray_imgs_list, lower_thresh, upper_thresh):
         Thresholded, binary images
     """
     out_masks = []
-    # Apply inRange to each array in the list 
+    # Apply inRange to each array in the list
     for i, array in enumerate(gray_imgs_list):
         mask = cv2.inRange(array, lower_thresh[i], upper_thresh[i])
         out_masks.append(mask)
