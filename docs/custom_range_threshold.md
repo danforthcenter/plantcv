@@ -1,7 +1,7 @@
 ## Custom Range Threshold
 
 Creates a binary image (mask) and a masked image from an RGB or grayscale image based on the user defined threshold values. 
-The threshold color-spaces that can be used are grayscale, RGB, HSV, or LAB.
+The threshold color-spaces that can be used are grayscale, RGB, HSV, CMYK, or LAB.
 
 **plantcv.threshold.custom_range**(*img, lower_thresh, upper_thresh, channel='RGB'*)
 
@@ -11,9 +11,9 @@ The threshold color-spaces that can be used are grayscale, RGB, HSV, or LAB.
     - img - RGB image data
     - lower_thresh - List of lower threshold values (0-255)
     - upper_thresh - List of upper threshold values (0-255)
-    - channel - Color-space channels of interest (either 'RGB', 'HSV', 'LAB', or 'gray')
+    - channel - Color-space channels of interest (either 'RGB', 'HSV', 'LAB', 'CMYK' or 'gray')
 - **Context:**
-    - Used to help differentiate plant and background
+    - Used to help differentiate plant/object and background
 - **Example use:**
     - Below
 
