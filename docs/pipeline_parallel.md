@@ -87,11 +87,12 @@ AABA002948_2014-03-14 03-29-45_Pilot-031014_VIS_TV_z3500.png
 
 Valid metadata that can be collected from filenames (basenames) are `camera`, `imgtype`, `zoom`, `exposure`, `gain`, `frame`, `rotation`,
 `lifter`, `timestamp`, `id`, `barcode`, `treatment`, `cartag`, `measurementlabel`, and `other`. Additionally, the file path starting from
-the `input_dir` can be used as `filepath` or individual components of it as `filepath{1:N}`, which may be useful for regex based filtering.
+the `input_dir` can be used as `filepath` or individual components of it as `filepath{1:N}`, the file name is available for regex filtering
+with the `basename` key, which may be useful for regex based filtering.
 
 Note that if a `metadata.json` or `SnapshotInfo.csv` file exists in your `config.input_dir` directory then that file will be used to supply
-metadata instead of any parsing specified in the `metadata` key. If one of those files exists the `filepath` and `filepath{1:N}` keys are
-still available to filter your data.
+metadata instead of any parsing specified in the `metadata` key. If one of those files exists the `filepath`, `filepath{1:N}`, and `basename`
+keys are still available to filter your data.
 
 To correctly process timestamps, you need to specify the timestamp format (`timestampformat` configuration
 parameter) code for the
@@ -226,7 +227,55 @@ Regex patterns can be supplied as dictionaries to the `metadata_regex` key of th
 
 The `filepath` key will search for a regex pattern anywhere in the absolute path to an image.
 The `filepath1` key will search for a regex pattern in the first directory starting from the `input_dir`.
-Additional keys up to `filepathN` (the max depth directory containing an image in `input_dir`) are available.
+Additional keys up to `filepathN` (the max depth directory containing an image in `input_dir`) are available
+as well as `basename` if filtering with regex is easier than with exact metadata terms.
+
+In this example we filter several levels of the file path and the basename.
+Here the first component of the file path starting from the `input_dir` represents a barcode,
+which we filter to start with "barcode" followed by two 0s and a number between 5 and 9,
+then matching either AB or AD. We don't filter the second component of the filepath,
+but do filter the third to start with "snapshot".
+Finally, we filter the basename for top view rgb images with "TV_VIS.*".
+
+**Example configuration:**
+
+```bash
+{
+    "input_dir": "input_directory",
+    "json": "output.json",
+    "filename_metadata": [""],
+    "workflow": "user-workflow.py",
+    "img_outdir": "output_directory",
+    "tmp_dir": ".",
+    "start_date": null,
+    "end_date": null,
+    "imgformat": "jpg",
+    "delimiter": '_',
+    "metadata_filters": {},
+	"metadata_regex": {"filepath1":"^barcode00[5-9]A[B|D]", "filepath3":"snapshot.*", "basename":"TV_VIS.*"},
+    "timestampformat": "%Y-%m-%d %H_%M_%S",
+    "writeimg": true,
+    "other_args": {},
+    "groupby": ["filepath"],
+    "group_name": "auto",
+    "cleanup": true,
+    "append": false,
+    "cluster": "HTCondorCluster",
+    "cluster_config": {
+        "n_workers": 16,
+        "cores": 1,
+        "memory": "1GB",
+        "disk": "1GB",
+        "log_directory": null,
+        "local_directory": null,
+        "job_extra_directives": null
+    },
+    "metadata_terms": {
+    ...
+    }
+}
+
+```
 
 
 #### Grouping images for multi-image workflows
