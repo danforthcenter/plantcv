@@ -15,7 +15,7 @@ def auto_correct_color(rgb_img, label=None, card_type=0, **kwargs):
         Modifies the variable name of observations recorded (default = pcv.params.sample_label).
     card_type : int
         reference value indicating the type of card being used for correction:
-                card_type = 0: calibrite color card (default)
+                card_type = 0: macbeth color card (default)
                 card_type = 1: astrobotany.com AIRI calibration sticker
     **kwargs
         Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle.

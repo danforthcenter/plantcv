@@ -100,8 +100,8 @@ def _draw_color_chips(rgb_img, centers, radius):
     return labeled_mask, debug_img
 
 
-def _calibrite_card_detection(rgb_img, **kwargs):
-    """Algorithm to automatically detect a color card.
+def _macbeth_card_detection(rgb_img, **kwargs):
+    """Algorithm to automatically detect a Macbeth-style color card.
 
     Parameters
     ----------
@@ -241,6 +241,8 @@ def _get_astro_std_mask():
                [517, 371],  # Value 28
                [582, 371],  # Value 22
                [647, 371]]  # Value 17 (Black)
+
+    # Top row of chips (BGRYK) are larger than the row of gray scale chips
     radii = [40 if y == 271 else 20 for _, y in centers]
 
     # Generate empty image and draw chips around centers
@@ -251,7 +253,7 @@ def _get_astro_std_mask():
 
 
 def _astrobotany_card_detection(rgb_img, **kwargs):
-    """Algorithm to automatically detect a color card.
+    """Algorithm to automatically detect an astrobotany.com-style color card.
 
     Parameters
     ----------
@@ -381,7 +383,7 @@ def mask_color_card(rgb_img, card_type=0, **kwargs):
         Input RGB image data containing a color card.
     card_type : int
         reference value indicating the type of card being used for correction:
-                card_type = 0: calibrite color card (default)
+                card_type = 0: macbeth color card (default)
                 card_type = 1: astrobotany.com AIRI calibration sticker
     **kwargs
         Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle.
@@ -398,7 +400,7 @@ def mask_color_card(rgb_img, card_type=0, **kwargs):
         Binary bounding box mask of the detected color card chips
     """
     if card_type == 0:
-        *_, bounding_mask = _calibrite_card_detection(rgb_img, **kwargs)
+        *_, bounding_mask = _macbeth_card_detection(rgb_img, **kwargs)
     elif card_type == 1:
         *_, bounding_mask = _astrobotany_card_detection(rgb_img, **kwargs)
     else:
@@ -429,7 +431,7 @@ def detect_color_card(rgb_img, label=None, card_type=0, **kwargs):
         modifies the variable name of observations recorded (default = pcv.params.sample_label).
     card_type : int
         reference value indicating the type of card being used for correction:
-                card_type = 0: calibrite color card (default)
+                card_type = 0: macbeth chart color card (default)
                 card_type = 1: astrobotany.com AIRI calibration sticker
     **kwargs
         Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle.
@@ -457,8 +459,8 @@ def detect_color_card(rgb_img, label=None, card_type=0, **kwargs):
         # TODO: Check for aruco tags and set card_type accordingly.
         warn("Invalid option for arg:card_type, attempting to automatically determine card type.")
     if card_type == 0:
-        # Search image for a Calibrite color card grid
-        labeled_mask, debug_img, marea, mheight, mwidth, _ = _calibrite_card_detection(rgb_img, **kwargs)
+        # Search image for a macbeth color card grid
+        labeled_mask, debug_img, marea, mheight, mwidth, _ = _macbeth_card_detection(rgb_img, **kwargs)
 
         # Create dataframe for easy summary stats
         chip_size = np.median(marea)
@@ -474,7 +476,7 @@ def detect_color_card(rgb_img, label=None, card_type=0, **kwargs):
         # Search image for astrobotany.com color card aruco tags
         labeled_mask, debug_img, card_img, marea, mheight, mwidth, _ = _astrobotany_card_detection(rgb_img, **kwargs)
 
-        # Save out conversion value for pixel to cm standardization
+        # Save out size of aruco tags in pixels (measured) and cm (standard)
         outputs.add_metadata(term="mean_aruco_tag_area_px", datatype=float, value=marea)
         outputs.add_metadata(term="aruco_tag_area_sq-cm", datatype=float, value=0.7975*0.7975)
         outputs.add_metadata(term="mean_aruco_tag_width_px", datatype=float, value=mwidth)
