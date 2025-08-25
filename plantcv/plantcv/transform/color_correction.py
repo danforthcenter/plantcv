@@ -147,7 +147,7 @@ def std_color_matrix(pos=0):
     # arange color values based on the indices
     color_matrix_wo_chip_nb = values_list[(cc_indices_rot-1).reshape(-1), :]/255.
 
-    # add chip number compatible with other PlantCV functions
+    # add chip number (mask value) compatible with other PlantCV functions
     chip_nb = np.arange(10, 10*N_chips+1, 10)
     color_matrix = np.concatenate((chip_nb.reshape(N_chips, 1), color_matrix_wo_chip_nb), axis=1)
 
@@ -162,29 +162,30 @@ def astro_color_matrix():
     color_matrix
         matrix containing the standard red, green, and blue values for each color chip
     """
-    # list of rgb values as average measurement of 103 imaged with a flatbed scanner
-    values_list = np.array([[28, 43, 111],      # Blue
-                            [79, 152, 52],      # Green
-                            [183, 45, 38],      # Red
-                            [244, 206, 49],     # Yellow
-                            [37, 37, 37],       # Black
+    values_list = np.array([[47, 59, 128],      # Blue
+                            [87, 158, 63],      # Green
+                            [181, 64, 54],      # Red
+                            [228, 207, 50],     # Yellow
+                            [53, 56, 55],       # Black
                             # Grayscale chips
-                            [254, 254, 254],    # Value 100 (White)
-                            [232, 232, 232],    # V92
-                            [196, 196, 196],    # V77
-                            [169, 169, 169],    # V67
-                            [145, 145, 145],    # V58
-                            [120, 120, 120],    # V48
-                            [92, 92, 92],       # V36
-                            [69, 69, 69],       # V28
-                            [56, 56, 56],       # V22
-                            [43, 43, 43]], dtype=np.float64)  # V17 (Black)
+                            [233, 241, 238],
+                            [210, 220, 220],
+                            [184, 192, 186],
+                            [164, 170, 163],
+                            [145, 147, 142],
+                            [123, 126, 122],
+                            [100, 102,  99],
+                            [83, 82, 81],
+                            [70, 71, 70],
+                            [57, 58, 58]], dtype=np.float64)
 
     # Convert RGB values to float
     color_matrix = values_list/255.
 
-    # Add chip number to be compatible with other PlantCV functions
-    chip_nb = np.arange(values_list.shape[0])
+    # Add chip number (mask value) to be compatible with other PlantCV functions
+    N_chips = values_list.shape[0]
+
+    chip_nb = np.arange(10, 10*N_chips+1, 10)
     chip_nb = np.reshape(chip_nb, shape=(-1, 1))
 
     color_matrix = np.concatenate((chip_nb, color_matrix), axis=1)
