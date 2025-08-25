@@ -1,5 +1,5 @@
 """Outputs the average pixel values from a percentile radially outward from an object's center."""
-from plantcv.plantcv import params, Objects, apply_mask, auto_crop, roi, plot_image, outputs, fatal_error
+from plantcv.plantcv import params, Objects, apply_mask, auto_crop, outputs, fatal_error
 from plantcv.plantcv import roi as roi_
 from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
 from plantcv.plantcv._debug import _debug
