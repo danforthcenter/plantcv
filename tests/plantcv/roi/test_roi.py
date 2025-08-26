@@ -181,6 +181,16 @@ def test_auto_wells(test_data):
     assert len(rois.hierarchy) == 24
 
 
+def test_auto_wells_in_region(test_data):
+    """Test for PlantCV."""
+    img = cv2.imread(test_data.hough_circle, -1)
+    roi_cont = [np.array([[[50, 50]], [[50, 499]], [[399, 499]], [[399, 50]]], dtype=np.int32)]
+    roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
+    rect = Objects(contours=[roi_cont], hierarchy=[roi_str])
+    rois = auto_wells(img, 20, 50, 30, 40, 50, 4, 6, -10, roi=rect)
+    assert len(rois.hierarchy) == 12
+    
+
 def test_multi_input_coords(roi_test_data):
     """Test for PlantCV."""
     # Read in test RGB image
