@@ -7,9 +7,10 @@ import cv2
 import os
 import numpy as np
 
+
 def _calc_dists(img, mask, percentile, store_debug, ind=None):
-    """Calculates the distances of each pixel, 
-    the cutoff based on given percentile, 
+    """Calculates the distances of each pixel,
+    the cutoff based on given percentile,
     and the average pixel values within that cutoff.
 
     Parameters
@@ -56,15 +57,16 @@ def _calc_dists(img, mask, percentile, store_debug, ind=None):
         params.debug = store_debug
         _debug(visual=example, filename=os.path.join(params.debug_outdir, str(params.device) + "_radial_average.png"))
         params.debug = None
-        
+
     avgs = float(np.nanmean(img_cutoff))
 
     if len(img.shape) == 3:
-        avgs = [float(np.nanmean(img_cutoff[:, :, [2]])), 
+        avgs = [float(np.nanmean(img_cutoff[:, :, [2]])),
                 float(np.nanmean(img_cutoff[:, :, [1]])),
-                float(np.nanmean(img_cutoff[:, :, [0]]))]    
-    
+                float(np.nanmean(img_cutoff[:, :, [0]]))]
+
     return avgs
+
 
 def radial_percentile(img, mask, roi=None, percentile=50, label=None):
     """_summary_
@@ -81,7 +83,7 @@ def radial_percentile(img, mask, roi=None, percentile=50, label=None):
         Percentile of max distance from center in which to average pixel values, by default 50
     label : str, optional
         Optional label for outputs (default = pcv.params.sample_label)
-        
+
     Returns
     -------
     avgs : list
@@ -89,12 +91,12 @@ def radial_percentile(img, mask, roi=None, percentile=50, label=None):
     """
     if label is None:
         label = params.sample_label
-    
+
     store_debug = params.debug
     params.debug = None
     if roi:
         avgs = []
-        for i in range(len(roi.contours)):
+        for i, _ in enumerate(roi.contours):
             # Loop through rois (even if there is only 1)
             roi_ind = Objects(contours=[roi.contours[i]], hierarchy=[roi.hierarchy[i]])
             # Filter mask by roi and apply it to the image
@@ -113,7 +115,7 @@ def radial_percentile(img, mask, roi=None, percentile=50, label=None):
 
                 # Calculate average of each channel
                 avgs.append(_calc_dists(img=crop_img, mask=crop_mask, percentile=percentile, store_debug=store_debug, ind=i))
-            
+
     else:
         masked = apply_mask(img=img, mask=mask, mask_color='black')
         # Crop the image and the mask to the roi
@@ -123,26 +125,26 @@ def radial_percentile(img, mask, roi=None, percentile=50, label=None):
         # Calculate averages of each channel
         avgs = [_calc_dists(img=crop_img, mask=crop_mask, percentile=percentile, store_debug=store_debug, ind=0)]
 
-    # Outputs 
+    # Outputs
     for idx, i in enumerate(avgs):
         if isinstance(i, float):
             outputs.add_observation(sample=label+"_"+str(idx+1), variable='gray_'+str(percentile)+'%_avg',
-                                    trait='gray_'+str(percentile)+'%_radial_average', 
+                                    trait='gray_'+str(percentile)+'%_radial_average',
                                     method='plantcv.plantcv.analyze.radial',
                                     scale='none', datatype=float, value=i, label='none')
         elif isinstance(i, list):
             outputs.add_observation(sample=label+"_"+str(idx+1), variable='red_'+str(percentile)+'%_avg',
-                                    trait='red_'+str(percentile)+'%_radial_average', 
+                                    trait='red_'+str(percentile)+'%_radial_average',
                                     method='plantcv.plantcv.analyze.radial',
                                     scale='none', datatype=float, value=i[0], label='none')
             outputs.add_observation(sample=label+"_"+str(idx+1), variable='green_'+str(percentile)+'%_avg',
-                                    trait='green_'+str(percentile)+'%_radial_average', 
+                                    trait='green_'+str(percentile)+'%_radial_average',
                                     method='plantcv.plantcv.analyze.radial',
                                     scale='none', datatype=float, value=i[1], label='none')
             outputs.add_observation(sample=label+"_"+str(idx+1), variable='blue_'+str(percentile)+'%_avg',
-                                    trait='blue_'+str(percentile)+'%_radial_average', 
+                                    trait='blue_'+str(percentile)+'%_radial_average',
                                     method='plantcv.plantcv.analyze.radial',
                                     scale='none', datatype=float, value=i[2], label='none')
-            
+
     params.debug = store_debug
     return avgs
