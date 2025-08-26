@@ -95,10 +95,10 @@ def radial_percentile(img, mask, roi=None, percentile=50, label=None):
             filt = roi_.filter(mask=mask, roi=roi_ind)
             # Check for empty
             if len(np.unique(filt)) == 1:
+                noavg = ["nan"]
                 if len(img.shape) == 3:
-                    avgs.append(["nan", "nan", "nan"])
-                else:
-                    avgs.append("nan")
+                    noavg.append("nan" for _ in range(2))
+                avgs.append(noavg)
             else:
                 masked = apply_mask(img=img, mask=filt, mask_color='black')
                 # Crop the image and the mask to the roi
