@@ -37,4 +37,4 @@ def test_radial_error(test_data):
     mask = cv2.imread(test_data.rgb_seed_mask, -1)
     # Object is too small
     with pytest.raises(RuntimeError):
-        _ = radial_percentile(img=img, mask=mask)
+        _ = radial_percentile(img=img, mask=mask, roi=roi)
