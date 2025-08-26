@@ -153,7 +153,7 @@ nav:
         - 'Create a Custom ROI': roi_custom.md
         - 'Create ROI from Binary Image': roi_from_binary_image.md
         - 'Create Multi ROIs': 'roi_multi.md'
-	- 'Create Multi Rectangular ROIs': 'roi_multi_rect.md'
+        - 'Create Multi Rectangular ROIs': 'roi_multi_rect.md'
         - 'Create Grid of ROIs Automatically': roi_auto_grid.md
         - 'Create Grid of Circular ROIs Automatically': roi_auto_wells.md
         - 'Filter a mask by ROI': roi_filter.md
