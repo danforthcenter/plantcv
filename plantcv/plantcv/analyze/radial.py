@@ -1,7 +1,6 @@
 """Outputs the average pixel values from a percentile radially outward from an object's center."""
-from plantcv.plantcv import params, Objects, apply_mask, auto_crop, outputs, fatal_error
+from plantcv.plantcv import params, Objects, apply_mask, auto_crop, outputs
 from plantcv.plantcv import roi as roi_
-from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
 from plantcv.plantcv._debug import _debug
 import cv2
 import os
@@ -31,17 +30,10 @@ def _calc_dists(img, mask, percentile, store_debug, ind=None):
     avgs : float or list
         average pixel values (gray or RGB) within the distance percentile
     """
-    # Find contours
-    cnt, cnt_str = _cv2_findcontours(bin_img=mask)
-    # Consolidate contours
-    obj = _object_composition(contours=cnt, hierarchy=cnt_str)
-    # Analyze shape properties if the object is large enough
-    if len(obj) > 5:
-        m = cv2.moments(mask, binaryImage=True)
-        cmx = m['m10'] / m['m00']
-        cmy = m['m01'] / m['m00']
-    else:
-        fatal_error("Object is not large enough to calculate a center point")
+    # Analyze shape properties
+    m = cv2.moments(mask, binaryImage=True)
+    cmx = m['m10'] / m['m00']
+    cmy = m['m01'] / m['m00']
     center = (cmx, cmy)
     # Calculate point distances from center
     y, x = np.ogrid[:img.shape[0], :img.shape[1]]
