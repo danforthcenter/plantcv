@@ -66,7 +66,7 @@ def _calc_dists(img, mask, percentile, store_debug, ind=None):
     
     return avgs
 
-def radial_percentile(img, mask, roi=None, percentile=50, label="default"):
+def radial_percentile(img, mask, roi=None, percentile=50, label=None):
     """_summary_
 
     Parameters
@@ -80,13 +80,16 @@ def radial_percentile(img, mask, roi=None, percentile=50, label="default"):
     percentile : int, optional
         Percentile of max distance from center in which to average pixel values, by default 50
     label : str, optional
-        Optional label for outputs, by default "default"
+        Optional label for outputs (default = pcv.params.sample_label)
         
     Returns
     -------
     avgs : list
         average pixel values (gray or RGB) within the distance percentile
     """
+    if label is None:
+        label = params.sample_label
+    
     store_debug = params.debug
     params.debug = None
     if roi:

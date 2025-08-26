@@ -4,14 +4,15 @@ This function calculates the average value of pixels within a cutoff threshold f
 the values out to the [Outputs class](outputs.md).  
 
 
-**plantcv.analyze.radial_percentile**(*img, mask, roi=None, percentile=50, label="default"*)
+**plantcv.analyze.radial_percentile**(*img, mask, roi=None, percentile=50, label=None*)
+
 **returns** List of average values for either grayscale or RGB
 
 - **Parameters:**
     - img - RGB or grayscale image.
     - mask - Binary mask.
     - roi - Optional ROIs for calculating on multiple objects in an image.
-    - percentile - cutoff for considering pixels in the average. Expressed as a percent of maximum distance from the object's center
+    - percentile - cutoff for considering pixels in the average. Expressed as a percent of maximum distance from the object's center (default = 50).
     - label - Optional label parameter, modifies the variable name of observations recorded. Can be a prefix or list (default = pcv.params.sample_label).
 - **Outputs:**
     - A list of average values for RGB or gray channels for each object (if ROIs are provided), or for the single object in the image. 
@@ -19,37 +20,29 @@ the values out to the [Outputs class](outputs.md).
     - Useful for calculating the intensity of the middle of seeds from an X-ray image.
     - Also could be useful in determining if there are color differences in the middle of a plant rosette. 
 
-- **Output data stored:** Data ('gray_frequencies', 'gray_mean', 'gray_median', 'gray_stdev') automatically gets stored to
+- **Output data stored:** Data ('gray_X%_avg', or 'red_X%_avg', 'green_X%_avg', 'blue_X%_avg') automatically gets stored to
 the [`Outputs` class](outputs.md) when this function is ran. These data can always get accessed during a workflow (example
 below). For more detail about data output see [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
-**Original grayscale image**
+**Multi-ROI object on original image**
 
-![Screenshot](img/documentation_images/analyze_grayscale/original_image.jpg)
+![Screenshot](img/documentation_images/analyze_radial/radial_doc1.png)
 
 ```python
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), 
-# or "plot" (Jupyter Notebooks or X11)
+# Caclulates the average values of pixels that fall within the distance percentile from the center of an object.
+list_of_averages  = pcv.analyze.radial_percentile(img=img, mask=mask, roi=rois, percentile=40)
 
-pcv.params.debug = "plot"
-# Optionally, set a sample label name
-pcv.params.sample_label = "plant"
-
-# Caclulates the proportion of pixels that fall into a signal bin and writes the values to a file.
-# Also provides a histogram of this data
-analysis_image  = pcv.analyze.grayscale(gray_img=gray_img, labeled_mask=mask, n_labels=1, bins=100)
-
-# Access data stored out from analyze.grayscale
-nir_frequencies = pcv.outputs.observations['plant_1']['gray_frequencies']['value']
+# Access data stored out from analyze.radial_percentile
+gray_avg_seed1 = pcv.outputs.observations['default_1']['gray_40%_avg']['value']
 
 ```
 
 
-**Near-infrared signal histogram**
+**Debug depicting one example of seed cropped to 40% of maximum distance from center**
 
-![Screenshot](img/documentation_images/analyze_grayscale/nir_histogram.jpg)
+![Screenshot](img/documentation_images/analyze_radial/radial_doc2.png)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/analyze/grayscale.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/analyze/radial.py)
