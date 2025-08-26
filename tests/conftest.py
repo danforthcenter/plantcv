@@ -92,7 +92,7 @@ class TestData:
         self.rgb_seed = os.path.join(self.datadir, "rgb_seed.jpg")
         self.rgb_seed_mask = os.path.join(self.datadir, "rgb_seed_mask.jpg")
         self.small_circle = os.path.join(self.datadir, "small_circle.png")
-        self.too_small = os.path.join(self.datadir, "seed_too_small.jpg")
+        self.bad_circle = os.path.join(self.datadir, "small_circle.jpg")
         
 
     @staticmethod

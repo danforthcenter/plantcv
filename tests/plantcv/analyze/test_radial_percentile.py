@@ -28,8 +28,12 @@ def test_radial_gray(test_data):
 
 def test_radial_error(test_data):
     """Test for PlantCV."""
+    # Read in incorrect circle
+    circle = cv2.imread(test_data.bad_circle, -1)
+    roi_contour, roi_hierarchy = _cv2_findcontours(bin_img=circle)
+    roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
     # Read in test data
-    img = cv2.imread(test_data.too_small, 0)
+    img = cv2.imread(test_data.rgb_seed, 0)
     mask = cv2.imread(test_data.rgb_seed_mask, -1)
     # Object is too small
     with pytest.raises(RuntimeError):
