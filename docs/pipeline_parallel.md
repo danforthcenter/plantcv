@@ -223,7 +223,7 @@ patterns. Also feel free to post an [issue](https://github.com/danforthcenter/pl
 
 #### Using a pattern matching-based filename metadata filter
 
-Regex patterns can be supplied as dictionaries to the `metadata_regex` key of the configuration json.
+Regex patterns can be supplied as a dictionary to the `metadata_regex` parameter of the configuration json.
 
 The `filepath` key will search for a regex pattern anywhere in the absolute path to an image.
 The `filepath1` key will search for a regex pattern in the first directory starting from the `input_dir`.
