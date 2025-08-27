@@ -253,7 +253,7 @@ def test_custom_bad_input(roi_test_data):
         _ = custom(img=img, vertices=[[226, -1], [3130, 1848], [2404, 2029], [2205, 2298], [1617, 1761]])
 
 
-@pytest.mark.parametrize("mode,exp", [["largest", 221], ["cutto", 152], ["partial", 221]])
+@pytest.mark.parametrize("mode,exp", [["largest", 221], ["cutto", 152], ["partial", 221], ["within", 0]])
 def test_filter(mode, exp, test_data):
     """Test for PlantCV."""
     # Read in test data
