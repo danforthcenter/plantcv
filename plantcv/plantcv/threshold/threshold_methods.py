@@ -538,8 +538,10 @@ def _check_threshold_inputs(required_length, lower_thresh, upper_thresh):
     upper_thresh : list
         List of upper threshold values (0-255)
 
-    Returns
+    Raises
     -------
+    RuntimeError
+        If the number of threshold inputs is incorrect
     """
     if not (len(lower_thresh) == required_length and len(upper_thresh) == required_length):
         fatal_error(f"{required_length} threshold inputs are needed for both lower_thresh and " +
