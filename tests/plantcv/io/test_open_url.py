@@ -13,6 +13,6 @@ def test_open_url():
 
 def test_open_url_unsupported():
     """PlantCV Test"""
-    url = "https://upload.wikimedia.org/wikipedia/commons/2/2c/Rotating_earth_%28large%29.gif"
+    url = "https://datasci.danforthcenter.org/test.gif"
     with pytest.raises(RuntimeError):
         _ = open_url(url=url)
