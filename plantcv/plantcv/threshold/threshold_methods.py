@@ -368,10 +368,7 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
     if channel.upper() == 'HSV':
 
         # Check threshold inputs
-        if not (len(lower_thresh) == 3 and len(upper_thresh) == 3):
-            fatal_error("If using the HSV colorspace, 3 thresholds are needed for both lower_thresh and " +
-                        "upper_thresh. If thresholding isn't needed for a channel, set lower_thresh=0 and " +
-                        "upper_thresh=255")
+        _check_threshold_inputs(3, lower_thresh, upper_thresh)
 
         # Convert the RGB image to HSV colorspace
         hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
@@ -381,54 +378,46 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         sat = hsv_img[:, :, 1]
         value = hsv_img[:, :, 2]
 
-        # Make a mask for each channel
-        h_mask = cv2.inRange(hue, lower_thresh[0], upper_thresh[0])
-        s_mask = cv2.inRange(sat, lower_thresh[1], upper_thresh[1])
-        v_mask = cv2.inRange(value, lower_thresh[2], upper_thresh[2])
+        # Make a mask for each channel (Use '*' to avoid linter error about unbalanced value unpacking)
+        *out_masks, = _call_inrange(gray_imgs_list=[hue, sat, value],
+                                    lower_thresh=lower_thresh, upper_thresh=upper_thresh)
 
         # Apply the masks to the image
-        result = cv2.bitwise_and(img, img, mask=h_mask)
-        result = cv2.bitwise_and(result, result, mask=s_mask)
-        masked_img = cv2.bitwise_and(result, result, mask=v_mask)
+        result = cv2.bitwise_and(img, img, mask=out_masks[0])
+        result = cv2.bitwise_and(result, result, mask=out_masks[1])
+        masked_img = cv2.bitwise_and(result, result, mask=out_masks[2])
 
         # Combine masks
-        mask = cv2.bitwise_and(s_mask, h_mask)
-        mask = cv2.bitwise_and(mask, v_mask)
+        mask = cv2.bitwise_and(out_masks[0], out_masks[1])
+        mask = cv2.bitwise_and(mask, out_masks[2])
 
     elif channel.upper() == 'RGB':
 
         # Check threshold inputs
-        if not (len(lower_thresh) == 3 and len(upper_thresh) == 3):
-            fatal_error("If using the RGB colorspace, 3 thresholds are needed for both lower_thresh and " +
-                        "upper_thresh. If thresholding isn't needed for a channel, set lower_thresh=0 and " +
-                        "upper_thresh=255")
+        _check_threshold_inputs(3, lower_thresh, upper_thresh)
 
         # Separate channels (pcv.readimage reads RGB images in as BGR)
         blue = img[:, :, 0]
         green = img[:, :, 1]
         red = img[:, :, 2]
 
-        # Make a mask for each channel
-        b_mask = cv2.inRange(blue, lower_thresh[2], upper_thresh[2])
-        g_mask = cv2.inRange(green, lower_thresh[1], upper_thresh[1])
-        r_mask = cv2.inRange(red, lower_thresh[0], upper_thresh[0])
+        # Make a mask for each channel (Use '*' to avoid linter error about unbalanced value unpacking)
+        *out_masks, = _call_inrange(gray_imgs_list=[blue, green, red],
+                                    lower_thresh=lower_thresh, upper_thresh=upper_thresh)
 
         # Apply the masks to the image
-        result = cv2.bitwise_and(img, img, mask=b_mask)
-        result = cv2.bitwise_and(result, result, mask=g_mask)
-        masked_img = cv2.bitwise_and(result, result, mask=r_mask)
+        result = cv2.bitwise_and(img, img, mask=out_masks[0])
+        result = cv2.bitwise_and(result, result, mask=out_masks[1])
+        masked_img = cv2.bitwise_and(result, result, mask=out_masks[2])
 
         # Combine masks
-        mask = cv2.bitwise_and(b_mask, g_mask)
-        mask = cv2.bitwise_and(mask, r_mask)
+        mask = cv2.bitwise_and(out_masks[0], out_masks[1])
+        mask = cv2.bitwise_and(mask, out_masks[2])
 
     elif channel.upper() == 'LAB':
 
         # Check threshold inputs
-        if not (len(lower_thresh) == 3 and len(upper_thresh) == 3):
-            fatal_error("If using the LAB colorspace, 3 thresholds are needed for both lower_thresh and " +
-                        "upper_thresh. If thresholding isn't needed for a channel, set lower_thresh=0 and " +
-                        "upper_thresh=255")
+        _check_threshold_inputs(3, lower_thresh, upper_thresh)
 
         # Convert the RGB image to LAB colorspace
         lab_img = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
@@ -438,26 +427,53 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         green_magenta = lab_img[:, :, 1]
         blue_yellow = lab_img[:, :, 2]
 
-        # Make a mask for each channel
-        l_mask = cv2.inRange(lightness, lower_thresh[0], upper_thresh[0])
-        gm_mask = cv2.inRange(green_magenta, lower_thresh[1], upper_thresh[1])
-        by_mask = cv2.inRange(blue_yellow, lower_thresh[2], upper_thresh[2])
+        # Make a mask for each channel (Use '*' to avoid linter error about unbalanced value unpacking)
+        *out_masks, = _call_inrange(gray_imgs_list=[lightness, green_magenta, blue_yellow],
+                                    lower_thresh=lower_thresh, upper_thresh=upper_thresh)
 
         # Apply the masks to the image
-        result = cv2.bitwise_and(img, img, mask=l_mask)
-        result = cv2.bitwise_and(result, result, mask=gm_mask)
-        masked_img = cv2.bitwise_and(result, result, mask=by_mask)
+        result = cv2.bitwise_and(img, img, mask=out_masks[0])
+        result = cv2.bitwise_and(result, result, mask=out_masks[1])
+        masked_img = cv2.bitwise_and(result, result, mask=out_masks[2])
 
         # Combine masks
-        mask = cv2.bitwise_and(l_mask, gm_mask)
-        mask = cv2.bitwise_and(mask, by_mask)
+        mask = cv2.bitwise_and(out_masks[0], out_masks[1])
+        mask = cv2.bitwise_and(mask, out_masks[2])
+
+    elif channel.upper() == 'CMYK':
+
+        # Check threshold inputs
+        if not (len(lower_thresh) == 4 and len(upper_thresh) == 4):
+            fatal_error("If using the CYMK colorspace, 4 thresholds are needed for both lower_thresh and " +
+                        "upper_thresh. If thresholding isn't needed for a channel, set lower_thresh=0 and " +
+                        "upper_thresh=255")
+
+        # Convert the RGB image to LAB colorspace
+        c = _rgb2cmyk(rgb_img=img, channel="c")
+        m = _rgb2cmyk(rgb_img=img, channel="m")
+        y = _rgb2cmyk(rgb_img=img, channel="y")
+        k = _rgb2cmyk(rgb_img=img, channel="k")
+
+        # Make a mask for each channel
+        *out_masks, = _call_inrange(gray_imgs_list=[c, m, y, k], lower_thresh=lower_thresh, upper_thresh=upper_thresh)
+        # Use '*' to avoid linter error about unbalanced value unpacking
+
+        # Apply the masks to the image
+        result = cv2.bitwise_and(img, img, mask=out_masks[0])
+        result = cv2.bitwise_and(result, result, mask=out_masks[1])
+        result = cv2.bitwise_and(result, result, mask=out_masks[2])
+        masked_img = cv2.bitwise_and(result, result, mask=out_masks[3])
+
+        # Combine masks
+        mask = cv2.bitwise_and(out_masks[0], out_masks[1])
+        mask2 = cv2.bitwise_and(out_masks[2], out_masks[3])
+        mask = cv2.bitwise_and(mask, mask2)
 
     elif channel.upper() in ('GRAY', 'GREY'):
 
         # Check threshold input
-        if not (len(lower_thresh) == 1 and len(upper_thresh) == 1):
-            fatal_error("If useing a grayscale colorspace, 1 threshold is needed for both the " +
-                        "lower_thresh and upper_thresh.")
+        _check_threshold_inputs(1, lower_thresh, upper_thresh)
+
         if len(np.shape(img)) == 3:
             # Convert RGB image to grayscale colorspace
             gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -471,7 +487,7 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         masked_img = cv2.bitwise_and(img, img, mask=mask)
 
     else:
-        fatal_error(str(channel) + " is not a valid colorspace. Channel must be either 'RGB', 'HSV', or 'gray'.")
+        fatal_error(str(channel) + " is not a valid colorspace. Channel must be either 'RGB', 'HSV', 'CMYK', or 'gray'.")
 
     # Auto-increment the device counter
 
@@ -481,6 +497,56 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
     _debug(visual=mask, filename=os.path.join(params.debug_outdir,
                                               str(params.device) + channel + 'custom_thresh_mask.png'))
     return mask, masked_img
+
+
+# Internal method for calling the OpenCV inRange function to reduce code duplication
+def _call_inrange(gray_imgs_list, lower_thresh, upper_thresh):
+    """Calls the OpenCV threshold function to reduce code duplication
+
+    Parameters
+    ----------
+    gray_imgs_list : list
+        List containing grayscale arrays
+    lower_thresh : list
+        List of lower threshold values (0-255)
+    upper_thresh : list
+        List of upper threshold values (0-255)
+
+    Returns
+    -------
+    list
+        Thresholded, binary images
+    """
+    out_masks = []
+    # Apply inRange to each array in the list
+    for i, array in enumerate(gray_imgs_list):
+        mask = cv2.inRange(array, lower_thresh[i], upper_thresh[i])
+        out_masks.append(mask)
+    return out_masks
+
+
+# Internal method for checking threshold inputs to reduce code duplication
+def _check_threshold_inputs(required_length, lower_thresh, upper_thresh):
+    """Checks threshold inputs for correct number of inputs
+
+    Parameters
+    ----------
+    required_length : int
+        Number of required inputs
+    lower_thresh : list
+        List of lower threshold values (0-255)
+    upper_thresh : list
+        List of upper threshold values (0-255)
+
+    Raises
+    -------
+    RuntimeError
+        If the number of threshold inputs is incorrect
+    """
+    if not (len(lower_thresh) == required_length and len(upper_thresh) == required_length):
+        fatal_error(f"{required_length} threshold inputs are needed for both lower_thresh and " +
+                    "upper_thresh for the given channel. If thresholding isn't needed for a channel, set lower_thresh=0 and " +
+                    "upper_thresh=255")
 
 
 # Internal method for calling the OpenCV threshold function to reduce code duplication
