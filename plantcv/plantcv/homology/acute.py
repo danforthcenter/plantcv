@@ -3,12 +3,12 @@
 import numpy as np
 import math
 import cv2
-from plantcv.plantcv import params
+from plantcv.plantcv import params, outputs
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
 
 
-def acute(img, mask, win, threshold):
+def acute(img, mask, win, threshold, label=None):
     """Identify landmark positions within a contour for morphometric analysis
 
     Inputs:
@@ -18,6 +18,8 @@ def acute(img, mask, win, threshold):
                   score; 1 cm in pixels often works well
     threshold   = angle score threshold to be applied for mapping out landmark
                   coordinate clusters within each contour
+    label       = Optional label parameter, modifies the variable name of
+                  observations recorded (default = pcv.params.sample_label).
 
     Outputs:
     homolog_pts    = pseudo-landmarks selected from each landmark cluster
@@ -42,6 +44,10 @@ def acute(img, mask, win, threshold):
     :return chain: list
     :return max_dist: list
     """
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+
     # Find contours
     contours, hierarchy = _cv2_findcontours(bin_img=mask)
     obj = _object_composition(contours=contours, hierarchy=hierarchy)
@@ -195,6 +201,13 @@ def acute(img, mask, win, threshold):
         cv2.drawContours(ori_img, homolog_pts, -1, (255, 255, 255), params.line_thickness)
         # print/plot debug image
         _debug(visual=ori_img, filename=f"{params.device}_acute_plms.png")
+        # Store number of acute points IDed to Outputs
+        outputs.add_observation(sample=label, variable='num_acute_pts', trait='number of acute points',
+                                method='plantcv.plantcv.homology.acute', scale='none', datatype=int,
+                                value=len(homolog_pts), label='none')
 
         return homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist
+    outputs.add_observation(sample=label, variable='num_acute_pts', trait='number of acute points',
+                            method='plantcv.plantcv.homology.acute', scale='none', datatype=int,
+                            value=0, label='none')
     return [], [], [], [], [], []
