@@ -544,7 +544,7 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
     else:
         # Reset debug mode
         params.debug = debug
-        fatal_error('ROI Type ' + str(roi_type) + ' is not "cutto", "largest", or "partial"!')
+        fatal_error('ROI Type ' + str(roi_type) + ' is not "cutto", "largest", "within" or "partial"!')
 
     # Reset debug mode
     params.debug = debug
