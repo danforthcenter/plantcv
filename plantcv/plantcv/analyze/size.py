@@ -2,6 +2,7 @@
 import os
 import cv2
 import numpy as np
+from pillow import ImageColor
 from scipy.spatial.distance import euclidean
 from plantcv.plantcv._helpers import _iterate_analysis, _cv2_findcontours, _object_composition, _grayscale_to_rgb, _scale_size
 from plantcv.plantcv import outputs, within_frame
@@ -103,7 +104,8 @@ def _analyze_size(img, mask, label):
         # Perimeter
         perimeter = cv2.arcLength(obj, closed=True)
         # Total edge legnth 
-        total_edge_length = cv2.arcLength(cnt, True)
+        for contour in cnt:
+            total_edge_length += cv2.arcLength(contour, True)
         # Bounding rectangle
         x, y, width, height = cv2.boundingRect(obj)
         # Centroid/Center of Mass
@@ -122,8 +124,9 @@ def _analyze_size(img, mask, label):
         longest_path = euclidean(tuple(caliper_transpose[caliper_length - 1]), tuple(caliper_transpose[0]))
 
         # Debugging measurements onto Diagnostic image
-        # Draw object outline (used to only draw perimeter in v4.9 and earlier)
-        cv2.drawContours(plt_img, cnt, -1, (255, 0, 0), params.line_thickness)
+        
+        # Draw object outline (previously only draw perimeter in v4.9 and earlier)
+        cv2.drawContours(plt_img, cnt, -1, (42, 120, 131), params.line_thickness)
         # Draw perimeter outline
         cv2.drawContours(plt_img, [hull], -1, (255, 0, 255), params.line_thickness)
         # Draw width annotation
