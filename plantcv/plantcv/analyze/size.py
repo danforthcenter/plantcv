@@ -2,7 +2,6 @@
 import os
 import cv2
 import numpy as np
-from pillow import ImageColor
 from scipy.spatial.distance import euclidean
 from plantcv.plantcv._helpers import _iterate_analysis, _cv2_findcontours, _object_composition, _grayscale_to_rgb, _scale_size
 from plantcv.plantcv import outputs, within_frame
@@ -126,18 +125,20 @@ def _analyze_size(img, mask, label):
         # Debugging measurements onto Diagnostic image
         
         # Draw object outline (previously only draw perimeter in v4.9 and earlier)
-        cv2.drawContours(plt_img, cnt, -1, (42, 120, 131), params.line_thickness)
+        cv2.drawContours(plt_img, cnt, -1, (84, 1, 68), params.line_thickness)
         # Draw perimeter outline
-        cv2.drawContours(plt_img, [hull], -1, (255, 0, 255), params.line_thickness)
+        cv2.drawContours(plt_img, cnt, -1, (139, 82, 59), params.line_thickness)
+        # Draw convex hull
+        cv2.drawContours(plt_img, [hull], -1, (140, 145, 33), params.line_thickness)
         # Draw width annotation
-        cv2.line(plt_img, (x, y), (x + width, y), (255, 0, 255), params.line_thickness)
+        cv2.line(plt_img, (x, y), (x + width, y), (255, 231, 37), params.line_thickness)
         # Draw height annotation
-        cv2.line(plt_img, (int(cmx), y), (int(cmx), y + height), (255, 0, 255), params.line_thickness)
+        cv2.line(plt_img, (int(cmx), y), (int(cmx), y + height), (255, 231, 37), params.line_thickness)
         # Draw centroid annotation
-        cv2.circle(plt_img, (int(cmx), int(cmy)), 10, (255, 0, 255), params.line_thickness)
+        cv2.circle(plt_img, (int(cmx), int(cmy)), 10, (255, 231, 37), params.line_thickness)
         # Draw longest path annotation
         cv2.line(plt_img, (tuple(caliper_transpose[caliper_length - 1])), (tuple(caliper_transpose[0])),
-                 (255, 0, 255), params.line_thickness)
+                 (98, 201, 94), params.line_thickness)
         if params.verbose:
             # Label the object with object label
             cv2.putText(img=plt_img, text=label, org=(int(cmx), int(cmy)), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
