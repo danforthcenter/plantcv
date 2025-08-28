@@ -30,6 +30,9 @@ landmark cluster edges, and angle score for entire contour.  Used in troubleshoo
     - Use `pcv.params.verbose = False` to quiet print statements
 - **Example use:**
     - [Use In Homology Tutorial](https://github.com/danforthcenter/plantcv-homology-tutorials/blob/main/README.md)
+- **Output data stored:** Data ('num_acute_pts') automatically
+gets stored to the [`Outputs` class](outputs.md) when this function is ran. These data can always get accessed during a
+workflow (example below). For more detail about data output see [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 **Original image**
 
@@ -45,12 +48,15 @@ from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
-
 pcv.params.debug = "plot"
+# Optionally, set a sample label name
+pcv.params.sample_label = "plant"
 
 # Given an image, mask, and object contours, identify pseudo-landmarks with acute
-
 homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = pcv.homology.acute(img=img, mask=mask, win=25, threshold=90)
+
+# Access data stored in outputs
+num_pts = pcv.outputs.observations['plant']['num_acute_pts']['value']
 
 ```
 
