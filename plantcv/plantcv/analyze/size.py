@@ -59,6 +59,7 @@ def _analyze_size(img, mask, label):
     hull_area = 0
     solidity = 0
     perimeter = 0
+    total_edge_length = 0
     width = 0
     height = 0
     caliper_length = 0
@@ -101,6 +102,8 @@ def _analyze_size(img, mask, label):
         solidity = area / hull_area if hull_area != 0 else 1
         # Perimeter
         perimeter = cv2.arcLength(obj, closed=True)
+        # Total edge legnth 
+        total_edge_length = cv2.arcLength(cnt, True)
         # Bounding rectangle
         x, y, width, height = cv2.boundingRect(obj)
         # Centroid/Center of Mass
@@ -117,13 +120,19 @@ def _analyze_size(img, mask, label):
         caliper_length, caliper_transpose = _longest_axis(height=img.shape[0], width=img.shape[1],
                                                           hull=hull, cmx=cmx, cmy=cmy)
         longest_path = euclidean(tuple(caliper_transpose[caliper_length - 1]), tuple(caliper_transpose[0]))
-        # Debugging output
+
+        # Debugging measurements onto Diagnostic image
         # Draw object outline (used to only draw perimeter in v4.9 and earlier)
         cv2.drawContours(plt_img, cnt, -1, (255, 0, 0), params.line_thickness)
+        # Draw perimeter outline
         cv2.drawContours(plt_img, [hull], -1, (255, 0, 255), params.line_thickness)
+        # Draw width annotation
         cv2.line(plt_img, (x, y), (x + width, y), (255, 0, 255), params.line_thickness)
+        # Draw height annotation
         cv2.line(plt_img, (int(cmx), y), (int(cmx), y + height), (255, 0, 255), params.line_thickness)
+        # Draw centroid annotation
         cv2.circle(plt_img, (int(cmx), int(cmy)), 10, (255, 0, 255), params.line_thickness)
+        # Draw longest path annotation
         cv2.line(plt_img, (tuple(caliper_transpose[caliper_length - 1])), (tuple(caliper_transpose[0])),
                  (255, 0, 255), params.line_thickness)
         if params.verbose:
@@ -146,6 +155,9 @@ def _analyze_size(img, mask, label):
     outputs.add_observation(sample=label, variable='perimeter', trait='perimeter',
                             method='plantcv.plantcv.analyze.size', scale=params.unit, datatype=int,
                             value=_scale_size(perimeter), label=params.unit)
+    outputs.add_observation(sample=label, variable='total_edge_length', trait='total length of object edges',
+                            method='plantcv.plantcv.analyze.size', scale=params.unit, datatype=int,
+                            value=_scale_size(total_edge_length), label=params.unit)
     outputs.add_observation(sample=label, variable='width', trait='width',
                             method='plantcv.plantcv.analyze.size', scale=params.unit, datatype=int,
                             value=_scale_size(width), label=params.unit)
