@@ -521,15 +521,16 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
         if roi_type.upper() == 'WITHIN' and kept_cnt:
             # make a mask with the outline of the ROI
             roi_outline_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
-            cv2.drawContours(image = roi_outline_mask, contours = roi_contour, contourIdx = -1, color=255, thickness = 1)
+            cv2.drawContours(image=roi_outline_mask, contours=roi_contour, contourIdx=-1,
+                             color=255, thickness=1)
             # make empty mask to append to
-            within_mask = np.zeros(np.shape(img)[:2], dtype = np.uint8)
+            within_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
             for c, _ in enumerate(kept_cnt):
                 # for each contour make a mask with that contour filled
                 filtering_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
                 cv2.fillPoly(filtering_mask, [np.vstack(kept_cnt[c])], (255))
                 # check overlap with traced ROI
-                overlap_img =_logical_operation(filtering_mask, roi_outline_mask, 'and')
+                overlap_img = _logical_operation(filtering_mask, roi_outline_mask, 'and')
                 # check color in original mask, ie don't keep gaps that are 0s.
                 # NOTE possible that this is better done with maxLevel in drawContours?
                 pts = np.where(filtering_mask == 255)
