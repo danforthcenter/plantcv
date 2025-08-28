@@ -532,7 +532,6 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
                 # check overlap with traced ROI
                 overlap_img = _logical_operation(filtering_mask, roi_outline_mask, 'and')
                 # check color in original mask, ie don't keep gaps that are 0s.
-                # NOTE possible that this is better done with maxLevel in drawContours?
                 pts = np.where(filtering_mask == 255)
                 original_color = img[pts[0], pts[1]]
                 # append contours fully within ROI to the within_mask
