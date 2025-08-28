@@ -270,6 +270,22 @@ def test_filter(mode, exp, test_data):
     assert area == exp
 
 
+def test_within_filter(test_data):
+    """Test for PlantCV."""
+    # Read in test data
+    img = cv2.imread(test_data.small_rgb_img)
+    mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
+    cnt, cnt_str = test_data.load_contours(test_data.small_contours_file)
+    cv2.drawContours(mask, cnt, -1, (255), -1, lineType=8, hierarchy=cnt_str)
+    roi = [np.array([[[100, 100]], [[100, 224]], [[249, 224]], [[249, 100]]], dtype=np.int32)]
+    roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
+    roi_Obj = Objects(contours=[roi], hierarchy=[roi_str])
+    filtered_mask = filter(mask=mask, roi=roi_Obj, roi_type="within")
+    area = cv2.countNonZero(filtered_mask)
+    # Assert that the contours were filtered as expected
+    assert area == 221
+
+
 def test_filter_multi(test_data):
     """Test for PlantCV."""
     # Read in test data
