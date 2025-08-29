@@ -363,7 +363,7 @@ def _read_phenofront(config, metadata_file):
                 # Parse camera label metaata
                 img_meta = _parse_filename(filename=img, config=config, metadata_index=metadata_index)
                 # Construct the filename
-                filename = f"{img}.{config.imgformat}"
+                filename = f"{img}.{config.imgformat}" # NOTE requires 1L imgformat
                 # The dataset key is the dataset relative path to the image
                 rel_path = os.path.join(snapshot_id, filename)
                 # Store the parsed image metadata
@@ -399,7 +399,10 @@ def _read_filenames(config):
         # If subdirectories are excluded, use glob to get a list of all image files
         # NOTE this does multiple loops I think.
         # I don't see something as simple as R's `dir(pattern = paste0(many_extensions, collapse = "|"))`?
-        fns = [f for ext in config.img_format for f in glob.glob(os.path.join(config.input_dir, "*[.]" + ext))]
+        extensions = config.imgformat
+        if isinstance(config.imgformat, str):
+            extensions = [config.imgformat]
+        fns = [f for ext in extensions for f in glob.glob(os.path.join(config.input_dir, "*[.]" + ext))]
     else:
         # If subdirectories are included, recursively walk through the path
         fns = []
