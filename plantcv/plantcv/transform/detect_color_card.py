@@ -394,18 +394,18 @@ def _astrobotany_card_detection(rgb_img, **kwargs):
     # Coordinates for top-left corner of each aruco tag in a standard-sized 600x700 image
     tag_topleft = {46: (0, 495), 47: (0, 0), 48: (595, 0), 49: (595, 495)}
     img_pts, ref_pts = [], []
-    areas, heights, widths = [], [], []
+    marea, mheight, mwidth = [], [], []
     for id, bbox in zip(tag_ids, tag_bboxes):
         id = id[0]
         # Do nothing if not a color card tag ID
         if id not in expected_ids:
             continue
-        # Measure area, height, and width of tag in pixels
+        # Measure area, height, and width of aruco tag in pixels
         area, height, width = _get_contour_sizes(bbox)
         # Convert measurements to px/sq-cm (area) or px/cm (h/w)
-        areas.append(area)
-        heights.append(height)         # Tag height is 0.7975 cm
-        widths.append(width)           # Tag width is 0.7975 cm
+        marea.append(area)
+        mheight.append(height)         # Tag height is 0.7975 cm
+        mwidth.append(width)           # Tag width is 0.7975 cm
         # Add coordinates of tag corners in image
         img_pts.extend(*bbox)
         # Add coordinates of tag corners on a standard-size color card
@@ -438,11 +438,6 @@ def _astrobotany_card_detection(rgb_img, **kwargs):
     # Generate color card bounding mask
     bounding_mask = cv2.warpPerspective(np.ones(shape=(600, 700), dtype=np.uint8)*255, mat, dsize=rgb_img.shape[1::-1],
                                         flags=cv2.INTER_NEAREST)
-
-    # Take average area, height, and width of aruco tags
-    marea = np.mean(areas)
-    mheight = np.mean(heights)
-    mwidth = np.mean(widths)
 
     return labeled_mask, debug_img, card_img, marea, mheight, mwidth, bounding_mask
 
@@ -536,7 +531,7 @@ def mask_color_card(rgb_img, card_type=0, **kwargs):
     elif card_type == 1:
         *_, bounding_mask = _astrobotany_card_detection(rgb_img, **kwargs)
     else:
-        fatal_error("Invalid option passed to <card_type>. Options are 0 (Calibrite) or 1 (Astrobotany)")
+        fatal_error("Invalid option passed to <card_type>. Options are 0 (Macbeth Chart) or 1 (Astrobotany Sticker)")
 
     if params.debug is not None:
         # Find contours
@@ -581,7 +576,6 @@ def detect_color_card(rgb_img, label=None, color_chip_size=None, roi=None, card_
         aspect_ratio: float (default = 1.27)
         solidity: float (default = 0.8)
 
-
     Returns
     -------
     numpy.ndarray
@@ -595,15 +589,12 @@ def detect_color_card(rgb_img, label=None, color_chip_size=None, roi=None, card_
         "It will be removed in PlantCV v5.0."
         )
 
-    if card_type not in [0, 1]:
-        # TODO: Check for aruco tags and set card_type accordingly.
-        warn("Invalid option for arg:card_type, attempting to automatically determine card type.")
     if card_type == 0:
         # apply _color_card_detection within bounding box
         sub_mask, debug_img, marea, mheight, mwidth, _ = _rect_filter(rgb_img,
-                                                                    roi,
-                                                                    function=_macbeth_card_detection,
-                                                                    **kwargs)
+                                                                      roi,
+                                                                      function=_macbeth_card_detection,
+                                                                      **kwargs)
         # slice sub_mask from bounding box into mask of original image size
         empty_mask = np.zeros((np.shape(rgb_img)[0], np.shape(rgb_img)[1]))
         labeled_mask = _rect_replace(empty_mask, sub_mask, roi)
@@ -618,25 +609,40 @@ def detect_color_card(rgb_img, label=None, color_chip_size=None, roi=None, card_
         outputs.add_metadata(term="median_color_chip_width", datatype=float, value=chip_width)
         outputs.add_metadata(term="median_color_chip_height", datatype=float, value=chip_height)
 
-        # Set size scaling factor if card type is provided
+        # Set size scaling factor if color chip size is provided
         if color_chip_size:
-            _set_size_scale_from_chip(color_chip_height=chip_height, color_chip_width=chip_width, color_chip_size=color_chip_size)
+            _set_size_scale_from_chip(color_chip_height=chip_height, color_chip_width=chip_width,
+                                      color_chip_size=color_chip_size)
 
     elif card_type == 1:
         # Search image for astrobotany.com color card aruco tags
-        labeled_mask, debug_img, card_img, marea, mheight, mwidth, _ = _astrobotany_card_detection(rgb_img, **kwargs)
+        sub_mask, debug_img, card_img, marea, mheight, mwidth, _ = _rect_filter(rgb_img,
+                                                                                roi,
+                                                                                function=_astrobotany_card_detection,
+                                                                                **kwargs)
+        # slice sub_mask from bounding box into mask of original image size
+        empty_mask = np.zeros((np.shape(rgb_img)[0], np.shape(rgb_img)[1]))
+        labeled_mask = _rect_replace(empty_mask, sub_mask, roi)
 
-        # Save out size of aruco tags in pixels (measured) and cm (standard)
-        outputs.add_metadata(term="mean_aruco_tag_area_px", datatype=float, value=marea)
-        outputs.add_metadata(term="aruco_tag_area_sq-cm", datatype=float, value=0.7975*0.7975)
-        outputs.add_metadata(term="mean_aruco_tag_width_px", datatype=float, value=mwidth)
-        outputs.add_metadata(term="aruco_tag_width_cm", datatype=float, value=0.7975)
-        outputs.add_metadata(term="mean_aruco_tag_height_px", datatype=float, value=mheight)
-        outputs.add_metadata(term="aruco_tag_height_cm", datatype=float, value=0.7975)
+        # Create dataframe for easy summary stats
+        chip_size = np.median(marea)
+        chip_height = np.median(mheight)
+        chip_width = np.median(mwidth)
+
+        # Save out size of aruco tags in pixels (measured) and mm (known value)
+        outputs.add_metadata(term="mean_aruco_tag_area_px", datatype=float, value=chip_size)
+        outputs.add_metadata(term="mean_aruco_tag_width_px", datatype=float, value=chip_width)
+        outputs.add_metadata(term="mean_aruco_tag_height_px", datatype=float, value=chip_height)
+
+        # Set size scaling factor if color chip size is provided
+        _set_size_scale_from_chip(color_chip_height=chip_height, color_chip_width=chip_width,
+                                  color_chip_size=(7.975, 7.975))
 
         # Save or plot debug image of color card transformed to standard size
         _debug(visual=card_img, filename=os.path.join(params.debug_outdir, f'{params.device}_aligned_color_card.png'))
 
+    else:
+        fatal_error("Invalid option passed to <card_type>. Options are 0 (Macbeth Chart) or 1 (Astrobotany Sticker)")
 
     # Debugging
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))

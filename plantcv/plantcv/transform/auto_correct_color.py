@@ -1,6 +1,6 @@
 # Automatically detect a color card and color correct to standard chip values
 
-from plantcv.plantcv import params, deprecation_warning
+from plantcv.plantcv import params, deprecation_warning, fatal_error
 from plantcv.plantcv.transform import detect_color_card
 from plantcv.plantcv.transform import get_color_matrix, std_color_matrix, affine_color_correction, astro_color_matrix
 
@@ -19,8 +19,8 @@ def auto_correct_color(rgb_img, label=None, color_chip_size=None, roi=None, card
     roi: plantcv.plantcv.Objects, optional
         Objects class rectangular ROI passed to detect_color_card (default None)
     card_type : int
-        reference value indicating the type of card being used for correction:
-                card_type = 0: macbeth color card (default)
+        value indicating the type of card being used for color correction:
+                card_type = 0: macbeth color chart (default)
                 card_type = 1: astrobotany.com AIRI calibration sticker
     **kwargs
         Other keyword arguments passed to cv2.adaptiveThreshold, cv2.circle and _rect_filter.
@@ -51,6 +51,8 @@ def auto_correct_color(rgb_img, label=None, color_chip_size=None, roi=None, card
         std_matrix = std_color_matrix(pos=3)
     elif card_type == 1:
         std_matrix = astro_color_matrix()
+    else:
+        fatal_error("Invalid option passed to <card_type>. Options are 0 (Macbeth Chart) or 1 (Astrobotany Sticker)")
 
     corr_img = affine_color_correction(rgb_img=rgb_img, source_matrix=card_matrix, target_matrix=std_matrix)
 
