@@ -180,7 +180,7 @@ def astro_color_matrix():
                             [57, 58, 58]], dtype=np.float64)
 
     # Convert RGB values to float
-    color_matrix = values_list/255.
+    color_matrix_wo_chip_nb = values_list/255.
 
     # Add chip number (mask value) to be compatible with other PlantCV functions
     N_chips = values_list.shape[0]
@@ -188,7 +188,7 @@ def astro_color_matrix():
     chip_nb = np.arange(10, 10*N_chips+1, 10)
     chip_nb = np.reshape(chip_nb, shape=(-1, 1))
 
-    color_matrix = np.concatenate((chip_nb, color_matrix), axis=1)
+    color_matrix = np.concatenate((chip_nb, color_matrix_wo_chip_nb), axis=1)
 
     return color_matrix
 
@@ -239,7 +239,7 @@ def get_color_matrix(rgb_img, mask):
     for i in np.unique(mask):
         if i != 0:
             chip = rgb_img[np.where(mask == i)]
-            color_matrix[row_counter][0] = (i / 10) - 1
+            color_matrix[row_counter][0] = i
             color_matrix[row_counter][1] = np.mean(chip[:, 2])
             color_matrix[row_counter][2] = np.mean(chip[:, 1])
             color_matrix[row_counter][3] = np.mean(chip[:, 0])

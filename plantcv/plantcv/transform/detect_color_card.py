@@ -74,7 +74,6 @@ def _draw_color_chips(rgb_img, centers, radius):
     labeled_mask = np.zeros(rgb_img.shape[0:2])
     debug_img = np.copy(rgb_img)
 
-    text_size, _ = cv2.getTextSize(str(id), cv2.FONT_HERSHEY_SIMPLEX, params.text_size, params.text_thickness)
     offset_dir = np.array([-1, 1])
 
     # Loop over the new chip centers and draw them on the RGB image and labeled mask
@@ -83,19 +82,23 @@ def _draw_color_chips(rgb_img, centers, radius):
             cv2.circle(labeled_mask, centers[i], radius, [(i + 1) * 10], -1)
             cv2.circle(debug_img, centers[i], radius, (255, 255, 0), -1)
 
+            text_size, _ = cv2.getTextSize(str(i), cv2.FONT_HERSHEY_SIMPLEX, params.text_size, params.text_thickness)
             text_pos = (pt + text_size*offset_dir/2).astype(int)
             cv2.putText(debug_img, text=str(i), org=text_pos, fontScale=params.text_size, color=(0, 0, 0),
                         fontFace=cv2.FONT_HERSHEY_SIMPLEX, thickness=params.text_thickness)
+
     elif len(radius) == len(centers):
         for i, pt in enumerate(centers):
             cv2.circle(labeled_mask,  centers[i], radius[i], [(i + 1) * 10], -1)
             cv2.circle(debug_img, centers[i], radius[i], (255, 255, 0), -1)
 
+            text_size, _ = cv2.getTextSize(str(i), cv2.FONT_HERSHEY_SIMPLEX, params.text_size, params.text_thickness)
             text_pos = (pt + text_size*offset_dir/2).astype(int)
             cv2.putText(debug_img, text=str(i), org=text_pos, fontScale=params.text_size, color=(0, 0, 0),
                         fontFace=cv2.FONT_HERSHEY_SIMPLEX, thickness=params.text_thickness)
+
     else:
-        fatal_error(f"Radius must be int or list with same length as centers, not: {radius}")
+        fatal_error("Radius must be int or list with same length as centers.")
 
     return labeled_mask, debug_img
 
