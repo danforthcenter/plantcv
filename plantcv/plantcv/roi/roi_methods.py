@@ -623,28 +623,29 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
 def multi_rect(img, coord, h=None, w=None, spacing=None, nrows=None, ncols=None):
     """Create multiple rectangular ROIs on a single image
 
-    Inputs
-    img           = Input image data.
-    coord         = Two-element tuple of the center of the top left object (x,y) or a list of tuples identifying
-                    the top left corner of each roi [(x1,y1),(x2,y2), ...]
-    h             = The height of each rectangular ROI
-    w             = The width of each rectangular ROI
-    spacing       = Two-element tuple of the horizontal and vertical spacing between ROIs, (x,y). Ignored if `coord`
-                    is a list and `rows` and `cols` are None.
-    nrows         = Number of rows in ROI layout. Should be missing or None if each center coordinate pair is listed.
-    ncols         = Number of columns in ROI layout. Should be missing or None if each center coordinate pair is listed.
+    Parameters
+    ----------
+    img : numpy.ndarray
+        Input image data.
+    coord : tuple, list
+        Two-element tuple of the center of the top left object (x,y) or a list of tuples identifying
+        the top left corner of each roi [(x1,y1),(x2,y2), ...]
+    h : int, optional
+        The height of each rectangular ROI, by default None
+    w : int, optional
+        The width of each rectangular ROI, by default None
+    spacing : tuple, optional
+        Two-element tuple of the horizontal and vertical spacing between ROIs, (x,y). Ignored if `coord`
+        is a list and `rows` and `cols` are None.
+    nrows : int, optional
+        Number of rows in ROI layout. Should be missing or None if each center coordinate pair is listed.
+    ncols : int, optional
+        Number of columns in ROI layout. Should be missing or None if each center coordinate pair is listed.
 
     Returns
-    roi_objects   = a dataclass with roi objects and hierarchies
-
-    :param img: numpy.ndarray
-    :param coord: tuple, list
-    :param h: int
-    :param w: int
-    :param spacing: tuple
-    :param nrows: int
-    :param ncols: int
-    :return roi_objects: plantcv.plantcv.classes.Objects
+    -------
+    plantcv.plantcv.classes.Objects
+        A dataclass with roi objects and hierarchies
     """
     # Grid of ROIs
     num_rois = 0
