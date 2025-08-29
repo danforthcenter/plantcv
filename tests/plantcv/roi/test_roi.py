@@ -2,7 +2,18 @@ import pytest
 import cv2
 import numpy as np
 from plantcv.plantcv import Objects
-from plantcv.plantcv.roi import from_binary_image, rectangle, circle, ellipse, auto_grid, multi, multi_rect, auto_wells, custom, filter
+from plantcv.plantcv.roi import (
+    from_binary_image,
+    rectangle,
+    circle,
+    ellipse,
+    auto_grid,
+    multi,
+    multi_rect,
+    auto_wells,
+    custom,
+    filter,
+)
 
 
 def test_from_binary_image(roi_test_data):
