@@ -363,7 +363,7 @@ def _read_phenofront(config, metadata_file):
                 # Parse camera label metaata
                 img_meta = _parse_filename(filename=img, config=config, metadata_index=metadata_index)
                 # Construct the filename
-                filename = f"{img}.{config.imgformat}" # NOTE requires 1L imgformat
+                filename = f"{img}.{config.imgformat}"
                 # The dataset key is the dataset relative path to the image
                 rel_path = os.path.join(snapshot_id, filename)
                 # Store the parsed image metadata
