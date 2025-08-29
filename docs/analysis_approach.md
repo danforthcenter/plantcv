@@ -54,6 +54,7 @@ downstream image processing steps like thresholding to be the same between image
 * Normalizing color across a dataset using a reference
 color card with [color correction](https://plantcv.org/tutorials/color-correction) is highly recommended, especially when color analysis is one 
 of the analysis objectives. See the [detect color card documentation](transform_detect_color_card.md) for more detail.
+* Supported color cards can also be used to automatically size scale measurements (from pixels to millimeters and millimeters<sup>2</sup>) recorded by PlantCV. 
 
 #####Object Segmentation Approaches
 
