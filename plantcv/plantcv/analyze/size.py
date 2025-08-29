@@ -124,9 +124,9 @@ def _analyze_size(img, mask, label):
 
         # Add measurements onto the diagnostic image
         # color blind friendly palette in BGR: (255, 0, 255) = magenta;
-        # (255, 0, 0) - blue; (37, 231, 255) = yellow
+        # (255, 0, 0) - blue; (0, 103, 255) = safety orange
         # Draw entire object outline (previously only drew perimeter in v4.9 and earlier)
-        cv2.drawContours(plt_img, cnt, -1, (37, 231, 255), params.line_thickness)
+        cv2.drawContours(plt_img, cnt, -1, (0, 103, 255), params.line_thickness)
         # Draw convex hull
         cv2.drawContours(plt_img, [hull], -1, (255, 0, 255), params.line_thickness)
         # Draw perimeter outline
