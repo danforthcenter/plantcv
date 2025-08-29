@@ -102,7 +102,7 @@ def _analyze_size(img, mask, label):
         solidity = area / hull_area if hull_area != 0 else 1
         # Perimeter
         perimeter = cv2.arcLength(obj, closed=True)
-        # Total edge legnth 
+        # Total edge legnth
         for contour in cnt:
             total_edge_length += cv2.arcLength(contour, True)
         # Bounding rectangle
