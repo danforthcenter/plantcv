@@ -1,10 +1,163 @@
 import cv2
 import numpy as np
-from plantcv.plantcv.dilate import dilate
-from plantcv.plantcv.image_subtract import image_subtract
+from skimage import morphology
 from plantcv.plantcv import fatal_error, warn
 from plantcv.plantcv import params
 import pandas as pd
+
+
+def _closing(gray_img, kernel=None, roi=None):
+    """Wrapper for scikit-image closing functions.
+
+    Opening can remove small dark spots (i.e. pepper).
+
+    Parameters
+    ----------
+    gray_img = numpy.ndarray
+             input image (grayscale or binary)
+    kernel   = numpy.ndarray
+             optional neighborhood, expressed as an array of 1s and 0s. If None, use cross-shaped structuring element.
+    roi : Objects class
+             Optional rectangular ROI to erode within
+
+    Returns
+    -------
+    numpy.ndarray
+         filtered (holes closed) image
+
+    Raises
+    ------
+    ValueError
+        If input image is not gray-scale
+    """
+    # Make sure the image is binary/grayscale
+    if len(np.shape(gray_img)) != 2:
+        fatal_error("Input image must be grayscale or binary")
+
+    if len(np.unique(gray_img)) <= 2:
+        bool_img = gray_img.astype(bool)
+        sub_img = _rect_filter(bool_img, roi=roi, function=morphology.binary_closing,
+                               **{"footprint": kernel})
+        filtered_img = sub_img.astype(np.uint8) * 255
+        replaced_img = _rect_replace(bool_img.astype(np.uint8) * 255, filtered_img, roi)
+    # Otherwise use method appropriate for grayscale images
+    else:
+        filtered_img = _rect_filter(gray_img,
+                                    roi=roi,
+                                    function=morphology.closing,
+                                    **{"footprint": kernel})
+        replaced_img = _rect_replace(gray_img, filtered_img, roi)
+
+    return replaced_img
+
+
+def _image_subtract(gray_img1, gray_img2):
+    """Subtract values of one gray-scale image array from another gray-scale image array.
+
+    The
+    resulting gray-scale image array has a minimum element value of zero. That is all negative values resulting from the
+    subtraction are forced to zero.
+
+    Parameters
+    ----------
+    gray_img1 : numpy.ndarray
+              Grayscale image data from which gray_img2 will be subtracted
+    gray_img2 : numpy.ndarray
+              Grayscale image data which will be subtracted from gray_img1
+
+    Returns
+    -------
+    new_img = subtracted image
+
+    Raises
+    ------
+    ValueError
+         If input image is not gray scale
+    """
+    # check inputs for gray-scale
+    if len(np.shape(gray_img1)) != 2 or len(np.shape(gray_img2)) != 2:
+        fatal_error("Input image is not gray-scale")
+
+    new_img = gray_img1.astype(np.float64) - gray_img2.astype(np.float64)  # subtract values
+    new_img[np.where(new_img < 0)] = 0  # force negative array values to zero
+    new_img = new_img.astype(np.uint8)  # typecast image to 8-bit image
+
+    return new_img  # return
+
+
+def _erode(gray_img, ksize, i, roi=None):
+    """Perform morphological 'erosion' filtering.
+
+    Keeps pixel in center of the kernel if conditions set in kernel are
+       true, otherwise removes pixel.
+
+    Parameters
+    ----------
+    gray_img : numpy.ndarray
+             Grayscale (usually binary) image data
+    ksize : int
+             Kernel size (int). A ksize x ksize kernel will be built. Must be greater than 1 to have an effect.
+    i : int
+             interations, i.e. number of consecutive filtering passes
+    roi : Objects class
+             Optional rectangular ROI to erode within
+
+    Returns
+    -------
+    numpy.ndarray
+         Eroded result image
+
+    Raises
+    ------
+    ValueError
+        If ksize is less than or equal to 1.
+    """
+    if ksize <= 1:
+        raise ValueError('ksize needs to be greater than 1 for the function to have an effect')
+
+    kernel1 = int(ksize)
+    kernel2 = np.ones((kernel1, kernel1), np.uint8)
+    sub_er_img = _rect_filter(img=gray_img, roi=roi, function=cv2.erode,
+                              **{"kernel": kernel2, "iterations": i})
+    er_img = _rect_replace(gray_img, sub_er_img, roi)
+
+    return er_img
+
+
+def _dilate(gray_img, ksize, i, roi=None):
+    """Performs morphological 'dilation' filtering.
+
+    Parameters
+    ----------
+    gray_img : numpy.ndarray
+        Grayscale image data to be dilated
+    ksize : int
+        Kernel size (int). A k x k kernel will be built. Must be greater than 1 to have an effect.
+    i : int
+        Number of iterations (i.e. how many times to apply the dilation).
+    roi : Objects class
+        Optional rectangular ROI to erode within
+
+    Returns
+    -------
+    numpy.ndarray
+        Dilation result image
+
+    Raises
+    ------
+    ValueError
+        If ksize is less than or equal to 1.
+    """
+    if ksize <= 1:
+        raise ValueError('ksize needs to be greater than 1 for the function to have an effect')
+
+    kernel1 = int(ksize)
+    kernel2 = np.ones((kernel1, kernel1), np.uint8)
+    sub_dil_img = _rect_filter(img=gray_img, roi=roi, function=cv2.dilate,
+                               **{"kernel": kernel2, "iterations": i})
+    dil_img = _rect_replace(gray_img, sub_dil_img, roi)
+
+    return dil_img
 
 
 def _find_segment_ends(skel_img, leaf_objects, plotting_img, size):
@@ -45,7 +198,7 @@ def _find_segment_ends(skel_img, leaf_objects, plotting_img, size):
         for j, obj in enumerate(segment_end_obj):
             segment_plot = np.zeros(skel_img.shape[:2], np.uint8)
             cv2.drawContours(segment_plot, obj, -1, 255, 1, lineType=8)
-            segment_plot = dilate(segment_plot, 3, 1)
+            segment_plot = _dilate(segment_plot, 3, 1)
             overlap_img = _logical_operation(segment_plot, tips, 'and')
             x, y = segment_end_obj[j].ravel()[:2]
             coord = (int(x), int(y))
@@ -89,7 +242,7 @@ def _iterative_prune(skel_img, size):
     # Iteratively remove endpoints (tips) from a skeleton
     for _ in range(0, size):
         endpoints, _, _ = _find_tips(pruned_img)
-        pruned_img = image_subtract(pruned_img, endpoints)
+        pruned_img = _image_subtract(pruned_img, endpoints)
 
     # Make debugging image
     pruned_plot = np.zeros(skel_img.shape[:2], np.uint8)
@@ -153,7 +306,7 @@ def _find_tips(skel_img, mask=None):
 
     if mask is None:
         # Make debugging image
-        dilated_skel = dilate(skel_img, params.line_thickness, 1)
+        dilated_skel = _dilate(skel_img, params.line_thickness, 1)
         tip_plot = cv2.cvtColor(dilated_skel, cv2.COLOR_GRAY2RGB)
 
     else:
@@ -638,3 +791,81 @@ def _scale_size(value, trait_type="linear"):
         return value * conversion_rate
     # Multiplication with list comprehension for lists of values
     return [x*conversion_rate for x in value]
+
+
+def _identity(x, **kwargs):
+    """Identity function for use in _rect_filter
+    This may be useful if there are several outputs from a function passed to _rect_filter
+    which would otherwise be difficult to manage
+    Parameters
+    ----------
+    x : any
+      An object
+    **kwargs
+      Other keyword arguments, ignored.
+    """
+    return x
+
+
+def _rect_filter(img, roi=None, function=None, **kwargs):
+    """Subset a rectangular section of image to apply function to
+    Parameters
+    ----------
+    img : numpy.ndarray
+        An image
+    roi : plantcv Objects class
+        A rectangular ROI as returned by plantcv.roi.rectangle
+    function : function
+        analysis function to apply to each submask
+    **kwargs
+        Other keyword arguments to pass to the analysis function.
+    Returns
+    -------
+    any
+        Return value depends on the function that is called. If no function is called then this is a numpy.ndarray.
+    """
+    if roi is None:
+        xstart = 0
+        ystart = 0
+        xend = np.shape(img)[1]
+        yend = np.shape(img)[0]
+    else:
+        xstart = roi.contours[0][0][0][0][0].astype("int32")
+        ystart = roi.contours[0][0][0][0][1].astype("int32")
+        xend = roi.contours[0][0][2][0][0].astype("int32")
+        yend = roi.contours[0][0][2][0][1].astype("int32")
+    # slice image to subset rectangle
+    sub_img = img[ystart:yend, xstart:xend]
+    # apply function
+    if function is None:
+        function = _identity
+
+    return function(sub_img, **kwargs)
+
+
+def _rect_replace(img, sub_img, roi):
+    """
+    Parameters
+    ----------
+    img : numpy.ndarray
+        Full sized image
+    sub_img : numpy.ndarray
+        output from _rect_filter
+    roi : plantcv Objects class
+        A rectangular ROI as returned by plantcv.roi.rectangle
+    Returns
+    -------
+    numpy.ndarray
+    """
+    if roi is None:
+        # if no ROI then no subsetting was done, just return sub_img
+        return sub_img
+
+    # if subsetting was done then get coordinates, slice into main image, and return
+    xstart = roi.contours[0][0][0][0][0].astype("int32")
+    ystart = roi.contours[0][0][0][0][1].astype("int32")
+    xend = roi.contours[0][0][2][0][0].astype("int32")
+    yend = roi.contours[0][0][2][0][1].astype("int32")
+    full_img = np.copy(img)
+    full_img[ystart:yend, xstart:xend] = sub_img
+    return full_img

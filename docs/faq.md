@@ -47,7 +47,10 @@ and [updating documentation](documentation.md).
     a [practical guide](https://doi.org/10.1071/FP12028)
     on growth conditions by Poorter et al. (2012),
     or a [glossary and general advice](https://doi.org/10.1242/dev.076414)
-    by Roeder et al. (2012).
+    by Roeder et al. (2012). Normalizing color across a dataset using a reference
+    color card with [color correction](https://plantcv.org/tutorials/color-correction) is highly recommended,
+    especially when color analysis is one of the analysis objectives. See the
+    [detect color card documentation](transform_detect_color_card.md) for more detail.
 - Q: Can I use PlantCV to process photos taken with a Raspberry Pi camera?
     - A: Yes.
     <!-- This is related to the previous question. -->

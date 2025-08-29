@@ -5,7 +5,7 @@ from plantcv.plantcv.transform import detect_color_card
 from plantcv.plantcv.transform import get_color_matrix, std_color_matrix, affine_color_correction, astro_color_matrix
 
 
-def auto_correct_color(rgb_img, label=None, card_type=0, **kwargs):
+def auto_correct_color(rgb_img, label=None, color_chip_size=None, roi=None, card_type=0, **kwargs):
     """Automatically detect a color card.
     Parameters
     ----------
@@ -13,37 +13,38 @@ def auto_correct_color(rgb_img, label=None, card_type=0, **kwargs):
         Input RGB image data containing a color card.
     label : str, optional
         Modifies the variable name of observations recorded (default = pcv.params.sample_label).
+    color_chip_size: str, tuple, optional
+        "passport", "classic", "cameratrax"; or tuple formatted (width, height)
+        in millimeters (default = None)
+    roi: plantcv.plantcv.Objects, optional
+        Objects class rectangular ROI passed to detect_color_card (default None)
     card_type : int
         reference value indicating the type of card being used for correction:
                 card_type = 0: macbeth color card (default)
                 card_type = 1: astrobotany.com AIRI calibration sticker
     **kwargs
-        Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle.
-
+        Other keyword arguments passed to cv2.adaptiveThreshold, cv2.circle and _rect_filter.
         Valid keyword arguments:
         adaptive_method: 0 (mean) or 1 (Gaussian) (default = 1)
         block_size: int (default = 51)
         radius: int (default = 20)
         min_size: int (default = 1000)
+        aspect_ratio: float (default = 1.27)
+        solidity: float (default = 0.8)
 
     Returns
     -------
     numpy.ndarray
         Color corrected image
     """
-    # Set lable to params.sample_label if None
+    # Set label to params.sample_label if None
     if label is None:
         label = params.sample_label
     deprecation_warning(
         "The 'label' parameter is no longer utilized, since color chip size is now metadata. "
         "It will be removed in PlantCV v5.0."
         )
-    # Get keyword arguments and set defaults if not set
-    labeled_mask = detect_color_card(rgb_img=rgb_img, card_type=card_type,
-                                     min_size=kwargs.get("min_size", 1000),
-                                     radius=kwargs.get("radius", 20),
-                                     adaptive_method=kwargs.get("adaptive_method", 1),
-                                     block_size=kwargs.get("block_size", 51))
+    labeled_mask = detect_color_card(rgb_img=rgb_img, color_chip_size=color_chip_size, roi=roi, card_type=card_type, **kwargs)
     _, card_matrix = get_color_matrix(rgb_img=rgb_img, mask=labeled_mask)
 
     if card_type == 0:

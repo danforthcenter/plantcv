@@ -26,6 +26,7 @@ dependencies:
   - altair
   - vl-convert-python
   - git
+  - flyr
 
 channels:
   - conda-forge
