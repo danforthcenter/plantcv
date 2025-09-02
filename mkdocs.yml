@@ -67,6 +67,7 @@ nav:
       - 'Flip Image': flip.md
       - 'Filters':
         - 'Eccentricity Filter': filters_eccentricity.md
+        - 'Object Filter': filters_obj_props.md
         - 'Laplace Filter': laplace_filter.md
         - 'Sobel Filter': sobel_filter.md
         - 'Scharr Filter': scharr_filter.md
@@ -88,6 +89,7 @@ nav:
       - 'Image Fusion': image_fusion.md
       - 'Invert': invert.md
       - 'I/O Functions':
+          - 'Open Image from URL': io_open_url.md
           - 'Random Subset': io_random_subset.md
           - 'Read Dataset': io_read_dataset.md
       - 'Kmeans Clustering Classifier': kmeans_classifier.md
@@ -116,6 +118,7 @@ nav:
         - 'Segment Angles': segment_angle.md
         - 'Combine Segments': segment_combine.md
         - 'Segment Curvature': segment_curvature.md
+        - 'Segment Ends': segment_ends.md
         - 'Segment Euclidean Length': segment_euclidean_length.md
         - 'Segment ID': segment_id.md
         - 'Segment Insertion Angle': segment_insertion_angle.md
@@ -138,6 +141,8 @@ nav:
       - 'Params (Debugging)': params.md
       - 'Print Image': print_image.md
       - 'Plot Image': plot_image.md
+      - "Quality Control Tools":
+        - "Exposure": qc_exposure.md
       - 'Read Image': read_image.md
       - 'Read Bayer Raw Image': read_bayer.md
       - 'Report Size Marker': report_size_marker.md
@@ -148,7 +153,9 @@ nav:
         - 'Create a Custom ROI': roi_custom.md
         - 'Create ROI from Binary Image': roi_from_binary_image.md
         - 'Create Multi ROIs': 'roi_multi.md'
+        - 'Create Multi Rectangular ROIs': 'roi_multi_rect.md'
         - 'Create Grid of ROIs Automatically': roi_auto_grid.md
+        - 'Create Grid of Circular ROIs Automatically': roi_auto_wells.md
         - 'Filter a mask by ROI': roi_filter.md
         - 'Filter a mask by ROI (quickly)': roi_quick_filter.md
         - 'Convert ROI to Mask': roi2mask.md
@@ -171,6 +178,7 @@ nav:
       - 'Transformation Methods':
           - 'Auto-Detect Color Card': transform_detect_color_card.md
           - 'Auto-Detect Color Card (old)': find_color_card.md
+          - 'Auto Correct Color': transform_auto_correct_color.md
           - 'Calibrate Camera': transform_calibrate_camera.md
           - 'Checkerboard Calibration': transform_checkerboard_calibration.md
           - 'Create Color Card Mask': create_color_card_mask.md
@@ -180,6 +188,7 @@ nav:
           - 'Affine Color Correction': transform_affine_color_correction.md
           - 'Standard Color Matrix': std_color_matrix.md
           - 'Gamma Correction': transform_gamma_correct.md
+          - 'Mask Color Card': transform_mask_color_card.md
           - 'Merge Images': transform_merge_images.md
           - 'Nonuniform Illumination Correction': nonuniform_illumination.md
           - 'Perspective warp': transform_warp.md
@@ -205,6 +214,7 @@ nav:
           - 'Object Sizes': visualize_obj_sizes.md
           - 'Pixel Scatter Plot': 'visualize_pixel_scatter_vis.md'
           - 'Pseudocolor': visualize_pseudocolor.md
+          - 'Tile': visualize_tile.md
           - 'Time Lapse Video': visualize_time_lapse_video.md
       - 'Watershed Segmentation': watershed.md
       - 'White balance': white_balance.md

@@ -2,10 +2,14 @@
 
 !!! warning
     Workflows should be optimized to an image test-set before running a whole dataset.
-    See the [VIS workflow tutorial](tutorials/vis_tutorial.md) or [VIS/NIR tutorial](tutorials/vis_nir_tutorial.md).
+    See the [VIS workflow tutorial](https://plantcv.org/tutorials/simple-rgb-workflow) or [VIS/NIR tutorial](https://plantcv.org/tutorials/dual-rgb-nir-workflow).
     Our [download tool](https://github.com/danforthcenter/pheno-data-service), which talks to a LemnaTec database system,
     has a specific file structure, which may be different than yours unless you are using our tool, but we also have instructions
     to run PlantCV over a flat file directory (just keep this in mind).
+
+### Workflow parallelization step-by-step guide <a name="Scribe Guide"></a>
+
+<iframe src="https://scribehow.com/embed/How_to_Parallelize_Your_Workflows_Using_PlantCV__GIx8o5YNRESjPjxMI_Sq0A" width="100%" height="640" allowfullscreen frameborder="0"></iframe>
 
 ### Running PlantCV workflows over a dataset
 
@@ -18,14 +22,15 @@ a configuration file can be edited and input.
 To create a configuration file, run the following:
 
 ```bash
-plantcv-run-workflow --template my_config.txt
+plantcv-run-workflow --template my_config.json
 
 ```
 
 The code above saves a text configuration file in JSON format using the built-in defaults for parameters. The parameters can be modified
 directly in Python as demonstrated in the [WorkflowConfig documentation](parallel_config.md). A configuration can be
 saved at any time using the `save_config` method to save for later use. Alternatively, open the saved config
-file with your favorite text editor and adjust the parameters as needed.
+file with your favorite text editor and adjust the parameters as needed (refer to the attributes section of
+[WorkflowConfig documentation](parallel_config.md) for details about each parameter).
 
 **Some notes on JSON format:**
 
@@ -99,7 +104,7 @@ Sample image filename: `cam1_16-08-06-16:45_el1100s1_p19.jpg`
     "filename_metadata": ["camera", "timestamp", "id", "other"],
     "workflow": "/home/mgehan/pat-edger/round1-python-pipelines/2016-08_pat-edger_brassica-cam1-splitimg.py",
     "img_outdir": "/shares/mgehan_share/raw_data/raw_image/2016-08_pat-edger/data/split-round1/split-cam1/output",
-    "tmp_dir": null,
+    "tmp_dir": "."",
     "start_date": null,
     "end_date": null,
     "imgformat": "jpg",
@@ -111,7 +116,7 @@ Sample image filename: `cam1_16-08-06-16:45_el1100s1_p19.jpg`
     "groupby": ["filepath"],
     "group_name": "auto",
     "cleanup": true,
-    "append": true,
+    "append": false,
     "cluster": "HTCondorCluster",
     "cluster_config": {
         "n_workers": 16,
@@ -175,7 +180,7 @@ in a list to the `filename_metadata` parameter.
     "filename_metadata": ["camera", "plantbarcode", "timestamp"],
     "workflow": "user-workflow.py",
     "img_outdir": "output_directory",
-    "tmp_dir": null,
+    "tmp_dir": ".",
     "start_date": null,
     "end_date": null,
     "imgformat": "jpg",
@@ -187,7 +192,7 @@ in a list to the `filename_metadata` parameter.
     "groupby": ["filepath"],
     "group_name": "auto",
     "cleanup": true,
-    "append": true,
+    "append": false,
     "cluster": "HTCondorCluster",
     "cluster_config": {
         "n_workers": 16,
@@ -227,7 +232,7 @@ To identify each image within our workflow, we will name them based on the `imgt
     "filename_metadata": ["imgtype", "timestamp", "id", "other"],
     "workflow": "/home/mgehan/pat-edger/round1-python-pipelines/2016-08_pat-edger_brassica-cam1-splitimg.py",
     "img_outdir": "/shares/mgehan_share/raw_data/raw_image/2016-08_pat-edger/data/split-round1/split-cam1/output",
-    "tmp_dir": null,
+    "tmp_dir": ".",
     "start_date": null,
     "end_date": null,
     "imgformat": "jpg",
@@ -239,7 +244,7 @@ To identify each image within our workflow, we will name them based on the `imgt
     "groupby": ["timestamp"],
     "group_name": "imgtype",
     "cleanup": true,
-    "append": true,
+    "append": false,
     "cluster": "HTCondorCluster",
     "cluster_config": {
         "n_workers": 16,

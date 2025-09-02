@@ -3,12 +3,11 @@
 This is a visualization method used to examine the distribution of object sizes. It is an alternative to histogram 
 visualization.
 
-**plantcv.visualize.ecdf.obj_size**(*mask, title=None*)
+**plantcv.visualize.obj_size_ecdf**(*mask*)
 **returns** fig_ecdf
 
 - **Parameters:**
     - mask - Binary mask made from selected contours (default mask=None).
-    - title - The title for the ecdf plot (default title=None) 
     
 **Context:**
 - Examine the cumulative distribution of object sizes found in a binary mask. This can be used as an alternative 
@@ -26,7 +25,7 @@ visualization.
 ```python
 from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
-fig_ecdf = pcv.visualize.ecdf.obj_size(mask=mask)
+fig_ecdf = pcv.visualize.obj_size_ecdf(mask=mask)
 ```
 
 **Cumulative distribution of object sizes**

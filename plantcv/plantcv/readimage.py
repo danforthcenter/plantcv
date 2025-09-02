@@ -4,6 +4,8 @@ import os
 import cv2
 import numpy as np
 import pandas as pd
+import nd2
+import flyr
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 from plantcv.plantcv.hyperspectral import read_data
@@ -15,7 +17,7 @@ def readimage(filename, mode="native"):
 
     Inputs:
     filename = name of image file
-    mode     = mode of imread ("native", "rgb", "rgba", "gray", "csv", "envi", "arcgis")
+    mode     = mode of imread ("native", "rgb", "rgba", "gray", "csv", "envi", "arcgis", "nd2", "thermal")
 
     Returns:
     img      = image object as numpy array
@@ -40,6 +42,10 @@ def readimage(filename, mode="native"):
     elif mode.upper() in ["ENVI", "ARCGIS"]:
         array_data = read_data(filename, mode=mode)
         return array_data
+    elif mode.upper() == "ND2":
+        img = nd2.imread(filename)
+    elif mode.upper() == "THERMAL":
+        img = flyr.unpack(filename).celsius
     else:
         img = cv2.imread(filename, -1)
 

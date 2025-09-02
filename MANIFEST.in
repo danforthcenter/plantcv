@@ -1,1 +1,4 @@
 include LICENSE
+prune tests
+prune docs
+prune vice

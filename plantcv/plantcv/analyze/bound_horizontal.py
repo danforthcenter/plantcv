@@ -3,7 +3,7 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _iterate_analysis, _cv2_findcontours, _object_composition, _grayscale_to_rgb
+from plantcv.plantcv._helpers import _iterate_analysis, _cv2_findcontours, _object_composition, _grayscale_to_rgb, _scale_size
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
@@ -114,7 +114,7 @@ def _analyze_bound_horizontal(img, mask, line_position, label):
         obj_points1 = np.transpose(obj_points)
 
         for c in obj_points1:
-            xy = tuple([int(ci) for ci in c])
+            xy = tuple(int(ci) for ci in c)
             pptest = cv2.pointPolygonTest(below_contour[0], xy, measureDist=False)
             if pptest == 1:
                 below.append(xy)
@@ -183,20 +183,20 @@ def _analyze_bound_horizontal(img, mask, line_position, label):
                             method='plantcv.plantcv.analyze.bound_horizontal', scale='none', datatype=int,
                             value=line_position, label='none')
     outputs.add_observation(sample=label, variable='height_above_reference', trait='height above reference',
-                            method='plantcv.plantcv.analyze.bound_horizontal', scale='pixels', datatype=int,
-                            value=height_above_bound, label='pixels')
+                            method='plantcv.plantcv.analyze.bound_horizontal', scale=params.unit, datatype=int,
+                            value=_scale_size(height_above_bound), label=params.unit)
     outputs.add_observation(sample=label, variable='height_below_reference', trait='height_below_reference',
-                            method='plantcv.plantcv.analyze.bound_horizontal', scale='pixels', datatype=int,
-                            value=height_below_bound, label='pixels')
+                            method='plantcv.plantcv.analyze.bound_horizontal', scale=params.unit, datatype=int,
+                            value=_scale_size(height_below_bound), label=params.unit)
     outputs.add_observation(sample=label, variable='area_above_reference', trait='area above reference',
-                            method='plantcv.plantcv.analyze.bound_horizontal', scale='pixels', datatype=int,
-                            value=above_bound_area, label='pixels')
+                            method='plantcv.plantcv.analyze.bound_horizontal', scale=params.unit, datatype=int,
+                            value=_scale_size(above_bound_area, "area"), label=params.unit)
     outputs.add_observation(sample=label, variable='percent_area_above_reference', trait='percent area above reference',
                             method='plantcv.plantcv.analyze.bound_horizontal', scale='none', datatype=float,
                             value=percent_bound_area_above, label='none')
     outputs.add_observation(sample=label, variable='area_below_reference', trait='area below reference',
-                            method='plantcv.plantcv.analyze.bound_horizontal', scale='pixels', datatype=int,
-                            value=below_bound_area, label='pixels')
+                            method='plantcv.plantcv.analyze.bound_horizontal', scale=params.unit, datatype=int,
+                            value=_scale_size(below_bound_area, "area"), label=params.unit)
     outputs.add_observation(sample=label, variable='percent_area_below_reference', trait='percent area below reference',
                             method='plantcv.plantcv.analyze.bound_horizontal', scale='none', datatype=float,
                             value=percent_bound_area_below, label='none')

@@ -2,7 +2,8 @@
 import os
 import cv2
 import numpy as np
-from plantcv.plantcv._helpers import _iterate_analysis, _cv2_findcontours, _object_composition, _grayscale_to_rgb
+from scipy.spatial.distance import euclidean
+from plantcv.plantcv._helpers import _iterate_analysis, _cv2_findcontours, _object_composition, _grayscale_to_rgb, _scale_size
 from plantcv.plantcv import outputs, within_frame
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
@@ -61,6 +62,7 @@ def _analyze_size(img, mask, label):
     width = 0
     height = 0
     caliper_length = 0
+    longest_path = 0
     cmx = 0
     cmy = 0
     hull_vertices = 0
@@ -114,6 +116,7 @@ def _analyze_size(img, mask, label):
         # Caliper length
         caliper_length, caliper_transpose = _longest_axis(height=img.shape[0], width=img.shape[1],
                                                           hull=hull, cmx=cmx, cmy=cmy)
+        longest_path = euclidean(tuple(caliper_transpose[caliper_length - 1]), tuple(caliper_transpose[0]))
         # Debugging output
         cv2.drawContours(plt_img, obj, -1, (255, 0, 0), params.line_thickness)
         cv2.drawContours(plt_img, [hull], -1, (255, 0, 255), params.line_thickness)
@@ -124,27 +127,29 @@ def _analyze_size(img, mask, label):
                  (255, 0, 255), params.line_thickness)
 
     # Store outputs
+    outputs.add_metadata(term="image_height", datatype=int, value=np.shape(img)[0])
+    outputs.add_metadata(term="image_width", datatype=int, value=np.shape(img)[1])
     outputs.add_observation(sample=label, variable='area', trait='area',
-                            method='plantcv.plantcv.analyze.size', scale='pixels', datatype=int,
-                            value=area, label='pixels')
+                            method='plantcv.plantcv.analyze.size', scale=params.unit, datatype=int,
+                            value=_scale_size(area, "area"), label=params.unit)
     outputs.add_observation(sample=label, variable='convex_hull_area', trait='convex hull area',
-                            method='plantcv.plantcv.analyze.size', scale='pixels', datatype=int,
-                            value=hull_area, label='pixels')
+                            method='plantcv.plantcv.analyze.size', scale=params.unit, datatype=int,
+                            value=_scale_size(hull_area, "area"), label=params.unit)
     outputs.add_observation(sample=label, variable='solidity', trait='solidity',
                             method='plantcv.plantcv.analyze.size', scale='none', datatype=float,
                             value=solidity, label='none')
     outputs.add_observation(sample=label, variable='perimeter', trait='perimeter',
-                            method='plantcv.plantcv.analyze.size', scale='pixels', datatype=int,
-                            value=perimeter, label='pixels')
+                            method='plantcv.plantcv.analyze.size', scale=params.unit, datatype=int,
+                            value=_scale_size(perimeter), label=params.unit)
     outputs.add_observation(sample=label, variable='width', trait='width',
-                            method='plantcv.plantcv.analyze.size', scale='pixels', datatype=int,
-                            value=width, label='pixels')
+                            method='plantcv.plantcv.analyze.size', scale=params.unit, datatype=int,
+                            value=_scale_size(width), label=params.unit)
     outputs.add_observation(sample=label, variable='height', trait='height',
-                            method='plantcv.plantcv.analyze.size', scale='pixels', datatype=int,
-                            value=height, label='pixels')
+                            method='plantcv.plantcv.analyze.size', scale=params.unit, datatype=int,
+                            value=_scale_size(height), label=params.unit)
     outputs.add_observation(sample=label, variable='longest_path', trait='longest path',
-                            method='plantcv.plantcv.analyze.size', scale='pixels', datatype=int,
-                            value=caliper_length, label='pixels')
+                            method='plantcv.plantcv.analyze.size', scale=params.unit, datatype=int,
+                            value=_scale_size(float(longest_path)), label=params.unit)
     outputs.add_observation(sample=label, variable='center_of_mass', trait='center of mass',
                             method='plantcv.plantcv.analyze.size', scale='none', datatype=tuple,
                             value=(cmx, cmy), label=("x", "y"))
@@ -158,11 +163,11 @@ def _analyze_size(img, mask, label):
                             method='plantcv.plantcv.analyze.size', scale='none', datatype=tuple,
                             value=(ellipse_center[0], ellipse_center[1]), label=("x", "y"))
     outputs.add_observation(sample=label, variable='ellipse_major_axis', trait='ellipse major axis length',
-                            method='plantcv.plantcv.analyze.size', scale='pixels', datatype=int,
-                            value=ellipse_major_axis, label='pixels')
+                            method='plantcv.plantcv.analyze.size', scale=params.unit, datatype=int,
+                            value=_scale_size(ellipse_major_axis), label=params.unit)
     outputs.add_observation(sample=label, variable='ellipse_minor_axis', trait='ellipse minor axis length',
-                            method='plantcv.plantcv.analyze.size', scale='pixels', datatype=int,
-                            value=ellipse_minor_axis, label='pixels')
+                            method='plantcv.plantcv.analyze.size', scale=params.unit, datatype=int,
+                            value=_scale_size(ellipse_minor_axis), label=params.unit)
     outputs.add_observation(sample=label, variable='ellipse_angle', trait='ellipse major axis angle',
                             method='plantcv.plantcv.analyze.size', scale='degrees', datatype=float,
                             value=float(ellipse_angle), label='degrees')
@@ -196,7 +201,7 @@ def _longest_axis(height, width, hull, cmx, cmy):
     vhull = np.vstack(hull)
 
     for i, c in enumerate(vhull):
-        xy = tuple([int(ci) for ci in c])
+        xy = tuple(int(ci) for ci in c)
         pptest = cv2.pointPolygonTest(centerpoint[0], xy, measureDist=True)
         dist.append(pptest)
 
@@ -213,7 +218,7 @@ def _longest_axis(height, width, hull, cmx, cmy):
     slope = 1
 
     if xdiff != 0:
-        slope = (float(ydiff / xdiff))
+        slope = float(ydiff / xdiff)
     b_line = caliper_mid_y - (slope * caliper_mid_x)
 
     if slope != 0:

@@ -40,7 +40,7 @@ def _get_color_dict_nir():
     params.color_scale = "inferno"
     nir_wavelengths = np.arange(701, 1725)
     nir_colors_ = color_palette(num=256)
-    nir_colors_ = [tuple([xi / 255 for xi in nir_colors_[math.floor(idx / 4)]]) for (idx, _) in
+    nir_colors_ = [tuple(xi / 255 for xi in nir_colors_[math.floor(idx / 4)]) for (idx, _) in
                    enumerate(nir_wavelengths)]
     nir_colors = {}
     for i, wv in enumerate(nir_wavelengths):
@@ -129,7 +129,7 @@ def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None
         params.color_scale = "cool_r"
         color_ = color_palette(num=256)[-154]
         under_uv_colors_ = {}
-        for i, wv in enumerate([x for x in match_wls if x < 290]):
+        for i, wv in enumerate((x for x in match_wls if x < 290)):
             under_uv_colors_[wv] = color_
         color_dict = {**color_dict, **under_uv_colors_}
     if any(290 <= x < 445 for x in match_wls):
@@ -146,7 +146,7 @@ def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None
         params.color_scale = "inferno"
         color_ = color_palette(num=256)[-1]
         above_uv_colors_ = {}
-        for i, wv in enumerate([x for x in match_wls if x >= 1701]):
+        for i, wv in enumerate((x for x in match_wls if x >= 1701)):
             above_uv_colors_[wv] = color_
         color_dict = {**color_dict, **above_uv_colors_}
 

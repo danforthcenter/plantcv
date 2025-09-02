@@ -18,14 +18,15 @@ Source: [https://en.wikipedia.org/wiki/ColorChecker](https://en.wikipedia.org/wi
         - pos = 2: top-right corner
         - pos = 3: top-left corner
 
+- **Context**
+    - A standard matrix can be used most readily while doing [affine](transform_affine_color_correction.md) color correction. 
+    Where possible it's recommended to use [`pcv.transform.detect_color_card`](transform_detect_color_card.md) which orders the color card mask as if the white chip were in the top-left corner, or `pos = 3`. 
+
 - **Returns**
     - color_matrix - a *n* x 4 matrix containing the standard red, green, and blue
     values for each color chip
 
-
-
-- **Example use:**
-    - Tutorial in progress
+- **Example use below:**
 
 ```python
 

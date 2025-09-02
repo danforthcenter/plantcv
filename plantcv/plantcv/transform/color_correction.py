@@ -37,7 +37,7 @@ def affine_color_correction(rgb_img, source_matrix, target_matrix):
     """
     # matrices must have the same number of color references
     if source_matrix.shape != target_matrix.shape:
-        fatal_error("Missmatch between the color matrices' shapes")
+        fatal_error("Mismatch between the color matrices' shapes")
 
     h, w, c = rgb_img.shape
 
@@ -49,7 +49,7 @@ def affine_color_correction(rgb_img, source_matrix, target_matrix):
     # the affine transformation
     S = np.concatenate((source_matrix[:, 1:].copy(), np.ones((n, 1))), axis=1)
 
-    # make vectors of taget values for each color
+    # make vectors of target values for each color
     T = target_matrix[:, 1:].copy()
     tr = T[:, 0]
     tg = T[:, 1]
@@ -62,7 +62,7 @@ def affine_color_correction(rgb_img, source_matrix, target_matrix):
     ab = np.matmul(np.linalg.pinv(S), tb)
 
     img_rgb = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2RGB)
-    # reshape image as a 2D array where the rows are pixels and the colums are color channels
+    # reshape image as a 2D array where the rows are pixels and the columns are color channels
     # and augment the channels with a column of 1s for the affine transformation
     img_pix = np.concatenate((img_rgb.reshape(h*w, c).astype(np.float64)/255, np.ones((h*w, 1))), axis=1)
 
@@ -85,7 +85,7 @@ def affine_color_correction(rgb_img, source_matrix, target_matrix):
 def std_color_matrix(pos=0):
     """Create a standard color matrix.
 
-    Standard color values compatible with the x-rite ColorCheker Classic,
+    Standard color values compatible with the x-rite ColorChecker Classic,
     ColorChecker Mini, and ColorChecker Passport targets.
     Source: https://en.wikipedia.org/wiki/ColorChecker
 
@@ -106,7 +106,7 @@ def std_color_matrix(pos=0):
     :return color_matrix: numpy.ndarray
     """
     # list of rgb values as indicated in the color card specs. They need to be
-    # aranged depending on the orientation of the color card of reference in the
+    # arranged depending on the orientation of the color card of reference in the
     # image to be corrected.
     values_list = np.array([[115, 82, 68],  # dark skin
                             [194, 150, 130],  # light skin
@@ -140,7 +140,7 @@ def std_color_matrix(pos=0):
     N_chips = values_list.shape[0]
 
     # array of indices from 1 to N chips in order to match the chip numbering
-    # in the color card specs. Later when used for indexing, we substract the 1.
+    # in the color card specs. Later when used for indexing, we subtract the 1.
     idx = np.arange(N_chips)+1
     # indices in the shape of the color card
     cc_indices = idx.reshape((4, 6), order='C')
@@ -235,12 +235,10 @@ def get_matrix_m(target_matrix, source_matrix):
     """
     # if the number of chips in source_img match the number of chips in target_matrix
     if np.shape(target_matrix) == np.shape(source_matrix):
-        t_r = target_matrix[:, 1].reshape(-1, 1)
-        t_g = target_matrix[:, 2].reshape(-1, 1)
-        t_b = target_matrix[:, 3].reshape(-1, 1)
-        s_r = source_matrix[:, 1].reshape(-1, 1)
-        s_g = source_matrix[:, 2].reshape(-1, 1)
-        s_b = source_matrix[:, 3].reshape(-1, 1)
+        t_mats = np.split(target_matrix, 4, 1)
+        t_r, t_g, t_b = t_mats[1], t_mats[2], t_mats[3]
+        s_mats = np.split(source_matrix, 4, 1)
+        s_r, s_g, s_b = s_mats[1], s_mats[2], s_mats[3]
     else:
         combined_matrix = np.zeros((np.ma.size(source_matrix, 0), 7))
         row_count = 0
@@ -255,12 +253,8 @@ def get_matrix_m(target_matrix, source_matrix):
                     combined_matrix[row_count][5] = source_matrix[i][2]
                     combined_matrix[row_count][6] = source_matrix[i][3]
                     row_count += 1
-        t_r = combined_matrix[:, 1].reshape(-1, 1)
-        t_g = combined_matrix[:, 2].reshape(-1, 1)
-        t_b = combined_matrix[:, 3].reshape(-1, 1)
-        s_r = combined_matrix[:, 4].reshape(-1, 1)
-        s_g = combined_matrix[:, 5].reshape(-1, 1)
-        s_b = combined_matrix[:, 6].reshape(-1, 1)
+        rgb_mats = np.split(combined_matrix, 7, 1)
+        t_r, t_g, t_b, s_r, s_g, s_b = rgb_mats[1], rgb_mats[2], rgb_mats[3], rgb_mats[4], rgb_mats[5], rgb_mats[6]
     t_r2 = np.square(t_r)
     t_r3 = np.power(t_r, 3)
     t_g2 = np.square(t_g)
@@ -314,16 +308,10 @@ def calc_transformation_matrix(matrix_m, matrix_b):
     if np.shape(matrix_m)[0] != np.shape(matrix_b)[1] or np.shape(matrix_m)[1] != np.shape(matrix_b)[0]:
         fatal_error("Cannot multiply matrices.")
 
-    t_r = matrix_b[:, 0].reshape(-1, 1)
-    t_r2 = matrix_b[:, 1].reshape(-1, 1)
-    t_r3 = matrix_b[:, 2].reshape(-1, 1)
-    t_g = matrix_b[:, 3].reshape(-1, 1)
-    t_g2 = matrix_b[:, 4].reshape(-1, 1)
-    t_g3 = matrix_b[:, 5].reshape(-1, 1)
-    t_b = matrix_b[:, 6].reshape(-1, 1)
-    t_b2 = matrix_b[:, 7].reshape(-1, 1)
-    t_b3 = matrix_b[:, 8].reshape(-1, 1)
-
+    t_mats = np.split(matrix_b, 9, 1)
+    t_r, t_r2, t_r3 = t_mats[0], t_mats[1], t_mats[2]
+    t_g, t_g2, t_g3 = t_mats[3], t_mats[4], t_mats[5]
+    t_b, t_b2, t_b3 = t_mats[6], t_mats[7], t_mats[8]
     # multiply each 22x1 matrix from target color space by matrix_m
     red = np.matmul(matrix_m, t_r)
     green = np.matmul(matrix_m, t_g)
@@ -352,7 +340,7 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
     Inputs:
     source_img      = an RGB image to be corrected to the target color space
     target_img      = an RGB image with the target color space
-    transformation_matrix        = a 9x9 matrix of tranformation coefficients
+    transformation_matrix        = a 9x9 matrix of transformation coefficients
 
     Outputs:
     corrected_img    = an RGB image in correct color space
@@ -370,9 +358,8 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
         fatal_error("Source_img is not an RGB image.")
 
     # split transformation_matrix
-    red = transformation_matrix[:, 0].reshape(-1, 1)
-    green = transformation_matrix[:, 1].reshape(-1, 1)
-    blue = transformation_matrix[:, 2].reshape(-1, 1)
+    channels = np.split(transformation_matrix, 9, 1)
+    red, green, blue = channels[0], channels[1], channels[2]
 
     source_dtype = source_img.dtype
     # normalization value as max number if the type is unsigned int
@@ -414,7 +401,7 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
     out_img = ((255.0/max_val)*out_img).astype(np.uint8)
     _debug(visual=out_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_corrected.png'))
 
-    # return corrected_img
+    # return the corrected image
     return corrected_img
 
 
@@ -617,13 +604,13 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
 
     # Make a column of chip numbers
     chip = np.arange(0, num_chips).reshape((num_chips, 1))
-    chips = np.row_stack((chip, chip, chip))
+    chips = np.vstack((chip, chip, chip))
 
     # Combine info
     color_data_r = np.column_stack((sr, tr, red))
     color_data_g = np.column_stack((sg, tg, green))
     color_data_b = np.column_stack((sb, tb, blue))
-    all_color_data = np.row_stack((color_data_b, color_data_g, color_data_r))
+    all_color_data = np.vstack((color_data_b, color_data_g, color_data_r))
 
     # Create a dataframe with headers
     dataset = pd.DataFrame({'source': all_color_data[:, 0], 'target': all_color_data[:, 1],

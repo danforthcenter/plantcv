@@ -3,7 +3,7 @@
 This is a filtering method used to identify and highlight coarse changes in pixel intensity based on the 1st derivative.
 Similar results to the [Scharr filter](scharr_filter.md) function.
 
-**plantcv.sobel_filter**(*gray_img, dx, dy, ksize*)
+**plantcv.sobel_filter**(*gray_img, dx, dy, ksize, roi=None*)
 
 **returns** filtered image
 
@@ -12,6 +12,7 @@ Similar results to the [Scharr filter](scharr_filter.md) function.
     - dx - derivative of x to analyze
     - dy - derivative of y to analyze
     - ksize - apertures size used to calculate 2nd derivative filter, specifies the size of the kernel (must be an odd integer)
+	- roi - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to apply this function. (default = None, which uses the entire image)
 - **Context:**
     - Used to define edges within and around objects
     - Aperture size must be greater than the largest derivative (`ksize >= dx & ksize >= dy`) in order to run

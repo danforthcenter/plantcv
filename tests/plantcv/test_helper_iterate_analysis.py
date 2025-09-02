@@ -17,7 +17,6 @@ def test_iterate_analysis_wrong_num_labels(test_data):
         _ = _iterate_analysis(img=mask, labeled_mask=mask, n_labels=1, label=["test", "test"], function=analysis_test_func)
 
 
-def analysis_test_func(img, mask, label):
+def analysis_test_func(**kwargs):
     """Test analysis function."""
-    if mask is not None and label is not None:
-        return img
+    return kwargs["img"]

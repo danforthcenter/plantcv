@@ -50,8 +50,8 @@ def segment_angle(segmented_img, objects, label=None):
         # Find line fit to each segment
         [vx, vy, x, y] = cv2.fitLine(objects[i], cv2.DIST_L2, 0, 0.01, 0.01)
         slope = -vy / vx
-        left_list = int(((x - x_min) * slope) + y)
-        right_list = int(((x - x_max) * slope) + y)
+        left_list = int(np.array(((x - x_min) * slope) + y).item())
+        right_list = int(np.array(((x - x_max) * slope) + y).item())
 
         if slope > 1000000 or slope < -1000000:
             print("Slope of contour with ID#", i, "is", slope, "and cannot be plotted.")
@@ -64,7 +64,8 @@ def segment_angle(segmented_img, objects, label=None):
         label_coord_y.append(objects[i][0][0][1])
 
         # Calculate degrees from slopes
-        segment_angles.append(np.arctan(slope[0]) * 180 / np.pi)
+        angle_value = (np.arctan(slope[0]) * 180 / np.pi).astype(np.float64)
+        segment_angles.append(angle_value)
 
     segment_ids = []
     for i, cnt in enumerate(objects):

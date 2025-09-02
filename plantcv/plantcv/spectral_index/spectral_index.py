@@ -36,7 +36,8 @@ def ndvi(hsi, distance=20):
         r800 = (hsi.array_data[:, :, r800_index])
         r670 = (hsi.array_data[:, :, r670_index])
         # Naturally ranges from -1 to 1
-        index_array_raw = (r800 - r670) / (r800 + r670)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = (r800 - r670) / (r800 + r670)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="NDVI")
     warn("Available wavelengths are not suitable for calculating NDVI. Try increasing distance.")
     return None
@@ -96,7 +97,8 @@ def savi(hsi, distance=20):
         r800 = (hsi.array_data[:, :, r800_index])
         r680 = (hsi.array_data[:, :, r680_index])
         # Naturally ranges from -1.2 to 1.2
-        index_array_raw = (1.5 * (r800 - r680)) / (r800 + r680 + 0.5)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = (1.5 * (r800 - r680)) / (r800 + r680 + 0.5)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="SAVI")
     warn("Available wavelengths are not suitable for calculating SAVI. Try increasing distance.")
     return None
@@ -126,7 +128,8 @@ def pri(hsi, distance=20):
         r531_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 531)
         r570 = (hsi.array_data[:, :, r570_index])
         r531 = (hsi.array_data[:, :, r531_index])
-        index_array_raw = (r531 - r570) / (r531 + r570)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = (r531 - r570) / (r531 + r570)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PRI")
     warn("Available wavelengths are not suitable for calculating PRI. Try increasing distance.")
     return None
@@ -155,7 +158,8 @@ def ari(hsi, distance=20):
         r700_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 700)
         r550 = (hsi.array_data[:, :, r550_index])
         r700 = (hsi.array_data[:, :, r700_index])
-        index_array_raw = (1 / r550) - (1 / r700)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = (1 / r550) - (1 / r700)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="ARI")
     warn("Available wavelengths are not suitable for calculating ARI. Try increasing distance.")
     return None
@@ -185,7 +189,8 @@ def ci_rededge(hsi, distance=20):
         r700 = (hsi.array_data[:, :, r700_index])
         r800 = (hsi.array_data[:, :, r800_index])
         # Naturally ranges from -1 to inf
-        index_array_raw = (r800 / r700) - 1
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = (r800 / r700) - 1
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="CI_REDEDGE")
     warn("Available wavelengths are not suitable for calculating CI_REDEDGE. Try increasing distance.")
     return None
@@ -215,7 +220,8 @@ def cri550(hsi, distance=20):
         r510 = (hsi.array_data[:, :, r510_index])
         r550 = (hsi.array_data[:, :, r550_index])
         # Naturally ranges from -inf to inf
-        index_array_raw = (1 / r510) - (1 / r550)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = (1 / r510) - (1 / r550)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="CRI510")
     warn("Available wavelengths are not suitable for calculating CRI510. Try increasing distance.")
     return None
@@ -245,13 +251,14 @@ def cri700(hsi, distance=20):
         r510 = (hsi.array_data[:, :, r510_index])
         r700 = (hsi.array_data[:, :, r700_index])
         # Naturally ranges from -inf to inf
-        index_array_raw = (1 / r510) - (1 / r700)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = (1 / r510) - (1 / r700)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="CRI700")
     warn("Available wavelengths are not suitable for calculating CRI700. Try increasing distance.")
     return None
 
 
-def egi(rgb_img):
+def egi(rgb_img, distance=40):
     """Excess Green Index.
 
     r = R / (R + G + B)
@@ -262,23 +269,40 @@ def egi(rgb_img):
     The theoretical range for EGI is (-1, 2).
 
     Inputs:
-    rgb_img      = Color image (np.array)
+    rgb_img      = Color image (np.array) or hyperspectral image (PlantCV Spectral_data instance)
 
     Returns:
     index_array    = Index data as a Spectral_data instance
 
+    :param distance: int
     :param rgb_img: np.array
     :return index_array: np.array
     """
-    # Split the RGB image into component channels
-    blue, green, red = cv2.split(rgb_img)
+    if type(rgb_img) is Spectral_data:
+        # If the available wavelengths completely cover the required range of data
+        if (float(rgb_img.max_wavelength) + distance) >= 700 and (float(rgb_img.min_wavelength) - distance) <= 460:
+            r460_index = _find_closest(np.array([float(i) for i in rgb_img.wavelength_dict.keys()]), 460)
+            r530_index = _find_closest(np.array([float(i) for i in rgb_img.wavelength_dict.keys()]), 530)
+            r700_index = _find_closest(np.array([float(i) for i in rgb_img.wavelength_dict.keys()]), 700)
+            blue = (rgb_img.array_data[:, :, r460_index])
+            green = (rgb_img.array_data[:, :, r530_index])
+            red = (rgb_img.array_data[:, :, r700_index])
+        # If the required range of data is outside the available wavelengths
+        else:
+            warn("Available wavelengths are not suitable for calculating EGI. Try increasing distance.")
+            return None
+
+    if type(rgb_img) is np.ndarray:
+        # Split the RGB image into component channels
+        blue, green, red = cv2.split(rgb_img)
     # Calculate float32 sum of all channels
     total = red.astype(np.float32) + green.astype(np.float32) + blue.astype(np.float32)
     # Calculate normalized channels
-    r = red.astype(np.float32) / total
-    g = green.astype(np.float32) / total
-    b = blue.astype(np.float32) / total
-    index_array_raw = (2 * g) - r - b
+    with np.errstate(divide="ignore", invalid="ignore"):
+        r = red.astype(np.float32) / total
+        g = green.astype(np.float32) / total
+        b = blue.astype(np.float32) / total
+        index_array_raw = (2 * g) - r - b
 
     hsi = Spectral_data(array_data=None, max_wavelength=0, min_wavelength=0, max_value=255, min_value=0,
                         d_type=np.uint8, wavelength_dict={}, samples=None, lines=None, interleave=None,
@@ -313,10 +337,60 @@ def evi(hsi, distance=20):
         r670 = (hsi.array_data[:, :, r670_index])
         r800 = (hsi.array_data[:, :, r800_index])
         # Naturally ranges from -inf to inf
-        index_array_raw = (2.5 * (r800 - r670)) / (1 + r800 + (6 * r670) - (7.5 * r480))
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = (2.5 * (r800 - r670)) / (1 + r800 + (6 * r670) - (7.5 * r480))
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="EVI")
     warn("Available wavelengths are not suitable for calculating EVI. Try increasing distance.")
     return None
+
+
+def gli(img, distance=20):
+    """Green leave index
+
+    GLI = (2 * R530 - R670 - R480) / (2 * R530 + R670 + R480)
+    or
+    GLI = (2 * G - R - B) / (2 * G + R + B)
+
+    The theoretical range for GLI is (-1, 1).
+
+    Inputs:
+    img         = hyperspectral image (PlantCV Spectral_data instance), or color image (np.array)
+    distance    = how lenient to be if the required wavelengths are not available
+
+    Returns:
+    index_array = Index data as a Spectral_data instance
+
+    :param img: __main__.Spectral_data, or np.array
+    :param distance: int
+    :return index_array: __main__.Spectral_data
+    """
+    if type(img) is Spectral_data:
+        if (float(img.max_wavelength) + distance) >= 670 and (float(img.min_wavelength) - distance) <= 480:
+            r480_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 480)
+            r670_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 670)
+            r530_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 530)
+            blue = (img.array_data[:, :, r480_index])
+            red = (img.array_data[:, :, r670_index])
+            green = (img.array_data[:, :, r530_index])
+        else:
+            warn("Available wavelengths are not suitable for calculating GLI. Try increasing distance.")
+            return None
+    if type(img) is np.ndarray:
+        # Split the RGB image into component channels
+        blue, green, red = cv2.split(img)
+
+    # Calculate normalized channels
+    with np.errstate(divide="ignore", invalid="ignore"):
+        r = red.astype(np.float32)
+        g = green.astype(np.float32)
+        b = blue.astype(np.float32)
+        index_array_raw = (2 * g - r - b) / (2 * g + r + b)
+
+    hsi = Spectral_data(array_data=None, max_wavelength=0, min_wavelength=0, max_value=255, min_value=0,
+                        d_type=np.uint8, wavelength_dict={}, samples=None, lines=None, interleave=None,
+                        wavelength_units=None, array_type=None, pseudo_rgb=None, filename=None, default_bands=None)
+
+    return _package_index(hsi=hsi, raw_index=index_array_raw, method="GLI")
 
 
 def mari(hsi, distance=20):
@@ -345,7 +419,8 @@ def mari(hsi, distance=20):
         r700 = (hsi.array_data[:, :, r700_index])
         r800 = (hsi.array_data[:, :, r800_index])
         # Naturally ranges from -inf to inf
-        index_array_raw = ((1 / r550) - (1 / r700)) * r800
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = ((1 / r550) - (1 / r700)) * r800
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="MARI")
     warn("Available wavelengths are not suitable for calculating MARI. Try increasing distance.")
     return None
@@ -377,7 +452,8 @@ def mcari(hsi, distance=20):
         r670 = (hsi.array_data[:, :, r670_index])
         r700 = (hsi.array_data[:, :, r700_index])
         # Naturally ranges from -inf to inf
-        index_array_raw = ((r700 - r670) - 0.2 * (r700 - r550)) * (r700 / r670)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = ((r700 - r670) - 0.2 * (r700 - r550)) * (r700 / r670)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="MCARI")
     warn("Available wavelengths are not suitable for calculating MCARI. Try increasing distance.")
     return None
@@ -409,9 +485,41 @@ def mtci(hsi, distance=20):
         r708 = (hsi.array_data[:, :, r708_index])
         r753 = (hsi.array_data[:, :, r753_index])
         # Naturally ranges from -inf to inf
-        index_array_raw = (r753 - r708) / (r708 - r681)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = (r753 - r708) / (r708 - r681)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="MTCI")
     warn("Available wavelengths are not suitable for calculating MTCI. Try increasing distance.")
+    return None
+
+
+def ndci(hsi, distance=20):
+    """Normalized Difference Chlorophyll Difference.
+
+    NDCI = (R708 - R665) / (R708 + R665)
+
+    The theoretical range for NDCI is [-1.0, 1.0].
+
+    Inputs:
+    hsi         = hyperspectral image (PlantCV Spectral_data instance)
+    distance    = how lenient to be if the required wavelengths are not available
+
+    Returns:
+    index_array = Index data as a Spectral_data instance
+
+    :param hsi: __main__.Spectral_data
+    :param distance: int
+    :return index_array: __main__.Spectral_data
+    """
+    if (float(hsi.max_wavelength) + distance) >= 708 and (float(hsi.min_wavelength) - distance) <= 665:
+        r708_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 708)
+        r665_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 665)
+        r708 = (hsi.array_data[:, :, r708_index])
+        r665 = (hsi.array_data[:, :, r665_index])
+        # Naturally ranges from -1 to 1
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = (r708 - r665) / (r708 + r665)
+        return _package_index(hsi=hsi, raw_index=index_array_raw, method="NDCI")
+    warn("Available wavelengths are not suitable for calculating NDCI. Try increasing distance.")
     return None
 
 
@@ -439,9 +547,41 @@ def ndre(hsi, distance=20):
         r790 = (hsi.array_data[:, :, r790_index])
         r720 = (hsi.array_data[:, :, r720_index])
         # Naturally ranges from -1 to 1
-        index_array_raw = (r790 - r720) / (r790 + r720)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = (r790 - r720) / (r790 + r720)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="NDRE")
     warn("Available wavelengths are not suitable for calculating NDRE. Try increasing distance.")
+    return None
+
+
+def npci(hsi, distance=20):
+    """Normalized Pigment Chlorophyll Index.
+
+    NPCI = (R680 - R430) / (R680 + R430)
+
+    The theoretical range for NPCI is [-1.0, 1.0].
+
+    Inputs:
+    hsi         = hyperspectral image (PlantCV Spectral_data instance)
+    distance    = how lenient to be if the required wavelengths are not available
+
+    Returns:
+    index_array = Index data as a Spectral_data instance
+
+    :param hsi: __main__.Spectral_data
+    :param distance: int
+    :return index_array: __main__.Spectral_data
+    """
+    if (float(hsi.max_wavelength) + distance) >= 680 and (float(hsi.min_wavelength) - distance) <= 430:
+        r430_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 430)
+        r680_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 680)
+        r680 = (hsi.array_data[:, :, r680_index])
+        r430 = (hsi.array_data[:, :, r430_index])
+        # Naturally ranges from -1 to 1
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = (r680 - r430) / (r680 + r430)
+        return _package_index(hsi=hsi, raw_index=index_array_raw, method="NPCI")
+    warn("Available wavelengths are not suitable for calculating NPCI. Try increasing distance.")
     return None
 
 
@@ -469,7 +609,8 @@ def psnd_chla(hsi, distance=20):
         r680 = (hsi.array_data[:, :, r680_index])
         r800 = (hsi.array_data[:, :, r800_index])
         # Naturally ranges from -1 to 1
-        index_array_raw = (r800 - r680) / (r800 + r680)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = (r800 - r680) / (r800 + r680)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSND_CHLA")
     warn("Available wavelengths are not suitable for calculating PSND_CHLA. Try increasing distance.")
     return None
@@ -499,7 +640,8 @@ def psnd_chlb(hsi, distance=20):
         r635 = (hsi.array_data[:, :, r635_index])
         r800 = (hsi.array_data[:, :, r800_index])
         # Naturally ranges from -1 to 1
-        index_array_raw = (r800 - r635) / (r800 + r635)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = (r800 - r635) / (r800 + r635)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSND_CHLB")
     warn("Available wavelengths are not suitable for calculating PSND_CHLB. Try increasing distance.")
     return None
@@ -529,7 +671,8 @@ def psnd_car(hsi, distance=20):
         r470 = (hsi.array_data[:, :, r470_index])
         r800 = (hsi.array_data[:, :, r800_index])
         # Naturally ranges from -1 to 1
-        index_array_raw = (r800 - r470) / (r800 + r470)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = (r800 - r470) / (r800 + r470)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSND_CAR")
     warn("Available wavelengths are not suitable for calculating PSND_CAR. Try increasing distance.")
     return None
@@ -561,7 +704,8 @@ def psri(hsi, distance=20):
         r678 = (hsi.array_data[:, :, r678_index])
         r750 = (hsi.array_data[:, :, r750_index])
         # Naturally ranges from -inf to inf
-        index_array_raw = (r678 - r500) / r750
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = (r678 - r500) / r750
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSRI")
     warn("Available wavelengths are not suitable for calculating PSRI. Try increasing distance.")
     return None
@@ -591,7 +735,8 @@ def pssr_chla(hsi, distance=20):
         r800 = (hsi.array_data[:, :, r800_index])
         r680 = (hsi.array_data[:, :, r680_index])
         # Naturally ranges from 0 to inf
-        index_array_raw = r800 / r680
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = r800 / r680
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSSR_CHLA")
     warn("Available wavelengths are not suitable for calculating PSSR_CHLA. Try increasing distance.")
     return None
@@ -621,7 +766,8 @@ def pssr_chlb(hsi, distance=20):
         r800 = (hsi.array_data[:, :, r800_index])
         r635 = (hsi.array_data[:, :, r635_index])
         # Naturally ranges from 0 to inf
-        index_array_raw = r800 / r635
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = r800 / r635
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSSR_CHLB")
     warn("Available wavelengths are not suitable for calculating PSSR_CHLB. Try increasing distance.")
     return None
@@ -651,7 +797,8 @@ def pssr_car(hsi, distance=20):
         r800 = (hsi.array_data[:, :, r800_index])
         r470 = (hsi.array_data[:, :, r470_index])
         # Naturally ranges from 0 to inf
-        index_array_raw = r800 / r470
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = r800 / r470
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSSR_CAR")
     warn("Available wavelengths are not suitable for calculating PSSR_CAR. Try increasing distance.")
     return None
@@ -678,7 +825,8 @@ def rgri(hsi, distance=20):
         r670 = (hsi.array_data[:, :, r670_index])
         r560 = (hsi.array_data[:, :, r560_index])
         # Naturally ranges from 0 to inf
-        index_array_raw = r670 / r560
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = r670 / r560
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="RGRI")
     warn("Available wavelengths are not suitable for calculating RGRI. Try increasing distance.")
     return None
@@ -742,7 +890,8 @@ def sipi(hsi, distance=20):
         r670 = (hsi.array_data[:, :, r670_index])
         r800 = (hsi.array_data[:, :, r800_index])
         # Naturally ranges from -inf to inf
-        index_array_raw = (r800 - r670) / (r800 - r445)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = (r800 - r670) / (r800 - r445)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="SIPI")
     warn("Available wavelengths are not suitable for calculating SIPI. Try increasing distance.")
     return None
@@ -772,7 +921,8 @@ def sr(hsi, distance=20):
         r670 = (hsi.array_data[:, :, r670_index])
         r800 = (hsi.array_data[:, :, r800_index])
         # Naturally ranges from 0 to inf
-        index_array_raw = r800 / r670
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = r800 / r670
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="SR")
     warn("Available wavelengths are not suitable for calculating SR. Try increasing distance.")
     return None
@@ -804,7 +954,8 @@ def vari(hsi, distance=20):
         r550 = (hsi.array_data[:, :, r550_index])
         r480 = (hsi.array_data[:, :, r480_index])
         # Naturally ranges from -inf to inf
-        index_array_raw = (r550 - r670) / (r550 + r670 - r480)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = (r550 - r670) / (r550 + r670 - r480)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="VARI")
     warn("Available wavelengths are not suitable for calculating VARI. Try increasing distance.")
     return None
@@ -834,7 +985,8 @@ def vi_green(hsi, distance=20):
         r670 = (hsi.array_data[:, :, r670_index])
         r550 = (hsi.array_data[:, :, r550_index])
         # Naturally ranges from -1 to 1
-        index_array_raw = (r550 - r670) / (r550 + r670)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = (r550 - r670) / (r550 + r670)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="VI_GREEN")
     warn("Available wavelengths are not suitable for calculating VI_GREEN. Try increasing distance.")
     return None
@@ -864,7 +1016,8 @@ def wi(hsi, distance=20):
         r900 = (hsi.array_data[:, :, r900_index])
         r970 = (hsi.array_data[:, :, r970_index])
         # Naturally ranges from 0 to Inf
-        index_array_raw = r900 / r970
+        with np.errstate(divide="ignore", invalid="ignore"):
+            index_array_raw = r900 / r970
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="WI")
     warn("Available wavelengths are not suitable for calculating WBI. Try increasing distance.")
     return None
@@ -904,7 +1057,8 @@ def _package_index(hsi, raw_index, method):
                           lines=hsi.lines, interleave=hsi.interleave,
                           wavelength_units=hsi.wavelength_units,
                           array_type="index_" + method.lower(),
-                          pseudo_rgb=scaled, filename=hsi.filename, default_bands=None)
+                          pseudo_rgb=scaled, filename=hsi.filename, default_bands=None,
+                          metadata=hsi.metadata)
 
     # Restore debug mode
     params.debug = debug

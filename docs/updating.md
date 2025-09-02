@@ -145,7 +145,7 @@ roi = pcv.roi.rectangle(img=img, x=100, y=100, h=100, w=100)
 
 # Filter binary image to make a clean mask based on ROI 
 # (no longer needs `pcv.find_objects` or `pcv.object_composition`)
-mask = pcv.roi.filter(mask=bin_img, roi=roi, roi_type="partial")
+mask = pcv.roi.filter(mask=bin_mask, roi=roi, roi_type="partial")
 
 # Extract shape traits from plant
 shape_img = pcv.analyze.size(img=img,labeled_mask=mask, n_labels=1)
@@ -158,7 +158,7 @@ In the case of a single plant workflow, users will likely create their `labeled_
 with the [`pcv.roi.filter`](roi_filter.md) function but multi-object workflows
 will want to use the [`pcv.create_labels`](create_labels.md) function. We've updated PlantCV
 analysis functions to work iteratively over multiple objects without needed to write a Python 
-`for` loop. See the [multi-plant tutorial](tutorials/multi-plant_tutorial.md) to see an 
+`for` loop. See the [multi-plant tutorial](https://plantcv.org/tutorials/arabidopsis-tray) to see an 
 example workflow for datasets where there are more than one distinct object of interest
 per image (e.g. top down tray of plants). 
 
@@ -349,6 +349,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.3: NA
 * post v3.3: filtered_img = **plantcv.closing**(*gray_img, kernel=None*)
+* post v4.9: filtered_img = **plantcv.closing**(*gray_img, kernel=None, roi=None*)
 
 
 #### plantcv.cluster_contour_splitimg
@@ -400,6 +401,7 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, dil_img = **plantcv.dilate**(*img, kernel, i, device, debug=None*)
 * post v3.0dev2: dil_img = **plantcv.dilate**(*gray_img, kernel, i*)
 * post v3.2: dil_img = **plantcv.dilate**(*gray_img, ksize, i*)
+* post v4.9: dil_img = **plantcv.dilate**(*gray_img, ksize, i, roi=None*)
 
 #### plantcv.distance_transform
 
@@ -411,28 +413,36 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, er_img = **plantcv.erode**(*img, kernel, i, device, debug=None*)
 * post v3.0dev2: er_img = **plantcv.erode**(*gray_img, kernel, i*)
 * post v3.2: er_img = **plantcv.erode**(*gray_img, ksize, i*)
+* post v4.9: er_img = **plantcv.erode**(*gray_img, ksize, i, roi=None*)
 
 #### plantcv.fill
 
 * pre v3.0dev2: device, filtered_img = **plantcv.fill**(*img, mask, size, device, debug=None*)
 * post v3.0dev2: filtered_img = **plantcv.fill**(*bin_img, size*)
+* post v4.9: filtered_img = **plantcv.fill**(*bin_img, size, roi=None*)
 
 #### plantcv.fill_holes
 
 * pre v3.3: NA
-* post v3.3: filtered_img = **plantcv.fill**(*bin_img*)
+* post v3.3: filtered_img = **plantcv.fill_holes**(*bin_img*)
+* post v4.9: filtered_img = **plantcv.fill_holes**(*bin_img, roi=None*)
 
 #### plantcv.filters.eccentricity 
 
 * pre v4.3:  NA 
 * post v4.3: filtered_mask = **plantcv.filters.eccentricity**(*bin_img, ecc_thresh=0*)
 
+#### plantcv.filters.obj_props
+
+* pre v4.4:  NA 
+* post v4.4: filtered_mask = **plantcv.filters.obj_props**(*bin_img, cut_side = "upper", thresh=0, regprop="area"*)
+* post v4.9: filtered_mask = **plantcv.filters.obj_props**(*bin_img, cut_side = "upper", thresh=0, regprop="area", roi=None*)
+
 #### plantcv.find_objects
 
 * pre v3.0dev2: device, objects, hierarchy = **plantcv.find_objects**(*img, mask, device, debug=None*)
 * post v3.0dev2: objects, hierarchy = **plantcv.find_objects**(*img, mask*)
 * post v4.0: Deprecated
-
 
 #### plantcv.flip
 
@@ -443,6 +453,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.1: NA
 * post v4.1: filled_image = **plantcv.flood_fill**(*bin_img, points, value=0*)
+* post v4.9: filled_image = **plantcv.flood_fill**(*bin_img, points, value=0, roi=None*)
 
 #### plantcv.fluor_fvfm
 
@@ -457,6 +468,7 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, img_gblur = **plantcv.gaussian_blur**(*device, img, ksize, sigmax=0, sigmay=None, debug=None*)
 * post v3.0dev2: img_gblur = **plantcv.gaussian_blur**(*img, ksize, sigmax=0, sigmay=None*)
 * post v3.2: img_gblur = **plantcv.gaussian_blur**(*img, ksize, sigma_x=0, sigma_y=None*)
+* post v4.9: img_gblur = **plantcv.gaussian_blur**(*img, ksize, sigma_x=0, sigma_y=None, roi=None*)
 
 #### plantcv.get_nir
 
@@ -565,6 +577,11 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, img_inv = **plantcv.invert**(*img, device, debug=None*)
 * post v3.0dev2: img_inv = **plantcv.invert**(*gray_img*)
 
+#### plantcv.io.open_url
+
+* pre v4.2.1: NA
+* post v4.2.1: img = **plantcv.io.open_url**(*url*)
+
 #### plantcv.io.random_subset
 
 * pre v3.14.0: NA
@@ -590,6 +607,7 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, lp_filtered = **plantcv.laplace_filter**(*img, k, scale, device, debug=None*)
 * post v3.0dev2: lp_filtered = **plantcv.laplace_filter**(*gray_img, k, scale*)
 * post v3.2: lp_filtered = **plantcv.laplace_filter**(*gray_img, ksize, scale*)
+* post v4.9: lp_filtered = **plantcv.laplace_filter**(*gray_img, ksize, scale, roi=None*)
 
 #### plantcv.learn.train_kmeans
 
@@ -620,7 +638,8 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, img_mblur = **plantcv.median_blur**(*img, ksize, device, debug=None*)
 * post v3.0dev2: img_mblur = **plantcv.median_blur**(*gray_img, ksize*)
-* post v3.2: img_blur = **plantcv.median_blur**(*gray_img, ksize*) OR img_blur = **plantcv.median_blur**(*gray_img, (ksize1, ksize2)*)
+* post v3.2: img_blur = **plantcv.median_blur**(*gray_img, ksize*)
+* post v4.9: img_blur = **plantcv.median_blur**(*gray_img, ksize, roi=None*)
 
 #### plantcv.morphology.analyze_stem
 
@@ -674,6 +693,11 @@ pages for more details on the input and output variable types.
 * post v3.3: labeled_img = **plantcv.morphology.segment_curvature**(*segmented_img, objects*)
 * post v3.11: labeled_img = **plantcv.morphology.segment_curvature**(*segmented_img, objects, label="default"*)
 * post v4.0: labeled_img = **plantcv.morphology.segment_curvature**(*segmented_img, objects, label=None*)
+
+#### plantcv.morphology.segment_ends 
+
+* pre v4.8: NA
+* post v4.8: sorted_obs, branch_pts, tips = **plantcv.morphology.segment_ends**(*skel_img, leaf_objects, mask=None, label=None*)
 
 #### plantcv.morphology.segment_euclidean_length
 
@@ -731,6 +755,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.3: NA
 * post v3.3: filtered_img = **plantcv.opening**(*gray_img, kernel=None*)
+* post v4.9: filtered_img = **plantcv.opening**(*gray_img, kernel=None, roi=None*)
 
 #### plantcv.otsu_auto_threshold
 
@@ -821,6 +846,11 @@ pages for more details on the input and output variable types.
 * post v3.1: pseudo_img = **plantcv.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, dpi=None, axes=True, colorbar=True*)
 * post v3.2: Deprecated, see:
     * pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, axes=True, colorbar=True*)
+
+#### plantcv.qc.exposure
+
+* pre v4.3.1: NA
+* post v4.3.1: chart = **plantcv.qc.exposure**(*rgb_img, warning_threshold=0.05*)
 
 #### plantcv.readbayer
 
@@ -919,11 +949,21 @@ pages for more details on the input and output variable types.
 * pre v4.0: NA
 * post v4.0: roi_objects = **pcv.roi.auto_grid**(*mask, nrows, ncols, radius=None, img=None*)
 
+#### plantcv.roi.auto_wells
+
+* pre v4.6: NA
+* post v4.6: roi_objects = **pcv.roi.auto_wells**(*gray_img, mindist, candec, accthresh, minradius, maxradius, nrows, ncols, radiusadjust=None*)
+* post v4.9: roi_objects = **pcv.roi.auto_wells**(*gray_img, mindist, candec, accthresh, minradius, maxradius, nrows, ncols, radiusadjust=None, roi=None*)
+
 #### plantcv.roi.multi
 
 * pre v3.1: NA
 * post v3.1: roi_contours, roi_hierarchies = **plantcv.roi.multi**(*img, coord, radius, spacing=None, nrows=None, ncols=None*)
 * post v4.0: roi_objects = **plantcv.roi.multi**(*img, coord, radius=None, spacing=None, nrows=None, ncols=None*)
+
+#### plantcv.roi.multi_rect
+* pre v4.10: NA
+* post v4.10: roi_objects = **plantcv.roi.multi_rect**(*img, coord, h=None, w=None, spacing=None, nrows=None, ncols=None*)
 
 #### plantcv.roi.quick_filter
 
@@ -947,6 +987,11 @@ pages for more details on the input and output variable types.
 
 * pre v4.2.1: NA
 * post v4.2.1: mtx, dist = **plantcv.transform.checkerboard_calib**(*img_path, col_corners, row_corners, out_dir*)
+
+#### plantcv.transform.mask_color_card 
+
+* pre v4.8:  NA 
+* post v4.8: color_card_mask = **plantcv.transform.mask_color_card**(*rgb_img, \*\*kwargs*)
 
 #### plantcv.transform.rotate
 
@@ -985,6 +1030,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, sr_img = **plantcv.scharr_filter**(*img, dX, dY, scale, device, debug=None*)
 * post v3.0dev2: sr_img = **plantcv.scharr_filter**(*gray_img, dx, dy, scale*)
+* post v4.9: sr_img = **plantcv.scharr_filter**(*gray_img, dx, dy, scale, roi=None*)
 
 #### plantcv.shift_img
 
@@ -1001,116 +1047,126 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, sb_img = **plantcv.sobel_filter**(*img, dx, dy, k, device, debug=None*)
 * post v3.0dev2: sb_img = **plantcv.sobel_filter**(*gray_img, dx, dy, k*)
 * post v3.2: sb_img = **plantcv.sobel_filer**(*gray_img, dx, dy, ksize*)
+* post v4.9: sb_img = **plantcv.sobel_filer**(*gray_img, dx, dy, ksize, roi=None*)
 
-#### plantcv.spectral_index.ndvi(hsi, distance=20)
-
-* post v3.8: array = plantcv.spectral_index.ndvi(hsi, distance=20)
-
-#### plantcv.spectral_index.gdvi(hsi, distance=20)
-
-* post v3.8: array = **plantcv.spectral_index.gdvi**(*hsi, distance=20*)
-
-#### plantcv.spectral_index.savi(hsi, distance=20)
-
-* post v3.8: array = **plantcv.spectral_index.savi**(*hsi, distance=20*)
-
-#### plantcv.spectral_index.pri(hsi, distance=20)
-
-* post v3.8: array = **plantcv.spectral_index.pri**(*hsi, distance=20*)
-
-#### plantcv.spectral_index.ari(hsi, distance=20)
+#### plantcv.spectral_index.ari
 
 * post v3.8: array = **plantcv.spectral_index.ari**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.ci_rededge(hsi, distance=20)
+#### plantcv.spectral_index.ci_rededge
 
 * post v3.8: array = **plantcv.spectral_index.ci_rededge**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.cri550(hsi, distance=20)
+#### plantcv.spectral_index.cri550
 
 * post v3.8: array = **plantcv.spectral_index.cri550**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.cri700(hsi, distance=20)
+#### plantcv.spectral_index.cri700
 
 * post v3.8: array = **plantcv.spectral_index.cri700**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.egi(rgb_img)
+#### plantcv.spectral_index.egi
 
 * post v3.8: array = **plantcv.spectral_index.egi**(*rgb_img*)
+* post v4.4: array = **plantcv.spectral_index.egi**(*rgb_img, distance=40*)
 
-#### plantcv.spectral_index.evi(hsi, distance=20)
+#### plantcv.spectral_index.evi
 
 * post v3.8: array = **plantcv.spectral_index.evi**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.mari(hsi, distance=20)
+#### plantcv.spectral_index.gdvi
+
+* post v3.8: array = **plantcv.spectral_index.gdvi**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.gli
+
+* post v4.4: array = **plantcv.spectral_index.gli**(*img, distance=20*)
+
+#### plantcv.spectral_index.mari
 
 * post v3.8: array = **plantcv.spectral_index.mari**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.mcari(hsi, distance=20)
+#### plantcv.spectral_index.mcari
 
 * post v3.8: array = **plantcv.spectral_index.mcari**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.mtci(hsi, distance=20)
+#### plantcv.spectral_index.mtci
 
 * post v3.8: array = **plantcv.spectral_index.mtci**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.ndre(hsi, distance=20)
+#### plantcv.spectral_index.ndre
 
 * post v3.8: array = **plantcv.spectral_index.ndre**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.psnd_chla(hsi, distance=20)
+#### plantcv.spectral_index.ndvi
 
-* post v3.8: array = **plantcv.spectral_index.psnd_chla**(*hsi, distance=20*)
+* post v3.8: array = **plantcv.spectral_index.ndvi**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.psnd_chlb(hsi, distance=20)
+#### plantcv.spectral_index.npci
 
-* post v3.8: array = **plantcv.spectral_index.psnd_chlb**(*hsi, distance=20*)
+* post v4.4: array = **plantcv.spectral_index.npci**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.psnd_car(hsi, distance=20)
+#### plantcv.spectral_index.pri
+
+* post v3.8: array = **plantcv.spectral_index.pri**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.psnd_car
 
 * post v3.8: array = **plantcv.spectral_index.psnd_car**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.psri(hsi, distance=20)
+#### plantcv.spectral_index.psnd_chla
+
+* post v3.8: array = **plantcv.spectral_index.psnd_chla**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.psnd_chlb
+
+* post v3.8: array = **plantcv.spectral_index.psnd_chlb**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.psri
 
 * post v3.8: array = **plantcv.spectral_index.psri**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.pssr_chla(hsi, distance=20)
-
-* post v3.8: array = **plantcv.spectral_index.pssr_chla**(*hsi, distance=20*)
-
-#### plantcv.spectral_index.pssr_chlb(hsi, distance=20)
-
-* post v3.8: array = **plantcv.spectral_index.pssr_chlb**(*hsi, distance=20*)
-
-#### plantcv.spectral_index.pssr_car(hsi, distance=20)
+#### plantcv.spectral_index.pssr_car
 
 * post v3.8: array = **plantcv.spectral_index.pssr_car**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.rgri(hsi, distance=20)
+#### plantcv.spectral_index.pssr_chla
+
+* post v3.8: array = **plantcv.spectral_index.pssr_chla**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.pssr_chlb
+
+* post v3.8: array = **plantcv.spectral_index.pssr_chlb**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.rgri
 
 * post v3.8: array = **plantcv.spectral_index.rgri**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.rvsi(hsi, distance=20)
+#### plantcv.spectral_index.rvsi
 
 * post v3.8: array = **plantcv.spectral_index.rvsi**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.sipi(hsi, distance=20)
+#### plantcv.spectral_index.savi
+
+* post v3.8: array = **plantcv.spectral_index.savi**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.sipi
 
 * post v3.8: array = **plantcv.spectral_index.sipi**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.sr(hsi, distance=20)
+#### plantcv.spectral_index.sr
 
 * post v3.8: array = **plantcv.spectral_index.sr**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.vari(hsi, distance=20)
+#### plantcv.spectral_index.vari
 
 * post v3.8: array = **plantcv.spectral_index.vari**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.vi_green(hsi, distance=20)
+#### plantcv.spectral_index.vi_green
 
 * post v3.8: array = **plantcv.spectral_index.vi_green**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.wi(hsi, distance=20)
+#### plantcv.spectral_index.wi
 
 * post v3.8: array = **plantcv.spectral_index.wi**(*hsi, distance=20*)
 
@@ -1118,6 +1174,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.9: NA
 * post v3.9: filtered_img = **plantcv.stdev_filter**(*img, kszie, borders="nearest"*)
+* post v4.9: filtered_img = **plantcv.stdev_filter**(*img, kszie, borders="nearest", roi=None*)
 
 #### plantcv.threshold.dual_channels
 
@@ -1186,6 +1243,12 @@ pages for more details on the input and output variable types.
 * pre v3.0dev1: NA
 * post v3.0dev2: determinant, transformation_matrix = **plantcv.transform.calc_transformation_matrix**(*matrix_m, matrix_b*)
 
+#### plantcv.transform.auto_correct_color
+
+* pre v4.6: NA
+* post v4.6: corrected_img = **plantcv.transform.auto_correct_color**(*rgb_img, label=None, \*\*kwargs*)
+* post v4.9: corrected_img = **plantcv.transform.auto_correct_color**(*rgb_img, label=None, color_chip_size=None, roi=None, \*\*kwargs*)
+
 #### plantcv.transform.correct_color
 
 * pre v3.0dev1: NA
@@ -1199,7 +1262,8 @@ pages for more details on the input and output variable types.
 #### plantcv.transform.detect_color_card
 
 * pre v4.0.1: NA
-* post v4.0.1: labeled_mask = **plantcv.transform.detect_color_card**(*rgb_img, label=None, **kwargs*)
+* post v4.0.1: labeled_mask = **plantcv.transform.detect_color_card**(*rgb_img, label=None, \*\*kwargs*)
+* post v4.9: labeled_mask = **plantcv.transform.detect_color_card**(*rgb_img, label=None, color_chip_size=None, roi=None, \*\*kwargs*)
 
 #### plantcv.transform.find_color_card
 
@@ -1310,6 +1374,12 @@ pages for more details on the input and output variable types.
 
 * pre v3.13: NA
 * post v3.13: fig_ecdf = **plantcv.visualize.obj_size_ecdf**(*mask, title=None*)
+* post v4.0: fig_ecdf = **plantcv.visualize.obj_size_ecdf**(*mask*)
+
+#### plantcv.visualize.obj_sizes
+
+* pre v3.13: NA
+* post v3.13: plotting_img = **pcv.visualize.obj_sizes**(*img, mask, num_objects=100*)
 
 #### plantcv.visualize.pseudocolor
 
@@ -1319,15 +1389,15 @@ pages for more details on the input and output variable types.
 * post v3.12: pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, axes=True, colorbar=True, obj_padding="auto", title=None*)
 * post v4.0: pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, mask=None, cmap=None, background="image", min_value=0, max_value=255, axes=True, colorbar=True, title=None*)
 
-#### plantcv.visualize.obj_sizes
-
-* pre v3.13: NA
-* post v3.13: plotting_img = **pcv.visualize.obj_sizes**(*img, mask, num_objects=100*)
-
 #### plantcv.visualize.pixel_scatter_plot
 
 * pre v4.0: NA
 * post v4.0: fig, ax = **pcv.visualize.pixel_scatter_plot**(*paths_to_imgs, x_channel, y_channel*)
+
+#### plantcv.visualize.tile
+
+* pre v4.4: NA
+* post v4.4: tile_img = **pcv.visualize.tile**(*img_list, ncol*)
 
 #### plantcv.visualize.time_lapse_video
 

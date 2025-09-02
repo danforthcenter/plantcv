@@ -3,17 +3,12 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv import params
-from plantcv.plantcv import dilate
-from plantcv.plantcv import closing
 from plantcv.plantcv import outputs
-from plantcv.plantcv import logical_and
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import color_palette
-from plantcv.plantcv.morphology import _iterative_prune
-from plantcv.plantcv.morphology import find_tips
 from plantcv.plantcv.morphology.segment_tangent_angle import _slope_to_intesect_angle
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _cv2_findcontours
+from plantcv.plantcv._helpers import _cv2_findcontours, _find_tips, _iterative_prune, _logical_operation, _dilate, _closing
 
 
 def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects, size, label=None):
@@ -45,10 +40,6 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     if label is None:
         label = params.sample_label
 
-    # Store debug
-    debug = params.debug
-    params.debug = None
-
     cols = segmented_img.shape[1]
     labeled_img = segmented_img.copy()
     segment_slopes = []
@@ -62,12 +53,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     pruned_away = []
 
     # Create a list of tip tuples to use for sorting
-    tips = find_tips(skel_img)
-    tips = dilate(tips, 3, 1)
-    tip_objects, _ = _cv2_findcontours(bin_img=tips)
-    tip_tuples = []
-    for i, cnt in enumerate(tip_objects):
-        tip_tuples.append((cnt[0][0][0], cnt[0][0][1]))
+    tips, _, _ = _find_tips(skel_img)
 
     for i, cnt in enumerate(leaf_objects):
         # Draw leaf objects
@@ -94,8 +80,8 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
 
                 segment_plot = np.zeros(segmented_img.shape[:2], np.uint8)
                 cv2.drawContours(segment_plot, obj, -1, 255, 1, lineType=8)
-                segment_plot = dilate(segment_plot, 3, 1)
-                overlap_img = logical_and(segment_plot, tips)
+                segment_plot = _dilate(segment_plot, 3, 1)
+                overlap_img = _logical_operation(segment_plot, tips, "and")
 
                 # If none of the tips are within a segment_end then it's an insertion segment
                 if np.sum(overlap_img) == 0:
@@ -115,35 +101,34 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     # Plot stem segments
     stem_img = np.zeros(segmented_img.shape[:2], np.uint8)
     cv2.drawContours(stem_img, stem_objects, -1, 255, 2, lineType=8)
-    stem_img = closing(stem_img)
+    stem_img = _closing(stem_img)
     combined_stem, _ = _cv2_findcontours(bin_img=stem_img)
 
     # Make sure stem objects are a single contour
     loop_count = 0
     while len(combined_stem) > 1 and loop_count < 50:
         loop_count += 1
-        stem_img = dilate(stem_img, 2, 1)
-        stem_img = closing(stem_img)
+        stem_img = _dilate(stem_img, 2, 1)
+        stem_img = _closing(stem_img)
         combined_stem, _ = _cv2_findcontours(bin_img=stem_img)
     if len(combined_stem) > 1:
         # Reset debug mode
-        params.debug = debug
         fatal_error('Unable to combine stem objects.')
 
     # Find slope of the stem
     [vx, vy, x, y] = cv2.fitLine(combined_stem[0], cv2.DIST_L2, 0, 0.01, 0.01)
     stem_slope = -vy / vx
     stem_slope = stem_slope[0]
-    lefty = int((-x * vy / vx) + y)
-    righty = int(((cols - x) * vy / vx) + y)
+    lefty = int(np.array((-x * vy / vx) + y).item())
+    righty = int(np.array(((cols - x) * vy / vx) + y).item())
     cv2.line(labeled_img, (cols - 1, righty), (0, lefty), (150, 150, 150), 3)
 
     for t, segment in enumerate(insertion_segments):
         # Find line fit to each segment
         [vx, vy, x, y] = cv2.fitLine(segment, cv2.DIST_L2, 0, 0.01, 0.01)
         slope = -vy / vx
-        left_list = int((-x * vy / vx) + y)
-        right_list = int(((cols - x) * vy / vx) + y)
+        left_list = int(np.array((-x * vy / vx) + y).item())
+        right_list = int(np.array(((cols - x) * vy / vx) + y).item())
         segment_slopes.append(slope[0])
 
         # Draw slope lines if possible
@@ -182,9 +167,6 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     outputs.add_observation(sample=label, variable='segment_insertion_angle', trait='segment insertion angle',
                             method='plantcv.plantcv.morphology.segment_insertion_angle', scale='degrees', datatype=list,
                             value=all_intersection_angles, label=segment_ids)
-
-    # Reset debug mode
-    params.debug = debug
 
     _debug(visual=labeled_img,
            filename=os.path.join(params.debug_outdir, f"{params.device}_segment_insertion_angles.png"))

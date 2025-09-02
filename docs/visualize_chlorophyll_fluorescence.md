@@ -17,7 +17,7 @@ to decide whether to use `auto_fm` in [pcv.analyze.yii](analyze_yii.md) and [pcv
 - **Context:**
     - Used to visualize chlorophyll florescence induction curves.
 - **Example use:**
-    - [Use In PSII Tutorial](tutorials/psII_tutorial.md)
+    - [Use In PSII Tutorial](https://plantcv.org/tutorials/photosynthesis)
 
 **Example image with labels marking three leaves**
 

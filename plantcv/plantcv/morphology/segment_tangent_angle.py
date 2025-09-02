@@ -6,9 +6,8 @@ import pandas as pd
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 from plantcv.plantcv import color_palette
-from plantcv.plantcv.morphology import _iterative_prune
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _cv2_findcontours
+from plantcv.plantcv._helpers import _cv2_findcontours, _iterative_prune
 
 
 def _slope_to_intesect_angle(m1, m2):
@@ -25,7 +24,7 @@ def _slope_to_intesect_angle(m1, m2):
     :param m2: float
     :return angle: float
     """
-    angle = (np.pi - np.absolute(np.arctan(m1) - np.arctan(m2))) * 180 / np.pi
+    angle = ((np.pi - np.absolute(np.arctan(m1) - np.arctan(m2))) * 180 / np.pi).astype(np.float64)
     return angle
 
 
@@ -83,10 +82,10 @@ def segment_tangent_angle(segmented_img, objects, size, label=None):
             x_min = int(df['x'].min())
 
             # Find line fit to each segment
-            [vx, vy, x, y] = cv2.fitLine(obj, cv2.DIST_L2, 0, 0.01, 0.01)
+            vx, vy, x, y = cv2.fitLine(obj, cv2.DIST_L2, 0, 0.01, 0.01)
             slope = -vy / vx
-            left_list = int(((x - x_min) * slope) + y)
-            right_list = int(((x - x_max) * slope) + y)
+            left_list = int(np.array(((x - x_min) * slope) + y).item())
+            right_list = int(np.array(((x - x_max) * slope) + y).item())
             slopes.append(slope)
 
             if slope > 1000000 or slope < -1000000:
