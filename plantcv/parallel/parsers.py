@@ -397,7 +397,7 @@ def _read_filenames(config):
     # make imgformat a list if multiple
     extensions = config.imgformat
     if isinstance(config.imgformat, str):
-            extensions = [config.imgformat]
+        extensions = [config.imgformat]
     # Get a list of all files
     if config.include_all_subdirs is False:
         # If subdirectories are excluded, use glob to get a list of all image files
