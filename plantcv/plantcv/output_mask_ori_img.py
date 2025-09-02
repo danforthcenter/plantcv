@@ -17,16 +17,14 @@ def output_mask(img, mask, filename, outdir=None, mask_only=False):
     mask_only = bool for printing only mask
 
     Returns:
-    imgpath = path to image
-    maskpath path to mask
+    results = list of output paths, [imgpath, maskpath, analysis_images]
 
     :param img: numpy.ndarray
     :param mask: numpy.ndarray
     :param filename: str
     :param outdir: str
     :param mask_only: bool
-    :return imgpath: str
-    :return maskpath: str
+    :return results: list
     """
     analysis_images = []
 
