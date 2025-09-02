@@ -394,21 +394,20 @@ def _read_filenames(config):
     :param config: plantcv.parallel.WorkflowConfig
     :return dataset: dict
     """
+    # make imgformat a list if multiple
+    extensions = config.imgformat
+    if isinstance(config.imgformat, str):
+            extensions = [config.imgformat]
     # Get a list of all files
     if config.include_all_subdirs is False:
         # If subdirectories are excluded, use glob to get a list of all image files
-        # NOTE this does multiple loops I think.
-        # I don't see something as simple as R's `dir(pattern = paste0(many_extensions, collapse = "|"))`?
-        extensions = config.imgformat
-        if isinstance(config.imgformat, str):
-            extensions = [config.imgformat]
         fns = [f for ext in extensions for f in glob.glob(os.path.join(config.input_dir, "*[.]" + ext))]
     else:
         # If subdirectories are included, recursively walk through the path
         fns = []
         for root, _, files in os.walk(config.input_dir):
             for file in files:
-                if file.lower().endswith(tuple(config.imgformat)):
+                if file.lower().endswith(tuple(extensions)):
                     # Keep the files that end with the image extension
                     fns.append(os.path.join(root, file))
     # Create a dataset
