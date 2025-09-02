@@ -3,7 +3,7 @@
 This is a plotting method that is used to examine the distribution of signal within an hyperspectral image for 
 specific wavelengths. This function is an application of the [histogram](visualize_histogram.md) function.
 
-**plantcv.visualize.hyper_histogram**(*hsi, mask=None, bins=100, lower_bound=None, upper_bound=None, title=None, wvlengths=[480, 550, 670]*)
+**plantcv.visualize.hyper_histogram**(*hsi, mask=None, bins=100, lower_bound=None, upper_bound=None, title=None, wvlengths=None*)
 
 **returns** fig_hist
 
@@ -14,7 +14,7 @@ specific wavelengths. This function is an application of the [histogram](visuali
     - lower_bound - Lower bound of range to be shown in the histogram (default lower_range=None). 
     - upper_bound - Upper bound of range to be shown in the histogram. 
     - title - The title for the histogram (default title=None) 
-    - wvlengths - Interested wavelengths (in nanometers) to show histogram of (default wvlengths=[480, 550, 670])
+    - wvlengths - Interested wavelengths (in nanometers) to show histogram of (default None, where wvlengths will be set to [480, 550, 670])
     
 - **Context:**
     - Examine the distribution of the signal, this can help select a value for calling the binary thresholding function.
