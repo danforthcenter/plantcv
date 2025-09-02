@@ -4,7 +4,7 @@ Calculates properties of objects in a binary image.
 Keeps objects that are either above or below a specified threshold for a specified property.
 When debug set to "plot," also prints the min, max, and mean of the specified property.
 
-**plantcv.filters.obj_props**(*bin_img, cut_side = "upper", thresh=0, regprop="area"*)
+**plantcv.filters.obj_props**(*bin_img, cut_side = "upper", thresh=0, regprop="area", roi=None*)
 
 **returns** filtered_mask
 
@@ -13,6 +13,7 @@ When debug set to "plot," also prints the min, max, and mean of the specified pr
     - cut_side - "upper" or "lower", side to keep when objects are divided by the "thresh" value
     - thresh - Threshold for keeping objects. 
     - regprop - Which object property to filter on
+	- roi - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to apply this function. (default = None, which uses the entire image)
 - **Context:**
     - Used to isolate objects of interest in a binary image based on their features. The output mask can be used for further analysis.
 - **Example use:**
@@ -55,4 +56,4 @@ filtered_area = pcv.filters.obj_props(bin_img=binary_img, cut_side="lower", thre
 
 ![count_img](img/documentation_images/filters_obj_props/example_filter_3.png)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/filters/filter_objs.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/filters/obj_props.py)

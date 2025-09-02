@@ -6,11 +6,11 @@ available by downloading/cloning the GitHub repository.
 ### Training machine learning models
 
 `plantcv-train` is a command-line tool for training machine learning classifiers or other models in PlantCV. More
-detail is provided in the [Machine Learning Tutorial](tutorials/machine_learning_tutorial.md) but command/input details are
+detail is provided in the [Machine Learning Tutorial](https://plantcv.org/tutorials/naive-bayes) but command/input details are
 provided below:
 
 ```
-usage: plantcv-train [-h] {naive_bayes,naive_bayes_multiclass}
+usage: plantcv-train [-h] {naive_bayes,naive_bayes_multiclass, kmeans}
 
 Subcommands:
     naive_bayes
@@ -32,6 +32,21 @@ Subcommands:
                                              class.
             -o OUTFILE, --outfile OUTFILE    Trained classifier output filename.
             -p, --plots                      Make output plots.
+    kmeans
+        usage: plantcv-train kmeans [-h] -i IMGDIR -k CATEGORIES -o OUTFILE [-r] [-p] [-s] [-n] [--sampling] [--seed] [--n_init]
+
+        optional arguments:
+            -h, --help                      Show this message and exit
+            -i IMGDIR, --imgdir IMDIR       Input directory containing images. 
+            -k INT, --categories INT        Number of classification categories.
+            -o OUTFILE, --out OUTFILE       Trained model output path and filename.
+            -r PREFIX, --prefix PREFIX      File prefix for training images.
+            -p INT, --patch_size INT        Patch size.
+            -s INT, --sigma INT             Severity of Gaussian blur, sigma.
+            --sampling FLOAT                Fraction of pixels sampled per image for patch extraction
+            --seed INT                      Random seed for reproducibility
+            -n INT, --num_imgs INT          Number of images in training directory to use.
+            --n_init INT                    Number of Kmeans random initiations  
 
 ```
 
@@ -48,7 +63,7 @@ Subcommands:
 
 `plantcv-utils json2csv` is a command-line tool for converting the output JSON files from `plantcv-run-workflow` to
 CSV-formatted tables for downstream analysis in [R](https://www.r-project.org/), 
-[MVApp](http://mvapp.kaust.edu.sa/MVApp/), or other programs.
+[MVApp](https://mvapp.kaust.edu.sa/), or other programs. For example, [pcvr](https://danforthcenter.github.io/pcvr/) provides R functions for use with PlantCV output or other phenotype data for Bayesian statistics and non-linear modeling.
 
 ```
 usage: plantcv-utils json2csv [-h] -j JSON -c CSV

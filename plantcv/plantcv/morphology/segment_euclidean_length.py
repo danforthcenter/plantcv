@@ -7,8 +7,7 @@ from plantcv.plantcv import outputs
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import color_palette
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _cv2_findcontours
-from plantcv.plantcv.morphology import find_tips
+from plantcv.plantcv._helpers import _cv2_findcontours, _find_tips, _scale_size
 from scipy.spatial.distance import euclidean
 
 
@@ -52,7 +51,7 @@ def segment_euclidean_length(segmented_img, objects, label=None):
         # Draw segments one by one to group segment tips together
         finding_tips_img = np.zeros(segmented_img.shape[:2], np.uint8)
         cv2.drawContours(finding_tips_img, objects, i, (255, 255, 255), 1, lineType=8)
-        segment_tips = find_tips(finding_tips_img)
+        segment_tips, _, _ = _find_tips(finding_tips_img)
         tip_objects, _ = _cv2_findcontours(bin_img=segment_tips)
         points = []
         if not len(tip_objects) == 2:
@@ -83,8 +82,8 @@ def segment_euclidean_length(segmented_img, objects, label=None):
         segment_ids.append(c)
 
     outputs.add_observation(sample=label, variable='segment_eu_length', trait='segment euclidean length',
-                            method='plantcv.plantcv.morphology.segment_euclidean_length', scale='pixels', datatype=list,
-                            value=segment_lengths, label=segment_ids)
+                            method='plantcv.plantcv.morphology.segment_euclidean_length', scale=params.unit, datatype=list,
+                            value=_scale_size(segment_lengths), label=segment_ids)
 
     _debug(visual=labeled_img, filename=os.path.join(params.debug_outdir, f"{params.device}_segment_eu_lengths.png"))
 

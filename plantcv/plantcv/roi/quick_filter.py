@@ -1,22 +1,29 @@
 """PlantCV quick_filter module."""
 import os
+import cv2
 import numpy as np
 from skimage.measure import label
+from skimage.color import label2rgb
 from plantcv.plantcv import params
 from plantcv.plantcv.roi import roi2mask
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _logical_operation
 
 
 def quick_filter(mask, roi):
     """Quickly filter a binary mask using a region of interest.
-    Inputs
-    ------
-    mask = binary mask
-    roi  = PlantCV ROI object
+
+    Parameters
+    ----------
+    mask : numpy.ndarray
+        Binary mask to filter.
+    roi : plantcv.plantcv.classes.Objects
+        PlantCV ROI object.
 
     Returns
     -------
-    filtered_mask = Filtered binary mask
+    numpy.ndarray
+        Filtered binary mask.
     """
     # Increment the device counter
     params.device += 1
@@ -68,3 +75,46 @@ def quick_filter(mask, roi):
     _debug(visual=summed, filename=os.path.join(params.debug_outdir, f"{params.device}_roi_filter.png"), cmap="gray")
 
     return summed
+
+
+def _quick_cutto(mask, roi):
+    """Quickly filter a binary mask using a region of interest by cutting to each ROI.
+
+    Parameters
+    ----------
+    mask : numpy.ndarray
+        Binary mask to filter.
+    roi : plantcv.plantcv.classes.Objects
+        PlantCV ROI object.
+
+    Returns
+    -------
+    numpy.ndarray, numpy.ndarray, int
+        Filtered binary mask, labeled mask, number of labels.
+    """
+    # Increment the device counter
+    params.device += 1
+
+    # Store debug
+    debug = params.debug
+    params.debug = None
+
+    mask_copy = np.copy(mask).astype(np.int32)
+    labeled_mask = np.zeros(mask.shape, dtype=np.int32)
+    bin_mask = np.copy(labeled_mask)
+    num_labels = len(roi.contours)
+    for i in range(num_labels):
+        # Pixel intensity of (i+1) such that the first object has value
+        cv2.drawContours(labeled_mask, roi.contours[i], -1, (i+1), -1)
+        cv2.drawContours(bin_mask, roi.contours[i], -1, (255), -1)
+    cropped_mask = _logical_operation(mask_copy, bin_mask, "and")
+    # Make a labeled mask from the cropped objects
+    label_mask_where = np.where(cropped_mask == 255, labeled_mask, 0)
+
+    # Print/plot debug image
+    colorful = label2rgb(label_mask_where)
+    colorful2 = (255*colorful).astype(np.uint8)
+    params.debug = debug
+    _debug(visual=colorful2, filename=os.path.join(params.debug_outdir, f"{params.device}_label_colored_mask.png"))
+
+    return cropped_mask.astype(np.uint8), label_mask_where, num_labels

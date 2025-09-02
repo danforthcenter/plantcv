@@ -3,12 +3,12 @@
 import numpy as np
 import math
 import cv2
-from plantcv.plantcv import params
+from plantcv.plantcv import params, outputs
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
 
 
-def acute(img, mask, win, threshold):
+def acute(img, mask, win, threshold, label=None):
     """Identify landmark positions within a contour for morphometric analysis
 
     Inputs:
@@ -18,18 +18,20 @@ def acute(img, mask, win, threshold):
                   score; 1 cm in pixels often works well
     threshold   = angle score threshold to be applied for mapping out landmark
                   coordinate clusters within each contour
+    label       = Optional label parameter, modifies the variable name of
+                  observations recorded (default = pcv.params.sample_label).
 
     Outputs:
-    homolog_pts = pseudo-landmarks selected from each landmark cluster
-    start_pts   = pseudo-landmark island starting position; useful in parsing homolog_pts in downstream analyses
-    stop_pts    = pseudo-landmark island end position ; useful in parsing homolog_pts in downstream analyses
-    ptvals      = average values of pixel intensity from the mask used to generate cont;
-                  useful in parsing homolog_pts in downstream analyses
-    chain       = raw angle scores for entire contour, used to visualize landmark
-                  clusters
-    verbose_out = supplemental file which stores coordinates, distance from
-                  landmark cluster edges, and angle score for entire contour.  Used
-                  in troubleshooting.
+    homolog_pts    = pseudo-landmarks selected from each landmark cluster
+    start_pts      = pseudo-landmark island starting position; useful in parsing homolog_pts in downstream analyses
+    stop_pts       = pseudo-landmark island end position ; useful in parsing homolog_pts in downstream analyses
+    ptvals         = average values of pixel intensity from the mask used to generate cont;
+                     useful in parsing homolog_pts in downstream analyses
+    chain          = raw angle scores for entire contour, used to visualize landmark
+                     clusters
+    max_dist       = supplemental list which stores coordinates, distance from
+                     landmark cluster edges, and angle score for entire contour.  Used
+                     in troubleshooting.
 
     :param img: numpy.ndarray
     :param mask: numpy.ndarray
@@ -39,9 +41,13 @@ def acute(img, mask, win, threshold):
     :return start_pts: numpy.ndarray
     :return stop_pts: numpy.ndarray
     :return ptvals: list
-    :return chain: lsit
-    :return verbose_out: list
+    :return chain: list
+    :return max_dist: list
     """
+    # Set lable to params.sample_label if None
+    if label is None:
+        label = params.sample_label
+
     # Find contours
     contours, hierarchy = _cv2_findcontours(bin_img=mask)
     obj = _object_composition(contours=contours, hierarchy=hierarchy)
@@ -118,7 +124,7 @@ def acute(img, mask, win, threshold):
 
         if len(isle) > 1:
             if (isle[0][0] == 0) & (isle[-1][-1] == (len(chain)-1)):
-                if params.debug is not None:
+                if params.verbose:
                     print('Fusing contour edges')
                 island = isle[-1]+isle[0]  # Fuse overlapping ends of contour
                 # Delete islands to be spliced if start-end fusion required
@@ -126,7 +132,7 @@ def acute(img, mask, win, threshold):
                 del isle[-1]
                 isle.insert(0, island)      # Prepend island to isle
         else:
-            if params.debug is not None:
+            if params.verbose:
                 print('Microcontour...')
 
         # Homologous point maximum distance method
@@ -155,7 +161,7 @@ def acute(img, mask, win, threshold):
                 ptvals.append('NaN')        # If no values can be retrieved (small/collapsed contours)
                 vals = []
             if len(island) >= 3:               # If landmark is multiple points (distance scan for position)
-                if params.debug is not None:
+                if params.verbose:
                     print('route C')
                 ss = obj[island[0]]            # Store isle "x" start site
                 ts = obj[island[-1]]           # Store isle "x" termination site
@@ -171,14 +177,14 @@ def acute(img, mask, win, threshold):
                         pt = d
                         dist_1 = dist_2                          # Current mean becomes new best mean
                 # print pt
-                if params.debug is not None:
+                if params.verbose:
                     print(f"Landmark site: {pt}, Start site: {island[0]}, Term. site: {island[-1]}")
 
                 maxpts.append(pt)           # Empty 'pts' prior to next mean distance scan
                 ss_pts.append(island[0])
                 ts_pts.append(island[-1])
 
-            if params.debug is not None:
+            if params.verbose:
                 print(f'Landmark point indices: {maxpts}')
                 print(f'Starting site indices: {ss_pts}')
                 print(f'Termination site indices: {ts_pts}')
@@ -195,6 +201,13 @@ def acute(img, mask, win, threshold):
         cv2.drawContours(ori_img, homolog_pts, -1, (255, 255, 255), params.line_thickness)
         # print/plot debug image
         _debug(visual=ori_img, filename=f"{params.device}_acute_plms.png")
+        # Store number of acute points IDed to Outputs
+        outputs.add_observation(sample=label, variable='num_acute_pts', trait='number of acute points',
+                                method='plantcv.plantcv.homology.acute', scale='none', datatype=int,
+                                value=len(homolog_pts), label='none')
 
         return homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist
+    outputs.add_observation(sample=label, variable='num_acute_pts', trait='number of acute points',
+                            method='plantcv.plantcv.homology.acute', scale='none', datatype=int,
+                            value=0, label='none')
     return [], [], [], [], [], []

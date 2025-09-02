@@ -21,7 +21,7 @@ class WorkflowConfig:
         self.workflow = ""
         self.img_outdir = "./output_images"
         self.include_all_subdirs = True
-        self.tmp_dir = None
+        self.tmp_dir = "."
         self.start_date = None
         self.end_date = None
         self.imgformat = "png"
@@ -31,9 +31,9 @@ class WorkflowConfig:
         self.writeimg = False
         self.other_args = {}
         self.groupby = ["filepath"]
-        self.group_name = "imgtype"
+        self.group_name = "auto"
         self.cleanup = True
-        self.append = True
+        self.append = False
         self.cluster = "LocalCluster"
         self.cluster_config = {
             "n_workers": 1,

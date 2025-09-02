@@ -558,7 +558,12 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/156026125?v=4",
       "profile": "https://github.com/k034b363",
       "contributions": [
-        "code"
+        "code",
+        "doc",
+        "test",
+        "tutorial",
+        "ideas",
+        "mentoring"
       ]
     },
     {
@@ -608,6 +613,125 @@
       "contributions": [
         "code",
         "doc"
+      ]
+    },
+    {
+      "login": "emmanuel-ferdman",
+      "name": "Emmanuel Ferdman",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35470921?v=4",
+      "profile": "https://github.com/emmanuel-ferdman",
+      "contributions": [
+        "bug",
+        "doc"
+      ]
+    },
+    {
+      "login": "jbraley1107",
+      "name": "jbraley1107",
+      "avatar_url": "https://avatars.githubusercontent.com/u/186077704?v=4",
+      "profile": "https://github.com/jbraley1107",
+      "contributions": [
+        "review",
+        "userTesting",
+        "bug"
+      ]
+    },
+    {
+      "login": "hkmanching",
+      "name": "Heather Manching",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8751385?v=4",
+      "profile": "https://github.com/hkmanching",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "mlohbihler",
+      "name": "Matthew Lohbihler",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1182059?v=4",
+      "profile": "https://github.com/mlohbihler",
+      "contributions": [
+        "bug",
+        "doc"
+      ]
+    },
+    {
+      "login": "Sunitalama2",
+      "name": "Sunitalama2",
+      "avatar_url": "https://avatars.githubusercontent.com/u/195969937?v=4",
+      "profile": "https://github.com/Sunitalama2",
+      "contributions": [
+        "tutorial",
+        "doc"
+      ]
+    },
+    {
+      "login": "trogers623",
+      "name": "trogers623",
+      "avatar_url": "https://avatars.githubusercontent.com/u/195968055?v=4",
+      "profile": "https://github.com/trogers623",
+      "contributions": [
+        "tutorial",
+        "doc"
+      ]
+    },
+    {
+      "login": "eseigeldanf",
+      "name": "eseigeldanf",
+      "avatar_url": "https://avatars.githubusercontent.com/u/195968072?v=4",
+      "profile": "https://github.com/eseigeldanf",
+      "contributions": [
+        "bug",
+        "tutorial",
+        "doc"
+      ]
+    },
+    {
+      "login": "clhendrikse",
+      "name": "Chloe Hendrikse",
+      "avatar_url": "https://avatars.githubusercontent.com/u/70405404?v=4",
+      "profile": "https://github.com/clhendrikse",
+      "contributions": [
+        "tutorial",
+        "doc"
+      ]
+    },
+    {
+      "login": "abrown-37",
+      "name": "abrown-37",
+      "avatar_url": "https://avatars.githubusercontent.com/u/82683033?v=4",
+      "profile": "https://github.com/abrown-37",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "NMiklave",
+      "name": "NMiklave",
+      "avatar_url": "https://avatars.githubusercontent.com/u/50243212?v=4",
+      "profile": "https://github.com/NMiklave",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "caitlynelliott56",
+      "name": "Caitlyn Elliott",
+      "avatar_url": "https://avatars.githubusercontent.com/u/214695433?v=4",
+      "profile": "https://github.com/caitlynelliott56",
+      "contributions": [
+        "code",
+        "ideas",
+        "tutorial"
+      ]
+    },
+    {
+      "login": "zhaYdamenaceee",
+      "name": "ZhakeYa D'Nai Hawkins",
+      "avatar_url": "https://avatars.githubusercontent.com/u/114114550?v=4",
+      "profile": "https://onlinegdb.com/h-5zNv0Dz",
+      "contributions": [
+        "tutorial"
       ]
     }
   ],

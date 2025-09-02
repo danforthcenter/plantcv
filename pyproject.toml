@@ -13,10 +13,10 @@ license = {file = "LICENSE"}
 dynamic = ["version"]
 dependencies = [
     "matplotlib >= 1.5",
-    "numpy >= 1.11, < 2",
+    "numpy >= 2",
     "pandas",
     "python-dateutil",
-    "scipy",
+    "scipy <1.16",
     "scikit-image >= 0.19",
     "scikit-learn",
     "dask",
@@ -26,6 +26,8 @@ dependencies = [
     "statsmodels",
     "altair",
     "vl-convert-python",
+    "nd2",
+    "flyr"
 ]
 requires-python = ">=3.8"
 authors = [

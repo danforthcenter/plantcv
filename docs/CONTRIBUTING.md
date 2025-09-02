@@ -1,5 +1,6 @@
 # Table of Contents for Contibution
 1. [Overview of Contribution](#overview)
+2. [Installing PlantCV for Contributors](#installing)
 2. [Creating Issues](#creatingissues)
 3. [Contributing Text or Code](#textcode)
     * [Set-Up Development Environment](#devenvironmment)
@@ -10,7 +11,7 @@
     * [Testing and documenting your code](#testdoc)
     * [Publish and Create Pull Request](#publish)
 4. [Guidelines for New Features](#newfeatures)
-    * [New Function Style Guide](#style)
+    * [New Function Style Guide](#styleguide)
 5. [Instructions for Adding A New Tutorial](#tutorial)
     * [Create Your Tutorial Repository](#repo)
     * [Add Your Tutorial to the Gallery Wall](#gallery)
@@ -34,6 +35,32 @@ There are many ways to contribute:
 * Add, update, or revise a use-case tutorial
 
 If you need any help, please contact us. 
+
+## Installing PlantCV for contributors <a name="installing"></a>
+Before getting started, please read our [contributor guidelines](CONTRIBUTING.md) and [code of conduct](CODE_OF_CONDUCT.md).
+
+You can build PlantCV from the source code if you are a developer or want the absolute latest version available.
+As noted in the [installation documentation](installation.md), we recommend installing PlantCV in a virtual environment. We will outline how to do this using `conda`.
+You will also need a [GitHub](https://github.com) account. You will need to
+[clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) the PlantCV
+repository from GitHub before getting started.
+
+To set up your environment, follow these steps in your command-line terminal:
+
+```bash
+# Enter the PlantCV directory
+cd plantcv
+
+# Create a conda environment named "plantcv" (or whatever you like) and automatically install the developer dependencies
+conda env create -n plantcv -f environment.yml
+
+# Activate the plantcv environment (you will have to do this each time you start a new session)
+conda activate plantcv
+
+# Install PlantCV in editable mode so that it updates as you work on new features/updates
+pip install -e .
+
+```
 
 ## Creating Issues <a name="creatingissues"></a>
 
@@ -75,7 +102,7 @@ using one of the methods described in the
 #### Install PlantCV Dependencies <a name="install"></a>
 
 We recommend using `conda` to set up a virtual environment for developing PlantCV. Instructions can be found in the
-[installation documentation](installation.md#installation-from-the-source-code).
+[installation documentation](installation.md).
 
 #### Create A Branch To Do Your Work <a name="branch"></a>
 
@@ -304,18 +331,7 @@ that might break wth new versions of PlantCV.
 
 #### Add Your Tutorial To the PlantCV Tutorial Gallery <a name="gallery"></a>
 
-1. In your PlantCV repo make a new branch (make sure your branch is based off the version you are working on e.g. release-4.0)
-
-2. Go to `/plantcv/docs/tutorials.md`, add a section for your new tutorial or update the binder links and link to your tutorial wall image
-
-3. Either go to `/plantcv/docs/tutorials/'yourtutorialname'` and update the binder links and nb viewer links for your tutorial or go to `/plantcv/docs/tutorials/`
-and add a doc with your tutorial name (use an exisiting tutorial as an example)
-
-4. While in your plantcv directory check the build of the documentation on the command line by the command: 
- ```
- mkdocs serve --theme readthedocs
-```
-5. If everything looks okay then commit changes and make a pull request (make sure that pull request is for the for version you are working on).
+1. Email the dev team at plantcv@danforthcenter.org, or open an issue [here](https://github.com/danforthcenter/plantcv/issues). 
 
 ### Thanks
 

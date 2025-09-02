@@ -3,6 +3,8 @@ import os
 import cv2
 import json
 import numpy as np
+import datetime
+from plantcv.plantcv import __version__ as ver
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv.annotate.points import _find_closest_pt
 import matplotlib.pyplot as plt
@@ -17,7 +19,7 @@ class Params:
     def __init__(self, device=0, debug=None, debug_outdir=".", line_thickness=5,
                  line_color=(255, 0, 255), dpi=100, text_size=0.55,
                  text_thickness=2, marker_size=60, color_scale="gist_rainbow", color_sequence="sequential",
-                 sample_label="default", saved_color_scale=None, verbose=True):
+                 sample_label="default", saved_color_scale=None, verbose=True, unit="pixels", px_height=1, px_width=1):
         """Initialize parameters.
 
         Keyword arguments/parameters:
@@ -35,6 +37,10 @@ class Params:
         sample_label      = Sample name prefix. Used in analyze functions. (default: "default")
         saved_color_scale = Saved color scale that will be applied next time color_palette is called. (default: None)
         verbose           = Whether or not in verbose mode. (default: True)
+        unit              = Units of size trait outputs. (default: "pixels")
+        px_height         = Size scaling information about pixel height (default: 1)
+        px_width          = Size scaling information about pixel width (default: 1)
+
 
         :param device: int
         :param debug: str
@@ -49,6 +55,10 @@ class Params:
         :param sample_label: str
         :param saved_color_scale: list
         :param verbose: bool
+        :param unit: str
+        :param px_height: float
+        :param px_width: float
+
         """
         self.device = device
         self.debug = debug
@@ -64,6 +74,9 @@ class Params:
         self.sample_label = sample_label
         self.saved_color_scale = saved_color_scale
         self.verbose = verbose
+        self.unit = unit
+        self.px_height = px_height
+        self.px_width = px_width
 
 
 class Outputs:
@@ -150,7 +163,7 @@ class Outputs:
         # Save the observation for the sample and variable
         self.metadata[term] = {
             "datatype": str(datatype),
-            "value": value
+            "value": [value]
         }
 
     # Method to save observations to a file
@@ -164,6 +177,11 @@ class Outputs:
         :param filename: str
         :param outformat: str
         """
+        # Add current date & time to metadata in UTC format
+        run_datetime = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        self.add_metadata(term="run_date", datatype=str, value=run_datetime)
+        self.add_metadata(term="plantcv_version", datatype=str, value=ver)
+
         if outformat.upper() == "JSON":
             if os.path.isfile(filename):
                 with open(filename, 'r') as f:
@@ -298,7 +316,8 @@ class Spectral_data:
     """PlantCV Hyperspectral data class"""
 
     def __init__(self, array_data, max_wavelength, min_wavelength, max_value, min_value, d_type, wavelength_dict,
-                 samples, lines, interleave, wavelength_units, array_type, pseudo_rgb, filename, default_bands):
+                 samples, lines, interleave, wavelength_units, array_type, pseudo_rgb, filename, default_bands,
+                 metadata=None):
         # The actual array/datacube
         self.array_data = array_data
         # Min/max available wavelengths (for spectral datacube)
@@ -325,6 +344,10 @@ class Spectral_data:
         self.filename = filename
         # The default band indices needed to make an pseudo_rgb image, if not available then store None
         self.default_bands = default_bands
+        # Metadata, flexible components in a dictionary
+        self.metadata = metadata
+        if not metadata:
+            self.metadata = {}
 
 
 class PSII_data:

@@ -82,6 +82,7 @@ from plantcv.plantcv import analyze
 from plantcv.plantcv import filters
 from plantcv.plantcv.kmeans_classifier import predict_kmeans
 from plantcv.plantcv.kmeans_classifier import mask_kmeans
+from plantcv.plantcv import qc
 # add new functions to end of lists
 
 __all__ = [
@@ -157,5 +158,6 @@ __all__ = [
     "floodfill",
     "filters",
     "predict_kmeans",
-    "mask_kmeans"
+    "mask_kmeans",
+    "qc"
 ]

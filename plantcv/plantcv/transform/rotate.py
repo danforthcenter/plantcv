@@ -27,7 +27,7 @@ def rotate(img, rotation_deg, crop):
     # Extract image spatial dimensions
     iy, ix = np.shape(img)[:2]
 
-    m = cv2.getRotationMatrix2D((ix / 2, iy / 2), rotation_deg, 1)
+    m = cv2.getRotationMatrix2D(((ix-1)/2, (iy-1)/2), rotation_deg, 1)
 
     cos = np.abs(m[0, 0])
     sin = np.abs(m[0, 1])

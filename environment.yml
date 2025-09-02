@@ -4,10 +4,10 @@ name: plantcv
 dependencies:
   - python=3.11
   - matplotlib>=1.5
-  - numpy>=1.11
+  - numpy>=2
   - pandas
   - python-dateutil
-  - scipy
+  - scipy<1.16
   - scikit-image>=0.19
   - scikit-learn
   - dask
@@ -16,6 +16,7 @@ dependencies:
   - statsmodels
   - xarray>=2022.11.0
   - mkdocs
+  - nd2
   - pytest
   - pytest-cov
   - flake8
@@ -25,7 +26,7 @@ dependencies:
   - altair
   - vl-convert-python
   - git
+  - flyr
 
 channels:
   - conda-forge
-  - defaults

@@ -1,13 +1,12 @@
 # Dilation filter
 
-import cv2
-import numpy as np
 import os
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _dilate
 from plantcv.plantcv import params
 
 
-def dilate(gray_img, ksize, i):
+def dilate(gray_img, ksize, i, roi=None):
     """
     Performs morphological 'dilation' filtering. Adds pixel to center of kernel if conditions set in kernel are true.
 
@@ -15,6 +14,7 @@ def dilate(gray_img, ksize, i):
     gray_img = Grayscale (usually binary) image data
     ksize   = Kernel size (int). A k x k kernel will be built. Must be greater than 1 to have an effect.
     i        = iterations, i.e. number of consecutive filtering passes
+    roi      = rectangular ROI to dilate within
 
     Returns:
     dil_img = dilated image
@@ -22,14 +22,10 @@ def dilate(gray_img, ksize, i):
     :param gray_img: numpy.ndarray
     :param ksize: int
     :param i: int
+    :param roi: plantcv.plantcv.Objects
     :return dil_img: numpy.ndarray
     """
-    if ksize <= 1:
-        raise ValueError('ksize needs to be greater than 1 for the function to have an effect')
-
-    kernel1 = int(ksize)
-    kernel2 = np.ones((kernel1, kernel1), np.uint8)
-    dil_img = cv2.dilate(src=gray_img, kernel=kernel2, iterations=i)
+    dil_img = _dilate(gray_img, ksize, i, roi=roi)
 
     _debug(visual=dil_img,
            filename=os.path.join(params.debug_outdir,
