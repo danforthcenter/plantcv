@@ -261,9 +261,9 @@ def _color_card_detection(rgb_img, **kwargs):
     out = cv2.warpPerspective(rgb_img, M, (maxWidth, maxHeight), flags=cv2.INTER_LINEAR)
     print("warpPerspective result on color card")
     _debug(visual=out, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
-    increment = max(np.shape(out)) / 6
-    radius = int((increment / 5) + 1)
-    start = radius * 3
+    increment = int((maxWidth + maxHeight) / 10.1)
+    radius = int(increment / 7) + 1
+    start = int(increment / 2) + 1
     new_centers = [[int(start + i * increment), int(start + j * increment)] for j in range(nrows) for i in range(ncols)]
     
     _, debug_img = _draw_color_chips(out, new_centers, radius)
