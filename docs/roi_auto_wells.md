@@ -1,6 +1,6 @@
 ## Autodetect Cicular Regions of Interest (ROI) 
 
-**plantcv.roi.auto_wells**(*gray_img, mindist, candec, accthresh, minradius, maxradius, nrows, ncols, radiusadjust=None*)
+**plantcv.roi.auto_wells**(*gray_img, mindist, candec, accthresh, minradius, maxradius, nrows, ncols, radiusadjust=None, roi=None*)
 
 **returns** roi_objects
 
@@ -14,6 +14,7 @@
     - nrows               = expected number of rows
     - ncols               = expected number of columns
     - radiusadjust        = amount to adjust the average radius, this can be desirable if you want ROI to sit inside a well, for example (in that case you might set it to a negative value).
+	- roi                 = Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) to detect wells within a given region.
 - **Context:**
     - Uses a Hough Circle detector to find circular shapes, then uses a gaussian mixture model to sort found circular objects so they are ordered from 
     top left to bottom right. We assume that circles are of approximately equal size because we calculate an average radius of all of the found circles.

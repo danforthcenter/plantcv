@@ -21,6 +21,7 @@ def test_job_builder_single_image(parallel_test_data, tmpdir):
     config.imgformat = "jpg"
     config.other_args = {"other": "on"}
     config.writeimg = True
+    config.group_name = "imgtype"
 
     jobs = job_builder(meta=parallel_test_data.metadata_snapshot_vis(), config=config)
 
