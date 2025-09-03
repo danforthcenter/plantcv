@@ -236,7 +236,40 @@ def _color_card_detection(rgb_img, **kwargs):
     debug_img = np.copy(rgb_img)
     #########################################################################################################
     # Find four-sided polygon to describe the skewed color card 
-    corners = cv2.approxPolyN(curve=square_centroids, nsides=4, ensure_convex=True)
+    corners = cv2.approxPolyN(curve=square_centroids, nsides=4, ensure_convex=True) ## gets centers of corner chips
+    corners = cv2.approxPolyN(curve=np.concatenate(filtered_contours), nsides=4, ensure_convex=True) ## gets centers of corner chips
+    
+    # Perspective warp the color card to unskew and un-rotate
+    pt_A, pt_B, pt_C, pt_D = corners[0]
+
+    input_pts = np.float32([pt_A, pt_B, pt_C, pt_D])
+    width_AD = np.sqrt(((pt_A[0] - pt_D[0]) ** 2) + ((pt_A[1] - pt_D[1]) ** 2))
+    width_BC = np.sqrt(((pt_B[0] - pt_C[0]) ** 2) + ((pt_B[1] - pt_C[1]) ** 2))
+    maxWidth = max(int(width_AD), int(width_BC))
+    
+    
+    height_AB = np.sqrt(((pt_A[0] - pt_B[0]) ** 2) + ((pt_A[1] - pt_B[1]) ** 2))
+    height_CD = np.sqrt(((pt_C[0] - pt_D[0]) ** 2) + ((pt_C[1] - pt_D[1]) ** 2))
+    maxHeight = max(int(height_AB), int(height_CD))
+
+    output_pts = np.float32([[0, 0],
+                            [0, maxHeight - 1],
+                            [maxWidth - 1, maxHeight - 1],
+                            [maxWidth - 1, 0]])
+    
+    M = cv2.getPerspectiveTransform(input_pts,output_pts)
+    out = cv2.warpPerspective(rgb_img, M, (maxWidth, maxHeight), flags=cv2.INTER_LINEAR)
+    print("warpPerspective result on color card")
+    _debug(visual=out, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
+    increment = max(np.shape(out)) / 6
+    radius = int((increment / 5) + 1)
+    start = radius * 3
+    new_centers = [[int(start + i * increment), int(start + j * increment)] for j in range(nrows) for i in range(ncols)]
+    
+    _, debug_img = _draw_color_chips(out, new_centers, radius)
+    print("New approach (labeled mask debug)")
+    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
+
     # Draw the approximated polygon (quadrilateral) in GREEN 
     cv2.drawContours(debug_img, [corners], -1, (0, 255, 0), params.line_thickness + 3)
     # Shrink the polygon
