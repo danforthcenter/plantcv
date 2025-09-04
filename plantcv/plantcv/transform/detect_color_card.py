@@ -192,17 +192,12 @@ def _color_card_detection(rgb_img, **kwargs):
     gaussian = cv2.GaussianBlur(imgray, (11, 11), 0)
     thresh = cv2.adaptiveThreshold(gaussian, 255, adaptive_method,
                                    cv2.THRESH_BINARY_INV, block_size, 2)
-    print("auto_threshold results:")
-    _debug(visual=thresh, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
     contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     # Filter contours, keep only square-shaped ones
     filtered_contours = [contour for contour in contours if _is_square(contour, min_size, aspect_ratio, solidity)]
     debug_img = np.copy(rgb_img)
-    print("square-like contours:")
-    cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
-    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
-    debug_img = np.copy(rgb_img)
+
     # Calculate median area of square contours
     target_square_area = np.median([cv2.contourArea(cnt) for cnt in filtered_contours])
     # Filter contours again, keep only those within 20% of median area
@@ -250,13 +245,11 @@ def _color_card_detection(rgb_img, **kwargs):
     new_rect = cv2.minAreaRect(np.array(centers))
     # Get the corners of the rectangle
     box_points = cv2.boxPoints(new_rect).astype("float32")
-    box_points_int = np.int_(box_points)
 
     ### This is where the algorithm *might* split ###
     #########################################################################################################
     ## Plot the centers of each detected chip contour 
-    rect = cv2.minAreaRect(square_centroids) ########## handles rotation but not skew 
-    
+    rect = cv2.minAreaRect(square_centroids) ########## handles rotation but not skew
     # Get the corners of the rectangle
     corners = np.array(np.intp(cv2.boxPoints(rect)))
     ## Find white chip and reorder 
@@ -264,19 +257,12 @@ def _color_card_detection(rgb_img, **kwargs):
     white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0], :], (255, 255, 255))) for corner in corners])
     # Sort color chips based on detected card orientation
     corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])[[0, 1, 3, 2]]]
-    
-    # Draw the corners as WHITE contour
-    print("boundingRect outline:")
-    _, debug_img = _draw_color_chips(debug_img, corners, radius)
-    cv2.drawContours(debug_img, [corners], -1, (255, 255, 255), params.line_thickness + 3)
-    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
-    debug_img = np.copy(rgb_img)
-    
+
     # Calculate the perspective transform matrix from the minimum area rectangle
     m_transform = cv2.getPerspectiveTransform(box_points, corners.astype("float32"))
     # Transform the chip centers using the perspective transform matrix
     new_centers = cv2.transform(np.array([centers]), m_transform)[0][:, 0:2]
-    _, corners_debug_img = _draw_color_chips(corners_debug_img, corners, 3, (255,255,255))
+    _, corners_debug_img = _draw_color_chips(corners_debug_img, corners, 3)
     
     # Draw detected and utilized contours
     cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
@@ -288,11 +274,17 @@ def _color_card_detection(rgb_img, **kwargs):
     debug_img = np.copy(rgb_img)
     #########################################################################################################
     # Find four-sided polygon to describe the skewed color card 
-    corners = cv2.approxPolyN(curve=square_centroids, nsides=4, ensure_convex=True) ## gets centers of corner chips
-    corners = cv2.approxPolyN(curve=np.concatenate(filtered_contours), nsides=4, ensure_convex=True) ## gets centers of corner chips
-    
+    # Get centroids of corner chips
+    centers1 = cv2.approxPolyN(curve=square_centroids, nsides=4, ensure_convex=True)
+    # Determine which corner most likely contains the white chip
+    white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0], :], (255, 255, 255))) for corner in centers1[0]])
+    # Get outter corners of corner chips and sort based on card orientation
+    corners = cv2.approxPolyN(curve=np.concatenate(filtered_contours), nsides=4, ensure_convex=True)
+    corners = np.concatenate(corners)
+    corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])[[1, 3, 2, 0]]]
+
     # Perspective warp the color card to unskew and un-rotate
-    pt_A, pt_B, pt_C, pt_D = corners[0]
+    pt_A, pt_B, pt_C, pt_D = corners
 
     input_pts = np.float32([pt_A, pt_B, pt_C, pt_D])
     width_AD = np.sqrt(((pt_A[0] - pt_D[0]) ** 2) + ((pt_A[1] - pt_D[1]) ** 2))
@@ -309,53 +301,33 @@ def _color_card_detection(rgb_img, **kwargs):
                             [maxWidth - 1, maxHeight - 1],
                             [maxWidth - 1, 0]])
     
-    M = cv2.getPerspectiveTransform(input_pts,output_pts)
-    out = cv2.warpPerspective(rgb_img, M, (maxWidth, maxHeight), flags=cv2.INTER_LINEAR)
-    print("warpPerspective result on color card")
-    _debug(visual=out, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
-    increment = int((maxWidth + maxHeight) / 10.1)
-    radius = int(increment / 7) + 1
-    start = int(increment / 2) + 1
-    new_centers = [[int(start + i * increment), int(start + j * increment)] for j in range(nrows) for i in range(ncols)]
+    # Sort corners based on detected orientation
+    #input_pts = input_pts[np.argsort([math.dist(corner, input_pts[white_index]) for corner in input_pts])[[1, 3, 2, 0]]]
+    #output_pts = output_pts[np.argsort([math.dist(corner, output_pts[white_index]) for corner in output_pts])[[1, 3, 2, 0]]]
     
-    _, debug_img = _draw_color_chips(out, new_centers, radius)
-    print("New approach (labeled mask debug)")
+    M = cv2.getPerspectiveTransform(input_pts, output_pts)
+    out = cv2.warpPerspective(rgb_img, M, (min(maxWidth, maxHeight), max(maxWidth, maxHeight)), flags=cv2.INTER_LINEAR)
+    # Create color card mask based on size of detected color card
+    increment = int((maxWidth + maxHeight) / 9.7) + 1
+    radius = int(increment / 15) + 1
+    start = int(increment * 0.32) + 1
+    new_centers_w = [[int(start + i * increment), int(start + j * increment)] for j in range(nrows) for i in range(ncols)]
+    _, debug_img = _draw_color_chips(out, new_centers_w, radius)
+    print("!!!New!!! approach (labeled mask on warped rgb color card)")
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
 
     # Draw the approximated polygon (quadrilateral) in GREEN 
     cv2.drawContours(debug_img, [corners], -1, (0, 255, 0), params.line_thickness + 3)
-    # Shrink the polygon
-    #corners = _scale_contour(corners, .85)
-    corners = corners[0]
-    if params.verbose:
-        print("Identified color card corners)")
-        _, debug_img = _draw_color_chips(debug_img, corners, radius)
-        _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
-        debug_img = np.copy(rgb_img)
-    # Determine which corner most likely contains the white chip
-    white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0], :], (255, 255, 255))) for corner in corners])
-    corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])[[0, 1, 3, 2]]]
-    
-    # Draw the corners as BLUE contour 
-    print("approxPolyN outline:")
-    _, debug_img = _draw_color_chips(debug_img, corners, radius)
-    cv2.drawContours(debug_img, [corners], -1, (255, 0, 0), params.line_thickness + 3)
-    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
-    debug_img = np.copy(rgb_img)
     
     # Calculate the perspective transform matrix from the minimum area rectangle
     m_transform = cv2.getPerspectiveTransform(box_points, corners.astype("float32"))
     # Transform the chip centers using the perspective transform matrix
     new_centers = cv2.transform(np.array([centers]), m_transform)[0][:, 0:2]
-    # Plot and compare corners used in both algorithms
-    _, corners_debug_img = _draw_color_chips(corners_debug_img, corners, 2)
-    print("Corners used (white for rectangle method, blue for polygon method)")
-    _debug(visual=corners_debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
 
     # Create labeled mask and debug image of color chips
     labeled_mask, debug_img = _draw_color_chips(debug_img, new_centers, radius)
     # Check that new centers are inside each unique filtered_contour
-    _check_point_per_chip(filtered_contours, new_centers, debug_img)
+    #_check_point_per_chip(filtered_contours, new_centers_w, debug_img)
 
     return labeled_mask, debug_img, marea, mheight, mwidth, boundind_mask
 
