@@ -13,7 +13,7 @@ import math
 def _get_color_dict_uv():
     """Create a color dictionary for UV wavelengths."""
     params.color_scale = "cool_r"
-    uv_wavelengths = np.arange(290, 444)
+    uv_wavelengths = np.arange(290, 445)
     uv_colors_ = color_palette(num=256)
     uv_colors_ = uv_colors_[0:len(uv_wavelengths)]
     uv_colors_ = [tuple(xi / 255 for xi in x) for x in uv_colors_[::-1]]
