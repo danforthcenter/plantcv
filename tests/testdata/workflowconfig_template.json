@@ -8,7 +8,7 @@
     "tmp_dir": ".",
     "start_date": null,
     "end_date": null,
-    "imgformat": "png",
+    "imgformat": "all",
     "delimiter": "_",
     "metadata_filters": {},
     "timestampformat": "%Y-%m-%dT%H:%M:%S.%fZ",
