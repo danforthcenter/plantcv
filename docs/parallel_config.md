@@ -79,7 +79,7 @@ current working directory.
 
 
 * **imgformat**: (str, default = "png"): image file format/extension in lowercase. This can accept a list if multiple
-extensions should be collectedcombined (if using phenofront data this must be length 1).
+extensions should be combined (if using phenofront data this must be length 1).
 
 
 * **delimiter**: (str, default = "_"): image filename metadata term delimiter character. Alternatively, a regular 
