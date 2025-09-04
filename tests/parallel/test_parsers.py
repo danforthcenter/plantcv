@@ -2,7 +2,8 @@ import pytest
 from plantcv.parallel import metadata_parser, WorkflowConfig
 
 
-def test_metadata_parser_snapshots(parallel_test_data):
+@pytest.mark.parametrize("imgformat",["jpg","all"])
+def test_metadata_parser_snapshots(parallel_test_data, imgformat):
     """Test for PlantCV.
 
     Test parsing a "phenofront" dataset.
@@ -17,7 +18,7 @@ def test_metadata_parser_snapshots(parallel_test_data):
     config.start_date = "2014-10-21 00:00:00.0"
     config.end_date = "2014-10-23 00:00:00.0"
     config.timestampformat = '%Y-%m-%d %H:%M:%S.%f'
-    config.imgformat = "jpg"
+    config.imgformat = imgformat
 
     meta = metadata_parser(config=config)
     assert len(meta) == 1
