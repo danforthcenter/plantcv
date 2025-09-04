@@ -317,6 +317,10 @@ def _read_phenofront(config, metadata_file):
     dataset = _init_dataset()
     # Index filename metadata based on user-supplied parsing parameters
     metadata_index = _filename_metadata_index(config=config)
+    # if imgformat is all then set to png for legacy
+    extension = config.imgformat
+    if config.imgformat == "all":
+        extension = "png"
     # Open the SnapshotInfo.csv file
     with open(metadata_file, 'r') as fp:
         # Read the first header line
@@ -363,7 +367,7 @@ def _read_phenofront(config, metadata_file):
                 # Parse camera label metaata
                 img_meta = _parse_filename(filename=img, config=config, metadata_index=metadata_index)
                 # Construct the filename
-                filename = f"{img}.{config.imgformat}"
+                filename = f"{img}.{extension}"
                 # The dataset key is the dataset relative path to the image
                 rel_path = os.path.join(snapshot_id, filename)
                 # Store the parsed image metadata
@@ -397,7 +401,7 @@ def _read_filenames(config):
     # make imgformat a list if multiple
     extensions = config.imgformat
     if isinstance(config.imgformat, str):
-        extensions = [config.imgformat]
+        extensions = _replace_string_extension(config.imgformat)
     # Get a list of all files
     if config.include_all_subdirs is False:
         # If subdirectories are excluded, use glob to get a list of all image files
@@ -426,4 +430,14 @@ def _read_filenames(config):
         # Store the image filename metadata
         dataset["images"][rel_path] = _parse_filename(filename=metadata, config=config, metadata_index=metadata_index)
     return dataset
+###########################################
+
+
+# Reads filename-based datasets
+###########################################
+def _replace_string_extension(imgformat):
+    extensions = [imgformat]
+    if imgformat == "all":
+        extensions = ['bmp', 'dib', 'jpeg', 'jpg', 'jpe', 'jp2', 'png', 'ppm', 'pgm', 'ppm', 'sr', 'ras', 'tiff', 'tif']
+    return extensions
 ###########################################
