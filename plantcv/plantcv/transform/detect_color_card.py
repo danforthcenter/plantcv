@@ -173,7 +173,7 @@ def _color_card_detection(rgb_img, **kwargs):
     """
     # Get keyword arguments and set defaults if not set
     min_size = kwargs.get("min_size", 1000)  # Minimum size for _is_square chip filtering
-    radius = kwargs.get("radius", 20)  # Radius of circles to draw on the color chips
+    radius = kwargs.get("radius", None)  # Radius of circles to draw on the color chips
     adaptive_method = kwargs.get("adaptive_method", 1)  # cv2.adaptiveThreshold method
     block_size = kwargs.get("block_size", 51)  # cv2.adaptiveThreshold block size
     aspect_ratio = kwargs.get("aspect_ratio", 1.27)  # _is_square aspect-ratio filtering
@@ -266,8 +266,6 @@ def _color_card_detection(rgb_img, **kwargs):
     
     # Draw detected and utilized contours
     cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
-    # Plot box points
-    cv2.drawContours(debug_img, [corners], -1, (255, 0, 0), params.line_thickness)
     labeled_mask, debug_img = _draw_color_chips(debug_img, new_centers, radius)
     print("boundingRect algorithm results:")
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
@@ -290,8 +288,7 @@ def _color_card_detection(rgb_img, **kwargs):
     width_AD = np.sqrt(((pt_A[0] - pt_D[0]) ** 2) + ((pt_A[1] - pt_D[1]) ** 2))
     width_BC = np.sqrt(((pt_B[0] - pt_C[0]) ** 2) + ((pt_B[1] - pt_C[1]) ** 2))
     maxWidth = max(int(width_AD), int(width_BC))
-    
-    
+
     height_AB = np.sqrt(((pt_A[0] - pt_B[0]) ** 2) + ((pt_A[1] - pt_B[1]) ** 2))
     height_CD = np.sqrt(((pt_C[0] - pt_D[0]) ** 2) + ((pt_C[1] - pt_D[1]) ** 2))
     maxHeight = max(int(height_AB), int(height_CD))
@@ -300,32 +297,18 @@ def _color_card_detection(rgb_img, **kwargs):
                             [0, maxHeight - 1],
                             [maxWidth - 1, maxHeight - 1],
                             [maxWidth - 1, 0]])
-    
-    # Sort corners based on detected orientation
-    #input_pts = input_pts[np.argsort([math.dist(corner, input_pts[white_index]) for corner in input_pts])[[1, 3, 2, 0]]]
-    #output_pts = output_pts[np.argsort([math.dist(corner, output_pts[white_index]) for corner in output_pts])[[1, 3, 2, 0]]]
-    
+
     M = cv2.getPerspectiveTransform(input_pts, output_pts)
     out = cv2.warpPerspective(rgb_img, M, (min(maxWidth, maxHeight), max(maxWidth, maxHeight)), flags=cv2.INTER_LINEAR)
     # Create color card mask based on size of detected color card
     increment = int((maxWidth + maxHeight) / 9.7) + 1
-    radius = int(increment / 15) + 1
+    if not radius:
+        radius = int(increment / 15) + 1
     start = int(increment * 0.32) + 1
     new_centers_w = [[int(start + i * increment), int(start + j * increment)] for j in range(nrows) for i in range(ncols)]
-    _, debug_img = _draw_color_chips(out, new_centers_w, radius)
-    print("!!!New!!! approach (labeled mask on warped rgb color card)")
-    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
-
-    # Draw the approximated polygon (quadrilateral) in GREEN 
-    cv2.drawContours(debug_img, [corners], -1, (0, 255, 0), params.line_thickness + 3)
-    
-    # Calculate the perspective transform matrix from the minimum area rectangle
-    m_transform = cv2.getPerspectiveTransform(box_points, corners.astype("float32"))
-    # Transform the chip centers using the perspective transform matrix
-    new_centers = cv2.transform(np.array([centers]), m_transform)[0][:, 0:2]
 
     # Create labeled mask and debug image of color chips
-    labeled_mask, debug_img = _draw_color_chips(debug_img, new_centers, radius)
+    labeled_mask, debug_img = _draw_color_chips(out, new_centers_w, radius)
     # Check that new centers are inside each unique filtered_contour
     #_check_point_per_chip(filtered_contours, new_centers_w, debug_img)
 
