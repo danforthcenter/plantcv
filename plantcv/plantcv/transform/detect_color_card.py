@@ -42,6 +42,54 @@ def _is_square(contour, min_size, aspect_ratio=1.27, solidity=.8):
             # Compare minAreaRect area to the actual contour area, a chip should be mostly solid
             (cv2.contourArea(contour) / np.prod(cv2.minAreaRect(contour)[1])) > solidity)
 
+def _find_color_chip_like_objects(rgb_img, **kwargs):
+    """Get the square-like and similarly sized objects from an RGB image.
+
+    Parameters
+    ----------
+    rgb_img : numpy.ndarray
+        Input RGB image data containing a color card.
+    **kwargs
+        Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle.
+
+        Valid keyword arguments:
+        adaptive_method: 0 (mean) or 1 (Gaussian) (default = 1)
+        block_size: int (default = 51)
+        radius: int (default = 20)
+        min_size: int (default = 1000)
+        aspect_ratio: countour squareness filters (default 1.27)
+        solidity: contour squareness filters (default 0.8)
+
+    Returns
+    -------
+    list
+        List of detected chip contours
+    """
+    # Get keyword arguments and set defaults if not set
+    min_size = kwargs.get("min_size", 1000)  # Minimum size for _is_square chip filtering
+    adaptive_method = kwargs.get("adaptive_method", 1)  # cv2.adaptiveThreshold method
+    block_size = kwargs.get("block_size", 51)  # cv2.adaptiveThreshold block size
+    aspect_ratio = kwargs.get("aspect_ratio", 1.27)  # _is_square aspect-ratio filtering
+    solidity = kwargs.get("solidity", 0.8)  # _is_square solidity filtering
+
+    # Throw a fatal error if block_size is not odd or greater than 1
+    if not (block_size % 2 == 1 and block_size > 1):
+        fatal_error('block_size parameter must be an odd int greater than 1.')
+
+    # Convert to grayscale, threshold, and findContours
+    imgray = _rgb2hsv(rgb_img=rgb_img, channel="v")
+    gaussian = cv2.GaussianBlur(imgray, (11, 11), 0)
+    thresh = cv2.adaptiveThreshold(gaussian, 255, adaptive_method,
+                                   cv2.THRESH_BINARY_INV, block_size, 2)
+    contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    # Filter contours, keep only square-shaped ones
+    filtered_contours = [contour for contour in contours if _is_square(contour, min_size, aspect_ratio, solidity)]
+    # Calculate median area of square contours
+    target_square_area = np.median([cv2.contourArea(cnt) for cnt in filtered_contours])
+    # Filter contours again, keep similar sized objects, only those within 20% of median area
+    return [contour for contour in filtered_contours if
+            (0.8 < (cv2.contourArea(contour) / target_square_area) < 1.2)]
+    
 
 def _get_contour_sizes(contours):
     """Get the shape and size of all contours.
@@ -171,42 +219,13 @@ def _color_card_detection(rgb_img, **kwargs):
     list
         Labeled mask of chips, debug img, detected chip areas, chip heights, chip widths, bounding box mask
     """
-    # Get keyword arguments and set defaults if not set
-    min_size = kwargs.get("min_size", 1000)  # Minimum size for _is_square chip filtering
-    radius = kwargs.get("radius", None)  # Radius of circles to draw on the color chips
-    adaptive_method = kwargs.get("adaptive_method", 1)  # cv2.adaptiveThreshold method
-    block_size = kwargs.get("block_size", 51)  # cv2.adaptiveThreshold block size
-    aspect_ratio = kwargs.get("aspect_ratio", 1.27)  # _is_square aspect-ratio filtering
-    solidity = kwargs.get("solidity", 0.8)  # _is_square solidity filtering
-
-    # Throw a fatal error if block_size is not odd or greater than 1
-    if not (block_size % 2 == 1 and block_size > 1):
-        fatal_error('block_size parameter must be an odd int greater than 1.')
-
     # Hard code since we don't currently support other color cards
     nrows = 6
     ncols = 4
+    # Radius of circles to draw on the color chips, adaptive unless set by the user
+    radius = kwargs.get("radius", None)  
 
-    # Convert to grayscale, threshold, and findContours
-    imgray = _rgb2hsv(rgb_img=rgb_img, channel="v")
-    gaussian = cv2.GaussianBlur(imgray, (11, 11), 0)
-    thresh = cv2.adaptiveThreshold(gaussian, 255, adaptive_method,
-                                   cv2.THRESH_BINARY_INV, block_size, 2)
-    contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-
-    # Filter contours, keep only square-shaped ones
-    filtered_contours = [contour for contour in contours if _is_square(contour, min_size, aspect_ratio, solidity)]
-    debug_img = np.copy(rgb_img)
-
-    # Calculate median area of square contours
-    target_square_area = np.median([cv2.contourArea(cnt) for cnt in filtered_contours])
-    # Filter contours again, keep only those within 20% of median area
-    filtered_contours = [contour for contour in filtered_contours if
-                         (0.8 < (cv2.contourArea(contour) / target_square_area) < 1.2)]
-    
-    # Draw detected corners on debug img
-    corners_debug_img = np.copy(rgb_img)
-
+    filtered_contours = _find_color_chip_like_objects(rgb_img, **kwargs)
     # Throw a fatal error if no color card found
     if len(filtered_contours) == 0:
         fatal_error('No color card found')
@@ -233,44 +252,11 @@ def _color_card_detection(rgb_img, **kwargs):
     # Get the corners of the rectangle
     corners = np.array(np.intp(cv2.boxPoints(rect)))
     # Check that corners are in image
-    _check_corners(imgray, corners)
+    _check_corners(rgb_img, corners)
     # Determine which corner most likely contains the white chip
     white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0], :], (255, 255, 255))) for corner in corners])
     corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])[[0, 1, 3, 2]]]
-    # Increment amount is arbitrary, cell distances rescaled during perspective transform
-    increment = 100
-    centers = [[int(0 + i * increment), int(0 + j * increment)] for j in range(nrows) for i in range(ncols)]
 
-    # Find the minimum area rectangle of the chip centers
-    new_rect = cv2.minAreaRect(np.array(centers))
-    # Get the corners of the rectangle
-    box_points = cv2.boxPoints(new_rect).astype("float32")
-
-    ### This is where the algorithm *might* split ###
-    #########################################################################################################
-    ## Plot the centers of each detected chip contour 
-    rect = cv2.minAreaRect(square_centroids) ########## handles rotation but not skew
-    # Get the corners of the rectangle
-    corners = np.array(np.intp(cv2.boxPoints(rect)))
-    ## Find white chip and reorder 
-    # Determine which corner most likely contains the white chip
-    white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0], :], (255, 255, 255))) for corner in corners])
-    # Sort color chips based on detected card orientation
-    corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])[[0, 1, 3, 2]]]
-
-    # Calculate the perspective transform matrix from the minimum area rectangle
-    m_transform = cv2.getPerspectiveTransform(box_points, corners.astype("float32"))
-    # Transform the chip centers using the perspective transform matrix
-    new_centers = cv2.transform(np.array([centers]), m_transform)[0][:, 0:2]
-    _, corners_debug_img = _draw_color_chips(corners_debug_img, corners, 3)
-    
-    # Draw detected and utilized contours
-    cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
-    labeled_mask, debug_img = _draw_color_chips(debug_img, new_centers, radius)
-    print("boundingRect algorithm results:")
-    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
-    debug_img = np.copy(rgb_img)
-    #########################################################################################################
     # Find four-sided polygon to describe the skewed color card 
     # Get centroids of corner chips
     centers1 = cv2.approxPolyN(curve=square_centroids, nsides=4, ensure_convex=True)
@@ -298,8 +284,8 @@ def _color_card_detection(rgb_img, **kwargs):
                             [maxWidth - 1, maxHeight - 1],
                             [maxWidth - 1, 0]])
     # Transform the color card to crop (and unwarp)
-    M = cv2.getPerspectiveTransform(input_pts, output_pts)
-    out = cv2.warpPerspective(rgb_img, M, (min(maxWidth, maxHeight), max(maxWidth, maxHeight)), flags=cv2.INTER_LINEAR)
+    matrix = cv2.getPerspectiveTransform(input_pts, output_pts)
+    out = cv2.warpPerspective(rgb_img, matrix, (min(maxWidth, maxHeight), max(maxWidth, maxHeight)), flags=cv2.INTER_LINEAR)
 
     # Create color card mask based on size of detected color card
     increment = int((maxWidth + maxHeight) / 9.7) + 1
@@ -311,16 +297,7 @@ def _color_card_detection(rgb_img, **kwargs):
     labeled_mask, debug_img = _draw_color_chips(out, new_centers_w, radius)
     
     # Find contours again to see if alignment of centers passes qc
-    # Convert to grayscale, threshold, and findContours
-    imgray = _rgb2hsv(rgb_img=out, channel="v")
-    gaussian = cv2.GaussianBlur(imgray, (11, 11), 0)
-    thresh = cv2.adaptiveThreshold(gaussian, 255, adaptive_method,
-                                   cv2.THRESH_BINARY_INV, block_size, 2)
-    contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    filtered_contours = [contour for contour in contours if _is_square(contour, min_size, aspect_ratio, solidity)]
-    target_square_area = np.median([cv2.contourArea(cnt) for cnt in filtered_contours])
-    filtered_contours = [contour for contour in filtered_contours if
-                         (0.8 < (cv2.contourArea(contour) / target_square_area) < 1.2)]
+    filtered_contours = _find_color_chip_like_objects(out, **kwargs)
     # Draw new contours onto cropped card debug image
     cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
 
