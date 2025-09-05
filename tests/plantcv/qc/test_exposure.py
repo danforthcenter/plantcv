@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from plantcv.plantcv import outputs
-import plantcv.plantcv.qc.exposure as exposure
+from plantcv.plantcv.qc.exposure import exposure
 
 
 def test_plantcv_quality_control(test_data):
