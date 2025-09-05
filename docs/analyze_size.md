@@ -14,8 +14,7 @@ Size and shape analysis outputs numeric properties for individual plants, seeds,
 - **Context:**
     - Used to output size and shape characteristics of individual objects (labeled regions). 
     - About the analysis image: We draw some of the measured shape characteristics on the input `img`. The height, width,
-    longest path, convex hull, and centroid are drawn in magenta. The perimeter of the plant is drawn in blue, and the holes within solid objects
-    are drawn in orange. When `pcv.params.verbose = True` then the `label` for a given object will also get drawn. Line thickness,
+    longest path, convex hull, and centroid are drawn in magenta. The edges of the object is drawn in blue. When `pcv.params.verbose = True` then the `label` for a given object will also get drawn. Line thickness,
     text size, and text thickness are customizable attributes of [`pcv.params`](params.md). 
 - **Example use:**
     - [Use In Seed Analysis Tutorial](https://plantcv.org/tutorials/seed-analysis-workflow)
