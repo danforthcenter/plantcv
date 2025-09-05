@@ -123,14 +123,11 @@ def _analyze_size(img, mask, label):
         longest_path = euclidean(tuple(caliper_transpose[caliper_length - 1]), tuple(caliper_transpose[0]))
 
         # Add measurements onto the diagnostic image
-        # color blind friendly palette in BGR: (255, 0, 255) = magenta;
-        # (255, 0, 0) - blue; (0, 103, 255) = safety orange
-        # Draw entire object outline (previously only drew perimeter in v4.9 and earlier)
-        cv2.drawContours(plt_img, cnt, -1, (0, 103, 255), params.line_thickness)
+        # color blind friendly palette in BGR: (255, 0, 255) = magenta; (255, 0, 0) = blue
         # Draw convex hull
         cv2.drawContours(plt_img, [hull], -1, (255, 0, 255), params.line_thickness)
         # Draw perimeter outline
-        cv2.drawContours(plt_img, obj, -1, (255, 0, 0), params.line_thickness)
+        cv2.drawContours(plt_img, cnt, -1, (255, 0, 0), params.line_thickness)
         # Draw width
         cv2.line(plt_img, (x, y), (x + width, y), (255, 0, 255), params.line_thickness)
         # Draw height
