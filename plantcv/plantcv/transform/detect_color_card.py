@@ -230,9 +230,6 @@ def _color_card_detection(rgb_img, **kwargs):
     if len(filtered_contours) == 0:
         fatal_error('No color card found')
 
-    # Draw filtered contours on debug img
-    debug_img = np.copy(rgb_img)
-    cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
     # Find the bounding box of the detected chips
     x, y, w, h = cv2.boundingRect(np.vstack(filtered_contours))
 
@@ -293,14 +290,14 @@ def _color_card_detection(rgb_img, **kwargs):
         radius = int(increment / 15) + 1
     start = int(increment * 0.32) + 1
     new_centers_w = [[int(start + i * increment), int(start + j * increment)] for j in range(nrows) for i in range(ncols)]
-    # Create labeled mask and debug image of color chips
-    labeled_mask, debug_img = _draw_color_chips(out, new_centers_w, radius)
-    
     # Find contours again to see if alignment of centers passes qc
     filtered_contours = _find_color_chip_like_objects(out, **kwargs)
-    # Draw new contours onto cropped card debug image
-    cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
 
+    # Draw new contours onto cropped card debug image
+    debug_img = np.copy(out)
+    cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
+    # Create labeled mask and debug image of color chips
+    labeled_mask, debug_img = _draw_color_chips(debug_img, new_centers_w, radius)
     # Check that new centers are inside each unique filtered_contour
     _check_point_per_chip(filtered_contours, new_centers_w, debug_img)
 
