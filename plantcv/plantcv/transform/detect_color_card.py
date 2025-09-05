@@ -297,20 +297,35 @@ def _color_card_detection(rgb_img, **kwargs):
                             [0, maxHeight - 1],
                             [maxWidth - 1, maxHeight - 1],
                             [maxWidth - 1, 0]])
-
+    # Transform the color card to crop (and unwarp)
     M = cv2.getPerspectiveTransform(input_pts, output_pts)
     out = cv2.warpPerspective(rgb_img, M, (min(maxWidth, maxHeight), max(maxWidth, maxHeight)), flags=cv2.INTER_LINEAR)
+
     # Create color card mask based on size of detected color card
     increment = int((maxWidth + maxHeight) / 9.7) + 1
     if not radius:
         radius = int(increment / 15) + 1
     start = int(increment * 0.32) + 1
     new_centers_w = [[int(start + i * increment), int(start + j * increment)] for j in range(nrows) for i in range(ncols)]
-
     # Create labeled mask and debug image of color chips
     labeled_mask, debug_img = _draw_color_chips(out, new_centers_w, radius)
+    
+    # Find contours again to see if alignment of centers passes qc
+    # Convert to grayscale, threshold, and findContours
+    imgray = _rgb2hsv(rgb_img=out, channel="v")
+    gaussian = cv2.GaussianBlur(imgray, (11, 11), 0)
+    thresh = cv2.adaptiveThreshold(gaussian, 255, adaptive_method,
+                                   cv2.THRESH_BINARY_INV, block_size, 2)
+    contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    filtered_contours = [contour for contour in contours if _is_square(contour, min_size, aspect_ratio, solidity)]
+    target_square_area = np.median([cv2.contourArea(cnt) for cnt in filtered_contours])
+    filtered_contours = [contour for contour in filtered_contours if
+                         (0.8 < (cv2.contourArea(contour) / target_square_area) < 1.2)]
+    # Draw new contours onto cropped card debug image
+    cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
+
     # Check that new centers are inside each unique filtered_contour
-    #_check_point_per_chip(filtered_contours, new_centers_w, debug_img)
+    _check_point_per_chip(filtered_contours, new_centers_w, debug_img)
 
     return labeled_mask, debug_img, marea, mheight, mwidth, boundind_mask
 
