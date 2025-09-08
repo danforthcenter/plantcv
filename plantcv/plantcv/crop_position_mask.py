@@ -32,7 +32,7 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
     :param h_pos: str
     :return newmask: numpy.ndarray
     """
-    if x < 0 or y < 0:
+    if not all([x, y]):
         fatal_error("x and y cannot be negative numbers or non-integers")
 
     if v_pos.upper() not in ["TOP", "BOTTOM"]:
@@ -43,9 +43,10 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
 
     # get the sizes of the images
     # subtract 1 from x and y since python counts start from 0
-    y = y - 1 if y != 0 else y
-    x = x - 1 if x != 0 else x
-
+    if y != 0:
+        y = y - 1
+    if x != 0:
+        x = x - 1
     # Convert grayscale images to color
     ori_img = _grayscale_to_rgb(img)
 
@@ -53,7 +54,7 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
     ix, iy = np.shape(ori_img)[0:2]
 
     # Convert mask to grayscale if needed and get its shape
-    if len(np.shape(mask)) > 2 or len(np.unique(mask)) > 2:
+    if any([len(np.shape(mask)) > 2, len(np.unique(mask)) > 2]):
         fatal_error("Mask should be a binary image")
     mx, my = np.shape(mask)
 
