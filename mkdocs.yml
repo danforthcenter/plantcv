@@ -204,6 +204,7 @@ nav:
           - 'Auto Threshold Methods': visualize_auto_threshold_methods.md
           - 'Chlorophyll Fluorescence': visualize_chlorophyll_fluorescence.md
           - 'Color Correction Scatter Plot': visualize_color_correction_scatter.md
+          - 'Color Chip Comparison Plot': visualize_color_chip_comparison.md
           - 'Colorize Label Image': visualize_colorize_label_img.md
           - 'Colorize Masks': visualize_colorize_masks.md
           - 'Colorspaces': visualize_colorspace.md
