@@ -32,7 +32,7 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
     :param h_pos: str
     :return newmask: numpy.ndarray
     """
-    if not all([x, y]):
+    if not all([x > 0, y > 0]):
         fatal_error("x and y cannot be negative numbers or non-integers")
 
     if v_pos.upper() not in ["TOP", "BOTTOM"]:
