@@ -61,14 +61,13 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
     if mx >= ix:
         r = mx - ix
         r1 = int(np.rint(r / 2.0))
-        r2 = r1 if r % 2 == 0 else r1 - 1
-        mask = mask[r1:mx - r2, 0:my]
+        r2 = _crop_modulo(r1, r)
+        mask = mask[r1 : mx - r2, 0:my]
     if my >= iy:
         r = my - iy
         r1 = int(np.rint(r / 2.0))
-        r2 = r1
-        r2 = r1 if r % 2 == 0 else r1 - 1
-        mask = mask[0:mx, r1:my - r2]
+        r2 = _crop_modulo(r1, r)
+        mask = mask[0:mx, r1 : my - r2]
 
     # New mask shape
     mx, my = np.shape(mask)
@@ -84,18 +83,45 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
         maskv = _right_crop_position(y, maskv, iy)
 
     newmask = np.array(maskv)
-    _debug(visual=newmask, filename=os.path.join(params.debug_outdir, str(params.device) + "_newmask.png"), cmap='gray')
+    _debug(
+        visual=newmask,
+        filename=os.path.join(params.debug_outdir, str(params.device) + "_newmask.png"),
+        cmap="gray",
+    )
 
     objects, hierarchy = _cv2_findcontours(bin_img=newmask)
     for i, _ in enumerate(objects):
-        cv2.drawContours(ori_img, objects, i, (255, 102, 255), -1, lineType=8, hierarchy=hierarchy)
-    _debug(visual=ori_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_mask_overlay.png'))
+        cv2.drawContours(
+            ori_img, objects, i, (255, 102, 255), -1, lineType=8, hierarchy=hierarchy
+        )
+    _debug(
+        visual=ori_img,
+        filename=os.path.join(
+            params.debug_outdir, str(params.device) + "_mask_overlay.png"
+        ),
+    )
 
     return newmask
 
 
+def _crop_modulo(x1, x):
+    """Force a number to make a rectangle slice
+
+    Parameters
+    ----------
+    x1:       int, half the difference in size between two images
+    x:        int, the difference in size between two images
+
+    Returns
+    -------
+    out:      int, x1 or x1 - 1 depending on if the difference in size is even.
+    """
+    out = x1 if x % 2 == 0 else x1 - 1
+    return out
+
+
 def _top_crop_position(x, my, mask, ix):
-    '''Add rows to top of a mask to push it "down" on an image
+    """Add rows to top of a mask to push it "down" on an image
 
     Parameters
     ----------
@@ -107,7 +133,7 @@ def _top_crop_position(x, my, mask, ix):
     Returns
     -------
     maskv:   numpy.ndarray, binary mask moved vertically on original image scale.
-    '''
+    """
     # Add rows to the top
     top = np.zeros((x, my), dtype=np.uint8)
 
@@ -130,14 +156,19 @@ def _top_crop_position(x, my, mask, ix):
             rows1 = np.zeros((r1, my), dtype=np.uint8)
             rows2 = np.zeros((r2, my), dtype=np.uint8)
             maskv = np.vstack((rows1, maskv, rows2))
-    _debug(visual=maskv,
-           filename=os.path.join(params.debug_outdir, str(params.device) + "_push-top.png"),
-           cmap='gray')
+    _debug(
+        visual=maskv,
+        filename=os.path.join(
+            params.debug_outdir, str(params.device) + "_push-top.png"
+        ),
+        cmap="gray",
+    )
 
     return maskv
 
+
 def _bottom_crop_position(x, my, mask, ix):
-    '''Add rows to bottom of a mask to push it "up" on an image
+    """Add rows to bottom of a mask to push it "up" on an image
 
     Parameters
     ----------
@@ -145,11 +176,11 @@ def _bottom_crop_position(x, my, mask, ix):
     my:      int, y-axis shape of image mask
     mask:    numpy.ndarray, binary mask
     ix:      int, x-axis shape of original image
-    
+
     Returns
     -------
     maskv:   numpy.ndarray, binary mask moved vertically on original image scale.
-    '''
+    """
     # Add rows to the bottom
     bottom = np.zeros((x, my), dtype=np.uint8)
 
@@ -174,26 +205,30 @@ def _bottom_crop_position(x, my, mask, ix):
             rows2 = np.zeros((r2, my), dtype=np.uint8)
             maskv = np.vstack((rows1, maskv, rows2))
 
-    _debug(visual=maskv,
-           filename=os.path.join(params.debug_outdir, str(params.device) + "_push-bottom.png"),
-           cmap='gray')
+    _debug(
+        visual=maskv,
+        filename=os.path.join(
+            params.debug_outdir, str(params.device) + "_push-bottom.png"
+        ),
+        cmap="gray",
+    )
 
     return maskv
 
 
 def _left_crop_position(y, mask, iy):
-    '''Add rows to bottom of a mask to push it "up" on an image
+    """Add rows to bottom of a mask to push it "up" on an image
 
     Parameters
     ----------
     y:        int, y position for left adjustment.
     mask:     numpy.ndarray, binary mask after vertical adjustments.
     iy:       int, y-axis shape of original image.
-    
+
     Returns
     -------
     maskh:   numpy.ndarray, binary mask moved vertically on original image scale.
-    '''
+    """
     mvx, _ = np.shape(mask)
 
     # Add rows to the left
@@ -217,26 +252,30 @@ def _left_crop_position(y, mask, iy):
             col2 = np.zeros((mx, c2), dtype=np.uint8)
             maskh = np.hstack((col1, maskh, col2))
 
-    _debug(visual=maskh,
-           filename=os.path.join(params.debug_outdir, str(params.device) + "_push-left.png"),
-           cmap='gray')
+    _debug(
+        visual=maskh,
+        filename=os.path.join(
+            params.debug_outdir, str(params.device) + "_push-left.png"
+        ),
+        cmap="gray",
+    )
 
     return maskh
 
 
 def _right_crop_position(y, mask, iy):
-    '''Add rows to bottom of a mask to push it "up" on an image
+    """Add rows to bottom of a mask to push it "up" on an image
 
     Parameters
     ----------
     y:        int, y position for left adjustment.
     mask:     numpy.ndarray, binary mask after vertical adjustments.
     iy:       int, y-axis shape of original image.
-    
+
     Returns
     -------
     maskh:   numpy.ndarray, binary mask moved vertically on original image scale.
-    '''
+    """
     mvx, _ = np.shape(mask)
 
     # Add rows to the left
@@ -262,8 +301,12 @@ def _right_crop_position(y, mask, iy):
             col2 = np.zeros((mx, c2), dtype=np.uint8)
             maskh = np.hstack((col1, maskh, col2))
 
-    _debug(visual=maskh,
-           filename=os.path.join(params.debug_outdir, str(params.device) + "_push-right.png"),
-           cmap='gray')
+    _debug(
+        visual=maskh,
+        filename=os.path.join(
+            params.debug_outdir, str(params.device) + "_push-right.png"
+        ),
+        cmap="gray",
+    )
 
     return maskh
