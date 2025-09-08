@@ -1,10 +1,10 @@
 # Visualize a scatter plot representation of color correction
 
 import pandas as pd
-from altair as alt
+import altair as alt
 
 
-def color_chip_comparison(std_matrix, **kwargs):
+def color_chip_comparison(std_matrix, *args):
     """
     Plot 4 panels showing the difference in observed vs expected colors and optionally
     the calibrated colors in a color card.
@@ -14,7 +14,7 @@ def color_chip_comparison(std_matrix, **kwargs):
     ----------
     std_matrix   : numpy.ndarray
                    Output from pcv.transform.std_color_matrix
-    **kwargs: list of numpy.ndarrays
+    *args: list of numpy.ndarrays
                    Output from pcv.transform.get_color_matrix
 
     Returns
@@ -22,7 +22,7 @@ def color_chip_comparison(std_matrix, **kwargs):
     altair.vegalite.v5.api.VConcatChart of color chip greenness ranks between observed and expected values.
     """
     # make standard color matrix into a rescaled dataframe
-    stddf = pd.DataFrame(stdmat)
+    stddf = pd.DataFrame(std_matrix)
     stddf.columns = ['chip', 'R', 'G', 'B']
     stddf["card"] = "std"
     stddf["std_R"] = stddf["R"] * 255
@@ -31,7 +31,7 @@ def color_chip_comparison(std_matrix, **kwargs):
     # initialize a list of like dataframes
     df_list = [stddf]
     # format and append all kwargs into list of dataframes
-    for i, mat in enumerate(**kwargs):
+    for i, mat in enumerate(args):
         df = pd.DataFrame(mat)
         df.columns = ['chip', 'R', 'G', 'B']
         df["card"] = f"card {i + 1}"
@@ -89,10 +89,10 @@ def color_chip_comparison(std_matrix, **kwargs):
     # initialize list of margin plots
     margin_plots = []
     # for each kwarg matrix and std matrix make a margin plot of residual ranks
-    for i in range(0, len(**kwargs) + 1):
+    for i in range(0, len(args) + 1):
         # select card
         whichcard = f"card {i + 1}"
-        if i + 1 > len(**kwargs):
+        if i + 1 > len(args):
             whichcard = "std"
         sub1 = fulldf[fulldf["card"] == whichcard]
         # initialize plot
@@ -100,8 +100,8 @@ def color_chip_comparison(std_matrix, **kwargs):
             alt.X("std_greenness_rank:Q"),
             alt.Y("std_greenness_rank:Q")
         ).properties(
-            height= 500 / (10/9 * len(obs_matrices) + 1),
-            width = 500 / (10/9 * len(obs_matrices) + 1),
+            height= 500 / (10/9 * len(args) + 1),
+            width = 500 / (10/9 * len(args) + 1),
             title = whichcard
         )
         # make line+points layer of observed vs expected ranks
@@ -124,3 +124,4 @@ def color_chip_comparison(std_matrix, **kwargs):
         margin_plots.append(iterchart)
     # combine tile plot and margin plots
     out = alt.vconcat(upper, alt.hconcat(*margin_plots, spacing = 5))
+    return out
