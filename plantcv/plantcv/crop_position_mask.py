@@ -72,123 +72,16 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
 
     # New mask shape
     mx, my = np.shape(mask)
-
+    # make vertical adjustments
     if v_pos.upper() == "TOP":
-        # Add rows to the top
-        top = np.zeros((x, my), dtype=np.uint8)
-
-        maskv = np.vstack((top, mask))
-
-        mx, my = np.shape(maskv)
-
-        if mx >= ix:
-            maskv = maskv[0:ix, 0:my]
-
-        if mx < ix:
-            r = ix - mx
-            if r % 2 == 0:
-                r1 = int(r / 2.0)
-                rows1 = np.zeros((r1, my), dtype=np.uint8)
-                maskv = np.vstack((rows1, maskv, rows1))
-            else:
-                r1 = int(math.ceil(r / 2.0))
-                r2 = r1 - 1
-                rows1 = np.zeros((r1, my), dtype=np.uint8)
-                rows2 = np.zeros((r2, my), dtype=np.uint8)
-                maskv = np.vstack((rows1, maskv, rows2))
-        _debug(visual=maskv,
-               filename=os.path.join(params.debug_outdir, str(params.device) + "_push-top.png"),
-               cmap='gray')
-
+        maskv = _top_crop_position(x, my, mask, ix)
     elif v_pos.upper() == "BOTTOM":
-        # Add rows to the bottom
-        bottom = np.zeros((x, my), dtype=np.uint8)
-
-        maskv = np.vstack((mask, bottom))
-
-        mx, my = np.shape(maskv)
-
-        if mx >= ix:
-            maskdiff = mx - ix
-            maskv = maskv[maskdiff:mx, 0:my]
-
-        if mx < ix:
-            r = ix - mx
-            if r % 2 == 0:
-                r1 = int(r / 2.0)
-                rows1 = np.zeros((r1, my), dtype=np.uint8)
-                maskv = np.vstack((rows1, maskv, rows1))
-            else:
-                r1 = int(math.ceil(r / 2.0))
-                r2 = r1 - 1
-                rows1 = np.zeros((r1, my), dtype=np.uint8)
-                rows2 = np.zeros((r2, my), dtype=np.uint8)
-                maskv = np.vstack((rows1, maskv, rows2))
-
-        _debug(visual=maskv,
-               filename=os.path.join(params.debug_outdir, str(params.device) + "_push-bottom.png"),
-               cmap='gray')
-
+        maskv = _bottom_crop_position(x, my, mask, ix)
+    # make horizontal adjustments
     if h_pos.upper() == "LEFT":
-
-        mx, my = np.shape(maskv)
-
-        # Add rows to the left
-        left = np.zeros((mx, y), dtype=np.uint8)
-        maskv = np.hstack((left, maskv))
-
-        mx, my = np.shape(maskv)
-
-        if my >= iy:
-            maskv = maskv[0:mx, 0:iy]
-
-        if my < iy:
-            c = iy - my
-            if c % 2 == 0:
-                c1 = int(c / 2.0)
-                col = np.zeros((mx, c1), dtype=np.uint8)
-                maskv = np.hstack((col, maskv, col))
-            else:
-                c1 = int(math.ceil(c / 2.0))
-                c2 = c1 - 1
-                col1 = np.zeros((mx, c1), dtype=np.uint8)
-                col2 = np.zeros((mx, c2), dtype=np.uint8)
-                maskv = np.hstack((col1, maskv, col2))
-
-        _debug(visual=maskv,
-               filename=os.path.join(params.debug_outdir, str(params.device) + "_push-left.png"),
-               cmap='gray')
-
+        maskv = _left_crop_position(y, maskv, iy)
     elif h_pos.upper() == "RIGHT":
-
-        mx, my = np.shape(maskv)
-
-        # Add rows to the left
-        right = np.zeros((mx, y), dtype=np.uint8)
-        maskv = np.hstack((maskv, right))
-
-        mx, my = np.shape(maskv)
-
-        if my >= iy:
-            ex = my - iy
-            maskv = maskv[0:mx, ex:my]
-
-        if my < iy:
-            c = iy - my
-            if c % 2 == 0:
-                c1 = int(c / 2.0)
-                col = np.zeros((mx, c1), dtype=np.uint8)
-                maskv = np.hstack((col, maskv, col))
-            else:
-                c1 = int(math.ceil(c / 2.0))
-                c2 = c1 - 1
-                col1 = np.zeros((mx, c1), dtype=np.uint8)
-                col2 = np.zeros((mx, c2), dtype=np.uint8)
-                maskv = np.hstack((col1, maskv, col2))
-
-        _debug(visual=maskv,
-               filename=os.path.join(params.debug_outdir, str(params.device) + "_push-right.png"),
-               cmap='gray')
+        maskv = _right_crop_position(y, maskv, iy)
 
     newmask = np.array(maskv)
     _debug(visual=newmask, filename=os.path.join(params.debug_outdir, str(params.device) + "_newmask.png"), cmap='gray')
@@ -199,3 +92,178 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
     _debug(visual=ori_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_mask_overlay.png'))
 
     return newmask
+
+
+def _top_crop_position(x, my, mask, ix):
+    '''Add rows to top of a mask to push it "down" on an image
+
+    Parameters
+    ----------
+    x:       int, x position.
+    my:      int, y-axis shape of image mask
+    mask:    numpy.ndarray, binary mask
+    ix:      int, x-axis shape of original image
+
+    Returns
+    -------
+    maskv:   numpy.ndarray, binary mask moved vertically on original image scale.
+    '''
+    # Add rows to the top
+    top = np.zeros((x, my), dtype=np.uint8)
+
+    maskv = np.vstack((top, mask))
+
+    mx, my = np.shape(maskv)
+
+    if mx >= ix:
+        maskv = maskv[0:ix, 0:my]
+
+    if mx < ix:
+        r = ix - mx
+        if r % 2 == 0:
+            r1 = int(r / 2.0)
+            rows1 = np.zeros((r1, my), dtype=np.uint8)
+            maskv = np.vstack((rows1, maskv, rows1))
+        else:
+            r1 = int(math.ceil(r / 2.0))
+            r2 = r1 - 1
+            rows1 = np.zeros((r1, my), dtype=np.uint8)
+            rows2 = np.zeros((r2, my), dtype=np.uint8)
+            maskv = np.vstack((rows1, maskv, rows2))
+    _debug(visual=maskv,
+           filename=os.path.join(params.debug_outdir, str(params.device) + "_push-top.png"),
+           cmap='gray')
+
+    return maskv
+
+def _bottom_crop_position(x, my, mask, ix):
+    '''Add rows to bottom of a mask to push it "up" on an image
+
+    Parameters
+    ----------
+    x:       int, x position.
+    my:      int, y-axis shape of image mask
+    mask:    numpy.ndarray, binary mask
+    ix:      int, x-axis shape of original image
+    
+    Returns
+    -------
+    maskv:   numpy.ndarray, binary mask moved vertically on original image scale.
+    '''
+    # Add rows to the bottom
+    bottom = np.zeros((x, my), dtype=np.uint8)
+
+    maskv = np.vstack((mask, bottom))
+
+    mx, my = np.shape(maskv)
+
+    if mx >= ix:
+        maskdiff = mx - ix
+        maskv = maskv[maskdiff:mx, 0:my]
+
+    if mx < ix:
+        r = ix - mx
+        if r % 2 == 0:
+            r1 = int(r / 2.0)
+            rows1 = np.zeros((r1, my), dtype=np.uint8)
+            maskv = np.vstack((rows1, maskv, rows1))
+        else:
+            r1 = int(math.ceil(r / 2.0))
+            r2 = r1 - 1
+            rows1 = np.zeros((r1, my), dtype=np.uint8)
+            rows2 = np.zeros((r2, my), dtype=np.uint8)
+            maskv = np.vstack((rows1, maskv, rows2))
+
+    _debug(visual=maskv,
+           filename=os.path.join(params.debug_outdir, str(params.device) + "_push-bottom.png"),
+           cmap='gray')
+
+    return maskv
+
+
+def _left_crop_position(y, mask, iy):
+    '''Add rows to bottom of a mask to push it "up" on an image
+
+    Parameters
+    ----------
+    y:        int, y position for left adjustment.
+    mask:     numpy.ndarray, binary mask after vertical adjustments.
+    iy:       int, y-axis shape of original image.
+    
+    Returns
+    -------
+    maskh:   numpy.ndarray, binary mask moved vertically on original image scale.
+    '''
+    mvx, _ = np.shape(mask)
+
+    # Add rows to the left
+    left = np.zeros((mvx, y), dtype=np.uint8)
+    maskh = np.hstack((left, mask))
+
+    mx, my = np.shape(maskh)
+
+    if my >= iy:
+        maskh = maskh[0:mx, 0:iy]
+    if my < iy:
+        c = iy - my
+        if c % 2 == 0:
+            c1 = int(c / 2.0)
+            col = np.zeros((mx, c1), dtype=np.uint8)
+            maskh = np.hstack((col, maskh, col))
+        else:
+            c1 = int(math.ceil(c / 2.0))
+            c2 = c1 - 1
+            col1 = np.zeros((mx, c1), dtype=np.uint8)
+            col2 = np.zeros((mx, c2), dtype=np.uint8)
+            maskh = np.hstack((col1, maskh, col2))
+
+    _debug(visual=maskh,
+           filename=os.path.join(params.debug_outdir, str(params.device) + "_push-left.png"),
+           cmap='gray')
+
+    return maskh
+
+
+def _right_crop_position(y, mask, iy):
+    '''Add rows to bottom of a mask to push it "up" on an image
+
+    Parameters
+    ----------
+    y:        int, y position for left adjustment.
+    mask:     numpy.ndarray, binary mask after vertical adjustments.
+    iy:       int, y-axis shape of original image.
+    
+    Returns
+    -------
+    maskh:   numpy.ndarray, binary mask moved vertically on original image scale.
+    '''
+    mvx, _ = np.shape(mask)
+
+    # Add rows to the left
+    right = np.zeros((mvx, y), dtype=np.uint8)
+    maskh = np.hstack((mask, right))
+
+    mx, my = np.shape(maskh)
+
+    if my >= iy:
+        ex = my - iy
+        maskh = maskh[0:mx, ex:my]
+
+    if my < iy:
+        c = iy - my
+        if c % 2 == 0:
+            c1 = int(c / 2.0)
+            col = np.zeros((mx, c1), dtype=np.uint8)
+            maskh = np.hstack((col, maskh, col))
+        else:
+            c1 = int(math.ceil(c / 2.0))
+            c2 = c1 - 1
+            col1 = np.zeros((mx, c1), dtype=np.uint8)
+            col2 = np.zeros((mx, c2), dtype=np.uint8)
+            maskh = np.hstack((col1, maskh, col2))
+
+    _debug(visual=maskh,
+           filename=os.path.join(params.debug_outdir, str(params.device) + "_push-right.png"),
+           cmap='gray')
+
+    return maskh
