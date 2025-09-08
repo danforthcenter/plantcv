@@ -9,7 +9,7 @@ This function plots 4 panels of 2D scatter plot visualizations showing RGB and g
 - **Parameters:**
 	- color_matrix     - A tuple of numpy.ndarrays, as returned from [`pcv.transform.get_color_matrix`](get_color_matrix.md).
 	- std_matrix       - A numpy.ndarray as returned from [`pcv.transform.std_color_matrix`](std_color_matrix.md).
-	- corrected_matrix - An optional tuple of numpy.ndarrays, as returned from [`pcv.transform.get_color_matrix`](get_color_matrix.md) used ona color corrected image.
+	- corrected_matrix - An optional tuple of numpy.ndarrays, as returned from [`pcv.transform.get_color_matrix`](get_color_matrix.md) used on a color corrected image.
 
 - **Context:**
     - The aim of this visualization is to help evaluate the condition of a color card, input image, and color correction. Generally after color correction an image will look better but it may be useful to check the residuals shown in this plot between observed and expected values.
@@ -30,7 +30,7 @@ fig, axs = pcv.visualize.color_correction_plot(colmat, stdmat, ccmat)
 
 ```
 
-**Pixel scatter visualizations:**
+**Color correction scatter visualizations:**
 
 ![Screenshot](img/documentation_images/visualize_color_correction_scatter/am003_sv_ex.png)
 
