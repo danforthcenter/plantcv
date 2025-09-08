@@ -140,7 +140,7 @@ def _apply_metadata_filters(df, config):
     # if there are regex filters then find the True indicies for each and only return those from the merged dataframe
     if bool(config.metadata_regex):
         for key, value in config.metadata_regex.items():
-            bools = [bool(re.search(value, x)) for x in df[key]]
+            bools = [bool(re.search(value, str(x))) for x in df[key]]
             df = df.loc[bools]
     return df
 ###########################################
