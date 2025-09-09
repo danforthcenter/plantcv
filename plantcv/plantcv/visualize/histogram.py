@@ -54,6 +54,31 @@ def _hist_gray(gray_img, bins, lower_bound, upper_bound, mask=None):
     # return hist_data
 
 
+def _get_histogram_bounds(img, mask=None, upper_bound=None, lower_bound=None):
+    """Get boundaries for where to count histogram pixels
+    Parameters
+    ----------
+    img      = numpy.ndarray, an RGB or grayscale image
+    mask     = numpy.ndarray, a binary mask image
+    upper_bound = int, upper bound for bins, default None
+    lower_bound = int, lower bound for bins, default None
+
+    Returns
+    -------
+    upper_bound, lower_bound = int, int ; new boundaries for bins
+    """
+    img_min, img_max = np.nanmin(img), np.nanmax(img)
+    if mask is not None:
+        masked = img[np.where(mask > 0)]
+        img_min, img_max = np.nanmin(masked), np.nanmax(masked)
+    # for lower / upper bound, if given, use the given value, otherwise, use the min / max of the image
+    if lower_bound is None:
+        lower_bound = img_min
+    if upper_bound is None:
+        upper_bound = img_max
+    return upper_bound, lower_bound
+
+
 def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, title=None, hist_data=False):
     """Plot histograms of each input image channel.
 
@@ -85,24 +110,16 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, titl
     if len(img.shape) < 2:
         fatal_error("Input image should be at least a 2d array!")
 
-    img_min, img_max = np.nanmin(img), np.nanmax(img)
-    if mask is not None:
-        masked = img[np.where(mask > 0)]
-        img_min, img_max = np.nanmin(masked), np.nanmax(masked)
+    upper_bound, lower_bound = _get_histogram_bounds(img, mask, upper_bound, lower_bound)
 
-    # for lower / upper bound, if given, use the given value, otherwise, use the min / max of the image
-    if lower_bound is None:
-        lower_bound = img_min
-    if upper_bound is None:
-        upper_bound = img_max
-    
     if len(img.shape) == 2:
         bin_labels, hist_percent, hist_ = _hist_gray(img, bins=bins, lower_bound=lower_bound, upper_bound=upper_bound,
                                                      mask=mask)
         hist_df = pd.DataFrame(
             {'pixel intensity': bin_labels, 'proportion of pixels (%)': hist_percent, 'hist_count': hist_,
              'color channel': ['0' for _ in range(len(hist_percent))]})
-    else: # greater than 2 image shape
+    # otherwise must be greater than 2 image shape
+    else:
         b_names = [str(i) for i in range(img.shape[2])]
         if img.shape[2] == 3:
             b_names = ['blue', 'green', 'red']
