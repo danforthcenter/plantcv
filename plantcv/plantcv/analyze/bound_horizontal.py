@@ -1,11 +1,34 @@
 """Analyze the vertical distribution of the plant relative to a horizontal reference line."""
 import os
-import cv2
 import numpy as np
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _iterate_analysis, _cv2_findcontours, _object_composition, _grayscale_to_rgb, _scale_size
+from plantcv.plantcv._helpers import _iterate_analysis, _grayscale_to_rgb, _scale_size
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
+
+
+def _get_boundary_values(bound_mask, total_area, axis=0):
+    """Calculate area, percent area and distance (height or width) in a boundary.
+    Parameters
+    ----------
+    bound_mask = numpy.ndarray, a binary mask of one side of a horizontal or vertical boundary
+    total_area = int, total area of the unbounded mask
+    axis       = int (0 or 1), which axis to use in calculated distance. 0 is height, 1 is width.
+
+    Returns
+    -------
+    bound_area         = int, area within boundary
+    distance_bound     = int, height/width of mask within boundary
+    percent_area_bound = float, percent of total area in this boundary
+    """
+    bound_area = int(np.sum(bound_mask))
+    distance_bound = 0
+    percent_area_bound = 0
+    if bound_area:
+        distance_bound = int(np.max(np.where(bound_mask)[axis]) +
+                             1 - np.min(np.where(bound_mask)[axis]))
+        percent_area_bound = int((bound_area / total_area) * 100)
+    return bound_area, distance_bound, percent_area_bound
 
 
 def bound_horizontal(img, labeled_mask, line_position, n_labels=1, label=None):
@@ -68,115 +91,22 @@ def _analyze_bound_horizontal(img, mask, line_position, label):
     percent_bound_area_above = 0
     below_bound_area = 0
     percent_bound_area_below = 0
-
     ori_img = np.copy(img)
     # Skip empty masks
-    if np.count_nonzero(mask) != 0:
-        # Draw line horizontal line through bottom of image, that is adjusted to user input height
+    if np.count_nonzero(mask) != 0 and line_position >= 0:
         ori_img = _grayscale_to_rgb(ori_img)
-        iy, ix, _ = np.shape(ori_img)
-        size = (iy, ix)
-        size1 = (iy, ix, 3)
-        background = np.zeros(size, dtype=np.uint8)
-        wback = (np.zeros(size1, dtype=np.uint8)) + 255
-        x_coor = int(ix)
-        y_coor = line_position
-        rec_corner = int(iy - 2)
-        rec_point1 = (1, rec_corner)
-        rec_point2 = (x_coor - 2, y_coor - 2)
-        cv2.rectangle(background, rec_point1, rec_point2, (255), 1)
-        below_contour, _ = _cv2_findcontours(bin_img=background)
-
-        # Find contours
-        cnt, cnt_str = _cv2_findcontours(bin_img=mask)
-
-        # Consolidate contours
-        obj = _object_composition(contours=cnt, hierarchy=cnt_str)
-
-        _, y, _, height = cv2.boundingRect(obj)
-
-        if y_coor - y <= 0:
-            height_above_bound = 0
-            height_below_bound = height
-        elif y_coor - y > 0:
-            height_1 = y_coor - y
-            if height - height_1 <= 0:
-                height_above_bound = height
-                height_below_bound = 0
-            else:
-                height_above_bound = y_coor - y
-                height_below_bound = height - height_above_bound
-
-        below = []
-        above = []
-        mask_nonzerox, mask_nonzeroy = np.nonzero(mask)
-        obj_points = np.vstack((mask_nonzeroy, mask_nonzerox))
-        obj_points1 = np.transpose(obj_points)
-
-        for c in obj_points1:
-            xy = tuple(int(ci) for ci in c)
-            pptest = cv2.pointPolygonTest(below_contour[0], xy, measureDist=False)
-            if pptest == 1:
-                below.append(xy)
-                cv2.circle(ori_img, xy, 1, (155, 0, 255))
-                cv2.circle(wback, xy, 1, (155, 0, 255))
-            else:
-                above.append(xy)
-                cv2.circle(ori_img, xy, 1, (0, 255, 0))
-                cv2.circle(wback, xy, 1, (0, 255, 0))
-        above_bound_area = len(above)
-        below_bound_area = len(below)
-        percent_bound_area_above = ((float(above_bound_area)) / (float(above_bound_area + below_bound_area))) * 100
-        percent_bound_area_below = ((float(below_bound_area)) / (float(above_bound_area + below_bound_area))) * 100
-
-        if above_bound_area or below_bound_area:
-            point3 = (0, y_coor - 4)
-            point4 = (x_coor, y_coor - 4)
-            cv2.line(ori_img, point3, point4, (255, 0, 255), params.line_thickness)
-            cv2.line(wback, point3, point4, (255, 0, 255), params.line_thickness)
-            m = cv2.moments(mask, binaryImage=True)
-            cmx, _ = (m['m10'] / m['m00'], m['m01'] / m['m00'])
-            if y_coor - y <= 0:
-                cv2.line(ori_img, (int(cmx), y), (int(cmx), y + height), (0, 255, 0), params.line_thickness)
-                cv2.line(wback, (int(cmx), y), (int(cmx), y + height), (0, 255, 0), params.line_thickness)
-            elif y_coor - y > 0:
-                height_1 = y_coor - y
-                if height - height_1 <= 0:
-                    cv2.line(ori_img, (int(cmx), y), (int(cmx), y + height), (255, 0, 0), params.line_thickness)
-                    cv2.line(wback, (int(cmx), y), (int(cmx), y + height), (255, 0, 0), params.line_thickness)
-                else:
-                    cv2.line(ori_img, (int(cmx), y_coor - 2), (int(cmx), y_coor - height_above_bound), (255, 0, 0),
-                             params.line_thickness)
-                    cv2.line(ori_img, (int(cmx), y_coor - 2), (int(cmx), y_coor + height_below_bound), (0, 255, 0),
-                             params.line_thickness)
-                    cv2.line(wback, (int(cmx), y_coor - 2), (int(cmx), y_coor - height_above_bound), (255, 0, 0),
-                             params.line_thickness)
-                    cv2.line(wback, (int(cmx), y_coor - 2), (int(cmx), y_coor + height_below_bound), (0, 255, 0),
-                             params.line_thickness)
-
-        point3 = (0, y_coor - 4)
-        point4 = (x_coor, y_coor - 4)
-        cv2.line(ori_img, point3, point4, (255, 0, 255), params.line_thickness)
-        cv2.line(wback, point3, point4, (255, 0, 255), params.line_thickness)
-        m = cv2.moments(mask, binaryImage=True)
-        cmx, _ = (m['m10'] / m['m00'], m['m01'] / m['m00'])
-        if y_coor - y <= 0:
-            cv2.line(ori_img, (int(cmx), y), (int(cmx), y + height), (0, 255, 0), params.line_thickness)
-            cv2.line(wback, (int(cmx), y), (int(cmx), y + height), (0, 255, 0), params.line_thickness)
-        elif y_coor - y > 0:
-            height_1 = y_coor - y
-            if height - height_1 <= 0:
-                cv2.line(ori_img, (int(cmx), y), (int(cmx), y + height), (255, 0, 0), params.line_thickness)
-                cv2.line(wback, (int(cmx), y), (int(cmx), y + height), (255, 0, 0), params.line_thickness)
-            else:
-                cv2.line(ori_img, (int(cmx), y_coor - 2), (int(cmx), y_coor - height_above_bound), (255, 0, 0),
-                         params.line_thickness)
-                cv2.line(ori_img, (int(cmx), y_coor - 2), (int(cmx), y_coor + height_below_bound), (0, 255, 0),
-                         params.line_thickness)
-                cv2.line(wback, (int(cmx), y_coor - 2), (int(cmx), y_coor - height_above_bound), (255, 0, 0),
-                         params.line_thickness)
-                cv2.line(wback, (int(cmx), y_coor - 2), (int(cmx), y_coor + height_below_bound), (0, 255, 0),
-                         params.line_thickness)
+        # make copy of mask for above and below threshold
+        top_mask = np.copy(mask).astype(bool)
+        bottom_mask = np.copy(mask).astype(bool)
+        # fill in area on opposite side of threshold with 0s
+        top_mask[line_position:np.shape(top_mask)[0] + 1] = np.zeros(
+            np.shape(top_mask[line_position:np.shape(top_mask)[0] + 1]))
+        bottom_mask[0:line_position - 1] = np.zeros(
+            np.shape(top_mask[0:line_position - 1]))
+        tot_area = np.sum(mask.astype(bool))
+        # calculate values above and below boundary
+        above_bound_area, height_above_bound, percent_bound_area_above = _get_boundary_values(top_mask, tot_area, 0)
+        below_bound_area, height_below_bound, percent_bound_area_below = _get_boundary_values(bottom_mask, tot_area, 0)
 
     outputs.add_observation(sample=label, variable='horizontal_reference_position',
                             trait='horizontal reference position',
