@@ -268,28 +268,31 @@ def _color_card_detection(rgb_img, **kwargs):
     pt_A, pt_B, pt_C, pt_D = corners
 
     input_pts = np.float32([pt_A, pt_B, pt_C, pt_D])
-    width_AD = np.sqrt(((pt_A[0] - pt_D[0]) ** 2) + ((pt_A[1] - pt_D[1]) ** 2))
-    width_BC = np.sqrt(((pt_B[0] - pt_C[0]) ** 2) + ((pt_B[1] - pt_C[1]) ** 2))
-    maxWidth = max(int(width_AD), int(width_BC))
+    length_AD = np.sqrt(((pt_A[0] - pt_D[0]) ** 2) + ((pt_A[1] - pt_D[1]) ** 2))
+    length_BC = np.sqrt(((pt_B[0] - pt_C[0]) ** 2) + ((pt_B[1] - pt_C[1]) ** 2))
+    length_card1 = max(int(length_AD), int(length_BC))
 
-    height_AB = np.sqrt(((pt_A[0] - pt_B[0]) ** 2) + ((pt_A[1] - pt_B[1]) ** 2))
-    height_CD = np.sqrt(((pt_C[0] - pt_D[0]) ** 2) + ((pt_C[1] - pt_D[1]) ** 2))
-    maxHeight = max(int(height_AB), int(height_CD))
+    length_AB = np.sqrt(((pt_A[0] - pt_B[0]) ** 2) + ((pt_A[1] - pt_B[1]) ** 2))
+    length_CD = np.sqrt(((pt_C[0] - pt_D[0]) ** 2) + ((pt_C[1] - pt_D[1]) ** 2))
+    length_card2 = max(int(length_AB), int(length_CD))
 
     output_pts = np.float32([[0, 0],
-                            [0, maxHeight - 1],
-                            [maxWidth - 1, maxHeight - 1],
-                            [maxWidth - 1, 0]])
+                            [0, length_card2 - 1],
+                            [length_card1 - 1, length_card2 - 1],
+                            [length_card1 - 1, 0]])
     # Transform the color card to crop (and unwarp)
     matrix = cv2.getPerspectiveTransform(input_pts, output_pts)
-    out = cv2.warpPerspective(rgb_img, matrix, (min(maxWidth, maxHeight), max(maxWidth, maxHeight)), flags=cv2.INTER_LINEAR)
+    out = cv2.warpPerspective(rgb_img, matrix, (min(length_card1, length_card2), max(length_card1, length_card2)), flags=cv2.INTER_LINEAR)
 
     # Create color card mask based on size of detected color card
-    increment = int((maxWidth + maxHeight) / 9.7) + 1
+
+    w_increment = int(length_card1 / 4) + 1
+    h_increment = int(length_card2 / 6) + 1
+    increment = int((w_increment + h_increment) / 2)
     if not radius:
         radius = int(increment / 15) + 1
     start = int(increment * 0.32) + 1
-    new_centers_w = [[int(start + i * increment), int(start + j * increment)] for j in range(nrows) for i in range(ncols)]
+    new_centers_w = [[int(start + i * w_increment), int(start + j * h_increment)] for j in range(nrows) for i in range(ncols)]
     # Find contours again to see if alignment of centers passes qc
     filtered_contours = _find_color_chip_like_objects(out, **kwargs)
 
