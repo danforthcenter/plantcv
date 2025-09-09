@@ -286,13 +286,14 @@ def _color_card_detection(rgb_img, **kwargs):
 
     # Create color card mask based on size of detected color card
 
-    w_increment = int(length_card1 / 4) + 1
-    h_increment = int(length_card2 / 6) + 1
+    w_increment = int(length_card1 / 3.7) + 1
+    h_increment = int(length_card2 / 5.7) + 1
     increment = int((w_increment + h_increment) / 2)
     if not radius:
         radius = int(increment / 15) + 1
-    start = int(increment * 0.32) + 1
-    new_centers_w = [[int(start + i * w_increment), int(start + j * h_increment)] for j in range(nrows) for i in range(ncols)]
+    start_x = int(increment * 0.3) + 1
+    start_y = int(start_x * 1.1)
+    new_centers_w = [[int(start_x + i * w_increment), int(start_y + j * h_increment)] for j in range(nrows) for i in range(ncols)]
     # Find contours again to see if alignment of centers passes qc
     filtered_contours = _find_color_chip_like_objects(out, **kwargs)
 
