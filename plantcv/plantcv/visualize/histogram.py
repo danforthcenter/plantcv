@@ -104,7 +104,7 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, titl
              'color channel': ['0' for _ in range(len(hist_percent))]})
     else: # greater than 2 image shape
         b_names = [str(i) for i in range(img.shape[2])]
-         if img.shape[2] == 3:
+        if img.shape[2] == 3:
             b_names = ['blue', 'green', 'red']
         # Assumption: RGB image
         # Initialize dataframe column arrays
