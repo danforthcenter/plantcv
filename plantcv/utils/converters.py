@@ -34,22 +34,7 @@ def json2csv(json_file, csv_prefix):
         raise ValueError(f"Invalid JSON file: {json_file}")
 
     # Split up variables
-    meta_vars = []
-    scalar_vars = []
-    multi_vars = []
-    for key, var in data["variables"].items():
-        # Metadata variables
-        if var["category"] == "metadata":
-            meta_vars.append(key)
-        # Data variables
-        else:
-            # Scalar variables
-            if var["datatype"] in ["<class 'bool'>", "<class 'int'>", "<class 'float'>", "<class 'str'>",
-                                   "<type 'bool'>", "<type 'int'>", "<type 'float'>", "<type 'str'>"]:
-                scalar_vars.append(key)
-            # Vector variables
-            if var["datatype"] in ["<class 'list'>", "<type 'list'>", "<class 'tuple'>", "<type 'tuple'>"]:
-                multi_vars.append(key)
+    meta_vars, scalar_vars, multi_vars = _unpack_variables(data)
 
     # Output files
     scalar_file = csv_prefix + "-single-value-traits.csv"
@@ -106,6 +91,40 @@ def json2csv(json_file, csv_prefix):
     df.to_csv(scalar_file)
 
 
+def _unpack_variables(data):
+    """Unpack variables from "variables" key of outputs
+    Parameters
+    ----------
+    data       = dict, json file
+
+    Return
+    ------
+    meta_vars   = list, variable names that are metadata
+    scalar_vars = list, variable names that are single-value traits
+    multi_vars  = list, variable names that are multi-value traits
+
+    """
+    # Split up variables
+    meta_vars = []
+    scalar_vars = []
+    multi_vars = []
+    for key, var in data["variables"].items():
+        # Metadata variables
+        if var["category"] == "metadata":
+            meta_vars.append(key)
+        # Data variables
+        else:
+            # Scalar variables
+            if var["datatype"] in ["<class 'bool'>", "<class 'int'>", "<class 'float'>", "<class 'str'>",
+                                   "<type 'bool'>", "<type 'int'>", "<type 'float'>", "<type 'str'>"]:
+                scalar_vars.append(key)
+            # Vector variables
+            if var["datatype"] in ["<class 'list'>", "<type 'list'>", "<class 'tuple'>", "<type 'tuple'>"]:
+                multi_vars.append(key)
+    return meta_vars, scalar_vars, multi_vars
+
+
+    
 def _last_index(*args):
     """Aggregation function to return the last index of a list."""
     return np.array(args[-1])[-1]
