@@ -124,7 +124,6 @@ def _unpack_variables(data):
     return meta_vars, scalar_vars, multi_vars
 
 
-    
 def _last_index(*args):
     """Aggregation function to return the last index of a list."""
     return np.array(args[-1])[-1]
