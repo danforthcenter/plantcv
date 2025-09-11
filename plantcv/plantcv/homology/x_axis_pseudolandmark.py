@@ -190,8 +190,7 @@ def _pseudolandmarks(img, obj, mask, label, axis=0):
     lt = direction_names[0]
     rb = direction_names[1]
     hv = direction_names[2]
-    
-    
+    # define increment
     inc = int(extent / 21)
     # Define variable for max points and min points
     pts_max = [main_ax]
