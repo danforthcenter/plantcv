@@ -109,7 +109,6 @@ def _small_img_pseudolandmarks(img, obj, mask, label, axis=0):
     cm = cms[axis]
     c_points = [cm] * 20
     center_h_or_v = list(zip(c_points, coords))
-    print(len(center_h_or_v))
     center_h_or_v = np.array(center_h_or_v)
     center_h_or_v.shape = (20, 1, 2)
     img2 = np.copy(img)
@@ -168,14 +167,17 @@ def _pseudolandmarks(img, obj, mask, label, axis=0):
     right_or_bottom  = list, right or bottom landmark points (depending on axis)
     center_h_or_v    = list, horizontal or vertical landmark points in middle portion (depending on axis)
     """
-    x, y, width, _ = cv2.boundingRect(obj)
+    x, y, width, height = cv2.boundingRect(obj)
     xy = [x, y] # writing as thought this is y aka 1
     main_ax = xy.pop(axis)
     other_ax = xy[0]
+    directions = [width, height]
+    main_direction = directions.pop(axis)
+    other_direction = directions[0]
     channels = [0, 1]
     main_c = channels.pop(axis)
     other_c = channels[0]
-    extent = width
+    extent = main_direction
     # Lists to return
     left_or_top = []
     right_or_bottom = []
@@ -196,16 +198,12 @@ def _pseudolandmarks(img, obj, mask, label, axis=0):
     
     inc = int(extent / 21)
     # Define variable for max points and min points
-    pts_max = []
-    pts_min = []
+    pts_max = [main_ax]
+    pts_min = [main_ax + inc]
     # Get max and min points for each of the intervals
-    for i in range(1, 21):
-        if i == 1:
-            pt_max = main_ax
-            pt_min = main_ax + (inc * i)
-        else:
-            pt_max = main_ax + (inc * (i - 1))
-            pt_min = main_ax + (inc * i)
+    for i in range(2, 21):
+        pt_max = main_ax + (inc * (i - 1))
+        pt_min = main_ax + (inc * i)
         # Put these in an array
         pts_max.append(pt_max)
         pts_min.append(pt_min)
@@ -279,17 +277,17 @@ def _pseudolandmarks(img, obj, mask, label, axis=0):
             smy = yval
             x_centroids.append(int(smx))
             y_centroids.append(int(smy))
-    left_or_top = list(zip(left_or_top_points, vals))
-    right_or_bottom = list(zip(right_or_bottom_points, vals))
-    if axis:
-        left_or_top = list(zip(vals, left_or_top_points))
-        right_or_bottom = list(zip(vals, right_or_bottom_points))
+    left_or_top = list(zip(left_or_top_points, y_vals))
+    right_or_bottom = list(zip(right_or_bottom_points, y_vals))
+    if not axis:
+        left_or_top = list(zip(y_vals, left_or_top_points))
+        right_or_bottom = list(zip(y_vals, right_or_bottom_points))
     left_or_top = np.array(left_or_top)
     left_or_top.shape = (20, 1, 2)
     right_or_bottom = np.array(right_or_bottom)
     right_or_bottom.shape = (20, 1, 2)
     center_h_or_v = list(zip(x_centroids, y_centroids))
-    center_h_or_v = np.array(center_h)
+    center_h_or_v = np.array(center_h_or_v)
     center_h_or_v.shape = (20, 1, 2)
 
     img2 = np.copy(img)
