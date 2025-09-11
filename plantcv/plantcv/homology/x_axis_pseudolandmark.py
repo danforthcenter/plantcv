@@ -167,7 +167,7 @@ def _pseudolandmarks(img, obj, mask, label, axis=0):
     center_h_or_v    = list, horizontal or vertical landmark points in middle portion (depending on axis)
     """
     x, y, width, height = cv2.boundingRect(obj)
-    xy = [x, y] # writing as thought this is y aka 1
+    xy = [x, y]
     main_ax = xy.pop(axis)
     directions = [width, height]
     main_direction = directions.pop(axis)
