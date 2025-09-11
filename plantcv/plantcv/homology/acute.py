@@ -66,7 +66,7 @@ def acute(img, mask, win, threshold, label=None):
 
     if len(index) != 0:
         # find islands from acute angles
-        isle = _find_islands(obj, index, threshold, chain, win)
+        isle = _find_islands(obj, index, chain, win)
         # get relevant points from acute islands
         homolog_pts, start_pts, stop_pts = _process_islands(obj, isle, chain, mask)
         num_acute_pts = len(homolog_pts)
@@ -143,17 +143,15 @@ def _angle_chain(obj, win):
 
         ang = math.degrees(math.acos(dot))
         chain.append(ang)
-    
     return chain
 
 
-def _find_islands(obj, index, threshold, chain, win):
+def _find_islands(obj, index, chain, win):
     """Find islands of acute angles from list of angles
     Parameters
     ----------
     obj       = plantcv.objects, contours and hierarchy of binary mask.
     index     = list, angles found from contours of mask
-    threshold = int, cutoff for an angle to be considered acute
     chain     = list, angle scores for each contour
     win       = int, maximum cumulative pixel distance window for calculating angle score
 
@@ -181,7 +179,7 @@ def _find_islands(obj, index, threshold, chain, win):
                 island = [ind]
 
     isle.append(island)
-    
+
     if len(isle) > 1:
         if (isle[0][0] == 0) & (isle[-1][-1] == (len(chain)-1)):
             if params.verbose:
@@ -214,8 +212,6 @@ def _process_islands(obj, isle, chain, mask):
     stop_pts    = list, pseudo-landmark island end position
     """
     # Initialize empty lists for homologous point max distance method
-    pt = []
-    vals = []
     maxpts = []
     ss_pts = []
     ts_pts = []
@@ -225,7 +221,7 @@ def _process_islands(obj, isle, chain, mask):
         # Identify if contour is concavity/convexity using image mask
         pix_x, pix_y, w, h = cv2.boundingRect(obj[island])  # Obtain local window around island
         for c in range(w):
-            val = []
+            vals = []
             for r in range(h):
                 # Identify pixels in local window internal to the island hull
                 pos = cv2.pointPolygonTest(obj[island], (pix_x + c, pix_y + r), 0)
@@ -268,4 +264,3 @@ def _process_islands(obj, isle, chain, mask):
     stop_pts = obj[ts_pts]
 
     return homolog_pts, start_pts, stop_pts
-    
