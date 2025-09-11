@@ -109,7 +109,7 @@ def _angle_chain(obj, win):
             rev = k - r
             # get next point of the 3
             pos = obj[rev]
-            dist_2 = np.sqrt(np.square(pos[0][0]-vert[0][0])+np.square(pos[0][1]-vert[0][1]))
+            dist_2 = np.sqrt(np.square(pos[0][0] - vert[0][0]) + np.square(pos[0][1] - vert[0][1]))
             if r >= 2:
                 if (dist_2 > dist_1) & (dist_2 <= win):  # Further from vertex than current pt A while within window
                     dist_1 = dist_2
@@ -125,11 +125,11 @@ def _angle_chain(obj, win):
             if fwd >= len(obj):
                 fwd -= len(obj)
             pos = obj[fwd]
-            dist_2 = np.sqrt(np.square(pos[0][0]-vert[0][0])+np.square(pos[0][1]-vert[0][1]))
+            dist_2 = np.sqrt(np.square(pos[0][0] - vert[0][0]) + np.square(pos[0][1] - vert[0][1]))
             if f >= 2:
-                if (dist_2 > dist_1) & (dist_2 <= win):  # Further from vertex than current pt B while within window?
+                if (dist_2 > dist_1) & (dist_2 <= win):
                     dist_1 = dist_2
-                    pt_b = pos                              # Load best fit within window as point B
+                    pt_b = pos
                 elif dist_2 > win:
                     break
             else:
@@ -167,9 +167,10 @@ def _find_islands(obj, index, threshold, chain, win):
     for ind in index:
         if not island:
             island.append(ind)
+        # if (last element of island) + 1 is this entry, append the entry as is
         elif island[-1] + 1 == ind:
             island.append(ind)
-        elif island[-1] + 1 != ind:
+        else:
             pt_a = obj[ind]
             pt_b = obj[island[-1] + 1]
             dist = np.sqrt(np.square(pt_a[0][0] - pt_b[0][0]) + np.square(pt_a[0][1] - pt_b[0][1]))
@@ -189,7 +190,7 @@ def _find_islands(obj, index, threshold, chain, win):
             # Delete islands to be spliced if start-end fusion required
             del isle[0]
             del isle[-1]
-            isle.insert(0, island)      # Prepend island to isle
+            isle.insert(0, island)
     else:
         if params.verbose:
             print('Microcontour...')
@@ -221,11 +222,10 @@ def _process_islands(obj, isle, chain, mask):
     ptvals = []
     max_dist = [['cont_pos', 'max_dist', 'angle']]
     for island in isle:
-
         # Identify if contour is concavity/convexity using image mask
         pix_x, pix_y, w, h = cv2.boundingRect(obj[island])  # Obtain local window around island
-
         for c in range(w):
+            val = []
             for r in range(h):
                 # Identify pixels in local window internal to the island hull
                 pos = cv2.pointPolygonTest(obj[island], (pix_x + c, pix_y + r), 0)
@@ -233,11 +233,9 @@ def _process_islands(obj, isle, chain, mask):
                     vals.append(mask[pix_y + r][pix_x + c])  # Store pixel value if internal
             if len(vals) > 0:
                 ptvals.append(sum(vals) / len(vals))
-                vals = []
             else:
-                ptvals.append('NaN')        # If no values can be retrieved
-                vals = []
-            if len(island) >= 3:               # If landmark is multiple points
+                ptvals.append('NaN')
+            if len(island) >= 3:               # If landmark is multiple points (distance scan for position)
                 if params.verbose:
                     print('route C')
                 ss = obj[island[0]]            # Store isle "x" start site
@@ -265,9 +263,9 @@ def _process_islands(obj, isle, chain, mask):
                 print(f'Landmark point indices: {maxpts}')
                 print(f'Starting site indices: {ss_pts}')
                 print(f'Termination site indices: {ts_pts}')
-    homolog_pts = obj[maxpts]
-    start_pts = obj[ss_pts]
-    stop_pts = obj[ts_pts]
+        homolog_pts = obj[maxpts]
+        start_pts = obj[ss_pts]
+        stop_pts = obj[ts_pts]
 
     return homolog_pts, start_pts, stop_pts
     
