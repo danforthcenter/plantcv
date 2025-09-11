@@ -47,29 +47,80 @@ def acute(img, mask, win, threshold, label=None):
     # Set lable to params.sample_label if None
     if label is None:
         label = params.sample_label
-
+    # initialize returns
+    homolog_pts = []
+    start_pts = []
+    stop_pts = []
+    ptvals = []
+    max_dist = []
+    num_acute_pts = 0
     # Find contours
     contours, hierarchy = _cv2_findcontours(bin_img=mask)
     obj = _object_composition(contours=contours, hierarchy=hierarchy)
+    # make list of angles in obj limited by window
+    chain = _angle_chain(obj, win)
+    index = []
+    for c, link in enumerate(chain):
+        if float(link) <= threshold:
+            index.append(c)
 
-    chain = []                                         # Create empty chain to store angle scores
-    for k in list(range(len(obj))):                    # Coordinate-by-coordinate 3-point assignments
+    if len(index) != 0:
+        # find islands from acute angles
+        isle = _find_islands(obj, index, threshold, chain, win)
+        # get relevant points from acute islands
+        homolog_pts, start_pts, stop_pts = _process_islands(obj, isle, chain, mask)
+        num_acute_pts = len(homolog_pts)
+        ori_img = np.copy(img)
+        # Convert grayscale images to color
+        if len(np.shape(ori_img)) == 2:
+            ori_img = cv2.cvtColor(ori_img, cv2.COLOR_GRAY2BGR)
+        # Draw acute points on the original image
+        cv2.drawContours(ori_img, homolog_pts, -1, (255, 255, 255), params.line_thickness)
+        # print/plot debug image
+        _debug(visual=ori_img, filename=f"{params.device}_acute_plms.png")
+    # add to outputs and return values for troubleshooting or downstream steps
+    outputs.add_observation(sample=label, variable='num_acute_pts', trait='number of acute points',
+                            method='plantcv.plantcv.homology.acute', scale='none', datatype=int,
+                            value=num_acute_pts, label='none')
+    return homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist
+
+
+def _angle_chain(obj, win):
+    """Makes a list of angles to be used in detecting acute angles
+    Parameters
+    ----------
+    obj      = Plantcv.objects, contours and hierarchy of a binary mask image
+    win      = int, maximum cumulative pixel distance window for calculating angle
+
+    Returns
+    -------
+    chain    = list, angles of contours.
+    """
+    # initialize chain list
+    chain = []
+    # assign 3 points, coordinate by coordinate
+    for k in list(range(len(obj))):
+        # first point, vert
         vert = obj[k]
+        # initial distance is 0, there is only 1 point
         dist_1 = 0
-        for r in range(len(obj)):                      # Reverse can to obtain point A
+        # loop over points to use with vert, starting by looking backwards for second point (A)
+        for r in range(len(obj)):
             rev = k - r
+            # get next point of the 3
             pos = obj[rev]
             dist_2 = np.sqrt(np.square(pos[0][0]-vert[0][0])+np.square(pos[0][1]-vert[0][1]))
             if r >= 2:
-                if (dist_2 > dist_1) & (dist_2 <= win):  # Further from vertex than current pt A while within window?
+                if (dist_2 > dist_1) & (dist_2 <= win):  # Further from vertex than current pt A while within window
                     dist_1 = dist_2
-                    pt_a = pos                              # Load best fit within window as point A
+                    pt_a = pos
                 elif dist_2 > win:
                     break
             else:
                 pt_a = pos
         dist_1 = 0
-        for f in range(len(obj)):                      # Forward scan to obtain point B
+        # find third point (B), looking forward
+        for f in range(len(obj)):
             fwd = k + f
             if fwd >= len(obj):
                 fwd -= len(obj)
@@ -91,76 +142,102 @@ def acute(img, mask, win, threshold, label=None):
         dot = (p12*p12 + p13*p13 - p23*p23)/(2*p12*p13)
 
         ang = math.degrees(math.acos(dot))
-
         chain.append(ang)
+    
+    return chain
 
-    index = []                      # Index chain to find clusters below angle threshold
 
-    for c, link in enumerate(chain):     # Identify links in chain with acute angles
-        if float(link) <= threshold:
-            index.append(c)         # Append positions of acute links to index
+def _find_islands(obj, index, threshold, chain, win):
+    """Find islands of acute angles from list of angles
+    Parameters
+    ----------
+    obj       = plantcv.objects, contours and hierarchy of binary mask.
+    index     = list, angles found from contours of mask
+    threshold = int, cutoff for an angle to be considered acute
+    chain     = list, angle scores for each contour
+    win       = int, maximum cumulative pixel distance window for calculating angle score
 
-    if len(index) != 0:
+    Returns
+    -------
+    isle      = list, list of islands around acute angles.
+    """
+    isle = []
+    island = []
+    # for every acute angle
+    for ind in index:
+        if not island:
+            island.append(ind)
+        elif island[-1] + 1 == ind:
+            island.append(ind)
+        elif island[-1] + 1 != ind:
+            pt_a = obj[ind]
+            pt_b = obj[island[-1] + 1]
+            dist = np.sqrt(np.square(pt_a[0][0] - pt_b[0][0]) + np.square(pt_a[0][1] - pt_b[0][1]))
+            if win / 2 > dist:
+                island.append(ind)
+            else:
+                isle.append(island)
+                island = [ind]
 
-        isle = []
-        island = []
-
-        for ind in index:           # Scan for iterative links within index
-            if not island:
-                island.append(ind)       # Initiate new link island
-            elif island[-1]+1 == ind:
-                island.append(ind)       # Append successful iteration to island
-            elif island[-1]+1 != ind:
-                pt_a = obj[ind]
-                pt_b = obj[island[-1]+1]
-                dist = np.sqrt(np.square(pt_a[0][0]-pt_b[0][0])+np.square(pt_a[0][1]-pt_b[0][1]))
-                if win/2 > dist:
-                    island.append(ind)
-                else:
-                    isle.append(island)
-                    island = [ind]
-
-        isle.append(island)
-
-        if len(isle) > 1:
-            if (isle[0][0] == 0) & (isle[-1][-1] == (len(chain)-1)):
-                if params.verbose:
-                    print('Fusing contour edges')
-                island = isle[-1]+isle[0]  # Fuse overlapping ends of contour
-                # Delete islands to be spliced if start-end fusion required
-                del isle[0]
-                del isle[-1]
-                isle.insert(0, island)      # Prepend island to isle
-        else:
+    isle.append(island)
+    
+    if len(isle) > 1:
+        if (isle[0][0] == 0) & (isle[-1][-1] == (len(chain)-1)):
             if params.verbose:
-                print('Microcontour...')
+                print('Fusing contour edges')
+            island = isle[-1] + isle[0]  # Fuse overlapping ends of contour
+            # Delete islands to be spliced if start-end fusion required
+            del isle[0]
+            del isle[-1]
+            isle.insert(0, island)      # Prepend island to isle
+    else:
+        if params.verbose:
+            print('Microcontour...')
 
-        # Homologous point maximum distance method
-        pt = []
-        vals = []
-        maxpts = []
-        ss_pts = []
-        ts_pts = []
-        ptvals = []
-        max_dist = [['cont_pos', 'max_dist', 'angle']]
-        for island in isle:
+    return isle
 
-            # Identify if contour is concavity/convexity using image mask
-            pix_x, pix_y, w, h = cv2.boundingRect(obj[island])  # Obtain local window around island
 
-            for c in range(w):
-                for r in range(h):
-                    # Identify pixels in local window internal to the island hull
-                    pos = cv2.pointPolygonTest(obj[island], (pix_x+c, pix_y+r), 0)
-                    if pos > 0:
-                        vals.append(mask[pix_y+r][pix_x+c])  # Store pixel value if internal
+def _process_islands(obj, isle, chain, mask):
+    """Process list of islands into start/landmark/termination sites.
+    Parameters
+    ----------
+    obj      = plantcv.objects, contours and hierarchy of binary mask.
+    isle     = list, list of islands around acute angles.
+    chain    = list, angle scores for each contour
+    mask     = numpy.ndarray, binary mask used to generate contour array
+
+    Results
+    -------
+    homolog_pts = list, pseudo-landmarks from each landmark cluster
+    start_pts   = list, pseudo-landmark island starting position
+    stop_pts    = list, pseudo-landmark island end position
+    """
+    # Initialize empty lists for homologous point max distance method
+    pt = []
+    vals = []
+    maxpts = []
+    ss_pts = []
+    ts_pts = []
+    ptvals = []
+    max_dist = [['cont_pos', 'max_dist', 'angle']]
+    for island in isle:
+
+        # Identify if contour is concavity/convexity using image mask
+        pix_x, pix_y, w, h = cv2.boundingRect(obj[island])  # Obtain local window around island
+
+        for c in range(w):
+            for r in range(h):
+                # Identify pixels in local window internal to the island hull
+                pos = cv2.pointPolygonTest(obj[island], (pix_x + c, pix_y + r), 0)
+                if pos > 0:
+                    vals.append(mask[pix_y + r][pix_x + c])  # Store pixel value if internal
             if len(vals) > 0:
-                ptvals.append(sum(vals)/len(vals))
+                ptvals.append(sum(vals) / len(vals))
                 vals = []
             else:
-                ptvals.append('NaN')        # If no values can be retrieved (small/collapsed contours)
+                ptvals.append('NaN')        # If no values can be retrieved
                 vals = []
-            if len(island) >= 3:               # If landmark is multiple points (distance scan for position)
+            if len(island) >= 3:               # If landmark is multiple points
                 if params.verbose:
                     print('route C')
                 ss = obj[island[0]]            # Store isle "x" start site
@@ -188,26 +265,9 @@ def acute(img, mask, win, threshold, label=None):
                 print(f'Landmark point indices: {maxpts}')
                 print(f'Starting site indices: {ss_pts}')
                 print(f'Termination site indices: {ts_pts}')
+    homolog_pts = obj[maxpts]
+    start_pts = obj[ss_pts]
+    stop_pts = obj[ts_pts]
 
-        homolog_pts = obj[maxpts]
-        start_pts = obj[ss_pts]
-        stop_pts = obj[ts_pts]
-
-        ori_img = np.copy(img)
-        # Convert grayscale images to color
-        if len(np.shape(ori_img)) == 2:
-            ori_img = cv2.cvtColor(ori_img, cv2.COLOR_GRAY2BGR)
-        # Draw acute points on the original image
-        cv2.drawContours(ori_img, homolog_pts, -1, (255, 255, 255), params.line_thickness)
-        # print/plot debug image
-        _debug(visual=ori_img, filename=f"{params.device}_acute_plms.png")
-        # Store number of acute points IDed to Outputs
-        outputs.add_observation(sample=label, variable='num_acute_pts', trait='number of acute points',
-                                method='plantcv.plantcv.homology.acute', scale='none', datatype=int,
-                                value=len(homolog_pts), label='none')
-
-        return homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist
-    outputs.add_observation(sample=label, variable='num_acute_pts', trait='number of acute points',
-                            method='plantcv.plantcv.homology.acute', scale='none', datatype=int,
-                            value=0, label='none')
-    return [], [], [], [], [], []
+    return homolog_pts, start_pts, stop_pts
+    
