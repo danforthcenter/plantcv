@@ -258,20 +258,15 @@ def _pseudolandmarks(img, obj, mask, label, axis=0):
         window[high_point:] = 0
         s = cv2.moments(window)
         # Centroid (center of mass x, center of mass y)
+        smx = (largest + smallest) / 2
+        smy = yval
+        # if difference is very small then recalculate centroids
         if largest - smallest > 3:
-            if s['m00'] > 0.001:
-                smx, smy = (s['m10'] / s['m00'], s['m01'] / s['m00'])
-                x_centroids.append(int(smx))
-                y_centroids.append(int(smy))
-            if s['m00'] < 0.001:
-                smx, smy = (s['m10'] / 0.001, s['m01'] / 0.001)
-                x_centroids.append(int(smx))
-                y_centroids.append(int(smy))
-        else:
-            smx = (largest + smallest) / 2
-            smy = yval
-            x_centroids.append(int(smx))
-            y_centroids.append(int(smy))
+            smx, smy = (s['m10'] / max(s['m00'], 0.001),
+                        s['m01'] / max(s['m00'], 0.001))
+        # append results to centroids
+        x_centroids.append(int(smx))
+        y_centroids.append(int(smy))
     left_or_top = list(zip(left_or_top_points, y_vals))
     right_or_bottom = list(zip(right_or_bottom_points, y_vals))
     if not axis:
