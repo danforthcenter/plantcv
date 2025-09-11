@@ -41,7 +41,7 @@ def y_axis_pseudolandmarks(img, mask, label=None):
     if not np.any(obj):
         return ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA')
     # Bounding rectangle
-    x, y, width, height = cv2.boundingRect(obj)
+    _, _, _, height = cv2.boundingRect(obj)
     extent = height
     # If height is greater than 21 pixels make 20 increments (5% intervals)
     if extent >= 21:

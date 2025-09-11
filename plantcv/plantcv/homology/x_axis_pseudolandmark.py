@@ -40,7 +40,7 @@ def x_axis_pseudolandmarks(img, mask, label=None):
     if not np.any(obj):
         return ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA')
     # Bounding rectangle
-    x, y, width, _ = cv2.boundingRect(obj)
+    _, _, width, _ = cv2.boundingRect(obj)
     extent = width
     # If width is greater than 21 pixels make 20 increments (5% intervals)
     if extent >= 21:
@@ -79,13 +79,12 @@ def _small_img_pseudolandmarks(img, obj, mask, label, axis=0):
     # helper lists for x/y directions
     axes_names = ["x", "y"]
     axis_name = axes_names.pop(axis)
-    other_axis = axes_names[0]
     direction_names = [["top", "bottom", "vertical"], ["left", "right", "horizontal"]][axis]
     lt = direction_names[0]
     rb = direction_names[1]
     hv = direction_names[2]
     # If the length of the object is less than 20 pixels make 20 pixel rectangle
-    x, y, width, height = cv2.boundingRect(obj)
+    x, y, width, _ = cv2.boundingRect(obj)
     xy = [x, y]
     main_ax = xy.pop(axis)
     other_ax = xy[0]
@@ -170,10 +169,8 @@ def _pseudolandmarks(img, obj, mask, label, axis=0):
     x, y, width, height = cv2.boundingRect(obj)
     xy = [x, y] # writing as thought this is y aka 1
     main_ax = xy.pop(axis)
-    other_ax = xy[0]
     directions = [width, height]
     main_direction = directions.pop(axis)
-    other_direction = directions[0]
     channels = [0, 1]
     main_c = channels.pop(axis)
     other_c = channels[0]
@@ -189,7 +186,6 @@ def _pseudolandmarks(img, obj, mask, label, axis=0):
     # helper lists for x/y directions
     axes_names = ["x", "y"]
     axis_name = axes_names.pop(axis)
-    other_axis = axes_names[0]
     direction_names = [["top", "bottom", "vertical"], ["left", "right", "horizontal"]][axis]
     lt = direction_names[0]
     rb = direction_names[1]
