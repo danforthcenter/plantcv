@@ -2,7 +2,8 @@ import pytest
 from plantcv.parallel import metadata_parser, WorkflowConfig
 
 
-def test_metadata_parser_snapshots(parallel_test_data):
+@pytest.mark.parametrize("imgformat",["jpg","all"])
+def test_metadata_parser_snapshots(parallel_test_data, imgformat):
     """Test for PlantCV.
 
     Test parsing a "phenofront" dataset.
@@ -17,14 +18,17 @@ def test_metadata_parser_snapshots(parallel_test_data):
     config.start_date = "2014-10-21 00:00:00.0"
     config.end_date = "2014-10-23 00:00:00.0"
     config.timestampformat = '%Y-%m-%d %H:%M:%S.%f'
-    config.imgformat = "jpg"
+    config.imgformat = imgformat
 
     meta = metadata_parser(config=config)
     assert len(meta) == 1
 
 
-@pytest.mark.parametrize("subdirs", [True, False])
-def test_metadata_parser_images(parallel_test_data, subdirs):
+@pytest.mark.parametrize("subdirs,imgformat,outlength",
+                         [[True, "jpg", 1], [False, "jpg", 1],
+                          [True, ["jpg","jpeg"], 2], [False, ["jpg","jpeg"], 2],
+                          [True, "all", 2]])
+def test_metadata_parser_images(parallel_test_data, subdirs, imgformat, outlength):
     """Test for PlantCV.
 
     Test parsing a filename-based dataset.
@@ -36,12 +40,12 @@ def test_metadata_parser_images(parallel_test_data, subdirs):
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = parallel_test_data.workflow_script
     config.metadata_filters = {"imgtype": "VIS"}
-    config.imgformat = "jpg"
+    config.imgformat = imgformat
     config.include_all_subdirs = subdirs
     config.delimiter = r'(VIS)_(SV)_(\d+)_(z1)_(h1)_(g0)_(e82)_(\d+)'
 
     meta = metadata_parser(config=config)
-    assert len(meta) == 1
+    assert len(meta) == outlength
 
 
 def test_metadata_parser_phenodata(parallel_test_data):

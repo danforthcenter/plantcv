@@ -24,7 +24,7 @@ class WorkflowConfig:
         self.tmp_dir = "."
         self.start_date = None
         self.end_date = None
-        self.imgformat = "png"
+        self.imgformat = "all"
         self.delimiter = "_"
         self.metadata_filters = {}
         self.timestampformat = "%Y-%m-%dT%H:%M:%S.%fZ"
