@@ -1,11 +1,8 @@
 """Function to scan for pseudolandmarks along the y-axis."""
 import cv2
-import os
 import numpy as np
-from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
 from plantcv.plantcv.homology.x_axis_pseudolandmark import _small_img_pseudolandmarks, _pseudolandmarks
-from plantcv.plantcv import params, outputs
 
 
 def y_axis_pseudolandmarks(img, mask, label=None):
