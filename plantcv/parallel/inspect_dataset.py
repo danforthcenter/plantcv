@@ -1,5 +1,5 @@
 import pandas as pd
-from plantcv.parallel import WorkflowConfig
+from plantcv.parallel.workflow_inputs import WorkflowConfig
 
 
 def inspect_dataset(config):
