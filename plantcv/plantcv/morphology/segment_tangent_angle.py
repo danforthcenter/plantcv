@@ -88,7 +88,7 @@ def segment_tangent_angle(segmented_img, objects, size, label=None):
             right_list = int(np.array(((x - x_max) * slope) + y).item())
             slopes.append(slope)
 
-            if slope > 1000000 or slope < -1000000:
+            if abs(slope) > 1000000:
                 print("Slope of contour with ID#", i, "is", slope, "and cannot be plotted.")
             else:
                 # Draw slope lines
