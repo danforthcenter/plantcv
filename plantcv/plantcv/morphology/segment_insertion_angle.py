@@ -6,7 +6,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import color_palette
-from plantcv.plantcv.morphology.segment_tangent_angle import _slope_to_intesect_angle
+from plantcv.plantcv.morphology.segment_tangent_angle import _slope_to_intersect_angle
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _find_tips, _iterative_prune, _logical_operation, _dilate, _closing
 
@@ -123,7 +123,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
             cv2.line(labeled_img, (cols - 1, right_list), (0, left_list), rand_color[t], 1)
 
         # Store intersection angles between insertion segment and stem line
-        intersection_angle = _slope_to_intesect_angle(slope[0], stem_slope)
+        intersection_angle = _slope_to_intersect_angle(slope[0], stem_slope)
         # Function measures clockwise but we want the acute angle between stem and leaf insertion
         if intersection_angle > 90:
             intersection_angle = 180 - intersection_angle
