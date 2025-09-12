@@ -59,7 +59,7 @@ def analyze_stem(rgb_img, stem_objects, label=None):
     x_max = img_x
     intercept1 = int(np.array(((x - x_min) * slope) + y).item())
     intercept2 = int(np.array(((x - x_max) * slope) + y).item())
-    if slope > 1000000 or slope < -1000000:
+    if abs(slope) > 1000000:
         print("Slope  is ", slope, " and cannot be plotted.")
     else:
         cv2.line(labeled_img, (x_max - 1, intercept2), (x_min, intercept1), (0, 0, 255), 1)
