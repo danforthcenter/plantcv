@@ -16,11 +16,13 @@ def metadata_parser(config):
 
     Outputs:
     meta   = image metadata dataframe
+    removed_df = dataframe of removed metadata
 
     :param config: plantcv.parallel.WorkflowConfig
     :return meta: pandas.core.frame.DataFrame
+    :return removed: pandas.core.frame.DataFrame
     """
-    # Read the input dataset
+    # Read the input dataset to a dictionary
     dataset = _read_dataset(config=config)
 
     # Convert the dataset metadata to a dataframe
@@ -30,12 +32,12 @@ def metadata_parser(config):
     meta, removed_df = _apply_metadata_filters(df=meta, config=config)
 
     # Apply user-supplied date range filters
-    meta = _apply_date_range_filter(df=meta, config=config)
+    meta, removed_df = _apply_date_range_filter(df=meta, config=config, removed_df=removed_df)
 
     # Apply metadata grouping
     meta = _group_metadata(df=meta, config=config)
 
-    return meta
+    return meta, removed_df
 ###########################################
 
 
@@ -63,7 +65,6 @@ def _read_dataset(config):
     # If the directory contains a SnapshotInfo.csv file it is a legacy "phenofront" dataset
     elif os.path.exists(os.path.join(config.input_dir, "SnapshotInfo.csv")):
         dataset = _read_phenofront(config=config, metadata_file=os.path.join(config.input_dir, "SnapshotInfo.csv"))
-    # Otherwise we will extract metadata from filenames
     else:
         dataset = _read_filenames(config=config)
     return dataset
@@ -132,8 +133,7 @@ def _apply_metadata_filters(df, config):
     # If there are no filters provide the metadata_filter dataframe will be empty and we can return the input dataframe
     if not metadata_filter.empty:
         filtered_df = df.merge(metadata_filter, how="inner")
-        outer = df.merge(metadata_filter, how='outer', indicator=True)
-        removed_df = outer[(outer._merge=='left_only')].drop('_merge', axis=1)
+        removed_df = _anti_join(df, filtered_df)
         removed_df["status"] = "Removed by config.metadata_filters"
         return filtered_df, removed_df
     return df, pd.DataFrame()
@@ -142,23 +142,22 @@ def _apply_metadata_filters(df, config):
 
 # Filter a metadata dataframe within a date range
 ###########################################
-def _apply_date_range_filter(df, config):
+def _apply_date_range_filter(df, config, removed_df):
     """Filter metadata based on a date range.
-
-    Keyword arguments:
-    df = metadata dataframe
+    Parameters
+    ----------
+    df = pandas.core.frame.DataFrame, metadata dataframe
     config = plantcv.parallel.WorkflowConfig object
+    removed_df = pandas.core.frame.DataFrame, dataframe of images removed up to this point
 
-    Outputs:
-    filtered_df = filtered metadata dataframe
-
-    :param df: pandas.core.frame.DataFrame
-    :param config: plantcv.parallel.WorkflowConfig
-    :return filtered_df: pandas.core.frame.DataFrame
+    Returns
+    -------
+    filtered_df = pandas.core.frame.DataFrame, filtered metadata dataframe
+    removeded_df = pandas.core.frame.DataFrame, dataframe of removed metadata
     """
     # If either the start or end date is None then do not filter
     if None in [config.start_date, config.end_date]:
-        return df
+        return df, removed_df
     # Set whether the datetime code is in UTC or not
     utc = bool("Z" in config.timestampformat)
     # Convert start and end dates to datetimes
@@ -166,7 +165,11 @@ def _apply_date_range_filter(df, config):
     end_date = pd.to_datetime(config.end_date, format=config.timestampformat, utc=utc)
     # Keep rows with dates between start and end date
     filtered_df = df.loc[df["timestamp"].between(start_date, end_date, inclusive="both")]
-    return filtered_df
+    not_between_df = _anti_join(df, filtered_df)
+    not_between_df["status"] = "Removed by config.start_date and config.end_date"
+    removed_df = pd.concat([removed_df, not_between_df])
+
+    return filtered_df, removed_df
 ###########################################
 
 
@@ -424,3 +427,19 @@ def _read_filenames(config):
         dataset["images"][rel_path] = _parse_filename(filename=metadata, config=config, metadata_index=metadata_index)
     return dataset
 ###########################################
+
+
+def _anti_join(df1, df2=None):
+    """Anti join function for pandas dataframes
+    Parameters
+    ----------
+    df1      = pandas.core.frame.Dataframe, dataframe of metadata
+    df2      = pandas.core.frame.Dataframe, dataframe of filtered metadata
+
+    Returns
+    -------
+    anti_joined = pandas.core.frame.Dataframe, metadata dataframe of what was removed
+    """
+    outer = df1.merge(df2, how='outer', indicator=True)
+    anti_joined = outer[(outer._merge=='left_only')].drop('_merge', axis=1)
+    return anti_joined
