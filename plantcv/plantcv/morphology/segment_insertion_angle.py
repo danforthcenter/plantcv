@@ -160,7 +160,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
 
 
 def _combine_stem(segmented_img, stem_objects, maxiter=50):
-    """
+    """Combine stem objects into a single contour of the stem
     Parameters
     ----------
     segmented_img  = numpy.ndarray, Segmented image to plot slope lines and intersection angles on
