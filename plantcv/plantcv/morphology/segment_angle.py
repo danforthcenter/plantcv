@@ -53,7 +53,7 @@ def segment_angle(segmented_img, objects, label=None):
         left_list = int(np.array(((x - x_min) * slope) + y).item())
         right_list = int(np.array(((x - x_max) * slope) + y).item())
 
-        if slope > 1000000 or slope < -1000000:
+        if abs(slope) > 1000000:
             print("Slope of contour with ID#", i, "is", slope, "and cannot be plotted.")
         else:
             # Draw slope lines
