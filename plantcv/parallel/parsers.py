@@ -109,17 +109,15 @@ def _dataset2dataframe(dataset, config):
 ###########################################
 def _apply_metadata_filters(df, config):
     """Apply filters to metadata.
-
-    Keyword arguments:
-    df = metadata dataframe
+    Parameters
+    ----------
+    df = pandas.core.frame.Dataframe, metadata dataframe
     config = plantcv.parallel.WorkflowConfig object
 
-    Outputs:
-    filtered_df = filtered metadata dataframe
-
-    :param df: pandas.core.frame.DataFrame
-    :param config: plantcv.parallel.WorkflowConfig
-    :return filtered_df: pandas.core.frame.DataFrame
+    Returns:
+    --------
+    filtered_df = pandas.core.frame.Dataframe, filtered metadata dataframe
+    removed_df  = pandas.core.frame.Dataframe, metadata dataframe of what was removed
     """
     # Convert all metadata filter values to a list type
     for term in config.metadata_filters:
