@@ -134,8 +134,11 @@ def _apply_metadata_filters(df, config):
     # If there are no filters provide the metadata_filter dataframe will be empty and we can return the input dataframe
     if not metadata_filter.empty:
         filtered_df = df.merge(metadata_filter, how="inner")
-        return filtered_df
-    return df
+        outer = df.merge(metadata_filter, how='outer', indicator=True)
+        removed_df = outer[(outer._merge=='left_only')].drop('_merge', axis=1)
+        removed_df["status"] = "Removed by config.metadata_filters"
+        return filtered_df, removed_df
+    return df, pd.DataFrame()
 ###########################################
 
 
