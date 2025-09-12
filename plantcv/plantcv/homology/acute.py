@@ -180,13 +180,12 @@ def _find_islands(obj, index, chain, win):
 
     isle.append(island)
 
-    if len(isle) > 1:
-        if (isle[0][0] == 0) & (isle[-1][-1] == (len(chain)-1)):
-            island = isle[-1] + isle[0]  # Fuse overlapping ends of contour
-            # Delete islands to be spliced if start-end fusion required
-            del isle[0]
-            del isle[-1]
-            isle.insert(0, island)
+    if (len(isle) > 1) & (isle[0][0] == 0) & (isle[-1][-1] == (len(chain)-1)):
+        island = isle[-1] + isle[0]  # Fuse overlapping ends of contour
+        # Delete islands to be spliced if start-end fusion required
+        del isle[0]
+        del isle[-1]
+        isle.insert(0, island)
 
     return isle
 
