@@ -99,22 +99,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
         cv2.drawContours(labeled_img, valid_segment, i, rand_color[i], params.line_thickness, lineType=8)
 
     # Plot stem segments
-    stem_img = np.zeros(segmented_img.shape[:2], np.uint8)
-    cv2.drawContours(stem_img, stem_objects, -1, 255, 2, lineType=8)
-    stem_img = _closing(stem_img)
-    combined_stem, _ = _cv2_findcontours(bin_img=stem_img)
-
-    # Make sure stem objects are a single contour
-    loop_count = 0
-    while len(combined_stem) > 1 and loop_count < 50:
-        loop_count += 1
-        stem_img = _dilate(stem_img, 2, 1)
-        stem_img = _closing(stem_img)
-        combined_stem, _ = _cv2_findcontours(bin_img=stem_img)
-    if len(combined_stem) > 1:
-        # Reset debug mode
-        fatal_error('Unable to combine stem objects.')
-
+    combined_stem = _combine_stem(segmented_img, stem_objects)
     # Find slope of the stem
     [vx, vy, x, y] = cv2.fitLine(combined_stem[0], cv2.DIST_L2, 0, 0.01, 0.01)
     stem_slope = -vy / vx
@@ -132,7 +117,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
         segment_slopes.append(slope[0])
 
         # Draw slope lines if possible
-        if slope > 1000000 or slope < -1000000:
+        if abs(slope) > 1000000:
             print("Slope of contour with ID#", t, "is", slope, "and cannot be plotted.")
         else:
             cv2.line(labeled_img, (cols - 1, right_list), (0, left_list), rand_color[t], 1)
@@ -172,3 +157,32 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
            filename=os.path.join(params.debug_outdir, f"{params.device}_segment_insertion_angles.png"))
 
     return labeled_img
+
+
+def _combine_stem(segmented_img, stem_objects, maxiter=50):
+    """
+    Parameters
+    ----------
+    segmented_img  = numpy.ndarray, Segmented image to plot slope lines and intersection angles on
+    stem_objects   = list, list of stem objects
+    maxiter        = int, maximum iterations to run trying to combine stem objects into a single contour.
+
+    Returns
+    -------
+    combined_stem  = list, contours of stem from _cv2_findcontours
+    """
+    stem_img = np.zeros(segmented_img.shape[:2], np.uint8)
+    cv2.drawContours(stem_img, stem_objects, -1, 255, 2, lineType=8)
+    stem_img = _closing(stem_img)
+    combined_stem, _ = _cv2_findcontours(bin_img=stem_img)
+
+    # Make sure stem objects are a single contour
+    loop_count = 0
+    while len(combined_stem) > 1 and loop_count < maxiter:
+        loop_count += 1
+        stem_img = _dilate(stem_img, 2, 1)
+        stem_img = _closing(stem_img)
+        combined_stem, _ = _cv2_findcontours(bin_img=stem_img)
+    if len(combined_stem) > 1:
+        fatal_error('Unable to combine stem objects.')
+    return combined_stem
