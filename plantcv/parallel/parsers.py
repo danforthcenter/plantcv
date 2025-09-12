@@ -27,7 +27,7 @@ def metadata_parser(config):
     meta = _dataset2dataframe(dataset=dataset, config=config)
 
     # Apply user-supplied metadata filters
-    meta = _apply_metadata_filters(df=meta, config=config)
+    meta, removed_df = _apply_metadata_filters(df=meta, config=config)
 
     # Apply user-supplied date range filters
     meta = _apply_date_range_filter(df=meta, config=config)
