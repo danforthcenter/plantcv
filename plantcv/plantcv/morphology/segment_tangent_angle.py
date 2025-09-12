@@ -10,7 +10,7 @@ from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _iterative_prune
 
 
-def _slope_to_intesect_angle(m1, m2):
+def _slope_to_intersect_angle(m1, m2):
     """Calculate intersections angle (in degrees) from the slope of two lines
 
     Inputs:
@@ -103,7 +103,7 @@ def segment_tangent_angle(segmented_img, objects, size, label=None):
             # Calculate intersection angles
             slope1 = slopes[0][0]
             slope2 = slopes[1][0]
-            intersection_angle = _slope_to_intesect_angle(slope1, slope2)
+            intersection_angle = _slope_to_intersect_angle(slope1, slope2)
             intersection_angles.append(intersection_angle)
 
         # Store coordinates for labels
