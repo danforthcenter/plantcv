@@ -6,17 +6,17 @@ name: builds
 on:
   push:
     # Run when main is updated
-    branches: [ main ]
+    branches: [ main, v5.0 ]
   pull_request:
     # Run on pull requests against main
-    branches: [ main ]
+    branches: [ main, v5.0 ]
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11']
+        python-version: ['3.11']
         os: [ubuntu-latest]
     env:
       OS: ${{ matrix.os }}
