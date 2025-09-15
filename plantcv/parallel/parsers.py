@@ -89,7 +89,8 @@ def _dataset2dataframe(dataset, config):
     """
     # Build a metadata dictionary of lists of metadata values
     metadata = {
-        "filepath": []
+        "filepath": [],
+        "n_metadata_terms":[]
     }
     # Populate metadata terms from the standard metadata vocabulary
     for term in config.metadata_terms:
@@ -97,6 +98,7 @@ def _dataset2dataframe(dataset, config):
     # Iterate over all image metadata and append metadata values to the dictionary
     for image in dataset["images"]:
         metadata["filepath"].append(os.path.join(config.input_dir, image))
+        metadata["n_metadata_terms"].append(dataset["images"][image].get("n_metadata_terms"))
         for term in config.metadata_terms:
             metadata[term].append(dataset["images"][image].get(term))
     df = pd.DataFrame(data=metadata)
@@ -130,11 +132,14 @@ def _apply_metadata_filters(df, config):
     # Create a metadata filter dataframe as the product of all combinations of values
     metadata_filter = pd.DataFrame(list(itertools.product(*config.metadata_filters.values())),
                                    columns=config.metadata_filters.keys(), dtype="object")
-    # If there are no filters provide the metadata_filter dataframe will be empty and we can return the input dataframe
+    # If there are no filters provide the metadata_filter dataframe will be empty and we can return the input datafram
     if not metadata_filter.empty:
         filtered_df = df.merge(metadata_filter, how="inner")
         removed_df = _anti_join(df, filtered_df)
         removed_df["status"] = "Removed by config.metadata_filters"
+        # if a row has None for all metadata then it was not able to be parsed due to variable length
+        removed_df.loc[removed_df[list(config.metadata_filters.keys())].isnull().apply(lambda x: all(x), axis=1),
+                       'status'] = "Incorrect metadata length"
         return filtered_df, removed_df
     return df, pd.DataFrame()
 ###########################################
@@ -153,7 +158,7 @@ def _apply_date_range_filter(df, config, removed_df):
     Returns
     -------
     filtered_df = pandas.core.frame.DataFrame, filtered metadata dataframe
-    removeded_df = pandas.core.frame.DataFrame, dataframe of removed metadata
+    removed_df = pandas.core.frame.DataFrame, dataframe of removed metadata
     """
     # If either the start or end date is None then do not filter
     if None in [config.start_date, config.end_date]:
@@ -275,6 +280,7 @@ def _parse_filename(filename, config, metadata_index):
             # If the same metadata is found in the image filename, store the value
             if term in metadata_index:
                 img_meta[term] = meta_list[metadata_index[term]]
+    img_meta["n_metadata_terms"] = len(meta_list)
     return img_meta
 ###########################################
 
