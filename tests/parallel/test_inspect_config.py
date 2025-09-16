@@ -14,7 +14,7 @@ def test_inspect_dataset(parallel_test_data):
     # inspect dataset
     sdf, df = inspect_dataset(config)
 
-    assert sdf.shape == (2, 17) and df.shape == (2, 19)
+    assert sdf.shape == (2, 16) and df.shape == (2, 18)
 
 
 def test_inspect_dataset_string(parallel_test_data):
@@ -22,6 +22,6 @@ def test_inspect_dataset_string(parallel_test_data):
     Testing inspection for config files
     """
     # initialize config
-    sdf, df = inspect_dataset(parallel_test_data.phenodata_imgdir)
+    sdf, df = inspect_dataset(parallel_test_data.phenodata_dir)
     # nothing found because default is png imgformat
     assert sdf.shape == (1, 2) and df.shape == (12, 3)
