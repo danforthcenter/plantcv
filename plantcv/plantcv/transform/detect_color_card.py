@@ -10,6 +10,7 @@ import numpy as np
 from plantcv.plantcv import params, outputs, fatal_error, deprecation_warning
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _rgb2hsv, _cv2_findcontours, _object_composition, _rect_filter, _rect_replace
+from plantcv.plantcv.transform.color_correction import get_color_matrix
 
 
 def _is_square(contour, min_size, aspect_ratio=1.27, solidity=0.8):
@@ -228,7 +229,7 @@ def _color_card_detection(rgb_img, **kwargs):
     Returns
     -------
     list
-        Labeled mask of chips, debug img, detected chip areas, chip heights, chip widths, bounding box mask
+        Color matrix, debug img, detected chip areas, chip heights, chip widths, bounding box mask
     """
     # Hard code since we don't currently support other color cards
     nrows = 6
@@ -316,8 +317,11 @@ def _color_card_detection(rgb_img, **kwargs):
     labeled_mask, debug_img = _draw_color_chips(debug_img, new_centers_w, radius)
     # Check that new centers are inside each unique filtered_contour
     _check_point_per_chip(filtered_contours, new_centers_w, debug_img)
+    
+    # Calculate color matrix from the cropped color card image 
+    _, color_matrix = get_color_matrix(rgb_img=out, mask=labeled_mask)
 
-    return labeled_mask, debug_img, marea, mheight, mwidth, boundind_mask
+    return color_matrix, debug_img, marea, mheight, mwidth, boundind_mask
 
 
 def _set_size_scale_from_chip(color_chip_width, color_chip_height, color_chip_size):
