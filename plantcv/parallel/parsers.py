@@ -9,16 +9,17 @@ import itertools
 # Parse dataset metadata
 ###########################################
 def metadata_parser(config):
-    """Image metadata parser.
+    """Parse image metadata from a dataset.
 
-    Keyword arguments:
-    config = plantcv.parallel.WorkflowConfig object
+    Parameters
+    ----------
+    config : plantcv.parallel.WorkflowConfig
+        Workflow configuration object.
 
-    Outputs:
-    meta   = image metadata dataframe
-
-    :param config: plantcv.parallel.WorkflowConfig
-    :return meta: pandas.core.groupby.generic.DataFrameGroupBy
+    Returns
+    -------
+    pandas.core.groupby.generic.DataFrameGroupBy
+        Grouped dataframe of image metadata.
     """
     # Read the input dataset
     dataset = _read_dataset(config=config)
@@ -286,16 +287,17 @@ def _parse_filename(filename, config, metadata_index):
 def _parse_filepath(df, config):
     """Parse metadata from a filename.
 
-    Keyword arguments:
-    df = pandas.dataframe of metadata
-    config = plantcv.parallel.WorkflowConfig object
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        Dataframe of image metadata.
+    config : plantcv.parallel.WorkflowConfig
+        PlantCV parallel configureation object.
 
-    Outputs:
-    meta2 = A pd.dataframe of the metadata with file name separated into columns
-
-    :param config: plantcv.parallel.WorkflowConfig
-    :return meta: pandas.dataframe
-    :return meta2: pandas.dataframe
+    Returns
+    -------
+    pandas.DataFrame
+        Dataframe with added filepath metadata columns.
     """
     # remove extraneous config.input_dir from file path
     paths_after_input = df["filepath"].map(lambda st: os.path.relpath(st, config.input_dir))
