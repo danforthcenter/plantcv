@@ -21,6 +21,6 @@ def test_inspect_dataset_string(parallel_test_data):
     Testing inspection for config files
     """
     # initialize config
-    sdf, df = inspect_dataset(parallel_test_data.flat_imgdirconfig)
+    sdf, df = inspect_dataset(parallel_test_data.flat_imgdir)
     # nothing found because default is png imgformat
     assert sdf.shape == (0, 2) and df.shape == (0, 3)
