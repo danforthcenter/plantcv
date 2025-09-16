@@ -19,7 +19,7 @@ def test_metadata_parser_snapshots(parallel_test_data):
     config.timestampformat = '%Y-%m-%d %H:%M:%S.%f'
     config.imgformat = "jpg"
 
-    meta = metadata_parser(config=config)
+    meta, _ = metadata_parser(config=config)
     assert len(meta) == 1
 
 
@@ -40,7 +40,7 @@ def test_metadata_parser_images(parallel_test_data, subdirs):
     config.include_all_subdirs = subdirs
     config.delimiter = r'(VIS)_(SV)_(\d+)_(z1)_(h1)_(g0)_(e82)_(\d+)'
 
-    meta = metadata_parser(config=config)
+    meta, _ = metadata_parser(config=config)
     assert len(meta) == 1
 
 
@@ -56,5 +56,5 @@ def test_metadata_parser_phenodata(parallel_test_data):
     config.workflow = parallel_test_data.workflow_script
     config.imgformat = "jpg"
 
-    meta = metadata_parser(config=config)
+    meta, _ = metadata_parser(config=config)
     assert len(meta) == 12
