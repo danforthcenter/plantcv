@@ -90,9 +90,10 @@ Valid metadata that can be collected from filenames (basenames) are `camera`, `i
 the `input_dir` can be used as `filepath` or individual components of it as `filepath{1:N}`, the file name is available for regex filtering
 with the `basename` key, which may be useful for regex based filtering.
 
-Note that if a `metadata.json` or `SnapshotInfo.csv` file exists in your `config.input_dir` directory then that file will be used to supply
-metadata instead of any parsing specified in the `metadata` key. If one of those files exists the `filepath`, `filepath{1:N}`, and `basename`
-keys are still available to filter your data.
+!!! note
+    Note that if a `metadata.json` or `SnapshotInfo.csv` file exists in your `config.input_dir` directory then that file will be used to supply
+    metadata instead of any parsing specified in the `metadata` key. If one of those files exists the `filepath`, `filepath{1:N}`, and `basename`
+    keys are still available to filter your data.
 
 To correctly process timestamps, you need to specify the timestamp format (`timestampformat` configuration
 parameter) code for the
