@@ -250,7 +250,6 @@ def _color_card_detection(rgb_img, **kwargs):
 
     # Initialize chip shape lists
     marea, mwidth, mheight = _get_contour_sizes(filtered_contours)
-    boundind_mask = np.zeros(rgb_img.shape[0:2])
 
     # Concatenate all detected centers into one array (minimum area rectangle used to find chip centers)
     square_centroids = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
@@ -454,10 +453,7 @@ def detect_color_card(rgb_img, label=None, color_chip_size=None, roi=None, **kwa
         "It will be removed in PlantCV v5.0."
     )
     # apply _color_card_detection within bounding box
-    sub_mask, debug_img, marea, mheight, mwidth, _ = _rect_filter(rgb_img, roi, function=_color_card_detection, **kwargs)
-    # slice sub_mask from bounding box into mask of original image size
-    empty_mask = np.zeros((np.shape(rgb_img)[0], np.shape(rgb_img)[1]))
-    labeled_mask = _rect_replace(empty_mask, sub_mask, roi)
+    color_matrix, debug_img, marea, mheight, mwidth, _ = _rect_filter(rgb_img, roi, function=_color_card_detection, **kwargs)
 
     # Create dataframe for easy summary stats
     chip_size = np.median(marea)
@@ -476,4 +472,4 @@ def detect_color_card(rgb_img, label=None, color_chip_size=None, roi=None, **kwa
     # Debugging
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f"{params.device}_color_card.png"))
 
-    return labeled_mask
+    return color_matrix
