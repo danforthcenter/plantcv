@@ -961,6 +961,10 @@ pages for more details on the input and output variable types.
 * post v3.1: roi_contours, roi_hierarchies = **plantcv.roi.multi**(*img, coord, radius, spacing=None, nrows=None, ncols=None*)
 * post v4.0: roi_objects = **plantcv.roi.multi**(*img, coord, radius=None, spacing=None, nrows=None, ncols=None*)
 
+#### plantcv.roi.multi_rect
+* pre v4.10: NA
+* post v4.10: roi_objects = **plantcv.roi.multi_rect**(*img, coord, h=None, w=None, spacing=None, nrows=None, ncols=None*)
+
 #### plantcv.roi.quick_filter
 
 * pre v4.2.1: NA
@@ -1254,6 +1258,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0: NA
 * post v3.0: mask = **pcv.transform.create_color_card_mask**(*rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=[]*)
+* post v4.9: mask = **pcv.transform.create_color_card_mask**(*rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=None*)
 
 #### plantcv.transform.detect_color_card
 
@@ -1365,6 +1370,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.13: NA
 * post v3.13: fig_hist = **plantcv.visualize.hyper_histogram**(*hsi, mask=None, bins=100, lower_bound=None, upper_bound=None, title=None, wvlengths=[480, 550, 650]*)
+* post v4.9: fig_hist = **plantcv.visualize.hyper_histogram**(*hsi, mask=None, bins=100, lower_bound=None, upper_bound=None, title=None, wvlengths=None*)
 
 #### plantcv.visualize.obj_size_ecdf
 
