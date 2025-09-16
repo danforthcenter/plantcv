@@ -235,7 +235,7 @@ def _color_card_detection(rgb_img, **kwargs):
     nrows = 6
     ncols = 4
     # Radius of circles to draw on the color chips, adaptive unless set by the user
-    radius = kwargs.get("radius", None)
+    radius = kwargs.get("radius")
 
     filtered_contours = _find_color_chip_like_objects(rgb_img, **kwargs)
     # Throw a fatal error if no color card found
@@ -316,8 +316,8 @@ def _color_card_detection(rgb_img, **kwargs):
     labeled_mask, debug_img = _draw_color_chips(debug_img, new_centers_w, radius)
     # Check that new centers are inside each unique filtered_contour
     _check_point_per_chip(filtered_contours, new_centers_w, debug_img)
-    
-    # Calculate color matrix from the cropped color card image 
+
+    # Calculate color matrix from the cropped color card image
     _, color_matrix = get_color_matrix(rgb_img=out, mask=labeled_mask)
 
     return color_matrix, debug_img, marea, mheight, mwidth, boundind_mask
