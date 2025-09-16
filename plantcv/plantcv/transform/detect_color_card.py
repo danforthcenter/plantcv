@@ -9,7 +9,7 @@ import math
 import numpy as np
 from plantcv.plantcv import params, outputs, fatal_error, deprecation_warning
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _rgb2hsv, _cv2_findcontours, _object_composition, _rect_filter, _rect_replace
+from plantcv.plantcv._helpers import _rgb2hsv, _cv2_findcontours, _object_composition, _rect_filter
 from plantcv.plantcv.transform.color_correction import get_color_matrix
 
 
