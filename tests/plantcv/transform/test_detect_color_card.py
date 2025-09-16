@@ -42,7 +42,7 @@ def test_detect_color_card_partial_card(transform_test_data):
     # load rgb image
     rgb_img = cv2.imread(transform_test_data.partial_card_rgb_img)
     with pytest.raises(RuntimeError):
-        _ = detect_color_card(rgb_img=rgb_img)
+        _ = detect_color_card(rgb_img=rgb_img, aspect_ratio=2, solidity=0.5)
 
 
 def test_detect_color_card_incorrect_card_size(transform_test_data):
