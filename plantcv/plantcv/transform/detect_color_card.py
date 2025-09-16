@@ -275,6 +275,13 @@ def _color_card_detection(rgb_img, **kwargs):
     corners = np.concatenate(corners)
     corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])[[1, 3, 2, 0]]]
 
+    if params.verbose:
+        # Draw new contours onto cropped card debug image
+        debug_img = np.copy(rgb_img)
+        cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
+        cv2.drawContours(debug_img, [corners], -1, color=(255, 0, 0), thickness=params.line_thickness)
+        _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_detected_color_card.png'))
+
     # Perspective warp the color card to unskew and un-rotate
     pt_A, pt_B, pt_C, pt_D = corners
 
@@ -295,7 +302,6 @@ def _color_card_detection(rgb_img, **kwargs):
     )
 
     # Create color card mask based on size of detected color card
-
     w_increment = int(length_card1 / 3.7) + 1
     h_increment = int(length_card2 / 5.7) + 1
     increment = int((w_increment + h_increment) / 2)
