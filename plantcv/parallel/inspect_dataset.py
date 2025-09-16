@@ -17,13 +17,13 @@ def inspect_dataset(config):
     """
     if isinstance(config, str):
         input_dir = config
-        config = type('inspectionconfig', (), {'input_dir':input_dir,
-                                               'imgformat':'png',
-                                               'include_all_subdirs':True,
-                                               'delimiter':'_',
+        config = type('inspectionconfig', (), {'input_dir': input_dir,
+                                               'imgformat': 'png',
+                                               'include_all_subdirs': True,
+                                               'delimiter': '_',
                                                'filename_metadata': ["filepath"],
-                                               'metadata_filters':{},
-                                               'metadata_terms':{'filepath'}
+                                               'metadata_filters': {},
+                                               'metadata_terms': {'filepath'}
                                                })
         dataset = _read_dataset(config)
         meta = _naive_dataset2dataframe(dataset, config)
@@ -49,7 +49,7 @@ def inspect_dataset(config):
     # count unique values by all filtered metadata and steps where images were dropped
     summary_df = meta.groupby(
         ['status', *config.metadata_filters],
-        dropna = False
+        dropna=False
     ).agg(_agg_unique_values)
     return summary_df, meta
 

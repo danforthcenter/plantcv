@@ -1,4 +1,3 @@
-import pytest
 from plantcv.parallel import inspect_dataset, WorkflowConfig
 
 

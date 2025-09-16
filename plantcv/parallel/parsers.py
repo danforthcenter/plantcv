@@ -90,7 +90,7 @@ def _dataset2dataframe(dataset, config):
     # Build a metadata dictionary of lists of metadata values
     metadata = {
         "filepath": [],
-        "n_metadata_terms":[]
+        "n_metadata_terms": []
     }
     # Populate metadata terms from the standard metadata vocabulary
     for term in config.metadata_terms:
@@ -138,7 +138,7 @@ def _apply_metadata_filters(df, config):
         removed_df = _anti_join(df, filtered_df)
         removed_df["status"] = "Removed by config.metadata_filters"
         # if a row has None for all metadata then it was not able to be parsed due to variable length
-        removed_df.loc[removed_df[list(config.metadata_filters.keys())].isnull().apply(lambda x: all(x), axis=1),
+        removed_df.loc[removed_df[list(config.metadata_filters.keys())].isnull().apply(all, axis=1),
                        'status'] = "Incorrect metadata length"
         return filtered_df, removed_df
     return df, pd.DataFrame()
@@ -447,5 +447,5 @@ def _anti_join(df1, df2=None):
     anti_joined = pandas.core.frame.Dataframe, metadata dataframe of what was removed
     """
     outer = df1.merge(df2, how='outer', indicator=True)
-    anti_joined = outer[(outer._merge=='left_only')].drop('_merge', axis=1)
+    anti_joined = outer[(outer['_merge'] == 'left_only')].drop('_merge', axis=1)
     return anti_joined
