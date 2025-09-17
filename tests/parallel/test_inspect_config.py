@@ -24,4 +24,4 @@ def test_inspect_dataset_string(parallel_test_data):
     # initialize config
     sdf, df = inspect_dataset(parallel_test_data.phenodata_dir)
     # nothing found because default is png imgformat
-    assert sdf.shape == (1, 2) and df.shape == (12, 3)
+    assert sdf.shape == (1, 18) and df.shape == (12, 19)
