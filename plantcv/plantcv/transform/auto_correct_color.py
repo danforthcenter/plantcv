@@ -2,8 +2,14 @@
 
 from plantcv.plantcv import params, deprecation_warning
 from plantcv.plantcv.transform.detect_color_card import detect_color_card
-from plantcv.plantcv.transform.color_correction import get_color_matrix, std_color_matrix, affine_color_correction, calc_transformation_matrix, get_matrix_m
-
+from plantcv.plantcv.transform.color_correction import (
+    apply_transformation_matrix,
+    get_color_matrix,
+    std_color_matrix,
+    affine_color_correction,
+    calc_transformation_matrix,
+    get_matrix_m,
+)
 
 def auto_correct_color(rgb_img, label=None, color_chip_size=None, roi=None, **kwargs):
     """Automatically detect a color card.
@@ -79,4 +85,6 @@ def auto_correct_color_nonlinear(rgb_img, label=None, color_chip_size=None, roi=
     _, matrix_m, matrix_b = get_matrix_m(target_matrix=std_matrix, source_matrix=card_matrix)
     # calculate transformation_matrix and save
     _, transformation_matrix = calc_transformation_matrix(matrix_m, matrix_b)
-    return 
+    # apply non-linear color transformation to the input image
+    corrected = apply_transformation_matrix(source_img=rgb_img, transformation_matrix=transformation_matrix)
+    return corrected
