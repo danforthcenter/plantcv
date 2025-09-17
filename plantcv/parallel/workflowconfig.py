@@ -2,16 +2,11 @@ import os
 import sys
 import json
 import datetime
-from plantcv.parallel.parsers import metadata_parser
-from plantcv.parallel.job_builder import job_builder
-from plantcv.parallel.process_results import process_results
-from plantcv.parallel.multiprocess import multiprocess
-from plantcv.parallel.multiprocess import create_dask_cluster
-from plantcv.parallel.workflow_inputs import workflow_inputs, WorkflowInputs
 
 
 class WorkflowConfig:
     """PlantCV Parallel Configuration class"""
+
     def __init__(self):
         self.input_dir = ""
         self.json = ""
@@ -25,6 +20,7 @@ class WorkflowConfig:
         self.imgformat = "png"
         self.delimiter = "_"
         self.metadata_filters = {}
+        self.metadata_regex = {}
         self.timestampformat = "%Y-%m-%dT%H:%M:%S.%fZ"
         self.writeimg = False
         self.other_args = {}
