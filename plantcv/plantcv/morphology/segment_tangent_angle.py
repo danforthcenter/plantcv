@@ -11,43 +11,47 @@ from plantcv.plantcv._helpers import _cv2_findcontours, _iterative_prune
 
 
 def _slope_to_intersect_angle(m1, m2):
-    """Calculate intersections angle (in degrees) from the slope of two lines
+    """
+    Calculate the intersection angle (in degrees) between two lines given their slopes.
 
-    Inputs:
-    m1    = Slope of line 1
-    m2    = Slope of line 2
+    Parameters
+    ----------
+    m1 : float
+        Slope of the first line.
+    m2 : float
+        Slope of the second line.
 
-    Returns:
-    angle = Intersection angle (in degrees)
-
-    :param m1: float
-    :param m2: float
-    :return angle: float
+    Returns
+    -------
+    angle : float
+        Intersection angle between the two lines, in degrees.
     """
     angle = ((np.pi - np.absolute(np.arctan(m1) - np.arctan(m2))) * 180 / np.pi).astype(np.float64)
     return angle
 
 
 def segment_tangent_angle(segmented_img, objects, size, label=None):
-    """Find 'tangent' angles in degrees of skeleton segments.
-    Use `size` pixels on either end of each segment to find a linear regression line, and calculate angle between the two
-    lines drawn per segment.
+    """
+    Find 'tangent' angles in degrees of skeleton segments.
 
-    Inputs:
-    segmented_img  = Segmented image to plot slope lines and intersection angles on
-    objects        = List of contours
-    size           = Size of ends used to calculate "tangent" lines
-    label          = Optional label parameter, modifies the variable name of
-                     observations recorded (default = pcv.params.sample_label).
+    Uses `size` pixels on either end of each segment to find a linear regression line, and calculates the
+    angle between the two lines drawn per segment.
 
-    Returns:
-    labeled_img    = Segmented debugging image with angles labeled
+    Parameters
+    ----------
+    segmented_img : numpy.ndarray
+        Segmented image to plot slope lines and intersection angles on.
+    objects : list
+        List of contours.
+    size : int
+        Size of ends used to calculate "tangent" lines.
+    label : str, optional
+        Label parameter, modifies the variable name of observations recorded (default = pcv.params.sample_label).
 
-    :param segmented_img: numpy.ndarray
-    :param objects: list
-    :param size: int
-    :param label: str
-    :return labeled_img: numpy.ndarray
+    Returns
+    -------
+    labeled_img : numpy.ndarray
+        Segmented debugging image with angles labeled.
     """
     # Set lable to params.sample_label if None
     if label is None:
