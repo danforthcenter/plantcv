@@ -1,6 +1,8 @@
 import pandas as pd
 import os
+import json
 from plantcv.parallel.parsers import metadata_parser, _read_dataset
+from plantcv.parallel.workflowconfig import WorkflowConfig
 
 
 def inspect_dataset(config):
@@ -17,26 +19,19 @@ def inspect_dataset(config):
     """
     if isinstance(config, str):
         input_dir = config
-        config = type('inspectionconfig', (), {'input_dir': input_dir,
-                                               'imgformat': 'png',
-                                               'include_all_subdirs': True,
-                                               'delimiter': '_',
-                                               'filename_metadata': ["filepath"],
-                                               'metadata_filters': {},
-                                               'metadata_terms': {'filepath'}
-                                               })
-        dataset = _read_dataset(config)
-        meta = _naive_dataset2dataframe(dataset, config)
-        removed = pd.DataFrame()
-    else:
-        # run the metadata parser to find images and return dataframes
-        meta, removed = metadata_parser(config)
-        # make dataframe out of groupby object
-        meta_filepaths = []
-        for i, _ in meta["filepath"]:
-            meta_filepaths.append(i[0])
-        meta = meta.apply(lambda x: x, include_groups=False)
-        meta["filepath"] = meta_filepaths
+        config = WorkflowConfig()
+        if input_dir.endswith(".json"):
+            config.import_config(config_file=input_dir)
+        else:
+            config.input_dir = input_dir
+    # run the metadata parser to find images and return dataframes
+    meta, removed = metadata_parser(config)
+    # make dataframe out of groupby object
+    meta_filepaths = []
+    for i, _ in meta["filepath"]:
+        meta_filepaths.append(i[0])
+    meta = meta.apply(lambda x: x, include_groups=False)
+    meta["filepath"] = meta_filepaths
     # flag kept images
     meta["status"] = "Kept"
     # combine both dataframes
