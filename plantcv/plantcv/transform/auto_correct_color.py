@@ -11,6 +11,7 @@ from plantcv.plantcv.transform.color_correction import (
     get_matrix_m,
 )
 
+
 def auto_correct_color(rgb_img, label=None, color_chip_size=None, roi=None, **kwargs):
     """Automatically detect a color card.
     Parameters
@@ -52,14 +53,12 @@ def auto_correct_color(rgb_img, label=None, color_chip_size=None, roi=None, **kw
                                    target_matrix=std_matrix)
 
 
-def auto_correct_color_nonlinear(rgb_img, label=None, color_chip_size=None, roi=None, **kwargs):
+def auto_correct_color_nonlinear(rgb_img, color_chip_size=None, roi=None, **kwargs):
     """Automatically detect a color card and applies non-linear color correction
     Parameters
     ----------
     rgb_img : numpy.ndarray
         Input RGB image data containing a color card.
-    label : str, optional
-        modifies the variable name of observations recorded (default = pcv.params.sample_label).
     color_chip_size: str, tuple, optional
         "passport", "classic", "cameratrax"; or tuple formatted (width, height)
         in millimeters (default = None)
