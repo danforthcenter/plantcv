@@ -135,6 +135,8 @@ def _apply_metadata_filters(df, config):
     metadata_filter = pd.DataFrame(list(itertools.product(*config.metadata_filters.values())),
                                    columns=config.metadata_filters.keys(), dtype="object")
     # If there are no filters provide the metadata_filter dataframe will be empty and we can return the input datafram
+    removed_df = pd.DataFrame()
+    filtered_df = df
     if not metadata_filter.empty:
         filtered_df = df.merge(metadata_filter, how="inner")
         removed_df = _anti_join(df, filtered_df)
@@ -142,14 +144,14 @@ def _apply_metadata_filters(df, config):
         # if a row has None for all metadata then it was not able to be parsed due to variable length
         removed_df.loc[removed_df[list(config.metadata_filters.keys())].isnull().apply(all, axis=1),
                        'status'] = "Incorrect metadata length"
-        return filtered_df, removed_df
-    return df, pd.DataFrame()
-        df = df.merge(metadata_filter, how="inner")
-    # if there are regex filters then find the True indicies for each and only return those from the merged dataframe
     if bool(config.metadata_regex):
+        prev_df = filtered_df
         for key, value in config.metadata_regex.items():
-            df = df[df[key].astype(str).str.contains(value, regex=True, na=False)]
-    return df
+            filtered_df = filtered_df[filtered_df[key].astype(str).str.contains(value, regex=True, na=False)]
+        removed_df_2 = _anti_join(prev_df, filtered_df)
+        removed_df_2["status"] = "Removed by config.metadata_regex"
+        removed_df = pd.concat([removed_df, removed_df_2])
+    return filtered_df, removed_df
 ###########################################
 
 
