@@ -489,7 +489,7 @@ def correct_color(target_img, target_mask, source_img, source_mask, output_direc
     save_matrix(transformation_matrix, os.path.join(output_directory, "transformation_matrix.npz"))
 
     # apply transformation
-    corrected_img = apply_transformation_matrix(source_img, target_img, transformation_matrix)
+    corrected_img = apply_transformation_matrix(source_img, transformation_matrix)
 
     return target_matrix, source_matrix, transformation_matrix, corrected_img
 
