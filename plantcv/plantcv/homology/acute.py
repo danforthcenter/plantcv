@@ -9,40 +9,37 @@ from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
 
 
 def acute(img, mask, win, threshold, label=None):
-    """Identify landmark positions within a contour for morphometric analysis
+    """
+    Identify landmark positions within a contour for morphometric analysis.
 
-    Inputs:
-    img         = Original image used for plotting purposes
-    mask        = binary mask used to generate contour array (necessary for ptvals)
-    win         = maximum cumulative pixel distance window for calculating angle
-                  score; 1 cm in pixels often works well
-    threshold   = angle score threshold to be applied for mapping out landmark
-                  coordinate clusters within each contour
-    label       = Optional label parameter, modifies the variable name of
-                  observations recorded (default = pcv.params.sample_label).
+    Parameters
+    ----------
+    img : numpy.ndarray
+        Original image used for plotting purposes
+    mask : numpy.ndarray
+        Binary mask used to generate contour array (necessary for ptvals)
+    win : int
+        Maximum cumulative pixel distance window for calculating angle score; 1 cm in pixels often works well
+    threshold : int
+        Angle score threshold to be applied for mapping out landmark coordinate clusters within each contour
+    label : str or None, optional
+        Optional label parameter, modifies the variable name of
+        observations recorded, (default = pcv.params.sample_label)
 
-    Outputs:
-    homolog_pts    = pseudo-landmarks selected from each landmark cluster
-    start_pts      = pseudo-landmark island starting position; useful in parsing homolog_pts in downstream analyses
-    stop_pts       = pseudo-landmark island end position ; useful in parsing homolog_pts in downstream analyses
-    ptvals         = average values of pixel intensity from the mask used to generate cont;
-                     useful in parsing homolog_pts in downstream analyses
-    chain          = raw angle scores for entire contour, used to visualize landmark
-                     clusters
-    max_dist       = supplemental list which stores coordinates, distance from
-                     landmark cluster edges, and angle score for entire contour.  Used
-                     in troubleshooting.
-
-    :param img: numpy.ndarray
-    :param mask: numpy.ndarray
-    :param win: int
-    :param threshold: int
-    :return homolog_pts: numpy.ndarray
-    :return start_pts: numpy.ndarray
-    :return stop_pts: numpy.ndarray
-    :return ptvals: list
-    :return chain: list
-    :return max_dist: list
+    Returns
+    -------
+    homolog_pts : list
+        List of pseudo-landmark coordinates (x,y) for each landmark cluster
+    start_pts : list
+        List of pseudo-landmark island starting coordinates (x,y)
+    stop_pts : list
+        List of pseudo-landmark island ending coordinates (x,y)
+    ptvals : list
+        List of mean pixel values underlying each landmark cluster
+    chain : list
+        List of angle scores for each contour point
+    max_dist : list
+        List of maximum distances for each contour point
     """
     # Set lable to params.sample_label if None
     if label is None:
@@ -86,15 +83,20 @@ def acute(img, mask, win, threshold, label=None):
 
 
 def _angle_chain(obj, win):
-    """Makes a list of angles to be used in detecting acute angles
+    """
+    Creates a list of angles to be used in detecting acute angles.
+
     Parameters
     ----------
-    obj      = Plantcv.objects, contours and hierarchy of a binary mask image
-    win      = int, maximum cumulative pixel distance window for calculating angle
+    obj : plantcv.Objects
+        Contours and hierarchy of objects
+    win : int
+        Maximum cumulative pixel distance window for calculating angle score
 
     Returns
     -------
-    chain    = list, angles of contours.
+    chain : list
+        List of angles for each contour point
     """
     # initialize chain list
     chain = []
@@ -147,17 +149,24 @@ def _angle_chain(obj, win):
 
 
 def _find_islands(obj, index, chain, win):
-    """Find islands of acute angles from list of angles
+    """
+    Find islands of acute angles from list of angles.
+
     Parameters
     ----------
-    obj       = plantcv.objects, contours and hierarchy of binary mask.
-    index     = list, angles found from contours of mask
-    chain     = list, angle scores for each contour
-    win       = int, maximum cumulative pixel distance window for calculating angle score
+    obj : plantcv.Objects
+        Contours and hierarchy of binary mask.
+    index : list
+        Angles found from contours of mask.
+    chain : list
+        Angle scores for each contour.
+    win : int
+        Maximum cumulative pixel distance window for calculating angle score.
 
     Returns
     -------
-    isle      = list, list of islands around acute angles.
+    isle : list
+        List of islands around acute angles.
     """
     isle = []
     island = []
@@ -191,19 +200,28 @@ def _find_islands(obj, index, chain, win):
 
 
 def _process_islands(obj, isle, chain, mask):
-    """Process list of islands into start/landmark/termination sites.
+    """
+    Process list of islands into start/landmark/termination sites.
+
     Parameters
     ----------
-    obj      = plantcv.objects, contours and hierarchy of binary mask.
-    isle     = list, list of islands around acute angles.
-    chain    = list, angle scores for each contour
-    mask     = numpy.ndarray, binary mask used to generate contour array
+    obj : plantcv.Objects
+        Contours and hierarchy of binary mask.
+    isle : list
+        List of islands around acute angles.
+    chain : list
+        Angle scores for each contour.
+    mask : numpy.ndarray
+        Binary mask used to generate contour array.
 
-    Results
+    Returns
     -------
-    homolog_pts = list, pseudo-landmarks from each landmark cluster
-    start_pts   = list, pseudo-landmark island starting position
-    stop_pts    = list, pseudo-landmark island end position
+    homolog_pts : list
+        Pseudo-landmarks from each landmark cluster.
+    start_pts : list
+        Pseudo-landmark island starting position.
+    stop_pts : list
+        Pseudo-landmark island end position.
     """
     # Initialize empty lists for homologous point max distance method
     maxpts = []
