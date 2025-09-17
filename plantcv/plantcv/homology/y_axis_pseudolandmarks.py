@@ -7,26 +7,26 @@ from plantcv.plantcv import params
 
 
 def y_axis_pseudolandmarks(img, mask, label=None):
-    """
-    Divide up object contour into 19 equidistant segments and generate landmarks for each
+    """Divide up object contour into 19 equidistant segments and generate landmarks for each.
 
-    Inputs:
-    img      = This is a copy of the original plant image generated using np.copy if debug is true it will be drawn on
-    mask     = this is a binary image. The object should be white and the background should be black
-    label    = Optional label parameter, modifies the variable name of
-               observations recorded (default = pcv.params.sample_label).
+    Parameters
+    ----------
+    img : numpy.ndarray
+        RGB or grayscale image data for plotting
+    mask : numpy.ndarray
+        Binary mask of the object of interest
+    label : str or None, optional
+        Optional label parameter, modifies the variable name of
+        observations recorded, (default = pcv.params.sample_label)
 
-    Returns:
-    left      = List of landmarks within the left side
-    right     = List of landmarks within the right side
-    center_h  = List of landmarks within the center
-
-    :param img: numpy.ndarray
-    :param mask: numpy.ndarray
-    :param label: str
-    :return left: list
-    :return right: list
-    :return center_h: list
+    Returns
+    -------
+    left : list
+        Left landmark points (depending on axis)
+    right : list
+        Right landmark points (depending on axis)
+    center_h : list
+        Horizontal landmark points in middle portion (depending on axis)
     """
     # Set lable to params.sample_label if None
     if label is None:

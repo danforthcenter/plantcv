@@ -8,26 +8,26 @@ from plantcv.plantcv import params, outputs
 
 
 def x_axis_pseudolandmarks(img, mask, label=None):
-    """
-    Divide up object contour into 20 equidistance segments and generate landmarks for each
+    """Divide up object contour into 20 equidistance segments and generate landmarks for each.
 
-    Inputs:
-    img          = RGB or grayscale image data for plotting
-    mask         = a contour of the plant object
-    label        = Optional label parameter, modifies the variable name of
-                   observations recorded (default = pcv.params.sample_label).
+    Parameters
+    ----------
+    img : numpy.ndarray
+        RGB or grayscale image data for plotting
+    mask : numpy.ndarray
+        Binary mask of the object of interest
+    label : str or None, optional
+        Optional label parameter, modifies the variable name of
+        observations recorded, (default = pcv.params.sample_label)
 
-    Returns:
-    top      = List of landmark points within 'top' portion
-    bottom   = List of landmark points within the 'bottom' portion
-    center_v = List of landmark points within the middle portion
-
-    :param img: numpy.ndarray
-    :param mask: numpy.ndarray
-    :param label: str
-    :return top: list
-    :return bottom: list
-    :return center_v: list
+    Returns
+    -------
+    top : list
+        Top landmark points (depending on axis)
+    bottom : list
+        Bottom landmark points (depending on axis)
+    center_v : list
+        Vertical landmark points in middle portion (depending on axis)
     """
     # Set lable to params.sample_label if None
     if label is None:
@@ -53,20 +53,30 @@ def x_axis_pseudolandmarks(img, mask, label=None):
 
 
 def _small_img_pseudolandmarks(img, obj, mask, label, axis=0):
-    """Divide object contour into equidistance segments for small (<=20px tall) images
+    """Divide object contour into equidistance segments for small (<=20px tall) images.
+
     Parameters
     ----------
-    img      = numpy.ndarray, RGB or grayscale image data for plotting
-    obj      = list of contours (list) and hierarchy (numpy.array)
-    mask     = numpy.ndarray, binary mask
-    label    = str, label for image
-    axis     = int, 0 for x axis, 1 for y axis.
+    img : numpy.ndarray
+        RGB or grayscale image data for plotting
+    obj : list
+        Contours of the object of interest
+    mask : numpy.ndarray
+        Binary mask of the object of interest
+    label : str
+        Label parameter, modifies the variable name of
+        observations recorded
+    axis : int, optional
+        Axis along which to generate landmarks, 0 for x axis, 1 for y axis, by default 0
 
     Returns
     -------
-    left_or_top      = list, left or top landmark points (depending on axis)
-    right_or_bottom  = list, right or bottom landmark points (depending on axis)
-    center_h_or_v    = list, horizontal or vertical landmark points in middle portion (depending on axis)
+    left_or_top : list
+        Left or top landmark points (depending on axis)
+    right_or_bottom : list
+        Right or bottom landmark points (depending on axis)
+    center_h_or_v : list
+        Horizontal or vertical landmark points in middle portion (depending on axis)
     """
     # Lists to return
     left_or_top = []
@@ -151,20 +161,30 @@ def _small_img_pseudolandmarks(img, obj, mask, label, axis=0):
 
 
 def _pseudolandmarks(img, obj, mask, label, axis=0):
-    """Divide object contour into equidistance segments for >20px tall images
+    """Divide object contour into equidistance segments for >20px tall images.
+
     Parameters
     ----------
-    img      = numpy.ndarray, RGB or grayscale image data for plotting
-    obj      = list of contours (list) and hierarchy (numpy.array)
-    mask     = numpy.ndarray, binary mask
-    label    = str, label for image
-    axis     = int, 0 for x axis, 1 for y axis.
+    img : numpy.ndarray
+        RGB or grayscale image data for plotting
+    obj : list
+        Contours of the object of interest
+    mask : numpy.ndarray
+        Binary mask of the object of interest
+    label : str
+        Label parameter, modifies the variable name of
+        observations recorded
+    axis : int, optional
+        Axis along which to generate landmarks, 0 for x axis, 1 for y axis, by default 0
 
     Returns
     -------
-    left_or_top      = list, left or top landmark points (depending on axis)
-    right_or_bottom  = list, right or bottom landmark points (depending on axis)
-    center_h_or_v    = list, horizontal or vertical landmark points in middle portion (depending on axis)
+    left_or_top : list
+        Left or top landmark points (depending on axis)
+    right_or_bottom : list
+        Right or bottom landmark points (depending on axis)
+    center_h_or_v : list
+        Horizontal or vertical landmark points in middle portion (depending on axis)
     """
     x, y, width, height = cv2.boundingRect(obj)
     xy = [x, y]
