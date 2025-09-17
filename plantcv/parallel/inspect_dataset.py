@@ -1,7 +1,6 @@
 import pandas as pd
 import os
-import json
-from plantcv.parallel.parsers import metadata_parser, _read_dataset
+from plantcv.parallel.parsers import metadata_parser
 from plantcv.parallel.workflowconfig import WorkflowConfig
 
 
@@ -47,25 +46,6 @@ def inspect_dataset(config):
         dropna=False
     ).agg(_agg_unique_values)
     return summary_df, meta
-
-
-def _naive_dataset2dataframe(dataset, config):
-    """Convert a dataset to a dataframe with little additional information.
-    Parameters
-    ----------
-    dataset = dict, metadata dictionary as returned by plantcv.parallel.parsers._read_dataset
-
-    Return
-    ------
-    meta    = pandas.DataFrame, metadata dataframe
-    """
-    metadata = {
-        "filepath": []
-    }
-    for image in dataset["images"]:
-        metadata["filepath"].append(os.path.join(config.input_dir, image))
-    df = pd.DataFrame(data=metadata)
-    return df
 
 
 def _agg_unique_values(series):
