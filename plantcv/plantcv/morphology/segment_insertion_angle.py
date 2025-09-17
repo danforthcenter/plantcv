@@ -12,29 +12,31 @@ from plantcv.plantcv._helpers import _cv2_findcontours, _find_tips, _iterative_p
 
 
 def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects, size, label=None):
-    """Find leaf insertion angles in degrees of skeleton segments.
-    Fit a linear regression line to the stem. Use `size` pixels on  the portion of leaf next to the stem find a linear
-    regression line, and calculate angle between the two lines per leaf object.
+    """
+    Find leaf insertion angles in degrees of skeleton segments.
 
-    Inputs:
-    skel_img         = Skeletonized image
-    segmented_img    = Segmented image to plot slope lines and intersection angles on
-    leaf_objects     = List of leaf segments
-    stem_objects     = List of stem segments
-    size             = Size of inner leaf used to calculate slope lines
-    label            = Optional label parameter, modifies the variable name of
-                       observations recorded (default = pcv.params.sample_label).
+    Fit a linear regression line to the stem. Use `size` pixels on the portion of leaf next to the stem to find a linear
+    regression line, and calculate the angle between the two lines per leaf object.
 
-    Returns:
-    labeled_img      = Debugging image with angles labeled
+    Parameters
+    ----------
+    skel_img : numpy.ndarray
+        Skeletonized image.
+    segmented_img : numpy.ndarray
+        Segmented image to plot slope lines and intersection angles on.
+    leaf_objects : list
+        List of leaf segments.
+    stem_objects : list
+        List of stem segments.
+    size : int
+        Size of inner leaf used to calculate slope lines.
+    label : str, optional
+        Label parameter, modifies the variable name of observations recorded (default = pcv.params.sample_label).
 
-    :param skel_img: numpy.ndarray
-    :param segmented_img: numpy.ndarray
-    :param leaf_objects: list
-    :param stem_objects: list
-    :param size: int
-    :param label: str
-    :return labeled_img: numpy.ndarray
+    Returns
+    -------
+    labeled_img : numpy.ndarray
+        Debugging image with angles labeled.
     """
     # Set lable to params.sample_label if None
     if label is None:
@@ -160,16 +162,30 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
 
 
 def _combine_stem(segmented_img, stem_objects, maxiter=50):
-    """Combine stem objects into a single contour of the stem
+    """
+    Combine multiple stem contours into a single stem contour.
+
     Parameters
     ----------
-    segmented_img  = numpy.ndarray, Segmented image to plot slope lines and intersection angles on
-    stem_objects   = list, list of stem objects
-    maxiter        = int, maximum iterations to run trying to combine stem objects into a single contour.
+    segmented_img : numpy.ndarray
+        Segmented image used for plotting and processing.
+    stem_objects : list of numpy.ndarray
+        List of contours representing stem objects.
+    maxiter : int, optional
+        Maximum number of iterations to attempt merging stem objects (default is 50).
+
+    combined_stem : list of numpy.ndarray
+        List containing the merged stem contour.
 
     Returns
     -------
-    combined_stem  = list, contours of stem from _cv2_findcontours
+    combined_stem : list of numpy.ndarray
+        List containing the merged stem contour.
+
+    Raises
+    ------
+    RuntimeError
+        If stem objects cannot be combined into a single contour within `maxiter` iterations.
     """
     stem_img = np.zeros(segmented_img.shape[:2], np.uint8)
     cv2.drawContours(stem_img, stem_objects, -1, 255, 2, lineType=8)

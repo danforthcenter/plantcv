@@ -9,20 +9,22 @@ from plantcv.plantcv._helpers import _scale_size
 
 
 def analyze_stem(rgb_img, stem_objects, label=None):
-    """Calculate angle of segments (in degrees) by fitting a linear regression line to segments.
+    """
+    Analyze stem characteristics by fitting a linear regression line to stem segments.
 
-    Inputs:
-    rgb_img       = RGB image to plot debug image
-    stem_objects  = List of stem segments (output from segment_sort function)
-    label        = optional label parameter, modifies the variable name of observations recorded
+    Parameters
+    ----------
+    rgb_img : numpy.ndarray
+        RGB image to plot debug image.
+    stem_objects : list
+        List of stem segments (output from segment_sort function).
+    label : str, optional
+        Label parameter, modifies the variable name of observations recorded.
 
-    Returns:
-    labeled_img    = Stem analysis debugging image
-
-    :param rgb_img: numpy.ndarray
-    :param stem_objects: list
-    :param label: str
-    :return labeled_img: numpy.ndarray
+    Returns
+    -------
+    labeled_img : numpy.ndarray
+        Stem analysis debugging image.
     """
     # Set lable to params.sample_label if None
     if label is None:
