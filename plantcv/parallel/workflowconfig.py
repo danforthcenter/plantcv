@@ -39,12 +39,16 @@ class WorkflowConfig:
             "job_extra_directives": None
         }
         self.metadata_terms = self.metadata_term_definition()
-     # set metadata_terms reactively based on filename_metadata
+
+    # set metadata_terms reactively based on filename_metadata
     @property
+
     def metadata_terms(self):
         self._metadata_terms = self.metadata_term_definition()
         return self._metadata_terms
+
     @metadata_terms.setter
+
     def metadata_terms(self, new):
         self._metadata_terms = new
 

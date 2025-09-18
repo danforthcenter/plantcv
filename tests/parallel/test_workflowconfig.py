@@ -31,7 +31,7 @@ def test_reactive_metadata_terms_config(parallel_test_data):
     config = WorkflowConfig()
     # add a non-standard piece of filename metadata
     config.filename_metadata = ["a weird key"]
-    assert "a weird key" in config.metadata_terms.keys()
+    assert bool(config.metadata_terms["a weird key"])
 
     
 def test_validate_config(parallel_test_data, tmpdir):
