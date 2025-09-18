@@ -66,7 +66,8 @@ corrected_img = pcv.transform.affine_color_correction(rgb_img=rgb_img,
 If `pcv.params.verbose = True` then a debug image will get created showing where the detected color card is located in the input image. 
 ![Screenshot](img/documentation_images/transform_detect_color_card/detected_color_card.png)
 
-Not all chips need to be detected in the cropped color card, but help with quality control of labeled mask alignment. 
+Not all chips need to be detected in the cropped color card, but help with quality control of labeled mask alignment.
+
 ![Screenshot](img/documentation_images/transform_detect_color_card/cropped_color_card.png)
 
 ### Suppored Color Cards
