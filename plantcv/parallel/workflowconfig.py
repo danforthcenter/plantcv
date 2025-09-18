@@ -38,88 +38,7 @@ class WorkflowConfig:
             "local_directory": None,
             "job_extra_directives": None
         }
-        self.metadata_terms = {
-                # Camera settings
-                "camera": {
-                    "label": "camera identifier",
-                    "datatype": "<class 'str'>",
-                    "value": "none"
-                },
-                "imgtype": {
-                    "label": "image type",
-                    "datatype": "<class 'str'>",
-                    "value": "none"
-                },
-                "zoom": {
-                    "label": "camera zoom setting",
-                    "datatype": "<class 'str'>",
-                    "value": "none"
-                },
-                "exposure": {
-                    "label": "camera exposure setting",
-                    "datatype": "<class 'str'>",
-                    "value": "none"
-                },
-                "gain": {
-                    "label": "camera gain setting",
-                    "datatype": "<class 'str'>",
-                    "value": "none"
-                },
-                "frame": {
-                    "label": "image series frame identifier",
-                    "datatype": "<class 'str'>",
-                    "value": "none"
-                },
-                "rotation": {
-                    "label": "sample rotation in degrees",
-                    "datatype": "<class 'str'>",
-                    "value": "none"
-                },
-                "lifter": {
-                    "label": "imaging platform height setting",
-                    "datatype": "<class 'str'>",
-                    "value": "none"
-                },
-                # Date-Time
-                "timestamp": {
-                    "label": "datetime of image",
-                    "datatype": "<class 'datetime.datetime'>",
-                    "value": None
-                },
-                # Sample attributes
-                "id": {
-                    "label": "image identifier",
-                    "datatype": "<class 'str'>",
-                    "value": "none"
-                },
-                "barcode": {
-                    "label": "plant barcode identifier",
-                    "datatype": "<class 'str'>",
-                    "value": "none"
-                },
-                "treatment": {
-                    "label": "treatment identifier",
-                    "datatype": "<class 'str'>",
-                    "value": "none"
-                },
-                "cartag": {
-                    "label": "plant carrier identifier",
-                    "datatype": "<class 'str'>",
-                    "value": "none"
-                },
-                # Experiment attributes
-                "measurementlabel": {
-                    "label": "experiment identifier",
-                    "datatype": "<class 'str'>",
-                    "value": "none"
-                },
-                # Other
-                "other": {
-                    "label": "other identifier",
-                    "datatype": "<class 'str'>",
-                    "value": "none"
-                }
-            }
+        self.metadata_terms = lambda: self.metadata_term_definition()
 
     # Save configuration to a file
     def save_config(self, config_file):
@@ -208,3 +127,100 @@ class WorkflowConfig:
                   f"Valid clusters include: {', '.join(map(str, valid_clusters))}."
                   )
         return all(checks)
+
+    # Specify metadata terms
+    def metadata_term_definition(self):
+        """Add dictionary of metadata terms
+        x
+        """
+        metadata_terms = {
+            # Camera settings
+            "camera": {
+                "label": "camera identifier",
+                "datatype": "<class 'str'>",
+                "value": "none"
+            },
+            "imgtype": {
+                "label": "image type",
+                "datatype": "<class 'str'>",
+                "value": "none"
+            },
+            "zoom": {
+                "label": "camera zoom setting",
+                "datatype": "<class 'str'>",
+                "value": "none"
+            },
+            "exposure": {
+                "label": "camera exposure setting",
+                "datatype": "<class 'str'>",
+                "value": "none"
+            },
+            "gain": {
+                "label": "camera gain setting",
+                "datatype": "<class 'str'>",
+                "value": "none"
+            },
+            "frame": {
+                "label": "image series frame identifier",
+                "datatype": "<class 'str'>",
+                "value": "none"
+            },
+            "rotation": {
+                "label": "sample rotation in degrees",
+                "datatype": "<class 'str'>",
+                "value": "none"
+            },
+            "lifter": {
+                "label": "imaging platform height setting",
+                "datatype": "<class 'str'>",
+                "value": "none"
+            },
+            # Date-Time
+            "timestamp": {
+                "label": "datetime of image",
+                "datatype": "<class 'datetime.datetime'>",
+                "value": None
+            },
+            # Sample attributes
+            "id": {
+                "label": "image identifier",
+                "datatype": "<class 'str'>",
+                "value": "none"
+            },
+            "barcode": {
+                "label": "plant barcode identifier",
+                "datatype": "<class 'str'>",
+                "value": "none"
+            },
+            "treatment": {
+                "label": "treatment identifier",
+                "datatype": "<class 'str'>",
+                "value": "none"
+            },
+            "cartag": {
+                "label": "plant carrier identifier",
+                "datatype": "<class 'str'>",
+                "value": "none"
+            },
+            # Experiment attributes
+            "measurementlabel": {
+                "label": "experiment identifier",
+                "datatype": "<class 'str'>",
+                "value": "none"
+            },
+            # Other
+            "other": {
+                "label": "other identifier",
+                "datatype": "<class 'str'>",
+                "value": "none"
+            }
+        }
+        # add any other metadata terms as strings
+        for k in [fm for fm in self.filename_metadata if fm not in metadata_terms]:
+            metadata_terms[k] = {
+                "label": f"{k}",
+                "datatype": "<class 'str'>",
+                "value": "none"
+            }
+
+        return metadata_terms
