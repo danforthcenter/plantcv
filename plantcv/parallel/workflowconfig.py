@@ -38,7 +38,15 @@ class WorkflowConfig:
             "local_directory": None,
             "job_extra_directives": None
         }
-        self.metadata_terms = lambda: self.metadata_term_definition()
+        self.metadata_terms = self.metadata_term_definition()
+     # set metadata_terms reactively based on filename_metadata
+    @property
+    def metadata_terms(self):
+        self._metadata_terms = self.metadata_term_definition()
+        return self._metadata_terms
+    @metadata_terms.setter
+    def metadata_terms(self, new):
+        self._metadata_terms = new
 
     # Save configuration to a file
     def save_config(self, config_file):
@@ -51,8 +59,11 @@ class WorkflowConfig:
         """
         # Open the file for writing
         with open(config_file, "w") as fp:
+            # strip the underscore from _metadata_terms before writing
+            content = vars(self)
+            content = {k.strip("_"): v for k, v in content.items()}
             # Save the data in JSON format with indentation
-            json.dump(obj=vars(self), fp=fp, indent=4)
+            json.dump(obj=content, fp=fp, indent=4)
 
     # Import a configuration from a file
     def import_config(self, config_file):
@@ -68,7 +79,8 @@ class WorkflowConfig:
             # Import the JSON configuration data
             config = json.load(fp)
             for key, value in config.items():
-                setattr(self, key, value)
+                if key != "_metadata_terms":
+                    setattr(self, key, value)
 
     # Validation checks on current config
     def validate_config(self):
