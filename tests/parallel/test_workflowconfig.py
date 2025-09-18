@@ -20,10 +20,20 @@ def test_import_config_file(parallel_test_data):
     config = WorkflowConfig()
     # import config file
     config.import_config(config_file=parallel_test_data.workflowconfig_template_file)
+    content = vars(config)
+    content = {k.strip("_"): v for k, v in content.items()}
+    assert content == parallel_test_data.workflowconfig_template()
 
-    assert vars(config) == parallel_test_data.workflowconfig_template()
 
+def test_reactive_metadata_terms_config(parallel_test_data):
+    """Test for PlantCV."""
+    # Create config instance
+    config = WorkflowConfig()
+    # add a non-standard piece of filename metadata
+    config.filename_metadata = ["a weird key"]
+    assert "a weird key" in config.metadata_terms.keys()
 
+    
 def test_validate_config(parallel_test_data, tmpdir):
     """Test for PlantCV."""
     # Create a test tmp directory
