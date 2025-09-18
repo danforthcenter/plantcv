@@ -102,14 +102,6 @@ class WorkflowConfig:
             print("Error: a list of filename metadata terms (filename_metadata) is required but is currently undefined",
                   file=sys.stderr)
             checks.append(False)
-        else:
-            # Are the user-defined metadata valid?
-            for term in self.filename_metadata:
-                if term not in self.metadata_terms:
-                    print(f"Error: the term {term} in filename_metadata is not a currently supported metadata type.",
-                          file=sys.stderr)
-                    checks.append(False)
-
         # Validate workflow script
         if not os.path.exists(self.workflow):
             print(f"Error: PlantCV workflow script (workflow) is required and {self.workflow} does not exist.",
