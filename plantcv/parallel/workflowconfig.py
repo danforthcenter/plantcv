@@ -39,16 +39,14 @@ class WorkflowConfig:
             "job_extra_directives": None
         }
         self.metadata_terms = self.metadata_term_definition()
-
     # set metadata_terms reactively based on filename_metadata
-    @property
 
+    @property
     def metadata_terms(self):
         self._metadata_terms = self.metadata_term_definition()
         return self._metadata_terms
 
     @metadata_terms.setter
-
     def metadata_terms(self, new):
         self._metadata_terms = new
 
@@ -146,9 +144,7 @@ class WorkflowConfig:
 
     # Specify metadata terms
     def metadata_term_definition(self):
-        """Add dictionary of metadata terms
-        x
-        """
+        """Add dictionary of metadata terms"""
         metadata_terms = {
             # Camera settings
             "camera": {
