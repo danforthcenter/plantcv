@@ -229,22 +229,28 @@ def _init_dataset():
 def _filename_metadata_index(config):
     """Index positional filename metadata.
 
-    Keyword arguments:
+    Parameters
+    ----------
     config = plantcv.parallel.WorkflowConfig object
 
-    Outputs:
-    metadata_index = dictionary of metadata terms and positions
-
-    :param config: plantcv.parallel.WorkflowConfig
-    :return metadata_index: dict
+    Return
+    ------
+    metadata_index = dict, metadata terms and positions
+    config = plantcv.parallel.WorkflowConfig object
     """
+    # if filename_metadata is not specified then estimate it
+    if not bool(config.filename_metadata):
+        print("Warning: Estimating config.filename_metadata based on file names.")
+        config = _estimate_filename_metadata(config):
+
     # A dictionary of metadata terms and their index position in the filename metadata term list
     metadata_index = {}
     # Enumerate the terms listed in the user configuration
     for i, term in enumerate(config.filename_metadata):
         # Store the term and the listed order
         metadata_index[term] = i
-    return metadata_index
+
+    return metadata_index, config
 ###########################################
 
 
@@ -372,7 +378,7 @@ def _read_phenofront(config, metadata_file):
     # Create a dataset
     dataset = _init_dataset()
     # Index filename metadata based on user-supplied parsing parameters
-    metadata_index = _filename_metadata_index(config=config)
+    metadata_index, config = _filename_metadata_index(config=config)
     # Open the SnapshotInfo.csv file
     with open(metadata_file, 'r') as fp:
         # Read the first header line
@@ -467,7 +473,7 @@ def _read_filenames(config):
     # Name the experiment with the input directory
     dataset["dataset"]["experiment"] = config.input_dir
     # Index filename metadata based on user-supplied parsing parameters
-    metadata_index = _filename_metadata_index(config=config)
+    metadata_index, config = _filename_metadata_index(config=config)
     for filepath in fns:
         # Get the image dataset-relative path to use as the dataset key
         rel_path = os.path.relpath(filepath, start=config.input_dir)
@@ -495,3 +501,29 @@ def _anti_join(df1, df2=None):
     outer = df1.merge(df2, how='outer', indicator=True)
     anti_joined = outer[(outer['_merge'] == 'left_only')].drop('_merge', axis=1)
     return anti_joined
+###########################################
+
+
+# Reads filename-based datasets
+###########################################
+
+
+def _estimate_filename_metadata(config):
+    """Estimate filename_metadata if it is missing
+    Parameters
+    ----------
+    config = plantcv.parallel.WorkflowConfig object
+
+    Returns
+    -------
+    config = plantcv.parallel.WorkflowConfig object with filename_metadata added
+    """
+    metadata_lengths = []
+    # check length of metadata from first 10 files, take the max, use those default terms.
+    for root, _, files in os.walk(config.input_dir):
+        for file in files[0:9]:
+            if file.endswith(config.imgformat):
+                # Keep the files that end with the image extension
+                metadata_lengths.append(len(file.split(config.delimiter)))
+    config.filename_metadata = list(config.metadata_terms)[0:int(np.max(metadata_lengths))]
+    return config
