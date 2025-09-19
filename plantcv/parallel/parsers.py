@@ -521,7 +521,8 @@ def _estimate_filename_metadata(config):
     metadata_lengths = [1]
     if config.include_all_subdirs is False:
         # If subdirectories are excluded, use glob to get a list of all image files
-        fns = list(glob.glob(pathname=f'*{config.imgformat}', root_dir=config.input_dir))
+        fns = list(glob.glob(pathname=os.path.join(config.input_dir, f'*{config.imgformat}')))
+        fns = [os.path.basename(f) for f in fns]
     else:
         fns = []
         for _, _, files in os.walk(config.input_dir):
