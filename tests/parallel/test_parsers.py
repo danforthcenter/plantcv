@@ -60,7 +60,8 @@ def test_metadata_parser_phenodata(parallel_test_data):
     assert len(meta) == 12
 
 
-def test_estimate_filename_metadata(parallel_test_data):
+@pytest.mark.parametrize("subdirs", [True, False])
+def test_estimate_filename_metadata(parallel_test_data, subdirs):
     """Test for PlantCV.
 
     Test estimating filename metadata when missing from config
@@ -69,5 +70,6 @@ def test_estimate_filename_metadata(parallel_test_data):
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.flat_imgdir
     config.imgformat = "jpg"
+    config.include_all_subdirs = subdirs
     meta, _ = metadata_parser(config=config)
     assert len(meta) == 2
