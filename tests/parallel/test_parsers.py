@@ -1,5 +1,6 @@
 import pytest
 from plantcv.parallel import metadata_parser, WorkflowConfig
+from plantcv.parallel.parsers import _estimate_filename_metadata
 
 
 def test_metadata_parser_snapshots(parallel_test_data):
@@ -58,3 +59,16 @@ def test_metadata_parser_phenodata(parallel_test_data):
 
     meta, _ = metadata_parser(config=config)
     assert len(meta) == 12
+
+
+def test_estimate_filename_metadata(parallel_test_data):
+    """Test for PlantCV.
+
+    Test estimating filename metadata when missing from config
+    """
+    # Create config instance
+    config = WorkflowConfig()
+    config.input_dir = parallel_test_data.flat_imgdir
+    config.imgformat = "jpg"
+    meta, _ = metadata_parser(config=config)
+    assert len(meta) == 2
