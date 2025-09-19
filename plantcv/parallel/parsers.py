@@ -519,7 +519,6 @@ def _estimate_filename_metadata(config):
     config = plantcv.parallel.WorkflowConfig object with filename_metadata added
     """
     metadata_lengths = [1]
-    test_files = x
     if config.include_all_subdirs is False:
         # If subdirectories are excluded, use glob to get a list of all image files
         fns = list(glob.glob(pathname=f'*{config.imgformat}', root_dir=config.input_dir))
