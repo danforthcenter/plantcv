@@ -518,12 +518,12 @@ def _estimate_filename_metadata(config):
     -------
     config = plantcv.parallel.WorkflowConfig object with filename_metadata added
     """
-    metadata_lengths = []
+    metadata_lengths = [1]
     # check length of metadata from first 10 files, take the max, use those default terms.
     for root, _, files in os.walk(config.input_dir):
         for file in files[0:9]:
             if file.endswith(config.imgformat):
                 # Keep the files that end with the image extension
                 metadata_lengths.append(len(file.split(config.delimiter)))
-    config.filename_metadata = list(config.metadata_terms)[0:int(np.max(metadata_lengths))]
+    config.filename_metadata = list(config.metadata_terms)[0:int(max(metadata_lengths))]
     return config
