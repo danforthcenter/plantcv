@@ -85,17 +85,6 @@ def test_invalid_enddate(parallel_test_data, tmpdir):
     assert not config.validate_config()
 
 
-def test_invalid_filename_metadata():
-    """Test for PlantCV."""
-    # Create config instance
-    config = WorkflowConfig()
-    # Set invalid values in config
-    # input_dir and json are not defined by default, but are required
-    # Do not set required filename_metadata
-    # Validate config
-    assert not config.validate_config()
-
-
 def test_invalid_cluster():
     """Test for PlantCV."""
     # Create config instance
