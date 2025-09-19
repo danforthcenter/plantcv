@@ -241,7 +241,7 @@ def _filename_metadata_index(config):
     # if filename_metadata is not specified then estimate it
     if not bool(config.filename_metadata):
         print("Warning: Estimating config.filename_metadata based on file names.")
-        config = _estimate_filename_metadata(config):
+        config = _estimate_filename_metadata(config)
 
     # A dictionary of metadata terms and their index position in the filename metadata term list
     metadata_index = {}
