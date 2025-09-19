@@ -1,6 +1,5 @@
 import pytest
 from plantcv.parallel import metadata_parser, WorkflowConfig
-from plantcv.parallel.parsers import _estimate_filename_metadata
 
 
 def test_metadata_parser_snapshots(parallel_test_data):
