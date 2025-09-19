@@ -519,11 +519,19 @@ def _estimate_filename_metadata(config):
     config = plantcv.parallel.WorkflowConfig object with filename_metadata added
     """
     metadata_lengths = [1]
+    test_files = x
+    if config.include_all_subdirs is False:
+        # If subdirectories are excluded, use glob to get a list of all image files
+        fns = list(glob.glob(pathname=f'*{config.imgformat}', root_dir=config.input_dir))
+    else:
+        fns = []
+        for _, _, files in os.walk(config.input_dir):
+            for file in files:
+                if file.endswith(config.imgformat):
+                    fns.append(file)
     # check length of metadata from first 10 files, take the max, use those default terms.
-    for root, _, files in os.walk(config.input_dir):
-        for file in files[0:9]:
-            if file.endswith(config.imgformat):
-                # Keep the files that end with the image extension
-                metadata_lengths.append(len(file.split(config.delimiter)))
+    for file in fns[0:9]:
+        # get length of split filename
+        metadata_lengths.append(len(file.split(config.delimiter)))
     config.filename_metadata = list(config.metadata_terms)[0:int(max(metadata_lengths))]
     return config
