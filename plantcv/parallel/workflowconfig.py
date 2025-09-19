@@ -97,11 +97,6 @@ class WorkflowConfig:
         if self.json == "":
             print("Error: an output JSON file (json) is required but is currently undefined.", file=sys.stderr)
             checks.append(False)
-        # Validate filename metadata
-        if len(self.filename_metadata) == 0:
-            print("Error: a list of filename metadata terms (filename_metadata) is required but is currently undefined",
-                  file=sys.stderr)
-            checks.append(False)
         # Validate workflow script
         if not os.path.exists(self.workflow):
             print(f"Error: PlantCV workflow script (workflow) is required and {self.workflow} does not exist.",
