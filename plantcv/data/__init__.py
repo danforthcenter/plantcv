@@ -65,28 +65,53 @@ class HSI(Image):
     """Subclass of Image for hyperspectral images."""
 
     def __new__(cls, input_array: np.ndarray, uri: str, wavelengths: list, default_wavelengths: list,
-                wavelength_units: str = "nm"):
+                wavelength_units: str = "nm", metadata: dict = None):
         # Create an instance of Image with default attributes
         obj = Image.__new__(cls, input_array, uri)
         # Add HSI-specific attributes
+        # Set wavelengths list
         obj.wavelengths = wavelengths
+        # Set wavelength units
         obj.wavelength_units = wavelength_units
+        # Compute min and max wavelengths
         obj.min_wavelength = np.min(wavelengths)
         obj.max_wavelength = np.max(wavelengths)
+        # Set default wavelengths for RGB thumbnail
         obj.default_wavelengths = default_wavelengths
+        # If no default wavelengths are provided, set to common RGB wavelengths if available,
         if default_wavelengths is None:
             if obj.max_wavelength >= 635 and obj.min_wavelength <= 490:
                 obj.default_wavelengths = [480, 540, 710]
             else:
                 obj.default_wavelengths = [wavelengths[np.argmax(np.sum(input_array, axis=(0, 1)))]]
+        # Set metadata
+        obj.metadata = metadata if metadata is not None else {}
         return obj
 
     def __init__(self, **kwargs):
+        """Initialize the HSI object."""
+        # Create a GRAY or RGB representation of the HSI data
         self.thumb = self._create_thumb()
 
     def get_wavelength(self, wavelength):
+        """
+        Get a specific wavelength from the hyperspectral image.
+
+        Parameters
+        ----------
+        wavelength : float
+            The wavelength to retrieve.
+
+        Returns
+        -------
+        plantcv.data.HSI
+            A new HSI object containing only the specified wavelength.
+        """
+        # Find the index of the closest wavelength
         idx = np.abs(np.array(self.wavelengths) - wavelength).argmin()
+        # Use the parent class __getitem__ method to get the specific wavelength slice
         obj = super(HSI, self).__getitem__(np.s_[:, :, idx])
+        # Update attributes for the new object
         obj.wavelengths = [self.wavelengths[idx]]
         obj.min_wavelength = np.min(obj.wavelengths)
         obj.max_wavelength = np.max(obj.wavelengths)
