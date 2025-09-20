@@ -479,16 +479,18 @@ def _read_filenames(config):
 # Reads filename-based datasets
 ###########################################
 def _replace_string_extension(imgformat):
-    """Replace "all" with a list of file extensions
+    """Replace "all" with a list of file extensions.
 
-    Keyword arguments:
-    imgformat = "imgformat" from a plantcv.parallel.WorkflowConfig object
+    Parameters
+    ----------
+    imgformat : str
+        The image format string, typically from a plantcv.parallel.WorkflowConfig object.
 
-    Outputs:
-    extensions = a list of file extensions
-
-    :param imgformat: str
-    :return extensions: list
+    Returns
+    -------
+    extensions : list of str
+        A list of file extensions. If `imgformat` is "all", returns a list of common image file extensions;
+        otherwise, returns a list containing only `imgformat`.
     """
     extensions = [imgformat]
     if imgformat == "all":
