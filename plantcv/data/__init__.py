@@ -127,7 +127,7 @@ class HSI(Image):
         obj.max_wavelength = np.max(obj.wavelengths)
         return obj
 
-    def view(self):
+    def thumbnail(self):
         """
         Create an RGB or grayscale thumbnail for quick visualization.
 
