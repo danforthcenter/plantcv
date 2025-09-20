@@ -46,7 +46,7 @@ Click through our step-by-step guide below to install PlantCV through the Jupyte
 
 ### Detailed installation instructions <a name="detailed"></a>
 
-PlantCV requires Python (tested with versions 3.9, 3.10, and 3.11) and these [Python packages](https://github.com/danforthcenter/plantcv/blob/main/pyproject.toml).
+PlantCV requires Python (tested with versions 3.11, 3.12, and 3.13) and these [Python packages](https://github.com/danforthcenter/plantcv/blob/main/pyproject.toml).
 Additionally, we recommend installing [JupyterLab](https://jupyter.org/).
 
 !!!note
