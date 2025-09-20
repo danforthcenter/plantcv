@@ -8,6 +8,21 @@ class Image(np.ndarray):
     # From NumPy documentation
     # Add uri attribute
     def __new__(cls, input_array: np.ndarray, uri: str):
+        """
+        Create a new Image instance.
+
+        Parameters
+        ----------
+        input_array : np.ndarray
+            The input array representing the image data.
+        uri : str
+            Uniform resource identifier of the source file.
+
+        Returns
+        -------
+        Image
+            An instance of the Image class with the uri attribute set.
+        """
         obj = np.asarray(input_array).view(cls)
         # New attribute uri stores uniform resource identifier of the source file
         obj.uri = uri
@@ -88,11 +103,6 @@ class HSI(Image):
         obj.metadata = metadata if metadata is not None else {}
         return obj
 
-    def __init__(self, **kwargs):
-        """Initialize the HSI object."""
-        # Create a GRAY or RGB representation of the HSI data
-        self.thumb = self._create_thumb()
-
     def get_wavelength(self, wavelength):
         """
         Get a specific wavelength from the hyperspectral image.
@@ -117,7 +127,15 @@ class HSI(Image):
         obj.max_wavelength = np.max(obj.wavelengths)
         return obj
 
-    def _create_thumb(self):
+    def view(self):
+        """
+        Create an RGB or grayscale thumbnail for quick visualization.
+
+        Returns
+        -------
+        plantcv.data.BGR or plantcv.data.GRAY
+            An RGB or grayscale thumbnail representation of the HSI data.
+        """
         if len(self.default_wavelengths) == 3:
             thumb = BGR(input_array=np.dstack([self.get_wavelength(self.default_wavelengths[0]),
                                                self.get_wavelength(self.default_wavelengths[1]),
