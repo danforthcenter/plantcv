@@ -27,6 +27,7 @@ class WorkflowConfig:
         self.imgformat = "all"
         self.delimiter = "_"
         self.metadata_filters = {}
+        self.metadata_regex = {}
         self.timestampformat = "%Y-%m-%dT%H:%M:%S.%fZ"
         self.writeimg = False
         self.other_args = {}

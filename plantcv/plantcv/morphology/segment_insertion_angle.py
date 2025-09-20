@@ -6,35 +6,37 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import color_palette
-from plantcv.plantcv.morphology.segment_tangent_angle import _slope_to_intesect_angle
+from plantcv.plantcv.morphology.segment_tangent_angle import _slope_to_intersect_angle
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _find_tips, _iterative_prune, _logical_operation, _dilate, _closing
 
 
 def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects, size, label=None):
-    """Find leaf insertion angles in degrees of skeleton segments.
-    Fit a linear regression line to the stem. Use `size` pixels on  the portion of leaf next to the stem find a linear
-    regression line, and calculate angle between the two lines per leaf object.
+    """
+    Find leaf insertion angles in degrees of skeleton segments.
 
-    Inputs:
-    skel_img         = Skeletonized image
-    segmented_img    = Segmented image to plot slope lines and intersection angles on
-    leaf_objects     = List of leaf segments
-    stem_objects     = List of stem segments
-    size             = Size of inner leaf used to calculate slope lines
-    label            = Optional label parameter, modifies the variable name of
-                       observations recorded (default = pcv.params.sample_label).
+    Fit a linear regression line to the stem. Use `size` pixels on the portion of leaf next to the stem to find a linear
+    regression line, and calculate the angle between the two lines per leaf object.
 
-    Returns:
-    labeled_img      = Debugging image with angles labeled
+    Parameters
+    ----------
+    skel_img : numpy.ndarray
+        Skeletonized image.
+    segmented_img : numpy.ndarray
+        Segmented image to plot slope lines and intersection angles on.
+    leaf_objects : list
+        List of leaf segments.
+    stem_objects : list
+        List of stem segments.
+    size : int
+        Size of inner leaf used to calculate slope lines.
+    label : str, optional
+        Label parameter, modifies the variable name of observations recorded (default = pcv.params.sample_label).
 
-    :param skel_img: numpy.ndarray
-    :param segmented_img: numpy.ndarray
-    :param leaf_objects: list
-    :param stem_objects: list
-    :param size: int
-    :param label: str
-    :return labeled_img: numpy.ndarray
+    Returns
+    -------
+    labeled_img : numpy.ndarray
+        Debugging image with angles labeled.
     """
     # Set lable to params.sample_label if None
     if label is None:
@@ -99,22 +101,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
         cv2.drawContours(labeled_img, valid_segment, i, rand_color[i], params.line_thickness, lineType=8)
 
     # Plot stem segments
-    stem_img = np.zeros(segmented_img.shape[:2], np.uint8)
-    cv2.drawContours(stem_img, stem_objects, -1, 255, 2, lineType=8)
-    stem_img = _closing(stem_img)
-    combined_stem, _ = _cv2_findcontours(bin_img=stem_img)
-
-    # Make sure stem objects are a single contour
-    loop_count = 0
-    while len(combined_stem) > 1 and loop_count < 50:
-        loop_count += 1
-        stem_img = _dilate(stem_img, 2, 1)
-        stem_img = _closing(stem_img)
-        combined_stem, _ = _cv2_findcontours(bin_img=stem_img)
-    if len(combined_stem) > 1:
-        # Reset debug mode
-        fatal_error('Unable to combine stem objects.')
-
+    combined_stem = _combine_stem(segmented_img, stem_objects)
     # Find slope of the stem
     [vx, vy, x, y] = cv2.fitLine(combined_stem[0], cv2.DIST_L2, 0, 0.01, 0.01)
     stem_slope = -vy / vx
@@ -132,13 +119,13 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
         segment_slopes.append(slope[0])
 
         # Draw slope lines if possible
-        if slope > 1000000 or slope < -1000000:
+        if abs(slope) > 1000000:
             print("Slope of contour with ID#", t, "is", slope, "and cannot be plotted.")
         else:
             cv2.line(labeled_img, (cols - 1, right_list), (0, left_list), rand_color[t], 1)
 
         # Store intersection angles between insertion segment and stem line
-        intersection_angle = _slope_to_intesect_angle(slope[0], stem_slope)
+        intersection_angle = _slope_to_intersect_angle(slope[0], stem_slope)
         # Function measures clockwise but we want the acute angle between stem and leaf insertion
         if intersection_angle > 90:
             intersection_angle = 180 - intersection_angle
@@ -172,3 +159,46 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
            filename=os.path.join(params.debug_outdir, f"{params.device}_segment_insertion_angles.png"))
 
     return labeled_img
+
+
+def _combine_stem(segmented_img, stem_objects, maxiter=50):
+    """
+    Combine multiple stem contours into a single stem contour.
+
+    Parameters
+    ----------
+    segmented_img : numpy.ndarray
+        Segmented image used for plotting and processing.
+    stem_objects : list of numpy.ndarray
+        List of contours representing stem objects.
+    maxiter : int, optional
+        Maximum number of iterations to attempt merging stem objects (default is 50).
+
+    combined_stem : list of numpy.ndarray
+        List containing the merged stem contour.
+
+    Returns
+    -------
+    combined_stem : list of numpy.ndarray
+        List containing the merged stem contour.
+
+    Raises
+    ------
+    RuntimeError
+        If stem objects cannot be combined into a single contour within `maxiter` iterations.
+    """
+    stem_img = np.zeros(segmented_img.shape[:2], np.uint8)
+    cv2.drawContours(stem_img, stem_objects, -1, 255, 2, lineType=8)
+    stem_img = _closing(stem_img)
+    combined_stem, _ = _cv2_findcontours(bin_img=stem_img)
+
+    # Make sure stem objects are a single contour
+    loop_count = 0
+    while len(combined_stem) > 1 and loop_count < maxiter:
+        loop_count += 1
+        stem_img = _dilate(stem_img, 2, 1)
+        stem_img = _closing(stem_img)
+        combined_stem, _ = _cv2_findcontours(bin_img=stem_img)
+    if len(combined_stem) > 1:
+        fatal_error('Unable to combine stem objects.')
+    return combined_stem
