@@ -91,6 +91,11 @@ extensions should be combined (if using phenofront data this must be length 1).
   `{"imgtype": "VIS", "frame": ["0", "90"]"}`).
 
 
+* **metadata_regex**: (dict, default = `None`): a dictionary of filepath terms (keys) and values, any specified keys
+will be used for regex based filtering (e.g. 
+  `{"filepath1": "first[p|P]athPattern.*", "basename": "^starts_with.*"}`).
+
+
 * **timestampformat**: (str, default = '%Y-%m-%dT%H:%M:%S.%fZ'): a date format code compatible with strptime C library. 
   See [strptime docs](https://docs.python.org/3.7/library/datetime.html#strftime-and-strptime-behavior) for supported 
   codes.

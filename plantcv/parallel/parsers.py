@@ -9,22 +9,26 @@ import itertools
 # Parse dataset metadata
 ###########################################
 def metadata_parser(config):
-    """Image metadata parser.
+    """Parse image metadata from a dataset.
 
-    Keyword arguments:
-    config = plantcv.parallel.WorkflowConfig object
+    Parameters
+    ----------
+    config : plantcv.parallel.WorkflowConfig
+        Workflow configuration object.
 
-    Outputs:
-    meta   = image metadata dataframe
-
-    :param config: plantcv.parallel.WorkflowConfig
-    :return meta: pandas.core.frame.DataFrame
+    Returns
+    -------
+    pandas.core.groupby.generic.DataFrameGroupBy
+        Grouped dataframe of image metadata.
     """
     # Read the input dataset
     dataset = _read_dataset(config=config)
 
     # Convert the dataset metadata to a dataframe
     meta = _dataset2dataframe(dataset=dataset, config=config)
+
+    # Split file paths into metadata terms 0:N-1
+    meta = _parse_filepath(df=meta, config=config)
 
     # Apply user-supplied metadata filters
     meta = _apply_metadata_filters(df=meta, config=config)
@@ -133,8 +137,11 @@ def _apply_metadata_filters(df, config):
                                    columns=config.metadata_filters.keys(), dtype="object")
     # If there are no filters provide the metadata_filter dataframe will be empty and we can return the input dataframe
     if not metadata_filter.empty:
-        filtered_df = df.merge(metadata_filter, how="inner")
-        return filtered_df
+        df = df.merge(metadata_filter, how="inner")
+    # if there are regex filters then find the True indicies for each and only return those from the merged dataframe
+    if bool(config.metadata_regex):
+        for key, value in config.metadata_regex.items():
+            df = df[df[key].astype(str).str.contains(value, regex=True, na=False)]
     return df
 ###########################################
 
@@ -272,6 +279,42 @@ def _parse_filename(filename, config, metadata_index):
             if term in metadata_index:
                 img_meta[term] = meta_list[metadata_index[term]]
     return img_meta
+###########################################
+
+
+# Parses file paths into metadata columns
+###########################################
+def _parse_filepath(df, config):
+    """Parse metadata from a filename.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        Dataframe of image metadata.
+    config : plantcv.parallel.WorkflowConfig
+        PlantCV parallel configureation object.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Dataframe with added filepath metadata columns.
+    """
+    # remove extraneous config.input_dir from file path
+    paths_after_input = df["filepath"].map(lambda st: os.path.relpath(st, config.input_dir))
+    path_metadata = []
+    for i, fp in enumerate(paths_after_input):
+        # for every file path, split it and add the elements to a list
+        splits = fp.split(os.sep)
+        path_metadata.append(splits[1:])
+    # bind list into a dataframe
+    path_metadata_df = pd.DataFrame(path_metadata)
+    # rename columns to filepath1:N, basename
+    path_metadata_df.columns = ["filepath"+str(i + 1) for i in range(len(path_metadata_df.columns))]
+    if not path_metadata_df.empty:
+        path_metadata_df.rename(columns={path_metadata_df.columns[-1]: "basename"}, inplace=True)
+    # bind new columns onto existing metadata
+    meta2 = df.reset_index(drop=True).join(path_metadata_df)
+    return meta2
 ###########################################
 
 

@@ -11,6 +11,7 @@
     "imgformat": "png",
     "delimiter": "_",
     "metadata_filters": {},
+    "metadata_regex": {},
     "timestampformat": "%Y-%m-%dT%H:%M:%S.%fZ",
     "writeimg": false,
     "other_args": {},
