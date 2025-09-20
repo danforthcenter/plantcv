@@ -78,8 +78,9 @@ current working directory.
   `timestampformat`.
 
 
-* **imgformat**: (str, default = "png"): image file format/extension in lowercase. This can accept a list if multiple
-extensions should be combined (if using phenofront data this must be length 1).
+* **imgformat**: (str, default = "all"): image file format/extension in lowercase. The string "all" can be used
+as shorthand to match all file extensions readable by `cv2.imread`. This can accept a list if multiple
+extensions should be combined (if using phenofront data this must be length 1 and "png" is the default).
 
 
 * **delimiter**: (str, default = "_"): image filename metadata term delimiter character. Alternatively, a regular 
