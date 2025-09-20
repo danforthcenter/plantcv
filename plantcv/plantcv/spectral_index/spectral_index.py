@@ -258,7 +258,7 @@ def cri700(hsi, distance=20):
     return None
 
 
-def egi(rgb_img, distance=40):
+def egi(img, distance=40):
     """Excess Green Index.
 
     r = R / (R + G + B)
@@ -269,32 +269,32 @@ def egi(rgb_img, distance=40):
     The theoretical range for EGI is (-1, 2).
 
     Inputs:
-    rgb_img      = Color image (np.array) or hyperspectral image (PlantCV Spectral_data instance)
+    img            = Color image (np.array) or hyperspectral image (PlantCV Spectral_data instance)
 
     Returns:
     index_array    = Index data as a Spectral_data instance
 
     :param distance: int
-    :param rgb_img: np.array
+    :param img: np.array
     :return index_array: np.array
     """
-    if type(rgb_img) is Spectral_data:
+    if type(img) is Spectral_data:
         # If the available wavelengths completely cover the required range of data
-        if (float(rgb_img.max_wavelength) + distance) >= 700 and (float(rgb_img.min_wavelength) - distance) <= 460:
-            r460_index = _find_closest(np.array([float(i) for i in rgb_img.wavelength_dict.keys()]), 460)
-            r530_index = _find_closest(np.array([float(i) for i in rgb_img.wavelength_dict.keys()]), 530)
-            r700_index = _find_closest(np.array([float(i) for i in rgb_img.wavelength_dict.keys()]), 700)
-            blue = (rgb_img.array_data[:, :, r460_index])
-            green = (rgb_img.array_data[:, :, r530_index])
-            red = (rgb_img.array_data[:, :, r700_index])
+        if (float(img.max_wavelength) + distance) >= 700 and (float(img.min_wavelength) - distance) <= 460:
+            r460_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 460)
+            r530_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 530)
+            r700_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 700)
+            blue = (img.array_data[:, :, r460_index])
+            green = (img.array_data[:, :, r530_index])
+            red = (img.array_data[:, :, r700_index])
         # If the required range of data is outside the available wavelengths
         else:
             warn("Available wavelengths are not suitable for calculating EGI. Try increasing distance.")
             return None
 
-    if type(rgb_img) is np.ndarray:
+    if type(img) is np.ndarray:
         # Split the RGB image into component channels
-        blue, green, red = cv2.split(rgb_img)
+        blue, green, red = cv2.split(img)
     # Calculate float32 sum of all channels
     total = red.astype(np.float32) + green.astype(np.float32) + blue.astype(np.float32)
     # Calculate normalized channels

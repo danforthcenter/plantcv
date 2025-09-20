@@ -1069,6 +1069,7 @@ pages for more details on the input and output variable types.
 
 * post v3.8: array = **plantcv.spectral_index.egi**(*rgb_img*)
 * post v4.4: array = **plantcv.spectral_index.egi**(*rgb_img, distance=40*)
+* post v5.0: array = **plantcv.spectral_index.egi**(*img, distance=40*)
 
 #### plantcv.spectral_index.evi
 

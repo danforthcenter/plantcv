@@ -103,12 +103,12 @@ EGI = 2g - r - b
 
 Index range: -1, 2
 
-**plantcv.spectral_index.egi**(*rgb_img, distance=40*)
+**plantcv.spectral_index.egi**(*img, distance=40*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
 - **Parameters:**
-    - rgb_img     - Color image or hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`).
+    - img     - Color image or hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`).
     - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index when using a hyperspectral images as input.
   
 ### EVI
@@ -679,7 +679,7 @@ cri550_array = pcv.spectral_index.cri550(hsi=spectral_data, distance=20)
 cri700_array = pcv.spectral_index.cri700(hsi=spectral_data, distance=20)
 
 # Extract EGI index from the datacube 
-egi_array = pcv.spectral_index.egi(rgb_img=spectral_data, distance=40)
+egi_array = pcv.spectral_index.egi(img=spectral_data, distance=40)
 
 # Extract EVI index from the datacube 
 evi_array = pcv.spectral_index.evi(hsi=spectral_data, distance=20)
