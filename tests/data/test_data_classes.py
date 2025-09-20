@@ -75,4 +75,13 @@ def test_hsi_grayscale_thumb():
     """Test creating an HSI class image."""
     hsi = HSI(input_array=np.zeros((10, 10, 5), dtype=np.uint8), uri="hsi.data", wavelengths=[700, 800, 900],
               default_wavelengths=None, wavelength_units="nm")
-    assert isinstance(hsi, HSI)
+    thumb = hsi.view()
+    assert isinstance(thumb, GRAY)
+
+
+def test_hsi_rgb_thumb():
+    """Test creating an HSI class image."""
+    hsi = HSI(input_array=np.zeros((10, 10, 5), dtype=np.uint8), uri="hsi.data", wavelengths=[480, 540, 710, 800, 900],
+              default_wavelengths=None, wavelength_units="nm")
+    thumb = hsi.view()
+    assert isinstance(thumb, BGR)
