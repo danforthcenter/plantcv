@@ -10,7 +10,7 @@ class jupyterconfig:
         # reactive properties set within notebook when initialized
         self.notebook = self.find_notebook()
         self.workflow = self.nameScript(),  # path to python script, created here
-        self.config = self.setupConfiguration() # path to config, will be written based on this object
+        self.config = self.nameConfig() # path to config, will be written based on this object
         self.analysis_script = self.notebook2script()
         # things that should be user set after object is initialized, argument like.
         self.input_dir = "."
@@ -125,13 +125,29 @@ class jupyterconfig:
     # make reactive property for config so that it rewrites when changed?
     @property
     def config(self):
-        self._config = self.setupConfiguration()
+        self._config = self.nameConfig()
         return self._config
     @config.setter
     def config(self, new):
         self._config = new
     # make a configuration file for running in parallel within current corpus
-    def setupConfiguration(self):
+    def nameConfig(self):
+        # save out with self config
+        config_file_name = os.path.splitext(self.workflow)[0] + ".json"
+        config.save_config(config_file = config_file_name)
+        return config_file_name
+        # ...
+        # profit?
+
+    # proper functions called for stuff other than reactive properties
+    def run(self):
+        # before running, rerun reactives then kick off the parallel process?
+        self.save_config()
+        # other "reactives" should be set since they are based only on the file this is being run in.
+        # if needed could change them again but I think this is reasonable for now.
+        print("doing parallel now")
+        # calls other stuff from plantcv.parallel.etc
+    def save_config(self):
         # this should make a python script and a config file per the standard way of parallelizing
         # i think this makes a WorkflowConfig from this thing and parallelizes per the standard method after that,
         #      just turning the jupyter kernel into the head node?
@@ -143,21 +159,9 @@ class jupyterconfig:
         # set a few manually due to property differences
         config.workflow = self.workflow
         config.json = self.results
-        # save out with self config
-        config_file_name = os.path.splitext(self.workflow)[0] + ".json"
-        config.save_config(config_file = config_file_name)
-        return config_file_name
-        # ...
-        # profit?
-
-    def run(self):
-        # before running, rerun reactives then kick off the parallel process
-        config = self.setupConfiguration()
-        # other "reactives" should be set since they are based only on the file this is being run in.
-        # if needed could change them again but I think this is reasonable for now.
-        print("doing parallel now")
-        # calls other stuff from plantcv.parallel.etc
-
+        # save
+        config.save_config(config_file = self.config)
+        
         
     def validate(self):
         # this should check the notebook and warn you about any suspicious lines (hey are you wanting to plot this..?)
