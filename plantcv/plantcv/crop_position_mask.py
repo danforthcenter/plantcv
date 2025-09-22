@@ -11,26 +11,43 @@ from plantcv.plantcv import params
 
 
 def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
-    """Crop position mask
+    """
+    Crop a binary mask to a specified position within an image.
 
-    Inputs:
-    img     = RGB or grayscale image data for plotting
-    mask    = Binary mask to use (must be correct size, if, not use make_resize_mask function)
-    x       = x position
-    y       = y position
-    v_pos   = push from "top" or "bottom"
-    h_pos   = push to "right" or "left"
+    Parameters
+    ----------
+    img : numpy.ndarray
+        RGB or grayscale image data for plotting.
+    mask : numpy.ndarray
+        Binary mask to use (must be correct size; if not, use make_resize_mask function).
+    x : int
+        x position for cropping.
+    y : int
+        y position for cropping.
+    v_pos : str, optional
+        Vertical position to push from, either "top" or "bottom" (default is "top").
+    h_pos : str, optional
+        Horizontal position to push to, either "right" or "left" (default is "right").
 
-    Returns:
-    newmask = image mask
+    Returns
+    -------
+    newmask : numpy.ndarray
+        Cropped image mask.
 
-    :param img: numpy.ndarray
-    :param mask: numpy.ndarray
-    :param x: int
-    :param y: int
-    :param v_pos: str
-    :param h_pos: str
-    :return newmask: numpy.ndarray
+    Raises
+    ------
+    ValueError
+        If x or y are negative or non-integer values.
+    ValueError
+        If v_pos or h_pos are not valid options.
+    ValueError
+        If mask is not a binary image.
+
+    Notes
+    -----
+    - The function centers and resizes the mask to match the image size.
+    - The mask is cropped and positioned according to the specified vertical and horizontal parameters.
+    - Debug images are saved if debugging is enabled.
     """
     if not all([x > 0, y > 0]):
         fatal_error("x and y cannot be negative numbers or non-integers")
@@ -63,12 +80,12 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
         r = mx - ix
         r1 = int(np.rint(r / 2.0))
         r2 = _crop_modulo(r1, r)
-        mask = mask[r1 : mx - r2, 0:my]
+        mask = mask[r1:mx - r2, 0:my]
     if my >= iy:
         r = my - iy
         r1 = int(np.rint(r / 2.0))
         r2 = _crop_modulo(r1, r)
-        mask = mask[0:mx, r1 : my - r2]
+        mask = mask[0:mx, r1:my - r2]
 
     # New mask shape
     mx, my = np.shape(mask)
