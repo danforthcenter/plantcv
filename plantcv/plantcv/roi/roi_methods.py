@@ -804,7 +804,7 @@ def filter(mask, roi, roi_type="partial"):
     Inputs:
     mask           = binary image data to be filtered
     roi            = region of interest, an instance of the Object class output from a roi function
-    roi_type       = 'cutto', 'partial' (for partially inside, default), or 'largest' (keep only the largest contour)
+    roi_type       = 'cutto', 'partial' (for partially inside, default), 'largest' (keep only the largest contour), or 'within'.
 
     Returns:
     filtered_mask     = mask image
