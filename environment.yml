@@ -2,7 +2,7 @@
 # optionally, change channel name with -n {plantcv-dev}
 name: plantcv
 dependencies:
-  - python=3.11
+  - python=3.13
   - matplotlib>=1.5
   - numpy>=2
   - pandas
