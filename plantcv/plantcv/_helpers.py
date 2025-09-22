@@ -532,10 +532,8 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
                 # check overlap with traced ROI
                 overlap_img = _logical_operation(filtering_mask, roi_outline_mask, 'and')
                 # check color in original mask, ie don't keep gaps that are 0s.
-                pts = np.where(filtering_mask == 255)
-                original_color = img[pts[0], pts[1]]
                 # append contours fully within ROI to the within_mask
-                if not overlap_img.any() and original_color.all():
+                if not overlap_img.any() and kept_hierarchy[0][c][3] == -1:
                     cv2.drawContours(within_mask, kept_cnt, c,
                                      int(img[kept_cnt[c][0][0][1], kept_cnt[c][0][0][0]]),
                                      -1, lineType=8, hierarchy=kept_hierarchy)
