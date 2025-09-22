@@ -440,31 +440,44 @@ def _cv2_findcontours(bin_img):
 
 def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
     """
-    Helper function to filter contours using a single ROI
+    Helper function to filter contours using a single ROI.
 
-    Find objects partially inside a region of interest or cut objects to the ROI.
+    Finds objects partially inside a region of interest or cuts objects to the ROI.
 
-    Inputs:
-    img            = RGB, binary, or grayscale image data for shape
-    roi            = region of interest, an instance of the Object class output from a roi function
-    obj            = contours of objects, output from "_cv2_findcontours" function
-    hierarchy      = hierarchy of objects, output from "_cv2_findcontours" function
-    roi_type       = 'cutto', 'partial' (for partially inside, default), 'largest' (keep only the largest contour)
-                     or 'within' (only objects fully within the ROI)
+    Parameters
+    ----------
+    img : numpy.ndarray
+        RGB, binary, or grayscale image data for shape.
+    roi : plantcv.plantcv.classes.Objects
+        Region of interest, an instance of the Object class output from a ROI function.
+    obj : list
+        Contours of objects, output from "_cv2_findcontours" function.
+    hierarchy : numpy.ndarray
+        Hierarchy of objects, output from "_cv2_findcontours" function.
+    roi_type : str, optional
+        Type of ROI filtering. Options are:
+        - 'partial': Find objects partially inside the ROI (default).
+        - 'cutto': Cut objects to the ROI.
+        - 'largest': Keep only the largest contour.
+        - 'within': Keep only objects fully within the ROI.
 
-    Returns:
-    kept_cnt       = kept contours
-    kept_hier      = kept hierarchy
-    mask           = mask image
+    Returns
+    -------
+    kept_cnt : list
+        List of kept contours after filtering.
+    kept_hier : numpy.ndarray
+        Hierarchy of kept contours.
+    mask : numpy.ndarray
+        Mask image showing the filtered contours.
 
-    :param img: numpy.ndarray
-    :param roi: plantcv.plantcv.classes.Objects
-    :param obj: list
-    :param hierarchy: np.array
-    :param roi_type: str
-    :return kept_cnt: list
-    :return kept_hier: np.array
-    :return mask: numpy.ndarray
+    Raises
+    ------
+    RuntimeError
+        If an invalid `roi_type` is provided.
+
+    Notes
+    -----
+    If a multi-ROI is provided, only the first ROI will be used. For multi-ROI processing, consider using a for loop.
     """
     # Store debug
     debug = params.debug
