@@ -2,7 +2,7 @@
 
 from plantcv.plantcv import params, deprecation_warning
 from plantcv.plantcv.transform.detect_color_card import detect_color_card
-from plantcv.plantcv.transform.color_correction import get_color_matrix, std_color_matrix, affine_color_correction
+from plantcv.plantcv.transform.color_correction import std_color_matrix, affine_color_correction
 
 
 def auto_correct_color(rgb_img, label=None, color_chip_size=None, roi=None, **kwargs):
@@ -39,8 +39,7 @@ def auto_correct_color(rgb_img, label=None, color_chip_size=None, roi=None, **kw
         "The 'label' parameter is no longer utilized, since color chip size is now metadata. "
         "It will be removed in PlantCV v5.0."
         )
-    labeled_mask = detect_color_card(rgb_img=rgb_img, color_chip_size=color_chip_size, roi=roi, **kwargs)
-    _, card_matrix = get_color_matrix(rgb_img=rgb_img, mask=labeled_mask)
+    card_matrix = detect_color_card(rgb_img=rgb_img, color_chip_size=color_chip_size, roi=roi, **kwargs)
     std_matrix = std_color_matrix(pos=3)
     return affine_color_correction(rgb_img=rgb_img, source_matrix=card_matrix,
                                    target_matrix=std_matrix)

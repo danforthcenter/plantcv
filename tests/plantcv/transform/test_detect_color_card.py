@@ -9,16 +9,16 @@ def test_detect_color_card(transform_test_data):
     """Test for PlantCV."""
     # Load rgb image
     rgb_img = cv2.imread(transform_test_data.colorcard_img)
-    labeled_mask = detect_color_card(rgb_img=rgb_img, color_chip_size="classic")
-    assert len(np.unique(labeled_mask)) == 25
+    color_matrix = detect_color_card(rgb_img=rgb_img, color_chip_size="classic")
+    assert np.shape(color_matrix) == (24, 4)
 
 
 def test_detect_color_card_set_size(transform_test_data):
     """Test for PlantCV."""
     # Load rgb image
     rgb_img = cv2.imread(transform_test_data.colorcard_img)
-    labeled_mask = detect_color_card(rgb_img=rgb_img, color_chip_size=(40, 40))
-    assert len(np.unique(labeled_mask)) == 25
+    color_matrix = detect_color_card(rgb_img=rgb_img, color_chip_size=(40, 40))
+    assert np.shape(color_matrix) == (24, 4)
 
 
 def test_detect_color_card_none_found(transform_test_data):
@@ -42,7 +42,7 @@ def test_detect_color_card_partial_card(transform_test_data):
     # load rgb image
     rgb_img = cv2.imread(transform_test_data.partial_card_rgb_img)
     with pytest.raises(RuntimeError):
-        _ = detect_color_card(rgb_img=rgb_img)
+        _ = detect_color_card(rgb_img=rgb_img, aspect_ratio=2, solidity=0.5)
 
 
 def test_detect_color_card_incorrect_card_size(transform_test_data):
