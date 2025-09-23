@@ -19,7 +19,7 @@ def run_parallel(config):
     ###########################################
     parser_start_time = time.time()
     print("Reading image metadata...", file=sys.stderr)
-    meta = plantcv.parallel.metadata_parser(config=config)
+    meta, _ = plantcv.parallel.metadata_parser(config=config)
     parser_clock_time = time.time() - parser_start_time
     print(f"Reading image metadata took {parser_clock_time} seconds.", file=sys.stderr)
     ###########################################
