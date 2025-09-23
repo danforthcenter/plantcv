@@ -1,7 +1,7 @@
 import os
 import nbformat
 from nbconvert import PythonExporter # new dependency
-from plantcv.parallel import WorkflowConfig
+from plantcv.parallel import WorkflowConfig, workflow_inputs
 # from plantcv.parallel.workflowconfig import WorkflowConfig # this is pending #1792 merging to separate workflowconfig from init.py
 
 class jupyterconfig:
@@ -141,12 +141,19 @@ class jupyterconfig:
 
     # proper functions called for stuff other than reactive properties
     def run(self):
-        # before running, rerun reactives then kick off the parallel process?
-        self.save_config()
-        # other "reactives" should be set since they are based only on the file this is being run in.
-        # if needed could change them again but I think this is reasonable for now.
-        print("doing parallel now")
-        plantcv.parallel.run_parallel(self.config)
+        # if in notebook, save config, start parallel.
+        if self.in_notebook():
+            # before running, rerun reactives then kick off the parallel process?
+            self.save_config()
+            # other "reactives" should be set since they are based only on the file
+            # this is being run in.
+            # if needed could change them again but I think this is reasonable for now.
+            print("doing parallel now")
+            plantcv.parallel.run_parallel(self.config)
+        else:
+            # set the arguments?
+            global args
+            args = workflow_inputs()
 
     def save_config(self):
         # this should make a python script and a config file per the standard way of parallelizing
@@ -163,7 +170,11 @@ class jupyterconfig:
         # save
         config.save_config(config_file = self.config)
         print("Saved" + self.config)
-        
+
+    def in_notebook(self):
+        import __main__ as main
+        return not hasattr(main, '__file__')
+    
     def validate(self):
         # this should check the notebook and warn you about any suspicious lines (hey are you wanting to plot this..?)
         return self
