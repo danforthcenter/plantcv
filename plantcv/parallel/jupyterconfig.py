@@ -1,7 +1,7 @@
 import os
 import nbformat
 from nbconvert import PythonExporter # new dependency
-from plantcv.parallel import WorkflowConfig, workflow_inputs
+from plantcv.parallel import WorkflowConfig, workflow_inputs, run_parallel, metadata_parser
 # from plantcv.parallel.workflowconfig import WorkflowConfig # this is pending #1792 merging to separate workflowconfig from init.py
 
 class jupyterconfig:
@@ -55,7 +55,9 @@ class jupyterconfig:
         self._notebook = new
     # function for finding the active notebook, slightly fraught?
     def find_notebook(self):
-        ipynb_path = os.environ['JPY_SESSION_NAME']
+        ipynb_path = "not found."
+        if self.in_notebook():
+            ipynb_path = os.environ['JPY_SESSION_NAME']
         return ipynb_path
 
 
@@ -108,16 +110,19 @@ class jupyterconfig:
     def notebook2script(self):
         # Make that self.script file
         # Read the notebook file
-        with open(self.notebook) as fh:
-            nb = nbformat.reads(fh.read(), nbformat.NO_CONVERT)
-        # Create a Python exporter instance
-        exporter = PythonExporter()
-        # Convert the notebook to Python code
-        source, _ = exporter.from_notebook_node(nb)
-        # Write the output to a Python file
-        with open(self.workflow, 'w') as fh:
-            fh.writelines(source)
-        # return boolean for if self.script exists
+        if self.in_notebook():
+            with open(self.notebook) as fh:
+                nb = nbformat.reads(fh.read(), nbformat.NO_CONVERT)
+            # Create a Python exporter instance
+            exporter = PythonExporter()
+            # Convert the notebook to Python code
+            source, _ = exporter.from_notebook_node(nb)
+            # Write the output to a Python file
+            # NOTE could say that if you don't see 'workflow_inputs(' in the code someplace then add it?
+            # I don't think we'll have smart enough parsing logic for that though. Might be a rtfm situation.
+            with open(self.workflow, 'w') as fh:
+                fh.writelines(source)
+            # return boolean for if self.script exists
         return os.path.exists(self.workflow)
 
 
@@ -134,42 +139,60 @@ class jupyterconfig:
     def nameConfig(self):
         # save out with self config
         config_file_name = os.path.splitext(self.workflow)[0] + ".json"
-        config.save_config(config_file = config_file_name)
         return config_file_name
         # ...
         # profit?
 
+    def find_jobs(self):
+        if self.in_notebook():
+            self.save_config()
+            config = WorkflowConfig()
+            config.import_config(self.config)
+            meta, rm = metadata_parser(config=config)
+            meta_filepaths = []
+            for i, _ in meta["filepath"]:
+                meta_filepaths.append(i[0])
+            meta = meta.apply(lambda x: x, include_groups=False)
+            meta["filepath"] = meta_filepaths
+            # flag kept images
+            meta["status"] = "Kept"
+            return meta, rm
     # proper functions called for stuff other than reactive properties
     def run(self):
         # if in notebook, save config, start parallel.
         if self.in_notebook():
+            print("Initializing from" + self.notebook + "Notebook")
             # before running, rerun reactives then kick off the parallel process?
             self.save_config()
             # other "reactives" should be set since they are based only on the file
             # this is being run in.
             # if needed could change them again but I think this is reasonable for now.
             print("doing parallel now")
-            plantcv.parallel.run_parallel(self.config)
+            config = WorkflowConfig()
+            config.import_config(self.config)
+            run_parallel(config)
         else:
+            print("not in a notebook, running a workflow")
             # set the arguments?
-            global args
-            args = workflow_inputs()
+            #global args
+            #args = workflow_inputs()
 
     def save_config(self):
         # this should make a python script and a config file per the standard way of parallelizing
         # i think this makes a WorkflowConfig from this thing and parallelizes per the standard method after that,
         #      just turning the jupyter kernel into the head node?
         # make a config object
-        config = WorkflowConfig()
-        # find shared keys between config and self, loop over assigning from self to config
-        for attr in [attr for attr in vars(config).keys() if attr in vars(self).keys()]:
-            setattr(config, attr, getattr(self, attr))
-        # set a few manually due to property differences
-        config.workflow = self.workflow
-        config.json = self.results
-        # save
-        config.save_config(config_file = self.config)
-        print("Saved" + self.config)
+        if self.in_notebook():
+            config = WorkflowConfig()
+            # find shared keys between config and self, loop over assigning from self to config
+            for attr in [attr for attr in vars(config).keys() if attr in vars(self).keys()]:
+                setattr(config, attr, getattr(self, attr))
+            # set a few manually due to property differences
+            config.workflow = self.workflow
+            config.json = self.results
+            # save
+            config.save_config(config_file = self.config)
+            print("Saved" + self.config)
 
     def in_notebook(self):
         import __main__ as main

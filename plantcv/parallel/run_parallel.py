@@ -4,6 +4,8 @@ import time
 import datetime
 import tempfile
 import shutil
+import plantcv.parallel
+import plantcv.utils
 
 
 def run_parallel(config):
