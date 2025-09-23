@@ -88,7 +88,7 @@ class jupyterconfig:
     def results(self, new):
         self._results = new
     def nameResults(self):
-        res_path = os.path.splitext(self.notebook)[0] + "parallel_results" # no extension, json2csv should get it?
+        res_path = os.path.splitext(self.notebook)[0] + "_parallel_results" # no extension, json2csv should get it?
         return res_path
 
 
@@ -146,7 +146,8 @@ class jupyterconfig:
         # other "reactives" should be set since they are based only on the file this is being run in.
         # if needed could change them again but I think this is reasonable for now.
         print("doing parallel now")
-        # calls other stuff from plantcv.parallel.etc
+        plantcv.parallel.run_parallel(self.config)
+
     def save_config(self):
         # this should make a python script and a config file per the standard way of parallelizing
         # i think this makes a WorkflowConfig from this thing and parallelizes per the standard method after that,
@@ -161,7 +162,7 @@ class jupyterconfig:
         config.json = self.results
         # save
         config.save_config(config_file = self.config)
-        
+        print("Saved" + self.config)
         
     def validate(self):
         # this should check the notebook and warn you about any suspicious lines (hey are you wanting to plot this..?)

@@ -7,9 +7,11 @@ from plantcv.parallel.job_builder import job_builder
 from plantcv.parallel.process_results import process_results
 from plantcv.parallel.multiprocess import multiprocess
 from plantcv.parallel.multiprocess import create_dask_cluster
+from plantcv.parallel.run_parallel import run_parallel
 from plantcv.parallel.workflow_inputs import workflow_inputs, WorkflowInputs
 
-__all__ = ["metadata_parser", "job_builder", "process_results", "multiprocess", "create_dask_cluster", "WorkflowConfig",
+__all__ = ["metadata_parser", "job_builder", "process_results", "multiprocess",
+           "create_dask_cluster", "WorkflowConfig", "run_parallel",
            "workflow_inputs", "WorkflowInputs"]
 
 
