@@ -1,13 +1,8 @@
 #!/usr/bin/env python
-import os
 import sys
 import argparse
-import time
-import datetime
 import plantcv.parallel
 import plantcv.utils
-import tempfile
-import shutil
 
 
 # Parse command-line arguments
