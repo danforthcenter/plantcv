@@ -47,7 +47,7 @@ def run_parallel(config):
     multi_start_time = time.time()
     print("Processing images... ", file=sys.stderr)
     cluster_client = plantcv.parallel.create_dask_cluster(cluster=config.cluster, cluster_config=config.cluster_config)
-    plantcv.parallel.multiprocess(jobs=jobs, client=cluster_client)
+    mp = plantcv.parallel.multiprocess(jobs=jobs, client=cluster_client)
     multi_clock_time = time.time() - multi_start_time
     print(f"Processing images took {multi_clock_time} seconds.", file=sys.stderr)
     ###########################################
@@ -57,7 +57,7 @@ def run_parallel(config):
     # Process results start time
     process_results_start_time = time.time()
     print("Processing results... ", file=sys.stderr)
-    plantcv.parallel.process_results(job_dir=config.tmp_dir, json_file=config.json)
+    pr = plantcv.parallel.process_results(job_dir=config.tmp_dir, json_file=config.json)
     process_results_clock_time = time.time() - process_results_start_time
     print(f"Processing results took {process_results_clock_time} seconds.", file=sys.stderr)
     ###########################################

@@ -1,5 +1,5 @@
 import dask_jobqueue
-from dask.distributed import Client, progress
+from dask.distributed import Client, progress, wait
 from subprocess import call
 
 
@@ -63,4 +63,6 @@ def multiprocess(jobs, client):
     futures = client.map(_process_images_multiproc, jobs)
     # Watch job progress and print a progress bar
     progress(futures)
+    wait(futures)
+    return True
 ###########################################
