@@ -171,11 +171,7 @@ class jupyterconfig:
             config = WorkflowConfig()
             config.import_config(self.config)
             run_parallel(config)
-        else:
-            print("not in a notebook, running a workflow")
-            # set the arguments?
-            #global args
-            #args = workflow_inputs()
+        # NOTE could do an else to set args in the global but so far that hasn't worked
 
     def save_config(self):
         # this should make a python script and a config file per the standard way of parallelizing
