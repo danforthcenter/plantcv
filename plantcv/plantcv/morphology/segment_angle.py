@@ -10,21 +10,22 @@ from plantcv.plantcv._debug import _debug
 
 
 def segment_angle(segmented_img, objects, label=None):
-    """Calculate angle of segments (in degrees) by fitting a linear regression line to segments.
+    """
+    Calculate the angle of skeleton segments in degrees by fitting a linear regression line.
 
-    Inputs:
-    segmented_img  = Segmented image to plot slope lines and angles on
-    objects        = List of contours
-    label          = Optional label parameter, modifies the variable name of
-                     observations recorded (default = pcv.params.sample_label).
+    Parameters
+    ----------
+    segmented_img : numpy.ndarray
+        Segmented image to plot slope lines and angles on.
+    objects : list
+        List of contours representing skeleton segments.
+    label : str, optional
+        Label for the observation variable. If None, uses `params.sample_label`.
 
-    Returns:
-    labeled_img    = Segmented debugging image with angles labeled
-
-    :param segmented_img: numpy.ndarray
-    :param objects: list
-    :param label: str
-    :return labeled_img: numpy.ndarray
+    Returns
+    -------
+    labeled_img : numpy.ndarray
+        Segmented image with slope lines and angles labeled.
     """
     # Set lable to params.sample_label if None
     if label is None:
@@ -53,7 +54,7 @@ def segment_angle(segmented_img, objects, label=None):
         left_list = int(np.array(((x - x_min) * slope) + y).item())
         right_list = int(np.array(((x - x_max) * slope) + y).item())
 
-        if slope > 1000000 or slope < -1000000:
+        if abs(slope) > 1000000:
             print("Slope of contour with ID#", i, "is", slope, "and cannot be plotted.")
         else:
             # Draw slope lines

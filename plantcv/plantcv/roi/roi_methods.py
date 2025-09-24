@@ -799,20 +799,25 @@ def custom(img, vertices):
 
 # Filter a mask based on a region of interest
 def filter(mask, roi, roi_type="partial"):
-    """Filter a mask using a region of interest. Connected regions of non-zero pixels outside the ROI turn to zero
+    """
+    Filter a mask using a region of interest.
 
-    Inputs:
-    mask           = binary image data to be filtered
-    roi            = region of interest, an instance of the Object class output from a roi function
-    roi_type       = 'cutto', 'partial' (for partially inside, default), or 'largest' (keep only the largest contour)
+    Connected regions of non-zero pixels outside the ROI are set to zero.
 
-    Returns:
-    filtered_mask     = mask image
+    Parameters
+    ----------
+    mask : numpy.ndarray
+        Binary image data to be filtered.
+    roi : plantcv.plantcv.classes.Objects
+        Region of interest, an instance of the Object class output from a ROI function.
+    roi_type : str, optional
+        Type of ROI filtering: 'cutto', 'partial' (default, for partially inside),
+        'largest' (keep only the largest contour), or 'within'.
 
-    :param mask: numpy.ndarray
-    :param roi: plantcv.plantcv.classes.Objects
-    :param roi_type: str
-    :return filtered_mask: numpy.ndarray
+    Returns
+    -------
+    filtered_mask : numpy.ndarray
+        Mask image after ROI filtering.
     """
     found_obj, found_hier = _cv2_findcontours(bin_img=mask)
 
