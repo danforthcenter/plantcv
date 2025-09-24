@@ -9,26 +9,26 @@ from plantcv.plantcv import outputs
 
 
 def bound_vertical(img, labeled_mask, line_position, n_labels=1, label=None):
-    """User-input boundary line analysis for individual objects.
+    """
+    Analyze the horizontal distribution of the plant relative to a vertical reference line for individual objects.
 
-    Inputs:
-    img           = RGB or grayscale image data for plotting
-    labeled_mask  = Labeled mask of objects (32-bit).
-    n_labels      = Total number expected individual objects (default = 1).
-    line_position = position of boundary line in pixels from top to bottom
-                    (a value of 0 would draw the line through the top of the image)
-    label         = Optional label parameter, modifies the variable name of
-                    observations recorded (default = pcv.params.sample_label).
+    Parameters
+    ----------
+    img : numpy.ndarray
+        RGB or grayscale image data for plotting.
+    labeled_mask : numpy.ndarray
+        Labeled mask of objects (32-bit).
+    line_position : int
+        Position of boundary line in pixels from left to right (a value of 0 draws the line through the left of the image).
+    n_labels : int, optional
+        Total number of expected individual objects (default = 1).
+    label : str, optional
+        Optional label parameter, modifies the variable name of observations recorded (default = params.sample_label).
 
-    Returns:
-    analysis_image = Diagnostic image showing measurements.
-
-    :param img: numpy.ndarray
-    :param labeled_mask: numpy.ndarray
-    :param n_labels: int
-    :param line_position: int
-    :param label: str
-    :return analysis_image: numpy.ndarray
+    Returns
+    -------
+    analysis_image : numpy.ndarray
+        Diagnostic image showing measurements.
     """
     # Set lable to params.sample_label if None
     if label is None:
@@ -44,22 +44,23 @@ def bound_vertical(img, labeled_mask, line_position, n_labels=1, label=None):
 
 def _analyze_bound_vertical(img, mask, line_position, label):
     """
-    User-input boundary line tool
+    Analyze the mask relative to a user-input vertical boundary line.
 
-    Inputs:
-    img             = RGB or grayscale image data for plotting
-    mask            = Binary mask made from selected contours
-    line_position   = position of boundary line (a value of 0 would draw the line through the left side of the image)
-    label           = optional label parameter, modifies the variable name of observations recorded
+    Parameters
+    ----------
+    img : numpy.ndarray
+        RGB or grayscale image data for plotting.
+    mask : numpy.ndarray
+        Binary mask made from selected contours.
+    line_position : int
+        Position of boundary line in pixels from left to right (a value of 0 draws the line through the left of the image).
+    label : str
+        Optional label parameter, modifies the variable name of observations recorded.
 
-    Returns:
-    analysis_images = output images
-
-    :param img: numpy.ndarray
-    :param mask: numpy.ndarray
-    :param line_position: int
-    :param label: str
-    :return analysis_images: list
+    Returns
+    -------
+    ori_img : numpy.ndarray
+        Output image.
     """
     # Initialize output measurements
     width_left_bound = 0

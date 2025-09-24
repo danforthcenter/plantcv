@@ -8,18 +8,26 @@ from plantcv.plantcv import outputs
 
 
 def _get_boundary_values(bound_mask, total_area, axis=0):
-    """Calculate area, percent area and distance (height or width) in a boundary.
+    """
+    Calculate area, percent area, and distance (height or width) in a boundary.
+
     Parameters
     ----------
-    bound_mask = numpy.ndarray, a binary mask of one side of a horizontal or vertical boundary
-    total_area = int, total area of the unbounded mask
-    axis       = int (0 or 1), which axis to use in calculated distance. 0 is height, 1 is width.
+    bound_mask : numpy.ndarray
+        A binary mask of one side of a horizontal or vertical boundary.
+    total_area : int
+        Total area of the unbounded mask.
+    axis : int, optional
+        Which axis to use in calculated distance. 0 is height, 1 is width.
 
     Returns
     -------
-    bound_area         = int, area within boundary
-    distance_bound     = int, height/width of mask within boundary
-    percent_area_bound = float, percent of total area in this boundary
+    bound_area : int
+        Area within boundary.
+    distance_bound : int
+        Height/width of mask within boundary.
+    percent_area_bound : float
+        Percent of total area in this boundary.
     """
     bound_area = int(np.sum(bound_mask))
     distance_bound = 0
@@ -32,26 +40,26 @@ def _get_boundary_values(bound_mask, total_area, axis=0):
 
 
 def bound_horizontal(img, labeled_mask, line_position, n_labels=1, label=None):
-    """User-input boundary line analysis for individual objects.
+    """
+    Analyze the vertical distribution of the plant relative to a horizontal reference line.
 
-    Inputs:
-    img           = RGB or grayscale image data for plotting
-    labeled_mask  = Labeled mask of objects (32-bit).
-    n_labels      = Total number expected individual objects (default = 1).
-    line_position = position of boundary line in pixels from top to bottom
-                    (a value of 0 would draw the line through the top of the image)
-    label         = Optional label parameter, modifies the variable name of
-                    observations recorded (default = pcv.params.sample_label).
+    Parameters
+    ----------
+    img : numpy.ndarray
+        RGB or grayscale image data for plotting.
+    labeled_mask : numpy.ndarray
+        Labeled mask of objects (32-bit).
+    n_labels : int, optional
+        Total number of expected individual objects (default = 1).
+    line_position : int
+        Position of boundary line in pixels from top to bottom (a value of 0 draws the line through the top of the image).
+    label : str, optional
+        Optional label parameter, modifies the variable name of observations recorded (default = pcv.params.sample_label).
 
-    Returns:
-    analysis_image = Diagnostic image showing measurements.
-
-    :param img: numpy.ndarray
-    :param labeled_mask: numpy.ndarray
-    :param n_labels: int
-    :param line_position: int
-    :param label: str
-    :return analysis_image: numpy.ndarray
+    Returns
+    -------
+    analysis_image : numpy.ndarray
+        Diagnostic image showing measurements.
     """
     # Set lable to params.sample_label if None
     if label is None:
@@ -67,22 +75,23 @@ def bound_horizontal(img, labeled_mask, line_position, n_labels=1, label=None):
 
 def _analyze_bound_horizontal(img, mask, line_position, label):
     """
-    User-input boundary line analysis for individual objects
+    User-input boundary line analysis for individual objects.
 
-    Inputs:
-    img             = RGB or grayscale image data for plotting
-    mask            = Binary image data
-    line_position   = Position of boundary line in pixels from top to bottom
-    label           = Label of object
+    Parameters
+    ----------
+    img : numpy.ndarray
+        RGB or grayscale image data for plotting.
+    mask : numpy.ndarray
+        Binary image data.
+    line_position : int
+        Position of boundary line in pixels from top to bottom.
+    label : str
+        Label of object.
 
-    Returns:
-    analysis_images = list of output images
-
-    :param img: numpy.ndarray
-    :param mask: numpy.ndarray
-    :param line_position: int
-    :param label: str
-    :return analysis_images: list
+    Returns
+    -------
+    ori_img : numpy.ndarray
+        Output image.
     """
     # Initialize output measurements
     height_above_bound = 0
