@@ -48,4 +48,3 @@ def process_results(job_dir, json_file):
     # Write out json file with info from all images
     with open(json_file, 'w') as datafile:
         json.dump(data, datafile, indent=4)
-    return True

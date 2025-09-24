@@ -64,5 +64,4 @@ def multiprocess(jobs, client):
     # Watch job progress and print a progress bar
     progress(futures)
     wait(futures)
-    return True
 ###########################################

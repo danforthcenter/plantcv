@@ -2,7 +2,6 @@
 import sys
 import argparse
 import plantcv.parallel
-import plantcv.utils
 
 
 # Parse command-line arguments

@@ -10,6 +10,6 @@ from plantcv.parallel.workflowconfig import WorkflowConfig
 from plantcv.parallel.jupyterconfig import jupyterconfig
 
 
-__all__ = ["metadata_parser", "job_builder", "process_results", "multiprocess",
-           "create_dask_cluster", "WorkflowConfig", "run_parallel",
-           "WorkflowConfig","workflow_inputs", "WorkflowInputs", "jupyterconfig"]
+__all__ = ["metadata_parser", "inspect_dataset", "job_builder", "process_results",
+           "multiprocess", "create_dask_cluster", "WorkflowConfig", "run_parallel",
+           "WorkflowConfig", "workflow_inputs", "WorkflowInputs", "jupyterconfig"]
