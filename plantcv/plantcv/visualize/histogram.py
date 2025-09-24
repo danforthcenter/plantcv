@@ -55,17 +55,26 @@ def _hist_gray(gray_img, bins, lower_bound, upper_bound, mask=None):
 
 
 def _get_histogram_bounds(img, mask=None, upper_bound=None, lower_bound=None):
-    """Get boundaries for where to count histogram pixels
+    """
+    Get boundaries for where to count histogram pixels.
+
     Parameters
     ----------
-    img      = numpy.ndarray, an RGB or grayscale image
-    mask     = numpy.ndarray, a binary mask image
-    upper_bound = int, upper bound for bins, default None
-    lower_bound = int, lower bound for bins, default None
+    img : numpy.ndarray
+        An RGB or grayscale image.
+    mask : numpy.ndarray, optional
+        A binary mask image.
+    upper_bound : int, optional
+        Upper bound for bins.
+    lower_bound : int, optional
+        Lower bound for bins.
 
     Returns
     -------
-    upper_bound, lower_bound = int, int ; new boundaries for bins
+    upper_bound : int
+        New upper boundary for bins.
+    lower_bound : int
+        New lower boundary for bins.
     """
     img_min, img_max = np.nanmin(img), np.nanmax(img)
     if mask is not None:
