@@ -10,6 +10,15 @@ import plantcv.utils
 
 
 def run_parallel(config):
+    """Run a parallel workflow
+    Parameters
+    ----------
+    Config = plantcv.parallel.workflowconfig object
+
+    Returns
+    -------
+    None
+    """
     # Job start time
     start_time = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     print("Starting run " + start_time + '\n', file=sys.stderr)

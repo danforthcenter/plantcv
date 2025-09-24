@@ -1,6 +1,6 @@
 import os
 import nbformat
-from nbconvert import PythonExporter # new dependency
+from nbconvert import PythonExporter
 from plantcv.parallel import WorkflowConfig, run_parallel, inspect_dataset
 
 
@@ -15,7 +15,7 @@ class jupyterconfig:
         self.analysis_script = self.notebook2script()  # convert notebook to py
         # things that should be user set after object is initialized, argument like.
         self.input_dir = "."
-        self.results = "results" # should be renamed?
+        self.results = "results"
         self.filename_metadata = []
         self.img_outdir = "./output_images"
         self.include_all_subdirs = True
@@ -27,7 +27,7 @@ class jupyterconfig:
         self.metadata_filters = {}
         self.metadata_regex = {}
         self.timestampformat = "%Y-%m-%dT%H:%M:%S.%fZ"
-        self.writeimg = False # might be removed generally
+        self.writeimg = False  # might be removed generally
         self.other_args = {}
         self.groupby = ["filepath"]
         self.group_name = "auto"
@@ -44,18 +44,14 @@ class jupyterconfig:
             "job_extra_directives": None
         }
 
-
-        
     # make reactive notebook property and hidden helper
     @property
-
     def notebook(self):
         """Get active notebook file name"""
         self._notebook = self.find_notebook()
         return self._notebook
 
     @notebook.setter
-
     def notebook(self, new):
         """Set active notebook file name"""
         self._notebook = new
@@ -68,12 +64,8 @@ class jupyterconfig:
             ipynb_path = os.environ['JPY_SESSION_NAME']
         return ipynb_path
 
-
-
-    
     # make reactive workflow (python script path) property and hidden helper
     @property
-
     def workflow(self):
         """Get workflow file name"""
         self._workflow = self.nameScript()
@@ -92,10 +84,8 @@ class jupyterconfig:
         py_path = os.path.splitext(self.notebook)[0] + ".py"
         return py_path
 
-
     # function for naming results if empty
     @property
-
     def results(self):
         """Get results file name"""
         self._results = self.nameResults()
@@ -109,19 +99,17 @@ class jupyterconfig:
 
     def nameResults(self):
         """Name results file"""
-        res_path = os.path.splitext(self.notebook)[0] + "_parallel_results" # no extension, json2csv should get it?
+        res_path = os.path.splitext(self.notebook)[0] + "_parallel_results"
         return res_path
 
     # make reactive analysis script as self.script, value here stored as boolean
     @property
-
     def analysis_script(self):
         """Get analysis_script attribute and make script"""
         self._analysis_script = self.notebook2script()
         return self._analysis_script
 
     @analysis_script.setter
-
     def analysis_script(self, new):
         """Set new analysis script value, you should not do this"""
         self._analysis_script = new
@@ -146,18 +134,14 @@ class jupyterconfig:
             # return boolean for if self.script exists
         return os.path.exists(self.workflow)
 
-
-    
     # make reactive property for config so that it rewrites when changed?
     @property
-    
     def config(self):
         """Get config values"""
         self._config = self.nameConfig()
         return self._config
 
     @config.setter
-
     def config(self, new):
         """Set config values"""
         self._config = new
@@ -167,8 +151,6 @@ class jupyterconfig:
         # save out with self config
         config_file_name = os.path.splitext(self.workflow)[0] + ".json"
         return config_file_name
-        # ...
-        # profit?
 
     def inspect_dataset(self):
         """Inspect input directory of images"""
@@ -220,8 +202,7 @@ class jupyterconfig:
             print("Saved" + self.config)
 
     @staticmethod
-
-    def in_notebook(self):
+    def in_notebook():
         """Check if executed from a notebook."""
         import __main__ as main
         return not hasattr(main, '__file__')
