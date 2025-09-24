@@ -1237,6 +1237,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev1: NA
 * post v3.0dev2: corrected_img = **plantcv.transform.apply_transformation_matrix**(*source_img, target_img, transformation_matrix*)
+* post v5.0: corrected_img = **plantcv.transform.apply_transformation_matrix**(*source_img, transformation_matrix*)
 
 #### plantcv.transform.calc_transformation_matrix
 
