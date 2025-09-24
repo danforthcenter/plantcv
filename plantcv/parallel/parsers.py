@@ -9,22 +9,26 @@ import itertools
 # Parse dataset metadata
 ###########################################
 def metadata_parser(config):
-    """Image metadata parser.
+    """Parse image metadata from a dataset.
 
-    Keyword arguments:
-    config = plantcv.parallel.WorkflowConfig object
+    Parameters
+    ----------
+    config : plantcv.parallel.WorkflowConfig
+        Workflow configuration object.
 
-    Outputs:
-    meta   = image metadata dataframe
-
-    :param config: plantcv.parallel.WorkflowConfig
-    :return meta: pandas.core.frame.DataFrame
+    Returns
+    -------
+    pandas.core.groupby.generic.DataFrameGroupBy
+        Grouped dataframe of image metadata.
     """
     # Read the input dataset
     dataset = _read_dataset(config=config)
 
     # Convert the dataset metadata to a dataframe
     meta = _dataset2dataframe(dataset=dataset, config=config)
+
+    # Split file paths into metadata terms 0:N-1
+    meta = _parse_filepath(df=meta, config=config)
 
     # Apply user-supplied metadata filters
     meta = _apply_metadata_filters(df=meta, config=config)
@@ -133,8 +137,11 @@ def _apply_metadata_filters(df, config):
                                    columns=config.metadata_filters.keys(), dtype="object")
     # If there are no filters provide the metadata_filter dataframe will be empty and we can return the input dataframe
     if not metadata_filter.empty:
-        filtered_df = df.merge(metadata_filter, how="inner")
-        return filtered_df
+        df = df.merge(metadata_filter, how="inner")
+    # if there are regex filters then find the True indicies for each and only return those from the merged dataframe
+    if bool(config.metadata_regex):
+        for key, value in config.metadata_regex.items():
+            df = df[df[key].astype(str).str.contains(value, regex=True, na=False)]
     return df
 ###########################################
 
@@ -275,6 +282,42 @@ def _parse_filename(filename, config, metadata_index):
 ###########################################
 
 
+# Parses file paths into metadata columns
+###########################################
+def _parse_filepath(df, config):
+    """Parse metadata from a filename.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        Dataframe of image metadata.
+    config : plantcv.parallel.WorkflowConfig
+        PlantCV parallel configureation object.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Dataframe with added filepath metadata columns.
+    """
+    # remove extraneous config.input_dir from file path
+    paths_after_input = df["filepath"].map(lambda st: os.path.relpath(st, config.input_dir))
+    path_metadata = []
+    for i, fp in enumerate(paths_after_input):
+        # for every file path, split it and add the elements to a list
+        splits = fp.split(os.sep)
+        path_metadata.append(splits[1:])
+    # bind list into a dataframe
+    path_metadata_df = pd.DataFrame(path_metadata)
+    # rename columns to filepath1:N, basename
+    path_metadata_df.columns = ["filepath"+str(i + 1) for i in range(len(path_metadata_df.columns))]
+    if not path_metadata_df.empty:
+        path_metadata_df.rename(columns={path_metadata_df.columns[-1]: "basename"}, inplace=True)
+    # bind new columns onto existing metadata
+    meta2 = df.reset_index(drop=True).join(path_metadata_df)
+    return meta2
+###########################################
+
+
 # Reads "phenodata" datasets
 ###########################################
 def _read_phenodata(metadata_file):
@@ -317,6 +360,10 @@ def _read_phenofront(config, metadata_file):
     dataset = _init_dataset()
     # Index filename metadata based on user-supplied parsing parameters
     metadata_index = _filename_metadata_index(config=config)
+    # if imgformat is all then set to png for legacy
+    extension = config.imgformat
+    if config.imgformat == "all":
+        extension = "png"
     # Open the SnapshotInfo.csv file
     with open(metadata_file, 'r') as fp:
         # Read the first header line
@@ -363,7 +410,7 @@ def _read_phenofront(config, metadata_file):
                 # Parse camera label metaata
                 img_meta = _parse_filename(filename=img, config=config, metadata_index=metadata_index)
                 # Construct the filename
-                filename = f"{img}.{config.imgformat}"
+                filename = f"{img}.{extension}"
                 # The dataset key is the dataset relative path to the image
                 rel_path = os.path.join(snapshot_id, filename)
                 # Store the parsed image metadata
@@ -394,16 +441,20 @@ def _read_filenames(config):
     :param config: plantcv.parallel.WorkflowConfig
     :return dataset: dict
     """
+    # make imgformat a list if multiple
+    extensions = config.imgformat
+    if isinstance(config.imgformat, str):
+        extensions = _replace_string_extension(config.imgformat)
     # Get a list of all files
     if config.include_all_subdirs is False:
         # If subdirectories are excluded, use glob to get a list of all image files
-        fns = list(glob.glob(pathname=os.path.join(config.input_dir, f'*{config.imgformat}')))
+        fns = [f for ext in extensions for f in glob.glob(os.path.join(config.input_dir, "*[.]" + ext))]
     else:
         # If subdirectories are included, recursively walk through the path
         fns = []
         for root, _, files in os.walk(config.input_dir):
             for file in files:
-                if file.endswith(config.imgformat):
+                if file.lower().endswith(tuple(extensions)):
                     # Keep the files that end with the image extension
                     fns.append(os.path.join(root, file))
     # Create a dataset
@@ -422,4 +473,27 @@ def _read_filenames(config):
         # Store the image filename metadata
         dataset["images"][rel_path] = _parse_filename(filename=metadata, config=config, metadata_index=metadata_index)
     return dataset
+###########################################
+
+
+# Reads filename-based datasets
+###########################################
+def _replace_string_extension(imgformat):
+    """Replace "all" with a list of file extensions.
+
+    Parameters
+    ----------
+    imgformat : str
+        The image format string, typically from a plantcv.parallel.WorkflowConfig object.
+
+    Returns
+    -------
+    extensions : list of str
+        A list of file extensions. If `imgformat` is "all", returns a list of common image file extensions;
+        otherwise, returns a list containing only `imgformat`.
+    """
+    extensions = [imgformat]
+    if imgformat == "all":
+        extensions = ['bmp', 'dib', 'jpeg', 'jpg', 'jpe', 'jp2', 'png', 'ppm', 'pgm', 'ppm', 'sr', 'ras', 'tiff', 'tif']
+    return extensions
 ###########################################

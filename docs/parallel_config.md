@@ -78,7 +78,9 @@ current working directory.
   `timestampformat`.
 
 
-* **imgformat**: (str, default = "png"): image file format/extension.
+* **imgformat**: (str, default = "all"): image file format/extension in lowercase. The string "all" can be used
+as shorthand to match all file extensions readable by `cv2.imread`. This can accept a list if multiple
+extensions should be combined (if using phenofront data this must be length 1 and "png" is the default).
 
 
 * **delimiter**: (str, default = "_"): image filename metadata term delimiter character. Alternatively, a regular 
@@ -88,6 +90,11 @@ current working directory.
 * **metadata_filters**: (dict, default = `None`): a dictionary of metadata terms (keys) and values, images will be 
   analyzed that have the associated term and value. A list of accepted values can be included. (e.g. 
   `{"imgtype": "VIS", "frame": ["0", "90"]"}`).
+
+
+* **metadata_regex**: (dict, default = `None`): a dictionary of filepath terms (keys) and values, any specified keys
+will be used for regex based filtering (e.g. 
+  `{"filepath1": "first[p|P]athPattern.*", "basename": "^starts_with.*"}`).
 
 
 * **timestampformat**: (str, default = '%Y-%m-%dT%H:%M:%S.%fZ'): a date format code compatible with strptime C library. 
