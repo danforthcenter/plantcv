@@ -27,6 +27,8 @@ dependencies:
   - vl-convert-python
   - git
   - flyr
+  - nbconvert
+  - nbformat
 
 channels:
   - conda-forge
