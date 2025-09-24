@@ -32,12 +32,12 @@ rgb_img, imgpath, imgname = pcv.readimage(filename="top_view_plant.png")
 corrected_rgb = pcv.transform.auto_correct_color_nonlinear(rgb_img=rgb_img, color_chip_size="Passport")
 
 # Or set `color_chip_size` can be defined explicitly
-# E.G. Given a square color card chips, (11mm x 11mm) in size
-corrected_rgb = pcv.transform.auto_correct_color_nonlinear(rgb_img=rgb_img, color_chip_size=(11, 11))
+# E.G. Given a square color card chips, (12mm x 12mm) in size
+corrected_rgb = pcv.transform.auto_correct_color_nonlinear(rgb_img=rgb_img, color_chip_size=(12, 12))
 ```
 
-**Debug Image: automatically detected color card**
+**Debug Image: Color Corrected Image**
 
-![Screenshot](img/documentation_images/
+![Screenshot](img/documentation_images/correct_color_imgs/corrected.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/transform/auto_correct_color.py)
