@@ -804,6 +804,11 @@ pages for more details on the input and output variable types.
 * pre v4.10: Untracked
 * post v4.10: **plantcv.parallel.job_builder**(*meta, config*)
 
+#### plantcv.parallel.jupyterconfig
+
+* pre v5: NA
+* post v5: **plantcv.parallel.jupyterconfig()**
+
 #### plantcv.parallel.metadata_parser
 
 * pre v4.10: Untracked
@@ -818,6 +823,12 @@ pages for more details on the input and output variable types.
 
 * pre v4.10: Untracked
 * post v4.10: **plantcv.parallel.workflow_inputs**(*\*other_args*)
+
+#### plantcv.parallel.WorkflowConfig
+
+* pre v5: Untracked
+* post v5: **plantcv.parallel.WorkflowConfig()
+
 
 #### plantcv.photosynthesis.analyze_fvfm
 

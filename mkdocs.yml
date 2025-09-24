@@ -225,6 +225,7 @@ nav:
       - 'Naive Bayes Multiclass': naive_bayes_multiclass.md
     - 'Parallelization':
         - 'Configure Parallelization': parallel_config.md
+        - 'Configure Parallelization in Jupyter': parallel_jupyterconfig.md
         - 'Inspect Configuration': parallel_inspect_config.md
         - 'Workflow Inputs Management': parallel_workflow_inputs.md
         - 'Metadata Parser': parallel_metadata_parser.md
