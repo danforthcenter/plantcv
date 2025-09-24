@@ -1,5 +1,6 @@
 """Analyze the vertical distribution of the plant relative to a horizontal reference line."""
 import os
+import cv2
 import numpy as np
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _iterate_analysis, _grayscale_to_rgb, _scale_size
@@ -39,6 +40,52 @@ def _get_boundary_values(bound_mask, total_area, axis=0):
     return bound_area, distance_bound, percent_area_bound
 
 
+def _boundary_img_annotation(img, mask, line_position, axis=0):
+    """Annotate a debug image used in horizontal/vertical boundary analysis
+    Parameters
+    ----------
+    img : numpy.ndarray
+        RGB or grayscale image data for plotting.
+    mask : numpy.ndarray
+        Binary mask of objects (32-bit).
+    line_position : int
+        Position of boundary line in pixels from top to bottom (a value of 0 draws the line through the top of the image).
+    axis : int
+        Whcih axis to use in drawing division
+    
+    Returns
+    -------
+    out_image : numpy.ndarray
+        Diagnostic image showing measurements.
+    """
+    out_img = np.copy(img)
+    # split mask by boundary
+    mask1 = np.copy(mask).astype(bool)
+    mask2 = np.copy(mask).astype(bool)
+    # split mask by line_position on axis
+    if not bool(axis):
+        # fill in area on opposite side of threshold with 0s
+        mask1[line_position:np.shape(mask1)[0] + 1] = np.zeros(
+            np.shape(mask1[line_position:np.shape(mask1)[0] + 1]))
+        mask2[0:line_position - 1] = np.zeros(
+            np.shape(mask2[0:line_position - 1]))
+    else:
+        # fill in area on opposite side of threshold
+        mask1[:, line_position:np.shape(mask1)[1] + 1] = np.zeros(
+            np.shape(mask1[:, line_position:np.shape(mask1)[1] + 1]))
+        mask2[:, 0:line_position - 1] = np.zeros(
+            np.shape(mask2[:, 0:line_position - 1]))
+        
+    # replace mask with colors
+    out_img[np.where(mask1)] = (255, 0, 255)
+    out_img[np.where(mask2)] = (0, 255, 0)
+    # draw boundary line
+    line_start = [(0, line_position), (line_position, 0)][axis]
+    line_end = [(np.shape(out_img)[1], line_position), (line_position, np.shape(img)[0])][axis]
+    cv2.line(out_img, line_start, line_end, (255, 0, 0))
+    return out_img
+
+
 def bound_horizontal(img, labeled_mask, line_position, n_labels=1, label=None):
     """
     Analyze the vertical distribution of the plant relative to a horizontal reference line.
@@ -68,6 +115,7 @@ def bound_horizontal(img, labeled_mask, line_position, n_labels=1, label=None):
     img = _iterate_analysis(img=img, labeled_mask=labeled_mask, n_labels=n_labels,
                             label=label, function=_analyze_bound_horizontal,
                             **{"line_position": line_position})
+    img = _boundary_img_annotation(img, labeled_mask, line_position, 0)
     # Debugging
     _debug(visual=img, filename=os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_img.png'))
     return img

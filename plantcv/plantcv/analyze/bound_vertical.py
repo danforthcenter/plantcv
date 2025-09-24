@@ -3,7 +3,7 @@ import os
 import numpy as np
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _iterate_analysis, _grayscale_to_rgb, _scale_size
-from plantcv.plantcv.analyze.bound_horizontal import _get_boundary_values
+from plantcv.plantcv.analyze.bound_horizontal import _get_boundary_values, _boundary_img_annotation
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
@@ -37,6 +37,7 @@ def bound_vertical(img, labeled_mask, line_position, n_labels=1, label=None):
     img = _iterate_analysis(img=img, labeled_mask=labeled_mask, n_labels=n_labels,
                             label=label, function=_analyze_bound_vertical,
                             **{"line_position": line_position})
+    img = _boundary_img_annotation(img, labeled_mask, line_position, 1)
     # Debugging
     _debug(visual=img, filename=os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_img.png'))
     return img
