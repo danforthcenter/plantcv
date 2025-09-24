@@ -82,7 +82,7 @@ def _boundary_img_annotation(img, mask, line_position, axis=0):
     # draw boundary line
     line_start = [(0, line_position), (line_position, 0)][axis]
     line_end = [(np.shape(out_img)[1], line_position), (line_position, np.shape(img)[0])][axis]
-    cv2.line(out_img, line_start, line_end, (255, 0, 0))
+    cv2.line(out_img, line_start, line_end, (255, 0, 0), thickness=params.line_thickness)
     return out_img
 
 
