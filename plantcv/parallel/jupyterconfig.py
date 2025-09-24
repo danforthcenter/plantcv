@@ -171,6 +171,7 @@ class jupyterconfig:
             config = WorkflowConfig()
             config.import_config(self.config)
             run_parallel(config)
+            print("Done!")
         # NOTE could do an else to set args in the global but so far that hasn't worked
 
     def save_config(self):
