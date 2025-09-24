@@ -51,8 +51,8 @@ def _boundary_img_annotation(img, mask, line_position, axis=0):
     line_position : int
         Position of boundary line in pixels from top to bottom (a value of 0 draws the line through the top of the image).
     axis : int
-        Whcih axis to use in drawing division
-    
+        Which axis to use in drawing division
+
     Returns
     -------
     out_image : numpy.ndarray
@@ -75,7 +75,7 @@ def _boundary_img_annotation(img, mask, line_position, axis=0):
             np.shape(mask1[:, line_position:np.shape(mask1)[1] + 1]))
         mask2[:, 0:line_position - 1] = np.zeros(
             np.shape(mask2[:, 0:line_position - 1]))
-        
+
     # replace mask with colors
     out_img[np.where(mask1)] = (255, 0, 255)
     out_img[np.where(mask2)] = (0, 255, 0)
