@@ -440,30 +440,44 @@ def _cv2_findcontours(bin_img):
 
 def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
     """
-    Helper function to filter contours using a single ROI
+    Helper function to filter contours using a single ROI.
 
-    Find objects partially inside a region of interest or cut objects to the ROI.
+    Finds objects partially inside a region of interest or cuts objects to the ROI.
 
-    Inputs:
-    img            = RGB, binary, or grayscale image data for shape
-    roi            = region of interest, an instance of the Object class output from a roi function
-    obj            = contours of objects, output from "_cv2_findcontours" function
-    hierarchy      = hierarchy of objects, output from "_cv2_findcontours" function
-    roi_type       = 'cutto', 'partial' (for partially inside, default), or 'largest' (keep only the largest contour)
+    Parameters
+    ----------
+    img : numpy.ndarray
+        RGB, binary, or grayscale image data for shape.
+    roi : plantcv.plantcv.classes.Objects
+        Region of interest, an instance of the Object class output from a ROI function.
+    obj : list
+        Contours of objects, output from "_cv2_findcontours" function.
+    hierarchy : numpy.ndarray
+        Hierarchy of objects, output from "_cv2_findcontours" function.
+    roi_type : str, optional
+        Type of ROI filtering. Options are:
+        - 'partial': Find objects partially inside the ROI (default).
+        - 'cutto': Cut objects to the ROI.
+        - 'largest': Keep only the largest contour.
+        - 'within': Keep only objects fully within the ROI.
 
-    Returns:
-    kept_cnt       = kept contours
-    kept_hier      = kept hierarchy
-    mask           = mask image
+    Returns
+    -------
+    kept_cnt : list
+        List of kept contours after filtering.
+    kept_hier : numpy.ndarray
+        Hierarchy of kept contours.
+    mask : numpy.ndarray
+        Mask image showing the filtered contours.
 
-    :param img: numpy.ndarray
-    :param roi: plantcv.plantcv.classes.Objects
-    :param obj: list
-    :param hierarchy: np.array
-    :param roi_type: str
-    :return kept_cnt: list
-    :return kept_hier: np.array
-    :return mask: numpy.ndarray
+    Raises
+    ------
+    RuntimeError
+        If an invalid `roi_type` is provided.
+
+    Notes
+    -----
+    If a multi-ROI is provided, only the first ROI will be used. For multi-ROI processing, consider using a for loop.
     """
     # Store debug
     debug = params.debug
@@ -507,7 +521,7 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
             kept_cnt, kept_hierarchy = _cv2_findcontours(bin_img=mask)
 
     # Allows user to cut objects to the ROI (all objects completely outside ROI will not be kept)
-    elif roi_type.upper() == 'CUTTO':
+    elif roi_type.upper() in ('CUTTO', 'WITHIN'):
         background1 = np.zeros(np.shape(img)[:2], dtype=np.uint8)
         background2 = np.zeros(np.shape(img)[:2], dtype=np.uint8)
         cv2.drawContours(background1, object_contour, -1, (255), -1, lineType=8, hierarchy=obj_hierarchy)
@@ -515,10 +529,33 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
         cv2.fillPoly(background2, [roi_points], (255))
         mask = cv2.multiply(background1, background2)
         kept_cnt, kept_hierarchy = _cv2_findcontours(bin_img=mask)
+
+        # Filter out contours that touch the edge if roi_type is 'within'
+        if roi_type.upper() == 'WITHIN' and kept_cnt:
+            # make a mask with the outline of the ROI
+            roi_outline_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
+            cv2.drawContours(image=roi_outline_mask, contours=roi_contour, contourIdx=-1,
+                             color=255, thickness=1)
+            # make empty mask to append to
+            within_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
+            for c, _ in enumerate(kept_cnt):
+                # for each contour make a mask with that contour filled
+                filtering_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
+                cv2.fillPoly(filtering_mask, [np.vstack(kept_cnt[c])], (255))
+                # check overlap with traced ROI
+                overlap_img = _logical_operation(filtering_mask, roi_outline_mask, 'and')
+                # check color in original mask, ie don't keep gaps that are 0s.
+                # append contours fully within ROI to the within_mask
+                if not overlap_img.any() and kept_hierarchy[0][c][3] == -1:
+                    cv2.drawContours(within_mask, kept_cnt, c,
+                                     int(img[kept_cnt[c][0][0][1], kept_cnt[c][0][0][0]]),
+                                     -1, lineType=8, hierarchy=kept_hierarchy)
+            mask = within_mask
+            kept_cnt, kept_hierarchy = _cv2_findcontours(bin_img=mask)
     else:
         # Reset debug mode
         params.debug = debug
-        fatal_error('ROI Type ' + str(roi_type) + ' is not "cutto", "largest", or "partial"!')
+        fatal_error('ROI Type ' + str(roi_type) + ' is not "cutto", "largest", "within" or "partial"!')
 
     # Reset debug mode
     params.debug = debug
