@@ -72,11 +72,10 @@ class jupyterconfig:
         return self._workflow
 
     @workflow.setter
-
     def workflow(self, new):
         """Set workflow file name, you probably should not do this"""
         self._workflow = new
-        
+
     # function for naming script
     def nameScript(self):
         """Make workflow file name"""
@@ -92,7 +91,6 @@ class jupyterconfig:
         return self._results
 
     @results.setter
-
     def results(self, new):
         """Set results file name"""
         self._results = new
@@ -113,7 +111,7 @@ class jupyterconfig:
     def analysis_script(self, new):
         """Set new analysis script value, you should not do this"""
         self._analysis_script = new
-    
+
     # function to convert a notebook to a script and write it out
     def notebook2script(self):
         """Turn notebook into a script"""
@@ -145,6 +143,7 @@ class jupyterconfig:
     def config(self, new):
         """Set config values"""
         self._config = new
+
     # make a configuration file for running in parallel within current corpus
     def nameConfig(self):
         """Make name for config file"""
@@ -162,6 +161,7 @@ class jupyterconfig:
                 setattr(config, attr, getattr(self, attr))
             summary, meta = inspect_dataset(config)
         return summary, meta
+
     # proper functions called for stuff other than reactive properties
     def run(self):
         """Run current Config"""
@@ -206,11 +206,12 @@ class jupyterconfig:
         """Check if executed from a notebook."""
         import __main__ as main
         return not hasattr(main, '__file__')
-    
+
     def validate(self):
         """Validation checks on current configuration."""
         # this should check the notebook and warn you about any suspicious lines (hey are you wanting to plot this..?)
         return self
+
     def lint(self):
         """linter"""
         # optionally could perform extra quality control on the generated script?

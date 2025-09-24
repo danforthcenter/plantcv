@@ -11,5 +11,5 @@ from plantcv.parallel.jupyterconfig import jupyterconfig
 
 
 __all__ = ["metadata_parser", "inspect_dataset", "job_builder", "process_results",
-           "multiprocess", "create_dask_cluster", "WorkflowConfig", "run_parallel",
-           "WorkflowConfig", "workflow_inputs", "WorkflowInputs", "jupyterconfig"]
+           "multiprocess", "create_dask_cluster",  "run_parallel", "workflow_inputs",
+           "WorkflowInputs", "WorkflowConfig", "jupyterconfig"]
