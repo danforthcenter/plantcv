@@ -504,8 +504,8 @@ def _anti_join(df1, df2=None):
     anti_joined = outer[(outer['_merge'] == 'left_only')].drop('_merge', axis=1)
     return anti_joined
 ###########################################
- 
- 
+
+
 # Reads filename-based datasets
 ###########################################
 def _replace_string_extension(imgformat):
@@ -526,4 +526,4 @@ def _replace_string_extension(imgformat):
     if imgformat == "all":
         extensions = ['bmp', 'dib', 'jpeg', 'jpg', 'jpe', 'jp2', 'png', 'ppm', 'pgm', 'ppm', 'sr', 'ras', 'tiff', 'tif']
     return extensions
-  ###########################################
+###########################################
