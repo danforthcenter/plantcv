@@ -1,7 +1,7 @@
 import os
 import nbformat
 from nbconvert import PythonExporter # new dependency
-from plantcv.parallel import WorkflowConfig, workflow_inputs, run_parallel, metadata_parser
+from plantcv.parallel import WorkflowConfig, workflow_inputs, run_parallel, metadata_parser, inspect_dataset
 # from plantcv.parallel.workflowconfig import WorkflowConfig # this is pending #1792 merging to separate workflowconfig from init.py
 
 class jupyterconfig:
@@ -143,20 +143,14 @@ class jupyterconfig:
         # ...
         # profit?
 
-    def find_jobs(self):
+    def inspect_dataset(self):
         if self.in_notebook():
-            self.save_config()
+            # self.save_config()
             config = WorkflowConfig()
-            config.import_config(self.config)
-            meta, rm = metadata_parser(config=config)
-            meta_filepaths = []
-            for i, _ in meta["filepath"]:
-                meta_filepaths.append(i[0])
-            meta = meta.apply(lambda x: x, include_groups=False)
-            meta["filepath"] = meta_filepaths
-            # flag kept images
-            meta["status"] = "Kept"
-            return meta, rm
+            for attr in [attr for attr in vars(config).keys() if attr in vars(self).keys()]:
+                setattr(config, attr, getattr(self, attr))
+            summary, meta = inspect_dataset(config)
+            return summary, meta
     # proper functions called for stuff other than reactive properties
     def run(self):
         # if in notebook, save config, start parallel.
@@ -167,11 +161,14 @@ class jupyterconfig:
             # other "reactives" should be set since they are based only on the file
             # this is being run in.
             # if needed could change them again but I think this is reasonable for now.
-            print("doing parallel now")
+            print("Starting parallel workflow from notebook kernel")
             config = WorkflowConfig()
             config.import_config(self.config)
-            run_parallel(config)
-            print("Done!")
+            if config.validate_config():
+                run_parallel(config)
+                print("Done!")
+            else:
+                print("Config validation failed, run aborted")
         # NOTE could do an else to set args in the global but so far that hasn't worked
 
     def save_config(self):
