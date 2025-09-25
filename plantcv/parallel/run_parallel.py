@@ -4,8 +4,11 @@ import time
 import datetime
 import tempfile
 import shutil
-from plantcv.parallel import (metadata_parser, job_builder, create_dask_cluster,
-                              multiprocess, process_results)
+from plantcv.parallel.parsers import metadata_parser
+from plantcv.parallel.job_builder import job_builder
+from plantcv.parallel.multiprocess import create_dask_cluster
+from plantcv.parallel.multiprocess import multiprocess
+from plantcv.parallel.process_results import process_results
 import plantcv.utils
 
 

@@ -1,7 +1,9 @@
 import os
 import nbformat
 from nbconvert import PythonExporter
-from plantcv.parallel import WorkflowConfig, run_parallel, inspect_dataset
+from plantcv.parallel.workflowconfig import WorkflowConfig
+from plantcv.parallel.run_parallel import run_parallel
+from plantcv.parallel.inspect_dataset import inspect_dataset
 
 
 class jupyterconfig:
