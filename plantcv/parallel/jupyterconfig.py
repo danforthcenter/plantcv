@@ -24,7 +24,7 @@ class jupyterconfig:
         self.tmp_dir = "."
         self.start_date = None
         self.end_date = None
-        self.imgformat = "png"
+        self.imgformat = "all"
         self.delimiter = "_"
         self.metadata_filters = {}
         self.metadata_regex = {}
@@ -106,7 +106,6 @@ class jupyterconfig:
     @property
     def analysis_script(self):
         """Get analysis_script attribute and make script"""
-        self._analysis_script = self.notebook2script()
         return self._analysis_script
 
     @analysis_script.setter
@@ -138,7 +137,6 @@ class jupyterconfig:
     @property
     def config(self):
         """Get config values"""
-        self._config = self.nameConfig()
         return self._config
 
     @config.setter
