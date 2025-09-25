@@ -60,7 +60,7 @@ class jupyterconfig:
     # function for finding the active notebook, slightly fraught?
     def find_notebook(self):
         """Make active notebook file name"""
-        ipynb_path = "not found."
+        ipynb_path = "not_found"
         if self.in_notebook():
             ipynb_path = os.environ['JPY_SESSION_NAME']
         return ipynb_path
@@ -166,7 +166,7 @@ class jupyterconfig:
         """Run current Config"""
         # if in notebook, save config, start parallel.
         if self.in_notebook():
-            print("Initializing from" + self.notebook + "Notebook")
+            print("Initializing from " + self.notebook + " Notebook")
             # before running, rerun reactives then kick off the parallel process?
             self.save_config()
             # other "reactives" should be set since they are based only on the file

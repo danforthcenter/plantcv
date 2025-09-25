@@ -40,14 +40,15 @@ def test_jupcon_inspect_dataset(parallel_test_data, tmpdir):
 def test_jupcon_notebook2script(parallel_test_data, tmpdir):
     """Test for PlantCV."""
     # initialize jupyterconfig
+    starting_dir = os.getcwd()
     os.chdir(tmpdir.mkdir("cache"))
     os.environ["JPY_SESSION_NAME"] = "dummy.ipynb"
     jupcon = jupyterconfig()
     jupcon.in_notebook = lambda: True
-    jupcon.notebook = os.path.join(os.getcwd(), "..", "testdata", parallel_test_data.jupyternotebook)
-    jupcon.workflow = "dummy.py"
-    print(jupcon.workflow)
-    print(jupcon.notebook)
+
+    jupcon.notebook = os.path.join(starting_dir, parallel_test_data.jupyternotebook)
+    jupcon.workflow = os.path.join(os.getcwd(), "dummy.py")
+
     jupcon.notebook2script()
     assert os.path.exists(jupcon.workflow)
 
@@ -62,7 +63,10 @@ def test_jupcon_run(parallel_test_data, tmpdir):
         f.write("from plantcv import plantcv as pcv")
     # force this to act like there is a notebook
     jupcon.in_notebook = lambda: True
+    jupcon.notebook = jupcon.find_notebook()
     jupcon.input_dir = parallel_test_data.flat_imgdir
+    jupcon.workflow = "example.py"
+    jupcon.results = "example"
     jupcon.run()
     assert os.path.exists(jupcon.results)
 
