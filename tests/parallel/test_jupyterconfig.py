@@ -2,7 +2,7 @@ from plantcv.parallel import jupyterconfig
 import os
 
 
-def test_jupcon_in_notebook():
+def test_jupcon_in_notebook(tmpdir):
     """Test for PlantCV."""
     # initialize jupyterconfig
     os.chdir(tmpdir.mkdir("cache"))
