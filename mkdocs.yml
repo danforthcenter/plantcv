@@ -224,6 +224,7 @@ nav:
       - 'Naive Bayes': naive_bayes.md
       - 'Naive Bayes Multiclass': naive_bayes_multiclass.md
     - 'Parallelization':
+        - 'Getting started in parallel': parallel_preparation.md
         - 'Configure Parallelization': parallel_config.md
         - 'Configure Parallelization in Jupyter': parallel_jupyterconfig.md
         - 'Inspect Configuration': parallel_inspect_config.md
