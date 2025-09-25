@@ -206,13 +206,3 @@ class jupyterconfig:
         """Check if executed from a notebook."""
         import __main__ as main
         return not hasattr(main, '__file__')
-
-    def validate(self):
-        """Validation checks on current configuration."""
-        # this should check the notebook and warn you about any suspicious lines (hey are you wanting to plot this..?)
-        return self
-
-    def lint(self):
-        """linter"""
-        # optionally could perform extra quality control on the generated script?
-        return self
