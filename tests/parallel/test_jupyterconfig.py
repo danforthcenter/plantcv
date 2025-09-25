@@ -50,7 +50,7 @@ def test_jupcon_run(parallel_test_data, tmpdir):
     jupcon.input_dir = parallel_test_data.flat_imgdir
     jupcon.run()
     assert os.path.exists(jupcon.results)
-    
+
 
 def test_jupcon_run_bad_input(parallel_test_data, tmpdir):
     """Test for PlantCV."""
