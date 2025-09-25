@@ -37,6 +37,21 @@ def test_jupcon_inspect_dataset(parallel_test_data, tmpdir):
     assert len(summary) == 1 and len(meta) == 3
 
 
+def test_jupcon_notebook2script(parallel_test_data, tmpdir):
+    """Test for PlantCV."""
+    # initialize jupyterconfig
+    os.chdir(tmpdir.mkdir("cache"))
+    os.environ["JPY_SESSION_NAME"] = "dummy.ipynb"
+    jupcon = jupyterconfig()
+    jupcon.in_notebook = lambda: True
+    jupcon.notebook = os.path.join(os.getcwd(), "..", "testdata", parallel_test_data.jupyternotebook)
+    jupcon.workflow = "dummy.py"
+    print(jupcon.workflow)
+    print(jupcon.notebook)
+    jupcon.notebook2script()
+    assert os.path.exists(jupcon.workflow)
+
+
 def test_jupcon_run(parallel_test_data, tmpdir):
     """Test for PlantCV."""
     # initialize jupyterconfig

@@ -50,7 +50,6 @@ class jupyterconfig:
     @property
     def notebook(self):
         """Get active notebook file name"""
-        self._notebook = self.find_notebook()
         return self._notebook
 
     @notebook.setter
