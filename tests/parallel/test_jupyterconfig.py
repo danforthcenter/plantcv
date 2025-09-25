@@ -50,7 +50,7 @@ def test_jupcon_notebook2script(parallel_test_data, tmpdir):
     jupcon.workflow = os.path.join(os.getcwd(), "dummy.py")
 
     jupcon.notebook2script()
-    assert os.path.exists(jupcon.workflow)
+    assert os.path.exists(jupcon.workflow) and jupcon.analysis_script
 
 
 def test_jupcon_run(parallel_test_data, tmpdir):

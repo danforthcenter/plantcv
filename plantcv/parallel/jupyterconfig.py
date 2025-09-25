@@ -105,6 +105,7 @@ class jupyterconfig:
     @property
     def analysis_script(self):
         """Get analysis_script attribute and make script"""
+        self._analysis_script = os.path.exists(self.workflow)
         return self._analysis_script
 
     @analysis_script.setter
