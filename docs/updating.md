@@ -789,6 +789,36 @@ pages for more details on the input and output variable types.
 * pre v3.12: NA
 * post v3.12: **plantcv.outputs.save_results**(*filename, outformat="json"*)
 
+#### plantcv.parallel.create_dask_cluster
+
+* pre v4.10: Untracked
+* post v4.10: **plantcv.parallel.create_dask_cluster**(*config, cluster_config*)
+
+#### plantcv.parallel.inspect_dataset
+
+* pre v4.10: NA
+* post v4.10: **plantcv.parallel.inspect_dataset**(*config*)
+
+#### plantcv.parallel.job_builder
+
+* pre v4.10: Untracked
+* post v4.10: **plantcv.parallel.job_builder**(*meta, config*)
+
+#### plantcv.parallel.metadata_parser
+
+* pre v4.10: Untracked
+* post 4.10: **plantcv.parallel.metadata_parser**(*config*)
+
+#### plantcv.parallel.multiprocess
+
+* pre v4.10: Untracked
+* post v4.10: **plantcv.parallel.multiprocess**(*jobs, client*)
+
+#### plantcv.parallel.workflow_inputs
+
+* pre v4.10: Untracked
+* post v4.10: **plantcv.parallel.workflow_inputs**(*\*other_args*)
+
 #### plantcv.photosynthesis.analyze_fvfm
 
 * pre v3.10: see plantcv.fluor_fvfm
