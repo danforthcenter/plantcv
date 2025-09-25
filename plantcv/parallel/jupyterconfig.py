@@ -201,7 +201,7 @@ class jupyterconfig:
             config.json = self.results
             # save
             config.save_config(config_file=self.config)
-            print("Saved" + self.config)
+            print("Saved " + self.config)
 
     @staticmethod
     def in_notebook():
