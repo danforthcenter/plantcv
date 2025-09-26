@@ -49,6 +49,7 @@ def workflow_inputs(*other_args) -> argparse.Namespace:
     for arg in other_args:
         parser.add_argument(f"--{arg}", help="Additional, user-defined workflow input.", required=False)
     args = parser.parse_args()
+    args.parallel = True
 
     images = _name_images(names=args.names, img_list=args.images)
     args.__dict__.update(images)

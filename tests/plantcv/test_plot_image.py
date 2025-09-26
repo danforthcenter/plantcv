@@ -6,6 +6,7 @@ import pandas as pd
 from matplotlib import pyplot as plt
 from plantcv.plantcv import PSII_data
 from plantcv.plantcv import plot_image
+from plantcv.plantcv import params
 
 
 def test_plot_image_rgb(test_data):
@@ -15,6 +16,15 @@ def test_plot_image_rgb(test_data):
     assert True
 
 
+def test_plot_image_parallel(test_data):
+    """Test for PlantCV."""
+    img = cv2.imread(test_data.small_rgb_img)
+    params._parallel = True
+    res = plot_image(img=img)
+    params._parallel = False
+    assert res == "Plotting skipped in parallel"
+
+    
 @pytest.mark.parametrize("cmap", [None, "viridis"])
 def test_plot_image_gray(cmap, test_data):
     """Test for PlantCV."""

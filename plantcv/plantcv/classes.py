@@ -77,6 +77,7 @@ class Params:
         self.unit = unit
         self.px_height = px_height
         self.px_width = px_width
+        self._parallel = False
 
 
 class Outputs:

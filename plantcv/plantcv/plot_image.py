@@ -20,6 +20,8 @@ def plot_image(img, cmap=None, **kwargs):
     :return:
     """
     dimensions = numpy.shape(img)
+    if params._parallel:
+        return "Plotting skipped in parallel"
 
     if isinstance(img, numpy.ndarray):
         matplotlib.rcParams['figure.dpi'] = params.dpi
