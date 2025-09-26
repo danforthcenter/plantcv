@@ -125,7 +125,7 @@ class jupyterconfig:
             # ignore @ignore tagged cells
             del_cells = []
             for i, cell in enumerate(nb.cells):
-                if re.search("^\s*#\s*@ignore", cell.source, re.MULTILINE) and cell.cell_type == "code":
+                if re.search(r"^\s*#\s*@ignore", cell.source, re.MULTILINE) and cell.cell_type == "code":
                     del_cells.append(i)
             for i in sorted(del_cells, reverse=True):
                 del nb.cells[i]
