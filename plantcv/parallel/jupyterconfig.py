@@ -123,9 +123,12 @@ class jupyterconfig:
             with open(self.notebook) as fh:
                 nb = nbformat.reads(fh.read(), nbformat.NO_CONVERT)
             # ignore @ignore tagged cells
+            del_cells = []
             for i, cell in enumerate(nb.cells):
-                if re.search("^#\s*@ignore", cell.source, re.MULTILINE) and cell.cell_type == "code":
-                    del nb.cells[i]
+                if re.search("^\s*#\s*@ignore", cell.source, re.MULTILINE) and cell.cell_type == "code":
+                    del_cells.append(i)
+            for i in sorted(del_cells, reverse=True):
+                del nb.cells[i]
             # Create a Python exporter instance
             exporter = PythonExporter()
             # Convert the notebook to Python code
