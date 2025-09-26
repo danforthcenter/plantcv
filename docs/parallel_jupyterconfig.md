@@ -4,7 +4,7 @@ The `jupyterconfig` class is very similar to the [`WorkflowConfig` class](parall
 
 ### Quick Start
 
-Initializing a `jupyterconfig` object in a Jupyter notebook will immediately use `nbconvert` to create a python script version of the workflow. Similar to `WorkflowConfig` objects you can overwrite default attributes to meet your particular needs. Once your edits are done the `run` method will run the workflow in parallel. Note that you will need to specify arguments with `workflow_inputs` how you would when using `WorkflowConfig` to run a script in parallel.
+Initializing a `jupyterconfig` object in a Jupyter notebook will immediately use `nbconvert` to create a python script version of the workflow. When the python script is generated notebook cells marked with `@ignore` as the start of a comment (`# @ignore`) are excluded, which may be useful to avoid making diagnostic plots in parallel or otherwise in keeping your notebook reproducible. Similar to `WorkflowConfig` objects you can overwrite default attributes to meet your particular needs. Once your edits are done the `run` method will run the workflow in parallel. Note that you will need to specify arguments with [`workflow_inputs`](parallel_workflow_inputs.md) how you would when using `WorkflowConfig` to run a script in parallel.
 
 ```python
 from plantcv import parallel as pcvpar
@@ -84,7 +84,7 @@ jupcon.run()
 args = pcvpar.workflow_inputs() # This is necessary for running the notebook in parallel
 # read image
 img, path, filename = pcv.readimage(filename=args.image1)
-# other components of your workflow, cell divisions in jupyter don't matter here
+# other components of your workflow
 # ...
 # save results
 pcv.outputs.save_results(filename= args.result, outformat="json")

@@ -22,6 +22,8 @@ args = pcvpar.WorkflowInputs(
     outdir=".",
     debug="plot"
     )
+# using the args object to set preferences will make parallelization easier later
+pcv.params.debug = args.debug
 img, path, filename = pcv.readimage(filename=args.image1)
 # ... the rest of your code
 ```
@@ -31,13 +33,15 @@ When you are ready to run in parallel whether you make a python script manually 
 # in your .py script
 from plantcv import parallel as pcvpar
 args = pcvpar.workflow_inputs()
+# these lines can stay the same thanks to workflow_inputs()
+pcv.params.debug = args.debug
 img, path, filename = pcv.readimage(filename=args.image1)
 # ... the rest of your code
 ```
 
 This change will allow the workflow to read the variety of image paths and associated metadata that are used when running in parallel.
 
-It is also a good idea to avoid making your code do extra work in parallel. Things like plotting debug images or saving intermediate data can be helpful in development but problematic in parallel. We recommend setting `plantcv.params.debug = None` when working in parallel and commenting out any code that explicitly draws plots/images.
+It is also a good idea to avoid making your code do extra work in parallel. Things like plotting debug images or saving intermediate data can be helpful in development but problematic in parallel. We recommend setting `plantcv.params.debug = None` when working in parallel and commenting out any code that explicitly draws plots/images. If you use `WorkflowInputs` in your Jupyter notebook then when you switch to `workflow_inputs` for use in parallel `args.debug` will default to `None`.
 
 Finally, for converting from a `.ipynb` notebook to a `.py` script you can copy and paste from cells or use [`nbconvert`](https://nbconvert.readthedocs.io/en/latest/).
 

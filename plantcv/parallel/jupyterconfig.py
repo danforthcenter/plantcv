@@ -1,4 +1,5 @@
 import os
+import re
 import nbformat
 from nbconvert import PythonExporter
 from plantcv.parallel.workflowconfig import WorkflowConfig
@@ -121,13 +122,15 @@ class jupyterconfig:
         if self.in_notebook():
             with open(self.notebook) as fh:
                 nb = nbformat.reads(fh.read(), nbformat.NO_CONVERT)
+            # ignore @ignore tagged cells
+            for i, cell in enumerate(nb.cells):
+                if re.search("^#\s*@ignore", cell.source, re.MULTILINE) and cell.cell_type == "code":
+                    del nb.cells[i]
             # Create a Python exporter instance
             exporter = PythonExporter()
             # Convert the notebook to Python code
             source, _ = exporter.from_notebook_node(nb)
             # Write the output to a Python file
-            # NOTE could say that if you don't see 'workflow_inputs(' in the code someplace then add it?
-            # I don't think we'll have smart enough parsing logic for that though. Might be a rtfm situation.
             with open(self.workflow, 'w') as fh:
                 fh.writelines(source)
             # return boolean for if self.script exists
