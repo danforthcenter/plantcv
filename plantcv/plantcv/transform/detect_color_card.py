@@ -74,10 +74,10 @@ def _draw_color_chips(rgb_img, centers, radius):
     ----------
     rgb_img : numpy.ndarray
         Input RGB image data containing a color card.
-    new_centers : numpy.array
+    centers : numpy.array
         Chip centers after transformation.
     radius : int or list
-        Radius of circles to draw on the color chips.
+        Radius of circles to draw on the color chips. If list, must be the same length as `centers` param.
 
     Returns
     -------
@@ -112,7 +112,7 @@ def _draw_color_chips(rgb_img, centers, radius):
                         fontFace=cv2.FONT_HERSHEY_SIMPLEX, thickness=params.text_thickness)
 
     else:
-        fatal_error("Radius must be int or list with same length as centers.")
+        fatal_error("Radius must be int or list with same length as `centers` param.")
 
     return labeled_mask, debug_img
 
@@ -269,15 +269,19 @@ def _find_aruco_tags(img, aruco_dict):
 
     Parameters
     ----------
-    img : np.ndarray
-        Input RGB or Grayscale image data containing aruco tags.
+    img : numpy.ndarray
+        Input RGB or Grayscale image data.
     aruco_dict : cv2.aruco.Dictionary
         CV2 Aruco Dictionary containing tags to be located.
 
     Returns
     -------
-    list
-        tag bounding boxes, tag IDs, rejected tag bounding boxes
+    tag_bboxes : list
+        List of aruco tag bounding boxes, sorted by tag ID
+    tag_ids : list
+        List of identified aruco tag IDs, sorted by tag ID
+    rejects : list
+        List of rejected aruco tag bounding boxes
     """
     aruco_params = cv2.aruco.DetectorParameters()
     detector = cv2.aruco.ArucoDetector(dictionary=aruco_dict, detectorParams=aruco_params)
@@ -290,7 +294,7 @@ def _find_aruco_tags(img, aruco_dict):
 
 
 def _get_astro_std_mask():
-    """Define reference centers of chips on a 600x700 px astrobotany color card
+    """Define reference centers of chips on an aligned 600x700 px astrobotany color card
 
     Returns
     -------
@@ -452,7 +456,7 @@ def _set_size_scale_from_chip(color_chip_width, color_chip_height, color_chip_si
     color_chip_height : float
         Height in pixels of the detected color chips
     color_chip_size : str, tuple
-        Type of supported color card target ("classic", "passport", or "cameratrax"), or a tuple of
+        Type of supported color card target ("classic", "passport", "cameratrax", or "nano"), or a tuple of
         (width, height) of the color card chip real-world dimensions in milimeters.
     """
     # Define known color chip dimensions, all in milimeters
