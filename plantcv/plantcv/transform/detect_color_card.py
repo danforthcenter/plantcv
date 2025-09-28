@@ -501,17 +501,15 @@ def _set_size_scale_from_chip(color_chip_width, color_chip_height, color_chip_si
     params.unit = "mm"
 
 
-def mask_color_card(rgb_img, card_type=0, **kwargs):
+def mask_color_card(rgb_img, card_type="macbeth", **kwargs):
     """Automatically detect a color card and create bounding box mask of the chips detected.
 
     Parameters
     ----------
     rgb_img : numpy.ndarray
         Input RGB image data containing a color card.
-    card_type : int
-        reference value indicating the type of card being used for correction:
-                card_type = 0: macbeth color card (default)
-                card_type = 1: astrobotany.com AIRI calibration sticker
+    card_type : str, optional
+        "macbeth", or "astro" (default = macbeth)
     **kwargs
         Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle.
 
@@ -526,12 +524,12 @@ def mask_color_card(rgb_img, card_type=0, **kwargs):
     numpy.ndarray
         Binary bounding box mask of the detected color card chips
     """
-    if card_type == 0:
-        *_, bounding_mask = _macbeth_card_detection(rgb_img, **kwargs)
-    elif card_type == 1:
+    if card_type.upper() == 'ASTRO':
         *_, bounding_mask = _astrobotany_card_detection(rgb_img, **kwargs)
+    elif card_type.upper() == "MACBETH":
+        *_, bounding_mask = _macbeth_card_detection(rgb_img, **kwargs)
     else:
-        fatal_error("Invalid option passed to <card_type>. Options are 0 (Macbeth Chart) or 1 (Astrobotany Sticker)")
+        fatal_error("Invalid option passed to <card_type>. Options are `macbeth` or `astro`.")
 
     if params.debug is not None:
         # Find contours
@@ -547,8 +545,8 @@ def mask_color_card(rgb_img, card_type=0, **kwargs):
     return bounding_mask
 
 
-def detect_color_card(rgb_img, label=None, color_chip_size=None, roi=None, card_type=0, **kwargs):
-    """Automatically detect a Macbeth ColorChecker style color card.
+def detect_color_card(rgb_img, label=None, color_chip_size=None, roi=None, **kwargs):
+    """Automatically detects a Macbeth ColorChecker or Astrobotany.com Calibration Sticker style color card.
 
     Parameters
     ----------
@@ -557,14 +555,10 @@ def detect_color_card(rgb_img, label=None, color_chip_size=None, roi=None, card_
     label : str, optional
         modifies the variable name of observations recorded (default = pcv.params.sample_label).
     color_chip_size: str, tuple, optional
-        "passport", "classic", "cameratrax"; or tuple formatted (width, height)
+        "passport", "classic", "cameratrax", "nano", or "astro"; or tuple formatted (width, height)
         in millimeters (default = None)
     roi : plantcv.plantcv.Objects, optional
         A rectangular ROI as returned from pcv.roi.rectangle to detect a color card only in that region.
-    card_type : int
-        reference value indicating the type of card being used for correction:
-                card_type = 0: macbeth chart color card (default)
-                card_type = 1: astrobotany.com AIRI calibration sticker
     **kwargs
         Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle.
 
@@ -589,32 +583,7 @@ def detect_color_card(rgb_img, label=None, color_chip_size=None, roi=None, card_
         "It will be removed in PlantCV v5.0."
         )
 
-    if card_type == 0:
-        # apply _color_card_detection within bounding box
-        sub_mask, debug_img, marea, mheight, mwidth, _ = _rect_filter(rgb_img,
-                                                                      roi,
-                                                                      function=_macbeth_card_detection,
-                                                                      **kwargs)
-        # slice sub_mask from bounding box into mask of original image size
-        empty_mask = np.zeros((np.shape(rgb_img)[0], np.shape(rgb_img)[1]))
-        labeled_mask = _rect_replace(empty_mask, sub_mask, roi)
-
-        # Create dataframe for easy summary stats
-        chip_size = np.median(marea)
-        chip_height = np.median(mheight)
-        chip_width = np.median(mwidth)
-
-        # Save out chip size for pixel to mm standardization
-        outputs.add_metadata(term="median_color_chip_size", datatype=float, value=chip_size)
-        outputs.add_metadata(term="median_color_chip_width", datatype=float, value=chip_width)
-        outputs.add_metadata(term="median_color_chip_height", datatype=float, value=chip_height)
-
-        # Set size scaling factor if color chip size is provided
-        if color_chip_size:
-            _set_size_scale_from_chip(color_chip_height=chip_height, color_chip_width=chip_width,
-                                      color_chip_size=color_chip_size)
-
-    elif card_type == 1:
+    if type(color_chip_size) is str and color_chip_size.upper() == 'ASTRO':
         # Search image for astrobotany.com color card aruco tags
         sub_mask, debug_img, card_img, marea, mheight, mwidth, _ = _rect_filter(rgb_img,
                                                                                 roi,
@@ -642,7 +611,29 @@ def detect_color_card(rgb_img, label=None, color_chip_size=None, roi=None, card_
         _debug(visual=card_img, filename=os.path.join(params.debug_outdir, f'{params.device}_aligned_color_card.png'))
 
     else:
-        fatal_error("Invalid option passed to <card_type>. Options are 0 (Macbeth Chart) or 1 (Astrobotany Sticker)")
+        # apply _color_card_detection within bounding box
+        sub_mask, debug_img, marea, mheight, mwidth, _ = _rect_filter(rgb_img,
+                                                                      roi,
+                                                                      function=_macbeth_card_detection,
+                                                                      **kwargs)
+        # slice sub_mask from bounding box into mask of original image size
+        empty_mask = np.zeros((np.shape(rgb_img)[0], np.shape(rgb_img)[1]))
+        labeled_mask = _rect_replace(empty_mask, sub_mask, roi)
+
+        # Create dataframe for easy summary stats
+        chip_size = np.median(marea)
+        chip_height = np.median(mheight)
+        chip_width = np.median(mwidth)
+
+        # Save out chip size for pixel to mm standardization
+        outputs.add_metadata(term="median_color_chip_size", datatype=float, value=chip_size)
+        outputs.add_metadata(term="median_color_chip_width", datatype=float, value=chip_width)
+        outputs.add_metadata(term="median_color_chip_height", datatype=float, value=chip_height)
+
+        # Set size scaling factor if color chip size is provided
+        if color_chip_size:
+            _set_size_scale_from_chip(color_chip_height=chip_height, color_chip_width=chip_width,
+                                      color_chip_size=color_chip_size)
 
     # Debugging
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
