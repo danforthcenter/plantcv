@@ -3,6 +3,7 @@ import sys
 import json
 from copy import deepcopy
 import uuid
+import pandas as pd
 
 
 # Build job list
