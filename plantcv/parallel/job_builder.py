@@ -10,19 +10,21 @@ import uuid
 def job_builder(meta, config):
     """Build a list of image processing jobs.
 
-    Inputs:
-    meta:         Dictionary of processed image metadata.
+    Parameters
+    ----------
+    meta:         pandas.core.frame.Dataframe
+                     Dataframe of image metadata
     config:       plantcv.parallel.WorkflowConfig object.
+                     Workflow configuration
 
-    Returns:
-    jobs:         List of image processing commands.
-
-    :param meta: dict
-    :param config: plantcv.parallel.WorkflowConfig
-    :return job_stack: list
+    Returns
+    -------
+    jobs:         list, iimage processing commands.
     """
     # Overall job stack. List of list of jobs
     jobs = []
+    # make pandas groupby object
+    meta = df.groupby(by=config.groupby)
 
     # Log the number of jobs to be run
     n_jobs = len(meta)
