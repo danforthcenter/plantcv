@@ -103,6 +103,7 @@ def _dataset2dataframe(dataset, config):
         for term in config.metadata_terms:
             metadata[term].append(dataset["images"][image].get(term))
     df = pd.DataFrame(data=metadata)
+    df["checkpointing"] = "unrun"
     utc = bool("Z" in config.timestampformat)
     df["timestamp"] = pd.to_datetime(df.timestamp, format=config.timestampformat, utc=utc)
     return df

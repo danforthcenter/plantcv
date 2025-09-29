@@ -25,7 +25,8 @@ def job_builder(meta, config):
     # Overall job stack. List of list of jobs
     jobs = []
     # make pandas groupby object
-    meta = df.groupby(by=config.groupby)
+    meta = meta[meta['checkpointing'] == "unrun"]
+    meta = meta.groupby(by=config.groupby)
 
     # Log the number of jobs to be run
     n_jobs = len(meta)
