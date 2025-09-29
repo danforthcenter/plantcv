@@ -39,6 +39,8 @@ def options():
     # Import a configuration if provided
     if args.config:
         config.import_config(config_file=args.config)
+        if args.config == config.json:
+            raise ValueError("Configuration file would be overwritten by results, change the json field of config.")
 
     if not config.validate_config():
         raise ValueError("Invalid configuration file. Check errors above.")
