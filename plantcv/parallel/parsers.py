@@ -18,8 +18,10 @@ def metadata_parser(config):
 
     Returns
     -------
-    pandas.core.groupby.generic.DataFrameGroupBy
-        Grouped dataframe of image metadata.
+    meta: pandas.core.frame.DataFrame
+        Dataframe of image metadata.
+    removed_df: pandas.core.frame.DataFrame
+        Dataframe of image metadata for images excluded from the workflow.
     """
     # Read the input dataset to a dictionary
     dataset = _read_dataset(config=config)
@@ -35,9 +37,6 @@ def metadata_parser(config):
 
     # Apply user-supplied date range filters
     meta, removed_df = _apply_date_range_filter(df=meta, config=config, removed_df=removed_df)
-
-    # Apply metadata grouping
-    meta = _group_metadata(df=meta, config=config)
 
     return meta, removed_df
 ###########################################
@@ -185,27 +184,6 @@ def _apply_date_range_filter(df, config, removed_df):
     removed_df = pd.concat([removed_df, not_between_df])
 
     return filtered_df, removed_df
-###########################################
-
-
-# Group metadata dataframe into sets
-###########################################
-def _group_metadata(df, config):
-    """Group metadata.
-
-    Keyword arguments:
-    df = metadata dataframe
-    config = plantcv.parallel.WorkflowConfig object
-
-    Outputs:
-    groups = grouped metadata
-
-    :param df: pandas.core.frame.DataFrame
-    :param config: plantcv.parallel.WorkflowConfig
-    :return groups: pandas.core.groupby.generic.DataFrameGroupBy
-    """
-    groups = df.groupby(by=config.groupby)
-    return groups
 ###########################################
 
 
