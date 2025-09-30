@@ -24,8 +24,6 @@ def job_builder(meta, config):
     """
     # Overall job stack. List of list of jobs
     jobs = []
-    # filter dataframe for only unrun jobs (all jobs are unrun from metadata_parser)
-    meta = meta[meta['checkpointing'] == "unrun"]
     # make pandas groupby object
     meta = meta.groupby(by=config.groupby)
 
@@ -33,7 +31,6 @@ def job_builder(meta, config):
     n_jobs = len(meta)
     print(f"Task list includes {n_jobs} workflows", file=sys.stderr)
 
-    checkpoint_file = config.json + "_checkpointing.csv"
     # Each grouping has a tuple of grouped metadata values and a dataframe of image metadata
     for _, grp_df in meta:
         # Create a JSON template for each group
@@ -54,7 +51,7 @@ def job_builder(meta, config):
             img_meta["metadata"][m]["value"] = grp_df[m].values.tolist()
 
         # Create random unique output file to store the image processing results and populate with metadata
-        outfile = os.path.join(config.tmp_dir, f"{uuid.uuid4()}.json")
+        outfile = os.path.join("checkpoint", config.tmp_dir, f"{uuid.uuid4()}.json")
         with open(outfile, "w") as fp:
             json.dump(img_meta, fp, indent=4)
 
@@ -68,7 +65,8 @@ def job_builder(meta, config):
 
         # Build job
         job_parts = ["python", config.workflow, "--outdir", config.img_outdir, "--result", outfile,
-                     "--checkpoint", checkpoint_file, "--names", ",".join(map(str, names))]
+                     "--tmpfile", outfile,
+                     "--names", ",".join(map(str, names))]
         # Add other arguments
         for key, value in config.other_args.items():
             job_parts.append(f"--{key}")

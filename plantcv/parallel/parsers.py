@@ -23,9 +23,9 @@ def metadata_parser(config):
     removed_df: pandas.core.frame.DataFrame
         Dataframe of image metadata for images excluded from the workflow.
     """
-    # if resuming a checkpointed process just read in that metadata, otherwise create metadata.
-    if os.path.exists(config.json + "checkpointing.csv") and config.resume:
-        meta = pd.read_csv(config.json + "checkpointing.csv")
+    # if resuming a checkpointed process read in that metadata, otherwise create metadata.
+    if os.path.exists("checkpoint") and config.checkpoint:
+        meta = _read_checkpoint_data()
         removed_df = pd.Dataframe()
         return meta, removed_df
 
@@ -44,10 +44,39 @@ def metadata_parser(config):
     # Apply user-supplied date range filters
     meta, removed_df = _apply_date_range_filter(df=meta, config=config, removed_df=removed_df)
 
-    # save metadata for checkpointing
-    meta.to_csv(config.json + "checkpointing.csv")
-
     return meta, removed_df
+###########################################
+
+
+# Read metadata from a checkpoint
+###########################################
+def _read_checkpoint_data():
+    """Reads checkpointing data to make a metadata dataframe for a new run
+
+    Parameters
+    ----------
+
+    Returns
+    -------
+    meta: pandas.core.frame.DataFrame
+        Dataframe of image metadata.
+    """
+
+    allfiles = os.listdir("checkpoint")
+    meta = []
+    meta_vars = []
+    for jsonfile in [s for s in allfiles if os.path.splitext(s)[1] == '.json']:
+    if not os.path.exists(os.path.join("checkpoint", os.path.splitext(jsonfile)[0]+"_complete")):
+        with open(os.path.join("checkpoint", jsonfile), "r") as fp:
+            j = json.load(fp)["metadata"]
+            row = {}
+            for var in j:
+                row[var] = j[var]["value"]
+            meta.append(pd.DataFrame.from_dict(row))
+
+    meta = pd.concat(meta)
+
+    return meta
 ###########################################
 
 
@@ -112,7 +141,6 @@ def _dataset2dataframe(dataset, config):
         for term in config.metadata_terms:
             metadata[term].append(dataset["images"][image].get(term))
     df = pd.DataFrame(data=metadata)
-    df["checkpointing"] = "unrun"
     utc = bool("Z" in config.timestampformat)
     df["timestamp"] = pd.to_datetime(df.timestamp, format=config.timestampformat, utc=utc)
     return df

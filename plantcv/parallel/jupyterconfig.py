@@ -34,7 +34,7 @@ class jupyterconfig:
         self.other_args = {}
         self.groupby = ["filepath"]
         self.group_name = "auto"
-        self.resume = True
+        self.checkpoint = True
         self.cleanup = True
         self.append = False
         self.cluster = "LocalCluster"
