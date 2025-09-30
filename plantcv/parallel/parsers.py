@@ -24,8 +24,8 @@ def metadata_parser(config):
         Dataframe of image metadata for images excluded from the workflow.
     """
     # if resuming a checkpointed process just read in that metadata, otherwise create metadata.
-    if os.path.exists(os.path.join(config.json + "checkpointing.csv")) and config.resume:
-        meta = pd.read_csv(os.path.join(config.json + "checkpointing.csv"))
+    if os.path.exists(config.json + "checkpointing.csv") and config.resume:
+        meta = pd.read_csv(config.json + "checkpointing.csv")
         removed_df = pd.Dataframe()
         return meta, removed_df
 
@@ -45,7 +45,7 @@ def metadata_parser(config):
     meta, removed_df = _apply_date_range_filter(df=meta, config=config, removed_df=removed_df)
 
     # save metadata for checkpointing
-    meta.to_csv(os.path.join(config.json + "checkpointing.csv"))
+    meta.to_csv(config.json + "checkpointing.csv")
 
     return meta, removed_df
 ###########################################

@@ -4,7 +4,6 @@ import time
 import datetime
 import tempfile
 import shutil
-import pandas as pd
 from plantcv.parallel.parsers import metadata_parser
 from plantcv.parallel.job_builder import job_builder
 from plantcv.parallel.multiprocess import create_dask_cluster
@@ -46,11 +45,6 @@ def run_parallel(config):
     meta, _ = metadata_parser(config=config)
     parser_clock_time = time.time() - parser_start_time
     print(f"Reading image metadata took {parser_clock_time} seconds.", file=sys.stderr)
-    ###########################################
-
-    # save metadata csv, will be an if eventually?
-    ###########################################
-    meta.to_csv(os.path.join(config.json + "checkpointing.csv"))
     ###########################################
 
     # Process images

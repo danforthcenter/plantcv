@@ -33,6 +33,7 @@ def job_builder(meta, config):
     n_jobs = len(meta)
     print(f"Task list includes {n_jobs} workflows", file=sys.stderr)
 
+    checkpoint_file = config.json + "_checkpointing.csv"
     # Each grouping has a tuple of grouped metadata values and a dataframe of image metadata
     for _, grp_df in meta:
         # Create a JSON template for each group
@@ -67,7 +68,7 @@ def job_builder(meta, config):
 
         # Build job
         job_parts = ["python", config.workflow, "--outdir", config.img_outdir, "--result", outfile,
-                     "--names", ",".join(map(str, names))]
+                     "--checkpoint", checkpoint_file, "--names", ",".join(map(str, names))]
         # Add other arguments
         for key, value in config.other_args.items():
             job_parts.append(f"--{key}")
