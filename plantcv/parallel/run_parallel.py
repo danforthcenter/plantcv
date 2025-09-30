@@ -25,11 +25,12 @@ def run_parallel(config):
     # Job start time
     start_time = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     print("Starting run " + start_time + '\n', file=sys.stderr)
-
+    # Create checkpointing directory
+    os.makedirs("checkpoint", exist_ok=True)
     # Create temporary directory for job
     if config.tmp_dir is not None:
-        os.makedirs(config.tmp_dir, exist_ok=True)
-    config.tmp_dir = tempfile.mkdtemp(prefix=start_time + '_', dir=config.tmp_dir)
+        os.makedirs(os.path.join("checkpoint", config.tmp_dir), exist_ok=True)
+    config.tmp_dir = tempfile.mkdtemp(prefix=start_time + '_', dir=os.path.join("checkpoint", config.tmp_dir))
 
     # Create img_outdir
     os.makedirs(config.img_outdir, exist_ok=True)

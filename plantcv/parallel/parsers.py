@@ -24,8 +24,16 @@ def metadata_parser(config):
         Dataframe of image metadata for images excluded from the workflow.
     """
     # if resuming a checkpointed process read in that metadata, otherwise create metadata.
-    if os.path.exists("checkpoint") and config.checkpoint:
-        meta = _read_checkpoint_data()
+    # what I actually want here is if there are json files anywhere in checkpoint dir
+    existing_json = []
+    for _, _, files in os.walk("checkpoint"):
+        for file in files:
+            if file.lower().endswith(".json"):
+                # Keep the files that end with the image extension
+                existing_json.append(file)
+
+    if any(existing_json) and config.checkpoint:
+        meta = _read_checkpoint_data(config)
         removed_df = pd.Dataframe()
         return meta, removed_df
 
@@ -50,11 +58,13 @@ def metadata_parser(config):
 
 # Read metadata from a checkpoint
 ###########################################
-def _read_checkpoint_data():
+def _read_checkpoint_data(config):
     """Reads checkpointing data to make a metadata dataframe for a new run
 
     Parameters
     ----------
+    config : plantcv.parallel.WorkflowConfig
+        Workflow configuration object.
 
     Returns
     -------
@@ -62,18 +72,24 @@ def _read_checkpoint_data():
         Dataframe of image metadata.
     """
 
-    allfiles = os.listdir("checkpoint")
+    allfiles = os.listdir(config.tmp_dir)
     meta = []
-    meta_vars = []
-    for jsonfile in [s for s in allfiles if os.path.splitext(s)[1] == '.json']:
-    if not os.path.exists(os.path.join("checkpoint", os.path.splitext(jsonfile)[0]+"_complete")):
-        with open(os.path.join("checkpoint", jsonfile), "r") as fp:
-            j = json.load(fp)["metadata"]
-            row = {}
-            for var in j:
-                row[var] = j[var]["value"]
-            meta.append(pd.DataFrame.from_dict(row))
-
+    # look through checkpoint directory for json without "completed" companion file
+    for root, _, files in os.walk("checkpoint"):
+        for file in files:
+            if file.lower().endswith(".json") and not os.path.exists(
+                os.path.join(root, os.path.splitext(file)[0]+"_complete")
+            ):
+                # Keep the files that end with the image extension
+                with open(os.path.join(root, file), "r") as fp:
+                    j = json.load(fp)["metadata"]
+                    row = {}
+                    for var in j:
+                        row[var] = j[var]["value"]
+                    meta.append(pd.DataFrame.from_dict(row))
+                # delete that file so that the next re-run does not double count it
+                os.remove(os.path.join(root, file))
+    # bind to metadata dataframe
     meta = pd.concat(meta)
 
     return meta

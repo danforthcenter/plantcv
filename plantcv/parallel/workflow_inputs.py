@@ -1,4 +1,5 @@
 import argparse
+import os
 from shutil import move
 
 
@@ -66,16 +67,16 @@ class workflow_inputs:
     def attempt(self):
         """Write the attempting checkpoint file"""
         # write the attempt file
-        if self.checkpoint:
+        if self.checkpoint.strip().lower() == "true":
             open(os.path.splitext(self.tmpfile)[0] + "_attempt", "w")
-            print("touched " + os.path.splitext(self.tmpfile)[0] + "_attempt")
+            #print("touched " + os.path.splitext(self.tmpfile)[0] + "_attempt")
 
     def complete(self):
         """Write the attempting checkpoint file"""
         # delete the _attempted file, write the _completed file
-        if self.checkpoint:
+        if self.checkpoint.strip().lower() == "true":
             move(os.path.splitext(self.tmpfile)[0] + "_attempt", os.path.splitext(self.tmpfile)[0] + "_complete")
-            print("touched " + os.path.splitext(self.tmpfile)[0] + "_complete")
+            #print("touched " + os.path.splitext(self.tmpfile)[0] + "_complete")
 
     @property
     def result(self):

@@ -51,7 +51,7 @@ def job_builder(meta, config):
             img_meta["metadata"][m]["value"] = grp_df[m].values.tolist()
 
         # Create random unique output file to store the image processing results and populate with metadata
-        outfile = os.path.join("checkpoint", config.tmp_dir, f"{uuid.uuid4()}.json")
+        outfile = os.path.join(config.tmp_dir, f"{uuid.uuid4()}.json")
         with open(outfile, "w") as fp:
             json.dump(img_meta, fp, indent=4)
 
@@ -65,7 +65,7 @@ def job_builder(meta, config):
 
         # Build job
         job_parts = ["python", config.workflow, "--outdir", config.img_outdir, "--result", outfile,
-                     "--tmpfile", outfile,
+                     "--checkpoint", str(config.checkpoint), "--tmpfile", outfile,
                      "--names", ",".join(map(str, names))]
         # Add other arguments
         for key, value in config.other_args.items():
