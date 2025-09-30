@@ -24,8 +24,9 @@ def job_builder(meta, config):
     """
     # Overall job stack. List of list of jobs
     jobs = []
-    # make pandas groupby object
+    # filter dataframe for only unrun jobs (all jobs are unrun from metadata_parser)
     meta = meta[meta['checkpointing'] == "unrun"]
+    # make pandas groupby object
     meta = meta.groupby(by=config.groupby)
 
     # Log the number of jobs to be run
