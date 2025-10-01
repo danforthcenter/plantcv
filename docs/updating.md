@@ -31,7 +31,7 @@ If conda does not update your PlantCV installation, you can try installing a spe
 ```bash
 conda install -n plantcv -c conda-forge plantcv=4.0
 
-``` 
+```
 
 You can find the version you have installed with:
 
@@ -818,6 +818,11 @@ pages for more details on the input and output variable types.
 
 * pre v4.10: Untracked
 * post v4.10: **plantcv.parallel.multiprocess**(*jobs, client*)
+
+#### plantcv.parallel.process_results
+
+* pre v4.10: Untracked
+* post v4.10: **plantcv.parallel.process_results**(*config*)
 
 #### plantcv.parallel.workflow_inputs
 

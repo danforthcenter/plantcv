@@ -118,6 +118,9 @@ metadata terms are listed [here](pipeline_parallel.md).
 image group (created by `groupby`), or `"auto"` to generate a numbered image sequence `image1, image2, ...`. The resulting
 names are used to access individual image filepaths in a workflow.
 
+* **checkpoint**: (bool, default = `True`): restart from where a previous run left off and/or keep checkpointing files in
+case jobs fail for any reason. For details see the checkpointing section of ['workflow_inputs'](parallel_workflow_inputs.md)
+
 * **cleanup**: (bool, default =`True`): remove temporary job directory if `True`.
 
 
@@ -135,7 +138,8 @@ names are used to access individual image filepaths in a workflow.
 
 
 * **metadata_terms**: (dict, default: as-is): a dictionary of metadata terms used to assign values in image filenames
-  (or metadata files) to metadata terms (should not be modified here). Terms from `filename_metadata` that are not present in the default dictionary of terms are added automatically.
+  (or metadata files) to metadata terms (should not be modified here). Terms from `filename_metadata`
+  that are not present in the default dictionary of terms are added automatically.
 
 
 ### Cluster configuration

@@ -69,19 +69,16 @@ class workflow_inputs:
         # write the attempt file
         if self.checkpoint.strip().lower() == "true":
             open(os.path.splitext(self.tmpfile)[0] + "_attempt", "w")
-            #print("touched " + os.path.splitext(self.tmpfile)[0] + "_attempt")
 
     def complete(self):
         """Write the attempting checkpoint file"""
         # delete the _attempted file, write the _completed file
         if self.checkpoint.strip().lower() == "true":
             move(os.path.splitext(self.tmpfile)[0] + "_attempt", os.path.splitext(self.tmpfile)[0] + "_complete")
-            #print("touched " + os.path.splitext(self.tmpfile)[0] + "_complete")
 
     @property
     def result(self):
-        # getter function should only be called for saving results which can trigger end_checkpoint()
-        # this would still need to know if there is information in the params.outputs, not if self._results is populated
+        # rename _attempt file to _complete
         self.complete()
         # once that is done, return hidden version of results
         return self._result
