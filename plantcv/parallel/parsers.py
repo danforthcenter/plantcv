@@ -47,7 +47,7 @@ def metadata_parser(config):
                 existing_json.append(file)
     # if there are json files in checkpoint then this is a re-run
     if any(existing_json) and config.checkpoint:
-        already_run = _read_checkpoint_data(config)
+        already_run = _read_checkpoint_data()
         meta2 = _anti_join(meta, already_run, on="filepath", suffixes=(None, "_removeY"))
         meta = meta2[meta.columns]
 
@@ -57,13 +57,11 @@ def metadata_parser(config):
 
 # Read metadata from a checkpoint
 ###########################################
-def _read_checkpoint_data(config):
+def _read_checkpoint_data():
     """Reads checkpointing data to make a metadata dataframe what was already run
 
     Parameters
     ----------
-    config : plantcv.parallel.WorkflowConfig
-        Workflow configuration object.
 
     Returns
     -------
