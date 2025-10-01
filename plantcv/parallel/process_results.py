@@ -19,7 +19,7 @@ def process_results(config):
     None
     """
     # generally process results from the tmpdir
-    job_dir = config.tmpdir
+    job_dir = config.tmp_dir
     # if checkpointing then process results from entire checkpoint
     if config.checkpoint:
         job_dir = "checkpoint"
