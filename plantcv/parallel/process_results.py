@@ -13,6 +13,10 @@ def process_results(config):
     ----------
     config : plantcv.parallel.WorkflowConfig
         Workflow configuration object.
+
+    Returns
+    -------
+    None
     """
     # generally process results from the tmpdir
     job_dir = config.tmpdir
