@@ -28,5 +28,5 @@ def test_workflow_inputs_checkpoint(tmpdir):
     # touch args.result to trigger complete method
     x = args.result
     # touch args.result setter
-    args._result = x
+    args.result = x
     assert os.path.exists(os.path.join(tmp, "example_tmp_complete"))
