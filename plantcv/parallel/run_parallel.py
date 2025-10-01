@@ -71,7 +71,7 @@ def run_parallel(config):
     # Process results start time
     process_results_start_time = time.time()
     print("Processing results... ", file=sys.stderr)
-    process_results(job_dir="checkpoint", json_file=config.json)
+    process_results(config)
     process_results_clock_time = time.time() - process_results_start_time
     print(f"Processing results took {process_results_clock_time} seconds.", file=sys.stderr)
     ###########################################
