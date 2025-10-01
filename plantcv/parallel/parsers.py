@@ -70,7 +70,6 @@ def _read_checkpoint_data(config):
     meta: pandas.core.frame.DataFrame
         Dataframe of image metadata.
     """
-    allfiles = os.listdir(config.tmp_dir)
     meta = [pd.DataFrame()]
     # look through checkpoint directory for json without "completed" companion file
     for root, _, files in os.walk("checkpoint"):
