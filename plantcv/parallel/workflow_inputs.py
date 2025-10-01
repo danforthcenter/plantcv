@@ -24,7 +24,27 @@ class WorkflowInputs:
         self.writeimg = writeimg
         self.debug = debug
         self.__dict__.update(kwargs)
-        self.__dict__.update(_name_images(names=names, img_list=images))
+        self.__dict__.update(_NameImages(names=names, img_list=images))
+
+
+def _NameImages(names: str, img_list: list):
+    """Pair image names with image file paths.
+
+    Parameters
+    ----------
+    names = str, a comma-delimited string of unique names.
+    img_list = list, a list of image file paths.
+
+    Returns
+    -------
+    images = dict, a dictionary of name-image file path pairings.
+    """
+    images = {}
+    # Enumerate the list of names split from the input comma-delimited string
+    for i, name in enumerate(names.split(",")):
+        # Pair each name with the corresponding image file path
+        images[name.lower()] = img_list[i]
+    return images
 
 
 class workflow_inputs:
