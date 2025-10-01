@@ -18,11 +18,11 @@ def process_results(config):
     -------
     None
     """
-    # generally process results from the tmpdir
-    job_dir = config.tmp_dir
-    # if checkpointing then process results from entire checkpoint
-    if config.checkpoint:
-        job_dir = "checkpoint"
+    # generally process results from the checkpoint
+    job_dir = "checkpoint"
+    # if not checkpointing then process results from only tmp_dir
+    if not config.checkpoint.strip().lower() == "true":
+        job_dir = config.tmp_dir
     # name outputs from config
     json_file = config.json
     # Data dictionary
