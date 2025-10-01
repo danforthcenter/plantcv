@@ -85,6 +85,9 @@ def _read_checkpoint_data(config):
                     meta.append(pd.DataFrame.from_dict(row))
                 # delete that file so that the next re-run does not double count it
                 os.remove(os.path.join(root, file))
+    # error handling if nothing was found
+    if len(meta) == 0:
+        raise RuntimeError("No incomplete checkpointing files to combine, aborting.")
     # bind to metadata dataframe
     meta = pd.concat(meta)
 
