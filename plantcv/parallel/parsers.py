@@ -23,18 +23,6 @@ def metadata_parser(config):
     removed_df: pandas.core.frame.DataFrame
         Dataframe of image metadata for images excluded from the workflow.
     """
-    # if resuming a checkpointed process read in that metadata, otherwise create metadata.
-    existing_json = []
-    for _, _, files in os.walk("checkpoint"):
-        for file in files:
-            if file.lower().endswith(".json"):
-                existing_json.append(file)
-    # if there are json files in checkpoint then this is a re-run
-    if any(existing_json) and config.checkpoint:
-        meta = _read_checkpoint_data(config)
-        removed_df = pd.DataFrame()
-        return meta, removed_df
-
     # Read the input dataset to a dictionary
     dataset = _read_dataset(config=config)
 
@@ -49,7 +37,20 @@ def metadata_parser(config):
 
     # Apply user-supplied date range filters
     meta, removed_df = _apply_date_range_filter(df=meta, config=config, removed_df=removed_df)
-    
+
+    # if resuming a checkpointed process read in that metadata (or metadata that has already been processed?
+    # if reading in data that is already processed then anti join that to the full metadata from above methods
+    existing_json = []
+    for _, _, files in os.walk("checkpoint"):
+        for file in files:
+            if file.lower().endswith(".json"):
+                existing_json.append(file)
+    # if there are json files in checkpoint then this is a re-run
+    if any(existing_json) and config.checkpoint:
+        already_run = _read_checkpoint_data(config)
+        meta2 = _anti_join(meta, already_run, on="filepath", suffixes=(None, "_removeY"))
+        meta = meta2[meta.columns]
+
     return meta, removed_df
 ###########################################
 
@@ -57,7 +58,7 @@ def metadata_parser(config):
 # Read metadata from a checkpoint
 ###########################################
 def _read_checkpoint_data(config):
-    """Reads checkpointing data to make a metadata dataframe for a new run
+    """Reads checkpointing data to make a metadata dataframe what was already run
 
     Parameters
     ----------
@@ -70,11 +71,11 @@ def _read_checkpoint_data(config):
         Dataframe of image metadata.
     """
     allfiles = os.listdir(config.tmp_dir)
-    meta = []
+    meta = [pd.DataFrame()]
     # look through checkpoint directory for json without "completed" companion file
     for root, _, files in os.walk("checkpoint"):
         for file in files:
-            if file.lower().endswith(".json") and not os.path.exists(
+            if file.lower().endswith(".json") and os.path.exists(
                 os.path.join(root, os.path.splitext(file)[0]+"_complete")
             ):
                 with open(os.path.join(root, file), "r") as fp:
@@ -83,11 +84,6 @@ def _read_checkpoint_data(config):
                     for var in j:
                         row[var] = j[var]["value"]
                     meta.append(pd.DataFrame.from_dict(row))
-                # delete that file so that the next re-run does not double count it
-                os.remove(os.path.join(root, file))
-    # error handling if nothing was found
-    if len(meta) == 0:
-        raise RuntimeError("No incomplete checkpointing files to combine, aborting.")
     # bind to metadata dataframe
     meta = pd.concat(meta)
 
@@ -529,18 +525,19 @@ def _read_filenames(config):
 ###########################################
 
 
-def _anti_join(df1, df2=None):
+def _anti_join(df1, df2=None, **kwargs):
     """Anti join function for pandas dataframes
     Parameters
     ----------
     df1      = pandas.core.frame.Dataframe, dataframe of metadata
-    df2      = pandas.core.frame.Dataframe, dataframe of filtered metadata
+    df2      = pandas.core.frame.Dataframe, dataframe of filtered metadata (rows to remove)
+    **kwargs = additional arguments passed to pandas.merge
 
     Returns
     -------
     anti_joined = pandas.core.frame.Dataframe, metadata dataframe of what was removed
     """
-    outer = df1.merge(df2, how='outer', indicator=True)
+    outer = df1.merge(df2, how='outer', indicator=True, **kwargs)
     anti_joined = outer[(outer['_merge'] == 'left_only')].drop('_merge', axis=1)
     return anti_joined
 ###########################################
