@@ -24,14 +24,12 @@ def metadata_parser(config):
         Dataframe of image metadata for images excluded from the workflow.
     """
     # if resuming a checkpointed process read in that metadata, otherwise create metadata.
-    # what I actually want here is if there are json files anywhere in checkpoint dir
     existing_json = []
     for _, _, files in os.walk("checkpoint"):
         for file in files:
             if file.lower().endswith(".json"):
-                # Keep the files that end with the image extension
                 existing_json.append(file)
-
+    # if there are json files in checkpoint then this is a re-run
     if any(existing_json) and config.checkpoint:
         meta = _read_checkpoint_data(config)
         removed_df = pd.DataFrame()
@@ -86,7 +84,7 @@ def _read_checkpoint_data(config):
                         row[var] = j[var]["value"]
                     meta.append(pd.DataFrame.from_dict(row))
                 # delete that file so that the next re-run does not double count it
-                # os.remove(os.path.join(root, file))
+                os.remove(os.path.join(root, file))
     # bind to metadata dataframe
     meta = pd.concat(meta)
 
