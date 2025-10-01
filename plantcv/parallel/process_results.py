@@ -21,7 +21,7 @@ def process_results(config):
     # generally process results from the checkpoint
     job_dir = "checkpoint"
     # if not checkpointing then process results from only tmp_dir
-    if not config.checkpoint.strip().lower() == "true":
+    if not config.checkpoint:
         job_dir = config.tmp_dir
     # name outputs from config
     json_file = config.json

@@ -228,12 +228,12 @@ def _apply_date_range_filter(df, config, removed_df):
     end_date = pd.to_datetime(config.end_date, format=config.timestampformat, utc=utc)
     # Keep rows with dates between start and end date
     filtered_df = df.loc[df["timestamp"].between(start_date, end_date, inclusive="both")]
-    filtered_df["timestamp"] = filtered_df["timestamp"].dt.strftime(config.timestampformat)
 
     not_between_df = _anti_join(df, filtered_df)
     not_between_df["status"] = "Removed by config.start_date and config.end_date"
     removed_df = pd.concat([removed_df, not_between_df])
     removed_df["timestamp"] = removed_df["timestamp"].dt.strftime(config.timestampformat)
+    filtered_df["timestamp"] = filtered_df["timestamp"].dt.strftime(config.timestampformat)
 
     return filtered_df, removed_df
 ###########################################

@@ -84,7 +84,6 @@ class ParallelTestData:
             }
         df = pd.DataFrame(meta)
         df["timestamp"] = pd.to_datetime(df.timestamp)
-        df = df.groupby(["filepath"])
         return df
 
     def metadata_snapshot_coprocess(self):
@@ -110,7 +109,6 @@ class ParallelTestData:
             }
         df = pd.DataFrame(meta)
         df["timestamp"] = pd.to_datetime(df.timestamp)
-        df = df.groupby(["camera", "rotation"])
         return df
 
 
