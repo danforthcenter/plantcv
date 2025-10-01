@@ -88,4 +88,4 @@ def run_parallel(config):
 
     # Cleanup
     if config.cleanup is True:
-        shutil.rmtree(config.tmp_dir)
+        shutil.rmtree("checkpoint")
