@@ -34,7 +34,7 @@ def metadata_parser(config):
 
     if any(existing_json) and config.checkpoint:
         meta = _read_checkpoint_data(config)
-        removed_df = pd.Dataframe()
+        removed_df = pd.DataFrame()
         return meta, removed_df
 
     # Read the input dataset to a dictionary
@@ -51,7 +51,7 @@ def metadata_parser(config):
 
     # Apply user-supplied date range filters
     meta, removed_df = _apply_date_range_filter(df=meta, config=config, removed_df=removed_df)
-
+    
     return meta, removed_df
 ###########################################
 
@@ -71,7 +71,6 @@ def _read_checkpoint_data(config):
     meta: pandas.core.frame.DataFrame
         Dataframe of image metadata.
     """
-
     allfiles = os.listdir(config.tmp_dir)
     meta = []
     # look through checkpoint directory for json without "completed" companion file
@@ -80,7 +79,6 @@ def _read_checkpoint_data(config):
             if file.lower().endswith(".json") and not os.path.exists(
                 os.path.join(root, os.path.splitext(file)[0]+"_complete")
             ):
-                # Keep the files that end with the image extension
                 with open(os.path.join(root, file), "r") as fp:
                     j = json.load(fp)["metadata"]
                     row = {}
@@ -88,7 +86,7 @@ def _read_checkpoint_data(config):
                         row[var] = j[var]["value"]
                     meta.append(pd.DataFrame.from_dict(row))
                 # delete that file so that the next re-run does not double count it
-                os.remove(os.path.join(root, file))
+                # os.remove(os.path.join(root, file))
     # bind to metadata dataframe
     meta = pd.concat(meta)
 
@@ -187,7 +185,7 @@ def _apply_metadata_filters(df, config):
     # Create a metadata filter dataframe as the product of all combinations of values
     metadata_filter = pd.DataFrame(list(itertools.product(*config.metadata_filters.values())),
                                    columns=config.metadata_filters.keys(), dtype="object")
-    # If there are no filters provide the metadata_filter dataframe will be empty and we can return the input datafram
+    # If there are no filters provide the metadata_filter dataframe will be empty and we can return the input dataframe
     removed_df = pd.DataFrame()
     filtered_df = df
     if not metadata_filter.empty:
@@ -233,9 +231,12 @@ def _apply_date_range_filter(df, config, removed_df):
     end_date = pd.to_datetime(config.end_date, format=config.timestampformat, utc=utc)
     # Keep rows with dates between start and end date
     filtered_df = df.loc[df["timestamp"].between(start_date, end_date, inclusive="both")]
+    filtered_df["timestamp"] = filtered_df["timestamp"].dt.strftime(config.timestampformat)
+
     not_between_df = _anti_join(df, filtered_df)
     not_between_df["status"] = "Removed by config.start_date and config.end_date"
     removed_df = pd.concat([removed_df, not_between_df])
+    removed_df["timestamp"] = removed_df["timestamp"].dt.strftime(config.timestampformat)
 
     return filtered_df, removed_df
 ###########################################

@@ -71,7 +71,7 @@ def run_parallel(config):
     # Process results start time
     process_results_start_time = time.time()
     print("Processing results... ", file=sys.stderr)
-    process_results(job_dir=config.tmp_dir, json_file=config.json)
+    process_results(job_dir="checkpoint", json_file=config.json)
     process_results_clock_time = time.time() - process_results_start_time
     print(f"Processing results took {process_results_clock_time} seconds.", file=sys.stderr)
     ###########################################
@@ -81,7 +81,7 @@ def run_parallel(config):
     # Convert results start time
     convert_results_start_time = time.time()
     print("Converting json to csv... ", file=sys.stderr)
-    plantcv.utils.json2csv(config.json, config.json)
+    plantcv.utils.json2csv(config.json, os.path.splitext(config.json)[0])
     convert_results_clock_time = time.time() - convert_results_start_time
     print(f"Processing results took {convert_results_clock_time} seconds.", file=sys.stderr)
     ###########################################

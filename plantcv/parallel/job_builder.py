@@ -37,14 +37,11 @@ def job_builder(meta, config):
         img_meta = {"metadata": deepcopy(config.metadata_terms), "observations": {}}
 
         # Store metadata in JSON
-        img_meta["metadata"]["image"] = {
+        img_meta["metadata"]["filepath"] = {
                 "label": "image files",
                 "datatype": "<class 'str'>",
                 "value": grp_df["filepath"].values.tolist()
             }
-
-        # Convert datetime to string before serialization
-        grp_df["timestamp"] = grp_df["timestamp"].dt.strftime(config.timestampformat)
 
         # Valid metadata
         for m in list(config.metadata_terms.keys()):
