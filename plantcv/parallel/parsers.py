@@ -18,10 +18,12 @@ def metadata_parser(config):
 
     Returns
     -------
-    pandas.core.groupby.generic.DataFrameGroupBy
-        Grouped dataframe of image metadata.
+    meta: pandas.core.frame.DataFrame
+        Dataframe of image metadata.
+    removed_df: pandas.core.frame.DataFrame
+        Dataframe of image metadata for images excluded from the workflow.
     """
-    # Read the input dataset
+    # Read the input dataset to a dictionary
     dataset = _read_dataset(config=config)
 
     # Convert the dataset metadata to a dataframe
@@ -31,15 +33,72 @@ def metadata_parser(config):
     meta = _parse_filepath(df=meta, config=config)
 
     # Apply user-supplied metadata filters
-    meta = _apply_metadata_filters(df=meta, config=config)
+    meta, removed_df = _apply_metadata_filters(df=meta, config=config)
 
     # Apply user-supplied date range filters
-    meta = _apply_date_range_filter(df=meta, config=config)
+    meta, removed_df = _apply_date_range_filter(df=meta, config=config, removed_df=removed_df)
 
-    # Apply metadata grouping
-    meta = _group_metadata(df=meta, config=config)
+    # if resuming a checkpointed process read in that metadata
+    meta, removed_df = _read_checkpoint_data(df=meta, config=config, removed_df=removed_df)
 
-    return meta
+    return meta, removed_df
+###########################################
+
+
+# Read metadata from a checkpoint
+###########################################
+def _read_checkpoint_data(df, config, removed_df):
+    """Reads checkpointing data to make a metadata dataframe what was already run
+
+    Parameters
+    ----------
+    df = pandas.core.frame.DataFrame, metadata dataframe
+    config = plantcv.parallel.WorkflowConfig object
+    removed_df = pandas.core.frame.DataFrame, dataframe of images removed up to this point
+
+    Returns
+    -------
+    df = pandas.core.frame.DataFrame, filtered metadata dataframe
+    removed_df = pandas.core.frame.DataFrame, dataframe of removed metadata
+    """
+    # look for any json files in a checkpoint directory (made by run_parallel)
+    existing_json = []
+    for _, _, files in os.walk("_PCV_PARALLEL_CHECKPOINT_"):
+        for file in files:
+            if file.lower().endswith(".json"):
+                existing_json.append(file)
+    # if there are json files in checkpoint then this is a re-run
+    if any(existing_json) and config.checkpoint:
+        ran_list = [pd.DataFrame()]
+        # look through checkpoint directory for json without "completed" companion file
+        for root, _, files in os.walk("_PCV_PARALLEL_CHECKPOINT_"):
+            for file in files:
+                if file.lower().endswith(".json") and os.path.exists(
+                        os.path.join(root, os.path.splitext(file)[0]+"_complete")
+                ):
+                    with open(os.path.join(root, file), "r") as fp:
+                        j = json.load(fp)["metadata"]
+                        row = {}
+                        for var in j:
+                            row[var] = j[var]["value"]
+                            ran_list.append(pd.DataFrame.from_dict(row))
+        # bind to metadata dataframe
+        already_run = pd.concat(ran_list)
+        already_run = already_run[already_run["filepath"].notna()]
+        # message for clarity
+        print(f"Found {already_run.shape[0]} existing results in checkpoint directory, excluding those jobs.")
+        # remove already_run rows from metadata dataframe
+        keep_columns = df.columns
+        df = _anti_join(df, already_run, on="filepath", suffixes=(None, "_removeY"))
+        df = df[keep_columns]
+        # add stuff that already exists to the removed metadata
+        already_run["status"] = "Removed by checkpointing, results already exist"
+        keep_rm_cols = [col for col in already_run.columns if col in ["filepath", "status",
+                                                                      *config.metadata_terms.keys()]]
+        already_run = already_run.loc[:, keep_rm_cols].drop_duplicates()
+        removed_df = pd.concat([removed_df, already_run])
+
+    return df, removed_df
 ###########################################
 
 
@@ -67,7 +126,6 @@ def _read_dataset(config):
     # If the directory contains a SnapshotInfo.csv file it is a legacy "phenofront" dataset
     elif os.path.exists(os.path.join(config.input_dir, "SnapshotInfo.csv")):
         dataset = _read_phenofront(config=config, metadata_file=os.path.join(config.input_dir, "SnapshotInfo.csv"))
-    # Otherwise we will extract metadata from filenames
     else:
         dataset = _read_filenames(config=config)
     return dataset
@@ -92,7 +150,8 @@ def _dataset2dataframe(dataset, config):
     """
     # Build a metadata dictionary of lists of metadata values
     metadata = {
-        "filepath": []
+        "filepath": [],
+        "n_metadata_terms": []
     }
     # Populate metadata terms from the standard metadata vocabulary
     for term in config.metadata_terms:
@@ -100,6 +159,7 @@ def _dataset2dataframe(dataset, config):
     # Iterate over all image metadata and append metadata values to the dictionary
     for image in dataset["images"]:
         metadata["filepath"].append(os.path.join(config.input_dir, image))
+        metadata["n_metadata_terms"].append(dataset["images"][image].get("n_metadata_terms"))
         for term in config.metadata_terms:
             metadata[term].append(dataset["images"][image].get(term))
     df = pd.DataFrame(data=metadata)
@@ -113,17 +173,15 @@ def _dataset2dataframe(dataset, config):
 ###########################################
 def _apply_metadata_filters(df, config):
     """Apply filters to metadata.
-
-    Keyword arguments:
-    df = metadata dataframe
+    Parameters
+    ----------
+    df = pandas.core.frame.Dataframe, metadata dataframe
     config = plantcv.parallel.WorkflowConfig object
 
-    Outputs:
-    filtered_df = filtered metadata dataframe
-
-    :param df: pandas.core.frame.DataFrame
-    :param config: plantcv.parallel.WorkflowConfig
-    :return filtered_df: pandas.core.frame.DataFrame
+    Returns:
+    --------
+    filtered_df = pandas.core.frame.Dataframe, filtered metadata dataframe
+    removed_df  = pandas.core.frame.Dataframe, metadata dataframe of what was removed
     """
     # Convert all metadata filter values to a list type
     for term in config.metadata_filters:
@@ -136,35 +194,44 @@ def _apply_metadata_filters(df, config):
     metadata_filter = pd.DataFrame(list(itertools.product(*config.metadata_filters.values())),
                                    columns=config.metadata_filters.keys(), dtype="object")
     # If there are no filters provide the metadata_filter dataframe will be empty and we can return the input dataframe
+    removed_df = pd.DataFrame()
+    filtered_df = df
     if not metadata_filter.empty:
-        df = df.merge(metadata_filter, how="inner")
-    # if there are regex filters then find the True indicies for each and only return those from the merged dataframe
+        filtered_df = df.merge(metadata_filter, how="inner")
+        removed_df = _anti_join(df, filtered_df)
+        removed_df["status"] = "Removed by config.metadata_filters"
+        # if a row has None for all metadata then it was not able to be parsed due to variable length
+        removed_df.loc[removed_df[list(config.metadata_filters.keys())].isnull().apply(all, axis=1),
+                       'status'] = "Incorrect metadata length"
     if bool(config.metadata_regex):
+        prev_df = filtered_df
         for key, value in config.metadata_regex.items():
-            df = df[df[key].astype(str).str.contains(value, regex=True, na=False)]
-    return df
+            filtered_df = filtered_df[filtered_df[key].astype(str).str.contains(value, regex=True, na=False)]
+        removed_df_2 = _anti_join(prev_df, filtered_df)
+        removed_df_2["status"] = "Removed by config.metadata_regex"
+        removed_df = pd.concat([removed_df, removed_df_2])
+    return filtered_df, removed_df
 ###########################################
 
 
 # Filter a metadata dataframe within a date range
 ###########################################
-def _apply_date_range_filter(df, config):
+def _apply_date_range_filter(df, config, removed_df):
     """Filter metadata based on a date range.
-
-    Keyword arguments:
-    df = metadata dataframe
+    Parameters
+    ----------
+    df = pandas.core.frame.DataFrame, metadata dataframe
     config = plantcv.parallel.WorkflowConfig object
+    removed_df = pandas.core.frame.DataFrame, dataframe of images removed up to this point
 
-    Outputs:
-    filtered_df = filtered metadata dataframe
-
-    :param df: pandas.core.frame.DataFrame
-    :param config: plantcv.parallel.WorkflowConfig
-    :return filtered_df: pandas.core.frame.DataFrame
+    Returns
+    -------
+    filtered_df = pandas.core.frame.DataFrame, filtered metadata dataframe
+    removed_df = pandas.core.frame.DataFrame, dataframe of removed metadata
     """
     # If either the start or end date is None then do not filter
     if None in [config.start_date, config.end_date]:
-        return df
+        return df, removed_df
     # Set whether the datetime code is in UTC or not
     utc = bool("Z" in config.timestampformat)
     # Convert start and end dates to datetimes
@@ -172,28 +239,14 @@ def _apply_date_range_filter(df, config):
     end_date = pd.to_datetime(config.end_date, format=config.timestampformat, utc=utc)
     # Keep rows with dates between start and end date
     filtered_df = df.loc[df["timestamp"].between(start_date, end_date, inclusive="both")]
-    return filtered_df
-###########################################
 
+    not_between_df = _anti_join(df, filtered_df)
+    not_between_df["status"] = "Removed by config.start_date and config.end_date"
+    removed_df = pd.concat([removed_df, not_between_df])
+    removed_df["timestamp"] = removed_df["timestamp"].dt.strftime(config.timestampformat)
+    filtered_df.loc[:, "timestamp"] = filtered_df["timestamp"].dt.strftime(config.timestampformat)
 
-# Group metadata dataframe into sets
-###########################################
-def _group_metadata(df, config):
-    """Group metadata.
-
-    Keyword arguments:
-    df = metadata dataframe
-    config = plantcv.parallel.WorkflowConfig object
-
-    Outputs:
-    groups = grouped metadata
-
-    :param df: pandas.core.frame.DataFrame
-    :param config: plantcv.parallel.WorkflowConfig
-    :return groups: pandas.core.groupby.generic.DataFrameGroupBy
-    """
-    groups = df.groupby(by=config.groupby)
-    return groups
+    return filtered_df, removed_df
 ###########################################
 
 
@@ -217,22 +270,28 @@ def _init_dataset():
 def _filename_metadata_index(config):
     """Index positional filename metadata.
 
-    Keyword arguments:
+    Parameters
+    ----------
     config = plantcv.parallel.WorkflowConfig object
 
-    Outputs:
-    metadata_index = dictionary of metadata terms and positions
-
-    :param config: plantcv.parallel.WorkflowConfig
-    :return metadata_index: dict
+    Return
+    ------
+    metadata_index = dict, metadata terms and positions
+    config = plantcv.parallel.WorkflowConfig object
     """
+    # if filename_metadata is not specified then estimate it
+    if not bool(config.filename_metadata):
+        print("Warning: Estimating config.filename_metadata based on file names.")
+        config = _estimate_filename_metadata(config)
+
     # A dictionary of metadata terms and their index position in the filename metadata term list
     metadata_index = {}
     # Enumerate the terms listed in the user configuration
     for i, term in enumerate(config.filename_metadata):
         # Store the term and the listed order
         metadata_index[term] = i
-    return metadata_index
+
+    return metadata_index, config
 ###########################################
 
 
@@ -278,6 +337,7 @@ def _parse_filename(filename, config, metadata_index):
             # If the same metadata is found in the image filename, store the value
             if term in metadata_index:
                 img_meta[term] = meta_list[metadata_index[term]]
+    img_meta["n_metadata_terms"] = len(meta_list)
     return img_meta
 ###########################################
 
@@ -359,7 +419,11 @@ def _read_phenofront(config, metadata_file):
     # Create a dataset
     dataset = _init_dataset()
     # Index filename metadata based on user-supplied parsing parameters
-    metadata_index = _filename_metadata_index(config=config)
+    metadata_index, config = _filename_metadata_index(config=config)
+    # if imgformat is all then set to png for legacy
+    extension = config.imgformat
+    if config.imgformat == "all":
+        extension = "png"
     # Open the SnapshotInfo.csv file
     with open(metadata_file, 'r') as fp:
         # Read the first header line
@@ -406,7 +470,7 @@ def _read_phenofront(config, metadata_file):
                 # Parse camera label metaata
                 img_meta = _parse_filename(filename=img, config=config, metadata_index=metadata_index)
                 # Construct the filename
-                filename = f"{img}.{config.imgformat}"
+                filename = f"{img}.{extension}"
                 # The dataset key is the dataset relative path to the image
                 rel_path = os.path.join(snapshot_id, filename)
                 # Store the parsed image metadata
@@ -437,16 +501,20 @@ def _read_filenames(config):
     :param config: plantcv.parallel.WorkflowConfig
     :return dataset: dict
     """
+    # make imgformat a list if multiple
+    extensions = config.imgformat
+    if isinstance(config.imgformat, str):
+        extensions = _replace_string_extension(config.imgformat)
     # Get a list of all files
     if config.include_all_subdirs is False:
         # If subdirectories are excluded, use glob to get a list of all image files
-        fns = list(glob.glob(pathname=os.path.join(config.input_dir, f'*{config.imgformat}')))
+        fns = [f for ext in extensions for f in glob.glob(os.path.join(config.input_dir, "*[.]" + ext))]
     else:
         # If subdirectories are included, recursively walk through the path
         fns = []
         for root, _, files in os.walk(config.input_dir):
             for file in files:
-                if file.endswith(config.imgformat):
+                if file.lower().endswith(tuple(extensions)):
                     # Keep the files that end with the image extension
                     fns.append(os.path.join(root, file))
     # Create a dataset
@@ -454,7 +522,7 @@ def _read_filenames(config):
     # Name the experiment with the input directory
     dataset["dataset"]["experiment"] = config.input_dir
     # Index filename metadata based on user-supplied parsing parameters
-    metadata_index = _filename_metadata_index(config=config)
+    metadata_index, config = _filename_metadata_index(config=config)
     for filepath in fns:
         # Get the image dataset-relative path to use as the dataset key
         rel_path = os.path.relpath(filepath, start=config.input_dir)
@@ -465,4 +533,76 @@ def _read_filenames(config):
         # Store the image filename metadata
         dataset["images"][rel_path] = _parse_filename(filename=metadata, config=config, metadata_index=metadata_index)
     return dataset
+###########################################
+
+
+def _anti_join(df1, df2=None, **kwargs):
+    """Anti join function for pandas dataframes
+    Parameters
+    ----------
+    df1      = pandas.core.frame.Dataframe, dataframe of metadata
+    df2      = pandas.core.frame.Dataframe, dataframe of filtered metadata (rows to remove)
+    **kwargs = additional arguments passed to pandas.merge
+
+    Returns
+    -------
+    anti_joined = pandas.core.frame.Dataframe, metadata dataframe of what was removed
+    """
+    outer = df1.merge(df2, how='outer', indicator=True, **kwargs)
+    anti_joined = outer[(outer['_merge'] == 'left_only')].drop('_merge', axis=1)
+    return anti_joined
+###########################################
+
+
+# Reads filename-based datasets
+###########################################
+
+def _estimate_filename_metadata(config):
+    """Estimate filename_metadata if it is missing
+    Parameters
+    ----------
+    config = plantcv.parallel.WorkflowConfig object
+
+    Returns
+    -------
+    config = plantcv.parallel.WorkflowConfig object with filename_metadata added
+    """
+    metadata_lengths = [1]
+    if config.include_all_subdirs is False:
+        # If subdirectories are excluded, use glob to get a list of all image files
+        fns = list(glob.glob(pathname=os.path.join(config.input_dir, f'*{config.imgformat}')))
+        fns = [os.path.basename(f) for f in fns]
+    else:
+        fns = []
+        for _, _, files in os.walk(config.input_dir):
+            for file in files:
+                if file.endswith(config.imgformat):
+                    fns.append(file)
+    # check length of metadata from first 10 files, take the max, use those default terms.
+    for file in fns[0:9]:
+        # get length of split filename
+        metadata_lengths.append(len(file.split(config.delimiter)))
+    config.filename_metadata = list(config.metadata_terms)[0:int(max(metadata_lengths))]
+    return config
+###########################################
+
+
+def _replace_string_extension(imgformat):
+    """Replace "all" with a list of file extensions.
+
+    Parameters
+    ----------
+    imgformat : str
+        The image format string, typically from a plantcv.parallel.WorkflowConfig object.
+
+    Returns
+    -------
+    extensions : list of str
+        A list of file extensions. If `imgformat` is "all", returns a list of common image file extensions;
+        otherwise, returns a list containing only `imgformat`.
+    """
+    extensions = [imgformat]
+    if imgformat == "all":
+        extensions = ['bmp', 'dib', 'jpeg', 'jpg', 'jpe', 'jp2', 'png', 'ppm', 'pgm', 'ppm', 'sr', 'ras', 'tiff', 'tif']
+    return extensions
 ###########################################

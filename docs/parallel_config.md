@@ -51,7 +51,7 @@ Validate parameters/structure of configuration data.
 
 
 * **filename_metadata**: (list, required): list of metadata terms used to construct filenames. for example: 
-`["plantbarcode","timestamp"]`. Supported metadata terms are listed [here](pipeline_parallel.md).
+`["plantbarcode","timestamp"]`. Default metadata terms are listed [here](pipeline_parallel.md) but other terms can be specified here.
 
 
 * **workflow**: (str, required): path/name of user-defined PlantCV workflow Python script (validates that it exists).
@@ -78,7 +78,9 @@ current working directory.
   `timestampformat`.
 
 
-* **imgformat**: (str, default = "png"): image file format/extension.
+* **imgformat**: (str, default = "all"): image file format/extension in lowercase. The string "all" can be used
+as shorthand to match all file extensions readable by `cv2.imread`. This can accept a list if multiple
+extensions should be combined (if using phenofront data this must be length 1 and "png" is the default).
 
 
 * **delimiter**: (str, default = "_"): image filename metadata term delimiter character. Alternatively, a regular 
@@ -86,7 +88,7 @@ current working directory.
 
 
 * **metadata_filters**: (dict, default = `None`): a dictionary of metadata terms (keys) and values, images will be 
-  analyzed that have the associated term and value. A list of accepted values can be included. (e.g. 
+  analyzed that have the associated term and value. These filters can use any keys from `filename_metadata` or the default list of metadata terms. A list of accepted values can be included. (e.g. 
   `{"imgtype": "VIS", "frame": ["0", "90"]"}`).
 
 
@@ -116,7 +118,10 @@ metadata terms are listed [here](pipeline_parallel.md).
 image group (created by `groupby`), or `"auto"` to generate a numbered image sequence `image1, image2, ...`. The resulting
 names are used to access individual image filepaths in a workflow.
 
-* **cleanup**: (bool, default =`True`): remove temporary job directory if `True`.
+* **checkpoint**: (bool, default = `True`): restart from where a previous run left off and/or keep checkpointing files in
+case jobs fail for any reason. For details see the checkpointing section of ['workflow_inputs'](parallel_workflow_inputs.md).
+
+* **cleanup**: (bool, default =`True`): remove `_PCV_PARALLEL_CHECKPOINT_` directory (including all temporary job directories) after a complete run if `True`.
 
 
 * **append**: (bool, default = `False`): if `False`, will delete previous results stored in the specified JSON file.
@@ -133,7 +138,8 @@ names are used to access individual image filepaths in a workflow.
 
 
 * **metadata_terms**: (dict, default: as-is): a dictionary of metadata terms used to assign values in image filenames
-  (or metadata files) to metadata terms (should not be modified).
+  (or metadata files) to metadata terms (should not be modified here). Terms from `filename_metadata`
+  that are not present in the default dictionary of terms are added automatically.
 
 
 ### Cluster configuration

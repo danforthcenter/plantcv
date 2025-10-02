@@ -10,19 +10,21 @@ import uuid
 def job_builder(meta, config):
     """Build a list of image processing jobs.
 
-    Inputs:
-    meta:         Dictionary of processed image metadata.
+    Parameters
+    ----------
+    meta:         pandas.core.frame.Dataframe
+                     Dataframe of image metadata
     config:       plantcv.parallel.WorkflowConfig object.
+                     Workflow configuration
 
-    Returns:
-    jobs:         List of image processing commands.
-
-    :param meta: dict
-    :param config: plantcv.parallel.WorkflowConfig
-    :return job_stack: list
+    Returns
+    -------
+    jobs:         list, iimage processing commands.
     """
     # Overall job stack. List of list of jobs
     jobs = []
+    # make pandas groupby object
+    meta = meta.groupby(by=config.groupby)
 
     # Log the number of jobs to be run
     n_jobs = len(meta)
@@ -34,14 +36,11 @@ def job_builder(meta, config):
         img_meta = {"metadata": deepcopy(config.metadata_terms), "observations": {}}
 
         # Store metadata in JSON
-        img_meta["metadata"]["image"] = {
+        img_meta["metadata"]["filepath"] = {
                 "label": "image files",
                 "datatype": "<class 'str'>",
                 "value": grp_df["filepath"].values.tolist()
             }
-
-        # Convert datetime to string before serialization
-        grp_df["timestamp"] = grp_df["timestamp"].dt.strftime(config.timestampformat)
 
         # Valid metadata
         for m in list(config.metadata_terms.keys()):
@@ -62,6 +61,7 @@ def job_builder(meta, config):
 
         # Build job
         job_parts = ["python", config.workflow, "--outdir", config.img_outdir, "--result", outfile,
+                     "--checkpoint", str(config.checkpoint), "--tmpfile", outfile,
                      "--names", ",".join(map(str, names))]
         # Add other arguments
         for key, value in config.other_args.items():
