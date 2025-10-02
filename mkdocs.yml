@@ -21,7 +21,6 @@ nav:
     - 'Adding/Editing Documentation': documentation.md
     - 'Pull Request Review Process' : pr_review_process.md
   - "Tutorials": tutorials.md
-  - 'Workflow Parallelization': pipeline_parallel.md
   - 'Exporting Data': db-exporter.md
   - 'PlantCV Namespace':
     - 'PlantCV':
