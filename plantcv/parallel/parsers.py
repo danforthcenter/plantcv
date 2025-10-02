@@ -38,20 +38,8 @@ def metadata_parser(config):
     # Apply user-supplied date range filters
     meta, removed_df = _apply_date_range_filter(df=meta, config=config, removed_df=removed_df)
 
-    # if resuming a checkpointed process read in that metadata (or metadata that has already been processed?
-    # if reading in data that is already processed then anti join that to the full metadata from above methods
-    existing_json = []
-    for _, _, files in os.walk("checkpoint"):
-        for file in files:
-            if file.lower().endswith(".json"):
-                existing_json.append(file)
-    # if there are json files in checkpoint then this is a re-run
-    if any(existing_json) and config.checkpoint:
-        already_run = _read_checkpoint_data()
-        print(f"Found {already_run.shape[0]} existing results in checkpoint directory, excluding those jobs.")
-        keep_columns = meta.columns
-        meta = _anti_join(meta, already_run, on="filepath", suffixes=(None, "_removeY"))
-        meta = meta[keep_columns]
+    # if resuming a checkpointed process read in that metadata
+    meta, removed_df = _read_checkpoint_data(df=meta, config=config, removed_df=removed_df)
 
     return meta, removed_df
 ###########################################
@@ -59,34 +47,58 @@ def metadata_parser(config):
 
 # Read metadata from a checkpoint
 ###########################################
-def _read_checkpoint_data():
+def _read_checkpoint_data(df, config, removed_df):
     """Reads checkpointing data to make a metadata dataframe what was already run
 
     Parameters
     ----------
+    df = pandas.core.frame.DataFrame, metadata dataframe
+    config = plantcv.parallel.WorkflowConfig object
+    removed_df = pandas.core.frame.DataFrame, dataframe of images removed up to this point
 
     Returns
     -------
-    meta: pandas.core.frame.DataFrame
-        Dataframe of image metadata.
+    df = pandas.core.frame.DataFrame, filtered metadata dataframe
+    removed_df = pandas.core.frame.DataFrame, dataframe of removed metadata
     """
-    meta = [pd.DataFrame()]
-    # look through checkpoint directory for json without "completed" companion file
-    for root, _, files in os.walk("checkpoint"):
+    # look for any json files in a checkpoint directory (made by run_parallel)
+    existing_json = []
+    for _, _, files in os.walk("checkpoint"):
         for file in files:
-            if file.lower().endswith(".json") and os.path.exists(
-                os.path.join(root, os.path.splitext(file)[0]+"_complete")
-            ):
-                with open(os.path.join(root, file), "r") as fp:
-                    j = json.load(fp)["metadata"]
-                    row = {}
-                    for var in j:
-                        row[var] = j[var]["value"]
-                    meta.append(pd.DataFrame.from_dict(row))
-    # bind to metadata dataframe
-    meta = pd.concat(meta)
+            if file.lower().endswith(".json"):
+                existing_json.append(file)
+    # if there are json files in checkpoint then this is a re-run
+    if any(existing_json) and config.checkpoint:
+        ran_list = [pd.DataFrame()]
+        # look through checkpoint directory for json without "completed" companion file
+        for root, _, files in os.walk("checkpoint"):
+            for file in files:
+                if file.lower().endswith(".json") and os.path.exists(
+                        os.path.join(root, os.path.splitext(file)[0]+"_complete")
+                ):
+                    with open(os.path.join(root, file), "r") as fp:
+                        j = json.load(fp)["metadata"]
+                        row = {}
+                        for var in j:
+                            row[var] = j[var]["value"]
+                            ran_list.append(pd.DataFrame.from_dict(row))
+        # bind to metadata dataframe
+        already_run = pd.concat(ran_list)
+        already_run = already_run[already_run["filepath"].notna()]
+        # message for clarity
+        print(f"Found {already_run.shape[0]} existing results in checkpoint directory, excluding those jobs.")
+        # remove already_run rows from metadata dataframe
+        keep_columns = df.columns
+        df = _anti_join(df, already_run, on="filepath", suffixes=(None, "_removeY"))
+        df = df[keep_columns]
+        # add stuff that already exists to the removed metadata
+        already_run["status"] = "Removed by checkpointing, results already exist"
+        keep_rm_cols = [col for col in already_run.columns if col in ["filepath", "status",
+                                                                      *config.metadata_terms.keys()]]
+        already_run = already_run.loc[:, keep_rm_cols].drop_duplicates()
+        removed_df = pd.concat([removed_df, already_run])
 
-    return meta
+    return df, removed_df
 ###########################################
 
 
