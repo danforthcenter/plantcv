@@ -1,4 +1,5 @@
 import pytest
+import os
 from plantcv.parallel import metadata_parser, WorkflowConfig
 
 
@@ -77,3 +78,17 @@ def test_estimate_filename_metadata(parallel_test_data, subdirs):
     config.include_all_subdirs = subdirs
     meta, _ = metadata_parser(config=config)
     assert len(meta) == 2
+
+
+def test_read_checkpoint_data(parallel_test_data):
+    """Test for PlantCV"""
+    os.chdir(parallel_test_data.datadir)
+    config = WorkflowConfig()
+    config.input_dir = parallel_test_data.phenodata_dir
+    config.json = "output.json"
+    config.workflow = parallel_test_data.workflow_script
+    config.imgformat = "jpg"
+    config.checkpoint = True
+
+    meta, _ = metadata_parser(config=config)
+    assert len(meta) == 12

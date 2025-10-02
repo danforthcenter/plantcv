@@ -48,8 +48,9 @@ def metadata_parser(config):
     # if there are json files in checkpoint then this is a re-run
     if any(existing_json) and config.checkpoint:
         already_run = _read_checkpoint_data()
-        meta2 = _anti_join(meta, already_run, on="filepath", suffixes=(None, "_removeY"))
-        meta = meta2[meta.columns]
+        keep_columns = meta.columns
+        meta = _anti_join(meta, already_run, on="filepath", suffixes=(None, "_removeY"))
+        meta = meta[keep_columns]
 
     return meta, removed_df
 ###########################################
@@ -230,7 +231,7 @@ def _apply_date_range_filter(df, config, removed_df):
     not_between_df["status"] = "Removed by config.start_date and config.end_date"
     removed_df = pd.concat([removed_df, not_between_df])
     removed_df["timestamp"] = removed_df["timestamp"].dt.strftime(config.timestampformat)
-    filtered_df["timestamp"] = filtered_df["timestamp"].dt.strftime(config.timestampformat)
+    filtered_df.loc[:, "timestamp"] = filtered_df["timestamp"].dt.strftime(config.timestampformat)
 
     return filtered_df, removed_df
 ###########################################
