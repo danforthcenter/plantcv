@@ -55,6 +55,6 @@ def test_bad_property(filters_test_data):
 
 def test_empty_mask():
     """PlantCV Test"""
-    mask = np.zeros(100, 100)
+    mask = np.zeros((100, 100))
     fmask = obj_props(bin_img=mask, regprop="solidity")
     assert np.sum(fmask) == 0
