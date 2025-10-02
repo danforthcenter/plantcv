@@ -48,6 +48,7 @@ def metadata_parser(config):
     # if there are json files in checkpoint then this is a re-run
     if any(existing_json) and config.checkpoint:
         already_run = _read_checkpoint_data()
+        print(f"Found {already_run.shape[0]} existing results in checkpoint directory, excluding those jobs.")
         keep_columns = meta.columns
         meta = _anti_join(meta, already_run, on="filepath", suffixes=(None, "_removeY"))
         meta = meta[keep_columns]
