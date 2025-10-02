@@ -74,8 +74,8 @@ def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area", roi=None):
             print(f"Max value = {max(valueslist)}")
             print(f"Mean value = {sum(valueslist)/len(valueslist)}")
 
-        _debug(visual=filtered_mask, filename=os.path.join(params.debug_outdir,
-                                                        f"{params.device}_discs_mask_{regprop}_{thresh}.png"))
-    else: 
+    else:
         filtered_mask = np.copy(bin_img)
+    _debug(visual=filtered_mask, filename=os.path.join(params.debug_outdir,
+                                                       f"{params.device}_filter_mask_{regprop}_{thresh}.png"))
     return filtered_mask
