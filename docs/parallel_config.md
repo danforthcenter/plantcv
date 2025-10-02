@@ -119,9 +119,9 @@ image group (created by `groupby`), or `"auto"` to generate a numbered image seq
 names are used to access individual image filepaths in a workflow.
 
 * **checkpoint**: (bool, default = `True`): restart from where a previous run left off and/or keep checkpointing files in
-case jobs fail for any reason. For details see the checkpointing section of ['workflow_inputs'](parallel_workflow_inputs.md)
+case jobs fail for any reason. For details see the checkpointing section of ['workflow_inputs'](parallel_workflow_inputs.md).
 
-* **cleanup**: (bool, default =`True`): remove temporary job directory if `True`.
+* **cleanup**: (bool, default =`True`): remove `checkpoint` directory (including all temporary job directories) if `True`. If you have a folder named `checkpoint` that is not temporary plantcv files either turn this to `False`, run PlantCV parallel from a different directory, or rename that folder.
 
 
 * **append**: (bool, default = `False`): if `False`, will delete previous results stored in the specified JSON file.
