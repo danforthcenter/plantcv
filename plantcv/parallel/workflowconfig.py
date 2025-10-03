@@ -8,29 +8,30 @@ class WorkflowConfig:
     """PlantCV Parallel Configuration class"""
 
     def __init__(self):
-        self.input_dir = ""
-        self.json = ""
-        self.filename_metadata = []
-        self.workflow = ""
-        self.img_outdir = "./output_images"
-        self.include_all_subdirs = True
-        self.tmp_dir = "."
-        self.start_date = None
-        self.end_date = None
-        self.imgformat = "all"
-        self.delimiter = "_"
-        self.metadata_filters = {}
-        self.metadata_regex = {}
-        self.timestampformat = "%Y-%m-%dT%H:%M:%S.%fZ"
-        self.writeimg = False
-        self.other_args = {}
-        self.groupby = ["filepath"]
-        self.group_name = "auto"
-        self.checkpoint = True
-        self.cleanup = True
-        self.append = False
-        self.cluster = "LocalCluster"
-        self.cluster_config = {
+        object.__setattr__(self, "input_dir", "")
+        object.__setattr__(self, "json", "")
+        object.__setattr__(self, "filename_metadata", [])
+        object.__setattr__(self, "workflow", "")
+        object.__setattr__(self, "img_outdir", "./output_images")
+        object.__setattr__(self, "include_all_subdirs", True)
+        object.__setattr__(self, "tmp_dir", ".")
+        object.__setattr__(self, "start_date", None)
+        object.__setattr__(self, "end_date", None)
+        object.__setattr__(self, "imgformat", "all")
+        object.__setattr__(self, "delimiter", "_")
+        object.__setattr__(self, "metadata_filters", {})
+        object.__setattr__(self, "metadata_regex", {})
+        object.__setattr__(self, "timestampformat", "%Y-%m-%dT%H:%M:%S.%fZ")
+        object.__setattr__(self, "writeimg", False)
+        object.__setattr__(self, "other_args", {})
+        object.__setattr__(self, "groupby", ["filepath"])
+        object.__setattr__(self, "group_name", "auto")
+        object.__setattr__(self, "checkpoint", True)
+        object.__setattr__(self, "cleanup", True)
+        object.__setattr__(self, "append", False)
+        object.__setattr__(self, "verbose", True)
+        object.__setattr__(self, "cluster", "LocalCluster")
+        object.__setattr__(self, "cluster_config", {
             "n_workers": 1,
             "cores": 1,
             "memory": "1GB",
@@ -38,9 +39,12 @@ class WorkflowConfig:
             "log_directory": None,
             "local_directory": None,
             "job_extra_directives": None
-        }
-        self.metadata_terms = self.metadata_term_definition()
+        })
+        object.__setattr__(self, "metadata_terms", self.metadata_term_definition())
     # set metadata_terms reactively based on filename_metadata
+    def __setattr__(self, name, value):
+        print(f"setting {name} to {value}")
+        object.__setattr__(self, name, value)
 
     @property
     def metadata_terms(self):
@@ -49,7 +53,7 @@ class WorkflowConfig:
 
     @metadata_terms.setter
     def metadata_terms(self, new):
-        self._metadata_terms = new
+        object.__setattr__(self, "_metadata_terms", new)
 
     # Save configuration to a file
     def save_config(self, config_file):
@@ -83,7 +87,7 @@ class WorkflowConfig:
             config = json.load(fp)
             for key, value in config.items():
                 if key != "_metadata_terms":
-                    setattr(self, key, value)
+                    object.__setattr__(self, key, value)
 
     # Validation checks on current config
     def validate_config(self):
@@ -224,3 +228,45 @@ class WorkflowConfig:
             }
 
         return metadata_terms
+
+
+def _config_attr_lookup(attr, val):
+    """Lookup attributes for a WorkflowConfig or jupyterconfig object
+
+    Parameters
+    ----------
+    attr     = str, name of an attribute to set.
+    
+    Returns
+    -------
+    control  = dict, dictionary of print message and expected dtype.
+
+    """
+    config_control = {
+        "input_dir": [f"Images will be read from {val}", str],
+        "json": [f"output will be written to {val}", str],
+        "filename_metadata": [f"Filenames will be parsed into {', '.join(val)}", str],
+        "workflow": [f"Will run {val} python script in each job", str],
+        "img_outdir": [f"Output images will be written to {val}", str],
+        "include_all_subdirs": [f"Will {['Not', ''][int(val)]} include images from subdirectories", bool],
+        "tmp_dir": [f"_PCV_PARALLEL_CHECKPOINT_/{val}", str],
+        "start_date": [f"Will only include images from after {val}", str],
+        "end_date": [f"Will only include images from after {val}", str],
+        "imgformat": [f"Will include {val} images", str],
+        "delimiter": [f"Splitting file basenames by {val}", str],
+        "metadata_filters": [f"Metadata will only be kept that matches {', '.join(val.keys())}", dict],
+        "metadata_regex": [f"message for input_dir", str],
+        "timestampformat": [f"message for input_dir", str],
+        "writeimg": [f"message for input_dir", str],
+        "other_args": [f"message for input_dir", str],
+        "groupby": [f"message for input_dir", str],
+        "group_name": [f"message for input_dir", str],
+        "checkpoint": [f"message for input_dir", str],
+        "cleanup": [f"message for input_dir", str],
+        "append": [f"message for input_dir", str],
+        "verbose": [f"message for input_dir", str],
+        "cluster": [f"message for input_dir", str],
+        "cluster_config": [f"message for input_dir", str],
+        "metadata_terms": [f"message for input_dir", str]
+    }
+    return config_control[attr]
