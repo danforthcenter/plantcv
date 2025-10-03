@@ -36,6 +36,8 @@ def readimage(filename, mode="native"):
         img = cv2.imread(filename)
     elif mode.upper() == "RGBA":
         img = cv2.imread(filename, -1)
+    elif mode.upper() == "NORMALIZE":
+        img = cv2.normalize(cv2.imread(filename, cv2.IMREAD_UNCHANGED), None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
     elif mode.upper() == "CSV":
         inputarray = pd.read_csv(filename, sep=',', header=None)
         img = inputarray.values
