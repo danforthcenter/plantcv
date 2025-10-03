@@ -26,7 +26,7 @@ def test_readimage_rgb(test_data):
     assert len(img.shape) == 3
 
 
-def test_readimage_rgb(test_data):
+def test_readimage_normalized(test_data):
     """Test for PlantCV."""
     img, _, _ = readimage(filename=test_data.small_gray_img, mode="normalize")
     assert len(img.shape) == 2
