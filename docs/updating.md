@@ -60,9 +60,9 @@ automatically. Alternatively, you can run `pip install -e .` to reinstall the pa
 ### Breaking changes between v4 and v5 <a name="breaking-changes"></a>
 
 #### plantcv.spectral_index.egi
-Renamed the input parameter from `rgb_img` to `img` to reflect the flexibility of using this function with RGB and hyperspectral data. 
-* post v4.4: array = **plantcv.spectral_index.egi**(*rgb_img, distance=40*)
-* post v5.0: array = **plantcv.spectral_index.egi**(*img, distance=40*)
+
+Renamed the input parameter `rgb_img` to `img` to reflect the flexibility of using the [EGI index function](spectral_index.md)
+with RGB and hyperspectral data.
 
 ### Updating to v4 <a name="v4"></a>
 
