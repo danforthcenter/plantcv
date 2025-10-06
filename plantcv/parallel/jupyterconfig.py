@@ -2,7 +2,7 @@ import os
 import re
 import nbformat
 from nbconvert import PythonExporter
-from plantcv.parallel.workflowconfig import WorkflowConfig
+from plantcv.parallel.workflowconfig import WorkflowConfig, _validate_set_attr, _config_attr_lookup
 from plantcv.parallel.run_parallel import run_parallel
 from plantcv.parallel.inspect_dataset import inspect_dataset
 
@@ -10,35 +10,35 @@ from plantcv.parallel.inspect_dataset import inspect_dataset
 class jupyterconfig:
     # initialization based mainly on plantcv/parallel/WorkflowConfig class
     def __init__(self):
-
+        object.__setattr__(self, "verbose", True)
         # reactive properties set within notebook when initialized
-        self.notebook = self.find_notebook()  # path to active notebook
-        self.workflow = self.nameScript()  # path to python script, created here
-        self.config = self.nameConfig()  # path to config, will be written based on this object
-        self.analysis_script = self.notebook2script()  # convert notebook to py
+        object.__setattr__(self, "notebook", self.find_notebook())  # path to active notebook
+        object.__setattr__(self, "workflow", self.nameScript())  # path to python script, created here
+        object.__setattr__(self, "config", self.nameConfig())  # path to config, will be written based on this object
+        object.__setattr__(self, "analysis_script", self.notebook2script())  # convert notebook to py
         # things that should be user set after object is initialized, argument like.
-        self.input_dir = "."
-        self.results = "results"
-        self.filename_metadata = []
-        self.img_outdir = "./output_images"
-        self.include_all_subdirs = True
-        self.tmp_dir = "."
-        self.start_date = None
-        self.end_date = None
-        self.imgformat = "all"
-        self.delimiter = "_"
-        self.metadata_filters = {}
-        self.metadata_regex = {}
-        self.timestampformat = "%Y-%m-%dT%H:%M:%S.%fZ"
-        self.writeimg = False  # might be removed generally
-        self.other_args = {}
-        self.groupby = ["filepath"]
-        self.group_name = "auto"
-        self.checkpoint = True
-        self.cleanup = True
-        self.append = False
-        self.cluster = "LocalCluster"
-        self.cluster_config = {
+        object.__setattr__(self, "input_dir", ".")
+        object.__setattr__(self, "results", "results")
+        object.__setattr__(self, "filename_metadata", [])
+        object.__setattr__(self, "img_outdir", "./output_images")
+        object.__setattr__(self, "include_all_subdirs", True)
+        object.__setattr__(self, "tmp_dir", ".")
+        object.__setattr__(self, "start_date", None)
+        object.__setattr__(self, "end_date", None)
+        object.__setattr__(self, "imgformat", "all")
+        object.__setattr__(self, "delimiter", "_")
+        object.__setattr__(self, "metadata_filters", {})
+        object.__setattr__(self, "metadata_regex", {})
+        object.__setattr__(self, "timestampformat", "%Y-%m-%dT%H:%M:%S.%fZ")
+        object.__setattr__(self, "writeimg", False)  # might be removed generally
+        object.__setattr__(self, "other_args", {})
+        object.__setattr__(self, "groupby", ["filepath"])
+        object.__setattr__(self, "group_name", "auto")
+        object.__setattr__(self, "checkpoint", True)
+        object.__setattr__(self, "cleanup", True)
+        object.__setattr__(self, "append", False)
+        object.__setattr__(self, "cluster", "LocalCluster")
+        object.__setattr__(self, "cluster_config", {
             "n_workers": 1,
             "cores": 1,
             "memory": "1GB",
@@ -46,7 +46,11 @@ class jupyterconfig:
             "log_directory": None,
             "local_directory": None,
             "job_extra_directives": None
-        }
+        })
+
+    def __setattr__(self, name, value):
+        _config_attr_lookup(self, name, value)
+        object.__setattr__(self, name, value)
 
     # make reactive notebook property and hidden helper
     @property
@@ -112,7 +116,8 @@ class jupyterconfig:
 
     @analysis_script.setter
     def analysis_script(self, new):
-        """Set new analysis script value, you should not do this"""
+        """Set new 'analysis script is ready' bool value, you should not do this"""
+        #_config_attr_lookup(self, "_analysis_script", new)
         self._analysis_script = new
 
     # function to convert a notebook to a script and write it out
@@ -165,7 +170,7 @@ class jupyterconfig:
         if self.in_notebook():
             config = WorkflowConfig()
             for attr in [attr for attr in vars(config).keys() if attr in vars(self).keys()]:
-                setattr(config, attr, getattr(self, attr))
+                object.__setattr__(self, attr, getattr(self, attr))
             summary, meta = inspect_dataset(config)
         return summary, meta
 
@@ -188,19 +193,15 @@ class jupyterconfig:
                 print("Done!")
             else:
                 print("Config validation failed, run aborted")
-        # NOTE could do an else to set args in the global but so far that hasn't worked
 
     def save_config(self):
         """Save current Config"""
-        # this should make a python script and a config file per the standard way of parallelizing
-        # i think this makes a WorkflowConfig from this thing and parallelizes per the standard method after that,
-        #      just turning the jupyter kernel into the head node?
         # make a config object
         if self.in_notebook():
             config = WorkflowConfig()
             # find shared keys between config and self, loop over assigning from self to config
             for attr in [attr for attr in vars(config).keys() if attr in vars(self).keys()]:
-                setattr(config, attr, getattr(self, attr))
+                object.__setattr__(config, attr, getattr(self, attr))
             # set a few manually due to property differences
             config.workflow = self.workflow
             config.json = self.results
@@ -211,5 +212,6 @@ class jupyterconfig:
     @staticmethod
     def in_notebook():
         """Check if executed from a notebook."""
+        # when jobs are run they are submitted to command line, so have no __file__ attribute
         import __main__ as main
         return not hasattr(main, '__file__')

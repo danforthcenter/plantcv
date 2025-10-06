@@ -41,9 +41,10 @@ class WorkflowConfig:
             "job_extra_directives": None
         })
         object.__setattr__(self, "metadata_terms", self.metadata_term_definition())
+
     # set metadata_terms reactively based on filename_metadata
     def __setattr__(self, name, value):
-        print(f"setting {name} to {value}")
+        _config_attr_lookup(self, name, value)
         object.__setattr__(self, name, value)
 
     @property
@@ -230,43 +231,100 @@ class WorkflowConfig:
         return metadata_terms
 
 
-def _config_attr_lookup(attr, val):
+def _validate_set_attr(val, sentence, expect_type):
+    """Validate attributes before setting them in a WorkflowConfig or jupyterconfig object
+
+    Parameters
+    ----------
+    val         = type flexible, value to assign to configuration attribute.
+    sentence    = str, unformatted string to mention what the change will do.
+    expect_type = type, expected type for val.
+
+    Returns
+    -------
+    out         = minimal message about what the change does.
+
+    Raises
+    ------
+    ValueError if incompatible type between input val and expected type for attribute.
+
+    """
+    if not isinstance(val, expect_type):
+        raise ValueError("Expected " + expect_type.__name__ + ", got " + type(val).__name__)
+    if isinstance(val, list):
+        form = ', '.join(val)
+    elif isinstance(val, bool):
+        form = ['not ', ''][int(val)]
+    elif isinstance(val, dict):
+        form = ", ".join(val.keys())
+    else:
+        form = val
+    # parse form into sentence string
+    out = sentence.format(form)
+    return out
+
+
+def _config_attr_lookup(config, attr, val):
     """Lookup attributes for a WorkflowConfig or jupyterconfig object
 
     Parameters
     ----------
+    config   = WorkflowConfig or JupyterConfig object
     attr     = str, name of an attribute to set.
+    val      = type flexible, value to assign to configuration attribute.
     
     Returns
     -------
-    control  = dict, dictionary of print message and expected dtype.
+    message  = minimal message about what the change does.
+
+    Raises
+    ------
+    ValueError if incompatible type between input val and expected type for attribute.
 
     """
-    config_control = {
-        "input_dir": [f"Images will be read from {val}", str],
-        "json": [f"output will be written to {val}", str],
-        "filename_metadata": [f"Filenames will be parsed into {', '.join(val)}", str],
-        "workflow": [f"Will run {val} python script in each job", str],
-        "img_outdir": [f"Output images will be written to {val}", str],
-        "include_all_subdirs": [f"Will {['Not', ''][int(val)]} include images from subdirectories", bool],
-        "tmp_dir": [f"_PCV_PARALLEL_CHECKPOINT_/{val}", str],
-        "start_date": [f"Will only include images from after {val}", str],
-        "end_date": [f"Will only include images from after {val}", str],
-        "imgformat": [f"Will include {val} images", str],
-        "delimiter": [f"Splitting file basenames by {val}", str],
-        "metadata_filters": [f"Metadata will only be kept that matches {', '.join(val.keys())}", dict],
-        "metadata_regex": [f"message for input_dir", str],
-        "timestampformat": [f"message for input_dir", str],
-        "writeimg": [f"message for input_dir", str],
-        "other_args": [f"message for input_dir", str],
-        "groupby": [f"message for input_dir", str],
-        "group_name": [f"message for input_dir", str],
-        "checkpoint": [f"message for input_dir", str],
-        "cleanup": [f"message for input_dir", str],
-        "append": [f"message for input_dir", str],
-        "verbose": [f"message for input_dir", str],
-        "cluster": [f"message for input_dir", str],
-        "cluster_config": [f"message for input_dir", str],
-        "metadata_terms": [f"message for input_dir", str]
-    }
-    return config_control[attr]
+    # do not do this for hidden attributes
+    if attr[0] != "_":
+        # for all other attributes, get their data from list
+        config_control = {
+            "input_dir": ["Images will be read from {}", str],
+            "json": ["output will be written to {}", str],
+            "filename_metadata": ["Filenames will be parsed into {}", list],
+            "workflow": ["Will run {} python script in each job", str],
+            "img_outdir": ["Output images will be written to {}", str],
+            "include_all_subdirs": ["Will {} include images from subdirectories", bool],
+            "tmp_dir": ["Writing intermediate files to {}", str],
+            "start_date": ["Will only include images from after {}", str],
+            "end_date": ["Will only include images from before {}", str],
+            "imgformat": ["Will include {} images", str],
+            "delimiter": ["Splitting file basenames by '{}'", str],
+            "metadata_filters": ["Metadata will only be kept that matches {}", dict],
+            "metadata_regex": ["Will filter for file path matches to regex pattern(s)", dict],
+            "timestampformat": ["Using timestamp format {} to parse datetimes", str],
+            "writeimg": ["Currently 'writeimg' does not control anything", bool],
+            "other_args": ["Adding additional arguments", dict],
+            "groupby": ["Grouping images by {}, matches will enter one workflow", str],
+            "group_name": ["Naming each workflow's images by {}", str],
+            "checkpoint": ["Run will {}be checkpointed", bool],
+            "cleanup": ["Run will {}be cleaned up", bool],
+            "append": ["Results will {}be appended", bool],
+            "verbose": ["Run will {}be verbose", bool],
+            "cluster": ["Using {} cluster type", str],
+            "cluster_config": ["Configuring cluster options", dict],
+            "metadata_terms": ["Setting metadata term options (overriding defaults)", dict],
+            "_notebook": ["HIDDEN Changing path to jupyter notebook (normally set to active notebook)", str],
+            "_workflow": ["HIDDEN Changing script path to {} (normally set to auto-generated script)", str],
+            "_config": ["HIDDEN Changing path to save config to {} (normally set to share notebook/script name)", str],
+            "_analysis_script": ["HIDDEN This should not generally be changed. Setting to {}ready.", bool],
+            "_results": ["HIDDEN output will be written to {}", str],
+            "notebook": ["Changing path to jupyter notebook (normally set to active notebook)", str],
+            "workflow": ["Changing script path to {} (normally set to auto-generated script)", str],
+            "config": ["Changing path to save config to {} (normally set to share notebook/script name)", str],
+            "analysis_script": ["This should not generally be changed. Setting to {}ready.", bool],
+            "results": ["output will be written to {}", str]
+            
+        }
+        # check the proposed new attribute and make message about it
+        message = _validate_set_attr(val=val, sentence=config_control[attr][0],
+                                     expect_type=config_control[attr][1])
+        if config.verbose:
+            print(message)
