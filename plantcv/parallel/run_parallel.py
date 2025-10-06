@@ -25,13 +25,11 @@ def run_parallel(config):
     # Job start time
     start_time = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     print("Starting run " + start_time + '\n', file=sys.stderr)
-    # Create checkpointing directory
-    os.makedirs("_PCV_PARALLEL_CHECKPOINT_", exist_ok=True)
     # Create temporary directory for job
     if config.tmp_dir is not None:
-        os.makedirs(os.path.join("_PCV_PARALLEL_CHECKPOINT_", config.tmp_dir), exist_ok=True)
+        os.makedirs(os.path.join(config.tmp_dir, "_PCV_PARALLEL_CHECKPOINT_"), exist_ok=True)
     config.tmp_dir = tempfile.mkdtemp(prefix=start_time + '_',
-                                      dir=os.path.join("_PCV_PARALLEL_CHECKPOINT_", config.tmp_dir))
+                                      dir=os.path.join(config.tmp_dir, "_PCV_PARALLEL_CHECKPOINT_"))
 
     # Create img_outdir
     os.makedirs(config.img_outdir, exist_ok=True)
@@ -89,4 +87,4 @@ def run_parallel(config):
 
     # Cleanup
     if config.cleanup is True:
-        shutil.rmtree("_PCV_PARALLEL_CHECKPOINT_")
+        shutil.rmtree(config.tmp_dir)

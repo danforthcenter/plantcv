@@ -18,11 +18,8 @@ def process_results(config):
     -------
     None
     """
-    # generally process results from the checkpoint
-    job_dir = "_PCV_PARALLEL_CHECKPOINT_"
-    # if not checkpointing then process results from only tmp_dir
-    if not config.checkpoint:
-        job_dir = config.tmp_dir
+    # process results from the checkpoint inside tmp_dir
+    job_dir = config.tmp_dir
     # name outputs from config
     json_file = config.json
     # Data dictionary

@@ -121,7 +121,7 @@ names are used to access individual image filepaths in a workflow.
 * **checkpoint**: (bool, default = `True`): restart from where a previous run left off and/or keep checkpointing files in
 case jobs fail for any reason. For details see the checkpointing section of ['workflow_inputs'](parallel_workflow_inputs.md).
 
-* **cleanup**: (bool, default =`True`): remove `_PCV_PARALLEL_CHECKPOINT_` directory (including all temporary job directories) after a complete run if `True`.
+* **cleanup**: (bool, default =`True`): remove `config.tmp_dir` directory (including all temporary job directories and checkpoint files) after a complete run if `True`.
 
 
 * **append**: (bool, default = `False`): if `False`, will delete previous results stored in the specified JSON file.
