@@ -49,7 +49,7 @@ class jupyterconfig:
             "local_directory": None,
             "job_extra_directives": None
         })
-        # does not need to have metadata_terms, those are made when run() is called
+        # does not need to have reactive metadata_terms, those are made when run() is called
 
     def __setattr__(self, name, value):
         _config_attr_lookup(self, name, value)
@@ -173,7 +173,7 @@ class jupyterconfig:
         if self.in_notebook():
             config = WorkflowConfig()
             for attr in [attr for attr in vars(config).keys() if attr in vars(self).keys()]:
-                object.__setattr__(self, attr, getattr(self, attr))
+                object.__setattr__(config, attr, getattr(self, attr))
             summary, meta = inspect_dataset(config)
         return summary, meta
 

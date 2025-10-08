@@ -44,6 +44,7 @@ def test_jupcon_inspect_dataset(parallel_test_data, tmpdir):
     os.environ["JPY_SESSION_NAME"] = "example.ipynb"
     jupcon = jupyterconfig()
     # force this to act like there is a notebook
+    object.__setattr__(jupcon, "verbose", False)
     object.__setattr__(jupcon, "in_notebook", lambda: True)
     jupcon.input_dir = parallel_test_data.flat_imgdir
     summary, meta = jupcon.inspect_dataset()
