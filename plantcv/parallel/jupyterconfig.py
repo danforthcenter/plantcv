@@ -1,4 +1,5 @@
 import os
+import json
 import re
 import nbformat
 from nbconvert import PythonExporter
@@ -48,6 +49,7 @@ class jupyterconfig:
             "local_directory": None,
             "job_extra_directives": None
         })
+        # does not need to have metadata_terms, those are made when run() is called
 
     def __setattr__(self, name, value):
         _config_attr_lookup(self, name, value)
@@ -210,6 +212,25 @@ class jupyterconfig:
             config.save_config(config_file=self.config)
             parallel_print("Saved " + self.config, verbose=self.verbose)
 
+    # Import a configuration from a file
+    def import_config(self, config_file):
+        """Import a configuration file.
+
+        Input variables:
+        config_file = Configuration file to import
+
+        :param config_file: str
+        """
+        # Open the file for reading
+        with open(config_file, "r") as fp:
+            # Import the JSON configuration data
+            config = json.load(fp)
+            for key, value in config.items():
+                if key == "json":
+                    object.__setattr__(self, "results", value)
+                elif key != "_metadata_terms":
+                    object.__setattr__(self, key, value)
+            
     @staticmethod
     def in_notebook():
         """Check if executed from a notebook."""
