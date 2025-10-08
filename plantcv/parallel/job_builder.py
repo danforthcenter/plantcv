@@ -3,6 +3,7 @@ import sys
 import json
 from copy import deepcopy
 import uuid
+from plantcv.parallel.message import parallel_print
 
 
 # Build job list
@@ -28,7 +29,7 @@ def job_builder(meta, config):
 
     # Log the number of jobs to be run
     n_jobs = len(meta)
-    print(f"Task list includes {n_jobs} workflows", file=sys.stderr)
+    parallel_print(f"Task list includes {n_jobs} workflows", file=sys.stderr, config.verbose)
 
     # Each grouping has a tuple of grouped metadata values and a dataframe of image metadata
     for _, grp_df in meta:

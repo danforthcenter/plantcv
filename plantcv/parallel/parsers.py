@@ -86,7 +86,7 @@ def _read_checkpoint_data(df, config, removed_df):
         already_run = pd.concat(ran_list)
         already_run = already_run[already_run["filepath"].notna()]
         # message for clarity
-        print(f"Found {already_run.shape[0]} existing results in checkpoint directory, excluding those jobs.")
+        parallel_print(f"Found {already_run.shape[0]} existing results in checkpoint directory, excluding those jobs.", verbose=config.verbose)
         # remove already_run rows from metadata dataframe
         keep_columns = df.columns
         df = _anti_join(df, already_run, on="filepath", suffixes=(None, "_removeY"))
@@ -281,7 +281,7 @@ def _filename_metadata_index(config):
     """
     # if filename_metadata is not specified then estimate it
     if not bool(config.filename_metadata):
-        print("Warning: Estimating config.filename_metadata based on file names.")
+        parallel_print("Warning: Estimating config.filename_metadata based on file names.", verbose=config.verbose)
         config = _estimate_filename_metadata(config)
 
     # A dictionary of metadata terms and their index position in the filename metadata term list

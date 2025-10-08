@@ -5,6 +5,7 @@ from nbconvert import PythonExporter
 from plantcv.parallel.workflowconfig import WorkflowConfig, _validate_set_attr, _config_attr_lookup
 from plantcv.parallel.run_parallel import run_parallel
 from plantcv.parallel.inspect_dataset import inspect_dataset
+from plantcv.parallel.message import parallel_print
 
 
 class jupyterconfig:
@@ -179,18 +180,18 @@ class jupyterconfig:
         """Run current Config"""
         # if in notebook, save config, start parallel.
         if self.in_notebook():
-            print("Initializing from " + self.notebook + " Notebook")
+            parallel_print("Initializing from " + self.notebook + " Notebook", verbose=self.verbose)
             # before running, rerun reactives then kick off the parallel process?
             self.save_config()
             # other "reactives" should be set since they are based only on the file
             # this is being run in.
             # if needed could change them again but I think this is reasonable for now.
-            print("Starting parallel workflow from notebook kernel")
+            parallel_print("Starting parallel workflow from notebook kernel", verbose=self.verbose)
             config = WorkflowConfig()
             config.import_config(self.config)
             if config.validate_config():
                 run_parallel(config)
-                print("Done!")
+                parallel_print("Done!", verbose=config.verbose)
             else:
                 print("Config validation failed, run aborted")
 
@@ -207,7 +208,7 @@ class jupyterconfig:
             config.json = self.results
             # save
             config.save_config(config_file=self.config)
-            print("Saved " + self.config)
+            parallel_print("Saved " + self.config, verbose=self.verbose)
 
     @staticmethod
     def in_notebook():
