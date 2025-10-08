@@ -4,6 +4,7 @@ import json
 import glob
 import pandas as pd
 import itertools
+from plantcv.parallel.message import parallel_print
 
 
 # Parse dataset metadata

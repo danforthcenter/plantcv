@@ -2,6 +2,7 @@ import pandas as pd
 import os
 from plantcv.parallel.parsers import metadata_parser
 from plantcv.parallel.workflowconfig import WorkflowConfig
+from plantcv.parallel.message import parallel_print
 
 
 def inspect_dataset(config):

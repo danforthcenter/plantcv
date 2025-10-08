@@ -29,7 +29,7 @@ def job_builder(meta, config):
 
     # Log the number of jobs to be run
     n_jobs = len(meta)
-    parallel_print(f"Task list includes {n_jobs} workflows", file=sys.stderr, config.verbose)
+    parallel_print(f"Task list includes {n_jobs} workflows", file=sys.stderr, verbose=config.verbose)
 
     # Each grouping has a tuple of grouped metadata values and a dataframe of image metadata
     for _, grp_df in meta:
