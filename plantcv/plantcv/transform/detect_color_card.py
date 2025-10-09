@@ -324,6 +324,8 @@ def _color_card_detection(rgb_img, **kwargs):
     labeled_mask, debug_img = _draw_color_chips(debug_img, new_centers_w, radius)
     # Check that new centers are inside each unique filtered_contour
     #_check_point_per_chip(filtered_contours, new_centers, debug_img)
+    # Calculate color matrix from the cropped color card image
+    _, color_matrix = get_color_matrix(rgb_img=out, mask=labeled_mask)
 
     return color_matrix, debug_img, marea, mheight, mwidth, boundind_mask
 
@@ -477,4 +479,4 @@ def detect_color_card(rgb_img, label=None, color_chip_size=None, roi=None, **kwa
     # Debugging
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f"{params.device}_color_card.png"))
 
-    return labeled_mask, debug_img
+    return color_matrix, debug_img
