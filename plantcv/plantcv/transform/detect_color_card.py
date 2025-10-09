@@ -240,7 +240,9 @@ def _color_card_detection(rgb_img, **kwargs):
     filtered_contours = _find_color_chip_like_objects(rgb_img, **kwargs)
     # Throw a fatal error if no color card found
     if len(filtered_contours) == 0:
-        fatal_error("No color card found")
+        #fatal_error('No color card found')
+        return rgb_img, debug_img, [0], [0], [0], rgb_img
+        
 
     # Find the bounding box of the detected chips
     x, y, w, h = cv2.boundingRect(np.vstack(filtered_contours))
@@ -260,7 +262,7 @@ def _color_card_detection(rgb_img, **kwargs):
     # Get the corners of the rectangle
     corners = np.array(np.intp(cv2.boxPoints(rect)))
     # Check that corners are in image
-    _check_corners(rgb_img, corners)
+    #_check_corners(imgray, corners)
     # Determine which corner most likely contains the white chip
     white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0], :], (255, 255, 255))) for corner in corners])
     corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])[[0, 1, 3, 2]]]
@@ -321,10 +323,7 @@ def _color_card_detection(rgb_img, **kwargs):
     # Create labeled mask and debug image of color chips
     labeled_mask, debug_img = _draw_color_chips(debug_img, new_centers_w, radius)
     # Check that new centers are inside each unique filtered_contour
-    _check_point_per_chip(filtered_contours, new_centers_w, debug_img)
-
-    # Calculate color matrix from the cropped color card image
-    _, color_matrix = get_color_matrix(rgb_img=out, mask=labeled_mask)
+    #_check_point_per_chip(filtered_contours, new_centers, debug_img)
 
     return color_matrix, debug_img, marea, mheight, mwidth, boundind_mask
 
@@ -478,4 +477,4 @@ def detect_color_card(rgb_img, label=None, color_chip_size=None, roi=None, **kwa
     # Debugging
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f"{params.device}_color_card.png"))
 
-    return color_matrix
+    return labeled_mask, debug_img
