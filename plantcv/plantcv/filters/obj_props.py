@@ -31,7 +31,7 @@ def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area", roi=None):
     """
     # Increment step counter
     params.device += 1
-    # Make cut_side all lowercase 
+    # Make cut_side all lowercase
     cut_side = cut_side.lower()
     # Check if cut_side is valid
     if cut_side not in ("upper", "lower"):
