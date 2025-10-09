@@ -58,3 +58,4 @@ def test_empty_mask():
     mask = np.zeros((100, 100))
     fmask = obj_props(bin_img=mask, regprop="solidity")
     assert np.sum(fmask) == 0
+    
