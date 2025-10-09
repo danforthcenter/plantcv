@@ -45,7 +45,7 @@ def test_validate_config(parallel_test_data, tmpdir):
     config.json = "valid_config.json"
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = parallel_test_data.workflow_script
-    config.img_outdir = img_outdir
+    config.img_outdir = str(img_outdir)
     # Validate config
     assert config.validate_config()
 
@@ -61,7 +61,7 @@ def test_invalid_startdate(parallel_test_data, tmpdir):
     config.json = "valid_config.json"
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = parallel_test_data.workflow_script
-    config.img_outdir = img_outdir
+    config.img_outdir = str(img_outdir)
     config.start_date = "2020-05-10"
     # Validate config
     assert not config.validate_config()
@@ -78,7 +78,7 @@ def test_invalid_enddate(parallel_test_data, tmpdir):
     config.json = "valid_config.json"
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = config.workflow = parallel_test_data.workflow_script
-    config.img_outdir = img_outdir
+    config.img_outdir = str(img_outdir)
     config.end_date = "2020-05-10"
     config.timestampformat = "%Y%m%d"
     # Validate config

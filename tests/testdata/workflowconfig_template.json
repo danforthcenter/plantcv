@@ -20,6 +20,7 @@
     "checkpoint": true,
     "cleanup": true,
     "append": false,
+    "verbose": true,
     "cluster": "LocalCluster",
     "cluster_config": {
         "n_workers": 1,
