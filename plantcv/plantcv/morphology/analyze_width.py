@@ -14,7 +14,6 @@ def _iterate_distance_transform(bin_img, iterations=5, threshold=0.4):
         dt = cv2.distanceTransform(result.astype(np.uint8), cv2.DIST_L2, cv2.DIST_MASK_PRECISE)
         dt_normalized = cv2.normalize(dt, None, 0, 1, cv2.NORM_MINMAX)
         result = (dt_normalized > threshold).astype(np.uint8) * 255
-        print(np.sum(result))
     return result
 
 
@@ -69,7 +68,9 @@ def analyze_width(img, labeled_mask, n_labels=1, label=None):
                                 scale=params.unit, datatype=list,
                                 value=_scale_size(value=stroke_width.astype(np.float64), trait_type="segment_width"),
                                 label=range(1, n_labels + 1))
-        # Debugging
-        _debug(visual=k, filename=os.path.join(params.debug_outdir, str(params.device) + '_segment_width.png'))
-        
-    return k
+    all_mask = np.where(labeled_mask > 0, 255, 0).astype(np.uint8)
+    dist = cv2.distanceTransform(all_mask, cv2.DIST_L2, cv2.DIST_MASK_PRECISE)
+    # Debugging
+    _debug(visual=dist, filename=os.path.join(params.debug_outdir, str(params.device) + '_segment_width.png'))
+    
+    return dist
