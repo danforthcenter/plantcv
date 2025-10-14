@@ -40,7 +40,7 @@ class WorkflowConfig:
             "local_directory": None,
             "job_extra_directives": None
         })
-        object.__setattr__(self, "_metadata_terms", self.metadata_term_definition())
+        self._metadata_terms = self.metadata_term_definition()
 
     # set metadata_terms reactively based on filename_metadata
     def __setattr__(self, name, value):

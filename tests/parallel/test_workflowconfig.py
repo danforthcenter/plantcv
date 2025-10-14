@@ -99,6 +99,7 @@ def test_invalid_cluster():
 
 
 def test_bad_config_setting():
+    """Test for PlantCV."""
     # create config instance
     config = WorkflowConfig()
     # try to set groupby (list) to a string
