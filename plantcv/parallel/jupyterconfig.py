@@ -3,7 +3,7 @@ import json
 import re
 import nbformat
 from nbconvert import PythonExporter
-from plantcv.parallel.workflowconfig import WorkflowConfig, _validate_set_attr, _config_attr_lookup
+from plantcv.parallel.workflowconfig import WorkflowConfig, _config_attr_lookup
 from plantcv.parallel.run_parallel import run_parallel
 from plantcv.parallel.inspect_dataset import inspect_dataset
 from plantcv.parallel.message import parallel_print
@@ -120,7 +120,6 @@ class jupyterconfig:
     @analysis_script.setter
     def analysis_script(self, new):
         """Set new 'analysis script is ready' bool value, you should not do this"""
-        #_config_attr_lookup(self, "_analysis_script", new)
         self._analysis_script = new
 
     # function to convert a notebook to a script and write it out
@@ -230,7 +229,7 @@ class jupyterconfig:
                     object.__setattr__(self, "results", value)
                 elif key != "_metadata_terms":
                     object.__setattr__(self, key, value)
-            
+
     @staticmethod
     def in_notebook():
         """Check if executed from a notebook."""

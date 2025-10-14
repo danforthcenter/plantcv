@@ -87,7 +87,8 @@ def _read_checkpoint_data(df, config, removed_df):
         already_run = pd.concat(ran_list)
         already_run = already_run[already_run["filepath"].notna()]
         # message for clarity
-        parallel_print(f"Found {already_run.shape[0]} existing results in checkpoint directory, excluding those jobs.", verbose=config.verbose)
+        parallel_print(f"Found {already_run.shape[0]} existing results in checkpoint directory, excluding those jobs.",
+                       verbose=config.verbose)
         # remove already_run rows from metadata dataframe
         keep_columns = df.columns
         df = _anti_join(df, already_run, on="filepath", suffixes=(None, "_removeY"))

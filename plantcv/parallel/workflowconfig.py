@@ -40,7 +40,7 @@ class WorkflowConfig:
             "local_directory": None,
             "job_extra_directives": None
         })
-        object.__setattr__(self, "metadata_terms", self.metadata_term_definition())
+        object.__setattr__(self, "_metadata_terms", self.metadata_term_definition())
 
     # set metadata_terms reactively based on filename_metadata
     def __setattr__(self, name, value):
@@ -272,7 +272,7 @@ def _config_attr_lookup(config, attr, val):
     config   = WorkflowConfig or JupyterConfig object
     attr     = str, name of an attribute to set.
     val      = type flexible, value to assign to configuration attribute.
-    
+
     Returns
     -------
     message  = minimal message about what the change does.
@@ -317,11 +317,9 @@ def _config_attr_lookup(config, attr, val):
             "_analysis_script": ["HIDDEN This should not generally be changed. Setting to {}ready.", bool],
             "_results": ["HIDDEN output will be written to {}", str],
             "notebook": ["Changing path to jupyter notebook (normally set to active notebook)", str],
-            "workflow": ["Changing script path to {} (normally set to auto-generated script)", str],
             "config": ["Changing path to save config to {} (normally set to share notebook/script name)", str],
             "analysis_script": ["This should not generally be changed. Setting to {}ready.", bool],
             "results": ["output will be written to {}", str]
-            
         }
         # check the proposed new attribute and make message about it
         message = _validate_set_attr(val=val, sentence=config_control[attr][0],

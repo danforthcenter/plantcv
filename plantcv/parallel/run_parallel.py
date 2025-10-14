@@ -46,7 +46,7 @@ def run_parallel(config):
     print("Reading image metadata...", file=sys.stderr)
     meta, _ = metadata_parser(config=config)
     parser_clock_time = time.time() - parser_start_time
-    parallel_print("Reading image metadata took {parser_clock_time} seconds.", file=sys.stderr, verbose=verbose)
+    parallel_print(f"Reading image metadata took {parser_clock_time} seconds.", file=sys.stderr, verbose=verbose)
     ###########################################
 
     # Process images
