@@ -1,4 +1,5 @@
 from plantcv.parallel import WorkflowConfig
+import pytest
 
 
 def test_save_config_file(parallel_test_data, tmpdir):
@@ -95,3 +96,11 @@ def test_invalid_cluster():
     config.cluster = "MyCluster"
     # Validate config
     assert not config.validate_config()
+
+
+def test_bad_config_setting():
+    # create config instance
+    config = WorkflowConfig()
+    # try to set groupby (list) to a string
+    with pytest.raises(ValueError):
+        config.groupby = "bad"
