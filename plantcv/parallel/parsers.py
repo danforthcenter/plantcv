@@ -452,8 +452,17 @@ def _read_filenames(config):
     else:
         # If subdirectories are included, recursively walk through the path
         fns = []
-        for root, _, files in os.walk(config.input_dir):
+        for root, dirs, files in os.walk(config.input_dir):
+        # Skip hidden directories
+            dirs[:] = [d for d in dirs if not d.startswith(".")]
             for file in files:
+            # Skip hidden or checkpoint files
+                if (
+                    file.startswith(".")
+                    or "-checkpoint" in file
+                    or file.startswith("._")
+                    ):
+                    continue
                 if file.lower().endswith(tuple(extensions)):
                     # Keep the files that end with the image extension
                     fns.append(os.path.join(root, file))
