@@ -18,9 +18,35 @@ We normally execute workflows in a shell script or in in a cluster scheduler job
 a configuration file can be edited and input. A similar configuration file can be made and run directly in a jupyter notebook,
 see [`jupyterconfig`](parallel_jupyterconfig.md).
 
-### Configuration-based method
+### Configuration for Parallel Workflows
 
-To create a configuration file, run the following:
+Parallel workflows in PlantCV use configuration files to find images, your analysis script, set up your cluster, etc.
+There are several ways to make a configuration file.
+
+#### Making a configuration file from Python
+
+You can create a configuration object in Python either to save to a .json file to run in parallel.
+Having a script/notebook that sets up the configuration file for a job can help you remember what attributes you editted later on.
+
+```python
+config = plantcv.parallel.WorkflowConfig()
+# change attributes to suit your needs
+config.save_config("my_config.json")
+```
+The above chunk would save a configuration file with built-in defaults only as `my_config.json`.
+To make the configuration file usable you would need to set a few attributes which are listed as required in the Attributes section of the [WorkflowConfig docs](parallel_config.md).
+
+Or you can create and use a configuration in a jupyter notebook to run a workflow in parallel.
+
+```python
+jupcon = plantcv.parallel.jupyterconfig()
+# change attributes to suit your needs
+jupcon.run()  # start parallel process
+```
+
+#### Making a configuration file from command line
+
+You can also create a configuration file from the command line by running the following:
 
 ```bash
 plantcv-run-workflow --template my_config.json
@@ -33,24 +59,12 @@ saved at any time using the `save_config` method to save for later use. Alternat
 file with your favorite text editor and adjust the parameters as needed (refer to the attributes section of
 [WorkflowConfig documentation](parallel_config.md) for details about each parameter).
 
-You can also create the configuration object in Python either to save to a .json file to run in parallel;
 
-```python
-config = plantcv.parallel.WorkflowConfig()
-# change attributes to suit your needs
-config.save_config("my_config.json")
-```
+#### Making a configuration file online
 
-Or you can create and use a configuration in a jupyter notebook to run a workflow in parallel.
+You can also use [our online tool](link to the app that eventually we'd host) to make your configuration file.
 
-```python
-jupcon = plantcv.parallel.jupyterconfig()
-# change attributes to suit your needs
-jupcon.run()  # start parallel process
-```
-
-
-**Some notes on JSON format:**
+### Notes on JSON format
 
 * Like Python, string variables (e.g. "VIS") need to be in quotes but must be double `"` quotes.
 * Unlike Python, `true` and `false` in JSON are lowercase.

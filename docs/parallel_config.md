@@ -50,7 +50,7 @@ Validate parameters/structure of configuration data.
 * **json**: (str, required): path/name of output JSON data file (appends new data if it already exists).
 
 
-* **filename_metadata**: (list, required): list of metadata terms used to construct filenames. for example: 
+* **filename_metadata**: (list): list of metadata terms used to construct filenames. for example: 
 `["plantbarcode","timestamp"]`. Default metadata terms are listed [here](pipeline_parallel.md) but other terms can be specified here.
 
 
