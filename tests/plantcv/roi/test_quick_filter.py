@@ -3,7 +3,7 @@ import cv2
 import pytest
 import numpy as np
 from plantcv.plantcv import Objects
-from plantcv.plantcv.roi.quick_filter import quick_filter, _quick_cutto
+from plantcv.plantcv.roi.quick_filter import quick_filter
 
 
 @pytest.mark.parametrize("mode,exp", [["partial", 221], ["cutto", 7], ["within", 0]])

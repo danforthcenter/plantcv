@@ -64,11 +64,9 @@ def quick_filter(mask, roi, roi_type="partial"):
         # set all the label values to zero
         elif roi_type.upper() == "WITHIN" and i in summed:
             summed[np.where(labels == i)] = 0
-
-
     # Objects that do not overlap the ROI will round to an integer and have
     # the same value before and after rounding.
-    # Objecs that overlap the ROI will round up/down and will not have the same value
+    # Objects that overlap the ROI will round up/down and will not have the same value
     # Where the values are equal (not overlapping)
     summed[np.where(summed == summed.round())] = 0
 
