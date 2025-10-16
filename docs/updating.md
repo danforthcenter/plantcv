@@ -969,6 +969,8 @@ pages for more details on the input and output variable types.
 
 * pre v4.2.1: NA
 * post v4.2.1: filtered_mask = **plantcv.roi.quick_filter**(*mask, roi*)
+* post v4.9: filtered_mask = **plantcv.roi.quick_filter**(*mask, roi, roi_type="partial"*)
+
 
 #### plantcv.roi_objects
 
