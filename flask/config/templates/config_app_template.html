@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Set tab title when shown in browser -->
+    {% if title %}
+    <title>Make Config - {{title}}</title>
+    {%else%}
+    <title>Make Config</title>
+    {%endif%}
+    <!-- Set css format -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/config_app.css') }}">
+  </head>
+  <body>
+    <header>
+      <h1>Make a PlantCV Configuration file</h1>
+      <p>
+	Use this form to make a configuration file to run PlantCV in parallel over a dataset.
+	Hover over fields to see some details about them. For full documentation see the 
+	<a href="https://plantcv.readthedocs.io/en/stable/parallel_config/">Workflow Configuration Docs</a>.
+      </p>
+    </header>
+    <form method="POST">
+      <div class="box-wrapper">
+	<div id="total_box">
+	  <div class="left-column"> 
+	    <div id="input_output_box">
+              <h3>Configure Inputs and Outputs</h3><br>
+	      <!-- Config fields controlling Inputs/Outputs -->
+	      <!-- input_dir -->
+              <div class="tooltip">
+		<label>input_dir:</label>
+		<input type="text" name="input_dir" placeholder="path to input data" required>
+		<span class="tooltiptext"> Path to Image data, this will be relative to where you run plantcv-run-workflow.</span>
+              </div><br><br>
+	      <!-- workflow -->
+	      <div class="tooltip">
+		<label>workflow:</label>
+		<input type="text" name="workflow" placeholder="your-python-script.py" required>
+		<span class="tooltiptext"> Filepath to your PlantCV Workflow script.</span>
+	      </div><br><br>
+	      <!-- json results file -->
+	      <div class="tooltip">
+		<label>json:</label>
+		<input type="text" name="json" value="results.json" required>
+		<span class="tooltiptext"> Name of the results file in json format. This will also be used in naming csv output.</span>
+	      </div><br><br>
+	      <!-- filename_metadata -->
+	      <div class="tooltip">
+		<label>filename_metadata:</label>
+		<input type="text" name="filename_metadata" placeholder="comma separated list">
+		<span class="tooltiptext"> List of terms to separate each filename into. If left empty this will be set automatically.</span>
+	      </div>
+	      <!-- include delimiter as a secondary piece of filename_metadata -->
+	      <div class="tooltip">
+		<label>delimiter:</label>
+		<input type="text" name="delimiter" value="_" required>
+		<span class="tooltiptext"> Delimiter in file names between metadata terms</span>
+	      </div><br><br>
+	      <!-- img_outdir -->
+	      <div class="tooltip">
+		<label>img_outdir:</label>
+		<input type="text" name="img_outdir" value="." required>
+		<span class="tooltiptext"> If images are written save them here</span>
+	      </div><br><br>
+	      <!-- tmp directory -->
+	      <div class="tooltip">
+		<label>tmp_dir:</label>
+		<input type="text" name="tmp_dir" value="." required>
+      		<span class="tooltiptext"> Path to a temporary directory (default is to make on in the cwd)</span>
+	      </div><br><br>
+	      <!-- include_all_subdirs -->
+	      <div class="tooltip">	
+		<label>include_all_subdirs:</label>
+		<input type="checkbox" name="include_all_subdirs" value="true" checked required>
+      		<span class="tooltiptext"> Boolean, Should all subdirectories be included when finding images?</span>
+	      </div><br><br>
+	    <!-- close input output box -->
+	    </div>
+	    <div id="filter_box">
+	      <!-- name filter box -->
+	      <h3>Filter which images to include</h3><br>
+	      <!-- set inputs for parsing/filtering -->
+	      <!-- Metadata Filters -->
+	      <div class="tooltip">
+		<label>metadata_filters:</label>
+		<input type="text" name="metadata_filters" placeholder="term:value, term2:value2, ...">
+		<span class="tooltiptext"> Dictionary of filename_metadata terms to filter, specified as "key:val, key2:val2, ...".</span>
+	      </div><br><br>
+	      <!-- Metadata Regex -->
+	      <div class="tooltip">
+		<label>metadata_regex:</label>
+		<input type="text" name="metadata_regex" placeholder="term:pattern, term2:pattern2, ...">
+		<span class="tooltiptext"> Dictionary of filename_metadata terms or file
+		  path components to search for regex matches in, specified as "key:val, key2:val2, ...".
+		  Note that commas or Semicolons may cause problems through the web interface.</span>
+	      </div><br><br>
+	      <!-- imgformat -->
+	      <div class="tooltip">
+		<label>imgformat:</label>
+		<input type="text" name="imgformat" value="all" required>
+		<span class="tooltiptext"> Image file extensions to use, defaults to "all" which is a special case including all images</span>
+	      </div><br><br>
+	      <!-- start_date -->
+	      <div class="tooltip">
+		<label>start_date:</label>
+		<input type="text" name="start_date" value="null" required>
+		<span class="tooltiptext"> Only include photos taken after this datetime.</span>
+	      </div><br><br>
+	      <!-- end_date -->
+	      <div class="tooltip">
+		<label>end_date:</label>
+		<input type="text" name="end_date" value="null" required>
+      		<span class="tooltiptext"> Only include photos taken before this datetime.</span>
+	      </div><br><br>
+	      <!-- timestampformat -->
+	      <div class="tooltip">
+		<label>timestampformat:</label>
+		<input type="text" name="timestampformat" value="%Y-%m-%dT%H:%M:%S.%fZ" required>
+      		<span class="tooltiptext"> strftime format to use parsing dates/datetimes from metadata/filenames</span>
+	      </div><br><br>
+	      <!-- Close filter box -->
+	    </div>
+	  </div> 
+	  <div class="right-column"> 
+	    <div id="parallel_box">
+	      <!-- Name parallel box -->
+              <h3>Configure Parallel Jobs</h3><br>
+	      <h4>Control Images sent to each job</h4><br>
+	      <!-- Groupby -->
+	      <div class="tooltip">
+		<label>groupby:</label>
+		<input type="text" name="groupby" value='filepath' required>
+		<span class="tooltiptext"> Group images by these variables to run together in a job.</span>
+	      </div>
+	      <!-- groupname -->
+	      <div class="tooltip">
+		<label>group_name:</label>
+		<input type="text" name="group_name" value="auto" required>
+		<span class="tooltiptext"> Names for each image if there are several images collected by groupby. If using multiple then a string with commas is expected ("img1,img2"). These names would then be used in your workflow like 'args.img1' and 'args.img2'.</span>
+	      </div><br><br>
+	      <h4>Cluster Configuration</h4><br>
+	      <!-- Cluster Type -->
+	      <div class="tooltip">
+		<label>cluster:</label>
+		<select id="cluster" name="cluster">
+		  <option value="LocalCluster">LocalCluster</option>
+		  <option value="HTCondorCluster">HTCondorCluster</option>
+		  <option value="LSFCluster">LSFCluster</option>
+		  <option value="MoabCluster">MoabCluster</option>
+		  <option value="OARCluster">OARCluster</option>
+		  <option value="PBSCluster">PBSCluster</option>
+		  <option value="SGECluster">SGECluster</option>
+		  <option value="SLURMCluster">SLURMCluster</option>
+		</select>
+		<span class="tooltiptext"> Type of Dask cluster to use.</span>
+	      </div><br><br>
+	      <!-- n workers -->
+	      <div class="tooltip">
+		<label>n_workers (number of jobs in parallel at once):</label>
+		<input type="number" name="n_workers" value="1" min="1" required>
+		<span class="tooltiptext"> Number of workers to run in parallel at once.</span>
+	      </div><br>
+	      <!-- cores per worker -->
+	      <div class="tooltip">
+		<label>cores per worker:</label>
+		<input type="number" name="cores" value="1" min="1" required>
+		<span class="tooltiptext"> Number of cores that each worker should use, this should almost always be 1.</span>
+	      </div><br>
+	      <!-- memory per worker -->
+	      <div class="tooltip">
+		<label>memory per worker:</label>
+		<input type="text" name="memory" value="1GB" required>
+		<span class="tooltiptext"> Amount of memory each worker should have, generally 1GB is plenty.</span>
+	      </div><br>
+	      <!-- disk per worker -->
+	      <div class="tooltip">
+		<label>disk per worker:</label>
+		<input type="text" name="disk" value="1GB" required>
+		<span class="tooltiptext"> Amount of disk memory each worker should have, generally 1GB is plenty.</span>
+	      </div><br>
+	      <!-- log directory -->
+	      <div class="tooltip">
+		<label>log directory:</label>
+		<input type="text" name="log_directory" value="null" required>
+		<span class="tooltiptext"> Path, where to write log files.</span>
+	      </div><br>
+	      <!-- local directory -->
+	      <div class="tooltip">
+		<label>local directory:</label>
+		<input type="text" name="local_directory" value="null" required>
+		<span class="tooltiptext"> Dask working directory location.</span>
+	      </div><br>
+	      <!-- extra directives -->
+	      <div class="tooltip">
+		<label>job extra directives:</label>
+		<input type="text" name="job_extra_directives" value="null" required>
+		<span class="tooltiptext"> Any other parameters sent to the scheduler, specified as "key:val, key2:val2, ...".
+		  <br>{"getenv": "true"} is common to use a conda env for each job.</span>
+	      </div><br>
+	    <!-- Close parallel box -->
+	    </div>
+	    <div id="general_box">
+	      <!-- Name general box -->
+	      <h3>General Behavior</h3>
+	      <!-- Bool Checkpoint -->
+	      <div class="tooltip">
+		<label>checkpoint:</label>
+		<input type="checkbox" name="checkpoint" value="true" checked>
+		<span class="tooltiptext"> Boolean, should checkpointing be done in case of an error.</span>
+	      </div>
+	      <!-- Bool Cleanup -->
+	      <div class="tooltip">
+		<label>cleanup:</label>
+		<input type="checkbox" name="cleanup" value="true" checked>
+		<span class="tooltiptext"> Boolean, should temp files be deleted after a successful run?</span>
+	      </div>
+	      <!-- Bool Append -->
+	      <div class="tooltip">
+		<label>append:</label>
+		<input type="checkbox" name="append" value="true">
+		<span class="tooltiptext"> Boolean, should these results be appended to the results json file?</span>
+	      </div>
+	      <!-- Bool Verbose -->
+	      <div class="tooltip">
+		<label>verbose:</label>
+		<input type="checkbox" name="verbose" value="true" checked>
+		<span class="tooltiptext"> Boolean, controls level of printed output.</span>
+	      </div>
+	      <!-- other args -->
+	      <div class="tooltip">
+		<label>other_args:</label>
+		<input type="text" name="other_args" placeholder="key:value, key2:value2, ...">
+		<span class="tooltiptext"> Other arguments, see documentation for details on how these are used.</span>
+	      </div><br><br>
+	      <!-- Close general box -->
+	    </div>
+	  </div> 
+	</div>
+	<div class="download_box">
+	<!-- Download Button-->
+	<button class="download_button" type="submit"><b>Download as JSON</b></button>
+	</div>
+	<!-- Close box wrapper-->
+      </div>
+    </form>
+  </body>
+</html>
