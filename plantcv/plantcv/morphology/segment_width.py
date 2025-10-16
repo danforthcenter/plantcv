@@ -60,7 +60,7 @@ def segment_width(img, labeled_mask, n_labels=1, label=None):
             
             if len(weighted_values) > 0:
                 stroke_width = 2 * np.mean(weighted_values)
-                widths.append(stroke_width)
+                widths.append(stroke_width.astype(np.float64))
                 print(f"Stroke Width = {stroke_width}")
                 
             else:
@@ -71,7 +71,7 @@ def segment_width(img, labeled_mask, n_labels=1, label=None):
     outputs.add_observation(sample=label, variable='segment_width', trait='segment width',
                                 method='plantcv.plantcv.morphology.analyze_width',
                                 scale=params.unit, datatype=list,
-                                value=_scale_size(value=widths.astype(np.float64), trait_type="segment_width"),
+                                value=_scale_size(value=widths, trait_type="segment_width"),
                                 label=range(1, n_labels + 1))   
     all_mask = np.where(labeled_mask > 0, 255, 0).astype(np.uint8)
     dist = cv2.distanceTransform(all_mask, cv2.DIST_L2, cv2.DIST_MASK_PRECISE)

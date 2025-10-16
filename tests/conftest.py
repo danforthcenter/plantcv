@@ -90,6 +90,8 @@ class TestData:
         self.nd2_img = os.path.join(self.datadir, "test_nd2_img.nd2")
         # flir thermal img
         self.flir_img = os.path.join(self.datadir, "FLIR_test.jpg")
+        # Labeled mask 
+        self.labeled_mask = os.path.join(self.datadir, "labeled_filled_mask.jpg")
 
     @staticmethod
     def load_hsi(pkl_file):
