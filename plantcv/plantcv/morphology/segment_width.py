@@ -8,16 +8,16 @@ from plantcv.plantcv._helpers import _scale_size
 from plantcv.plantcv._debug import _debug
 
 
-def _iterate_distance_transform(bin_img, iterations=5, threshold=0.4):
+def _iterate_distance_transform(bin_img, threshold=0.4):
     result = bin_img.copy()
-    for _ in range(iterations):
+    for _ in range(5):
         dt = cv2.distanceTransform(result.astype(np.uint8), cv2.DIST_L2, cv2.DIST_MASK_PRECISE)
         dt_normalized = cv2.normalize(dt, None, 0, 1, cv2.NORM_MINMAX)
         result = (dt_normalized > threshold).astype(np.uint8) * 255
     return result
 
 
-def analyze_width(img, labeled_mask, n_labels=1, label=None):
+def segment_width(img, labeled_mask, n_labels=1, label=None):
     """A function that analyzes the width of an object using a distance transformation.
 
     Inputs:
@@ -36,6 +36,7 @@ def analyze_width(img, labeled_mask, n_labels=1, label=None):
     :param label: str
     :return analysis_image: numpy.ndarray
     """
+    widths = []
     for i in range(1, n_labels + 1):
         submask = np.where(labeled_mask == i, 255, 0).astype(np.uint8)
         # Set lable to params.sample_label if None
@@ -59,15 +60,19 @@ def analyze_width(img, labeled_mask, n_labels=1, label=None):
             
             if len(weighted_values) > 0:
                 stroke_width = 2 * np.mean(weighted_values)
+                widths.append(stroke_width)
                 print(f"Stroke Width = {stroke_width}")
+                
             else:
+                widths.append(0)
                 print("No stroke width detected")
         
-        outputs.add_observation(sample=label, variable='segment_width', trait='segment width',
+     
+    outputs.add_observation(sample=label, variable='segment_width', trait='segment width',
                                 method='plantcv.plantcv.morphology.analyze_width',
                                 scale=params.unit, datatype=list,
-                                value=_scale_size(value=stroke_width.astype(np.float64), trait_type="segment_width"),
-                                label=range(1, n_labels + 1))
+                                value=_scale_size(value=widths.astype(np.float64), trait_type="segment_width"),
+                                label=range(1, n_labels + 1))   
     all_mask = np.where(labeled_mask > 0, 255, 0).astype(np.uint8)
     dist = cv2.distanceTransform(all_mask, cv2.DIST_L2, cv2.DIST_MASK_PRECISE)
     # Debugging
