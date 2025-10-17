@@ -134,6 +134,13 @@ class WorkflowConfig:
     def metadata_term_definition(self):
         """Add dictionary of metadata terms"""
         metadata_terms = {
+            "timestamp": {
+                "label": "datetime of image",
+                "datatype": "<class 'datetime.datetime'>",
+                "value": None
+            }
+        }
+        default_metadata_terms = {
             # Camera settings
             "camera": {
                 "label": "camera identifier",
@@ -216,11 +223,14 @@ class WorkflowConfig:
             }
         }
         # add any other metadata terms as strings
-        for k in [fm for fm in self.filename_metadata if fm not in metadata_terms]:
+        for k in [fm for fm in self.filename_metadata if fm not in default_metadata_terms]:
             metadata_terms[k] = {
                 "label": f"{k}",
                 "datatype": "<class 'str'>",
                 "value": "none"
             }
+        # add default terms with their formatting
+        for k in [fm for fm in self.filename_metadata if fm in default_metadata_terms]:
+            metadata_terms[k] = default_metadata_terms[k]
 
         return metadata_terms

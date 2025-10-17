@@ -281,7 +281,7 @@ def _filename_metadata_index(config):
     """
     # if filename_metadata is not specified then estimate it
     if not bool(config.filename_metadata):
-        print("Warning: Estimating config.filename_metadata based on file names.")
+        print("Warning: Creating config.filename_metadata based on file names.")
         config = _estimate_filename_metadata(config)
 
     # A dictionary of metadata terms and their index position in the filename metadata term list
@@ -578,11 +578,11 @@ def _estimate_filename_metadata(config):
             for file in files:
                 if file.endswith(config.imgformat):
                     fns.append(file)
-    # check length of metadata from first 10 files, take the max, use those default terms.
-    for file in fns[0:9]:
+    # check length of metadata from all files, take the max, use those default terms.
+    for file in fns:
         # get length of split filename
         metadata_lengths.append(len(file.split(config.delimiter)))
-    config.filename_metadata = list(config.metadata_terms)[0:int(max(metadata_lengths))]
+    config.filename_metadata = ["metadata_" + str(i) for i in range(max(metadata_lengths))]
     return config
 ###########################################
 
