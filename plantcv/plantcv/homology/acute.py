@@ -65,7 +65,7 @@ def acute(img, mask, win, threshold, label=None):
         # find islands from acute angles
         isle = _find_islands(obj, index, chain, win)
         # get relevant points from acute islands
-        homolog_pts, start_pts, stop_pts = _process_islands(obj, isle, chain, mask)
+        homolog_pts, start_pts, stop_pts, ptvals = _process_islands(obj, isle, chain, mask)
         num_acute_pts = len(homolog_pts)
         ori_img = np.copy(img)
         # Convert grayscale images to color
@@ -222,6 +222,8 @@ def _process_islands(obj, isle, chain, mask):
         Pseudo-landmark island starting position.
     stop_pts : list
         Pseudo-landmark island end position.
+    pt_vals  : list
+        Point values
     """
     # Initialize empty lists for homologous point max distance method
     maxpts = []
@@ -273,4 +275,4 @@ def _process_islands(obj, isle, chain, mask):
     start_pts = obj[ss_pts]
     stop_pts = obj[ts_pts]
 
-    return homolog_pts, start_pts, stop_pts
+    return homolog_pts, start_pts, stop_pts, ptvals
