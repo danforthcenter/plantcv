@@ -4,7 +4,7 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv import outputs, params
-from plantcv.plantcv._helpers import _scale_size
+from plantcv.plantcv._helpers import _scale_size, _dilate
 from plantcv.plantcv._debug import _debug
 
 
@@ -28,18 +28,17 @@ def segment_width(skel_img, labeled_mask, n_labels=1, label=None):
     :return analysis_image: numpy.ndarray
     """
     widths = []
-    values = np.unique(labeled_mask)
-    nonzero_values = [i for i in values if i != 0]
+    dilated_midline =  _dilate(skel_img, 2, 1)
 
-    for i in nonzero_values:
+    for i in range(1, n_labels + 1):
         submask = np.where(labeled_mask == i, 255, 0).astype(np.uint8)
 
         if np.count_nonzero(submask) > 0:
             mask_copy = submask.copy().astype(np.uint8)
             k = cv2.distanceTransform(mask_copy, cv2.DIST_L2, cv2.DIST_MASK_PRECISE)
                         
-            # Select non-zero values from weighted distance transform
-            nonzero_mask = (k * skel_img) != 0
+            # Select central non-zero values from weighted distance transform
+            nonzero_mask = (k * dilated_midline) != 0
             weighted_values = k[nonzero_mask]
             
             if len(weighted_values) > 0:
