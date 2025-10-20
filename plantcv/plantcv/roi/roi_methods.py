@@ -380,6 +380,46 @@ def _rois_from_coordinates(img, coord=None, radius=None):
     return roi_objects, overlap_img
 
 
+def _rect_rois_from_coordinates(img, h, w, coord=None):
+    """Create multiple circular ROIs on a single image from a list of coordinates
+
+    Parameters
+    ----------
+    img : numpy.ndarray
+        Input image data
+    coord : list, optional
+        List of tuples identifying the center of each roi [(x1,y1),(x2,y2)], by default None
+    h : int
+        Height of rectangular ROIs
+    w : int
+        Width of rectangular ROIs
+
+    Returns
+    -------
+    plantcv.plantcv.classes.Objects, numpy.ndarray
+        A dataclass with roi objects and hierarchies, A binary image with overlapping ROIs
+    """
+    # Get the height and width of the reference image
+    height, width = np.shape(img)[:2]
+    overlap_img = np.zeros((height, width), dtype=np.uint8)
+    roi_objects = Objects()
+    for i in range(0, len(coord)):
+        y = int(coord[i][1])
+        x = int(coord[i][0])
+        # find corners of rectangle
+        pt1 = [x, y]
+        pt2 = [x, y + h - 1]
+        pt3 = [x + w - 1, y + h - 1]
+        pt4 = [x + w - 1, y]
+        # Make a list of contours and hierarchies
+        rc = [np.array([[pt1], [pt2], [pt3], [pt4]], dtype=np.int32)]
+        rh = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
+        # Keep track of each roi individually to check overlapping
+        overlap_img = cv2.drawContours(overlap_img, rc, -1, 255, -1)
+        roi_objects.append(rc, rh)
+    return roi_objects, overlap_img
+
+
 def _grid_roi(img, nrows, ncols, coord=None, radius=None, spacing=None):
     """Create a grid of ROIs
 
@@ -434,6 +474,58 @@ def _grid_roi(img, nrows, ncols, coord=None, radius=None, spacing=None):
             overlap_img = cv2.circle(overlap_img, (x, y), radius, 255, -1)
             # Make a list of contours and hierarchies
             rc, rh = cv2.findContours(circle_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[-2:]
+            roi_objects.append(rc, rh)
+    return roi_objects, overlap_img
+
+
+def _grid_roi_rect(img, nrows, ncols, h, w, coord=None, spacing=None):
+    """Create a grid of rectangular ROIs
+
+    Parameters
+    ----------
+    img : numpy.ndarray
+        Input image data
+    nrows : int
+        Number of rows in ROI layout
+    ncols : int
+        Number of columns in ROI layout
+    coord : tuple, optional
+        Two-element tuple of the center of the top left object (x,y), by default None
+    h : int
+        Height of each rectangle
+    w : int
+        Width of each rectangle
+    spacing : tuple, optional
+        Two-element tuple of the horizontal and vertical spacing between ROIs, (x,y), by default None
+
+    Returns
+    -------
+    plantcv.plantcv.classes.Objects, numpy.ndarray
+        A dataclass with roi objects and hierarchies, A binary image with overlapping ROIs
+    """
+    # Get the height and width of the reference image
+    height, width = np.shape(img)[:2]
+    overlap_img = np.zeros((height, width), dtype=np.uint8)
+    roi_objects = Objects()
+    # Loop over each row
+    for i in range(0, nrows):
+        # The upper left corner is the y starting coordinate + the ROI offset * the vertical spacing
+        y = coord[1] + i * spacing[1]
+        # Loop over each column
+        for j in range(0, ncols):
+            # The upper left corner is the x starting coordinate + the ROI offset * the
+            # horizontal spacing between chips
+            x = coord[0] + j * spacing[0]
+            # calculate corners
+            pt1 = [x, y]
+            pt2 = [x, y + h - 1]
+            pt3 = [x + w - 1, y + h - 1]
+            pt4 = [x + w - 1, y]
+            # Create the ROI contours and hierarchy
+            rc = [np.array([[pt1], [pt2], [pt3], [pt4]], dtype=np.int32)]
+            rh = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
+            # Draw the rectangle on the overall mask
+            overlap_img = cv2.drawContours(overlap_img, rc, -1, 255, -1)
             roi_objects.append(rc, rh)
     return roi_objects, overlap_img
 
@@ -509,6 +601,61 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
     # User specified ROI centers
     elif (isinstance(coord, list)) and ((nrows and ncols) is None) and (spacing is None):
         roi_objects, overlap_img = _rois_from_coordinates(img=img, coord=coord, radius=radius)
+        # The number of ROIs is the length of the list of coordinates
+        num_rois = len(coord)
+    else:
+        fatal_error("Function can either make a grid of ROIs (user must provide nrows, ncols, spacing, and coord) "
+                    "or take custom ROI coordinates (user must provide only a list of tuples to 'coord' parameter). "
+                    "For automatic detection of a grid layout from just nrows, ncols, and a binary mask, use auto_grid")
+
+    # Label the ROIs to check for overlap
+    _, num_labels = label(overlap_img, return_num=True)
+    # Check for overlapping ROIs where the number of labels is not equal to the number of expected ROIs
+    if num_labels != num_rois:
+        warn("Two or more of the user defined regions of interest overlap! "
+             "If you only see one ROI then they may overlap exactly.")
+
+    # Draw the ROIs if requested
+    _draw_roi(img=img, roi_contour=roi_objects)
+    return roi_objects
+
+
+def multi_rect(img, coord, h=None, w=None, spacing=None, nrows=None, ncols=None):
+    """Create multiple rectangular ROIs on a single image
+
+    Parameters
+    ----------
+    img : numpy.ndarray
+        Input image data.
+    coord : tuple, list
+        Two-element tuple of the center of the top left object (x,y) or a list of tuples identifying
+        the top left corner of each roi [(x1,y1),(x2,y2), ...]
+    h : int, optional
+        The height of each rectangular ROI, by default None
+    w : int, optional
+        The width of each rectangular ROI, by default None
+    spacing : tuple, optional
+        Two-element tuple of the horizontal and vertical spacing between ROIs, (x,y). Ignored if `coord`
+        is a list and `rows` and `cols` are None.
+    nrows : int, optional
+        Number of rows in ROI layout. Should be missing or None if each center coordinate pair is listed.
+    ncols : int, optional
+        Number of columns in ROI layout. Should be missing or None if each center coordinate pair is listed.
+
+    Returns
+    -------
+    plantcv.plantcv.classes.Objects
+        A dataclass with roi objects and hierarchies
+    """
+    # Grid of ROIs
+    num_rois = 0
+    if (isinstance(coord, tuple)) and ((nrows and ncols) is not None) and (isinstance(spacing, tuple)):
+        roi_objects, overlap_img = _grid_roi_rect(img, nrows, ncols, h, w, coord, spacing)
+        # The number of ROIs is the product of the number of rows and columns
+        num_rois = nrows * ncols
+    # User specified ROI centers
+    elif (isinstance(coord, list)) and ((nrows and ncols) is None) and (spacing is None):
+        roi_objects, overlap_img = _rect_rois_from_coordinates(img=img, h=h, w=w, coord=coord)
         # The number of ROIs is the length of the list of coordinates
         num_rois = len(coord)
     else:
@@ -652,20 +799,25 @@ def custom(img, vertices):
 
 # Filter a mask based on a region of interest
 def filter(mask, roi, roi_type="partial"):
-    """Filter a mask using a region of interest. Connected regions of non-zero pixels outside the ROI turn to zero
+    """
+    Filter a mask using a region of interest.
 
-    Inputs:
-    mask           = binary image data to be filtered
-    roi            = region of interest, an instance of the Object class output from a roi function
-    roi_type       = 'cutto', 'partial' (for partially inside, default), or 'largest' (keep only the largest contour)
+    Connected regions of non-zero pixels outside the ROI are set to zero.
 
-    Returns:
-    filtered_mask     = mask image
+    Parameters
+    ----------
+    mask : numpy.ndarray
+        Binary image data to be filtered.
+    roi : plantcv.plantcv.classes.Objects
+        Region of interest, an instance of the Object class output from a ROI function.
+    roi_type : str, optional
+        Type of ROI filtering: 'cutto', 'partial' (default, for partially inside),
+        'largest' (keep only the largest contour), or 'within'.
 
-    :param mask: numpy.ndarray
-    :param roi: plantcv.plantcv.classes.Objects
-    :param roi_type: str
-    :return filtered_mask: numpy.ndarray
+    Returns
+    -------
+    filtered_mask : numpy.ndarray
+        Mask image after ROI filtering.
     """
     found_obj, found_hier = _cv2_findcontours(bin_img=mask)
 
