@@ -49,14 +49,13 @@ def segment_width(segmented_img, skel_img, labeled_mask, n_labels=1, label=None)
             if len(weighted_values) > 0:
                 stroke_width = 2 * np.mean(weighted_values)
                 widths.append(stroke_width.astype(np.float64))
-                print(f"Stroke Width = {stroke_width}")
                 text = str(int(stroke_width))
-                cv2.putText(img=labeled_img, text=text, org=(cnt[0][0][0][0], cnt[0][0][0][1]), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                            fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
+                if params.verbose: 
+                    cv2.putText(img=labeled_img, text=text, org=(cnt[0][0][0][0], cnt[0][0][0][1]), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                                fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
                         
             else:
                 widths.append(0)
-                print("No stroke width detected")
      
     # Set lable to params.sample_label if None
     if label is None:
