@@ -59,3 +59,31 @@ def test_detect_color_card_incorrect_card_type(transform_test_data):
     rgb_img = cv2.imread(transform_test_data.colorcard_img)
     with pytest.raises(RuntimeError):
         _ = detect_color_card(rgb_img=rgb_img, color_chip_size="pantone")
+
+
+def test_detect_astro_card(transform_test_data):
+    """Test for PlantCV."""
+    rgb_img = cv2.imread(transform_test_data.astrocard_img)
+    labeled_mask = detect_color_card(rgb_img=rgb_img, color_chip_size="astro")
+    assert len(np.unique(labeled_mask)) == 16
+
+
+def test_detect_astro_card_duplicate_aruco_tags(transform_test_data):
+    """Test for PlantCV."""
+    rgb_img = cv2.imread(transform_test_data.duplicate_aruco_tags)
+    with pytest.raises(RuntimeError):
+        _ = detect_color_card(rgb_img=rgb_img, color_chip_size="astro")
+
+
+def test_detect_astro_card_no_aruco_tags(transform_test_data):
+    """Test for PlantCV."""
+    rgb_img = cv2.imread(transform_test_data.colorcard_img)
+    with pytest.raises(RuntimeError):
+        _ = detect_color_card(rgb_img=rgb_img, color_chip_size="astro")
+
+
+def test_detect_astro_card_wrong_aruco_tags(transform_test_data):
+    """Test for PlantCV."""
+    rgb_img = cv2.imread(transform_test_data.wrong_aruco_tags)
+    with pytest.raises(RuntimeError):
+        _ = detect_color_card(rgb_img=rgb_img, color_chip_size="astro")

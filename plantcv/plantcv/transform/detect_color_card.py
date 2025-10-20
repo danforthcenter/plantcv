@@ -287,8 +287,11 @@ def _find_aruco_tags(img, aruco_dict):
     detector = cv2.aruco.ArucoDetector(dictionary=aruco_dict, detectorParams=aruco_params)
     tag_bboxes, tag_ids, rejects = detector.detectMarkers(img)
 
-    # Sort bounding boxes by tag ID
-    tag_ids, tag_bboxes = zip(*sorted(zip(tag_ids, tag_bboxes), key=lambda x: x[0]))
+    # Sort bounding boxes by tag ID, raises TypeError if no tags are detected
+    try:
+        tag_ids, tag_bboxes = zip(*sorted(zip(tag_ids, tag_bboxes), key=lambda x: x[0]))
+    except TypeError:
+        fatal_error("No ArUco tags detected in image. Can not locate color card.")
 
     return tag_bboxes, tag_ids, rejects
 
@@ -358,7 +361,7 @@ def _astrobotany_card_detection(rgb_img, **kwargs):
     aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
     tag_bboxes, tag_ids, _ = _find_aruco_tags(imgray, aruco_dict)
 
-    # Generate debug image with all aruco tags
+    # Generate debug image and draw on detected aruco tags
     debug_img = np.copy(rgb_img)
     for id, bbox in zip(tag_ids, tag_bboxes):
         id = id[0]
@@ -505,7 +508,7 @@ def _set_size_scale_from_chip(color_chip_width, color_chip_height, color_chip_si
     params.unit = "mm"
 
 
-def mask_color_card(rgb_img, card_type="macbeth", **kwargs):
+def mask_color_card(rgb_img, color_chip_size=None, **kwargs):
     """Automatically detect a color card and create bounding box mask of the chips detected.
 
     Parameters
@@ -528,12 +531,10 @@ def mask_color_card(rgb_img, card_type="macbeth", **kwargs):
     numpy.ndarray
         Binary bounding box mask of the detected color card chips
     """
-    if card_type.upper() == 'ASTRO':
+    if type(color_chip_size) is str and color_chip_size.upper() == "ASTRO":
         *_, bounding_mask = _astrobotany_card_detection(rgb_img, **kwargs)
-    elif card_type.upper() == "MACBETH":
-        *_, bounding_mask = _macbeth_card_detection(rgb_img, **kwargs)
     else:
-        fatal_error("Invalid option passed to <card_type>. Options are `macbeth` or `astro`.")
+        *_, bounding_mask = _macbeth_card_detection(rgb_img, **kwargs)
 
     if params.debug is not None:
         # Find contours

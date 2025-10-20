@@ -6,7 +6,7 @@ import numpy as np
 from altair.vegalite.v5.api import Chart
 from plantcv.plantcv.transform import (get_color_matrix, get_matrix_m, calc_transformation_matrix, apply_transformation_matrix,
                                        save_matrix, load_matrix, correct_color, create_color_card_mask, quick_color_check,
-                                       std_color_matrix, affine_color_correction)
+                                       std_color_matrix, astro_color_matrix, affine_color_correction)
 
 
 def test_affine_color_correction(transform_test_data):
@@ -64,6 +64,21 @@ def test_std_color_matrix_bad_pos():
     """Test for PlantCV."""
     with pytest.raises(RuntimeError):
         _ = std_color_matrix(pos=4.5)
+
+
+def test_astro_color_matrix():
+    """Test for PlantCV."""
+    astro_matrix = astro_color_matrix()
+
+    # Index and RGB values (range [0-1]) of the yellow chip in color matrix
+    yellow_idx = 3
+    yellow_val = astro_matrix[yellow_idx, 1:]
+
+    # RGB values of the yellow chip
+    yellow_rgb = np.array([228., 207., 50.], dtype=np.float64)
+
+    # compare RGB values in the range [0-255]
+    assert np.sum(np.abs(255*yellow_val - yellow_rgb)) < 1
 
 
 def test_get_color_matrix(transform_test_data):
