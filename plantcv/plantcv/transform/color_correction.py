@@ -496,7 +496,7 @@ def correct_color(target_img, target_mask, source_img, source_mask, output_direc
     return target_matrix, source_matrix, transformation_matrix, corrected_img
 
 
-def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=[]):
+def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=None):
     """Create a labeled mask for color card chips.
 
     Inputs:
@@ -525,7 +525,9 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
     # Store debug mode
     debug = params.debug
     params.debug = None
-
+    # Initialize exclude list
+    if exclude is None:
+        exclude = []
     # Loop over each color card row
     for i in range(0, nrows):
         # The upper left corner is the y starting coordinate + the chip offset * the vertical spacing between chips
@@ -624,8 +626,8 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
         y="source",
         color=alt.Color("color").scale(range=["blue", "green", "red"]),
         column="color"
-        ).interactive()
+        )
 
     _debug(visual=p1, filename=os.path.join(params.debug_outdir, 'color_quick_check.png'))
 
-    return p1
+    return p1.interactive()
