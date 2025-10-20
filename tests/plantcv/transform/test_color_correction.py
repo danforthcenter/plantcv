@@ -6,7 +6,7 @@ import numpy as np
 from altair.vegalite.v5.api import Chart
 from plantcv.plantcv.transform import (get_color_matrix, get_matrix_m, calc_transformation_matrix, apply_transformation_matrix,
                                        save_matrix, load_matrix, correct_color, create_color_card_mask, quick_color_check,
-                                       std_color_matrix, astro_color_matrix, affine_color_correction)
+                                       std_color_matrix, astro_color_matrix, affine_color_correction, detect_color_card)
 
 
 def test_affine_color_correction(transform_test_data):
@@ -311,3 +311,28 @@ def test_quick_color_check(transform_test_data):
     source_matrix = transform_test_data.load_npz(transform_test_data.source1_matrix_file)
     chart = quick_color_check(target_matrix, source_matrix, num_chips=22)
     assert isinstance(chart, Chart)
+
+
+def test_cameratrax_and_astro_consistent_color_calibration(transform_test_data):
+    """Test for PlantCV."""
+    # Load rgb image
+    rgb_img = cv2.imread(transform_test_data.cameratrax_astro_img)
+
+    # Correct with cameratrax card and measure corrected astrocard values
+    ctrax_mask = detect_color_card(rgb_img=rgb_img)
+    _, ctrax_mat = get_color_matrix(rgb_img=rgb_img, mask=ctrax_mask)
+    ctrax_std_mat = std_color_matrix(pos=3)
+    ctrax_corr_img = affine_color_correction(rgb_img=rgb_img, source_matrix=ctrax_mat, target_matrix=ctrax_std_mat)
+
+    # Correct with astrocard and measure corrected astrocard values
+    astro_mask = detect_color_card(rgb_img=rgb_img, color_chip_size="astro")
+    _, astro_mat = get_color_matrix(rgb_img=rgb_img, mask=astro_mask)
+    astro_std_mat = astro_color_matrix()
+    astro_corr_img = affine_color_correction(rgb_img=rgb_img, source_matrix=astro_mat, target_matrix=astro_std_mat)
+
+    # Get astrocard color matrix in both corrected images
+    _, ctrax_corr_mat = get_color_matrix(rgb_img=ctrax_corr_img, mask=astro_mask)
+    _, astro_corr_mat = get_color_matrix(rgb_img=astro_corr_img, mask=astro_mask)
+
+    # Check for similarity in corrected color: mean absolute color difference less than 2.5 (1% of range)
+    assert np.mean(np.abs(255*ctrax_corr_mat[1:] - 255*astro_corr_mat[1:])) < 2.5

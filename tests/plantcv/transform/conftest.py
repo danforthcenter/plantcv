@@ -48,6 +48,8 @@ class TransformTestData:
         self.colorcard_img = os.path.join(self.datadir, "colorcard_img.png")
         # Astro color card image
         self.astrocard_img = os.path.join(self.datadir, "astrocard_img.png")
+        # Cameratrax and astrocard in same image
+        self.cameratrax_astro_img = os.path.join(self.datadir, "cameratrax_and_astro_img.png")
         # Duplicate aruco tags image
         self.duplicate_aruco_tags = os.path.join(self.datadir, "duplicate_aruco_tags.png")
         # Image of non-astrocard aruco tags
