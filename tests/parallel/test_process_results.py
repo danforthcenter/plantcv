@@ -11,7 +11,7 @@ def test_process_results(parallel_test_data, tmpdir):
     config = type("smallconfig", (),
                   {"tmp_dir": parallel_test_data.parallel_results_dir,
                    "checkpoint": False,
-                   "json": result_file})
+                   "results": result_file})
     # Run twice to create appended results
     process_results(config)
     process_results(config)
@@ -28,7 +28,7 @@ def test_process_results_new_output(parallel_test_data, tmpdir):
     config = type("smallconfig", (),
                   {"tmp_dir": parallel_test_data.parallel_results_dir,
                    "checkpoint": False,
-                   "json": result_file})
+                   "results": result_file})
     process_results(config)
 
     # Assert output matches expected values
@@ -42,7 +42,7 @@ def test_process_results_valid_json(parallel_test_data):
     config = type("smallconfig", (),
                   {"tmp_dir": parallel_test_data.parallel_results_dir,
                    "checkpoint": "false",
-                   "json": parallel_test_data.valid_json_file})
+                   "results": parallel_test_data.valid_json_file})
     # Test when the file is a valid json file but doesn't contain expected keys
     with pytest.raises(RuntimeError):
         process_results(config)
@@ -56,6 +56,6 @@ def test_process_results_invalid_json(tmpdir):
     config = type("smallconfig", (),
                   {"tmp_dir": os.path.split(str(result_file))[0],
                    "checkpoint": "false",
-                   "json": result_file})
+                   "results": result_file})
     with pytest.raises(RuntimeError):
         process_results(config)

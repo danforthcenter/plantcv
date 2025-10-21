@@ -79,7 +79,7 @@ def test_jupcon_run(parallel_test_data, tmpdir):
     jupcon.notebook = jupcon.find_notebook()
     jupcon.input_dir = parallel_test_data.flat_imgdir
     jupcon.workflow = "example.py"
-    jupcon.results = "example"
+    jupcon.results = "example.json"
     jupcon.run()
     assert os.path.exists(jupcon.results)
 

@@ -206,6 +206,7 @@ class jupyterconfig:
                 object.__setattr__(config, attr, getattr(self, attr))
             # set a few manually due to property differences
             config.workflow = self.workflow
+            config.results = self.results
             # save
             config.save_config(config_file=self.config)
             parallel_print("Saved " + self.config, verbose=self.verbose)

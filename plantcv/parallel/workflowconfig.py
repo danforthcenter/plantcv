@@ -99,8 +99,8 @@ class WorkflowConfig:
             print(f"Error: input directory (input_dir) is required and {self.input_dir} does not exist.",
                   file=sys.stderr)
             checks.append(False)
-        # Validate JSON file
-        if self.json == "":
+        # Validate JSON results file
+        if self.results == "":
             print("Error: an output JSON file (results) is required but is currently undefined.", file=sys.stderr)
             checks.append(False)
         # Validate workflow script
