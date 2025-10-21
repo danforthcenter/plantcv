@@ -4,9 +4,10 @@
 1. [Updating with PyPi](#pypi)
 2. [Updating with Conda](#conda)
 3. [Updating from source](#source)
-4. [Updating to v4](#v4)
+4. [Breaking changes in v5](#breaking-changes)
+5. [Updating to v4](#v4)
     * [An example](#ex)
-5. [Changelog](#changelog)
+6. [Changelog](#changelog)
 
 ### PyPI <a name="pypi"></a>
 
@@ -55,6 +56,13 @@ and are on the `main` branch, here is how you can tell:
 
 If you installed PlantCV using the "editable" mode `pip install -e .` then your installation should be updated
 automatically. Alternatively, you can run `pip install -e .` to reinstall the package from the cloned repository.
+
+### Breaking changes between v4 and v5 <a name="breaking-changes"></a>
+
+#### plantcv.spectral_index.egi
+
+Renamed the input parameter `rgb_img` to `img` to reflect the flexibility of using the [EGI index function](spectral_index.md)
+with RGB and hyperspectral data.
 
 ### Updating to v4 <a name="v4"></a>
 
@@ -1069,6 +1077,7 @@ pages for more details on the input and output variable types.
 
 * post v3.8: array = **plantcv.spectral_index.egi**(*rgb_img*)
 * post v4.4: array = **plantcv.spectral_index.egi**(*rgb_img, distance=40*)
+* post v5.0: array = **plantcv.spectral_index.egi**(*img, distance=40*)
 
 #### plantcv.spectral_index.evi
 
@@ -1371,6 +1380,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.13: NA
 * post v3.13: fig_hist = **plantcv.visualize.hyper_histogram**(*hsi, mask=None, bins=100, lower_bound=None, upper_bound=None, title=None, wvlengths=[480, 550, 650]*)
+* post v4.9: fig_hist = **plantcv.visualize.hyper_histogram**(*hsi, mask=None, bins=100, lower_bound=None, upper_bound=None, title=None, wvlengths=None*)
 
 #### plantcv.visualize.obj_size_ecdf
 
