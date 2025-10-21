@@ -21,7 +21,7 @@ def process_results(config):
     # process results from the checkpoint inside tmp_dir
     job_dir = config.tmp_dir
     # name outputs from config
-    json_file = config.json
+    json_file = config.results
     # Data dictionary
     data = {"variables": {}, "entities": []}
     if os.path.exists(json_file):

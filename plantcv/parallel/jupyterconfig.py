@@ -206,7 +206,6 @@ class jupyterconfig:
                 object.__setattr__(config, attr, getattr(self, attr))
             # set a few manually due to property differences
             config.workflow = self.workflow
-            config.json = self.results
             # save
             config.save_config(config_file=self.config)
             parallel_print("Saved " + self.config, verbose=self.verbose)
@@ -225,9 +224,7 @@ class jupyterconfig:
             # Import the JSON configuration data
             config = json.load(fp)
             for key, value in config.items():
-                if key == "json":
-                    object.__setattr__(self, "results", value)
-                elif key != "_metadata_terms":
+                if key != "_metadata_terms":
                     object.__setattr__(self, key, value)
 
     @staticmethod
