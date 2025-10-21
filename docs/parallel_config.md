@@ -47,7 +47,7 @@ Validate parameters/structure of configuration data.
 * **input_dir**: (str, required): path/name of input images directory (validates that it exists).
 
 
-* **json**: (str, required): path/name of output JSON data file (appends new data if it already exists).
+* **results**: (str, required): path/name of output JSON data file (appends new data if it already exists).
 
 
 * **filename_metadata**: (list, required): list of metadata terms used to construct filenames. for example: 
@@ -206,7 +206,7 @@ config.import_config(config_file="my_config.json")
 
 # Change configuration values directly in Python as needed. At a minimum you must specify input_dir, json, filename_metadata, workflow.
 config.input_dir = "./my_images"
-config.json = "output.json"
+config.results = "output.json"
 config.filename_metadata = ["plantbarcode", "timestamp"]
 config.workflow = "my_workflow.py"
 
