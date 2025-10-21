@@ -43,7 +43,7 @@ def test_validate_config(parallel_test_data, tmpdir):
     config = WorkflowConfig()
     # Set valid values in config
     config.input_dir = parallel_test_data.flat_imgdir
-    config.json = "valid_config.json"
+    config.results = "valid_config.json"
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = parallel_test_data.workflow_script
     config.img_outdir = str(img_outdir)
@@ -59,7 +59,7 @@ def test_invalid_startdate(parallel_test_data, tmpdir):
     config = WorkflowConfig()
     # Set valid values in config
     config.input_dir = parallel_test_data.flat_imgdir
-    config.json = "valid_config.json"
+    config.results = "valid_config.json"
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = parallel_test_data.workflow_script
     config.img_outdir = str(img_outdir)
@@ -76,7 +76,7 @@ def test_invalid_enddate(parallel_test_data, tmpdir):
     config = WorkflowConfig()
     # Set valid values in config
     config.input_dir = config.input_dir = parallel_test_data.flat_imgdir
-    config.json = "valid_config.json"
+    config.results = "valid_config.json"
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = config.workflow = parallel_test_data.workflow_script
     config.img_outdir = str(img_outdir)
