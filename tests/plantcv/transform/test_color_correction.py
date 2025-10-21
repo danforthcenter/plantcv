@@ -4,9 +4,11 @@ import os
 import cv2
 import numpy as np
 from altair.vegalite.v5.api import Chart
-from plantcv.plantcv.transform import (get_color_matrix, get_matrix_m, calc_transformation_matrix, apply_transformation_matrix,
-                                       save_matrix, load_matrix, correct_color, create_color_card_mask, quick_color_check,
-                                       std_color_matrix, astro_color_matrix, affine_color_correction, detect_color_card)
+from plantcv.plantcv.transform.color_correction import (get_color_matrix, get_matrix_m, calc_transformation_matrix,
+                                                        apply_transformation_matrix, save_matrix, load_matrix, correct_color,
+                                                        create_color_card_mask, quick_color_check, std_color_matrix,
+                                                        astro_color_matrix, affine_color_correction)
+from plantcv.plantcv.transform.detect_color_card import detect_color_card
 
 
 def test_affine_color_correction(transform_test_data):

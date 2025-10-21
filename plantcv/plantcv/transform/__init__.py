@@ -27,5 +27,5 @@ __all__ = ["get_color_matrix", "get_matrix_m", "calc_transformation_matrix", "ap
            "save_matrix", "load_matrix", "correct_color", "create_color_card_mask", "quick_color_check",
            "find_color_card", "std_color_matrix", "astro_color_matrix", "affine_color_correction", "rescale",
            "nonuniform_illumination", "resize", "resize_factor", "warp", "rotate", "warp", "warp_align",
-           "gamma_correct", "detect_color_card", "checkerboard_calib", "calibrate_camera", "merge_images",
-           "auto_correct_color", "mask_color_card"]
+           "gamma_correct", "detect_color_card", "mask_color_card", "checkerboard_calib", "calibrate_camera",
+           "merge_images", "auto_correct_color"]

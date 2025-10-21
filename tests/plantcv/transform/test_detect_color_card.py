@@ -2,7 +2,7 @@
 import cv2
 import pytest
 import numpy as np
-from plantcv.plantcv.transform import detect_color_card
+from plantcv.plantcv.transform.detect_color_card import detect_color_card
 
 
 def test_detect_color_card(transform_test_data):

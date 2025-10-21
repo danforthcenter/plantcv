@@ -1,8 +1,9 @@
 # Automatically detect a color card and color correct to standard chip values
 
 from plantcv.plantcv import params, deprecation_warning
-from plantcv.plantcv.transform import detect_color_card
-from plantcv.plantcv.transform import get_color_matrix, std_color_matrix, affine_color_correction, astro_color_matrix
+from plantcv.plantcv.transform.detect_color_card import detect_color_card
+from plantcv.plantcv.transform.color_correction import (get_color_matrix, std_color_matrix, affine_color_correction,
+                                                        astro_color_matrix)
 
 
 def auto_correct_color(rgb_img, label=None, color_chip_size=None, roi=None, **kwargs):
