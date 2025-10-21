@@ -426,8 +426,6 @@ def _astrobotany_card_detection(rgb_img, **kwargs):
 
     # Calculate matrix to transform standard-size color card to the image
     mat, _ = cv2.findHomography(ref_pts, img_pts, method=0)
-    if mat is None:
-        fatal_error("Cannot calculate a robust model with given corresponding coordinates!")
 
     # Apply inverse matrix to generate image of aligned color card
     inv_mat = np.linalg.inv(np.array(mat).astype(np.float32))

@@ -54,6 +54,8 @@ class TransformTestData:
         self.duplicate_aruco_tags = os.path.join(self.datadir, "duplicate_aruco_tags.png")
         # Image of non-astrocard aruco tags
         self.wrong_aruco_tags = os.path.join(self.datadir, "wrong_aruco_tags.png")
+        # Image of astrocard with some aruco tags not in image or too blurry to be identified
+        self.astrocard_missing_tags = os.path.join(self.datadir, "astrocard_missing_tags.png")
         # Checkerboard image directory
         self.checkerboard_imgdir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                                 "..", "..", "testdata", "checkerboard_imgdir")
