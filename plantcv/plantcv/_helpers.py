@@ -907,6 +907,7 @@ def _rect_replace(img, sub_img, roi):
     full_img[ystart:yend, xstart:xend] = sub_img
     return full_img
 
+
 def _unsharp_masking(img, ksize, amount=1, threshold=0, sigma_x=0, sigma_y=None):
     """Helper function to sharpen image using unsharp masking
     Parameters
