@@ -19,46 +19,28 @@ class Params:
     def __init__(self, device=0, debug=None, debug_outdir=".", line_thickness=5,
                  line_color=(255, 0, 255), dpi=100, text_size=0.55,
                  text_thickness=2, marker_size=60, color_scale="gist_rainbow", color_sequence="sequential",
-                 sample_label="default", saved_color_scale=None, verbose=True, unit="pixels", px_height=1, px_width=1):
+                 sample_label="default", saved_color_scale=None, verbose=1, unit="pixels", px_height=1, px_width=1):
         """Initialize parameters.
 
-        Keyword arguments/parameters:
-        device            = Device number. Used to count steps in the pipeline. (default: 0)
-        debug             = None, print, or plot. Print = save to file, Plot = print to screen. (default: None)
-        debug_outdir      = Debug images output directory. (default: .)
-        line_thickness    = Width of line drawings. (default: 5)
-        line_color        = Color of line annotations (default = (255, 0, 255))
-        dpi               = Figure plotting resolution, dots per inch. (default: 100)
-        text_size         = Size of plotting text. (default: 0.55)
-        text_thickness    = Thickness of plotting text. (default: 2)
-        marker_size       = Size of plotting markers (default: 60)
-        color_scale       = Name of plotting color scale (matplotlib colormap). (default: gist_rainbow)
-        color_sequence    = Build color scales in "sequential" or "random" order. (default: sequential)
-        sample_label      = Sample name prefix. Used in analyze functions. (default: "default")
-        saved_color_scale = Saved color scale that will be applied next time color_palette is called. (default: None)
-        verbose           = Whether or not in verbose mode. (default: True)
-        unit              = Units of size trait outputs. (default: "pixels")
-        px_height         = Size scaling information about pixel height (default: 1)
-        px_width          = Size scaling information about pixel width (default: 1)
-
-
-        :param device: int
-        :param debug: str
-        :param debug_outdir: str
-        :param line_thickness: numeric
-        :param dpi: int
-        :param text_size: float
-        :param text_thickness: int
-        :param marker_size: int
-        :param color_scale: str
-        :param color_sequence: str
-        :param sample_label: str
-        :param saved_color_scale: list
-        :param verbose: bool
-        :param unit: str
-        :param px_height: float
-        :param px_width: float
-
+        Parameters
+        ----------
+        device            = int, Device number. Used to count steps in the pipeline. (default: 0)
+        debug             = str or None. Print = save to file, Plot = print to screen. (default: None)
+        debug_outdir      = str, Debug images output directory. (default: .)
+        line_thickness    = numeric, Width of line drawings. (default: 5)
+        line_color        = tuple, Color of line annotations (default = (255, 0, 255))
+        dpi               = numeric, Figure plotting resolution, dots per inch. (default: 100)
+        text_size         = float, Size of plotting text. (default: 0.55)
+        text_thickness    = int, Thickness of plotting text. (default: 2)
+        marker_size       = int, Size of plotting markers (default: 60)
+        color_scale       = str, Name of plotting color scale (matplotlib colormap). (default: gist_rainbow)
+        color_sequence    = str, Build color scales in "sequential" or "random" order. (default: sequential)
+        sample_label      = str, Sample name prefix. Used in analyze functions. (default: "default")
+        saved_color_scale = list or None, Saved color scale that will be applied next time color_palette is called. (default: None)
+        verbose           = Int, 0:2 representing verbosity level. 0 is least verbose, 2 is most verbose (default 1)
+        unit              = str, Units of size trait outputs. (default: "pixels")
+        px_height         = float, Size scaling information about pixel height (default: 1)
+        px_width          = float, Size scaling information about pixel width (default: 1)
         """
         self.device = device
         self.debug = debug
