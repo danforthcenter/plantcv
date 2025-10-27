@@ -151,6 +151,46 @@ def _check_point_per_chip(contours, centers, debug_img):
         fatal_error("Centers do not map 1 to 1 with detected color chips")
 
 
+def _check_chips_not_aruco_tags(img, centers, debug_img):
+    """Check that detected chips are not actually aruco tags
+
+    Parameters
+    ----------
+    img : numpy.ndarray
+        Input RGB or Grayscale image data.
+    centers : numpy.ndarray
+             (X, Y) points of the center of each prospective mask to make
+    debug_img : numpy.ndarray
+             Debug image to show the problem if a fatal error is generated
+
+    Returns
+    -------
+    No returns
+
+    Raises
+    ------
+    fatal_error
+          If any center is placed in an aruco tag
+    """
+    # set up default aruco tag detection
+    aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
+    aruco_params = cv2.aruco.DetectorParameters()
+    detector = cv2.aruco.ArucoDetector(dictionary=aruco_dict, detectorParams=aruco_params)
+    tag_bboxes, _, _ = detector.detectMarkers(img)
+    # if tags are found and any of the boxes has a center in it then error
+    aruco_tag_has_mask = []
+    for box in tag_bboxes:
+        bools = []
+        for pt in centers:
+            # -1 is outside, 0 is on line, 1 is inside
+            bools.append(cv2.pointPolygonTest(box, (int(pt[0]), int(pt[1])), False) == 1)
+            aruco_tag_has_mask.append(bool(sum(bools)))
+    # if any tags have a mask in them then raise an error
+    if any(x for x in aruco_tag_has_mask):
+        _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
+        fatal_error("At least one center is inside an ArUco tag, should you be using color_chip_size='aruco'?")
+
+
 def _check_corners(img, corners):
     """Check that corners are within an image
     Parameters
@@ -260,6 +300,8 @@ def _macbeth_card_detection(rgb_img, **kwargs):
     labeled_mask, debug_img = _draw_color_chips(debug_img, new_centers, radius)
     # Check that new centers are inside each unique filtered_contour
     _check_point_per_chip(filtered_contours, new_centers, debug_img)
+    # check that new centers are not inside aruco tags
+    _check_chips_not_aruco_tags(imgray, new_centers, debug_img)
 
     return labeled_mask, debug_img, marea, mheight, mwidth, bounding_mask
 
