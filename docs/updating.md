@@ -1238,6 +1238,10 @@ pages for more details on the input and output variable types.
 * pre v3.0dev1: NA
 * post v3.0dev2: corrected_img = **plantcv.transform.apply_transformation_matrix**(*source_img, target_img, transformation_matrix*)
 
+#### plantcv.transform.astro_color_matrix
+* pre v5.0: NA
+* post v5.0: matrix = **plantcv.transform.astro_color_matrix**()
+
 #### plantcv.transform.calc_transformation_matrix
 
 * pre v3.0dev1: NA
