@@ -35,9 +35,9 @@ def obj_size_ecdf(mask):
         x=alt.X("object area:Q").scale(type='log'),
         y="cumulative probability:Q",
         tooltip=['object area', 'cumulative probability']
-    ).interactive()
+    )
 
     # Plot or print the ecdf
     _debug(visual=chart,
            filename=os.path.join(params.debug_outdir, str(params.device) + '_area_ecdf.png'))
-    return chart
+    return chart.interactive()

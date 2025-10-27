@@ -34,7 +34,7 @@ def print_image(img, filename, **kwargs):
 
     # Print altair type images
     elif isinstance(img, (FacetChart, LayerChart, Chart)):
-        img.save(filename)
+        img.save(filename, ppi=params.dpi)
 
     elif isinstance(img, DataArray):
         fig_handle = _show_dataarray(img, **kwargs)

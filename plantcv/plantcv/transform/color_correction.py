@@ -626,8 +626,8 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
         y="source",
         color=alt.Color("color").scale(range=["blue", "green", "red"]),
         column="color"
-        ).interactive()
+        )
 
     _debug(visual=p1, filename=os.path.join(params.debug_outdir, 'color_quick_check.png'))
 
-    return p1
+    return p1.interactive()
