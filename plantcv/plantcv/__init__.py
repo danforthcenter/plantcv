@@ -26,7 +26,6 @@ from plantcv.plantcv.rgb2gray_hsv import rgb2gray_hsv
 from plantcv.plantcv.rgb2gray_lab import rgb2gray_lab
 from plantcv.plantcv.rgb2gray_cmyk import rgb2gray_cmyk
 from plantcv.plantcv.gaussian_blur import gaussian_blur
-from plantcv.plantcv.sharpen import sharpen
 from plantcv.plantcv import transform
 from plantcv.plantcv import hyperspectral
 from plantcv.plantcv import spectral_index
@@ -84,6 +83,7 @@ from plantcv.plantcv import filters
 from plantcv.plantcv.kmeans_classifier import predict_kmeans
 from plantcv.plantcv.kmeans_classifier import mask_kmeans
 from plantcv.plantcv import qc
+from plantcv.plantcv.sharpen import sharpen
 # add new functions to end of lists
 
 __all__ = [
@@ -104,7 +104,6 @@ __all__ = [
     "rgb2gray_lab",
     "rgb2gray_cmyk",
     "gaussian_blur",
-    "sharpen",
     "transform",
     "hyperspectral",
     "spectral_index",
@@ -161,5 +160,6 @@ __all__ = [
     "filters",
     "predict_kmeans",
     "mask_kmeans",
-    "qc"
+    "qc",
+    "sharpen"
 ]
