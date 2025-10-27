@@ -26,6 +26,7 @@ from plantcv.plantcv.rgb2gray_hsv import rgb2gray_hsv
 from plantcv.plantcv.rgb2gray_lab import rgb2gray_lab
 from plantcv.plantcv.rgb2gray_cmyk import rgb2gray_cmyk
 from plantcv.plantcv.gaussian_blur import gaussian_blur
+from plantcv.plantcv.sharpen import sharpen
 from plantcv.plantcv import transform
 from plantcv.plantcv import hyperspectral
 from plantcv.plantcv import spectral_index
