@@ -186,6 +186,7 @@ nav:
           - 'Color Correction Workflow': transform_correct_color.md
           - 'Quick Color Check': quick_color_check.md
           - 'Affine Color Correction': transform_affine_color_correction.md
+          - 'Auto Correct Color (non-linear)': transform_auto_correct_color_nonlinear.md
           - 'Standard Color Matrix': std_color_matrix.md
           - 'Gamma Correction': transform_gamma_correct.md
           - 'Mask Color Card': transform_mask_color_card.md
