@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from plantcv.plantcv import sharpen, Objects
+from plantcv.plantcv import sharpen
 
 
 def test_sharpen_zero_amount(test_data):

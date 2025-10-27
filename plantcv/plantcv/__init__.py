@@ -104,6 +104,7 @@ __all__ = [
     "rgb2gray_lab",
     "rgb2gray_cmyk",
     "gaussian_blur",
+    "sharpen",
     "transform",
     "hyperspectral",
     "spectral_index",

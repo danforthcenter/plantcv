@@ -3,7 +3,7 @@ import os
 import numpy as np
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _rect_filter, _rect_replace
-from plantcv.plantcv import params
+
 
 def sharpen(img, ksize, amount=1, threshold=0, sigma_x=0, sigma_y=None, roi=None):
     """Sharpen an image
@@ -55,10 +55,7 @@ def _unsharp_masking(img, ksize, amount=1, threshold=0, sigma_x=0, sigma_y=None)
     sharpened = numpy.ndarray,
                    sharpened image
     """
-    debugging = params.debug
-    params.debug = None
     blurred = cv2.GaussianBlur(img, ksize=ksize, sigmaX=sigma_x, sigmaY=sigma_y)
-    params.debug = debugging
     # subtract blurry image from "saturated" version of image
     sharpened_unscaled = float(amount + 1) * img - float(amount) * blurred
     # ensure image is [0, 255]
