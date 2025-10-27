@@ -1,9 +1,9 @@
 # Sharpen an image
 
 import os
+from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _rect_filter, _rect_replace, _unsharp_masking
-from plantcv.plantcv import params
 
 
 def sharpen(img, ksize, amount=1, threshold=0, sigma_x=0, sigma_y=None, roi=None):
