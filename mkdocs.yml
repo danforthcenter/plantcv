@@ -196,6 +196,7 @@ nav:
           - 'Resize Images': transform_resize.md
           - 'Rotate': rotate2.md
       - 'Transformation Helpers':
+            - 'Astrobotany Calibration Matrix': astro_color_matrix.md
             - 'Calculate Moore-Penrose Inverse Matrix': mp_inverse.md
             - 'Create Color Correction Matrix': transformation_matrix.md
             - 'Apply Color Correction Matrix': apply_transformation_matrix.md
