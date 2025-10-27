@@ -83,7 +83,7 @@ from plantcv.plantcv import filters
 from plantcv.plantcv.kmeans_classifier import predict_kmeans
 from plantcv.plantcv.kmeans_classifier import mask_kmeans
 from plantcv.plantcv import qc
-from plantcv.plantcv.sharpen import sharpen
+from plantcv.plantcv.sharpen_image import sharpen
 # add new functions to end of lists
 
 __all__ = [
