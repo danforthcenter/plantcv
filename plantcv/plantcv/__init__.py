@@ -63,6 +63,7 @@ from plantcv.plantcv.distance_transform import distance_transform
 from plantcv.plantcv.canny_edge_detect import canny_edge_detect
 from plantcv.plantcv.opening import opening
 from plantcv.plantcv.closing import closing
+from plantcv.plantcv.sharpen import sharpen
 from plantcv.plantcv import roi
 from plantcv.plantcv import threshold
 from plantcv.plantcv import visualize
@@ -83,7 +84,6 @@ from plantcv.plantcv import filters
 from plantcv.plantcv.kmeans_classifier import predict_kmeans
 from plantcv.plantcv.kmeans_classifier import mask_kmeans
 from plantcv.plantcv import qc
-from plantcv.plantcv.sharpen import sharpen
 # add new functions to end of lists
 
 __all__ = [
@@ -140,6 +140,7 @@ __all__ = [
     "canny_edge_detect",
     "opening",
     "closing",
+    "sharpen",
     "roi",
     "threshold",
     "visualize",
@@ -160,6 +161,5 @@ __all__ = [
     "filters",
     "predict_kmeans",
     "mask_kmeans",
-    "qc",
-    "sharpen"
+    "qc"
 ]
