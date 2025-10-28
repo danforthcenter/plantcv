@@ -36,7 +36,8 @@ class Params:
         color_scale       = str, Name of plotting color scale (matplotlib colormap). (default: gist_rainbow)
         color_sequence    = str, Build color scales in "sequential" or "random" order. (default: sequential)
         sample_label      = str, Sample name prefix. Used in analyze functions. (default: "default")
-        saved_color_scale = list or None, Saved color scale that will be applied next time color_palette is called. (default: None)
+        saved_color_scale = list or None, Saved color scale that will be applied next time color_palette is called.
+                            (default: None)
         verbose           = Int, 0:2 representing verbosity level. 0 is least verbose, 2 is most verbose (default 1)
         unit              = str, Units of size trait outputs. (default: "pixels")
         px_height         = float, Size scaling information about pixel height (default: 1)
