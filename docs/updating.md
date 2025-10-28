@@ -1257,6 +1257,7 @@ pages for more details on the input and output variable types.
 * pre v4.6: NA
 * post v4.6: corrected_img = **plantcv.transform.auto_correct_color**(*rgb_img, label=None, \*\*kwargs*)
 * post v4.9: corrected_img = **plantcv.transform.auto_correct_color**(*rgb_img, label=None, color_chip_size=None, roi=None, \*\*kwargs*)
+* post v5.0: corrected_img = **plantcv.transform.auto_correct_color**(*rgb_img, color_chip_size=None, roi=None, \*\*kwargs*)
 
 #### plantcv.transform.correct_color
 
