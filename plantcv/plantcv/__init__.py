@@ -8,7 +8,7 @@ from plantcv.plantcv.classes import Params
 from plantcv.plantcv.classes import Outputs
 from plantcv.plantcv.classes import Spectral_data
 from plantcv.plantcv.classes import PSII_data
-from plantcv.plantcv.classes import Points
+from plantcv.plantcv.classes import Point
 from plantcv.plantcv.classes import Objects
 
 # Initialize an instance of the Params and Outputs class with default values
