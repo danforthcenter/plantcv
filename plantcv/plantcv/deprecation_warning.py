@@ -14,5 +14,5 @@ def deprecation_warning(warning):
     :param warning: str
     """
     warning_msg = f"DeprecationWarning: {warning} Current PlantCV version: {version}"
-    if params.verbose is True:
+    if params.verbose == 2:
         print(warning_msg, file=sys.stderr)
