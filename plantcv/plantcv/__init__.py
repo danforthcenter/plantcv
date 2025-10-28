@@ -93,6 +93,8 @@ __all__ = [
     'PSII_data',
     'Points',
     "Objects",
+    "params",
+    "outputs",
     "deprecation_warning",
     "warn",
     "print_image",

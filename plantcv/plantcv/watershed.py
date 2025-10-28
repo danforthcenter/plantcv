@@ -9,9 +9,8 @@ from scipy import ndimage as ndi
 from skimage.feature import peak_local_max
 from skimage.segmentation import watershed
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import color_palette
-from plantcv.plantcv._globals import params
-from plantcv.plantcv import outputs
+from plantcv.plantcv.color_palette import color_palette
+from plantcv.plantcv._globals import params, outputs
 from plantcv.plantcv._helpers import _cv2_findcontours
 
 

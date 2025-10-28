@@ -3,8 +3,8 @@
 import os
 import numpy as np
 from skimage import img_as_ubyte
-from plantcv.plantcv import fatal_error
-from plantcv.plantcv import Spectral_data
+from plantcv.plantcv.fatal_error import fatal_error
+from plantcv.plantcv.classes import Spectral_data
 from plantcv.plantcv._globals import params
 from plantcv.plantcv.hyperspectral.read_data import _make_pseudo_rgb
 from plantcv.plantcv._debug import _debug
