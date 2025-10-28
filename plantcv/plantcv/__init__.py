@@ -91,7 +91,7 @@ __all__ = [
     "Outputs",
     "Spectral_data",
     'PSII_data',
-    'Points',
+    'Point',
     "Objects",
     "deprecation_warning",
     "warn",

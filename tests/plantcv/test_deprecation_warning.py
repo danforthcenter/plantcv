@@ -1,4 +1,4 @@
-from plantcv.plantcv import deprecation_warning, params
+from plantcv.plantcv import params, deprecation_warning
 
 
 def test_deprecation_warning():
