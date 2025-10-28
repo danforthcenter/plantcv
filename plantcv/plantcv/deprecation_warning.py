@@ -2,7 +2,7 @@
 
 import sys
 from plantcv.plantcv import __version__ as version
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 
 
 def deprecation_warning(warning):

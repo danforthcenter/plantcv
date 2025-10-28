@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from skimage import morphology
 from plantcv.plantcv import fatal_error, warn
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 import pandas as pd
 
 

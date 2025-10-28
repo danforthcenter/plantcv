@@ -1,10 +1,11 @@
 # Sharpen an image
 
-import os
 import cv2
+import os
 import numpy as np
-from ._debug import _debug
-from ._helpers import _rect_filter, _rect_replace
+from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _rect_filter, _rect_replace
+from plantcv.plantcv._globals import params
 
 
 def sharpen(img, ksize, amount=1, threshold=0, sigma_x=0, sigma_y=None, roi=None):
@@ -25,7 +26,6 @@ def sharpen(img, ksize, amount=1, threshold=0, sigma_x=0, sigma_y=None, roi=None
     sharp_img = numpy.ndarray,
                    sharpened image
     """
-    from plantcv.plantcv import params
     sub_sharp_img = _rect_filter(img, roi, _unsharp_masking,
                                  **{"ksize": ksize,
                                     "sigma_x": sigma_x,

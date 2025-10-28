@@ -13,8 +13,7 @@ from plantcv.plantcv.classes import Objects
 
 # Initialize an instance of the Params and Outputs class with default values
 # params and outputs are available when plantcv is imported
-params = Params()
-outputs = Outputs()
+from plantcv.plantcv._globals import params, outputs
 
 from plantcv.plantcv.deprecation_warning import deprecation_warning
 from plantcv.plantcv.warn import warn

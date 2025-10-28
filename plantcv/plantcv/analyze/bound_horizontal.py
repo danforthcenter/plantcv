@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _iterate_analysis, _grayscale_to_rgb, _scale_size
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv import outputs
 
 

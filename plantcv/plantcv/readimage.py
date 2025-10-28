@@ -7,7 +7,7 @@ import pandas as pd
 import nd2
 import flyr
 from plantcv.plantcv import fatal_error
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv.hyperspectral import read_data
 from plantcv.plantcv._debug import _debug
 

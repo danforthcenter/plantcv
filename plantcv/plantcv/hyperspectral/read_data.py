@@ -4,7 +4,7 @@ import os
 import re
 import cv2
 import numpy as np
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import Spectral_data
 from plantcv.plantcv.transform import rescale
