@@ -13,8 +13,7 @@ from plantcv.plantcv.classes import Objects
 
 # Initialize an instance of the Params and Outputs class with default values
 # params and outputs are available when plantcv is imported
-params = Params()
-outputs = Outputs()
+from plantcv.plantcv._globals import params, outputs
 
 from plantcv.plantcv.deprecation_warning import deprecation_warning
 from plantcv.plantcv.warn import warn
@@ -63,6 +62,7 @@ from plantcv.plantcv.distance_transform import distance_transform
 from plantcv.plantcv.canny_edge_detect import canny_edge_detect
 from plantcv.plantcv.opening import opening
 from plantcv.plantcv.closing import closing
+from plantcv.plantcv.sharpen import sharpen
 from plantcv.plantcv import roi
 from plantcv.plantcv import threshold
 from plantcv.plantcv import visualize
@@ -93,6 +93,8 @@ __all__ = [
     'PSII_data',
     'Point',
     "Objects",
+    "params",
+    "outputs",
     "deprecation_warning",
     "warn",
     "print_image",
@@ -139,6 +141,7 @@ __all__ = [
     "canny_edge_detect",
     "opening",
     "closing",
+    "sharpen",
     "roi",
     "threshold",
     "visualize",

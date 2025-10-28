@@ -3,7 +3,7 @@
 import os
 import cv2
 import numpy as np
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv.morphology import segment_sort, segment_skeleton
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _iterative_prune, _image_subtract
