@@ -4,7 +4,7 @@ import os
 import numpy as np
 from skimage.measure import label
 from skimage.color import label2rgb
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _roi_filter, _cv2_findcontours
 

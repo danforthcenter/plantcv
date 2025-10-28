@@ -3,7 +3,7 @@
 import os
 import numpy as np
 from skimage import morphology
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _rect_filter, _rect_replace
 from plantcv.plantcv import fatal_error
