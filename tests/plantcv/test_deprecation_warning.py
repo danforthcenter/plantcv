@@ -1,4 +1,4 @@
-from plantcv.plantcv.Classes import Params
+from plantcv.plantcv.classes import Params
 from plantcv.plantcv.deprecation_warning import deprecation_warning
 
 
