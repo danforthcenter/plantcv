@@ -64,6 +64,10 @@ automatically. Alternatively, you can run `pip install -e .` to reinstall the pa
 Renamed the input parameter `rgb_img` to `img` to reflect the flexibility of using the [EGI index function](spectral_index.md)
 with RGB and hyperspectral data.
 
+#### plantcv.visualize.time_lapse_video
+
+Deprecated the function to enable compatibility with the opencv-headless package. Will be readded in a future release.
+
 ### Updating to v4 <a name="v4"></a>
 
 In addition to new features a major goal of PlantCV v4 is to make PlantCV functions
@@ -1414,6 +1418,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: NA
 * post v4.0: frame_size = **pcv.visualize.time_lapse_video**(*img_list, out_filename='./time_lapse_video.mp4', fps=29.97, display=True*)
+* post v5.0: deprecated.
 
 #### plantcv.watershed_segmentation
 
