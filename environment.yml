@@ -12,7 +12,7 @@ dependencies:
   - scikit-learn
   - dask
   - dask-jobqueue
-  - opencv-python-headless
+  - opencv *=headless*
   - statsmodels
   - xarray>=2022.11.0
   - mkdocs
