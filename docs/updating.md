@@ -74,6 +74,11 @@ Removed `label` parameter since size marker data is now stored as metadata in th
 Removed `label` parameter since size marker data is now stored as metadata in the
 [`Outputs` class](outputs.md) and does not need to be labeled per sample.
 
+#### plantcv.transform.detect_color_card
+
+Deprecated the function in favor of the new
+[`plantcv.transform.detect_color_card`](transform_detect_color_card.md) function.
+
 #### plantcv.visualize.time_lapse_video
 
 Deprecated the function to enable compatibility with the opencv-headless package. Will be readded in a future release.
