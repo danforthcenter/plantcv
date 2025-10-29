@@ -59,6 +59,11 @@ automatically. Alternatively, you can run `pip install -e .` to reinstall the pa
 
 ### Breaking changes between v4 and v5 <a name="breaking-changes"></a>
 
+#### plantcv.report_size_marker_area
+
+Removed `label` parameter since size marker data is now stored as metadata in the
+[`Outputs` class](outputs.md) and does not need to be labeled per sample.
+
 #### plantcv.spectral_index.egi
 
 Renamed the input parameter `rgb_img` to `img` to reflect the flexibility of using the [EGI index function](spectral_index.md)
