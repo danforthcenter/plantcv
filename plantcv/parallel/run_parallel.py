@@ -10,7 +10,7 @@ from plantcv.parallel.multiprocess import create_dask_cluster
 from plantcv.parallel.multiprocess import multiprocess
 from plantcv.parallel.process_results import process_results
 from plantcv.parallel.message import parallel_print
-import plantcv.utils
+from plantcv.parallel.json2csv import json2csv
 
 
 def run_parallel(config):
@@ -82,7 +82,7 @@ def run_parallel(config):
     # Convert results start time
     convert_results_start_time = time.time()
     print("Converting json to csv... ", file=sys.stderr)
-    plantcv.utils.json2csv(config.results, os.path.splitext(config.results)[0])
+    json2csv(config.results, os.path.splitext(config.results)[0])
     convert_results_clock_time = time.time() - convert_results_start_time
     parallel_print(f"Processing results took {convert_results_clock_time} seconds.", file=sys.stderr, verbose=verbose)
     ###########################################
