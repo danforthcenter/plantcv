@@ -73,14 +73,14 @@ def test_run_naive_bayes_multiclass(tmpdir, learn_test_data):
     assert main() is None
 
 
-def test_run_tabulate_bayes_classes(utils_test_data, tmpdir):
+def test_run_tabulate_bayes_classes(learn_test_data, tmpdir):
     """Test for PlantCV."""
     # Create tmp directory
     tmp_dir = tmpdir.mkdir("cache")
     # Mock ARGV
     import sys
-    sys.argv = ["plantcv-utils", "tabulate_bayes_classes",
-                "--infile", utils_test_data.rgb_values_file,
+    sys.argv = ["plantcv-train", "tabulate_bayes_classes",
+                "--file", learn_test_data.rgb_values_file,
                 "--outfile", os.path.join(str(tmp_dir), "rgb_table.txt")]
     assert main() is None
 

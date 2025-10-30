@@ -158,7 +158,7 @@ def _sample_filenames(source_path, dest_path, num=100):
     # Check to make sure number of imgs to select is less than number of images found
     if num > len(img_element_array):
         print(f"Only {len(img_element_array)} images found, lowering 'num' to match.")
-        num = len(img_element_array)
+        num = len(img_element_array) - 1
 
     # Get random images
     random_index = random.sample(range(0, len(img_element_array) - 1), num)

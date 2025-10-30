@@ -26,12 +26,12 @@ def test_naive_bayes_multiclass(learn_test_data, tmpdir):
     assert os.path.exists(outfile)
 
 
-def test_tabulate_bayes_classes(utils_test_data, tmpdir):
+def test_tabulate_bayes_classes(learn_test_data, tmpdir):
     """Test for PlantCV."""
     # Create tmp directory
     tmp_dir = tmpdir.mkdir("cache")
     outfile = os.path.join(str(tmp_dir), "rgb_table.txt")
-    tabulate_bayes_classes(input_file=utils_test_data.rgb_values_file, output_file=outfile)
+    tabulate_bayes_classes(input_file=learn_test_data.rgb_values_file, output_file=outfile)
     table = pd.read_csv(outfile, sep="\t")
     assert table.shape == (228, 2)
 

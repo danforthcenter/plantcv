@@ -10,7 +10,7 @@ def test_sample_images_snapshot(parallel_test_data, tmpdir):
     tmp_dir = tmpdir.mkdir("cache")
     snapshot_dir = parallel_test_data.snapshot_imgdir
     img_outdir = os.path.join(str(tmp_dir), "snapshot")
-    sample_images(source_path=snapshot_dir, dest_path=img_outdir, num=3)
+    sample_images(source=snapshot_dir, dest_path=img_outdir, num=3)
     random_images = os.listdir(img_outdir)
     assert all([len(random_images) == 3, len(np.unique(random_images)) == 3])
 
@@ -21,7 +21,7 @@ def test_sample_images_flatdir(parallel_test_data, tmpdir):
     tmp_dir = tmpdir.mkdir("cache")
     flat_dir = parallel_test_data.flat_imgdir
     img_outdir = os.path.join(str(tmp_dir), "images")
-    sample_images(source_path=flat_dir, dest_path=img_outdir, num=1)
+    sample_images(source=flat_dir, dest_path=img_outdir, num=1)
     random_images = os.listdir(img_outdir)
     assert all([len(random_images) == 1, len(np.unique(random_images)) == 1])
 
@@ -33,16 +33,16 @@ def test_sample_images_bad_source(tmpdir):
     fake_dir = "snapshot"
     img_outdir = os.path.join(str(tmp_dir), "images")
     with pytest.raises(IOError):
-        sample_images(source_path=fake_dir, dest_path=img_outdir, num=3)
+        sample_images(source=fake_dir, dest_path=img_outdir, num=3)
 
 
 def test_sample_images_bad_flat_num(parallel_test_data, tmpdir):
     """Test for PlantCV."""
     # Create tmp directory
     tmp_dir = tmpdir.mkdir("cache")
-    flat_dir = parallel_test_data.datadir
+    flat_dir = parallel_test_data.flat_imgdir
     img_outdir = os.path.join(str(tmp_dir), "images")
-    sample_images(source_path=flat_dir, dest_path=img_outdir, num=300)
+    sample_images(source=flat_dir, dest_path=img_outdir, num=300)
     random_images = os.listdir(img_outdir)
     assert len(random_images) == 2
 
@@ -54,7 +54,7 @@ def test_sample_images_bad_phenofront_num(parallel_test_data, tmpdir):
     snapshot_dir = parallel_test_data.snapshot_imgdir
     img_outdir = os.path.join(str(tmp_dir), "images")
     with pytest.raises(RuntimeError):
-        sample_images(source_path=snapshot_dir, dest_path=img_outdir, num=300)
+        sample_images(source=snapshot_dir, dest_path=img_outdir, num=300)
 
 
 def test_sample_images_phenodata(parallel_test_data, tmpdir):
@@ -63,7 +63,7 @@ def test_sample_images_phenodata(parallel_test_data, tmpdir):
     tmp_dir = tmpdir.mkdir("cache")
     phenodata_dir = parallel_test_data.phenodata_dir
     img_outdir = os.path.join(str(tmp_dir), "images")
-    sample_images(source_path=phenodata_dir, dest_path=img_outdir, num=1)
+    sample_images(source=phenodata_dir, dest_path=img_outdir, num=1)
     random_images = os.listdir(img_outdir)
     assert len(random_images) == 2
 
@@ -75,4 +75,4 @@ def test_sample_images_phenodata_bad_num(parallel_test_data, tmpdir):
     phenodata_dir = parallel_test_data.phenodata_dir
     img_outdir = os.path.join(str(tmp_dir), "images")
     with pytest.raises(RuntimeError):
-        sample_images(source_path=phenodata_dir, dest_path=img_outdir, num=300)
+        sample_images(source=phenodata_dir, dest_path=img_outdir, num=300)
