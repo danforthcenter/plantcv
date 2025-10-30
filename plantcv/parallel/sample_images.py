@@ -12,7 +12,7 @@ def sample_images(source, dest_path="./sampled_images", num=100):
 
     Parameters
     ----------
-    source : str or WorkflowConfig object
+    source : str or WorkflowConfig/jupyterconfig object
         The directory containing the images to be sampled or a configuration file
     dest_path : str
         The directory where the sampled images will be copied
