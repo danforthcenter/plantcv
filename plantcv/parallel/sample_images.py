@@ -23,8 +23,8 @@ def sample_images(source, dest_path="./sampled_images", num=100):
     ------
     None
     """
-    if not os.path.exists(source_path):
-        raise IOError(f"Directory does not exist: {source_path}")
+    if not os.path.exists(source):
+        raise IOError(f"Directory does not exist: {source}")
 
     os.makedirs(dest_path, exist_ok=True)  # exist_ok argument does not exist in python 2
 
@@ -152,8 +152,7 @@ def _sample_filenames(source_path, dest_path, num=100):
     for root, _, files in os.walk(source_path):
         for file in files:
             # Check file type so that only images get copied over
-            ext = os.path.splitext(file)[1]
-            if ext.lower() in img_extensions:
+            if file.lower().endswith(tuple(img_extensions)):
                 img_element_array.append(os.path.join(root, file))
 
     # Check to make sure number of imgs to select is less than number of images found
