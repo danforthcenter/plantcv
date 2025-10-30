@@ -188,9 +188,6 @@ def _plot_pdf(channel, outdir, **kwargs):
     plt.close()
 
 
-    """Converter functions."""
-
-
 def tabulate_bayes_classes(input_file, output_file):
     """Tabulate pixel RGB values into a table for naive Bayes training.
     Inputs:

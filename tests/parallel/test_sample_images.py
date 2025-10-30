@@ -4,6 +4,22 @@ import numpy as np
 from plantcv.parallel import sample_images
 
 
+def test_sample_images_config(parallel_test_data, tmpdir):
+    """Test for PlantCV."""
+    # Create tmp directory
+    from plantcv.parallel import WorkflowConfig
+    working = os.getcwd()
+    os.chdir(tmpdir.mkdir("cache"))
+    config = WorkflowConfig()
+    config.input_dir = parallel_test_data.flat_imgdir
+    config.save_config("testsample_config.json")
+    img_outdir = "output_goes_here"
+    sample_images(source="testsample_config.json", dest_path=img_outdir, num=3)
+    random_images = os.listdir(img_outdir)
+    os.chdir(working)
+    assert all([len(random_images) == 3, len(np.unique(random_images)) == 3])
+
+
 def test_sample_images_snapshot(parallel_test_data, tmpdir):
     """Test for PlantCV."""
     # Create tmp directory
@@ -30,7 +46,7 @@ def test_sample_images_bad_source(tmpdir):
     """Test for PlantCV."""
     # Create tmp directory
     tmp_dir = tmpdir.mkdir("cache")
-    fake_dir = "snapshot"
+    fake_dir = "path_that_does_not_exist"
     img_outdir = os.path.join(str(tmp_dir), "images")
     with pytest.raises(IOError):
         sample_images(source=fake_dir, dest_path=img_outdir, num=3)

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import sys
 import argparse
 from plantcv.parallel.sample_images import sample_images
 

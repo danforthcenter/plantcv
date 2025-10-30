@@ -33,12 +33,13 @@ def sample_images(source, dest_path="./sampled_images", num=100):
         _sample_from_directory(source, dest_path, num)
         return None
     # if source is a file, read that as a WorkflowConfig
-    elif os.path.isfile(source):
+    if os.path.isfile(source):
         config = WorkflowConfig()
         config.import_config(source)
         source = config
     # `source` at this point should be a WorkflowConfig
     _sample_from_config(source, dest_path, num)
+    return None
 
 
 def _sample_from_config(config, dest_path, num):
@@ -55,8 +56,6 @@ def _sample_from_config(config, dest_path, num):
     None
     """
     meta, _ = metadata_parser(config)
-    # need a helper to read meta and copy `num` of those files
-    # will run metadata_parser on a config and prototype an image copying function, probably basically the same as filename option below?
     sampled = meta.sample(n=num, axis=0)
     # I think this has filenames in it, need to make sure I know how to get those. I think image?
     for filepath in sampled["filepath"]:
@@ -214,4 +213,3 @@ def _sample_phenodata(source_path, dest_path, num=100):
     # Write the sampled dataset to a JSON file
     with open(os.path.join(dest_path, "metadata.json"), "w") as fp:
         json.dump(sampled_dataset, fp, indent=4)
-

@@ -1,5 +1,4 @@
 import os
-import pytest
 from plantcv.parallel.cli_sample_images import main
 
 
