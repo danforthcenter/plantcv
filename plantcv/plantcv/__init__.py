@@ -6,7 +6,7 @@ __version__ = version("plantcv")
 from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.classes import Spectral_data
 from plantcv.plantcv.classes import PSII_data
-from plantcv.plantcv.classes import Points
+from plantcv.plantcv.classes import Point
 from plantcv.plantcv.classes import Objects
 
 # Initialize an instance of the Params and Outputs class with default values
@@ -88,7 +88,7 @@ __all__ = [
     "fatal_error",
     "Spectral_data",
     'PSII_data',
-    'Points',
+    'Point',
     "Objects",
     "Params",
     "Outputs",
