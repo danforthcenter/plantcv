@@ -285,11 +285,12 @@ def _validate_set_attr(val, sentence, expect_type):
     return out
 
 
-def _config_attr_lookup(attr, val):
+def _config_attr_lookup(config, attr, val):
     """Lookup attributes for a WorkflowConfig or jupyterconfig object
 
     Parameters
     ----------
+    config   = plantcv.parallel.workflowconfig or jupyterconfig, configuration file
     attr     = str, name of an attribute to set.
     val      = type flexible, value to assign to configuration attribute.
 
