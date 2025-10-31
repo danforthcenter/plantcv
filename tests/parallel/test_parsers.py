@@ -1,4 +1,5 @@
 import pytest
+import os
 from plantcv.parallel import metadata_parser, WorkflowConfig
 
 
@@ -20,7 +21,7 @@ def test_metadata_parser_snapshots(parallel_test_data, imgformat):
     config.timestampformat = '%Y-%m-%d %H:%M:%S.%f'
     config.imgformat = imgformat
 
-    meta = metadata_parser(config=config)
+    meta, _ = metadata_parser(config=config)
     assert len(meta) == 1
 
 
@@ -44,7 +45,7 @@ def test_metadata_parser_images(parallel_test_data, subdirs, imgformat, outlengt
     config.include_all_subdirs = subdirs
     config.delimiter = r'(VIS)_(SV)_(\d+)_(z1)_(h1)_(g0)_(e82)_(\d+)'
 
-    meta = metadata_parser(config=config)
+    meta, _ = metadata_parser(config=config)
     assert len(meta) == outlength
 
 
@@ -60,5 +61,34 @@ def test_metadata_parser_phenodata(parallel_test_data):
     config.workflow = parallel_test_data.workflow_script
     config.imgformat = "jpg"
 
-    meta = metadata_parser(config=config)
+    meta, _ = metadata_parser(config=config)
+    assert len(meta) == 12
+
+
+@pytest.mark.parametrize("subdirs", [True, False])
+def test_estimate_filename_metadata(parallel_test_data, subdirs):
+    """Test for PlantCV.
+
+    Test estimating filename metadata when missing from config
+    """
+    # Create config instance
+    config = WorkflowConfig()
+    config.input_dir = parallel_test_data.flat_imgdir
+    config.imgformat = "jpg"
+    config.include_all_subdirs = subdirs
+    meta, _ = metadata_parser(config=config)
+    assert len(meta) == 2
+
+
+def test_read_checkpoint_data(parallel_test_data):
+    """Test for PlantCV"""
+    os.chdir(parallel_test_data.datadir)
+    config = WorkflowConfig()
+    config.input_dir = parallel_test_data.phenodata_dir
+    config.json = "output.json"
+    config.workflow = parallel_test_data.workflow_script
+    config.imgformat = "jpg"
+    config.checkpoint = True
+
+    meta, _ = metadata_parser(config=config)
     assert len(meta) == 12

@@ -12,7 +12,7 @@ from plantcv.plantcv.roi import (
     multi_rect,
     auto_wells,
     custom,
-    filter,
+    filter
 )
 
 
