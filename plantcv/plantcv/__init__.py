@@ -4,8 +4,6 @@ from importlib.metadata import version
 __version__ = version("plantcv")
 
 from plantcv.plantcv.fatal_error import fatal_error
-from plantcv.plantcv.classes import Params
-from plantcv.plantcv.classes import Outputs
 from plantcv.plantcv.classes import Spectral_data
 from plantcv.plantcv.classes import PSII_data
 from plantcv.plantcv.classes import Points
@@ -13,6 +11,7 @@ from plantcv.plantcv.classes import Objects
 
 # Initialize an instance of the Params and Outputs class with default values
 # params and outputs are available when plantcv is imported
+from plantcv.plantcv._globals import Params, Outputs
 from plantcv.plantcv._globals import params, outputs
 
 from plantcv.plantcv.deprecation_warning import deprecation_warning
@@ -87,12 +86,12 @@ from plantcv.plantcv import qc
 
 __all__ = [
     "fatal_error",
-    "Params",
-    "Outputs",
     "Spectral_data",
     'PSII_data',
     'Points',
     "Objects",
+    "Params",
+    "Outputs",
     "params",
     "outputs",
     "deprecation_warning",
