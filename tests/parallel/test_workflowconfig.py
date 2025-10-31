@@ -105,3 +105,20 @@ def test_bad_config_setting():
     # try to set groupby (list) to a string
     with pytest.raises(ValueError):
         config.groupby = "bad"
+
+
+def test_too_many_cluster_config_cores(parallel_test_data):
+    """Test for PlantCV."""
+    # Create config instance
+    config = WorkflowConfig()
+    config.input_dir = config.input_dir = parallel_test_data.flat_imgdir
+    config.json = "valid_config.json"
+    config.workflow = config.workflow = parallel_test_data.workflow_script
+    # Set invalid values in config
+    # input_dir and json are not defined by default, but are required
+    # Set invalid cluster type
+    config.cluster = "LocalCluster"
+    config.cluster_config["n_workers"] = 1000
+    config.cluster_config["cores"] = 1000
+    # Validate config
+    assert not config.validate_config()

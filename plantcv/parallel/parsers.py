@@ -302,18 +302,15 @@ def _filename_metadata_index(config):
 def _parse_filename(filename, config, metadata_index):
     """Parse metadata from a filename.
 
-    Keyword arguments:
-    filename = Filename to parse metadata from
+    Parameters
+    ----------
+    filename = str, Filename to parse metadata from
     config = plantcv.parallel.WorkflowConfig object
-    metadata_index = dictionary of metadata terms and positions
+    metadata_index = dict, dictionary of metadata terms and positions
 
-    Outputs:
-    img_meta = dictionary of image metadata keys and valaues
-
-    :param filename: str
-    :param config: plantcv.parallel.WorkflowConfig
-    :return metadata_index: dict
-    :return img_meta: dict
+    Returns
+    -------
+    img_meta = dict, dictionary of image metadata keys and valaues
     """
     # Image metadata
     img_meta = {}
@@ -331,14 +328,20 @@ def _parse_filename(filename, config, metadata_index):
         # If thre is no match meta_list will be None, make an empty list
         else:
             meta_list = []
-    if len(meta_list) == len(config.filename_metadata):
+    # if all metadata terms start with "metadata_" then they are blank defaults and
+    # we will include all pieces of the filepath.
+    dummy_metadata = all(term.startswith("metadata_") for term in config.filename_metadata)
+    if len(meta_list) == len(config.filename_metadata) or dummy_metadata:
         # For each of the type of metadata PlantCV keeps track of
-        for term in config.metadata_terms:
+        for i, term in enumerate(config.metadata_terms):
             # First store the default value for each term
             img_meta[term] = config.metadata_terms[term]["value"]
             # If the same metadata is found in the image filename, store the value
             if term in metadata_index:
-                img_meta[term] = meta_list[metadata_index[term]]
+                mi_term = metadata_index[term]
+                img_meta[term] = None
+                if i <= len(meta_list) - 1:
+                    img_meta[term] = meta_list[mi_term]
     img_meta["n_metadata_terms"] = len(meta_list)
     return img_meta
 ###########################################
@@ -589,6 +592,14 @@ def _estimate_filename_metadata(config):
         # get length of split filename
         metadata_lengths.append(len(file.split(config.delimiter)))
     config.filename_metadata = ["metadata_" + str(i) for i in range(max(metadata_lengths))]
+    # if we had to make default metadata terms then add them to config.metadata_terms
+    for term in config.filename_metadata:
+        config.metadata_terms[term] = {
+                "label": f"{term}",
+                "datatype": "<class 'str'>",
+                "value": "none"
+            }
+
     return config
 ###########################################
 
