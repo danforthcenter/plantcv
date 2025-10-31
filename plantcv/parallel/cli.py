@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import os
 import sys
 import argparse
 import plantcv.parallel
@@ -46,7 +47,6 @@ def options():
         dryrun = args.dryrun
         configfile = args.dryrun
     # Import a configuration if provided
-    
     if configfile:
         config.import_config(config_file=configfile)
         if configfile == config.results:
