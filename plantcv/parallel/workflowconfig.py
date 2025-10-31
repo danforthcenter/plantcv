@@ -135,8 +135,10 @@ class WorkflowConfig:
                   )
 
         # Validate the cluster configuration
-        if (self.cluster_config["n_workers"] * self.cluster_config["cores"] > os.cpu_count() and
-            self.cluster == "LocalCluster"):
+        if (
+                self.cluster_config["n_workers"] * self.cluster_config["cores"] > os.cpu_count()
+                and self.cluster == "LocalCluster"
+        ):
             print(f"Error: n_workers is {self.cluster_config['n_workers']} and "
                   f"cores is {self.cluster_config['cores']} which requires "
                   f"more than the {os.cpu_count()} available cores.")
@@ -270,12 +272,6 @@ def _validate_set_attr(config, val, sentence, expect_type, attr):
     ValueError if incompatible type between input val and expected type for attribute.
 
     """
-    if attr.startswith("cluster_config"):
-        print(attr)
-        print(type(attr))
-        out = _cluster_config_attr_lookup(config=config, field=attr, val=val)
-        return out
-
     if not isinstance(val, expect_type):
         raise ValueError("Expected " + expect_type.__name__ + ", got " + type(val).__name__)
     if isinstance(val, list):
