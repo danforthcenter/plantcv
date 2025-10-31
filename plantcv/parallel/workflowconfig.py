@@ -133,6 +133,17 @@ class WorkflowConfig:
             print(f"Error: the cluster type {self.cluster} is not a supported cluster provider. "
                   f"Valid clusters include: {', '.join(map(str, valid_clusters))}."
                   )
+
+        # Validate the cluster configuration
+        if (
+                self.cluster_config["n_workers"] * self.cluster_config["cores"] > os.cpu_count()
+                and self.cluster == "LocalCluster"
+        ):
+            print(f"Error: n_workers is {self.cluster_config['n_workers']} and "
+                  f"cores is {self.cluster_config['cores']} which requires "
+                  f"more than the {os.cpu_count()} available cores.")
+            checks.append(False)
+
         return all(checks)
 
     # Specify metadata terms
@@ -279,7 +290,7 @@ def _config_attr_lookup(config, attr, val):
 
     Parameters
     ----------
-    config   = WorkflowConfig or JupyterConfig object
+    config   = plantcv.parallel.workflowconfig or jupyterconfig, configuration file
     attr     = str, name of an attribute to set.
     val      = type flexible, value to assign to configuration attribute.
 
