@@ -2,7 +2,7 @@
 import numpy as np
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv.classes import PSII_data
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 
 
 def reassign_frame_labels(ps_da, mask):
