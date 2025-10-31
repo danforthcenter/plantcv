@@ -26,3 +26,11 @@ config.input_dir("./my_images")
 
 summary, meta = pcvpar.inspect_dataset(config)
 ```
+
+#### Command Line Interface
+
+`plantcv.parallel.inspect_dataset` can also be run from the command line using `plantcv-run-workflow --dryrun configfile.json`. Used this way it will save the summary and metadata DataFrames to csv files named for your configuration file with `_summary_df.csv` and `_metadata_df.csv` replacing the `.json` extension.
+
+```bash
+plantcv-run-workflow --dryrun configfile.json
+```

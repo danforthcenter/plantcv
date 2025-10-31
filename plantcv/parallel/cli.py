@@ -26,6 +26,9 @@ def options():
     run_grp = parser.add_argument_group("RUN")
     run_grp.add_argument("--config", required=False,
                          help="Input configuration file (created using the --template option).")
+    inspect_grp = parser.add_argument_group("DRYRUN")
+    inspect_grp.add_argument("--dryrun", required=False,
+                             help="Input configuration file (created using the --template option).")
     args = parser.parse_args()
 
     # Create a config
@@ -36,15 +39,22 @@ def options():
         config.save_config(config_file=args.template)
         sys.exit()
 
+    # run or dry-run
+    configfile = args.config
+    dryrun = False
+    if args.dryrun:
+        dryrun = args.dryrun
+        configfile = args.dryrun
     # Import a configuration if provided
-    if args.config:
-        config.import_config(config_file=args.config)
-        if args.config == config.results:
+    
+    if configfile:
+        config.import_config(config_file=configfile)
+        if configfile == config.results:
             raise ValueError("Configuration file would be overwritten by results, change the results field of config.")
 
     if not config.validate_config():
         raise ValueError("Invalid configuration file. Check errors above.")
-    return config
+    return config, dryrun
 ###########################################
 
 
@@ -61,7 +71,14 @@ def main():
 
     """
     # Get options
-    config = options()
-    # run parallel using config
-    plantcv.parallel.run_parallel(config)
+    config, dryrun = options()
+    if dryrun:
+        summary_df, meta = plantcv.parallel.inspect_dataset(config)
+        print(f"Saving {dryrun}_summary_df.csv")
+        summary_df.to_csv(os.path.splitext(dryrun)[0] + "_summary_df.csv")
+        print(f"Saving {os.path.splitext(dryrun)[0]}_metadata_df.csv")
+        meta.to_csv(dryrun + "_metadata_df.csv")
+    else:
+        # run parallel using config
+        plantcv.parallel.run_parallel(config)
 ###########################################
