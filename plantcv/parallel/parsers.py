@@ -287,7 +287,7 @@ def _parse_filename(filename, config, metadata_index):
             meta_list = []
     # if all metadata terms start with "metadata_" then they are blank defaults and
     # we will include all pieces of the filepath.
-    dummy_metadata = all([term.startswith("metadata_") for term in config.filename_metadata])
+    dummy_metadata = all(term.startswith("metadata_") for term in config.filename_metadata)
     if len(meta_list) == len(config.filename_metadata) or dummy_metadata:
         # For each of the type of metadata PlantCV keeps track of
         for i, term in enumerate(config.metadata_terms):
@@ -297,7 +297,7 @@ def _parse_filename(filename, config, metadata_index):
             if term in metadata_index:
                 mi_term = metadata_index[term]
                 img_meta[term] = None
-                if (i <= len(meta_list) - 1):
+                if i <= len(meta_list) - 1:
                     img_meta[term] = meta_list[mi_term]
     img_meta["n_metadata_terms"] = len(meta_list)
     return img_meta
