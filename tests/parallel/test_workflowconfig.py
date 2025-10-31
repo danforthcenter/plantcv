@@ -112,7 +112,7 @@ def test_too_many_cluster_config_cores(parallel_test_data):
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = config.input_dir = parallel_test_data.flat_imgdir
-    config.json = "valid_config.json"
+    config.results = "valid_config.json"
     config.workflow = config.workflow = parallel_test_data.workflow_script
     # Set invalid values in config
     # input_dir and json are not defined by default, but are required
