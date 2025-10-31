@@ -133,6 +133,15 @@ class WorkflowConfig:
             print(f"Error: the cluster type {self.cluster} is not a supported cluster provider. "
                   f"Valid clusters include: {', '.join(map(str, valid_clusters))}."
                   )
+
+        # Validate the cluster configuration
+        if (self.cluster_config["n_workers"] * self.cluster_config["cores"] > os.cpu_count() and
+            self.cluster == "LocalCluster"):
+            print(f"Error: n_workers is {self.cluster_config['n_workers']} and "
+                  f"cores is {self.cluster_config['cores']} which requires "
+                  f"more than the {os.cpu_count()} available cores.")
+            checks.append(False)
+
         return all(checks)
 
     # Specify metadata terms
@@ -241,14 +250,16 @@ class WorkflowConfig:
         return metadata_terms
 
 
-def _validate_set_attr(val, sentence, expect_type):
+def _validate_set_attr(config, val, sentence, expect_type, attr):
     """Validate attributes before setting them in a WorkflowConfig or jupyterconfig object
 
     Parameters
     ----------
+    config   = WorkflowConfig or JupyterConfig object
     val         = type flexible, value to assign to configuration attribute.
     sentence    = str, unformatted string to mention what the change will do.
     expect_type = type, expected type for val.
+    attr        = str, attribute name
 
     Returns
     -------
@@ -259,6 +270,12 @@ def _validate_set_attr(val, sentence, expect_type):
     ValueError if incompatible type between input val and expected type for attribute.
 
     """
+    if attr.startswith("cluster_config"):
+        print(attr)
+        print(type(attr))
+        out = _cluster_config_attr_lookup(config=config, field=attr, val=val)
+        return out
+
     if not isinstance(val, expect_type):
         raise ValueError("Expected " + expect_type.__name__ + ", got " + type(val).__name__)
     if isinstance(val, list):
@@ -332,7 +349,7 @@ def _config_attr_lookup(config, attr, val):
             "results": ["output will be written to {}", str]
         }
         # check the proposed new attribute and make message about it
-        message = _validate_set_attr(val=val, sentence=config_control[attr][0],
-                                     expect_type=config_control[attr][1])
+        message = _validate_set_attr(config=config, val=val, sentence=config_control[attr][0],
+                                     expect_type=config_control[attr][1], attr=attr)
         if config.verbose:
             print(message)
