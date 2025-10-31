@@ -14,7 +14,7 @@ def test_inspect_dataset(parallel_test_data):
     # inspect dataset
     sdf, df = inspect_dataset(config)
 
-    assert sdf.shape == (2, 10) and df.shape == (2, 12)
+    assert sdf.shape == (2, 9) and df.shape == (2, 11)
 
 
 def test_inspect_dataset_string(parallel_test_data):
