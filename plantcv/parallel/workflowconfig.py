@@ -252,16 +252,14 @@ class WorkflowConfig:
         return metadata_terms
 
 
-def _validate_set_attr(config, val, sentence, expect_type, attr):
+def _validate_set_attr(val, sentence, expect_type):
     """Validate attributes before setting them in a WorkflowConfig or jupyterconfig object
 
     Parameters
     ----------
-    config   = WorkflowConfig or JupyterConfig object
     val         = type flexible, value to assign to configuration attribute.
     sentence    = str, unformatted string to mention what the change will do.
     expect_type = type, expected type for val.
-    attr        = str, attribute name
 
     Returns
     -------
@@ -287,12 +285,11 @@ def _validate_set_attr(config, val, sentence, expect_type, attr):
     return out
 
 
-def _config_attr_lookup(config, attr, val):
+def _config_attr_lookup(attr, val):
     """Lookup attributes for a WorkflowConfig or jupyterconfig object
 
     Parameters
     ----------
-    config   = WorkflowConfig or JupyterConfig object
     attr     = str, name of an attribute to set.
     val      = type flexible, value to assign to configuration attribute.
 
@@ -345,7 +342,7 @@ def _config_attr_lookup(config, attr, val):
             "results": ["output will be written to {}", str]
         }
         # check the proposed new attribute and make message about it
-        message = _validate_set_attr(config=config, val=val, sentence=config_control[attr][0],
-                                     expect_type=config_control[attr][1], attr=attr)
+        message = _validate_set_attr(val=val, sentence=config_control[attr][0],
+                                     expect_type=config_control[attr][1])
         if config.verbose:
             print(message)
