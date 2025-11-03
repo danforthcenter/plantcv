@@ -40,6 +40,15 @@ def segment_width(segmented_img, skel_img, labeled_mask, n_labels=1, label=None)
 
         if np.count_nonzero(submask) > 0:
             mask_copy = submask.copy().astype(np.uint8)
+            # Find contours from the submask 
+            id_objects = cv2.findContours(mask_copy, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2]
+            # ID and store area values and centers of mass for labeling them
+            m = cv2.moments(id_objects[0])
+            # Skip iteration if contour area is zero
+            # This is needed because cv2.contourArea can be > 0 while moments area is 0.
+            if m['m00'] != 0:
+                label_coord_x = int(m["m10"] / m["m00"])
+                label_coord_y = int(m["m01"] / m["m00"])
             k = cv2.distanceTransform(mask_copy, cv2.DIST_L2, cv2.DIST_MASK_PRECISE)
                         
             # Select central non-zero values from weighted distance transform
@@ -51,7 +60,7 @@ def segment_width(segmented_img, skel_img, labeled_mask, n_labels=1, label=None)
                 widths.append(stroke_width.astype(np.float64))
                 text = str(int(stroke_width))
                 if params.verbose: 
-                    cv2.putText(img=labeled_img, text=text, org=(cnt[0][0][0][0], cnt[0][0][0][1]), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                    cv2.putText(img=labeled_img, text=text, org=(label_coord_x, label_coord_y), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                                 fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
                         
             else:
