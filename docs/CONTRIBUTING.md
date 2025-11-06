@@ -315,19 +315,26 @@ that might break wth new versions of PlantCV.
 
 #### Create Your Tutorial Repository <a name="repo"></a>
 
-1. Create a new repository on GitHub (Please consider creating your repo within an instituional account rather than a personal account e.g. Danforth Center). The name should start with plantcv-tutorial. When you make this repo you can use the option to import the tutorial template from `https://github.com/danforthcenter/plantcv-tutorial-template`
+1. Create a new repository on GitHub. To prepopulate your repository with the file layout we recommend, you can import our 
+tutorial template from `https://github.com/danforthcenter/plantcv-tutorial-template`
 
-2. If you don't import the tutorial template when you make your repo intitally you can clone the [tutorial template repository](https://github.com/danforthcenter/plantcv-tutorial-template) and copy the files and folders from the template repository to your tutorial repository
+2. If you don't import the tutorial template when you make your repo intitally you can clone the
+[tutorial template repository](https://github.com/danforthcenter/plantcv-tutorial-template) and copy the files and folders
+from the template repository to your tutorial repository
 
-3. Update the `README` and `index.ipynb` files with your tutorial content, including data (make sure you are updating or using the correct documentation branch, e.g. release-4.0)
+3. Update the `README`, `index.ipynb`, and `index-Colab.ipynb` files with your tutorial content, including data
 
-4. Add an image called `tutorial_card.png` to the repo, this will be used on the gallery webpage. The image should be approximately square and have a width of 200px.
+4. Add an image called `tutorial_card.png` to the repo, this will be used on the gallery webpage. The image should be
+approximately square and have a width of 200px.
 
-5. Follow the instructions to create a Binder button in the readme
+5. Follow the instructions to create Binder and Colab buttons in the README
 
-6. Commit the changes to your tutorial github repository
+6. Commit the changes to your tutorial GitHub repository
 
-7. Go to your repo online and test the 'Launch Binder' button for your repo
+7. Go to your repo online and test the 'Launch Binder' and 'Open in Colab' buttons for your repo
+
+8. To cite your tutorial in a publication or presentation you can connect your repository to
+[Zenodo to get a DOI](https://help.zenodo.org/docs/github/archive-software/github-upload/).
 
 #### Add Your Tutorial To the PlantCV Tutorial Gallery <a name="gallery"></a>
 
