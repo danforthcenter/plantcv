@@ -9,8 +9,7 @@ from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition, _ro
 
 
 def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_channel=None, thresh=None):
-    """
-    Detects a size marker in a specified region and reports its size and eccentricity
+    """Detects a size marker in a specified region and reports its size and eccentricity
 
     Inputs:
     img             = An RGB or grayscale image to plot the marker object on
