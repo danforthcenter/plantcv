@@ -5,14 +5,13 @@ in the RGB space after automatic detection of a color card within the image. A o
 [plantcv.transform.detect_color_card](transform_detect_color_card.md), [plantcv.transform.std_color_matrix](std_color_matrix.md),
 [plantcv.transform.get_color_matrix](get_color_matrix.md), and [plantcv.transform.affine_color_correction](transform_affine_color_correction.md).
 
-**plantcv.transform.auto_correct_color**(*rgb_img, label=None, color_chip_size=None, roi=None, \*\*kwargs*)
+**plantcv.transform.auto_correct_color**(*rgb_img, color_chip_size=None, roi=None, \*\*kwargs*)
 
 **returns** corrected_img
 
 - **Parameters**
     - rgb_img          - Input RGB image data containing a color card.
-    - label            - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
-    - color_chip_size  - Type of color card to be detected, (case insensitive, either "classic", "passport", "nano", "mini", or "cameratrax", by default `None`). Or provide `(width, height)` of your specific color card in millimeters. If set then size scalings parameters `pcv.params.unit`, `pcv.params.px_width`, and `pcv.params.px_height` are automatically set, and utilized throughout linear and area type measurements stored to `Outputs`.
+    - color_chip_size  - Type of color card to be detected, (case insensitive, either "classic", "passport", "nano", or "cameratrax", by default `None`). Or provide `(width, height)` of your specific color card in millimeters. If set then size scalings parameters `pcv.params.unit`, `pcv.params.px_width`, and `pcv.params.px_height` are automatically set, and utilized throughout linear and area type measurements stored to `Outputs`.
     - roi              - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to look for the color card. (default = None)
 	- **kwargs         - Other keyword arguments passed to `cv2.adaptiveThreshold` and `cv2.circle`.
         - adaptive_method  - Adaptive threhold method. 0 (mean) or 1 (Gaussian) (default = 1).
