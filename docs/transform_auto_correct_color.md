@@ -11,7 +11,7 @@ in the RGB space after automatic detection of a color card within the image. A o
 
 - **Parameters**
     - rgb_img          - Input RGB image data containing a color card.
-    - color_chip_size  - Type of color card to be detected, (case insensitive, either "classic", "passport", "nano", or "cameratrax", by default `None`). Or provide `(width, height)` of your specific color card in millimeters. If set then size scalings parameters `pcv.params.unit`, `pcv.params.px_width`, and `pcv.params.px_height` are automatically set, and utilized throughout linear and area type measurements stored to `Outputs`.
+    - color_chip_size  - Type of color card to be detected, (case insensitive, either "classic", "passport", "nano", "mini", or "cameratrax", by default `None`). Or provide `(width, height)` of your specific color card in millimeters. If set then size scalings parameters `pcv.params.unit`, `pcv.params.px_width`, and `pcv.params.px_height` are automatically set, and utilized throughout linear and area type measurements stored to `Outputs`.
     - roi              - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to look for the color card. (default = None)
 	- **kwargs         - Other keyword arguments passed to `cv2.adaptiveThreshold` and `cv2.circle`.
         - adaptive_method  - Adaptive threhold method. 0 (mean) or 1 (Gaussian) (default = 1).
