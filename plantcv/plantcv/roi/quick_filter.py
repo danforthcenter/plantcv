@@ -19,7 +19,7 @@ def quick_filter(mask, roi, roi_type="partial"):
         Binary mask to filter.
     roi : plantcv.plantcv.classes.Objects
         PlantCV ROI object.
-    roi_type : str,
+    roi_type : str, optional
         filter method, one of "partial", "cutto", or "within"
 
     Returns

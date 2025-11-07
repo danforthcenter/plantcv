@@ -3,7 +3,7 @@
 Filter objects (connected regions of non-zero pixels) within a region of interest. This function is similar to
 [plantcv.roi.filter](roi_filter.md) but is faster, though it does not support all methods in `plantcv.roi.filter`.
 
-**plantcv.roi.quick_filter**(*mask, roi, roi_type*)
+**plantcv.roi.quick_filter**(*mask, roi, roi_type="partial"*)
 
 **returns** filtered_mask
 
