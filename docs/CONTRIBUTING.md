@@ -318,7 +318,7 @@ that might break wth new versions of PlantCV.
 1. Create a new repository on GitHub. To prepopulate your repository with the file layout we recommend, you can import our 
 tutorial template from `https://github.com/danforthcenter/plantcv-tutorial-template`
 
-2. If you don't import the tutorial template when you make your repo intitally you can clone the
+2. If you don't import the tutorial template when you make your repo intitally you can [clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) the
 [tutorial template repository](https://github.com/danforthcenter/plantcv-tutorial-template) and copy the files and folders
 from the template repository to your tutorial repository
 
