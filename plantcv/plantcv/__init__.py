@@ -83,6 +83,9 @@ from plantcv.plantcv import filters
 from plantcv.plantcv.kmeans_classifier import predict_kmeans
 from plantcv.plantcv.kmeans_classifier import mask_kmeans
 from plantcv.plantcv import qc
+from plantcv.plantcv.process_results import process_results
+from plantcv.plantcv.json2csv import json2csv
+
 # add new functions to end of lists
 
 __all__ = [
@@ -159,5 +162,6 @@ __all__ = [
     "filters",
     "predict_kmeans",
     "mask_kmeans",
-    "qc"
+    "qc",
+    "process_results"
 ]
