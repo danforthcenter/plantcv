@@ -37,6 +37,17 @@ def test_process_results_new_output(test_data, tmpdir):
     assert results == expected
 
 
+def test_process_results_csv_format(test_data, tmpdir):
+    """Test for PlantCV."""
+    result_file = tmpdir.mkdir("sub").join("new_result.json")
+    config = type("smallconfig", (),
+                  {"tmp_dir": test_data.parallel_results_dir,
+                   "checkpoint": False,
+                   "results": result_file})
+    process_results(config)
+    assert os.path.exists(result_file.strpath.replace(".json", "-single-value-traits.csv"))
+
+
 def test_process_results_valid_json(test_data):
     """Test for PlantCV."""
     config = type("smallconfig", (),
