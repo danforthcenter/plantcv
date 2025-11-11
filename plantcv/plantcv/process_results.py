@@ -9,6 +9,7 @@ from plantcv.plantcv.json2csv import json2csv
 ###########################################
 def process_results(input_dir=".", filename="results", outformat="csv"):
     """Get results from individual files and combine into final JSON file.
+
     Parameters
     ----------
     input_dir : str or plantcv.parallel.WorkflowConfig
@@ -22,9 +23,7 @@ def process_results(input_dir=".", filename="results", outformat="csv"):
     -------
     None
     """
-
     job_dir, json_file = _handle_config_process_results(input_dir, filename)
-
     # Data dictionary
     data = {"variables": {}, "entities": []}
     if os.path.exists(json_file):
