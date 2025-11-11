@@ -75,7 +75,7 @@ def _handle_config_process_results(input_dir, filename):
 
     Returns
     -------
-    None    
+    None
     """
     # if input_dir is not a str then it is a workflowconfig
     if not isinstance(input_dir, str):
