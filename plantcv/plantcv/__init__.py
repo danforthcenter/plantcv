@@ -163,5 +163,6 @@ __all__ = [
     "predict_kmeans",
     "mask_kmeans",
     "qc",
-    "process_results"
+    "process_results",
+    "json2csv"
 ]

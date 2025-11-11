@@ -9,7 +9,6 @@ from plantcv.plantcv.json2csv import json2csv
 ###########################################
 def process_results(input_dir=".", filename="results", outformat="csv"):
     """Get results from individual files and combine into final JSON file.
-
     Parameters
     ----------
     input_dir : str or plantcv.parallel.WorkflowConfig
@@ -39,11 +38,11 @@ def process_results(input_dir=".", filename="results", outformat="csv"):
 
     # Walk through the image processing job directory and process data from each file
     for (dirpath, _, filenames) in os.walk(job_dir):
-        for filename in filenames:
+        for fn in filenames:
             # Make sure file is a text or json file
-            if 'text/plain' in mimetypes.guess_type(filename) or 'application/json' in mimetypes.guess_type(filename):
+            if 'text/plain' in mimetypes.guess_type(fn) or 'application/json' in mimetypes.guess_type(fn):
                 # Open results file
-                with open(os.path.join(dirpath, filename)) as results:
+                with open(os.path.join(dirpath, fn)) as results:
                     obs = json.load(results)
                     data["entities"].append(obs)
                     # Keep track of all metadata variables stored
