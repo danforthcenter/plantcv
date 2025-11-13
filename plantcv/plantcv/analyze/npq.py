@@ -41,7 +41,7 @@ def npq(ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bi
     :param measurement_labels: list
     :param label: str
     :return npq_global: xarray.core.dataarray.DataArray
-    :return npq_chart: altair.vegalite.v5.api.FacetChart
+    :return npq_chart: altair.vegalite.v4.api.FacetChart
     """
     # Set labels
     labels = _set_labels(label, n_labels)

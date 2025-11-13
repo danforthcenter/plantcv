@@ -32,7 +32,7 @@ def yii(ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None,
     :param measurement_labels: list
     :param label: str
     :return yii_global: xarray.core.dataarray.DataArray
-    :return yii_chart: altair.vegalite.v5.api.FacetChart
+    :return yii_chart: altair.vegalite.v4.api.FacetChart
     """
     # Set labels
     labels = _set_labels(label, n_labels)
