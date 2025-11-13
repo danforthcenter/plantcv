@@ -4,7 +4,7 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv import outputs, params
-from plantcv.plantcv._helpers import _scale_size, _dilate, _cv2_findcontours
+from plantcv.plantcv._helpers import _scale_size, _dilate
 from plantcv.plantcv._debug import _debug
 
 
@@ -64,7 +64,7 @@ def segment_width(segmented_img, skel_img, labeled_mask, n_labels=1, label=None)
                                 fontScale=params.text_size, color=(150, 150, 150),
                                 thickness=params.text_thickness)
             else:
-                widths.append(0)
+                widths.append('NA')
 
     # Set lable to params.sample_label if None
     if label is None:
