@@ -20,7 +20,7 @@ def obj_size_ecdf(mask):
     chart = empirical cumulative distribution function plot
 
     :param mask: numpy.ndarray
-    :return chart: altair.vegalite.v5.api.Chart
+    :return chart: altair.vegalite.v6.api.Chart
     """
     objects, _ = _cv2_findcontours(bin_img=mask)
     areas = [cv2.contourArea(cnt) for cnt in objects]

@@ -165,7 +165,7 @@ def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None
     :param upper_bound: None, int, float
     :param title: None, str
     :param wvlengths: list
-    :return fig_hist: altair.vegalite.v5.api.Chart
+    :return fig_hist: altair.vegalite.v6.api.Chart
     """
     # Set default wavelengths to plot
     if wvlengths is None:

@@ -111,7 +111,7 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, titl
     :param upper_bound: int
     :param title: str
     :param hist_data: bool
-    :return chart: altair.vegalite.v5.api.Chart
+    :return chart: altair.vegalite.v6.api.Chart
     :return hist_df: pandas.core.frame.DataFrame
     """
     if not isinstance(img, np.ndarray):

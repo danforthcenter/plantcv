@@ -36,7 +36,6 @@ def segment_width(segmented_img, skel_img, labeled_mask, n_labels=1, label=None)
 
     for i in range(1, n_labels + 1):
         submask = np.where(labeled_mask == i, 255, 0).astype(np.uint8)
-        cnt, _ = _cv2_findcontours(submask)
 
         if np.count_nonzero(submask) > 0:
             mask_copy = submask.copy().astype(np.uint8)
@@ -74,8 +73,6 @@ def segment_width(segmented_img, skel_img, labeled_mask, n_labels=1, label=None)
                                 scale=params.unit, datatype=list,
                                 value=_scale_size(value=widths, trait_type="segment_width"),
                                 label=range(1, n_labels + 1))   
-    all_mask = np.where(labeled_mask > 0, 255, 0).astype(np.uint8)
-    dist = cv2.distanceTransform(all_mask, cv2.DIST_L2, cv2.DIST_MASK_PRECISE)
     # Debugging
     _debug(visual=labeled_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_segment_width.png'))
     

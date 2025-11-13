@@ -31,7 +31,7 @@ def spectral_index(index_img, labeled_mask, n_labels=1, bins=100, min_bin=0, max
     :param min_bin: float
     :param max_bin: float
     :param label: str
-    :return index_hist: altair.vegalite.v5.api.FacetChart
+    :return index_hist: altair.vegalite.v6.api.FacetChart
     """
     # Set lable to params.sample_label if None
     if label is None:

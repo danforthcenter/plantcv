@@ -26,7 +26,7 @@ def distribution(labeled_mask, n_labels=1, direction="down", bin_size=100, hist_
 
     Returns
     -------
-    alt.vegalite.v5.api.FacetChart
+    alt.vegalite.v6.api.FacetChart
         Facet chart of the object distribution histograms
     """
     # Increment the device counter
