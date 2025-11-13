@@ -31,15 +31,14 @@ def segment_width(segmented_img, skel_img, labeled_mask, n_labels=1, label=None)
         Segmented image with average width per segment.
     """
     widths = []
-    dilated_midline =  _dilate(skel_img, 2, 1)
+    dilated_midline = _dilate(skel_img, 2, 1)
     labeled_img = segmented_img.copy()
 
     for i in range(1, n_labels + 1):
         submask = np.where(labeled_mask == i, 255, 0).astype(np.uint8)
-
         if np.count_nonzero(submask) > 0:
             mask_copy = submask.copy().astype(np.uint8)
-            # Find contours from the submask 
+            # Find contours from the submask
             id_objects = cv2.findContours(mask_copy, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2]
             # ID and store area values and centers of mass for labeling them
             m = cv2.moments(id_objects[0])
@@ -49,31 +48,33 @@ def segment_width(segmented_img, skel_img, labeled_mask, n_labels=1, label=None)
                 label_coord_x = int(m["m10"] / m["m00"])
                 label_coord_y = int(m["m01"] / m["m00"])
             k = cv2.distanceTransform(mask_copy, cv2.DIST_L2, cv2.DIST_MASK_PRECISE)
-                        
+
             # Select central non-zero values from weighted distance transform
             nonzero_mask = (k * dilated_midline) != 0
             weighted_values = k[nonzero_mask]
-            
+
             if len(weighted_values) > 0:
                 stroke_width = 2 * np.mean(weighted_values)
                 widths.append(stroke_width.astype(np.float64))
                 text = str(int(stroke_width))
-                if params.verbose: 
-                    cv2.putText(img=labeled_img, text=text, org=(label_coord_x, label_coord_y), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                                fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
-                        
+                if params.verbose:
+                    cv2.putText(img=labeled_img, text=text,
+                                org=(label_coord_x, label_coord_y),
+                                fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                                fontScale=params.text_size, color=(150, 150, 150),
+                                thickness=params.text_thickness)
             else:
                 widths.append(0)
-     
+
     # Set lable to params.sample_label if None
     if label is None:
         label = params.sample_label
     outputs.add_observation(sample=label, variable='segment_width', trait='segment width',
-                                method='plantcv.plantcv.morphology.analyze_width',
-                                scale=params.unit, datatype=list,
-                                value=_scale_size(value=widths, trait_type="segment_width"),
-                                label=range(1, n_labels + 1))   
+                            method='plantcv.plantcv.morphology.analyze_width',
+                            scale=params.unit, datatype=list,
+                            value=_scale_size(value=widths, trait_type="segment_width"),
+                            label=range(1, n_labels + 1))
     # Debugging
     _debug(visual=labeled_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_segment_width.png'))
-    
+
     return labeled_img
