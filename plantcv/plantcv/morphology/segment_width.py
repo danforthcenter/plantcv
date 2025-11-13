@@ -79,4 +79,4 @@ def segment_width(segmented_img, skel_img, labeled_mask, n_labels=1, label=None)
     # Debugging
     _debug(visual=labeled_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_segment_width.png'))
     
-    return dist
+    return labeled_img
