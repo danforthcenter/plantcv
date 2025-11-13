@@ -243,7 +243,7 @@ class Outputs:
         Returns:
         chart          = Altair chart object
         :param variable: str
-        :return chart: altair.vegalite.v4.api.Chart
+        :return chart: altair.vegalite.v5.api.Chart
         """
         alt.data_transformers.disable_max_rows()
         data = {"sample": [], "value": [], "label": []}
