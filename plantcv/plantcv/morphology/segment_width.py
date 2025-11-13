@@ -31,6 +31,8 @@ def segment_width(segmented_img, skel_img, labeled_mask, n_labels=1, label=None)
         Segmented image with average width per segment.
     """
     widths = []
+    stdevs = []
+    max_width = []
     dilated_midline = _dilate(skel_img, 2, 1)
     labeled_img = segmented_img.copy()
 
@@ -55,7 +57,11 @@ def segment_width(segmented_img, skel_img, labeled_mask, n_labels=1, label=None)
 
             if len(weighted_values) > 0:
                 stroke_width = 2 * np.mean(weighted_values)
+                stroke_width_max = 2 * np.max(weighted_values)
+                width_std = np.std(weighted_values)
                 widths.append(stroke_width.astype(np.float64))
+                stdevs.append(width_std)
+                max_width.append(stroke_width_max)
                 text = str(int(stroke_width))
                 if params.verbose:
                     cv2.putText(img=labeled_img, text=text,
@@ -65,6 +71,8 @@ def segment_width(segmented_img, skel_img, labeled_mask, n_labels=1, label=None)
                                 thickness=params.text_thickness)
             else:
                 widths.append(0)
+                stdevs.append("NA")
+                max_width.append(0)
 
     # Set lable to params.sample_label if None
     if label is None:
@@ -73,6 +81,16 @@ def segment_width(segmented_img, skel_img, labeled_mask, n_labels=1, label=None)
                             method='plantcv.plantcv.morphology.analyze_width',
                             scale=params.unit, datatype=list,
                             value=_scale_size(value=widths, trait_type="segment_width"),
+                            label=range(1, n_labels + 1))
+    outputs.add_observation(sample=label, variable='segment_width_std', trait='segment width standard deviation',
+                            method='plantcv.plantcv.morphology.analyze_width',
+                            scale="pixels", datatype=list,
+                            value=stdevs,
+                            label=range(1, n_labels + 1))
+    outputs.add_observation(sample=label, variable='segment_width_max', trait='maximum width per segment',
+                            method='plantcv.plantcv.morphology.analyze_width',
+                            scale=params.unit, datatype=list,
+                            value=_scale_size(value=max_width, trait_type="segment_width_max"),
                             label=range(1, n_labels + 1))
     # Debugging
     _debug(visual=labeled_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_segment_width.png'))
