@@ -188,7 +188,7 @@ def _check_chips_not_aruco_tags(img, centers, debug_img):
     # if any tags have a mask in them then raise an error
     if any(x for x in aruco_tag_has_mask):
         _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
-        fatal_error("At least one center is inside an ArUco tag, should you be using color_chip_size='aruco'?")
+        fatal_error("At least one center is inside an ArUco tag, should you be using color_chip_size='astro'?")
 
 
 def _check_corners(img, corners):
