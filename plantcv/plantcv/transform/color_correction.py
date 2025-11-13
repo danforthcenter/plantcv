@@ -583,7 +583,7 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
     :param source_matrix: numpy.ndarray
     :param target_matrix: numpy.ndarray
     :param num_chips: int
-    :return p1: altair.vegalite.v6.api.Chart
+    :return p1: altair.vegalite.v5.api.Chart
     """
     # Scale matrices to 0-255
     target_matrix = 255*target_matrix

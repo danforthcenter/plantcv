@@ -26,7 +26,7 @@ def grayscale(gray_img, labeled_mask, n_labels=1, bins=100, label=None):
     :param n_labels: int
     :param bins: int
     :param label: str
-    :return analysis_image: altair.vegalite.v6.api.FacetChart
+    :return analysis_image: altair.vegalite.v5.api.FacetChart
     """
     # Set lable to params.sample_label if None
     if label is None:

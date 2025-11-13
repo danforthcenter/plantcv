@@ -1,7 +1,7 @@
 """Tests for pcv.visualize.hyper_histogram."""
 import pytest
 import numpy as np
-from altair.vegalite.v6.api import Chart
+from altair.vegalite.v5.api import Chart
 from plantcv.plantcv.visualize import hyper_histogram
 
 

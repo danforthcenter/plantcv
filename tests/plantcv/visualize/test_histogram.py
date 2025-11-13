@@ -2,7 +2,7 @@
 import pytest
 import cv2
 import numpy as np
-from altair.vegalite.v6.api import Chart
+from altair.vegalite.v5.api import Chart
 from pandas.core.frame import DataFrame
 from plantcv.plantcv.visualize import histogram
 

@@ -22,7 +22,7 @@ def spectral_reflectance(hsi, labeled_mask, n_labels=1, label=None):
     :param labeled_mask: numpy.ndarray
     :param n_labels: int
     :param label: str
-    :return spectral_chart: altair.vegalite.v6.api.FacetChart
+    :return spectral_chart: altair.vegalite.v5.api.FacetChart
     """
     # Set lable to params.sample_label if None
     if label is None:
