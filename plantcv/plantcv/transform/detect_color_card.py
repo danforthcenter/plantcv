@@ -6,7 +6,7 @@ import os
 import cv2
 import math
 import numpy as np
-from plantcv.plantcv import params, outputs, fatal_error, deprecation_warning, warn
+from plantcv.plantcv import params, outputs, fatal_error, warn
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _rgb2gray, _cv2_findcontours, _object_composition, _rect_filter, _rect_replace
 
@@ -381,8 +381,6 @@ def _astrobotany_card_detection(rgb_img, **kwargs):
     ----------
     rgb_img : numpy.ndarray
         Input RGB image data containing a color card.
-    label : str, optional
-        modifies the variable name of observations recorded (default = pcv.params.sample_label).
     **kwargs : optional
         Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle.
 
@@ -590,15 +588,13 @@ def mask_color_card(rgb_img, color_chip_size=None, **kwargs):
     return bounding_mask
 
 
-def detect_color_card(rgb_img, label=None, color_chip_size=None, roi=None, **kwargs):
+def detect_color_card(rgb_img, color_chip_size=None, roi=None, **kwargs):
     """Automatically detects a Macbeth ColorChecker or Astrobotany.com Calibration Sticker style color card.
 
     Parameters
     ----------
     rgb_img : numpy.ndarray
         Input RGB image data containing a color card.
-    label : str, optional
-        modifies the variable name of observations recorded (default = pcv.params.sample_label).
     color_chip_size: str, tuple, optional
         "passport", "classic", "nano", "cameratrax", or "astro"; or tuple formatted (width, height)
         in millimeters (default = None)
@@ -620,14 +616,6 @@ def detect_color_card(rgb_img, label=None, color_chip_size=None, roi=None, **kwa
     numpy.ndarray
         Labeled mask of chips.
     """
-    # Set lable to params.sample_label if None
-    if label is None:
-        label = params.sample_label
-    deprecation_warning(
-        "The 'label' parameter is no longer utilized, since color chip size is now metadata. "
-        "It will be removed in PlantCV v5.0."
-        )
-
     if type(color_chip_size) is str and color_chip_size.upper() == 'ASTRO':
         # Search image for astrobotany.com color card aruco tags
         sub_mask, debug_img, card_img, marea, mheight, mwidth, _ = _rect_filter(rgb_img,
