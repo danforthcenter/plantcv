@@ -19,7 +19,7 @@ Measure the average width of segments.
 
 **Reference Image:** [Images of copper wires with various diameters for validating root image analysis](https://doi.org/10.5281/zenodo.4677546)
 
-![Screenshot](img/documentation_images/segment_width/Mixed_40_32_28_22_16_W2_600_dpi.tif.png)
+![Screenshot](img/documentation_images/segment_width/Mixed_40_32_28_22_16_W2_600_dpi.png)
 
 
 ```python
