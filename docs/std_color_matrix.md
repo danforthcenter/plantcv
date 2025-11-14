@@ -1,4 +1,4 @@
-## Color Matrix
+## Macbeth ColorChecker Standard Color Matrix
 
 Returns a color matrix with the standard *R*, *G*, *B* values compatible with the x-rite ColorCheker Classic,
 ColorChecker Mini, and ColorChecker Passport targets.
