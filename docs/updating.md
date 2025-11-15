@@ -1001,7 +1001,6 @@ pages for more details on the input and output variable types.
 * post v4.2.1: filtered_mask = **plantcv.roi.quick_filter**(*mask, roi*)
 * post v4.9: filtered_mask = **plantcv.roi.quick_filter**(*mask, roi, roi_type="partial"*)
 
-
 #### plantcv.roi_objects
 
 * pre v3.0dev2: device, kept_cnt, hierarchy, mask, obj_area = **plantcv.roi_objects**(*img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, device, debug=None*)
