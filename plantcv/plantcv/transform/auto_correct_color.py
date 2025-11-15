@@ -17,7 +17,7 @@ def auto_correct_color(rgb_img, color_chip_size=None, roi=None, **kwargs):
     rgb_img : numpy.ndarray
         Input RGB image data containing a color card.
     color_chip_size: str, tuple, optional
-        "passport", "classic", "cameratrax"; or tuple formatted (width, height)
+        "passport", "classic", "nano", "mini", or "cameratrax"; or tuple formatted (width, height)
         in millimeters (default = None)
     roi: plantcv.plantcv.Objects, optional
         Objects class rectangular ROI passed to detect_color_card (default None)
@@ -49,7 +49,7 @@ def auto_correct_color_nonlinear(rgb_img, color_chip_size=None, roi=None, **kwar
     rgb_img : numpy.ndarray
         Input RGB image data containing a color card.
     color_chip_size: str, tuple, optional
-        "passport", "classic", "cameratrax"; or tuple formatted (width, height)
+        "passport", "classic", "nano", "mini", or "cameratrax"; or tuple formatted (width, height)
         in millimeters (default = None)
     roi: plantcv.plantcv.Objects, optional
         Objects class rectangular ROI passed to detect_color_card (default None)
