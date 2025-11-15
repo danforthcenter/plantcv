@@ -21,7 +21,7 @@ def metadata_parser(config):
     pandas.core.groupby.generic.DataFrameGroupBy
         Grouped dataframe of image metadata.
     """
-    # Read the input dataset
+    # Read the input dataset to a dictionary
     dataset = _read_dataset(config=config)
 
     # Convert the dataset metadata to a dataframe
@@ -31,15 +31,15 @@ def metadata_parser(config):
     meta = _parse_filepath(df=meta, config=config)
 
     # Apply user-supplied metadata filters
-    meta = _apply_metadata_filters(df=meta, config=config)
+    meta, removed_df = _apply_metadata_filters(df=meta, config=config)
 
     # Apply user-supplied date range filters
-    meta = _apply_date_range_filter(df=meta, config=config)
+    meta, removed_df = _apply_date_range_filter(df=meta, config=config, removed_df=removed_df)
 
     # Apply metadata grouping
     meta = _group_metadata(df=meta, config=config)
 
-    return meta
+    return meta, removed_df
 ###########################################
 
 
@@ -67,7 +67,6 @@ def _read_dataset(config):
     # If the directory contains a SnapshotInfo.csv file it is a legacy "phenofront" dataset
     elif os.path.exists(os.path.join(config.input_dir, "SnapshotInfo.csv")):
         dataset = _read_phenofront(config=config, metadata_file=os.path.join(config.input_dir, "SnapshotInfo.csv"))
-    # Otherwise we will extract metadata from filenames
     else:
         dataset = _read_filenames(config=config)
     return dataset
@@ -92,7 +91,8 @@ def _dataset2dataframe(dataset, config):
     """
     # Build a metadata dictionary of lists of metadata values
     metadata = {
-        "filepath": []
+        "filepath": [],
+        "n_metadata_terms": []
     }
     # Populate metadata terms from the standard metadata vocabulary
     for term in config.metadata_terms:
@@ -100,6 +100,7 @@ def _dataset2dataframe(dataset, config):
     # Iterate over all image metadata and append metadata values to the dictionary
     for image in dataset["images"]:
         metadata["filepath"].append(os.path.join(config.input_dir, image))
+        metadata["n_metadata_terms"].append(dataset["images"][image].get("n_metadata_terms"))
         for term in config.metadata_terms:
             metadata[term].append(dataset["images"][image].get(term))
     df = pd.DataFrame(data=metadata)
@@ -113,17 +114,15 @@ def _dataset2dataframe(dataset, config):
 ###########################################
 def _apply_metadata_filters(df, config):
     """Apply filters to metadata.
-
-    Keyword arguments:
-    df = metadata dataframe
+    Parameters
+    ----------
+    df = pandas.core.frame.Dataframe, metadata dataframe
     config = plantcv.parallel.WorkflowConfig object
 
-    Outputs:
-    filtered_df = filtered metadata dataframe
-
-    :param df: pandas.core.frame.DataFrame
-    :param config: plantcv.parallel.WorkflowConfig
-    :return filtered_df: pandas.core.frame.DataFrame
+    Returns:
+    --------
+    filtered_df = pandas.core.frame.Dataframe, filtered metadata dataframe
+    removed_df  = pandas.core.frame.Dataframe, metadata dataframe of what was removed
     """
     # Convert all metadata filter values to a list type
     for term in config.metadata_filters:
@@ -135,36 +134,45 @@ def _apply_metadata_filters(df, config):
     # Create a metadata filter dataframe as the product of all combinations of values
     metadata_filter = pd.DataFrame(list(itertools.product(*config.metadata_filters.values())),
                                    columns=config.metadata_filters.keys(), dtype="object")
-    # If there are no filters provide the metadata_filter dataframe will be empty and we can return the input dataframe
+    # If there are no filters provide the metadata_filter dataframe will be empty and we can return the input datafram
+    removed_df = pd.DataFrame()
+    filtered_df = df
     if not metadata_filter.empty:
-        df = df.merge(metadata_filter, how="inner")
-    # if there are regex filters then find the True indicies for each and only return those from the merged dataframe
+        filtered_df = df.merge(metadata_filter, how="inner")
+        removed_df = _anti_join(df, filtered_df)
+        removed_df["status"] = "Removed by config.metadata_filters"
+        # if a row has None for all metadata then it was not able to be parsed due to variable length
+        removed_df.loc[removed_df[list(config.metadata_filters.keys())].isnull().apply(all, axis=1),
+                       'status'] = "Incorrect metadata length"
     if bool(config.metadata_regex):
+        prev_df = filtered_df
         for key, value in config.metadata_regex.items():
-            df = df[df[key].astype(str).str.contains(value, regex=True, na=False)]
-    return df
+            filtered_df = filtered_df[filtered_df[key].astype(str).str.contains(value, regex=True, na=False)]
+        removed_df_2 = _anti_join(prev_df, filtered_df)
+        removed_df_2["status"] = "Removed by config.metadata_regex"
+        removed_df = pd.concat([removed_df, removed_df_2])
+    return filtered_df, removed_df
 ###########################################
 
 
 # Filter a metadata dataframe within a date range
 ###########################################
-def _apply_date_range_filter(df, config):
+def _apply_date_range_filter(df, config, removed_df):
     """Filter metadata based on a date range.
-
-    Keyword arguments:
-    df = metadata dataframe
+    Parameters
+    ----------
+    df = pandas.core.frame.DataFrame, metadata dataframe
     config = plantcv.parallel.WorkflowConfig object
+    removed_df = pandas.core.frame.DataFrame, dataframe of images removed up to this point
 
-    Outputs:
-    filtered_df = filtered metadata dataframe
-
-    :param df: pandas.core.frame.DataFrame
-    :param config: plantcv.parallel.WorkflowConfig
-    :return filtered_df: pandas.core.frame.DataFrame
+    Returns
+    -------
+    filtered_df = pandas.core.frame.DataFrame, filtered metadata dataframe
+    removed_df = pandas.core.frame.DataFrame, dataframe of removed metadata
     """
     # If either the start or end date is None then do not filter
     if None in [config.start_date, config.end_date]:
-        return df
+        return df, removed_df
     # Set whether the datetime code is in UTC or not
     utc = bool("Z" in config.timestampformat)
     # Convert start and end dates to datetimes
@@ -172,7 +180,11 @@ def _apply_date_range_filter(df, config):
     end_date = pd.to_datetime(config.end_date, format=config.timestampformat, utc=utc)
     # Keep rows with dates between start and end date
     filtered_df = df.loc[df["timestamp"].between(start_date, end_date, inclusive="both")]
-    return filtered_df
+    not_between_df = _anti_join(df, filtered_df)
+    not_between_df["status"] = "Removed by config.start_date and config.end_date"
+    removed_df = pd.concat([removed_df, not_between_df])
+
+    return filtered_df, removed_df
 ###########################################
 
 
@@ -278,6 +290,7 @@ def _parse_filename(filename, config, metadata_index):
             # If the same metadata is found in the image filename, store the value
             if term in metadata_index:
                 img_meta[term] = meta_list[metadata_index[term]]
+    img_meta["n_metadata_terms"] = len(meta_list)
     return img_meta
 ###########################################
 
@@ -473,6 +486,23 @@ def _read_filenames(config):
         # Store the image filename metadata
         dataset["images"][rel_path] = _parse_filename(filename=metadata, config=config, metadata_index=metadata_index)
     return dataset
+###########################################
+
+
+def _anti_join(df1, df2=None):
+    """Anti join function for pandas dataframes
+    Parameters
+    ----------
+    df1      = pandas.core.frame.Dataframe, dataframe of metadata
+    df2      = pandas.core.frame.Dataframe, dataframe of filtered metadata
+
+    Returns
+    -------
+    anti_joined = pandas.core.frame.Dataframe, metadata dataframe of what was removed
+    """
+    outer = df1.merge(df2, how='outer', indicator=True)
+    anti_joined = outer[(outer['_merge'] == 'left_only')].drop('_merge', axis=1)
+    return anti_joined
 ###########################################
 
 
