@@ -172,6 +172,41 @@ function call to the most updated function call.
 See the individual function help
 pages for more details on the input and output variable types.
 
+#### learn.train_kmeans
+
+* pre v4.3: NA 
+* post v4.3: **learn.train_kmeans**(*img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, sigma=5, sampling=None, seed=1, num_imgs=0, n_init=10*)
+
+#### parallel.create_dask_cluster
+
+* pre v4.10: Untracked
+* post v4.10: **parallel.create_dask_cluster**(*config, cluster_config*)
+
+#### parallel.inspect_dataset
+
+* pre v4.10: NA
+* post v4.10: **parallel.inspect_dataset**(*config*)
+
+#### parallel.job_builder
+
+* pre v4.10: Untracked
+* post v4.10: **parallel.job_builder**(*meta, config*)
+
+#### parallel.metadata_parser
+
+* pre v4.10: Untracked
+* post 4.10: **parallel.metadata_parser**(*config*)
+
+#### parallel.multiprocess
+
+* pre v4.10: Untracked
+* post v4.10: **parallel.multiprocess**(*jobs, client*)
+
+#### parallel.workflow_inputs
+
+* pre v4.10: Untracked
+* post v4.10: **parallel.workflow_inputs**(*\*other_args*)
+
 #### plantcv.acute
 
 * pre v3.0dev2: device, homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = **plantcv.acute**(*obj, win, thresh, mask, device, debug=None*)
@@ -608,11 +643,6 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: lp_filtered = **plantcv.laplace_filter**(*gray_img, k, scale*)
 * post v3.2: lp_filtered = **plantcv.laplace_filter**(*gray_img, ksize, scale*)
 * post v4.9: lp_filtered = **plantcv.laplace_filter**(*gray_img, ksize, scale, roi=None*)
-
-#### plantcv.learn.train_kmeans
-
-* pre v4.3: NA 
-* post v4.3: **plantcv.learn.train_kmeans**(*img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, sigma=5, sampling=None, seed=1, num_imgs=0, n_init=10*)
 
 #### plantcv.logical_and
 
