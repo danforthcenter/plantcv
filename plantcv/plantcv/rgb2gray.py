@@ -1,7 +1,7 @@
 # RGB -> Gray
 
 import os
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _rgb2gray
 
