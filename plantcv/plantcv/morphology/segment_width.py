@@ -60,8 +60,8 @@ def segment_width(segmented_img, skel_img, labeled_mask, n_labels=1, label=None)
                 stroke_width_max = 2 * np.max(weighted_values)
                 width_std = np.std(weighted_values)
                 widths.append(stroke_width.astype(np.float64))
-                stdevs.append(width_std)
-                max_width.append(stroke_width_max)
+                stdevs.append(width_std.astype(np.float64))
+                max_width.append(stroke_width_max.astype(np.float64))
                 text = str(int(stroke_width))
                 if params.verbose:
                     cv2.putText(img=labeled_img, text=text,
@@ -81,17 +81,17 @@ def segment_width(segmented_img, skel_img, labeled_mask, n_labels=1, label=None)
                             method='plantcv.plantcv.morphology.analyze_width',
                             scale=params.unit, datatype=list,
                             value=_scale_size(value=widths, trait_type="segment_width"),
-                            label=range(1, n_labels + 1))
+                            label=list(range(1, n_labels + 1)))
     outputs.add_observation(sample=label, variable='segment_width_std', trait='segment width standard deviation',
                             method='plantcv.plantcv.morphology.analyze_width',
                             scale="pixels", datatype=list,
                             value=stdevs,
-                            label=range(1, n_labels + 1))
+                            label=list(range(1, n_labels + 1)))
     outputs.add_observation(sample=label, variable='segment_width_max', trait='maximum width per segment',
                             method='plantcv.plantcv.morphology.analyze_width',
                             scale=params.unit, datatype=list,
                             value=_scale_size(value=max_width, trait_type="segment_width_max"),
-                            label=range(1, n_labels + 1))
+                            label=list(range(1, n_labels + 1)))
     # Debugging
     _debug(visual=labeled_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_segment_width.png'))
 
