@@ -10,12 +10,14 @@ Before you can parallelize a workflow you need to make sure that it works on a s
 
 There are a few things to consider moving from prototyping in Jupyter to running a potentially computationally heavy parallel job.
 
-Another helpful tool for building a workflow with the goal of running analyses in parallel is to use [`workflow_inputs`](parallel_workflow_inputs.md) to set things like file paths. There are many examples of this in the tutorials, but the general pattern working interactively in Jupyter would be:
+Another helpful tool for building a workflow with the goal of running analyses in parallel is to use [`WorkflowInputs`](parallel_workflow_inputs.md) to set things like file paths. There are many examples of this in the tutorials, but the general pattern working interactively in Jupyter would be:
 
 ```python
 # in your .ipynb notebook
-from plantcv import parallel as pcvpar
-args = pcvpar.WorkflowInputs(
+from plantcv.parallel import WorkflowInputs
+
+# Define workflow inputs
+args = WorkflowInputs(
     images=["path/to/your/image.file"],
     names="image1",
     result="example_results.json",
@@ -27,12 +29,14 @@ pcv.params.debug = args.debug
 img, path, filename = pcv.readimage(filename=args.image1)
 # ... the rest of your code
 ```
-When you are ready to run in parallel whether you make a python script manually and run with [`WorkflowConfig`](parallel_config.md) or if you run the Jupyter notebook in parallel with [`jupyterconfig`](parallel_jupyterconfig.md) you would need to change the above to:
+When you are ready to run in parallel whether you make a python script manually and run with [`workflow_inputs`](parallel_config.md) or if you run the Jupyter notebook in parallel with [`jupyterconfig`](parallel_jupyterconfig.md) you would need to change the above to:
 
 ```python
 # in your .py script
-from plantcv import parallel as pcvpar
-args = pcvpar.workflow_inputs()
+from plantcv.parallel import workflow_inputs
+
+# Parse configuration arguments
+args = workflow_inputs()
 # these lines can stay the same thanks to workflow_inputs()
 pcv.params.debug = args.debug
 img, path, filename = pcv.readimage(filename=args.image1)
