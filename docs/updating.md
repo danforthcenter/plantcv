@@ -234,6 +234,11 @@ pages for more details on the input and output variable types.
 * pre v4.10: Untracked
 * post v4.10: **parallel.multiprocess**(*jobs, client*)
 
+#### parallel.run_parallel
+
+* pre v4.10: NA
+* post v4.10: **parallel.run_parallel**(*config*)
+
 #### parallel.workflow_inputs
 
 * pre v4.10: Untracked
