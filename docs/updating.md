@@ -710,11 +710,6 @@ pages for more details on the input and output variable types.
 * post v3.3: pruned_img = **plantcv.morphology.prune**(*skel_img, size*)
 * post v3.4: pruned_skeleton, segmented_img, segment_objects = **plantcv.morphology.prune**(*skel_img, size=0, mask=None*)
 
-#### plantcv.morphology.prune_by_height
-
-* pre v4.7: NA
-* post v4.7: pruned_img = **plantcv.morphology.prune_by_height**(*skel_img, line_position=None, mask=None, label=None*)
-
 #### plantcv.morphology.segment_angle
 
 * pre v3.3: NA

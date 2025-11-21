@@ -1,7 +1,7 @@
 # Find both segment end coordinates
 import os
 import numpy as np
-from plantcv.plantcv import params, outputs
+from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _find_segment_ends
 
@@ -13,7 +13,7 @@ def segment_ends(skel_img, leaf_objects, mask=None):
     skel_img         = Skeletonized image
     leaf_objects     = List of leaf segments
     mask             = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
-    
+
     Returns:
     sorted_obs       = Reordered segments based on segment branch point y-coordinates
     inner_list       = List of branch point coordinates of the input leaf_objects
