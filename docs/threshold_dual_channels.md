@@ -11,16 +11,16 @@ Pixels in the plane above and below the straight line are assigned two different
 - **Parameters:**
     - rgb_img - RGB image
     - x_channel - Channel to use for the horizontal coordinate.
-      Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'gray', and 'index'
+      Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'c', 'm', 'y', 'k', 'gray', and 'index'
     - y_channel - Channel to use for the vertical coordinate.
-      Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'gray', and 'index'
+      Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'c', 'm', 'y', 'k', 'gray', and 'index'
     - points - List containing two points as tuples defining the segmenting straight line
     - above - Whether the pixels above the line are given the value of 0 or 255
 
 - **Context:**
     - Used to help differentiate plant and background
-- **Example use:**
-    <!-- - [Use In VIS Tutorial](tutorials/vis_tutorial.md) -->
+    - Helpful in maize images, shown in the [single plant tutorial](https://plantcv.org/tutorials/single-plant-rgb-workflow), or in other plants with purple hues. 
+- **Example use below:**
 
 **Original image**
 

@@ -6,24 +6,25 @@ from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _find_segment_ends
 
 
-def segment_ends(skel_img, leaf_objects, mask=None, label=None):
-    """Find tips and segment branch points.
+def segment_ends(skel_img, leaf_objects, mask=None):
+    """Find tips and segment branch points, resort objects based on inner_list of coordinates.
 
     Inputs:
     skel_img         = Skeletonized image
     leaf_objects     = List of leaf segments
     mask             = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
-    label            = Optional label parameter, modifies the variable name of
-                       observations recorded (default = pcv.params.sample_label).
-
+    
     Returns:
     sorted_obs       = Reordered segments based on segment branch point y-coordinates
+    inner_list       = List of branch point coordinates of the input leaf_objects
+    tip_list         = List of leaf tip coordinates of the input leaf_object
 
     :param segmented_img: numpy.ndarray
     :param leaf_objects: list
     :param mask: numpy.ndarray
-    :param label: str
     :return sorted_ids: list
+    :return inner_list: list
+    :return tip_list: list
     """
     # Store debug
     debug = params.debug
@@ -34,29 +35,9 @@ def segment_ends(skel_img, leaf_objects, mask=None, label=None):
     else:
         labeled_img = mask.copy()
     # Find and sort segment ends, and create debug image
-    labeled_img, tip_list, inner_list, labels, objs = _find_segment_ends(
+    labeled_img, tip_list, inner_list, _, objs = _find_segment_ends(
         skel_img=skel_img, leaf_objects=leaf_objects, plotting_img=labeled_img, size=1)
-    # Set lable to params.sample_label if None
-    if label is None:
-        label = params.sample_label
-    # Save coordinates to Outputs
-    outputs.add_observation(sample=label, variable='segment_tips',
-                            trait='list of tip coordinates identified from segments',
-                            method='plantcv.plantcv.morphology.segment_ends', scale='None', datatype=list,
-                            value=tip_list, label=labels)
-    outputs.add_observation(sample=label, variable='segment_branch_points',
-                            trait='list of branch point coordinates identified from segments',
-                            method='plantcv.plantcv.morphology.segment_ends', scale='None', datatype=list,
-                            value=inner_list, label=labels)
-    # Were any segments missing a branch point?
-    if len(inner_list) != len(leaf_objects):
-        missing = True
-    else:
-        missing = False
-    outputs.add_observation(sample=label, variable='segment_unsortable',
-                            trait='one or more leaf segments are missing a branch point',
-                            method='plantcv.plantcv.morphology.segment_ends', scale='None', datatype=bool,
-                            value=missing, label="none")
+
     # Reset debug mode
     params.debug = debug
     _debug(visual=labeled_img, filename=os.path.join(params.debug_outdir, f"{params.device}_segment_ends.png"))
@@ -69,4 +50,4 @@ def segment_ends(skel_img, leaf_objects, mask=None, label=None):
     sorted_key_index = np.argsort(values)
     sorted_objs = [objs[i] for i in sorted_key_index[::-1]]
 
-    return labeled_img, sorted_objs
+    return sorted_objs, inner_list, tip_list

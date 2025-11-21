@@ -4,7 +4,7 @@ This is a filtering method used to identify and highlight gradient edges/feature
        Typically used to identify gradients along the x-axis (dx = 1, dy = 0) and y-axis (dx = 0, dy = 1) independently.
        Performance is quite similar to [Sobel filter](sobel_filter.md). Used to detect edges and/or changes in pixel intensity. 
 
-**plantcv.scharr_filter**(*img, dx, dy, scale*)
+**plantcv.scharr_filter**(*img, dx, dy, scale, roi=None*)
 
 **returns** filtered image
 
@@ -13,6 +13,7 @@ This is a filtering method used to identify and highlight gradient edges/feature
     - dx - derivative of x to analyze (0 or 1)
     - dy - derivative of y to analyze (0 or 1)
     - scale - scaling factor applied (multiplied) to computed Scharr values (scale = 1 is unscaled)
+	- roi - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to apply this function. (default = None, which uses the entire image)
 - **Context:**
     - This is a filtering method used to identify and highlight gradient edges/features using the 1st derivative.
        Typically used to identify gradients along the x-axis (dx = 1, dy = 0) and y-axis (dx = 0, dy = 1) independently.

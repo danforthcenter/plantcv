@@ -558,7 +558,12 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/156026125?v=4",
       "profile": "https://github.com/k034b363",
       "contributions": [
-        "code"
+        "code",
+        "doc",
+        "test",
+        "tutorial",
+        "ideas",
+        "mentoring"
       ]
     },
     {
@@ -689,6 +694,75 @@
       "contributions": [
         "tutorial",
         "doc"
+      ]
+    },
+    {
+      "login": "abrown-37",
+      "name": "abrown-37",
+      "avatar_url": "https://avatars.githubusercontent.com/u/82683033?v=4",
+      "profile": "https://github.com/abrown-37",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "NMiklave",
+      "name": "NMiklave",
+      "avatar_url": "https://avatars.githubusercontent.com/u/50243212?v=4",
+      "profile": "https://github.com/NMiklave",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "caitlynelliott56",
+      "name": "Caitlyn Elliott",
+      "avatar_url": "https://avatars.githubusercontent.com/u/214695433?v=4",
+      "profile": "https://github.com/caitlynelliott56",
+      "contributions": [
+        "code",
+        "ideas",
+        "tutorial"
+      ]
+    },
+    {
+      "login": "zhaYdamenaceee",
+      "name": "ZhakeYa D'Nai Hawkins",
+      "avatar_url": "https://avatars.githubusercontent.com/u/114114550?v=4",
+      "profile": "https://onlinegdb.com/h-5zNv0Dz",
+      "contributions": [
+        "tutorial"
+      ]
+    },
+    {
+      "login": "JalissaPirro",
+      "name": "JalissaPirro",
+      "avatar_url": "https://avatars.githubusercontent.com/u/214848039?v=4",
+      "profile": "https://github.com/JalissaPirro",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "Sam-Taylor-UIOWA",
+      "name": "Samuel Kalevi Zebarth Taylor",
+      "avatar_url": "https://avatars.githubusercontent.com/u/116521490?v=4",
+      "profile": "https://github.com/Sam-Taylor-UIOWA",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "marcusdgriff",
+      "name": "Marcus Griffiths",
+      "avatar_url": "https://avatars.githubusercontent.com/u/44459040?v=4",
+      "profile": "https://www.marcusgriffiths.com",
+      "contributions": [
+        "code",
+        "doc",
+        "test"
       ]
     }
   ],

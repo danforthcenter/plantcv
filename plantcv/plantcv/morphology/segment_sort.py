@@ -3,10 +3,8 @@
 import os
 import cv2
 import numpy as np
-from plantcv.plantcv import dilate
 from plantcv.plantcv import params
-from plantcv.plantcv import logical_and
-from plantcv.plantcv._helpers import _find_tips
+from plantcv.plantcv._helpers import _find_tips, _logical_operation, _dilate
 from plantcv.plantcv._debug import _debug
 
 
@@ -31,10 +29,6 @@ def segment_sort(skel_img, objects, mask=None, first_stem=True):
     :return secondary_objects: list
     :return other_objects: list
     """
-    # Store debug
-    debug = params.debug
-    params.debug = None
-
     secondary_objects = []
     primary_objects = []
 
@@ -44,13 +38,13 @@ def segment_sort(skel_img, objects, mask=None, first_stem=True):
         labeled_img = mask.copy()
 
     tips_img, _, _ = _find_tips(skel_img)
-    tips_img = dilate(tips_img, 3, 1)
+    tips_img = _dilate(tips_img, 3, 1)
 
     # Loop through segment contours
     for i, cnt in enumerate(objects):
         segment_plot = np.zeros(skel_img.shape[:2], np.uint8)
         cv2.drawContours(segment_plot, objects, i, 255, 1, lineType=8)
-        overlap_img = logical_and(segment_plot, tips_img)
+        overlap_img = _logical_operation(segment_plot, tips_img, "and")
 
         # The first contour is the base, and while it contains a tip, it isn't a leaf
         if i == 0 and first_stem:
@@ -63,9 +57,6 @@ def segment_sort(skel_img, objects, mask=None, first_stem=True):
                 secondary_objects.append(cnt)
             else:
                 primary_objects.append(cnt)
-
-    # Reset debug mode
-    params.debug = debug
 
     # Plot segments where green segments are leaf objects and fuschia are other objects
     labeled_img = cv2.cvtColor(labeled_img, cv2.COLOR_GRAY2RGB)

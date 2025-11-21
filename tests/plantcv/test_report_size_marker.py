@@ -19,7 +19,7 @@ def test_report_size_marker(marker, exp, test_data):
     roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
     _ = report_size_marker_area(img=img, roi=roi, marker=marker,
                                 objcolor='light', thresh_channel='s', thresh=120)
-    assert int(outputs.observations["default"]["marker_area"]["value"]) == exp
+    assert int(outputs.metadata["marker_area"]["value"][0]) == exp
 
 
 def test_report_size_marker_grayscale_input(test_data):
@@ -34,7 +34,7 @@ def test_report_size_marker_grayscale_input(test_data):
     roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
     _ = report_size_marker_area(img=img, roi=roi, marker='define',
                                 objcolor='light', thresh_channel='s', thresh=120)
-    assert int(outputs.observations["default"]["marker_area"]["value"]) == 2601
+    assert int(outputs.metadata["marker_area"]["value"][0]) == 2601
 
 
 @pytest.mark.parametrize("marker,channel", [
@@ -52,3 +52,18 @@ def test_report_size_marker_bad_inputs(marker, channel, test_data):
     with pytest.raises(RuntimeError):
         _ = report_size_marker_area(img=img, roi=roi, marker=marker,
                                     objcolor='light', thresh_channel=channel, thresh=120)
+
+
+def test_report_size_marker_no_detection(test_data):
+    """Test for PlantCV."""
+    # Clear outputs
+    outputs.clear()
+    # Read in test data
+    img = cv2.imread(test_data.small_gray_img, -1)
+    # ROI contour
+    roi_contour = [np.array([[[1, 1]], [[1, 2]], [[2, 2]], [[2, 1]]], dtype=np.int32)]
+    roi_hierarchy = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
+    roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
+    _ = report_size_marker_area(img=img, roi=roi, marker='define',
+                                objcolor='light', thresh_channel='s', thresh=120)
+    assert outputs.metadata["marker_area"]["value"][0] == 'none'

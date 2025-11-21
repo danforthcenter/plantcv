@@ -45,6 +45,18 @@ def test_readimage_envi(test_data):
     assert hsi.array_data.shape[2] == 978
 
 
+def test_readimage_nd2(test_data):
+    """Test for PlantCV."""
+    img, _, _ = readimage(filename=test_data.nd2_img, mode="nd2")
+    assert len(img.shape) == 3
+
+
+def test_readimage_thermal(test_data):
+    """Test for PlantCV."""
+    img, _, _ = readimage(filename=test_data.flir_img, mode="thermal")
+    assert len(img.shape) == 2
+
+
 def test_readimage_bad_file():
     """Test for PlantCV."""
     with pytest.raises(RuntimeError):

@@ -375,3 +375,15 @@ def test_wi_bad_input(spectral_index_test_data):
     """Test for PlantCV."""
     index_array = spectral_index.wi(spectral_index_test_data.load_hsi(), distance=20)
     assert spectral_index.wi(hsi=index_array, distance=20) is None
+
+
+def test_ndci(spectral_index_test_data):
+    """Test for PlantCV."""
+    index_array = spectral_index.ndci(spectral_index_test_data.load_hsi(), distance=20)
+    assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
+
+
+def test_ndci_bad_input(spectral_index_test_data):
+    """Test for PlantCV."""
+    index_array = spectral_index.ndci(spectral_index_test_data.load_hsi(), distance=20)
+    assert spectral_index.ndci(hsi=index_array, distance=20) is None

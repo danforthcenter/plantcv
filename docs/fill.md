@@ -2,18 +2,19 @@
 
 Identifies objects and fills objects that are less than specified size
 
-**plantcv.fill**(*bin_img, size*)
+**plantcv.fill**(*bin_img, size, roi=None*)
 
 **returns** fill_image
 
 - **Parameters:**
     - bin_img - Binary image data
     - size - minimum object area size in pixels (integer), smaller objects will be filled
+	- roi - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to apply this function. (default = None, which uses the entire image)
   - **Context:**
     - Used to reduce image noise
 - **Example use:**
-    - [Use In VIS Tutorial](tutorials/vis_tutorial.md)
-    - [Use In PSII Tutorial](tutorials/psII_tutorial.md)
+    - [Use In Seed Analysis Tutorial](https://plantcv.org/tutorials/seed-analysis-workflow)
+    - [Use In PSII Tutorial](https://plantcv.org/tutorials/photosynthesis-multiobject)
 
 ```python
 

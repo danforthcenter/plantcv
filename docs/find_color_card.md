@@ -20,8 +20,8 @@ Automatically detects a color card's location and size. Useful in workflows wher
     - label - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
 - **Returns**
     - df            - Dataframe of all color card chips found.
-    - start_coord   - Two-element tuple of the first chip mask starting x and y coordinate. Useful in [create a color card mask](#create-a-labeled-color-card-mask) function.
-    - spacing       - Two-element tuple of the horizontal and vertical spacing between chip masks. Useful in [create a color card mask](#create-a-labeled-color-card-mask) function.
+    - start_coord   - Two-element tuple of the first chip mask starting x and y coordinate. Useful in [create a color card mask](create_color_card_mask.md) function.
+    - spacing       - Two-element tuple of the horizontal and vertical spacing between chip masks. Useful in [create a color card mask](create_color_card_mask.md) function.
 
 !!! note
     This function isn't entirely robust. There are a few important assumptions that must be met in order to automatically
