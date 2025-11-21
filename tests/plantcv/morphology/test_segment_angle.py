@@ -1,14 +1,13 @@
 import cv2
 import numpy as np
-from plantcv.plantcv import outputs, params
-from plantcv.plantcv.morphology import segment_angle
+from plantcv.plantcv import outputs
+from plantcv.plantcv.morphology.segment_angle import segment_angle
 
 
 def test_segment_angle(morphology_test_data):
     """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
-    params.saved_color_scale = None
     skeleton = cv2.imread(morphology_test_data.skel_img, -1)
     _ = segment_angle(segmented_img=skeleton,
                       objects=morphology_test_data.load_segments(morphology_test_data.segments_file, "leaves"))
