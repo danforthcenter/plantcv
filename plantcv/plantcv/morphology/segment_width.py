@@ -80,7 +80,7 @@ def segment_width(segmented_img, skel_img, labeled_mask, n_labels=1, label=None)
     outputs.add_observation(sample=label, variable='mean_segment_width', trait='mean segment widths',
                             method='plantcv.plantcv.morphology.segment_width',
                             scale=params.unit, datatype=list,
-                            value=_scale_size(value=widths, trait_type="segment_width"),
+                            value=_scale_size(value=widths, trait_type="linear"),
                             label=list(range(1, n_labels + 1)))
     outputs.add_observation(sample=label, variable='segment_width_std', trait='segment width standard deviation',
                             method='plantcv.plantcv.morphology.segment_width',
@@ -90,7 +90,7 @@ def segment_width(segmented_img, skel_img, labeled_mask, n_labels=1, label=None)
     outputs.add_observation(sample=label, variable='segment_width_max', trait='maximum segment widths',
                             method='plantcv.plantcv.morphology.segment_width',
                             scale=params.unit, datatype=list,
-                            value=_scale_size(value=max_width, trait_type="segment_width_max"),
+                            value=_scale_size(value=max_width, trait_type="linear"),
                             label=list(range(1, n_labels + 1)))
     # Debugging
     _debug(visual=labeled_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_segment_width.png'))
