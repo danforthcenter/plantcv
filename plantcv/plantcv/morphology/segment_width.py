@@ -78,17 +78,17 @@ def segment_width(segmented_img, skel_img, labeled_mask, n_labels=1, label=None)
     if label is None:
         label = params.sample_label
     outputs.add_observation(sample=label, variable='segment_width', trait='segment width',
-                            method='plantcv.plantcv.morphology.analyze_width',
+                            method='plantcv.plantcv.morphology.segment_width',
                             scale=params.unit, datatype=list,
                             value=_scale_size(value=widths, trait_type="segment_width"),
                             label=list(range(1, n_labels + 1)))
     outputs.add_observation(sample=label, variable='segment_width_std', trait='segment width standard deviation',
-                            method='plantcv.plantcv.morphology.analyze_width',
+                            method='plantcv.plantcv.morphology.segment_width',
                             scale="pixels", datatype=list,
                             value=stdevs,
                             label=list(range(1, n_labels + 1)))
     outputs.add_observation(sample=label, variable='segment_width_max', trait='maximum width per segment',
-                            method='plantcv.plantcv.morphology.analyze_width',
+                            method='plantcv.plantcv.morphology.segment_width',
                             scale=params.unit, datatype=list,
                             value=_scale_size(value=max_width, trait_type="segment_width_max"),
                             label=list(range(1, n_labels + 1)))
