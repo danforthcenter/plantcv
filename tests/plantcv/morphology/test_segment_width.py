@@ -13,4 +13,4 @@ def test_segment_width(morphology_test_data):
     skeleton = cv2.imread(morphology_test_data.skel_img, -1)
     mask[100, 100] = 2
     _ = segment_width(segmented_img=mask, skel_img=skeleton, labeled_mask=mask, n_labels=2)
-    assert int(sum(outputs.observations['default']['segment_width']['value'])) == 6
+    assert int(sum(outputs.observations['default']['mean_segment_width']['value'])) == 6
