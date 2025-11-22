@@ -32,9 +32,9 @@ pcv.params.debug = "plot"
 # Optionally, set a sample label name
 pcv.params.sample_label = "wire"
 
-labeled_img = pcv.morphology.segment_path_length(segmented_img=segmented_img, skel_img=skel, labeled_mask=labeled_mask, n_labels=5)
+labeled_img = pcv.morphology.segment_width(segmented_img=segmented_img, skel_img=skel, labeled_mask=labeled_mask, n_labels=5)
 
-# Access data stored out from segment_path_length
+# Access data stored out from segment_width
 seg_widths = pcv.outputs.observations['wire']['mean_segment_width']['value']
 
 ```
