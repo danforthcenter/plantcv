@@ -14,4 +14,3 @@ def test_segment_width(morphology_test_data):
     mask[100, 100] = 2
     _ = segment_width(segmented_img=mask, skel_img=skeleton, labeled_mask=mask, n_labels=2)
     assert int(sum(outputs.observations['default']['segment_width']['value'])) == 6
-
