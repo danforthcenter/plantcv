@@ -1,6 +1,6 @@
 import cv2
 from plantcv.plantcv import outputs
-from plantcv.plantcv.morphology import find_tips
+from plantcv.plantcv.morphology.find_tips import find_tips
 
 
 def test_find_tips(morphology_test_data):

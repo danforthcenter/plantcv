@@ -1,6 +1,6 @@
 import cv2
 from plantcv.plantcv import outputs
-from plantcv.plantcv.morphology import analyze_stem
+from plantcv.plantcv.morphology.analyze_stem import analyze_stem
 
 
 def test_analyze_stem(morphology_test_data):

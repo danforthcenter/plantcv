@@ -1,6 +1,6 @@
 import pytest
 import cv2
-from plantcv.plantcv.morphology import segment_combine
+from plantcv.plantcv.morphology.segment_combine import segment_combine
 
 
 def test_segment_combine(morphology_test_data):

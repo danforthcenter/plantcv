@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from plantcv.plantcv.morphology import skeletonize
+from plantcv.plantcv.morphology.skeletonize import skeletonize
 
 
 def test_skeletonize(morphology_test_data):

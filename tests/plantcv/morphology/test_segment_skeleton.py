@@ -1,5 +1,5 @@
 import cv2
-from plantcv.plantcv.morphology import segment_skeleton
+from plantcv.plantcv.morphology.segment_skeleton import segment_skeleton
 
 
 def test_segment_skeleton(morphology_test_data):

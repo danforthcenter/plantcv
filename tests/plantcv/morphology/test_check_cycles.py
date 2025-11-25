@@ -1,6 +1,6 @@
 import cv2
 from plantcv.plantcv import outputs
-from plantcv.plantcv.morphology import check_cycles
+from plantcv.plantcv.morphology.check_cycles import check_cycles
 
 
 def test_check_cycles(morphology_test_data):
