@@ -23,7 +23,7 @@ Size and shape analysis outputs numeric properties for individual plants, seeds,
 'ellipse_angle', 'ellipse_eccentricity', 'total_edge_length') automatically gets stored to the [`Outputs` class](outputs.md) when this function is
 run. These data can be accessed during a workflow (example below). Length and area type measurements can be scaled to real world units (e.g. mm and mm<sup>2</sup> using the `unit`, `px_height`, and `px_width` [parameters](params.md). For more detail about data output see
 [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
-    
+
 **Original image**
 
 ![Screenshot](img/documentation_images/analyze_size/original_image.jpg)
