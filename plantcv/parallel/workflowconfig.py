@@ -33,7 +33,6 @@ class WorkflowConfig:
         object.__setattr__(self, "cluster", "LocalCluster")
         object.__setattr__(self, "cluster_config", {
             "n_workers": 1,
-            "cores": 1,
             "memory": "1GB",
             "disk": "1GB",
             "log_directory": None,
@@ -133,14 +132,13 @@ class WorkflowConfig:
             print(f"Error: the cluster type {self.cluster} is not a supported cluster provider. "
                   f"Valid clusters include: {', '.join(map(str, valid_clusters))}."
                   )
-
         # Validate the cluster configuration
         if (
-                self.cluster_config["n_workers"] * self.cluster_config["cores"] > os.cpu_count()
+                self.cluster_config["n_workers"] * self.cluster_config.get('cores', 1) > os.cpu_count()
                 and self.cluster == "LocalCluster"
         ):
             print(f"Error: n_workers is {self.cluster_config['n_workers']} and "
-                  f"cores is {self.cluster_config['cores']} which requires "
+                  f"cores is {self.cluster_config.get('cores', 1)} which requires "
                   f"more than the {os.cpu_count()} available cores.")
             checks.append(False)
 
