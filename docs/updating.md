@@ -72,6 +72,11 @@ Renamed the "json" attribute to "results" for clarity about what it controls and
 Renamed the input parameter `rgb_img` to `img` to reflect the flexibility of using the [EGI index function](spectral_index.md)
 with RGB and hyperspectral data.
 
+#### plantcv.report_size_marker_area
+
+Removed `label` parameter since size marker data is now stored as metadata in the
+[`Outputs` class](outputs.md) and does not need to be labeled per sample.
+
 #### plantcv.transform.auto_correct_color
 
 Removed `label` parameter since size marker data is now stored as metadata in the
@@ -82,7 +87,7 @@ Removed `label` parameter since size marker data is now stored as metadata in th
 Removed `label` parameter since size marker data is now stored as metadata in the
 [`Outputs` class](outputs.md) and does not need to be labeled per sample.
 
-#### plantcv.transform.detect_color_card
+#### plantcv.transform.find_color_card
 
 Deprecated the function in favor of the new
 [`plantcv.transform.detect_color_card`](transform_detect_color_card.md) function.
@@ -206,6 +211,46 @@ Below is an overview of all updates that are required to convert a pre-v3.0dev2
 function call to the most updated function call.
 See the individual function help
 pages for more details on the input and output variable types.
+
+#### learn.train_kmeans
+
+* pre v4.3: NA 
+* post v4.3: **learn.train_kmeans**(*img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, sigma=5, sampling=None, seed=1, num_imgs=0, n_init=10*)
+
+#### parallel.create_dask_cluster
+
+* pre v4.10: Untracked
+* post v4.10: **parallel.create_dask_cluster**(*config, cluster_config*)
+
+#### parallel.inspect_dataset
+
+* pre v4.10: NA
+* post v4.10: **parallel.inspect_dataset**(*config*)
+
+#### parallel.job_builder
+
+* pre v4.10: Untracked
+* post v4.10: **parallel.job_builder**(*meta, config*)
+
+#### parallel.metadata_parser
+
+* pre v4.10: Untracked
+* post 4.10: **parallel.metadata_parser**(*config*)
+
+#### parallel.multiprocess
+
+* pre v4.10: Untracked
+* post v4.10: **parallel.multiprocess**(*jobs, client*)
+
+#### parallel.run_parallel
+
+* pre v4.10: NA
+* post v4.10: **parallel.run_parallel**(*config*)
+
+#### parallel.workflow_inputs
+
+* pre v4.10: Untracked
+* post v4.10: **parallel.workflow_inputs**(*\*other_args*)
 
 #### plantcv.acute
 
@@ -649,11 +694,6 @@ pages for more details on the input and output variable types.
 * post v3.2: lp_filtered = **plantcv.laplace_filter**(*gray_img, ksize, scale*)
 * post v4.9: lp_filtered = **plantcv.laplace_filter**(*gray_img, ksize, scale, roi=None*)
 
-#### plantcv.learn.train_kmeans
-
-* pre v4.3: NA 
-* post v4.3: **plantcv.learn.train_kmeans**(*img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, sigma=5, sampling=None, seed=1, num_imgs=0, n_init=10*)
-
 #### plantcv.logical_and
 
 * pre v3.0dev2: device, merged = **plantcv.logical_and**(*img1, img2, device, debug=None*)
@@ -874,7 +914,6 @@ pages for more details on the input and output variable types.
 * pre v5: Untracked
 * post v5: **plantcv.parallel.WorkflowConfig()
 
-
 #### plantcv.photosynthesis.analyze_fvfm
 
 * pre v3.10: see plantcv.fluor_fvfm
@@ -962,6 +1001,7 @@ pages for more details on the input and output variable types.
 * post v3.3: analysis_image = **plantcv.report_size_marker_area**(*img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None, thresh=None*)
 * post v3.11: analysis_image = **plantcv.report_size_marker_area**(*img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None, thresh=None, label="default"*)
 * post v4.0: analysis_image = **plantcv.report_size_marker_area**(*img, roi, marker='define', objcolor='dark', thresh_channel=None, thresh=None, label=None*)
+* post v5.0: analysis_image = **plantcv.report_size_marker_area**(*img, roi, marker='define', objcolor='dark', thresh_channel=None, thresh=None*)
 
 #### plantcv.resize
 
@@ -1055,6 +1095,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.2.1: NA
 * post v4.2.1: filtered_mask = **plantcv.roi.quick_filter**(*mask, roi*)
+* post v4.9: filtered_mask = **plantcv.roi.quick_filter**(*mask, roi, roi_type="partial"*)
 
 #### plantcv.roi_objects
 
@@ -1324,6 +1365,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev1: NA
 * post v3.0dev2: corrected_img = **plantcv.transform.apply_transformation_matrix**(*source_img, target_img, transformation_matrix*)
+* post v5.0: corrected_img = **plantcv.transform.apply_transformation_matrix**(*source_img, transformation_matrix*)
 
 #### plantcv.transform.calc_transformation_matrix
 
@@ -1336,6 +1378,11 @@ pages for more details on the input and output variable types.
 * post v4.6: corrected_img = **plantcv.transform.auto_correct_color**(*rgb_img, label=None, \*\*kwargs*)
 * post v4.9: corrected_img = **plantcv.transform.auto_correct_color**(*rgb_img, label=None, color_chip_size=None, roi=None, \*\*kwargs*)
 * post v5.0: corrected_img = **plantcv.transform.auto_correct_color**(*rgb_img, color_chip_size=None, roi=None, \*\*kwargs*)
+
+#### plantcv.transform.auto_correct_color_nonlinear
+
+* pre v5.0: NA
+* post v5.0: corrected_img = **plantcv.transform.auto_correct_color_nonlinear**(*rgb_img, color_chip_size=None, roi=None,  \*\*kwargs*)
 
 #### plantcv.transform.correct_color
 
