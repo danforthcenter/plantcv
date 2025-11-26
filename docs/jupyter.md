@@ -144,5 +144,5 @@ pcv.outputs.save_results(filename=args.result, outformat="json")
 
 In the case where creating a parallel workflow is not convenient (e.g. image sets where ROIs or other parameters must be adjusted between images), it is possible to run all images individually through Jupyter Notebook and then combine the JSON outputs into a larger JSON. The resulting file will look and function similarly to the result.json of a parallel workflow and can be used for downstream data analysis.
 
-For all images whose data should be combined, the output JSONs should be moved to a new, separate folder. The files can then be combined using the process outlined on the [Process Results](parallel_process_results.md) page and plantcv-utils json2csv ([documentation](https://plantcv.readthedocs.io/en/stable/tools/#convert-output-json-data-files-to-csv-tables)).
+For all images whose data should be combined, the output JSONs should be moved to a new, separate folder. The files can then be combined using the process outlined on the [Process Results](parallel_process_results.md) page and [`plantcv.parallel.json2csv`](json2csv.md).
 
