@@ -21,7 +21,6 @@ nav:
     - 'Adding/Editing Documentation': documentation.md
     - 'Pull Request Review Process' : pr_review_process.md
   - "Tutorials": tutorials.md
-  - 'Workflow Parallelization': pipeline_parallel.md
   - 'Exporting Data': db-exporter.md
   - 'PlantCV Namespace':
     - 'PlantCV':
@@ -223,7 +222,9 @@ nav:
       - 'Naive Bayes': naive_bayes.md
       - 'Naive Bayes Multiclass': naive_bayes_multiclass.md
     - 'Parallelization':
+        - 'Getting started in parallel': parallel_preparation.md
         - 'Configure Parallelization': parallel_config.md
+        - 'Configure Parallelization in Jupyter': parallel_jupyterconfig.md
         - 'Inspect Configuration': parallel_inspect_config.md
         - 'Workflow Inputs Management': parallel_workflow_inputs.md
         - 'Metadata Parser': parallel_metadata_parser.md
