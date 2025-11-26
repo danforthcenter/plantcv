@@ -176,6 +176,7 @@ nav:
       - 'Transformation Methods':
           - 'Auto-Detect Color Card': transform_detect_color_card.md
           - 'Auto Correct Color': transform_auto_correct_color.md
+          - 'Auto Correct Color (non-linear)': transform_auto_correct_color_nonlinear.md
           - 'Calibrate Camera': transform_calibrate_camera.md
           - 'Checkerboard Calibration': transform_checkerboard_calibration.md
           - 'Create Color Card Mask': create_color_card_mask.md
