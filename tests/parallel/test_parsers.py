@@ -3,7 +3,7 @@ import os
 from plantcv.parallel import metadata_parser, WorkflowConfig
 
 
-@pytest.mark.parametrize("imgformat",["jpg","all"])
+@pytest.mark.parametrize("imgformat", ["jpg", "all"])
 def test_metadata_parser_snapshots(parallel_test_data, imgformat):
     """Test for PlantCV.
 
@@ -27,7 +27,7 @@ def test_metadata_parser_snapshots(parallel_test_data, imgformat):
 
 @pytest.mark.parametrize("subdirs,imgformat,outlength",
                          [[True, "jpg", 1], [False, "jpg", 1],
-                          [True, ["jpg","jpeg"], 2], [False, ["jpg","jpeg"], 2],
+                          [True, ["jpg", "jpeg"], 2], [False, ["jpg", "jpeg"], 2],
                           [True, "all", 2]])
 def test_metadata_parser_images(parallel_test_data, subdirs, imgformat, outlength):
     """Test for PlantCV.

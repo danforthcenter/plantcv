@@ -34,7 +34,7 @@ def test_reactive_metadata_terms_config(parallel_test_data):
     config.filename_metadata = ["a weird key"]
     assert bool(config.metadata_terms["a weird key"])
 
-    
+
 def test_validate_config(parallel_test_data, tmpdir):
     """Test for PlantCV."""
     # Create a test tmp directory
