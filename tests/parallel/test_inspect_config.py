@@ -10,7 +10,7 @@ def test_inspect_dataset(parallel_test_data):
     config.input_dir = parallel_test_data.flat_imgdir
     config.imgformat = "jpg"
     config.filename_metadata = ["imgtype", "camera", "angle", "zoom", "gain", "exposure", "lifter", "id"]
-    config.metadata_filters = {"imgtype" : "VIS"}
+    config.metadata_filters = {"imgtype": "VIS"}
     # inspect dataset
     sdf, df = inspect_dataset(config)
 

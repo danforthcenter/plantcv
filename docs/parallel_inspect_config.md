@@ -22,7 +22,7 @@ Once you have a [`WorkflowConfig` class object](parallel_config.md), a saved con
 from plantcv import parallel as pcvpar
 
 config = pcvpar.WorkflowConfig()
-config.input_dir("./my_images")
+config.input_dir = "./my_images"
 
 summary, meta = pcvpar.inspect_dataset(config)
 ```
