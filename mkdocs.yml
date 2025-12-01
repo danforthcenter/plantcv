@@ -127,6 +127,7 @@ nav:
         - 'Segment Sort': segment_sort.md
         - 'Segment Tangent Angle': segment_tangent_angle.md
         - 'Skeletonize': skeletonize.md
+        - 'Segment Width': segment_width.md
       - 'Naive Bayes Classifier': naive_bayes_classifier.md
       - 'Objects Class': objects.md
       - 'Opening': opening.md
