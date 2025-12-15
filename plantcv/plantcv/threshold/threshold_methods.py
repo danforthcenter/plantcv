@@ -196,13 +196,11 @@ def triangle(gray_img, object_type="light", xstep=1):
     :param xstep: int
     :return bin_img: numpy.ndarray
     """
-    
     # If the image is empty, return empty image
     if np.count_nonzero(gray_img) == 0:
         params.device += 1
         bin_img = np.copy(gray_img)
-        _debug(visual=bin_img, filename=os.path.join(params.debug_outdir,
-                                                 f"{params.device}_triangle_empty.png"))
+        _debug(visual=bin_img, filename=os.path.join(params.debug_outdir, f"{params.device}_triangle_empty.png"))
         return bin_img
     
     # Calculate automatic threshold value based on triangle algorithm
