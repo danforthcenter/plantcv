@@ -202,7 +202,7 @@ def triangle(gray_img, object_type="light", xstep=1):
         bin_img = np.copy(gray_img)
         _debug(visual=bin_img, filename=os.path.join(params.debug_outdir, f"{params.device}_triangle_empty.png"))
         return bin_img
-    
+
     # Calculate automatic threshold value based on triangle algorithm
     hist = cv2.calcHist([gray_img], [0], None, [256], [0, 255])
 
