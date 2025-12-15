@@ -255,3 +255,10 @@ def test_dual_channels_bad_channel():
     pts = [(0, 0), (255, 255)]
     with pytest.raises(RuntimeError):
         _ = dual_channels(img, x_channel='wrong_ch', y_channel='index', points=pts, above=True)
+
+
+def test_empty_mask_triangle():
+    """Test for PlantCV."""
+    mask = np.zeros((100, 100))
+    fmask = triangle(mask)
+    assert np.sum(fmask) == 0
