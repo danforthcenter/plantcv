@@ -12,7 +12,6 @@ def test_segment_combine(morphology_test_data):
     assert len(new_objects) + 1 == len(edges)
 
 
-
 def test_segment_combine_bad_input(morphology_test_data):
     """Test for PlantCV."""
     skel = cv2.imread(morphology_test_data.skel_img, -1)
