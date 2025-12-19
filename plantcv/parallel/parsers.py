@@ -231,17 +231,23 @@ def _apply_date_range_filter(df, config, removed_df):
     filtered_df = pandas.core.frame.DataFrame, filtered metadata dataframe
     removed_df = pandas.core.frame.DataFrame, dataframe of removed metadata
     """
-    # If either the start or end date is None then do not filter
-    if None in [config.start_date, config.end_date]:
-        return df, removed_df
     # Set whether the datetime code is in UTC or not
     utc = bool("Z" in config.timestampformat)
-    # Convert start and end dates to datetimes
-    start_date = pd.to_datetime(config.start_date, format=config.timestampformat, utc=utc)
-    end_date = pd.to_datetime(config.end_date, format=config.timestampformat, utc=utc)
-    # Keep rows with dates between start and end date
-    filtered_df = df.loc[df["timestamp"].between(start_date, end_date, inclusive="both")]
 
+    # Include all by default
+    after_start_date = pd.Series([True] * df.shape[0])
+    before_end_date = pd.Series([True] * df.shape[0])
+
+    # Make boolean vector for start and end date filtering if dates are not None
+    if config.start_date is not None:
+        after_start_date = df["timestamp"] >= pd.to_datetime(config.start_date, format=config.timestampformat, utc=utc)
+    if config.end_date is not None:
+        before_end_date = df["timestamp"] <= pd.to_datetime(config.end_date, format=config.timestampformat, utc=utc)
+
+    # And of boolean vectors
+    keep_dates = after_start_date & before_end_date
+    # Keep rows with dates between start and end date
+    filtered_df = df.loc[keep_dates]
     not_between_df = _anti_join(df, filtered_df)
     not_between_df["status"] = "Removed by config.start_date and config.end_date"
     removed_df = pd.concat([removed_df, not_between_df])
