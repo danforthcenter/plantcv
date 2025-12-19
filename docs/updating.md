@@ -65,7 +65,7 @@ The `plantcv.utils` module has been deleted with `sample_images` moving to `plan
 
 #### plantcv.parallel.WorkflowConfig
 
-Renamed the "json" attribute to "results" for clarity about what it controls and for consistency with new [jupyterconfig](parallel_jupyterconfig.md)
+Renamed the "json" attribute to "results" for clarity about what it controls and for consistency with new [JupyterConfig](parallel_jupyterconfig.md)
 
 #### plantcv.spectral_index.egi
 

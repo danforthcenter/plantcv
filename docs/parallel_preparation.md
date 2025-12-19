@@ -31,7 +31,7 @@ pcv.params.debug = args.debug
 img, path, filename = pcv.readimage(filename=args.image1)
 # ... the rest of your code
 ```
-When you are ready to run in parallel whether you make a python script manually and run with [`workflow_inputs`](parallel_config.md) or if you run the Jupyter notebook in parallel with [`jupyterconfig`](parallel_jupyterconfig.md) you would need to change the above to:
+When you are ready to run in parallel whether you make a python script manually and run with [`workflow_inputs`](parallel_config.md) or if you run the Jupyter notebook in parallel with [`JupyterConfig`](parallel_jupyterconfig.md) you would need to change the above to:
 
 ```python
 # in your .py script
