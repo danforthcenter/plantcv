@@ -83,7 +83,7 @@ def test_parallel_cli_valid_config(parallel_test_data, tmpdir):
     config.input_dir = parallel_test_data.flat_imgdir
     config.results = conf_file.dirpath().join(os.path.basename(parallel_test_data.new_results_file)).strpath
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
-    config.metadata_regex = {"filepath":".*"}
+    config.metadata_regex = {"filepath": ".*"}
     config.workflow = parallel_test_data.workflow_script
     config.img_outdir = str(conf_file.dirpath())
     config.tmp_dir = str(conf_file.dirpath() / "tmp")
