@@ -262,6 +262,7 @@ def _color_card_detection(rgb_img, **kwargs):
     # Check that corners are in image
     _check_corners(rgb_img, corners)
     # Determine which corner most likely contains the white chip
+    # PROBLEM
     white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0], :], (255, 255, 255))) for corner in corners])
     corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])[[0, 1, 3, 2]]]
 
@@ -273,6 +274,9 @@ def _color_card_detection(rgb_img, **kwargs):
     # Get outter corners of corner chips and sort based on card orientation
     corners = cv2.approxPolyN(curve=np.concatenate(filtered_contours), nsides=4, ensure_convex=True)
     corners = np.concatenate(corners)
+    # PROBLEM this white index usage is new for the branch, previously white_index was defined once (the previous one above)
+    # and I think there is something going on with this redefinition, maybe it needs to happen later or something.
+    # I might need to pull apart the code in jupyter to understand what the corners ordering is doing though.
     corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])[[1, 3, 2, 0]]]
 
     if params.verbose:
