@@ -115,8 +115,8 @@ Example (abbreviated) JSON data:
 }
 ```
 
-Data in this structure can be converted to tables for downstream analysis using the provided script 
-`plantcv-utils json2csv`, see [Accessory Tools](tools.md) for more details.
+Data in this structure can be converted to tables for downstream analysis using the 
+[`plantcv.parallel.json2csv`](json2csv.md) function.
 
 ## Summary of Output Metadata
 
