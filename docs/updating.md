@@ -815,6 +815,11 @@ pages for more details on the input and output variable types.
 * post v3.11: labeled_img = **plantcv.morphology.segment_tangent_angle**(*segmented_img, objects, size, label="default"*)
 * post v4.0: labeled_img = **plantcv.morphology.segment_tangent_angle**(*segmented_img, objects, size, label=None*)
 
+#### plantcv.morphology.segment_width
+
+* pre v4.10: NA
+* post v4.10: labeled_img = **plantcv.morphology.segment_width**(*segmented_img, skel_img, labeled_mask, n_labels=1, label=None*)
+
 #### plantcv.morphology.skeletontize
 
 * pre v3.3: NA
