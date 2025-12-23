@@ -21,13 +21,15 @@ dependencies = [
     "scikit-learn",
     "dask",
     "dask-jobqueue",
-    "opencv-python",
+    "opencv-python-headless",
     "xarray >= 2022.11.0",
     "statsmodels",
-    "altair",
+    "altair < 6",
     "vl-convert-python",
     "nd2",
-    "flyr"
+    "flyr",
+    "nbconvert",
+    "nbformat"
 ]
 requires-python = ">=3.8"
 authors = [

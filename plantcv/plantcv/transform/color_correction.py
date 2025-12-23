@@ -334,19 +334,17 @@ def calc_transformation_matrix(matrix_m, matrix_b):
     return 1-t_det, transformation_matrix
 
 
-def apply_transformation_matrix(source_img, target_img, transformation_matrix):
+def apply_transformation_matrix(source_img, transformation_matrix):
     """Apply the transformation matrix to the source_image.
 
     Inputs:
     source_img      = an RGB image to be corrected to the target color space
-    target_img      = an RGB image with the target color space
     transformation_matrix        = a 9x9 matrix of transformation coefficients
 
     Outputs:
     corrected_img    = an RGB image in correct color space
 
     :param source_img: numpy.ndarray
-    :param target_img: numpy.ndarray
     :param transformation_matrix: numpy.ndarray
     :return corrected_img: numpy.ndarray
     """
@@ -396,7 +394,7 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
 
     # For debugging, create a horizontal view of source_img, corrected_img, and target_img to the plotting device
     # plot horizontal comparison of source_img, corrected_img (with rounded elements) and target_img
-    out_img = np.hstack([source_img, corrected_img, target_img])
+    out_img = np.hstack([source_img, corrected_img])
     # Change range of visualization image to 0-255 and convert to uin8
     out_img = ((255.0/max_val)*out_img).astype(np.uint8)
     _debug(visual=out_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_corrected.png'))
@@ -491,7 +489,7 @@ def correct_color(target_img, target_mask, source_img, source_mask, output_direc
     save_matrix(transformation_matrix, os.path.join(output_directory, "transformation_matrix.npz"))
 
     # apply transformation
-    corrected_img = apply_transformation_matrix(source_img, target_img, transformation_matrix)
+    corrected_img = apply_transformation_matrix(source_img, transformation_matrix)
 
     return target_matrix, source_matrix, transformation_matrix, corrected_img
 
@@ -626,8 +624,8 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
         y="source",
         color=alt.Color("color").scale(range=["blue", "green", "red"]),
         column="color"
-        ).interactive()
+        )
 
     _debug(visual=p1, filename=os.path.join(params.debug_outdir, 'color_quick_check.png'))
 
-    return p1
+    return p1.interactive()
