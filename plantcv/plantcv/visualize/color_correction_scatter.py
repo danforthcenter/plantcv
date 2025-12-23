@@ -93,17 +93,18 @@ def color_correction_plot(color_matrix, std_matrix, corrected_matrix=None):
             ).astype("float32")
         )
     )
-    graycc = _rgb2gray(
-        np.transpose(
-            np.array(
-                [
-                    [corrected_matrix[1][:, 1]],
-                    [corrected_matrix[1][:, 2]],
-                    [corrected_matrix[1][:, 3]],
-                ]
-            ).astype("float32")
+    if use_corrected:
+        graycc = _rgb2gray(
+            np.transpose(
+                np.array(
+                    [
+                        [corrected_matrix[1][:, 1]],
+                        [corrected_matrix[1][:, 2]],
+                        [corrected_matrix[1][:, 3]],
+                    ]
+                ).astype("float32")
+            )
         )
-    )
     for i in range(0, len(graystd)):
         axs[1, 1].plot(
             [255 * graystd[i], 255 * graystd[i]],
