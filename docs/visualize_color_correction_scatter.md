@@ -2,7 +2,7 @@
 
 This function plots 4 panels of 2D scatter plot visualizations showing RGB and grayscale values of an input image, the expected color card, and optionally a color corrected image. The horizontal and vertical coordinates are defined by the intensity of the pixels in the specified channels. The color of each dot is given by the original RGB color of the image, ideal color card, or corrected image.
 
-**plantcv.visualize.color_correction_plot**(*color_matrix, std_matrix, corrected_matrix*)
+**plantcv.visualize.color_correction_plot**(*color_matrix, std_matrix, corrected_matrix=None*)
 
 **returns** fig, axs
 
