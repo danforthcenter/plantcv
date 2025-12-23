@@ -3,7 +3,7 @@
 import cv2
 import os
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 
 
 def invert(gray_img):
