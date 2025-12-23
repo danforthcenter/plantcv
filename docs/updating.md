@@ -1430,8 +1430,8 @@ pages for more details on the input and output variable types.
 
 #### plantcv.visualize.color_correction_scatter
 
-* pre v4.10: NA
-* post v4.10: plot = plantcv.visualize.color_correction_scatter**(*color_matrix, std_matrix, corrected_matrix=None*)
+* pre v4.11: NA
+* post v4.11: fig, axs = plantcv.visualize.color_correction_scatter**(*color_matrix, std_matrix, corrected_matrix=None*)
 
 #### plantcv.visualize.colorize_label_img
 
