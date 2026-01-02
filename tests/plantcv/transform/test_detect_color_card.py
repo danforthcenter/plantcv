@@ -80,7 +80,7 @@ def test_detect_color_card_incorrect_card_type(transform_test_data):
 
 def test_detect_color_card_masked_aruco_tags(transform_test_data):
     """Test for PlantCV."""
-        # Load rgb image
+    # Load rgb image
     rgb_img = cv2.imread(transform_test_data.astrocard_img)
     with pytest.raises(RuntimeError):
         _ = detect_color_card(rgb_img=rgb_img)
