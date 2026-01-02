@@ -198,9 +198,8 @@ def test_apply_transformation(transform_test_data):
     # read in matrices
     matrix_t = transform_test_data.load_npz(transform_test_data.transformation_matrix_file)
     # read in images
-    target_img = cv2.imread(transform_test_data.target_img)
     source_img = cv2.imread(transform_test_data.source1_img)
-    corrected_img = apply_transformation_matrix(source_img, target_img, matrix_t)
+    corrected_img = apply_transformation_matrix(source_img, matrix_t)
     # assert source and corrected have same shape
     assert np.array_equal(corrected_img, corrected_compare)
 
@@ -210,10 +209,9 @@ def test_apply_transformation_incorrect_t(transform_test_data):
     # read in matrices
     matrix_t = transform_test_data.load_npz(transform_test_data.matrix_b1_file)
     # read in images
-    target_img = cv2.imread(transform_test_data.target_img)
     source_img = cv2.imread(transform_test_data.source1_img)
     with pytest.raises(RuntimeError):
-        _ = apply_transformation_matrix(source_img, target_img, matrix_t)
+        _ = apply_transformation_matrix(source_img, matrix_t)
 
 
 def test_apply_transformation_incorrect_img(transform_test_data):
@@ -221,10 +219,9 @@ def test_apply_transformation_incorrect_img(transform_test_data):
     # read in matrices
     matrix_t = transform_test_data.load_npz(transform_test_data.transformation_matrix_file)
     # read in images
-    target_img = cv2.imread(transform_test_data.target_img)
     source_img = cv2.imread(transform_test_data.colorcard_mask, -1)
     with pytest.raises(RuntimeError):
-        _ = apply_transformation_matrix(source_img, target_img, matrix_t)
+        _ = apply_transformation_matrix(source_img, matrix_t)
 
 
 def test_save_matrix(transform_test_data, tmpdir):
