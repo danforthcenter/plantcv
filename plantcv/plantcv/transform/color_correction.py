@@ -576,12 +576,11 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
             chips.append(circle(img=rgb_img, x=x, y=y, r=radius))
     # Restore debug parameter
     params.debug = debug
-    if exclude is not None:
-        # Sort excluded chips from largest to smallest
-        exclude.sort(reverse=True)
-        # Remove any excluded chips
-        for chip in exclude:
-            del chips[chip]
+    # Sort excluded chips from largest to smallest
+    exclude.sort(reverse=True)
+    # Remove any excluded chips
+    for chip in exclude:
+        del chips[chip]
     # Create mask
     mask = np.zeros(shape=np.shape(rgb_img)[:2], dtype=np.uint8)
     # Mask label index
