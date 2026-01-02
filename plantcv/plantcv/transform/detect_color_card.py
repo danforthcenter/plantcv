@@ -550,7 +550,7 @@ def _set_size_scale_from_chip(color_chip_width, color_chip_height, color_chip_si
     params.unit = "mm"
 
 
-def mask_color_card(rgb_img, color_chip_size=None, **kwargs):
+def mask_color_card(rgb_img, card_type="macbeth", **kwargs):
     """Automatically detect a color card and create bounding box mask of the chips detected.
 
     Parameters
@@ -573,7 +573,7 @@ def mask_color_card(rgb_img, color_chip_size=None, **kwargs):
     numpy.ndarray
         Binary bounding box mask of the detected color card chips
     """
-    if type(color_chip_size) is str and color_chip_size.upper() == "ASTRO":
+    if card_type.upper() == "ASTRO":
         *_, bounding_mask = _astrobotany_card_detection(rgb_img, **kwargs)
     else:
         *_, bounding_mask = _macbeth_card_detection(rgb_img, **kwargs)

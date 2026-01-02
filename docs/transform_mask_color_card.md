@@ -2,7 +2,7 @@
 
 Automatically detects a color card and creates a bounding box mask. 
 
-**plantcv.transform.mask_color_card**(*rgb_img, card_type, \*\*kwargs*)
+**plantcv.transform.mask_color_card**(*rgb_img, card_type="macbeth", \*\*kwargs*)
 
 **returns** color_card_mask
 

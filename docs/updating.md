@@ -1066,6 +1066,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.8:  NA 
 * post v4.8: color_card_mask = **plantcv.transform.mask_color_card**(*rgb_img, \*\*kwargs*)
+* post v5.0: color_card_mask = **plantcv.transform.mask_color_card**(*rgb_img, card_type="macbeth", \*\*kwargs*)
 
 #### plantcv.transform.rotate
 
