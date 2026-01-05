@@ -23,7 +23,7 @@ def process_results(config):
     if "chkpt_start_dir" not in config.__dict__:
         config.chkpt_start_dir = config.tmp_dir
     # process results from the checkpoint inside start point for tmp dirs
-    job_dir = config.chkpt_start_dir
+    job_dir = os.path.join(config.chkpt_start_dir, "_PCV_PARALLEL_CHECKPOINT_")
     # name outputs from config
     json_file = config.json
     # Data dictionary
