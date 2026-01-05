@@ -61,7 +61,7 @@ def _read_checkpoint_data(df, config, removed_df):
     df = pandas.core.frame.DataFrame, filtered metadata dataframe
     removed_df = pandas.core.frame.DataFrame, dataframe of removed metadata
     """
-    if not "chkpt_start_dir" in config.__dict__:
+    if "chkpt_start_dir" not in config.__dict__:
         config.chkpt_start_dir = config.tmp_dir
     # look for any json files in a checkpoint directory (made by run_parallel)
     existing_json = []
