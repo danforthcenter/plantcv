@@ -63,7 +63,7 @@ def _read_checkpoint_data(df, config, removed_df):
     """
     # look for any json files in a checkpoint directory (made by run_parallel)
     existing_json = []
-    for _, _, files in os.walk(os.path.join(config.tmp_dir, "_PCV_PARALLEL_CHECKPOINT_")):
+    for _, _, files in os.walk(os.path.join(config.chkpt_start_dir, "_PCV_PARALLEL_CHECKPOINT_")):
         for file in files:
             if file.lower().endswith(".json"):
                 existing_json.append(file)
@@ -71,7 +71,7 @@ def _read_checkpoint_data(df, config, removed_df):
     if any(existing_json) and config.checkpoint:
         ran_list = [pd.DataFrame()]
         # look through checkpoint directory for json without "completed" companion file
-        for root, _, files in os.walk(os.path.join(config.tmp_dir, "_PCV_PARALLEL_CHECKPOINT_")):
+        for root, _, files in os.walk(os.path.join(config.chkpt_start_dir, "_PCV_PARALLEL_CHECKPOINT_")):
             for file in files:
                 if file.lower().endswith(".json") and os.path.exists(
                         os.path.join(root, os.path.splitext(file)[0]+"_complete")
@@ -81,7 +81,7 @@ def _read_checkpoint_data(df, config, removed_df):
                         row = {}
                         for var in j:
                             row[var] = j[var]["value"]
-                            ran_list.append(pd.DataFrame.from_dict(row))
+                        ran_list.append(pd.DataFrame.from_dict(row))
         # bind to metadata dataframe
         already_run = pd.concat(ran_list)
         already_run = already_run[already_run["filepath"].notna()]
