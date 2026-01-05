@@ -18,8 +18,12 @@ def process_results(config):
     -------
     None
     """
-    # process results from the checkpoint inside tmp_dir
-    job_dir = config.tmp_dir
+    # chkpt_start_dir is made by run_parallel, make sure that it exists
+    # default to tmp_dir if not
+    if "chkpt_start_dir" not in config.__dict__:
+        config.chkpt_start_dir = config.tmp_dir
+    # process results from the checkpoint inside start point for tmp dirs
+    job_dir = config.chkpt_start_dir
     # name outputs from config
     json_file = config.json
     # Data dictionary
