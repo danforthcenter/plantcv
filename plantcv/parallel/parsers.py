@@ -252,7 +252,7 @@ def _apply_date_range_filter(df, config, removed_df):
     not_between_df["status"] = "Removed by config.start_date and config.end_date"
     removed_df = pd.concat([removed_df, not_between_df])
     removed_df["timestamp"] = removed_df["timestamp"].dt.strftime(config.timestampformat)
-    filtered_df.loc[:, "timestamp"] = filtered_df["timestamp"].dt.strftime(config.timestampformat)
+    filtered_df["timestamp"] = filtered_df["timestamp"].dt.strftime(config.timestampformat)
 
     return filtered_df, removed_df
 ###########################################
