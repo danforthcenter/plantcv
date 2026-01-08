@@ -4,7 +4,7 @@ Reads metadata the from the input data directory.
 
 **plantcv.parallel.metadata_parser**(*config*)
 
-**returns** dataset (grouped Pandas DataFrame of image metadata)
+**returns** meta (Pandas DataFrame of metadata from images that will be part of the job) and removed_df (Pandas Dataframe of metadata from images that will not be part of the job)
 
 - **Parameters:**
     - config   - plantcv.parallel.WorkflowConfig object
