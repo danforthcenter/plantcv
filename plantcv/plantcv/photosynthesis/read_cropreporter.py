@@ -45,6 +45,9 @@ def read_cropreporter(filename):
     # Light-adapted measurements
     _process_psl_data(ps=ps, metadata=metadata_dict)
 
+    # NPQ measurements
+    _process_npq_data(ps=ps, metadata=metadata_dict)
+
     # Dark-adapted PAM measurements
     _process_pmd_data(ps=ps, metadata=metadata_dict)
 
@@ -151,6 +154,63 @@ def _process_psl_data(ps, metadata):
         )
         psl.attrs["long_name"] = "OJIP light-adapted measurements"
         ps.add_data(psl)
+
+        _debug(visual=ps.ojip_light.squeeze('measurement', drop=True),
+               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSL-frames.png"),
+               col='frame_label',
+               col_wrap=int(np.ceil(ps.ojip_light.frame_label.size / 4)))
+
+
+def _process_npq_data(ps, metadata):
+    """
+    Create an xarray DataArray for a NPQ dataset.
+
+    Parameters
+    ----------
+    ps : plantcv.plantcv.classes.PSII_data
+        PSII_data instance
+    metadata : dict
+        INF file metadata dictionary
+    """
+    bin_filepath = _dat_filepath(dataset="NPQ", datapath=ps.datapath, filename=ps.filename)
+    if os.path.exists(bin_filepath):
+        img_cube, frame_labels, frame_nums = _read_dat_file(dataset="NPQ", filename=bin_filepath,
+                                                            height=int(metadata["ImageRows"]),
+                                                            width=int(metadata["ImageCols"]))
+        # Add the OJIP dark frames
+        frame_labels[0] = 'Fdark'
+        frame_labels[1] = 'F0'
+        frame_labels[2] = 'Fm'
+        psd = xr.DataArray(
+            data=img_cube[:, :, 0:3, None],
+            dims=('x', 'y', 'frame_label', 'measurement'),
+            coords={'frame_label': frame_labels[0:3],
+                    'frame_num': ('frame_label', frame_nums[0:3]),
+                    'measurement': ['t0']},
+            name='ojip_dark'
+        )
+        psd.attrs["long_name"] = "OJIP dark-adapted measurements"
+        ps.add_data(psd)
+
+        _debug(visual=ps.ojip_dark.squeeze('measurement', drop=True),
+               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSD-frames.png"),
+               col='frame_label',
+               col_wrap=int(np.ceil(ps.ojip_dark.frame_label.size / 4)))
+
+        # Add the OJIP light frames
+        frame_labels[3] = 'Flight'
+        frame_labels[4] = 'Fp'
+        frame_labels[5] = 'Fmp'
+        psd = xr.DataArray(
+            data=img_cube[:, :, 3:6, None],
+            dims=('x', 'y', 'frame_label', 'measurement'),
+            coords={'frame_label': frame_labels[3:6],
+                    'frame_num': ('frame_label', frame_nums[3:6]),
+                    'measurement': ['t0']},
+            name='ojip_light'
+        )
+        psd.attrs["long_name"] = "OJIP light-adapted measurements"
+        ps.add_data(psd)
 
         _debug(visual=ps.ojip_light.squeeze('measurement', drop=True),
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSL-frames.png"),

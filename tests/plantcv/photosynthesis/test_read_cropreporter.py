@@ -61,3 +61,10 @@ def test_read_cropreporter_spc_only(photosynthesis_test_data, tmpdir):
     ps = read_cropreporter(filename=fluor_filename)
     print(os.listdir(cache_dir))
     assert isinstance(ps, PSII_data) and ps.spectral.array_data.shape == (966, 1296, 3)
+
+
+def test_read_cropreporter_npq(photosynthesis_test_data, tmpdir):
+    """Test for PlantCV."""
+    ps = read_cropreporter(filename=photosynthesis_test_data.cropreporter_npq)
+    assert isinstance(ps, PSII_data) and ps.ojip_dark.shape == (966, 1296, 3, 1)
+    assert isinstance(ps, PSII_data) and ps.ojip_light.shape == (966, 1296, 3, 1)
