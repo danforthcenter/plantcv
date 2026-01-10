@@ -14,6 +14,8 @@ class PhotosynthesisTestData:
         # Test data directories
         self.datadir_v441 = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                          "..", "..", "testdata", "cropreporter_v441")
+        self.datadir_npq = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                        "..", "..", "testdata", "cropreporter_npq")
         self.datadir_v653 = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                          "..", "..", "testdata", "cropreporter_v653")
         # CropReporter data file
