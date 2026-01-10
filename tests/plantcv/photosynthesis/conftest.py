@@ -21,6 +21,7 @@ class PhotosynthesisTestData:
         # CropReporter data file
         self.cropreporter = os.path.join(self.datadir_v441, "PSII_HDR_020321_WT_TOP_1.INF")
         self.cropreporter_v653 = os.path.join(self.datadir_v653, "HDR_dark_light.INF")
+        self.cropreporter_npq = os.path.join(self.datadir_npq, "PSII_HDR_020321_WT_TOP_1.INF")
         # Mask image
         self.ps_mask = os.path.join(self.datadir_v441, "PSII_HDR_020321_WT_TOP_1_mask.png")
 
