@@ -360,6 +360,8 @@ class PSII_data:
         self.pam_light = None
         self.spectral = None
         self.chlorophyll = None
+        self.gfp = None
+        self.rfp = None
         self.datapath = None
         self.filename = None
 
