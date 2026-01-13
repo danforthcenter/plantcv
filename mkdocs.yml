@@ -48,6 +48,7 @@ nav:
       - 'Auto Crop': auto_crop.md
       - 'Background Subtraction': background_subtraction.md
       - 'Canny Edge Detection': canny_edge_detect.md
+      - 'Circular Sub Masks': sub_mask.md
       - 'Closing': closing.md
       - 'Color Palette': color_palette.md
       - 'Colorspace Conversion':
