@@ -60,6 +60,15 @@ def read_cropreporter(filename):
     # Spectral measurements
     _process_spc_data(ps=ps, metadata=metadata_dict)
 
+    # GFP fluorescence intensity data
+    _process_gfp_data(ps=ps, metadata=metadata_dict)
+
+    # RFP fluorescence intensity data
+    _process_rfp_data(ps=ps, metadata=metadata_dict)
+
+    # APH reflectance data
+    _process_aph_data(ps=ps, metadata=metadata_dict)
+
     return ps
 
 
@@ -388,6 +397,114 @@ def _process_spc_data(ps, metadata):
 
         _debug(visual=ps.spectral.pseudo_rgb,
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_spectral-RGB.png"))
+
+
+def _process_gfp_data(ps, metadata):
+    """
+    Create an xarray DataArray for a GFP dataset.
+
+    Inputs:
+        ps       = PSII_data instance
+        metadata = INF file metadata dictionary
+
+    :param ps: plantcv.plantcv.classes.PSII_data
+    :param metadata: dict
+    """
+    bin_filepath = _dat_filepath(dataset="GFP", datapath=ps.datapath, filename=ps.filename)
+    if os.path.exists(bin_filepath):
+        img_cube, frame_labels, frame_nums = _read_dat_file(dataset="GFP", filename=bin_filepath,
+                                                            height=int(metadata["ImageRows"]),
+                                                            width=int(metadata["ImageCols"]))
+        frame_labels = ["Fdark", "GFP", "Auto"]
+        gfp = xr.DataArray(
+            data=img_cube,
+            dims=('x', 'y', 'frame_label'),
+            coords={'frame_label': frame_labels},
+            name='gfp'
+        )
+        gfp.attrs["long_name"] = "GFP fluorescence intensity measurements (525nm GFP, 585nm Auto)"
+        gfp.attrs["dark_comp_on"] = int(metadata.get("GfpDarkCompOn", "0"))
+        gfp.attrs["calib_factor"] = float(metadata.get("GfpCalibFactor", metadata.get("GfpCalFactor", "nan")))
+        gfp.attrs["meas_power"] = float(metadata.get("GfpMeasPower", "nan"))
+        gfp.attrs["shutter"] = float(metadata.get("GfpShutter", metadata.get("GfpShutterFrames", "nan")))
+        ps.add_data(gfp)
+
+        _debug(visual=ps.gfp,
+               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_GFP-frames.png"),
+               col='frame_label',
+               col_wrap=int(np.ceil(ps.gfp.frame_label.size / 4)))
+
+
+def _process_rfp_data(ps, metadata):
+    """
+    Create an xarray DataArray for a RFP dataset.
+
+    Inputs:
+        ps       = PSII_data instance
+        metadata = INF file metadata dictionary
+
+    :param ps: plantcv.plantcv.classes.PSII_data
+    :param metadata: dict
+    """
+    bin_filepath = _dat_filepath(dataset="RFP", datapath=ps.datapath, filename=ps.filename)
+    if os.path.exists(bin_filepath):
+        img_cube, frame_labels, frame_nums = _read_dat_file(dataset="RFP", filename=bin_filepath,
+                                                            height=int(metadata["ImageRows"]),
+                                                            width=int(metadata["ImageCols"]))
+        frame_labels = ["Fdark", "RFP"]
+        rfp = xr.DataArray(
+            data=img_cube,
+            dims=('x', 'y', 'frame_label'),
+            coords={'frame_label': frame_labels},
+            name='rfp'
+        )
+        rfp.attrs["long_name"] = "RFP fluorescence intensity measurements (585nm)"
+        rfp.attrs["dark_comp_on"] = int(metadata.get("RfpDarkCompOn", "0"))
+        rfp.attrs["calib_factor"] = float(metadata.get("RfpCalibFactor", "nan"))
+        rfp.attrs["meas_power"] = float(metadata.get("RfpMeasPower", "nan"))
+        rfp.attrs["shutter"] = float(metadata.get("RfpShutter", metadata.get("RfpShutterFrames", "nan")))
+        ps.add_data(rfp)
+
+        _debug(visual=ps.rfp,
+               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_RFP-frames.png"),
+               col='frame_label',
+               col_wrap=int(np.ceil(ps.rfp.frame_label.size / 4)))
+
+def _process_aph_data(ps, metadata):
+    """
+    Create an xarray DataArray for an APH dataset.
+
+    Inputs:
+        ps       = PSII_data instance
+        metadata = INF file metadata dictionary
+
+    :param ps: plantcv.plantcv.classes.PSII_data
+    :param metadata: dict
+    """
+    bin_filepath = _dat_filepath(dataset="APH", datapath=ps.datapath, filename=ps.filename)
+    if os.path.exists(bin_filepath):
+        img_cube, frame_labels, frame_nums = _read_dat_file(dataset="APH", filename=bin_filepath,
+                                                            height=int(metadata["ImageRows"]),
+                                                            width=int(metadata["ImageCols"]))
+        frame_labels = ["Red", "FarRed"]
+        aph = xr.DataArray(
+            data=img_cube,
+            dims=('x', 'y', 'frame_label'),
+            coords={'frame_label': frame_labels},
+            name='aph'
+        )
+        aph.attrs["long_name"] = "APH reflectance measurements (660nm Red, 730nm FarRed)"
+        aph.attrs["dark_comp_on"] = int(metadata.get("AphDarkCompOn", metadata.get("AlphaDarkCompOn", "0")))
+        aph.attrs["gain_red"] = float(metadata.get("AphGainRed", metadata.get("AlphaGainRed", "nan")))
+        aph.attrs["gain_farred"] = float(metadata.get("AphGainFarRed", metadata.get("AlphaGainFarRed", "nan")))
+        ps.add_data(aph)
+
+        _debug(
+            visual=ps.aph,
+            filename=os.path.join(params.debug_outdir, f"{str(params.device)}_APH-frames.png"),
+            col='frame_label',
+            col_wrap=int(np.ceil(ps.aph.frame_label.size / 4))
+        )
 
 
 def _dat_filepath(dataset, datapath, filename):
