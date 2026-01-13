@@ -362,6 +362,7 @@ class PSII_data:
         self.chlorophyll = None
         self.gfp = None
         self.rfp = None
+        self.aph = None
         self.datapath = None
         self.filename = None
 
