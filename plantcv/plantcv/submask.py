@@ -50,7 +50,7 @@ def _check_overlapping_masks(labeled_mask, new_mask):
     ----------
     labeled_mask = numpy.ndarray, the labeled_mask that the new_mask may be added to
     new_mask     = numpy.ndarray, the new proposed region to mask
-    
+
     Returns
     -------
     Boolean, True if new_mask does not overlap the labeled mask
