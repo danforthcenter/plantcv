@@ -5,7 +5,7 @@ import numpy as np
 from sklearn.cluster import DBSCAN
 from sklearn.cluster import OPTICS
 from sklearn.preprocessing import StandardScaler
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import color_palette
 
