@@ -259,6 +259,6 @@ def test_dual_channels_bad_channel():
 
 def test_empty_mask_triangle():
     """Test for PlantCV."""
-    mask = np.zeros((100, 100))
+    mask = np.zeros((100, 100), dtype=np.uint8)
     fmask = triangle(mask)
     assert np.sum(fmask) == 0
