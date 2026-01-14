@@ -27,6 +27,16 @@ def obj_size_ecdf(mask):
     # Remove objects with areas < 1px
     areas = [i for i in areas if i >= 1.0]
 
+    # If the mask is empty, return empty chart
+    if len(areas) == 0:
+        ecdf_df = pd.DataFrame({'object_area': [], 'cumulative_probability': []})
+        chart = alt.Chart(ecdf_df).mark_circle(size=10).encode(
+            x=alt.X("object area:Q").scale(type='log'),
+            y="cumulative probability:Q",
+            tooltip=['object area', 'cumulative probability']
+        )
+        return chart.interactive()
+
     ecdf = ECDF(areas, side='right')
 
     ecdf_df = pd.DataFrame({'object area': ecdf.x[1:], 'cumulative probability': ecdf.y[1:]})
