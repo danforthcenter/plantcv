@@ -419,7 +419,8 @@ def _process_gfp_data(ps, metadata):
         gfp = xr.DataArray(
             data=img_cube,
             dims=('x', 'y', 'frame_label'),
-            coords={'frame_label': frame_labels},
+            coords={'frame_label': frame_labels,
+                    'frame_num': ('frame_label', frame_nums)},
             name='gfp'
         )
         gfp.attrs["long_name"] = "GFP fluorescence intensity measurements (525nm GFP, 585nm Auto)"
@@ -455,7 +456,8 @@ def _process_rfp_data(ps, metadata):
         rfp = xr.DataArray(
             data=img_cube,
             dims=('x', 'y', 'frame_label'),
-            coords={'frame_label': frame_labels},
+            coords={'frame_label': frame_labels
+                    'frame_num': ('frame_label', frame_nums)},
             name='rfp'
         )
         rfp.attrs["long_name"] = "RFP fluorescence intensity measurements (585nm)"
@@ -469,6 +471,7 @@ def _process_rfp_data(ps, metadata):
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_RFP-frames.png"),
                col='frame_label',
                col_wrap=int(np.ceil(ps.rfp.frame_label.size / 4)))
+
 
 def _process_aph_data(ps, metadata):
     """
@@ -490,7 +493,8 @@ def _process_aph_data(ps, metadata):
         aph = xr.DataArray(
             data=img_cube,
             dims=('x', 'y', 'frame_label'),
-            coords={'frame_label': frame_labels},
+            coords={'frame_label': frame_labels
+                    'frame_num': ('frame_label', frame_nums)},
             name='aph'
         )
         aph.attrs["long_name"] = "APH reflectance measurements (660nm Red, 730nm FarRed)"
