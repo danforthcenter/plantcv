@@ -78,7 +78,13 @@ def _handle_config_process_results(input_dir, filename):
     # if input_dir is not a str then it is a workflowconfig
     if not isinstance(input_dir, str):
         config = input_dir
-        input_dir = config.tmp_dir
+        if "chkpt_start_dir" not in config.__dict__:
+            config.chkpt_start_dir = config.tmp_dir
+            # process results from the checkpoint inside start point for tmp dirs
+            job_dir = os.path.join(config.chkpt_start_dir, "_PCV_PARALLEL_CHECKPOINT_")
+            # name outputs from config
+            json_file = config.results
+        input_dir = config.chkpt_start_dir
         # name outputs from config
         filename = config.results
     return input_dir, filename
