@@ -30,7 +30,7 @@ def run_parallel(config):
     # Create temporary directory for job
     if config.tmp_dir is not None:
         os.makedirs(os.path.join(config.tmp_dir, "_PCV_PARALLEL_CHECKPOINT_"), exist_ok=True)
-    config.chkpt_start_dir = config.tmp_dir
+    config._chkpt_start_dir = config.tmp_dir
     config.tmp_dir = tempfile.mkdtemp(prefix=start_time + '_',
                                       dir=os.path.join(config.tmp_dir, "_PCV_PARALLEL_CHECKPOINT_"))
     # Create img_outdir
