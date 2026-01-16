@@ -32,7 +32,7 @@ If conda does not update your PlantCV installation, you can try installing a spe
 ```bash
 conda install -n plantcv -c conda-forge plantcv=4.0
 
-``` 
+```
 
 You can find the version you have installed with:
 
@@ -58,6 +58,14 @@ If you installed PlantCV using the "editable" mode `pip install -e .` then your 
 automatically. Alternatively, you can run `pip install -e .` to reinstall the package from the cloned repository.
 
 ### Breaking changes between v4 and v5 <a name="breaking-changes"></a>
+
+#### plantcv.utils
+
+The `plantcv.utils` module has been deleted with `sample_images` moving to `plantcv.parallel`, `json2csv` moving to `plantcv.plantcv`, and `tabulate_bayes_classes` moving to `plantcv.learn`. Command-line interfaces are still available for `sample_images` [plantcv-sample](tools.md#PlantCV-Parallel) and `tabulate_bayes_classes` as [plantcv-learn tabulate_bayes_classes](tools.md#Training-machine-learning-models).
+
+#### plantcv.parallel.WorkflowConfig
+
+Renamed the "json" attribute to "results" for clarity about what it controls and for consistency with new [JupyterConfig](parallel_jupyterconfig.md)
 
 #### plantcv.spectral_index.egi
 
@@ -664,6 +672,11 @@ pages for more details on the input and output variable types.
 * pre v3.14.0: NA
 * post v3.14.0:  image_dataset = **plantcv.io.read_dataset**(*source_path, pattern='', sort=True*)
 
+#### plantcv.json2csv
+
+* pre v5: NA
+* post v5: **json2csv**(*json_file, csv_prefix*)
+
 #### plantcv.landmark_reference_pt_dist
 
 * pre v3.0dev2: device, vert_ave_c, hori_ave_c, euc_ave_c, ang_ave_c, vert_ave_b, hori_ave_b, euc_ave_b, ang_ave_b = **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r, device, debug=None*)
@@ -860,6 +873,51 @@ pages for more details on the input and output variable types.
 
 * pre v3.12: NA
 * post v3.12: **plantcv.outputs.save_results**(*filename, outformat="json"*)
+
+#### plantcv.parallel.create_dask_cluster
+
+* pre v4.10: Untracked
+* post v4.10: **plantcv.parallel.create_dask_cluster**(*config, cluster_config*)
+
+#### plantcv.parallel.inspect_dataset
+
+* pre v4.10: NA
+* post v4.10: **plantcv.parallel.inspect_dataset**(*config*)
+
+#### plantcv.parallel.job_builder
+
+* pre v4.10: Untracked
+* post v4.10: **plantcv.parallel.job_builder**(*meta, config*)
+
+#### plantcv.parallel.jupyterconfig
+
+* pre v5: NA
+* post v5: **plantcv.parallel.jupyterconfig()**
+
+#### plantcv.parallel.metadata_parser
+
+* pre v4.10: Untracked
+* post 4.10: **plantcv.parallel.metadata_parser**(*config*)
+
+#### plantcv.parallel.multiprocess
+
+* pre v4.10: Untracked
+* post v4.10: **plantcv.parallel.multiprocess**(*jobs, client*)
+
+#### plantcv.parallel.process_results
+
+* pre v4.10: Untracked
+* post v4.10: **plantcv.parallel.process_results**(*config*)
+
+#### plantcv.parallel.workflow_inputs
+
+* pre v4.10: Untracked
+* post v4.10: **plantcv.parallel.workflow_inputs**(*\*other_args*)
+
+#### plantcv.parallel.WorkflowConfig
+
+* pre v5: Untracked
+* post v5: **plantcv.parallel.WorkflowConfig()
 
 #### plantcv.photosynthesis.analyze_fvfm
 

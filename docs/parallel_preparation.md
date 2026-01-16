@@ -1,10 +1,24 @@
 ## Why Parallelize?
 
-PlantCV's Parallel module allows for running a PlantCV workflow on many images across many cores. If you have a high throughput image phenotyping facility or other hardware allowing you to take many photos then working one photo at a time through a Jupyter notebook may be prohibitively slow and would not leverage the benefits of PlantCV over non-scripting image analysis tools.
+PlantCV's Parallel module allows for running a PlantCV workflow on many images across many cores. Sometimes this is called "multiprocessing" or "batch processing". If you have a high throughput image phenotyping facility or other hardware allowing you to take many photos then working one photo at a time through a Jupyter notebook may be prohibitively slow and would not leverage the benefits of PlantCV over non-scripting image analysis tools.
+
+In addition to making it easier for users to analyze many images parallelization also aides in making workflows reproducible since there is no need to make sure that you remember to make the right edits each time you run through a jupyter notebook or change file paths in a python script.
+
+## Taking photos with the goal of parallel analysis
+
+Ideally your images should fulfill a few criteria to make parallelization easier:
+
+- **1:** Using a basically comparable imaging station helps make parallelization easier. If you can leave a camera in one place and put your plants in front of it at the same distance, with the same lighting, and a consistently placed color card (if you are using one) then there will be less room for things to require manual attention which would slow down your analysis.
+- **2:** Naming your files with a consistent and meaningful schema will let tools like the [`metadata_parser`](metadata_parser.md) work well to subset your image dataset and provide meaningful metadata in the outputs without you then having to look up barcodes/labels in downstream analysis.
+**3:** Storing images in a consistent location with meaningful file paths will make using the right images easier. By default the a parallel configuration file will go into all the subdirectories after your `input_dir` and find all image files in those subdirectories. That means you could name intermediate directories however you want to, but tools like [`inspect_dataset`](parallel_inspect_config.md) or the regex/directory filters available in [`workflowconfig`](parallel_config.md) give you meaningful information and options.
+
+While `plantcv.parallel` is a very flexible and useful tool able to work over highly variable datasets taking some time to think about how you are going to take, name, and store images can save you and collaborators a lot of work in image analysis.
 
 ## Getting ready to parallelize
 
 Before you can parallelize a workflow you need to make sure that it works on a single image. Generally we recommend prototyping a workflow in Jupyter notebooks so that you can run interactively. Most of the time a previous workflow of yours or one of our many [tutorials](https://plantcv.org/tutorials) will be a good place to start. Once your Jupyter notebook works on one image try it on a few more to make sure you've caught any obvious errors that could come up.
+
+Running a parallel workflow will make some temporary files specified by `config.tmp_dir` including a directory called `_PCV_PARALLEL_CHECKPOINT_`, with nested directories named by timestamp. By default the `cleanup=true` field of the parallel configuration will remove the temporary directories (including `_PCV_PARALLEL_CHECKPOINT_`, so if you are interested in interim analyses you may decide not to cleanup) at the end of a successful parallel workflow.
 
 ### From Jupyter to Parallel
 
@@ -29,7 +43,7 @@ pcv.params.debug = args.debug
 img, path, filename = pcv.readimage(filename=args.image1)
 # ... the rest of your code
 ```
-When you are ready to run in parallel whether you make a python script manually and run with [`workflow_inputs`](parallel_config.md) or if you run the Jupyter notebook in parallel with [`jupyterconfig`](parallel_jupyterconfig.md) you would need to change the above to:
+When you are ready to run in parallel whether you make a python script manually and run with [`workflow_inputs`](parallel_config.md) or if you run the Jupyter notebook in parallel with [`JupyterConfig`](parallel_jupyterconfig.md) you would need to change the above to:
 
 ```python
 # in your .py script
