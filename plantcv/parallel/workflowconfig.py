@@ -302,7 +302,7 @@ def _config_attr_lookup(config, attr, val):
 
     """
     # do not do this for hidden attributes
-    if attr[0] != "_":
+    if attr[0] != "_" and attr != "chkpt_start_dir":
         # for all other attributes, get their data from list
         config_control = {
             "input_dir": ["Images will be read from {}", str],
@@ -334,6 +334,7 @@ def _config_attr_lookup(config, attr, val):
             "_config": ["HIDDEN Changing path to save config to {} (normally set to share notebook/script name)", str],
             "_analysis_script": ["HIDDEN This should not generally be changed. Setting to {}ready.", bool],
             "_results": ["HIDDEN output will be written to {}", str],
+            "chkpt_start_dir": ["HIDDEN checkpoint data will be read from {}", str],
             "notebook": ["Changing path to jupyter notebook (normally set to active notebook)", str],
             "config": ["Changing path to save config to {} (normally set to share notebook/script name)", str],
             "analysis_script": ["This should not generally be changed. Setting to {}ready.", bool],
