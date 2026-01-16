@@ -25,7 +25,7 @@ def metadata_parser(config):
         Dataframe of image metadata for images excluded from the workflow.
     """
     # Read the input dataset to a dictionary
-    dataset = _read_dataset(config=config)
+    dataset, config = _read_dataset(config=config)
 
     # Convert the dataset metadata to a dataframe
     meta = _dataset2dataframe(dataset=dataset, config=config)
@@ -111,14 +111,14 @@ def _read_checkpoint_data(df, config, removed_df):
 def _read_dataset(config):
     """Read image datasets.
 
-    Keyword arguments:
+    Parameters
+    ----------
     config = plantcv.parallel.WorkflowConfig object
 
-    Outputs:
-    dataset = dataset metadata
-
-    :param config: plantcv.parallel.WorkflowConfig
-    :return dataset: dict
+    Returns
+    -------
+    dataset = dict of dataset metadata
+    config  = plantcv.parallel.WorkflowConfig object, possibly with more filename_metadata terms
     """
     # Each dataset reader function outputs the dataset metadata in the same format
     # This makes the dataset compatible with the downstream steps
@@ -127,12 +127,18 @@ def _read_dataset(config):
     # If the directory contains a metadata.json file it is a "phenodata" dataset
     if os.path.exists(os.path.join(config.input_dir, "metadata.json")):
         dataset = _read_phenodata(metadata_file=os.path.join(config.input_dir, "metadata.json"))
+        elements = list(dataset["images"].items())[0][1]
+        add_elements = [el for el in elements if el not in config.filename_metadata]
+        config.filename_metadata.extend(add_elements)
     # If the directory contains a SnapshotInfo.csv file it is a legacy "phenofront" dataset
     elif os.path.exists(os.path.join(config.input_dir, "SnapshotInfo.csv")):
         dataset = _read_phenofront(config=config, metadata_file=os.path.join(config.input_dir, "SnapshotInfo.csv"))
+        elements = ["snapshot", "barcode", "cartag", "timestamp", "camera_label"]
+        add_elements = [el for el in elements if el not in config.filename_metadata]
+        config.filename_metadata.extend(list(add_elements))
     else:
         dataset = _read_filenames(config=config)
-    return dataset
+    return dataset, config
 ###########################################
 
 
@@ -488,7 +494,7 @@ def _read_phenofront(config, metadata_file):
                 rel_path = os.path.join(snapshot_id, filename)
                 # Store the parsed image metadata
                 dataset["images"][rel_path] = img_meta
-                # Update the metadata with metaata from SnapshotInfo.csv
+                # Update the metadata with metadata from SnapshotInfo.csv
                 dataset["images"][rel_path].update({
                     "snapshot": snapshot_id,
                     "barcode": snapshot_meta[colnames["plantbarcode"]],
