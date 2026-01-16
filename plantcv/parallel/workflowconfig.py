@@ -304,7 +304,7 @@ def _config_attr_lookup(config, attr, val):
 
     """
     # do not do this for hidden attributes
-    if attr[0] != "_" and attr is not "chkpt_start_dir":
+    if attr[0] != "_" and attr != "chkpt_start_dir":
         # for all other attributes, get their data from list
         config_control = {
             "input_dir": ["Images will be read from {}", str],
