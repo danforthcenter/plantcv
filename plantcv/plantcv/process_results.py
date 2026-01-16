@@ -38,6 +38,7 @@ def process_results(input_dir=".", filename="results", outformat="csv"):
     # Walk through the image processing job directory and process data from each file
     for (dirpath, _, filenames) in os.walk(job_dir):
         for fn in filenames:
+            print("Found " + fn + " in process_results")
             # Make sure file is a text or json file
             if 'text/plain' in mimetypes.guess_type(fn) or 'application/json' in mimetypes.guess_type(fn):
                 # Open results file
@@ -81,9 +82,7 @@ def _handle_config_process_results(input_dir, filename):
         if "chkpt_start_dir" not in config.__dict__:
             config.chkpt_start_dir = config.tmp_dir
             # process results from the checkpoint inside start point for tmp dirs
-            job_dir = os.path.join(config.chkpt_start_dir, "_PCV_PARALLEL_CHECKPOINT_")
-            # name outputs from config
-            json_file = config.results
+            input_dir = os.path.join(config.chkpt_start_dir, "_PCV_PARALLEL_CHECKPOINT_")
         input_dir = config.chkpt_start_dir
         # name outputs from config
         filename = config.results
