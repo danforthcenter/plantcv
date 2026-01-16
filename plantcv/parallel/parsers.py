@@ -62,9 +62,11 @@ def _read_checkpoint_data(df, config, removed_df):
     df = pandas.core.frame.DataFrame, filtered metadata dataframe
     removed_df = pandas.core.frame.DataFrame, dataframe of removed metadata
     """
+    if "chkpt_start_dir" not in config.__dict__:
+        config.chkpt_start_dir = config.tmp_dir
     # look for any json files in a checkpoint directory (made by run_parallel)
     existing_json = []
-    for _, _, files in os.walk(os.path.join(config.tmp_dir, "_PCV_PARALLEL_CHECKPOINT_")):
+    for _, _, files in os.walk(os.path.join(config.chkpt_start_dir, "_PCV_PARALLEL_CHECKPOINT_")):
         for file in files:
             if file.lower().endswith(".json"):
                 existing_json.append(file)
@@ -72,7 +74,7 @@ def _read_checkpoint_data(df, config, removed_df):
     if any(existing_json) and config.checkpoint:
         ran_list = [pd.DataFrame()]
         # look through checkpoint directory for json without "completed" companion file
-        for root, _, files in os.walk(os.path.join(config.tmp_dir, "_PCV_PARALLEL_CHECKPOINT_")):
+        for root, _, files in os.walk(os.path.join(config.chkpt_start_dir, "_PCV_PARALLEL_CHECKPOINT_")):
             for file in files:
                 if file.lower().endswith(".json") and os.path.exists(
                         os.path.join(root, os.path.splitext(file)[0]+"_complete")
@@ -82,7 +84,7 @@ def _read_checkpoint_data(df, config, removed_df):
                         row = {}
                         for var in j:
                             row[var] = j[var]["value"]
-                            ran_list.append(pd.DataFrame.from_dict(row))
+                        ran_list.append(pd.DataFrame.from_dict(row))
         # bind to metadata dataframe
         already_run = pd.concat(ran_list)
         already_run = already_run[already_run["filepath"].notna()]
@@ -231,22 +233,28 @@ def _apply_date_range_filter(df, config, removed_df):
     filtered_df = pandas.core.frame.DataFrame, filtered metadata dataframe
     removed_df = pandas.core.frame.DataFrame, dataframe of removed metadata
     """
-    # If either the start or end date is None then do not filter
-    if None in [config.start_date, config.end_date]:
-        return df, removed_df
     # Set whether the datetime code is in UTC or not
     utc = bool("Z" in config.timestampformat)
-    # Convert start and end dates to datetimes
-    start_date = pd.to_datetime(config.start_date, format=config.timestampformat, utc=utc)
-    end_date = pd.to_datetime(config.end_date, format=config.timestampformat, utc=utc)
-    # Keep rows with dates between start and end date
-    filtered_df = df.loc[df["timestamp"].between(start_date, end_date, inclusive="both")]
 
+    # Include all by default
+    after_start_date = pd.Series([True] * df.shape[0])
+    before_end_date = pd.Series([True] * df.shape[0])
+
+    # Make boolean vector for start and end date filtering if dates are not None
+    if config.start_date is not None:
+        after_start_date = df["timestamp"] >= pd.to_datetime(config.start_date, format=config.timestampformat, utc=utc)
+    if config.end_date is not None:
+        before_end_date = df["timestamp"] <= pd.to_datetime(config.end_date, format=config.timestampformat, utc=utc)
+
+    # And of boolean vectors
+    keep_dates = after_start_date & before_end_date
+    # Keep rows with dates between start and end date
+    filtered_df = df.loc[keep_dates]
     not_between_df = _anti_join(df, filtered_df)
     not_between_df["status"] = "Removed by config.start_date and config.end_date"
     removed_df = pd.concat([removed_df, not_between_df])
     removed_df["timestamp"] = removed_df["timestamp"].dt.strftime(config.timestampformat)
-    filtered_df.loc[:, "timestamp"] = filtered_df["timestamp"].dt.strftime(config.timestampformat)
+    filtered_df["timestamp"] = filtered_df["timestamp"].dt.strftime(config.timestampformat)
 
     return filtered_df, removed_df
 ###########################################
