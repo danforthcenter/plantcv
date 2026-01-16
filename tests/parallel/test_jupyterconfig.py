@@ -77,6 +77,7 @@ def test_jupcon_run(parallel_test_data, tmpdir):
     # force this to act like there is a notebook
     object.__setattr__(jupcon, "in_notebook", lambda: True)
     jupcon.notebook = jupcon.find_notebook()
+    #jupcon.config = "example_config.json"
     jupcon.input_dir = parallel_test_data.flat_imgdir
     jupcon.workflow = "example.py"
     jupcon.results = "example.json"
