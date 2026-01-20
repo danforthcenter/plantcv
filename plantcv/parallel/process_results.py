@@ -6,16 +6,26 @@ from plantcv.plantcv import fatal_error
 
 # Process results. Parse individual image output files.
 ###########################################
-def process_results(job_dir, json_file):
+def process_results(config):
     """Get results from individual files and combine into final JSON file.
 
-    Args:
-        job_dir:              Intermediate file output directory.
-        json_file:            Json data table filehandle object.
+    Parameters
+    ----------
+    config : plantcv.parallel.WorkflowConfig
+        Workflow configuration object.
 
-    :param job_dir: str
-    :param json_file: obj
+    Returns
+    -------
+    None
     """
+    # chkpt_start_dir is made by run_parallel, make sure that it exists
+    # default to tmp_dir if not
+    if "chkpt_start_dir" not in config.__dict__:
+        config.chkpt_start_dir = config.tmp_dir
+    # process results from the checkpoint inside start point for tmp dirs
+    job_dir = os.path.join(config.chkpt_start_dir, "_PCV_PARALLEL_CHECKPOINT_")
+    # name outputs from config
+    json_file = config.results
     # Data dictionary
     data = {"variables": {}, "entities": []}
     if os.path.exists(json_file):
