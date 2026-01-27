@@ -9,14 +9,16 @@ from plantcv.plantcv._debug import _debug
 from plantcv.plantcv.photosynthesis import reassign_frame_labels
 
 
-def npq(ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto",
+def npq(ps_da_light, ps_da_dark=None, labeled_mask=None, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto",
         measurement_labels=None, label=None):
     """
     Calculate and analyze non-photochemical quenching estimates from fluorescence image data.
 
     Inputs:
-    ps_da_light        = Photosynthesis xarray DataArray that contains frame_label `Fmp` (ojip_light)
-    ps_da_dark         = Photosynthesis xarray DataArray that contains frame_label `Fm` (ojip_dark)
+    ps_da_light        = Photosynthesis xarray DataArray that contains frame_label `Fmp` (ojip_light, pam_light)
+                         OR `pam_time` DataArray containing both phases.
+    ps_da_dark         = Photosynthesis xarray DataArray that contains frame_label `Fm` (ojip_dark, pam_dark).
+                         Optional if ps_da_light is `pam_time`.
     labeled_mask       = Labeled mask of objects (32-bit).
     n_labels           = Total number expected individual objects (default = 1).
     auto_fm            = Automatically calculate the frame with maximum fluorescence per label, otherwise
@@ -46,22 +48,63 @@ def npq(ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bi
     # Set labels
     labels = _set_labels(label, n_labels)
 
-    if labeled_mask.shape != ps_da_light.shape[:2] or labeled_mask.shape != ps_da_dark.shape[:2]:
+    # Input checks
+    if labeled_mask is None:
+        fatal_error("Labeled_mask is required.")
+
+    if labeled_mask.shape != ps_da_light.shape[:2]:
         fatal_error(f"Mask needs to have shape {ps_da_dark.shape[:2]}")
 
-    if (measurement_labels is not None) and (len(measurement_labels) != ps_da_light.coords['measurement'].shape[0]):
-        fatal_error('measurement_labels must be the same length as the number of measurements in `ps_da_light`')
+    if ps_da_dark is not None:
+        if labeled_mask.shape != ps_da_dark.shape[:2]:
+            fatal_error(f"Mask shape {labeled_mask.shape} doesn't match dark data {ps_da_dark.shape[:2]}")
 
-    if ps_da_light.name.lower() != 'ojip_light' or ps_da_dark.name.lower() != 'ojip_dark':
-        fatal_error(f"ps_da_light and ps_da_dark must be DataArrays with names 'ojip_light' and 'ojip_dark', "
-                    f"respectively. Instead the inputs are: "
-                    f"ps_da_light: {ps_da_light.name}, ps_da_dark: {ps_da_dark.name}"
-                    )
+    # Determine DataArray type and prepare the specific Light/Dark slices we need
+    da_type = ps_da_light.name.lower()
+    
+    # We will identify exactly one Light DataArray (containing the Fmp frame) and one Dark DataArray (containing the Fm frame) to work with.
+    target_light_da = None
+    target_dark_da = None
 
-    # Make an zeroed array of the same shape as the input DataArray
-    npq_global = xr.zeros_like(ps_da_light, dtype=float)
+    if da_type == 'pam_time':
+        # 1. Dark Source: The t0 measurement in array contains Fm
+        target_dark_da = ps_da_light.sel(measurement='t0')
+        
+        # 2. Light Source: The LAST measurement that contains a valid 'Fmp' frame.
+        try:
+            # We filter the DataArray to find measurements where 'Fmp' is not All-NaN.
+            # dropna(..., how='all') removes measurements that have no Fmp data.
+            fmp_valid_measurements = ps_da_light.sel(frame_label='Fmp').dropna(dim='measurement', how='all').measurement.values
+            
+            if len(fmp_valid_measurements) == 0:
+                 fatal_error("No valid 'Fmp' frames found in pam_time DataArray.")
+            
+            # Select the last one from the valid list
+            last_fmp_meas = fmp_valid_measurements[-1]
+            target_light_da = ps_da_light.sel(measurement=[last_fmp_meas])
+            
+        except KeyError:
+             fatal_error("Could not find frame_label 'Fmp' in pam_time DataArray.")
+
+    elif da_type in ['ojip_light', 'pam_light']:
+        if ps_da_dark is None:
+            fatal_error(f"ps_da_dark is required when analyzing {da_type}")
+        target_dark_da = ps_da_dark
+        target_light_da = ps_da_light
+    else:
+        fatal_error(f"Unsupported DataArray type: {da_type}")
+
+    # Validate labels against the reduced target array
+    if (measurement_labels is not None) and (len(measurement_labels) != target_light_da.coords['measurement'].shape[0]):
+        fatal_error(f'measurement_labels length ({len(measurement_labels)}) does not match the number of '
+                    f'analyzed measurements ({target_light_da.coords["measurement"].shape[0]}). '
+                    f'Note: pam_time analysis is reduced to the single last valid Fmp measurement.')
+
+    # Initialize Output Map
+    npq_global = xr.zeros_like(target_light_da, dtype=float)
     # Drop the frame_label coordinate
-    npq_global = npq_global[:, :, 0, :].drop_vars('frame_label')
+    if 'frame_label' in npq_global.coords:
+        npq_global = npq_global[:, :, 0, :].drop_vars('frame_label')
 
     # Make a copy of the labeled mask
     mask_copy = np.copy(labeled_mask)
@@ -75,15 +118,33 @@ def npq(ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bi
         # Create a binary submask for each label
         submask = np.where(mask_copy == i, 255, 0).astype(np.uint8)
 
-        # If auto_fm is True, reassign frame labels to choose the best Fm or Fm' for each labeled region
-        if auto_fm:
-            ps_da_light = reassign_frame_labels(ps_da=ps_da_light, mask=submask)
-            ps_da_dark = reassign_frame_labels(ps_da=ps_da_dark, mask=submask)
+        # Use localized variables for this specific plant
+        curr_light = target_light_da
+        curr_dark = target_dark_da
 
-        # Mask the Fm frame with the label submask
-        fm = ps_da_dark.sel(measurement='t0', frame_label='Fm').where(submask > 0, other=0)
-        # Calculate NPQ for the labeled region
-        npq_lbl = ps_da_light.sel(frame_label='Fmp').groupby('measurement', squeeze=False).map(_calc_npq, fm=fm)
+        # If auto_fm is True, reassign frame labels to choose the best Fm or Fm' for each labeled region
+        # We skip this for pam_time because we already hand-selected the specific pulses we want
+        if auto_fm and da_type != 'pam_time':
+            curr_light = reassign_frame_labels(ps_da=target_light_da, mask=submask)
+            curr_dark = reassign_frame_labels(ps_da=target_dark_da, mask=submask)
+
+        # --- Extract Fm Reference (Dark Max) ---
+        try:
+            # We now use curr_dark, which is correctly defined even if input dark was None
+            fm_ref = curr_dark.sel(frame_label='Fm').squeeze().where(submask > 0, other=0)
+        except KeyError:
+            fatal_error(f"Could not find frame_label 'Fm' in dark dataset.")
+
+        # --- Extract Fmp Target (Light Max) ---
+        try:
+            # We now use curr_light
+            fmp_frames = curr_light.sel(frame_label='Fmp')
+        except KeyError:
+             fatal_error(f"Could not find frame_label 'Fmp' in light dataset.")
+
+        # --- Calculate NPQ ---
+        # Groupby measurement ensures output preserves measurement coordinate
+        npq_lbl = fmp_frames.groupby('measurement', squeeze=False).map(_calc_npq, fm=fm_ref)
 
         # Drop the frame_label coordinate - not needed with xarray v2022.11.0+
         # npq_lbl = npq_lbl.drop_vars('frame_label')
@@ -93,9 +154,9 @@ def npq(ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bi
         npq_global = npq_global + npq_lbl
 
         # Record observations for each labeled region
-        _add_observations(npq_da=npq_lbl, measurements=ps_da_light.measurement.values,
+        _add_observations(npq_da=npq_lbl, measurements=target_light_da.measurement.values,
                           measurement_labels=measurement_labels, label=f"{labels[i - 1]}_{i}",
-                          max_bin=max_bin, min_bin=min_bin)
+                          max_bin=max_bin, min_bin=min_bin)     
 
     # Convert the labeled mask to a binary mask
     bin_mask = np.where(labeled_mask > 0, 255, 0)
@@ -111,7 +172,7 @@ def npq(ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bi
     npq_global = npq_global.drop_vars(res)  # does not fail if res is []
 
     # Create a ridgeline plot of the NPQ values
-    npq_chart = _ridgeline_plots(measurements=ps_da_light.measurement.values, measurement_labels=measurement_labels)
+    npq_chart = _ridgeline_plots(measurements=target_light_da.measurement.values, measurement_labels=measurement_labels)
 
     # Plot/print dataarray
     _debug(visual=npq_global,
@@ -120,8 +181,8 @@ def npq(ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bi
            col_wrap=int(np.ceil(npq_global.measurement.size / 4)),
            robust=True)
 
-    # this only returns the last histogram..... xarray does not seem to support panels of histograms
-    # but does support matplotlib subplots....
+    # this only returns the last histogram, xarray does not seem to support panels of histograms
+    # but does support matplotlib subplots.
     return npq_global.squeeze(), npq_chart
 
 
@@ -174,17 +235,26 @@ def _create_histogram(npq_img, mlabel, min_bin, max_bin):
     :return npq_mode: float
     """
     # Calculate the histogram of NPQ non-zero values
-    npq_hist, npq_bins = np.histogram(npq_img[np.where(npq_img > 0)], 100, range=(min_bin, max_bin))
+    # Filter for values > 0 to avoid counting background/zero-quenching
+    valid_pixels = npq_img[np.where(npq_img > 0)]
+    npq_hist, npq_bins = np.histogram(valid_pixels, 100, range=(min_bin, max_bin))
     # npq_bins is a bins + 1 length list of bin endpoints, so we need to calculate bin midpoints so that
     # the we have a one-to-one list of x (NPQ) and y (frequency) values.
     # To do this we add half the bin width to each lower bin edge x-value
     # midpoints = npq_bins[:-1] + 0.5 * np.diff(npq_bins)
+    # Calculate the total sum of the histogram
+    hist_sum = float(np.sum(npq_hist))
 
-    # Calculate which non-zero bin has the maximum Fv/Fm value
-    npq_mode = npq_bins[np.argmax(npq_hist)]
-
-    # Convert the histogram pixel counts to proportional frequencies
-    npq_percent = (npq_hist / float(np.sum(npq_hist))) * 100
+    # Check if we have data to avoid division by zero
+    if hist_sum > 0:
+        # Convert the histogram pixel counts to proportional frequencies
+        npq_percent = (npq_hist / hist_sum) * 100
+        # Calculate which non-zero bin has the maximum value
+        npq_mode = npq_bins[np.argmax(npq_hist)]
+    else:
+        # If no valid pixels were found, return an array of zeros
+        npq_percent = np.zeros_like(npq_hist)
+        npq_mode = 0.0
 
     # Create a dataframe
     hist_df = pd.DataFrame({'proportion of pixels (%)': npq_percent, mlabel: npq_bins[:-1]})

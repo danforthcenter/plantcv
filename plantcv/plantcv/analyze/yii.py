@@ -83,36 +83,52 @@ def yii(ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None,
         # Initialize an empty list to hold YII parts
         yii_parts = []
 
-        # Dark-adapted datasets (Fv/Fm)
+        # 1. Dark-adapted datasets (Fv/Fm)
         if var in ['ojip_dark', 'pam_dark', 'pam_time']:
-            # Calculate Fv/Fm
-            yii_dark = (yii_masked.sel(frame_label='Fm') - yii_masked.sel(frame_label='F0')) / yii_masked.sel(frame_label='Fm')
-            yii_dark = yii_dark.drop_vars('frame_label')
-            yii_parts.append(('dark', yii_dark))
+            # We explicitly check for presence of both labels in the coordinate
+            dark_indices = [m for m in yii_masked.measurement.values 
+                            if 'Fm' in yii_masked.sel(measurement=m).frame_label.values 
+                            and 'F0' in yii_masked.sel(measurement=m).frame_label.values]
+            
+            if dark_indices:
+                ds_dark = yii_masked.sel(measurement=dark_indices)
+                yii_dark = (ds_dark.sel(frame_label='Fm') - ds_dark.sel(frame_label='F0')) / ds_dark.sel(frame_label='Fm')
+                yii_dark = yii_dark.drop_vars('frame_label')
+                yii_parts.append(('dark', yii_dark))
 
-        # Light-adapted datasets (Fq'/Fm')
+        # 2. Light-adapted datasets (Fq'/Fm')
         if var in ['ojip_light', 'pam_light', 'pam_time']:
-            # Calculate Fq'/Fm'
-            yii_light = (yii_masked.groupby('measurement', squeeze=False).map(_calc_yiilight).drop_vars('frame_label'))
-            yii_parts.append(('light', yii_light))
+            # Filter for measurements containing Fmp and either Fsp or Fp
+            light_indices = [m for m in yii_masked.measurement.values 
+                             if 'Fmp' in yii_masked.sel(measurement=m).frame_label.values 
+                             and any(f in yii_masked.sel(measurement=m).frame_label.values for f in ['Fsp', 'Fp'])]
+            
+            if light_indices:
+                ds_light = yii_masked.sel(measurement=light_indices)
+                yii_light = (ds_light.groupby('measurement', squeeze=False).map(_calc_yiilight).drop_vars('frame_label'))
+                yii_parts.append(('light', yii_light))
 
-         # PAM time datasets (Fq"/Fm")
+        # 3. PAM time datasets (Fq"/Fm")
         if var in ['pam_time']:
-            # Calculate Fq"/Fm"
-            yii_time = (yii_masked.groupby('measurement', squeeze=False).map(_calc_yiitime).drop_vars('frame_label'))
-            yii_parts.append(('time', yii_time))
+            # Filter for measurements containing Fmpp and F0pp
+            time_indices = [m for m in yii_masked.measurement.values 
+                            if 'Fmpp' in yii_masked.sel(measurement=m).frame_label.values 
+                            and 'F0pp' in yii_masked.sel(measurement=m).frame_label.values]
+            
+            if time_indices:
+                ds_time = yii_masked.sel(measurement=time_indices)
+                yii_time = (ds_time.groupby('measurement', squeeze=False).map(_calc_yiitime).drop_vars('frame_label'))
+                yii_parts.append(('time', yii_time))
             
         for tag, yii_part in yii_parts:
-            yii_part = yii_part.fillna(0)
+            # Mask out background but keep NaNs for missing measurements to allow alignment
+            yii_part_filled = yii_part.fillna(0)
+            yii_global = yii_global + yii_part_filled
 
-            # accumulate image output
-            yii_global = yii_global + yii_part
-
-            # record observations separately
-
+            # Record observations only for the measurements that exist in THIS part
             _add_observations(
                     yii_da=yii_part,
-                    measurements=ps_da.measurement.values,
+                    measurements=yii_part.measurement.values, # Use the subset, not ps_da
                     label=f"{labels[i - 1]}_{i}",
                     measurement_labels=measurement_labels,
                     suffix=tag
@@ -132,7 +148,7 @@ def yii(ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None,
     yii_global = yii_global.drop_vars(res)  # does not fail if res is []
 
     # Create a ridgeline plot of the YII values
-    yii_chart = _ridgeline_plots(measurements=ps_da.measurement.values, measurement_labels=measurement_labels)
+    yii_chart = _ridgeline_plots(measurements=ps_da.measurement.values, measurement_labels=measurement_labels, label=label)
 
     # Create a pseudocolor image of the YII values
     _debug(visual=yii_global,
@@ -190,11 +206,19 @@ def _create_histogram(yii_img, mlabel):
     # To do this we add half the bin width to each lower bin edge x-value
     # midpoints = yii_bins[:-1] + 0.5 * np.diff(yii_bins)
 
-    # Calculate which non-zero bin has the maximum value
-    yii_mode = yii_bins[np.argmax(yii_hist)]
+    # Calculate the sum
+    hist_sum = float(np.sum(yii_hist))
 
-    # Convert the histogram pixel counts to proportional frequencies
-    yii_percent = (yii_hist / float(np.sum(yii_hist))) * 100
+    # Check for empty data to avoid RuntimeWarning
+    if hist_sum > 0:
+        # Convert the histogram pixel counts to proportional frequencies
+        yii_percent = (yii_hist / hist_sum) * 100
+        # Calculate which non-zero bin has the maximum value
+        yii_mode = yii_bins[np.argmax(yii_hist)]
+    else:
+        # Fallback for empty data
+        yii_percent = np.zeros_like(yii_hist)
+        yii_mode = 0.0
 
     # Create a dataframe for the histogram
     hist_df = pd.DataFrame({'proportion of pixels (%)': yii_percent, mlabel: yii_bins[:-1]})
@@ -257,12 +281,28 @@ def _calc_yiitime(da):
     return (da.sel(frame_label='Fmpp') - da.sel(frame_label='F0pp')) / da.sel(frame_label='Fmpp')
 
 
-def _ridgeline_plots(measurements, measurement_labels):
-    """Create ridgeline plots of YII values."""
+def _ridgeline_plots(measurements, measurement_labels, label):
+    """Create ridgeline plots by searching available observations."""
     yii_chart = None
-    for i, mlabel in enumerate(measurements):
-        if measurement_labels is not None:
-            mlabel = measurement_labels[i]
-        yii_chart = outputs.plot_dists(variable=f"yii_hist_{mlabel}")
-        _debug(visual=yii_chart, filename=os.path.join(params.debug_outdir, str(params.device) + '_yii_hist.png'))
+    
+    # Ensure we have the right top-level key
+    search_label = label if label is not None else params.sample_label
+
+    if search_label not in outputs.observations:
+        return None
+
+    # Get all available observation keys for this plant
+    available_keys = outputs.observations[search_label].keys()
+
+    # Find every key that contains 'yii_hist'
+    hist_keys = [k for k in available_keys if "yii_hist" in k]
+
+    for variable_name in hist_keys:
+        # Plot each one found
+        yii_chart = outputs.plot_dists(variable=variable_name)
+        
+        # Save a debug image for each histogram found
+        _debug(visual=yii_chart, 
+               filename=os.path.join(params.debug_outdir, f"{params.device}_{variable_name}.png"))
+               
     return yii_chart
