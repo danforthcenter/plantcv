@@ -9,9 +9,10 @@ from plantcv.plantcv.visualize.obj_sizes import obj_sizes
 from plantcv.plantcv.visualize.obj_size_ecdf import obj_size_ecdf
 from plantcv.plantcv.visualize.hyper_histogram import hyper_histogram
 from plantcv.plantcv.visualize.pixel_scatter_vis import pixel_scatter_plot
+from plantcv.plantcv.visualize.color_correction_scatter import color_correction_plot
 from plantcv.plantcv.visualize.chlorophyll_fluorescence import chlorophyll_fluorescence
 from plantcv.plantcv.visualize.tile import tile
 
 __all__ = ["pseudocolor", "colorize_masks", "histogram", "colorspaces", "auto_threshold_methods",
            "overlay_two_imgs", "colorize_label_img", "obj_size_ecdf", "obj_sizes", "hyper_histogram",
-           "pixel_scatter_plot", "chlorophyll_fluorescence", "tile"]
+           "pixel_scatter_plot", "color_correction_plot", "chlorophyll_fluorescence", "tile"]
