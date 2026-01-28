@@ -37,8 +37,7 @@ def auto_correct_color(rgb_img, color_chip_size=None, roi=None, **kwargs):
     numpy.ndarray
         Color corrected image
     """
-    labeled_mask = detect_color_card(rgb_img=rgb_img, color_chip_size=color_chip_size, roi=roi, **kwargs)
-    _, card_matrix = get_color_matrix(rgb_img=rgb_img, mask=labeled_mask)
+    card_matrix = detect_color_card(rgb_img=rgb_img, color_chip_size=color_chip_size, roi=roi, **kwargs)
 
     if isinstance(color_chip_size, str) and color_chip_size.upper() == 'ASTRO':
         std_matrix = astro_color_matrix()
@@ -75,8 +74,7 @@ def auto_correct_color_nonlinear(rgb_img, color_chip_size=None, roi=None, **kwar
     numpy.ndarray
         Color corrected image
     """
-    labeled_mask = detect_color_card(rgb_img=rgb_img, color_chip_size=color_chip_size, roi=roi, **kwargs)
-    _, card_matrix = get_color_matrix(rgb_img=rgb_img, mask=labeled_mask)
+    card_matrix = detect_color_card(rgb_img=rgb_img, color_chip_size=color_chip_size, roi=roi, **kwargs)
     std_matrix = std_color_matrix(pos=3)
     _, matrix_m, matrix_b = get_matrix_m(target_matrix=std_matrix, source_matrix=card_matrix)
     # calculate transformation_matrix and save

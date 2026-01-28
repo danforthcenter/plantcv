@@ -79,12 +79,13 @@ def test_detect_color_card_incorrect_card_type(transform_test_data):
         _ = detect_color_card(rgb_img=rgb_img, color_chip_size="pantone")
 
 
-def test_detect_color_card_masked_aruco_tags(transform_test_data):
+def test_detect_color_card_masked_aruco_tags(transform_test_data, capsys):
     """Test for PlantCV."""
     # Load rgb image
     rgb_img = cv2.imread(transform_test_data.astrocard_img)
-    with pytest.raises(RuntimeError):
-        _ = detect_color_card(rgb_img=rgb_img)
+    _ = detect_color_card(rgb_img=rgb_img)
+    captured = capsys.readouterr()
+    assert captured.err == "Warning: Image contains an ArUco tag, should you be using color_chip_size='astro'?\n"
 
 
 def test_detect_astro_card(transform_test_data):

@@ -204,17 +204,13 @@ def _check_point_per_chip(contours, centers, debug_img):
         fatal_error("Centers do not map 1 to 1 with detected color chips")
 
 
-def _check_chips_not_aruco_tags(img, centers, debug_img):
-    """Check that detected chips are not actually aruco tags
+def _check_no_aruco_tags(img):
+    """Check that there are not aruco tags in an image
 
     Parameters
     ----------
     img : numpy.ndarray
         Input RGB or Grayscale image data.
-    centers : numpy.ndarray
-             (X, Y) points of the center of each prospective mask to make
-    debug_img : numpy.ndarray
-             Debug image to show the problem if a fatal error is generated
 
     Returns
     -------
@@ -222,26 +218,19 @@ def _check_chips_not_aruco_tags(img, centers, debug_img):
 
     Raises
     ------
-    fatal_error
-          If any center is placed in an aruco tag
+    warning
+          If there are aruco tags in an image analysed for a macbeth color card
     """
     # set up default aruco tag detection
     aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
     aruco_params = cv2.aruco.DetectorParameters()
     detector = cv2.aruco.ArucoDetector(dictionary=aruco_dict, detectorParams=aruco_params)
     tag_bboxes, _, _ = detector.detectMarkers(img)
-    # if tags are found and any of the boxes has a center in it then error
-    aruco_tag_has_mask = []
-    for box in tag_bboxes:
-        bools = []
-        for pt in centers:
-            # -1 is outside, 0 is on line, 1 is inside
-            bools.append(cv2.pointPolygonTest(box, (int(pt[0]), int(pt[1])), False) == 1)
-            aruco_tag_has_mask.append(bool(sum(bools)))
-    # if any tags have a mask in them then raise an error
-    if any(x for x in aruco_tag_has_mask):
-        _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card.png'))
-        fatal_error("At least one center is inside an ArUco tag, should you be using color_chip_size='astro'?")
+    if len(tag_bboxes):
+        debug_img = np.copy(img)
+        cv2.aruco.drawDetectedMarkers(debug_img, tag_bboxes)
+        _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_color_card_has_ArUco.png'))
+        warn("Image contains an ArUco tag, should you be using color_chip_size='astro'?")
 
 
 def _check_corners(img, corners):
@@ -291,7 +280,8 @@ def _macbeth_card_detection(rgb_img, **kwargs):
     # Throw a fatal error if no color card found
     if len(filtered_contours) == 0:
         fatal_error("No color card found")
-
+    # check if there are aruco tags, warn about possible wrong mode
+    _check_no_aruco_tags(rgb_img)
     # Find the bounding box of the detected chips
     x, y, w, h = cv2.boundingRect(np.vstack(filtered_contours))
 
@@ -334,6 +324,7 @@ def _macbeth_card_detection(rgb_img, **kwargs):
         corners = np.array(np.intp(cv2.boxPoints(rect)))
 
     centers1 = cv2.approxPolyN(curve=square_centroids, nsides=4, ensure_convex=True)
+
     # Determine which corner most likely contains the white chip
     white_index = np.argmin([np.mean(math.dist(rot_img[corner[1], corner[0], :], (255, 255, 255))) for corner in centers1[0]])
     # Get outter corners of corner chips and sort based on card orientation
@@ -392,9 +383,6 @@ def _macbeth_card_detection(rgb_img, **kwargs):
     labeled_mask, debug_img = _draw_color_chips(out, new_centers_w, radius)
     # Check that new centers are inside each unique filtered_contour
     _check_point_per_chip(filtered_contours, new_centers_w, debug_img)
-    # check that new centers are not inside aruco tags
-    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_detected_color_card.png'))
-    _check_chips_not_aruco_tags(out, new_centers, debug_img) #NOTE HERE
     # Calculate color matrix from the cropped color card image
     _, color_matrix = get_color_matrix(rgb_img=out, mask=labeled_mask)
 
