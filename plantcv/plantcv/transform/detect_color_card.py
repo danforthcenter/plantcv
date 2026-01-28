@@ -389,11 +389,12 @@ def _macbeth_card_detection(rgb_img, **kwargs):
     debug_img = np.copy(rot_img)
     cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
     # Create labeled mask and debug image of color chips
-    labeled_mask, debug_img = _draw_color_chips(debug_img, new_centers_w, radius)
+    labeled_mask, debug_img = _draw_color_chips(out, new_centers_w, radius)
     # Check that new centers are inside each unique filtered_contour
     _check_point_per_chip(filtered_contours, new_centers_w, debug_img)
     # check that new centers are not inside aruco tags
-    _check_chips_not_aruco_tags(out, new_centers, debug_img)
+    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_detected_color_card.png'))
+    _check_chips_not_aruco_tags(out, new_centers, debug_img) #NOTE HERE
     # Calculate color matrix from the cropped color card image
     _, color_matrix = get_color_matrix(rgb_img=out, mask=labeled_mask)
 
@@ -723,10 +724,10 @@ def detect_color_card(rgb_img, color_chip_size=None, roi=None, **kwargs):
     """
     if type(color_chip_size) is str and color_chip_size.upper() == 'ASTRO':
         # Search image for astrobotany.com color card aruco tags labeled_mask, debug_img, card_img, marea, mheight, mwidth, bounding_mask
-        color_matrix, debug_img, card_img, marea, mheight, mwidth, _ = _rect_filter(rgb_img,
-                                                                                    roi,
-                                                                                    function=_astrobotany_card_detection,
-                                                                                    **kwargs)
+        color_matrix, debug_img, marea, mheight, mwidth, _ = _rect_filter(rgb_img,
+                                                                          roi,
+                                                                          function=_astrobotany_card_detection,
+                                                                          **kwargs)
         # Create dataframe for easy summary stats
         chip_size = np.median(marea)
         chip_height = np.median(mheight)
@@ -742,7 +743,7 @@ def detect_color_card(rgb_img, color_chip_size=None, roi=None, **kwargs):
                                   color_chip_size=(7.975, 7.975))
 
         # Save or plot debug image of color card transformed to standard size
-        _debug(visual=card_img, filename=os.path.join(params.debug_outdir, f'{params.device}_aligned_color_card.png'))
+        _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_aligned_color_card.png'))
 
     else:
         # apply _color_card_detection within bounding box

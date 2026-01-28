@@ -26,8 +26,8 @@ def test_draw_nonuniform_color_chips(transform_test_data):
     # Load rgb image
     rgb_img = cv2.imread(transform_test_data.colorcard_img)
     radii = [3*(i+1) for i in range(24)]
-    labeled_mask = detect_color_card(rgb_img=rgb_img, color_chip_size=(40, 40), radius=radii)
-    assert len(np.unique(labeled_mask)) == 25
+    color_matrix = detect_color_card(rgb_img=rgb_img, color_chip_size=(40, 40), radius=radii)
+    assert np.shape(color_matrix) == (24,4)
 
 
 def test_draw_nonuniform_color_chips_len_mismatch(transform_test_data):
@@ -90,15 +90,15 @@ def test_detect_color_card_masked_aruco_tags(transform_test_data):
 def test_detect_astro_card(transform_test_data):
     """Test for PlantCV."""
     rgb_img = cv2.imread(transform_test_data.astrocard_img)
-    labeled_mask = detect_color_card(rgb_img=rgb_img, color_chip_size="astro")
-    assert len(np.unique(labeled_mask)) == 16
+    color_matrix = detect_color_card(rgb_img=rgb_img, color_chip_size="astro")
+    assert np.shape(color_matrix) == (15, 4)
 
 
 def test_detect_astro_card_missing_aruco_tags(transform_test_data):
     """Test for PlantCV."""
     rgb_img = cv2.imread(transform_test_data.astrocard_missing_tags)
-    labeled_mask = detect_color_card(rgb_img=rgb_img, color_chip_size="astro")
-    assert len(np.unique(labeled_mask)) == 16
+    color_matrix = detect_color_card(rgb_img=rgb_img, color_chip_size="astro")
+    assert np.shape(color_matrix) == (15, 4)
 
 
 def test_detect_astro_card_duplicate_aruco_tags(transform_test_data):
