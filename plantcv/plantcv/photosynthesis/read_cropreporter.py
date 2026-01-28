@@ -423,7 +423,7 @@ def _process_gfp_data(ps, metadata):
                     'frame_num': ('frame_label', frame_nums)},
             name='gfp'
         )
-        gfp.attrs["long_name"] = "GFP fluorescence intensity measurements (525nm GFP, 585nm Auto)"
+        gfp.attrs["long_name"] = "Green fluorescence protein fluorescence intensity (525nm GFP, 585nm Auto)"
         gfp.attrs["dark_comp_on"] = int(metadata.get("GfpDarkCompOn", "0"))
         gfp.attrs["calib_factor"] = float(metadata.get("GfpCalibFactor", metadata.get("GfpCalFactor", "nan")))
         gfp.attrs["meas_power"] = float(metadata.get("GfpMeasPower", "nan"))
@@ -460,7 +460,7 @@ def _process_rfp_data(ps, metadata):
                     'frame_num': ('frame_label', frame_nums)},
             name='rfp'
         )
-        rfp.attrs["long_name"] = "RFP fluorescence intensity measurements (585nm)"
+        rfp.attrs["long_name"] = "Red fluorescence protein fluorescence intensity (585nm)"
         rfp.attrs["dark_comp_on"] = int(metadata.get("RfpDarkCompOn", "0"))
         rfp.attrs["calib_factor"] = float(metadata.get("RfpCalibFactor", "nan"))
         rfp.attrs["meas_power"] = float(metadata.get("RfpMeasPower", "nan"))
@@ -497,7 +497,7 @@ def _process_aph_data(ps, metadata):
                     'frame_num': ('frame_label', frame_nums)},
             name='aph'
         )
-        aph.attrs["long_name"] = "APH reflectance measurements (660nm Red, 730nm FarRed)"
+        aph.attrs["long_name"] = "Alpha Light absorption coefficient (Reflection) (640nm Red, 732nm FarRed)"
         aph.attrs["dark_comp_on"] = int(metadata.get("AphDarkCompOn", metadata.get("AlphaDarkCompOn", "0")))
         aph.attrs["gain_red"] = float(metadata.get("AphGainRed", metadata.get("AlphaGainRed", "nan")))
         aph.attrs["gain_farred"] = float(metadata.get("AphGainFarRed", metadata.get("AlphaGainFarRed", "nan")))
