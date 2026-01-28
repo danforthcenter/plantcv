@@ -2,7 +2,6 @@
 from plantcv.plantcv.transform.detect_color_card import detect_color_card
 from plantcv.plantcv.transform.color_correction import (
     apply_transformation_matrix,
-    get_color_matrix,
     std_color_matrix,
     affine_color_correction,
     calc_transformation_matrix,

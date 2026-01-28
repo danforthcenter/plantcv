@@ -361,7 +361,6 @@ def _macbeth_card_detection(rgb_img, **kwargs):
 
     # Increment amount is arbitrary, cell distances rescaled during perspective transform
     increment = 100
-    new_centers = [[int(0 + i * increment), int(0 + j * increment)] for j in range(nrows) for i in range(ncols)]
     # Create color card mask based on size of detected color card
     w_increment = int(length_card1 / 3.7) + 1
     h_increment = int(length_card2 / 5.7) + 1
@@ -552,7 +551,6 @@ def _astrobotany_card_detection(rgb_img, **kwargs):
 
     # Apply inverse matrix to generate image of aligned color card
     inv_mat = np.linalg.inv(np.array(mat).astype(np.float32))
-    card_img = cv2.warpPerspective(rgb_img, M=inv_mat, dsize=(700, 600))
 
     # Get reference card mask and transform to image position
     standard_mask = _get_astro_std_mask()
@@ -711,7 +709,7 @@ def detect_color_card(rgb_img, color_chip_size=None, roi=None, **kwargs):
         Labeled mask of chips.
     """
     if type(color_chip_size) is str and color_chip_size.upper() == 'ASTRO':
-        # Search image for astrobotany.com color card aruco tags labeled_mask, debug_img, card_img, marea, mheight, mwidth, bounding_mask
+        # Search image for astrobotany.com color card aruco tags
         color_matrix, debug_img, marea, mheight, mwidth, _ = _rect_filter(rgb_img,
                                                                           roi,
                                                                           function=_astrobotany_card_detection,
