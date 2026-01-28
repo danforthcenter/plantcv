@@ -31,8 +31,8 @@ def affine_color_correction(rgb_img, source_matrix, target_matrix):
 
 
     :param rgb_img: numpy.ndarray
-    :return source_matrix: numpy.ndarray
-    :return target_matrix: numpy.ndarray
+    :param source_matrix: numpy.ndarray
+    :param target_matrix: numpy.ndarray
     :return corrected_img: numpy.ndarray
     """
     # matrices must have the same number of color references
@@ -89,21 +89,19 @@ def std_color_matrix(pos=0):
     ColorChecker Mini, and ColorChecker Passport targets.
     Source: https://en.wikipedia.org/wiki/ColorChecker
 
-    Inputs:
-    pos     = reference value indicating orientation of the color card. The reference
-                is based on the position of the white chip:
-
-                pos = 0: bottom-left corner
+    Parameters
+    ----------
+    pos : int
+        reference value indicating orientation of the color card. The reference is based on the position of the white chip:
+                pos = 0: bottom-left corner (default)
                 pos = 1: bottom-right corner
                 pos = 2: top-right corner
                 pos = 3: top-left corner
 
-    Outputs:
-    color_matrix    = matrix containing the standard red, green, and blue
-                        values for each color chip
-
-    :param pos: int
-    :return color_matrix: numpy.ndarray
+    Returns
+    -------
+    color_matrix
+        matrix containing the standard red, green, and blue values for each color chip
     """
     # list of rgb values as indicated in the color card specs. They need to be
     # arranged depending on the orientation of the color card of reference in the
@@ -149,9 +147,48 @@ def std_color_matrix(pos=0):
     # arange color values based on the indices
     color_matrix_wo_chip_nb = values_list[(cc_indices_rot-1).reshape(-1), :]/255.
 
-    # add chip number compatible with other PlantCV functions
+    # add chip number (mask value) compatible with other PlantCV functions
     chip_nb = np.arange(10, 10*N_chips+1, 10)
     color_matrix = np.concatenate((chip_nb.reshape(N_chips, 1), color_matrix_wo_chip_nb), axis=1)
+
+    return color_matrix
+
+
+def astro_color_matrix():
+    """Create a standard color matrix for astrobotany calibration stickers
+
+    Returns
+    -------
+    color_matrix
+        matrix containing the standard red, green, and blue values for each color chip
+    """
+    values_list = np.array([[47, 59, 128],      # Blue
+                            [87, 158, 63],      # Green
+                            [181, 64, 54],      # Red
+                            [228, 207, 50],     # Yellow
+                            [53, 56, 55],       # Black
+                            # Grayscale chips
+                            [233, 241, 238],
+                            [210, 220, 220],
+                            [184, 192, 186],
+                            [164, 170, 163],
+                            [145, 147, 142],
+                            [123, 126, 122],
+                            [100, 102,  99],
+                            [83, 82, 81],
+                            [70, 71, 70],
+                            [57, 58, 58]], dtype=np.float64)
+
+    # Convert RGB values to float
+    color_matrix_wo_chip_nb = values_list/255.
+
+    # Add chip number (mask value) to be compatible with other PlantCV functions
+    N_chips = values_list.shape[0]
+
+    chip_nb = np.arange(10, 10*N_chips+1, 10)
+    chip_nb = np.reshape(chip_nb, shape=(-1, 1))
+
+    color_matrix = np.concatenate((chip_nb, color_matrix_wo_chip_nb), axis=1)
 
     return color_matrix
 
@@ -159,20 +196,19 @@ def std_color_matrix(pos=0):
 def get_color_matrix(rgb_img, mask):
     """Calculate the average value of pixels in each color chip for each color channel.
 
-    Inputs:
-    rgb_img         = RGB image with color chips visualized
-    mask        = a gray-scale img with unique values for each segmented space, representing unique, discrete
-                    color chips.
+    Parameters
+    ----------
+    rgb_img : numpy.ndarray
+        an RGB image with color chips visualized
+    mask : numpy.ndarray
+        a gray-scale img with unique values for each segmented space, representing unique, discrete color chips.
 
-    Outputs:
-    color_matrix        = a 22x4 matrix containing the average red value, average green value, and average blue value
-                            for each color chip.
-    headers             = a list of 4 headers corresponding to the 4 columns of color_matrix respectively
-
-    :param rgb_img: numpy.ndarray
-    :param mask: numpy.ndarray
-    :return headers: string array
-    :return color_matrix: numpy.ndarray
+    Returns
+    -------
+    color_matrix
+        a 22x4 matrix containing the average red value, average green value, and average blue value for each color chip.
+    headers
+        a list of 4 headers corresponding to the 4 columns of color_matrix respectively
     """
     # Check for RGB input
     if len(np.shape(rgb_img)) != 3:
@@ -334,19 +370,17 @@ def calc_transformation_matrix(matrix_m, matrix_b):
     return 1-t_det, transformation_matrix
 
 
-def apply_transformation_matrix(source_img, target_img, transformation_matrix):
+def apply_transformation_matrix(source_img, transformation_matrix):
     """Apply the transformation matrix to the source_image.
 
     Inputs:
     source_img      = an RGB image to be corrected to the target color space
-    target_img      = an RGB image with the target color space
     transformation_matrix        = a 9x9 matrix of transformation coefficients
 
     Outputs:
     corrected_img    = an RGB image in correct color space
 
     :param source_img: numpy.ndarray
-    :param target_img: numpy.ndarray
     :param transformation_matrix: numpy.ndarray
     :return corrected_img: numpy.ndarray
     """
@@ -396,7 +430,7 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
 
     # For debugging, create a horizontal view of source_img, corrected_img, and target_img to the plotting device
     # plot horizontal comparison of source_img, corrected_img (with rounded elements) and target_img
-    out_img = np.hstack([source_img, corrected_img, target_img])
+    out_img = np.hstack([source_img, corrected_img])
     # Change range of visualization image to 0-255 and convert to uin8
     out_img = ((255.0/max_val)*out_img).astype(np.uint8)
     _debug(visual=out_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_corrected.png'))
@@ -450,8 +484,9 @@ def correct_color(target_img, target_mask, source_img, source_mask, output_direc
     target_img          = an RGB image with color chips visualized
     source_img          = an RGB image with color chips visualized
     target_mask         = a gray-scale image with color chips and background each represented with unique values
-    target_mask         = a gray-scale image with color chips and background each represented as unique values
+    source_mask         = a gray-scale image with color chips and background each represented as unique values
     output_directory    = a file path to which outputs will be saved
+
     Outputs:
     target_matrix   = saved in .npz file, a 22x4 matrix containing the average red value, average green value, and
                             average blue value for each color chip.
@@ -491,7 +526,7 @@ def correct_color(target_img, target_mask, source_img, source_mask, output_direc
     save_matrix(transformation_matrix, os.path.join(output_directory, "transformation_matrix.npz"))
 
     # apply transformation
-    corrected_img = apply_transformation_matrix(source_img, target_img, transformation_matrix)
+    corrected_img = apply_transformation_matrix(source_img, transformation_matrix)
 
     return target_matrix, source_matrix, transformation_matrix, corrected_img
 
@@ -552,7 +587,7 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
     i = 1
     # Draw labeled chip boxes on the mask
     for chip in chips:
-        mask = cv2.drawContours(mask, chip.contours[0], -1, (i * 10), -1)
+        mask = cv2.drawContours(mask, chip.contours[0], -1, [i * 10], -1)
         i += 1
     # Create a copy of the input image for plotting
     canvas = np.copy(rgb_img)
@@ -626,8 +661,8 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
         y="source",
         color=alt.Color("color").scale(range=["blue", "green", "red"]),
         column="color"
-        ).interactive()
+        )
 
     _debug(visual=p1, filename=os.path.join(params.debug_outdir, 'color_quick_check.png'))
 
-    return p1
+    return p1.interactive()

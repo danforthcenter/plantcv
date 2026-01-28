@@ -36,6 +36,24 @@ def test_parallel_cli_invalid_config(parallel_test_data, tmpdir):
         main()
 
 
+def test_parallel_cli_overwriting_config(parallel_test_data, tmpdir):
+    """Test for PlantCV."""
+    # Create a test tmp directory
+    conf_file = tmpdir.mkdir("cache").join("config.json")
+    config = WorkflowConfig()
+    # Set valid values in config
+    config.json = conf_file.strpath
+    config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
+    config.workflow = parallel_test_data.workflow_script
+    config.img_outdir = str(conf_file.dirpath())
+    config.save_config(config_file=conf_file.strpath)
+    # Mock ARGV
+    import sys
+    sys.argv = ["plantcv-run-workflow", "--config", conf_file.strpath]
+    with pytest.raises(ValueError):
+        main()
+
+
 def test_parallel_cli_valid_config(parallel_test_data, tmpdir):
     """Test for PlantCV."""
     # Create a test tmp directory
@@ -47,7 +65,7 @@ def test_parallel_cli_valid_config(parallel_test_data, tmpdir):
     config.input_dir = parallel_test_data.flat_imgdir
     config.json = conf_file.dirpath().join(os.path.basename(parallel_test_data.new_results_file)).strpath
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
-    config.metadata_regex = {"filepath":".*"}
+    config.metadata_regex = {"filepath": ".*"}
     config.workflow = parallel_test_data.workflow_script
     config.img_outdir = str(conf_file.dirpath())
     config.tmp_dir = str(conf_file.dirpath() / "tmp")

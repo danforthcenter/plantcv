@@ -1,15 +1,15 @@
 ## Automatically Detect a Color Card
 
-Automatically detects a Macbeth ColorChecker style color card and creates a labeled mask. 
+Automatically detects a Macbeth ColorChecker or Astrobotany.com Calibration Sticker style color card and creates a labeled mask.
 
-**plantcv.transform.detect_color_card**(*rgb_img, label=None, color_chip_size=None, roi=None, \*\*kwargs*)
+**plantcv.transform.detect_color_card**(*rgb_img, color_chip_size=None, roi=None, \*\*kwargs*)
 
 **returns** color_matrix
 
 - **Parameters**
     - rgb_img          - Input RGB image data containing a color card.
     - label            - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
-    - color_chip_size - Type of color card to be detected, ("classic", "passport", "nano", or "cameratrax", by default `None`) or a tuple of the `(width, height)` dimensions of the color card chips in millimeters. If set then size scalings parameters `pcv.params.unit`, `pcv.params.px_width`, and `pcv.params.px_height`
+    - color_chip_size - Type of color card to be detected, ("classic", "passport", "nano", "mini", "cameratrax", or "astro", by default `None`) or a tuple of the `(width, height)` dimensions of the color card chips in millimeters. If set then size scalings parameters `pcv.params.unit`, `pcv.params.px_width`, and `pcv.params.px_height`
             are automatically set, and utilized throughout linear and area type measurements stored to `Outputs`. 
     - roi              - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to look for the color card. (default = None)
     - **kwargs         - Other keyword arguments passed to `cv2.adaptiveThreshold` and `cv2.circle`.
@@ -24,10 +24,10 @@ Automatically detects a Macbeth ColorChecker style color card and creates a labe
     - color_matrix     - Detected color values as a matrix, the same format as output from [`pcv.transform.get_color_matrix`](get_color_matrix.md)).
     
 - **Context**
-    - If the goal is to color correct the image colorspace to the standard color card values, consider using [`pcv.transform.auto_correct_color`](transform_auto_correct_color.md) since this new function is a one-step wrapper of plantcv.transform.detect_color_card, [plantcv.transform.std_color_matrix](std_color_matrix.md),
-    and [plantcv.transform.affine_color_correction](transform_affine_color_correction.md).
-    - This mask output will be consistent in chip order regardless of orientation, where the white chip is detected and labeled first with index=0.
-    - This algorithm uses an adaptive edge detection, and filters objects based on their size, apparent aspect ratio, and solidity.
+    - If the goal is to color correct the image colorspace to the standard color card values, consider using [`pcv.transform.auto_correct_color`](transform_auto_correct_color.md) since this new function is a one-step wrapper of plantcv.transform.detect_color_card, [plantcv.transform.std_color_matrix](std_color_matrix.md) or [plantcv.transform.astro_color_matrix](astro_color_matrix.md), and [plantcv.transform.affine_color_correction](transform_affine_color_correction.md).
+    - This mask output will be consistent in chip order regardless of orientation. For Macbeth ColorChecker style cards, the white chip is detected and labeled first with index=0.
+    - The Macbeth ColorChecker algorithm uses an adaptive edge detection, and filters objects based on their size, apparent aspect ratio, and solidity.
+    - The Astrobotany Calibration Sticker algorithm searches for ArUco tags, and orients the color card using ArUco tag corner coordinates.
     - QR codes are often falsely detected by this algorithm, but can be ignored during detection if the optional `roi` parameter is used.
 - **Example use:**
     - [Color Correction Tutorial](https://plantcv.org/tutorials/color-correction) since this function is called during [`pcv.transform.auto_correct_color`](transform_auto_correct_color.md). 
@@ -38,7 +38,7 @@ Automatically detects a Macbeth ColorChecker style color card and creates a labe
     There are a few important assumptions that must be met in order to automatically detect color cards:
     
     - There is only one color card in the image.
-    - Color card should be 4x6 [Macbeth ColorChecker](https://en.wikipedia.org/wiki/ColorChecker) like one of the supported color cards described below. 
+    - Color card should be either a 4x6 [Macbeth ColorChecker](https://en.wikipedia.org/wiki/ColorChecker) like one of the supported color cards described below, or an [Astrobotany Calibration Sticker](https://astrobotany.com/product/airi-bio-imaging-spectrum-5cm/)
 
 ```python
 
@@ -72,28 +72,38 @@ Not all chips need to be detected in the cropped color card, but help with quali
 
 ### Suppored Color Cards
 
-**[Calibrite ColorChecker Passport](https://calibrite.com/us/product/colorchecker-passport-photo-2/)** 
+**[Calibrite ColorChecker "Passport"](https://calibrite.com/us/product/colorchecker-passport-photo-2/)** 
 
 ![Screenshot](img/documentation_images/correct_color_imgs/calibrite-passport.png)
 
 Chip dimensions: 12mm x 12mm
 
-**[Calibrite ColorChecker Classic](https://calibrite.com/us/product/colorchecker-classic/)** 
+**[Calibrite ColorChecker "Classic"](https://calibrite.com/us/product/colorchecker-classic/)** 
 
 ![Screenshot](img/documentation_images/correct_color_imgs/classic.png)
 
 Chip dimensions: 40mm x 40mm
 
-**[CameraTrax 24ColorCard-2x3](https://www.cameratrax.com/cardorder.php)** 
+**[Calibrite ColorChecker Classic "Mini"](https://calibrite.com/us/product/colorchecker-classic-mini/)** 
+
+![Screenshot](img/documentation_images/correct_color_imgs/colorchecker-classic-mini.jpg)
+
+Chip dimensions: 12mm x 12mm
+
+**["CameraTrax" 24ColorCard-2x3](https://www.cameratrax.com/cardorder.php)** 
 
 ![Screenshot](img/documentation_images/correct_color_imgs/camera-trax.png)
 
 Chip dimensions: 11mm x 11mm
 
-**[ColorChecker Classic Nano](https://calibrite.com/us/product/colorchecker-classic-nano/)** 
+**[ColorChecker Classic "Nano"](https://calibrite.com/us/product/colorchecker-classic-nano/)** 
 
 ![Screenshot](img/documentation_images/correct_color_imgs/nano.jpeg)
 
 Chip dimensions: 3mm x 4mm
+
+**[AstroBotany Calibration Sticker](https://astrobotany.com/product/airi-bio-imaging-spectrum-5cm/)**
+
+![Screenshot](img/documentation_images/correct_color_imgs/astro-sticker.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/transform/detect_color_card.py)
