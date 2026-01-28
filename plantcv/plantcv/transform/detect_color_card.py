@@ -262,34 +262,47 @@ def _color_card_detection(rgb_img, **kwargs):
     # Check that corners are in image
     _check_corners(rgb_img, corners)
     # Determine which corner most likely contains the white chip
-    # PROBLEM
     white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0], :], (255, 255, 255))) for corner in corners])
     corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])[[0, 1, 3, 2]]]
+    rot_img = np.rot90(rgb_img, k=white_index, axes=(0, 1)).copy()
+    # rotate the image so that the white color chip is warp-able to the top left position without mirroring the card
+    rotations = white_index
+    if (rotations):  # if the image was rotated, find new contours for chips
+        filtered_contours = _find_color_chip_like_objects(rot_img, **kwargs)
+        # Find the bounding box of the detected chips
+        x, y, w, h = cv2.boundingRect(np.vstack(filtered_contours))
+        # Draw the bound box rectangle
+        boundind_mask = cv2.rectangle(np.zeros(rot_img.shape[0:2]), (x, y), (x + w, y + h), (255), -1).astype(np.uint8)
+        # Initialize chip shape lists
+        marea, mwidth, mheight = _get_contour_sizes(filtered_contours)
+        # Concatenate all detected centers into one array (minimum area rectangle used to find chip centers)
+        square_centroids = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
+        # Concatenate all contours into one array and find the minimum area rectangle
+        rect = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
+        rect = cv2.minAreaRect(rect)
+        # Get the corners of the rectangle
+        corners = np.array(np.intp(cv2.boxPoints(rect)))
 
-    # Find four-sided polygon to describe the skewed color card
-    # Get centroids of corner chips
     centers1 = cv2.approxPolyN(curve=square_centroids, nsides=4, ensure_convex=True)
     # Determine which corner most likely contains the white chip
-    white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0], :], (255, 255, 255))) for corner in centers1[0]])
+    white_index = np.argmin([np.mean(math.dist(rot_img[corner[1], corner[0], :], (255, 255, 255))) for corner in centers1[0]])
     # Get outter corners of corner chips and sort based on card orientation
     corners = cv2.approxPolyN(curve=np.concatenate(filtered_contours), nsides=4, ensure_convex=True)
     corners = np.concatenate(corners)
-    # PROBLEM this white index usage is new for the branch, previously white_index was defined once (the previous one above)
-    # and I think there is something going on with this redefinition, maybe it needs to happen later or something.
-    # I might need to pull apart the code in jupyter to understand what the corners ordering is doing though.
     corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])[[1, 3, 2, 0]]]
 
     if params.verbose:
         # Draw new contours onto cropped card debug image
-        debug_img = np.copy(rgb_img)
+        debug_img = np.copy(rot_img)
         cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
         cv2.drawContours(debug_img, [corners], -1, color=(255, 0, 0), thickness=params.line_thickness)
-        _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_detected_color_card.png'))
+        unrot_debug_img = np.rot90(debug_img, k=-1*rotations, axes=(0, 1)).copy()
+        _debug(visual=unrot_debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_detected_color_card.png'))
 
-    # Perspective warp the color card to unskew and un-rotate
+    # Perspective warp the color card to unskew and square to frame
     pt_A, pt_B, pt_C, pt_D = corners
-
     input_pts = np.float32([pt_A, pt_B, pt_C, pt_D])
+
     length_AD = np.sqrt(((pt_A[0] - pt_D[0]) ** 2) + ((pt_A[1] - pt_D[1]) ** 2))
     length_BC = np.sqrt(((pt_B[0] - pt_C[0]) ** 2) + ((pt_B[1] - pt_C[1]) ** 2))
     length_card1 = max(int(length_AD), int(length_BC))
@@ -302,7 +315,7 @@ def _color_card_detection(rgb_img, **kwargs):
     # Transform the color card to crop (and unwarp)
     matrix = cv2.getPerspectiveTransform(input_pts, output_pts)
     out = cv2.warpPerspective(
-        rgb_img, matrix, (min(length_card1, length_card2), max(length_card1, length_card2)), flags=cv2.INTER_LINEAR
+        rot_img, matrix, (min(length_card1, length_card2), max(length_card1, length_card2)), flags=cv2.INTER_LINEAR
     )
 
     # Create color card mask based on size of detected color card
