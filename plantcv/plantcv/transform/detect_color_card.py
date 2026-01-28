@@ -9,7 +9,7 @@ import math
 import numpy as np
 from plantcv.plantcv import params, outputs, fatal_error, warn
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _rgb2hsv, _cv2_findcontours, _object_composition, _rect_filter
+from plantcv.plantcv._helpers import _rgb2hsv, _rgb2gray, _cv2_findcontours, _object_composition, _rect_filter
 from plantcv.plantcv.transform.color_correction import get_color_matrix
 
 
@@ -282,26 +282,11 @@ def _macbeth_card_detection(rgb_img, **kwargs):
     list
         Color matrix, debug img, detected chip areas, chip heights, chip widths, bounding box mask
     """
-    # Get keyword arguments and set defaults if not set
-    min_size = kwargs.get("min_size", 1000)  # Minimum size for _is_square chip filtering
-    radius = kwargs.get("radius", 20)  # Radius of circles to draw on the color chips
-    adaptive_method = kwargs.get("adaptive_method", 1)  # cv2.adaptiveThreshold method
-    block_size = kwargs.get("block_size", 51)  # cv2.adaptiveThreshold block size
-    aspect_ratio = kwargs.get("aspect_ratio", 1.27)  # _is_square aspect-ratio filtering
-    solidity = kwargs.get("solidity", 0.8)  # _is_square solidity filtering
-
-    # Throw a fatal error if block_size is not odd or greater than 1
-    if not (block_size % 2 == 1 and block_size > 1):
-        fatal_error('block_size parameter must be an odd int greater than 1.')
-
     nrows = 6
     ncols = 4
     # Radius of circles to draw on the color chips, adaptive unless set by the user
     radius = kwargs.get("radius")
-    imgray = _rgb2gray(rgb_img=rgb_img)
-    gaussian = cv2.GaussianBlur(imgray, (11, 11), 0)
-    thresh = cv2.adaptiveThreshold(gaussian, 255, adaptive_method, cv2.THRESH_BINARY_INV, block_size, 2)
-    filtered_contours = _find_color_chip_like_objects(thresh, **kwargs)
+    filtered_contours = _find_color_chip_like_objects(rgb_img, **kwargs)
 
     # Throw a fatal error if no color card found
     if len(filtered_contours) == 0:
@@ -311,7 +296,7 @@ def _macbeth_card_detection(rgb_img, **kwargs):
     x, y, w, h = cv2.boundingRect(np.vstack(filtered_contours))
 
     # Draw the bound box rectangle
-    bounding_mask = cv2.rectangle(np.zeros(rgb_img.shape[0:2]), (x, y), (x + w, y + h), (255), -1).astype(np.uint8)
+    boundind_mask = cv2.rectangle(np.zeros(rgb_img.shape[0:2]), (x, y), (x + w, y + h), (255), -1).astype(np.uint8)
 
     # Initialize chip shape lists
     marea, mwidth, mheight = _get_contour_sizes(filtered_contours)
@@ -332,7 +317,7 @@ def _macbeth_card_detection(rgb_img, **kwargs):
     rot_img = np.rot90(rgb_img, k=white_index, axes=(0, 1)).copy()
     # rotate the image so that the white color chip is warp-able to the top left position without mirroring the card
     rotations = white_index
-    if (rotations):  # if the image was rotated, find new contours for chips
+    if rotations:  # if the image was rotated, find new contours for chips
         filtered_contours = _find_color_chip_like_objects(rot_img, **kwargs)
         # Find the bounding box of the detected chips
         x, y, w, h = cv2.boundingRect(np.vstack(filtered_contours))
@@ -383,6 +368,9 @@ def _macbeth_card_detection(rgb_img, **kwargs):
         rot_img, matrix, (min(length_card1, length_card2), max(length_card1, length_card2)), flags=cv2.INTER_LINEAR
     )
 
+    # Increment amount is arbitrary, cell distances rescaled during perspective transform
+    increment = 100
+    new_centers = [[int(0 + i * increment), int(0 + j * increment)] for j in range(nrows) for i in range(ncols)]
     # Create color card mask based on size of detected color card
     w_increment = int(length_card1 / 3.7) + 1
     h_increment = int(length_card2 / 5.7) + 1
@@ -398,17 +386,17 @@ def _macbeth_card_detection(rgb_img, **kwargs):
     filtered_contours = _find_color_chip_like_objects(out, **kwargs)
 
     # Draw new contours onto cropped card debug image
-    debug_img = np.copy(out)
+    debug_img = np.copy(rot_img)
     cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
     # Create labeled mask and debug image of color chips
     labeled_mask, debug_img = _draw_color_chips(debug_img, new_centers_w, radius)
     # Check that new centers are inside each unique filtered_contour
     _check_point_per_chip(filtered_contours, new_centers_w, debug_img)
     # check that new centers are not inside aruco tags
-    _check_chips_not_aruco_tags(imgray, new_centers, debug_img)
+    _check_chips_not_aruco_tags(out, new_centers, debug_img)
     # Calculate color matrix from the cropped color card image
     _, color_matrix = get_color_matrix(rgb_img=out, mask=labeled_mask)
- 
+
     return color_matrix, debug_img, marea, mheight, mwidth, boundind_mask
 
 
@@ -589,8 +577,9 @@ def _astrobotany_card_detection(rgb_img, **kwargs):
     # Generate color card bounding mask
     bounding_mask = cv2.warpPerspective(np.ones(shape=(600, 700), dtype=np.uint8)*255, mat, dsize=rgb_img.shape[1::-1],
                                         flags=cv2.INTER_NEAREST)
-
-    return labeled_mask, debug_img, card_img, marea, mheight, mwidth, bounding_mask
+    # Calculate color matrix from the cropped color card image
+    _, color_matrix = get_color_matrix(rgb_img=rgb_img, mask=labeled_mask)
+    return color_matrix, debug_img, marea, mheight, mwidth, bounding_mask
 
 
 def _set_size_scale_from_chip(color_chip_width, color_chip_height, color_chip_size):
@@ -733,15 +722,11 @@ def detect_color_card(rgb_img, color_chip_size=None, roi=None, **kwargs):
         Labeled mask of chips.
     """
     if type(color_chip_size) is str and color_chip_size.upper() == 'ASTRO':
-        # Search image for astrobotany.com color card aruco tags
-        sub_mask, debug_img, card_img, marea, mheight, mwidth, _ = _rect_filter(rgb_img,
-                                                                                roi,
-                                                                                function=_astrobotany_card_detection,
-                                                                                **kwargs)
-        # slice sub_mask from bounding box into mask of original image size
-        empty_mask = np.zeros((np.shape(rgb_img)[0], np.shape(rgb_img)[1]))
-        labeled_mask = _rect_replace(empty_mask, sub_mask, roi)
-
+        # Search image for astrobotany.com color card aruco tags labeled_mask, debug_img, card_img, marea, mheight, mwidth, bounding_mask
+        color_matrix, debug_img, card_img, marea, mheight, mwidth, _ = _rect_filter(rgb_img,
+                                                                                    roi,
+                                                                                    function=_astrobotany_card_detection,
+                                                                                    **kwargs)
         # Create dataframe for easy summary stats
         chip_size = np.median(marea)
         chip_height = np.median(mheight)
@@ -761,14 +746,10 @@ def detect_color_card(rgb_img, color_chip_size=None, roi=None, **kwargs):
 
     else:
         # apply _color_card_detection within bounding box
-        sub_mask, debug_img, marea, mheight, mwidth, _ = _rect_filter(rgb_img,
-                                                                      roi,
-                                                                      function=_macbeth_card_detection,
-                                                                      **kwargs)
-        # slice sub_mask from bounding box into mask of original image size
-        empty_mask = np.zeros((np.shape(rgb_img)[0], np.shape(rgb_img)[1]))
-        labeled_mask = _rect_replace(empty_mask, sub_mask, roi)
-
+        color_matrix, debug_img, marea, mheight, mwidth, _ = _rect_filter(rgb_img,
+                                                                          roi,
+                                                                          function=_macbeth_card_detection,
+                                                                          **kwargs)
         # Create dataframe for easy summary stats
         chip_size = np.median(marea)
         chip_height = np.median(mheight)
