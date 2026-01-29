@@ -327,5 +327,7 @@ def test_cameratrax_and_astro_consistent_color_calibration(transform_test_data):
     astro_std_mat = astro_color_matrix()
     astro_corr_img = affine_color_correction(rgb_img=rgb_img, source_matrix=astro_mat, target_matrix=astro_std_mat)
 
+    diff = np.abs(ctrax_corr_img - astro_corr_img)
+    channel_diffs = np.sum(diff, axis=(0,1)) / (diff.shape[0] * diff.shape[1])
     # Check for similarity in corrected color: mean absolute color difference less than 2.5 (1% of range)
-    assert np.mean(np.abs(ctrax_corr_img - astro_corr_img)) < 2.5
+    assert all(channel_diffs < 3) and np.mean(channel_diffs) < 2.5
