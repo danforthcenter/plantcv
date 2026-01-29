@@ -300,7 +300,7 @@ def _macbeth_card_detection(rgb_img, **kwargs):
     # if the largest sum (bottom right corner of box) is the first element then sort the elements properly.
     if bottom_right_corner_index == 0:
         box_points = box_points[[2, 3, 0, 1]]
-     # Calculate the perspective transform matrix from the minimum area rectangle
+    # Calculate the perspective transform matrix from the minimum area rectangle
     m_transform = cv2.getPerspectiveTransform(box_points, corners.astype("float32"))
     # Transform the chip centers using the perspective transform matrix
     new_centers = cv2.transform(np.array([centers]), m_transform)[0][:, 0:2]
