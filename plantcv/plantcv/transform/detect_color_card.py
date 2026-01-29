@@ -303,7 +303,6 @@ def _macbeth_card_detection(rgb_img, **kwargs):
     _check_corners(rgb_img, corners)
     # Determine which corner most likely contains the white chip
     white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0], :], (255, 255, 255))) for corner in corners])
-    corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])[[0, 1, 3, 2]]]
     rot_img = np.rot90(rgb_img, k=white_index, axes=(0, 1)).copy()
     # rotate the image so that the white color chip is warp-able to the top left position without mirroring the card
     rotations = white_index
