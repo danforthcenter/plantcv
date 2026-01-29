@@ -292,7 +292,15 @@ def _macbeth_card_detection(rgb_img, **kwargs):
     new_rect = cv2.minAreaRect(np.array(centers))
     # Get the corners of the rectangle
     box_points = cv2.boxPoints(new_rect).astype("float32")
-    # Calculate the perspective transform matrix from the minimum area rectangle
+    # previously the boxpoints (corners of box) started from the top left and proceeded clockwise around the image.
+    # between opencv 4.12.0 and 4.13.0 there is an unexplained change to start boxPoints from
+    # the bottom right of the image, so now we have to find the bottom right point and make sure
+    # that it is in the bottom right
+    bottom_right_corner_index = np.argsort(-box_points.sum(axis=1))[0]
+    # if the largest sum (bottom right corner of box) is the first element then sort the elements properly.
+    if bottom_right_corner_index == 0:
+        box_points = box_points[[2, 3, 0, 1]]
+     # Calculate the perspective transform matrix from the minimum area rectangle
     m_transform = cv2.getPerspectiveTransform(box_points, corners.astype("float32"))
     # Transform the chip centers using the perspective transform matrix
     new_centers = cv2.transform(np.array([centers]), m_transform)[0][:, 0:2]
