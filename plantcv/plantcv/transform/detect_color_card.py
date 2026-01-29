@@ -549,9 +549,6 @@ def _astrobotany_card_detection(rgb_img, **kwargs):
     # Calculate matrix to transform standard-size color card to the image
     mat, _ = cv2.findHomography(ref_pts, img_pts, method=0)
 
-    # Apply inverse matrix to generate image of aligned color card
-    inv_mat = np.linalg.inv(np.array(mat).astype(np.float32))
-
     # Get reference card mask and transform to image position
     standard_mask = _get_astro_std_mask()
     labeled_mask = cv2.warpPerspective(standard_mask, mat, dsize=rgb_img.shape[1::-1], flags=cv2.INTER_NEAREST)
