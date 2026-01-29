@@ -4,7 +4,7 @@ name: plantcv
 dependencies:
   - python=3.13
   - matplotlib>=1.5
-  - numpy>=2
+  - numpy>=1.26
   - pandas
   - python-dateutil
   - scipy<1.16
@@ -23,7 +23,7 @@ dependencies:
   - ipympl
   - nodejs
   - jupyterlab
-  - altair
+  - altair<6
   - vl-convert-python
   - git
   - flyr
