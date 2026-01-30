@@ -76,11 +76,12 @@ def main():
     # Get options
     config, dryrun = options()
     if dryrun:
+        prefix = os.path.splitext(dryrun)[0]
         summary_df, meta = plantcv.parallel.inspect_dataset(config)
-        print(f"Saving {dryrun}_summary_df.csv")
-        summary_df.to_csv(os.path.splitext(dryrun)[0] + "_summary_df.csv")
-        print(f"Saving {os.path.splitext(dryrun)[0]}_metadata_df.csv")
-        meta.to_csv(dryrun + "_metadata_df.csv")
+        print(f"Saving {prefix}_summary_df.csv")
+        summary_df.to_csv(f"{prefix}_summary_df.csv")
+        print(f"Saving {prefix}_metadata_df.csv")
+        meta.to_csv(f"{prefix}_metadata_df.csv")
     else:
         # run parallel using config
         plantcv.parallel.run_parallel(config)
