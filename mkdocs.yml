@@ -197,6 +197,7 @@ nav:
           - 'Resize Images': transform_resize.md
           - 'Rotate': rotate2.md
       - 'Transformation Helpers':
+            - 'Astrobotany Calibration Matrix': astro_color_matrix.md
             - 'Calculate Moore-Penrose Inverse Matrix': mp_inverse.md
             - 'Create Color Correction Matrix': transformation_matrix.md
             - 'Apply Color Correction Matrix': apply_transformation_matrix.md
@@ -205,6 +206,7 @@ nav:
       - 'Visualization Methods':
           - 'Auto Threshold Methods': visualize_auto_threshold_methods.md
           - 'Chlorophyll Fluorescence': visualize_chlorophyll_fluorescence.md
+          - 'Color Correction Scatter Plot': visualize_color_correction_scatter.md
           - 'Colorize Label Image': visualize_colorize_label_img.md
           - 'Colorize Masks': visualize_colorize_masks.md
           - 'Colorspaces': visualize_colorspace.md
