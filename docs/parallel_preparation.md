@@ -6,6 +6,8 @@ PlantCV's Parallel module allows for running a PlantCV workflow on many images a
 
 Before you can parallelize a workflow you need to make sure that it works on a single image. Generally we recommend prototyping a workflow in Jupyter notebooks so that you can run interactively. Most of the time a previous workflow of yours or one of our many [tutorials](https://plantcv.org/tutorials) will be a good place to start. Once your Jupyter notebook works on one image try it on a few more to make sure you've caught any obvious errors that could come up.
 
+Running a parallel workflow will make some temporary files specified by `config.tmp_dir` including a directory called `_PCV_PARALLEL_CHECKPOINT_`, with nested directories named by timestamp. By default the `cleanup=true` field of the parallel configuration will remove the temporary directories (including `_PCV_PARALLEL_CHECKPOINT_`, so if you are interested in interim analyses you may decide not to cleanup) at the end of a successful parallel workflow.
+
 ### From Jupyter to Parallel
 
 There are a few things to consider moving from prototyping in Jupyter to running a potentially computationally heavy parallel job.

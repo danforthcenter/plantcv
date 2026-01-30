@@ -17,6 +17,7 @@
     "other_args": {},
     "groupby": ["filepath"],
     "group_name": "auto",
+    "checkpoint": true,
     "cleanup": true,
     "append": false,
     "cluster": "LocalCluster",
