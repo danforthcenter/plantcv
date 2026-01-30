@@ -85,7 +85,6 @@ class ParallelTestData:
             "other": [None]
             }
         df = pd.DataFrame(meta)
-        df["timestamp"] = pd.to_datetime(df.timestamp)
         return df
 
     def metadata_snapshot_coprocess(self):
@@ -110,7 +109,6 @@ class ParallelTestData:
             "other": [None, None]
             }
         df = pd.DataFrame(meta)
-        df["timestamp"] = pd.to_datetime(df.timestamp)
         return df
 
 
