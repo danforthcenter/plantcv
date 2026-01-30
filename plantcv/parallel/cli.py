@@ -50,10 +50,13 @@ def options():
     if configfile:
         config.import_config(config_file=configfile)
         if configfile == config.results:
-            raise ValueError("Configuration file would be overwritten by results, change the results field of config.")
+            print("Configuration file would be overwritten by results, change the results field of config.",
+                  file=sys.stderr)
+            sys.exit(1)
 
     if not config.validate_config():
-        raise ValueError("Invalid configuration file. Check errors above.")
+        print("Error: Invalid configuration file. Check errors above.", file=sys.stderr)
+        sys.exit(1)
     return config, dryrun
 ###########################################
 

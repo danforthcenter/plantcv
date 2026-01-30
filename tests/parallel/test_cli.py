@@ -49,8 +49,9 @@ def test_parallel_cli_invalid_config(parallel_test_data, tmpdir):
     # Mock ARGV
     import sys
     sys.argv = ["plantcv-run-workflow", "--config", conf_file.strpath]
-    with pytest.raises(ValueError):
+    with pytest.raises(SystemExit) as exitcode:
         main()
+    assert exitcode.value.code == 1
 
 
 def test_parallel_cli_overwriting_config(parallel_test_data, tmpdir):
@@ -67,8 +68,9 @@ def test_parallel_cli_overwriting_config(parallel_test_data, tmpdir):
     # Mock ARGV
     import sys
     sys.argv = ["plantcv-run-workflow", "--config", conf_file.strpath]
-    with pytest.raises(ValueError):
+    with pytest.raises(SystemExit) as exitcode:
         main()
+    assert exitcode.value.code == 1
 
 
 def test_parallel_cli_valid_config(parallel_test_data, tmpdir):
