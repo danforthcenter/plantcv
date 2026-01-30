@@ -708,8 +708,8 @@ def detect_color_card(rgb_img, color_chip_size=None, roi=None, **kwargs):
 
     Returns
     -------
-    numpy.ndarray
-        Labeled mask of chips.
+    color matrix 
+        Matrix containing the average red value, average green value, and average blue value for each color chip
     """
     if type(color_chip_size) is str and color_chip_size.upper() == 'ASTRO':
         # Search image for astrobotany.com color card aruco tags
