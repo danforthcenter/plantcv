@@ -87,6 +87,7 @@ def test_parallel_cli_valid_config(parallel_test_data, tmpdir):
     config.workflow = parallel_test_data.workflow_script
     config.img_outdir = str(conf_file.dirpath())
     config.tmp_dir = str(conf_file.dirpath() / "tmp")
+    config.cluster_config["log_directory"] = "."
     config.append = False
     config.save_config(config_file=conf_file.strpath)
     shutil.copy(parallel_test_data.new_results_file, conf_file.dirpath())

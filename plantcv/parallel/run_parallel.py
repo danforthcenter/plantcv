@@ -30,9 +30,16 @@ def run_parallel(config):
     # Create temporary directory for job
     if config.tmp_dir is not None:
         os.makedirs(os.path.join(config.tmp_dir, "_PCV_PARALLEL_CHECKPOINT_"), exist_ok=True)
+
     config.chkpt_start_dir = config.tmp_dir
     config.tmp_dir = tempfile.mkdtemp(prefix=start_time + '_',
                                       dir=os.path.join(config.tmp_dir, "_PCV_PARALLEL_CHECKPOINT_"))
+    # if a logs directory is specified then add the tmpdir inside it.
+    if config.cluster_config["log_directory"] is not None:
+        config.cluster_config["log_directory"] = os.path.join(
+            config.cluster_config["log_directory"], os.path.basename(config.tmp_dir)
+        )
+        os.makedirs(config.cluster_config["log_directory"], exist_ok=True)
     # Create img_outdir
     os.makedirs(config.img_outdir, exist_ok=True)
 
