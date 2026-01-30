@@ -4,9 +4,11 @@ import os
 import cv2
 import numpy as np
 from altair.vegalite.v5.api import Chart
-from plantcv.plantcv.transform import (get_color_matrix, get_matrix_m, calc_transformation_matrix, apply_transformation_matrix,
-                                       save_matrix, load_matrix, correct_color, create_color_card_mask, quick_color_check,
-                                       std_color_matrix, affine_color_correction)
+from plantcv.plantcv.transform.color_correction import (get_color_matrix, get_matrix_m, calc_transformation_matrix,
+                                                        apply_transformation_matrix, save_matrix, load_matrix, correct_color,
+                                                        create_color_card_mask, quick_color_check, std_color_matrix,
+                                                        astro_color_matrix, affine_color_correction)
+from plantcv.plantcv.transform.detect_color_card import detect_color_card
 
 
 def test_affine_color_correction(transform_test_data):
@@ -64,6 +66,21 @@ def test_std_color_matrix_bad_pos():
     """Test for PlantCV."""
     with pytest.raises(RuntimeError):
         _ = std_color_matrix(pos=4.5)
+
+
+def test_astro_color_matrix():
+    """Test for PlantCV."""
+    astro_matrix = astro_color_matrix()
+
+    # Index and RGB values (range [0-1]) of the yellow chip in color matrix
+    yellow_idx = 3
+    yellow_val = astro_matrix[yellow_idx, 1:]
+
+    # RGB values of the yellow chip
+    yellow_rgb = np.array([228., 207., 50.], dtype=np.float64)
+
+    # compare RGB values in the range [0-255]
+    assert np.sum(np.abs(255*yellow_val - yellow_rgb)) < 1
 
 
 def test_get_color_matrix(transform_test_data):
@@ -181,9 +198,8 @@ def test_apply_transformation(transform_test_data):
     # read in matrices
     matrix_t = transform_test_data.load_npz(transform_test_data.transformation_matrix_file)
     # read in images
-    target_img = cv2.imread(transform_test_data.target_img)
     source_img = cv2.imread(transform_test_data.source1_img)
-    corrected_img = apply_transformation_matrix(source_img, target_img, matrix_t)
+    corrected_img = apply_transformation_matrix(source_img, matrix_t)
     # assert source and corrected have same shape
     assert np.array_equal(corrected_img, corrected_compare)
 
@@ -193,10 +209,9 @@ def test_apply_transformation_incorrect_t(transform_test_data):
     # read in matrices
     matrix_t = transform_test_data.load_npz(transform_test_data.matrix_b1_file)
     # read in images
-    target_img = cv2.imread(transform_test_data.target_img)
     source_img = cv2.imread(transform_test_data.source1_img)
     with pytest.raises(RuntimeError):
-        _ = apply_transformation_matrix(source_img, target_img, matrix_t)
+        _ = apply_transformation_matrix(source_img, matrix_t)
 
 
 def test_apply_transformation_incorrect_img(transform_test_data):
@@ -204,10 +219,9 @@ def test_apply_transformation_incorrect_img(transform_test_data):
     # read in matrices
     matrix_t = transform_test_data.load_npz(transform_test_data.transformation_matrix_file)
     # read in images
-    target_img = cv2.imread(transform_test_data.target_img)
     source_img = cv2.imread(transform_test_data.colorcard_mask, -1)
     with pytest.raises(RuntimeError):
-        _ = apply_transformation_matrix(source_img, target_img, matrix_t)
+        _ = apply_transformation_matrix(source_img, matrix_t)
 
 
 def test_save_matrix(transform_test_data, tmpdir):
@@ -296,3 +310,28 @@ def test_quick_color_check(transform_test_data):
     source_matrix = transform_test_data.load_npz(transform_test_data.source1_matrix_file)
     chart = quick_color_check(target_matrix, source_matrix, num_chips=22)
     assert isinstance(chart, Chart)
+
+
+def test_cameratrax_and_astro_consistent_color_calibration(transform_test_data):
+    """Test for PlantCV."""
+    # Load rgb image
+    rgb_img = cv2.imread(transform_test_data.cameratrax_astro_img)
+
+    # Correct with cameratrax card and measure corrected astrocard values
+    ctrax_mask = detect_color_card(rgb_img=rgb_img)
+    _, ctrax_mat = get_color_matrix(rgb_img=rgb_img, mask=ctrax_mask)
+    ctrax_std_mat = std_color_matrix(pos=3)
+    ctrax_corr_img = affine_color_correction(rgb_img=rgb_img, source_matrix=ctrax_mat, target_matrix=ctrax_std_mat)
+
+    # Correct with astrocard and measure corrected astrocard values
+    astro_mask = detect_color_card(rgb_img=rgb_img, color_chip_size="astro")
+    _, astro_mat = get_color_matrix(rgb_img=rgb_img, mask=astro_mask)
+    astro_std_mat = astro_color_matrix()
+    astro_corr_img = affine_color_correction(rgb_img=rgb_img, source_matrix=astro_mat, target_matrix=astro_std_mat)
+
+    # Get astrocard color matrix in both corrected images
+    _, ctrax_corr_mat = get_color_matrix(rgb_img=ctrax_corr_img, mask=astro_mask)
+    _, astro_corr_mat = get_color_matrix(rgb_img=astro_corr_img, mask=astro_mask)
+
+    # Check for similarity in corrected color: mean absolute color difference less than 2.5 (1% of range)
+    assert np.mean(np.abs(255*ctrax_corr_mat[1:] - 255*astro_corr_mat[1:])) < 2.5
