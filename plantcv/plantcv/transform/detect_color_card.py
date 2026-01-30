@@ -299,11 +299,12 @@ def _macbeth_card_detection(rgb_img, **kwargs):
     rect = cv2.minAreaRect(rect)
     # Get the corners of the rectangle
     corners = np.array(np.intp(cv2.boxPoints(rect)))
+  #  print("Boxpoints of rect (corners)", corners)
     # Check that corners are in image
     _check_corners(rgb_img, corners)
     # Determine which corner most likely contains the white chip
     white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0], :], (255, 255, 255))) for corner in corners])
-    rot_img = np.rot90(rgb_img, k=white_index, axes=(0, 1)).copy()
+    rot_img = np.rot90(rgb_img, k=white_index, axes=(1, 0)).copy()
     # rotate the image so that the white color chip is warp-able to the top left position without mirroring the card
     rotations = white_index
     if rotations:  # if the image was rotated, find new contours for chips
@@ -316,27 +317,31 @@ def _macbeth_card_detection(rgb_img, **kwargs):
         marea, mwidth, mheight = _get_contour_sizes(filtered_contours)
         # Concatenate all detected centers into one array (minimum area rectangle used to find chip centers)
         square_centroids = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
-        # Concatenate all contours into one array and find the minimum area rectangle
-        rect = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
-        rect = cv2.minAreaRect(rect)
-        # Get the corners of the rectangle
-        corners = np.array(np.intp(cv2.boxPoints(rect)))
 
+
+#    print("square centroids:", square_centroids)
     centers1 = cv2.approxPolyN(curve=square_centroids, nsides=4, ensure_convex=True)
-
     # Determine which corner most likely contains the white chip
     white_index = np.argmin([np.mean(math.dist(rot_img[corner[1], corner[0], :], (255, 255, 255))) for corner in centers1[0]])
     # Get outter corners of corner chips and sort based on card orientation
     corners = cv2.approxPolyN(curve=np.concatenate(filtered_contours), nsides=4, ensure_convex=True)
     corners = np.concatenate(corners)
-    corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])[[1, 3, 2, 0]]]
+    white_index = np.argmin([np.mean(math.dist(rot_img[corner[1], corner[0], :], (255, 255, 255))) for corner in corners])
 
+    bottom_right_corner_index = np.argsort(-corners.sum(axis=1))[0]
+    sorting_list = [1, 3, 2, 0]
+    if bottom_right_corner_index == 0:
+        sorting_list = [0, 2, 3, 1]
+
+    corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])]
+    corners = corners[sorting_list]
+    
     if params.verbose:
         # Draw new contours onto cropped card debug image
         debug_img = np.copy(rot_img)
         cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
         cv2.drawContours(debug_img, [corners], -1, color=(255, 0, 0), thickness=params.line_thickness)
-        unrot_debug_img = np.rot90(debug_img, k=-1*rotations, axes=(0, 1)).copy()
+        unrot_debug_img = np.rot90(debug_img, k=-1*rotations, axes=(1, 0)).copy()
         _debug(visual=unrot_debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_detected_color_card.png'))
 
     # Perspective warp the color card to unskew and square to frame
@@ -352,6 +357,9 @@ def _macbeth_card_detection(rgb_img, **kwargs):
     length_card2 = max(int(length_AB), int(length_CD))
 
     output_pts = np.float32([[0, 0], [0, length_card2 - 1], [length_card1 - 1, length_card2 - 1], [length_card1 - 1, 0]])
+    print("input_pts:", input_pts)
+    print("output_pts:", output_pts)
+    
     # Transform the color card to crop (and unwarp)
     matrix = cv2.getPerspectiveTransform(input_pts, output_pts)
     out = cv2.warpPerspective(
@@ -360,7 +368,7 @@ def _macbeth_card_detection(rgb_img, **kwargs):
 
     # Increment amount is arbitrary, cell distances rescaled during perspective transform
     increment = 100
-    # Create color card mask based on size of detected color card
+    # Create color card mask based on size of detected color card3
     w_increment = int(length_card1 / 3.7) + 1
     h_increment = int(length_card2 / 5.7) + 1
     increment = int((w_increment + h_increment) / 2)
