@@ -326,6 +326,10 @@ def _macbeth_card_detection(rgb_img, **kwargs):
     white_index = np.argmin([np.mean(math.dist(rot_img[corner[1], corner[0], :], (255, 255, 255))) for corner in corners])
 
     bottom_right_corner_index = np.argsort(-corners.sum(axis=1))[0]
+    # Between opencv versions 4.12 and 4.13 the order of returned boxPoints and PolyN points
+    # was changed from starting at the top left ot starting at the bottom right, to be compatible
+    # with both versions we need options for how we sort the corners based on where the bottom chip
+    # coordinates are in that list of returned points.
     sorting_list = [1, 3, 2, 0]
     if bottom_right_corner_index == 0:
         sorting_list = [0, 2, 3, 1]
