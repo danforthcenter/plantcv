@@ -37,8 +37,8 @@ def run_parallel(config):
     os.makedirs(config.img_outdir, exist_ok=True)
 
     # Remove JSON results file if append=False
-    if not config.append and os.path.exists(config.json):
-        os.remove(config.json)
+    if not config.append and os.path.exists(config.results):
+        os.remove(config.results)
 
     # Read image metadata
     ###########################################
@@ -82,7 +82,7 @@ def run_parallel(config):
     # Convert results start time
     convert_results_start_time = time.time()
     print("Converting json to csv... ", file=sys.stderr)
-    plantcv.utils.json2csv(config.json, os.path.splitext(config.json)[0])
+    plantcv.utils.json2csv(config.results, os.path.splitext(config.results)[0])
     convert_results_clock_time = time.time() - convert_results_start_time
     parallel_print(f"Processing results took {convert_results_clock_time} seconds.", file=sys.stderr, verbose=verbose)
     ###########################################

@@ -125,7 +125,7 @@ Sample image filename: `cam1_16-08-06-16:45_el1100s1_p19.jpg`
 ```
 {
     "input_dir": "/shares/mgehan_share/raw_data/raw_image/2016-08_pat-edger/data/split-round1/split-cam1",
-    "json": "edger-round1-brassica.json",
+    "results": "edger-round1-brassica.json",
     "filename_metadata": ["camera", "timestamp", "id", "other"],
     "workflow": "/home/mgehan/pat-edger/round1-python-pipelines/2016-08_pat-edger_brassica-cam1-splitimg.py",
     "img_outdir": "/shares/mgehan_share/raw_data/raw_image/2016-08_pat-edger/data/split-round1/split-cam1/output",
@@ -203,7 +203,7 @@ in a list to the `filename_metadata` parameter.
 ```bash
 {
     "input_dir": "input_directory",
-    "json": "output.json",
+    "results": "output.json",
     "filename_metadata": ["camera", "plantbarcode", "timestamp"],
     "workflow": "user-workflow.py",
     "img_outdir": "output_directory",
@@ -263,7 +263,7 @@ Finally, we filter the basename for top view rgb images with "TV_VIS.*".
 ```bash
 {
     "input_dir": "input_directory",
-    "json": "output.json",
+    "results": "output.json",
     "filename_metadata": [""],
     "workflow": "user-workflow.py",
     "img_outdir": "output_directory",
@@ -315,7 +315,7 @@ To identify each image within our workflow, we will name them based on the `imgt
 ```
 {
     "input_dir": "/shares/mgehan_share/raw_data/raw_image/2016-08_pat-edger/data/split-round1/split-cam1",
-    "json": "edger-round1-brassica.json",
+    "results": "edger-round1-brassica.json",
     "filename_metadata": ["imgtype", "timestamp", "id", "other"],
     "workflow": "/home/mgehan/pat-edger/round1-python-pipelines/2016-08_pat-edger_brassica-cam1-splitimg.py",
     "img_outdir": "/shares/mgehan_share/raw_data/raw_image/2016-08_pat-edger/data/split-round1/split-cam1/output",

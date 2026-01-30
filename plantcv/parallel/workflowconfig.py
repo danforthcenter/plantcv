@@ -9,7 +9,7 @@ class WorkflowConfig:
 
     def __init__(self):
         object.__setattr__(self, "input_dir", "")
-        object.__setattr__(self, "json", "")
+        object.__setattr__(self, "results", "")
         object.__setattr__(self, "filename_metadata", [])
         object.__setattr__(self, "workflow", "")
         object.__setattr__(self, "img_outdir", "./output_images")
@@ -99,9 +99,9 @@ class WorkflowConfig:
             print(f"Error: input directory (input_dir) is required and {self.input_dir} does not exist.",
                   file=sys.stderr)
             checks.append(False)
-        # Validate JSON file
-        if self.json == "":
-            print("Error: an output JSON file (json) is required but is currently undefined.", file=sys.stderr)
+        # Validate JSON results file
+        if self.results == "":
+            print("Error: an output JSON file (results) is required but is currently undefined.", file=sys.stderr)
             checks.append(False)
         # Validate workflow script
         if not os.path.exists(self.workflow):
@@ -308,7 +308,6 @@ def _config_attr_lookup(config, attr, val):
         # for all other attributes, get their data from list
         config_control = {
             "input_dir": ["Images will be read from {}", str],
-            "json": ["output will be written to {}", str],
             "filename_metadata": ["Filenames will be parsed into {}", list],
             "workflow": ["Will run {} python script in each job", str],
             "img_outdir": ["Output images will be written to {}", str],

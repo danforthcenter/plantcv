@@ -25,7 +25,7 @@ def process_results(config):
     # process results from the checkpoint inside start point for tmp dirs
     job_dir = os.path.join(config.chkpt_start_dir, "_PCV_PARALLEL_CHECKPOINT_")
     # name outputs from config
-    json_file = config.json
+    json_file = config.results
     # Data dictionary
     data = {"variables": {}, "entities": []}
     if os.path.exists(json_file):

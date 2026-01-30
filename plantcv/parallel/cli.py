@@ -39,8 +39,8 @@ def options():
     # Import a configuration if provided
     if args.config:
         config.import_config(config_file=args.config)
-        if args.config == config.json:
-            print("Error: Configuration file would be overwritten by results, change the json field of config.",
+        if args.config == config.results:
+            print("Configuration file would be overwritten by results, change the results field of config.",
                   file=sys.stderr)
             sys.exit(1)
 
