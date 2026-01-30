@@ -299,7 +299,6 @@ def _macbeth_card_detection(rgb_img, **kwargs):
     rect = cv2.minAreaRect(rect)
     # Get the corners of the rectangle
     corners = np.array(np.intp(cv2.boxPoints(rect)))
-  #  print("Boxpoints of rect (corners)", corners)
     # Check that corners are in image
     _check_corners(rgb_img, corners)
     # Determine which corner most likely contains the white chip
@@ -318,8 +317,6 @@ def _macbeth_card_detection(rgb_img, **kwargs):
         # Concatenate all detected centers into one array (minimum area rectangle used to find chip centers)
         square_centroids = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
 
-
-#    print("square centroids:", square_centroids)
     centers1 = cv2.approxPolyN(curve=square_centroids, nsides=4, ensure_convex=True)
     # Determine which corner most likely contains the white chip
     white_index = np.argmin([np.mean(math.dist(rot_img[corner[1], corner[0], :], (255, 255, 255))) for corner in centers1[0]])
@@ -335,7 +332,7 @@ def _macbeth_card_detection(rgb_img, **kwargs):
 
     corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])]
     corners = corners[sorting_list]
-    
+
     if params.verbose:
         # Draw new contours onto cropped card debug image
         debug_img = np.copy(rot_img)
@@ -357,9 +354,7 @@ def _macbeth_card_detection(rgb_img, **kwargs):
     length_card2 = max(int(length_AB), int(length_CD))
 
     output_pts = np.float32([[0, 0], [0, length_card2 - 1], [length_card1 - 1, length_card2 - 1], [length_card1 - 1, 0]])
-    print("input_pts:", input_pts)
-    print("output_pts:", output_pts)
-    
+
     # Transform the color card to crop (and unwarp)
     matrix = cv2.getPerspectiveTransform(input_pts, output_pts)
     out = cv2.warpPerspective(
