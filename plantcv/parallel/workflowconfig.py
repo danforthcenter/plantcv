@@ -8,29 +8,30 @@ class WorkflowConfig:
     """PlantCV Parallel Configuration class"""
 
     def __init__(self):
-        self.input_dir = ""
-        self.json = ""
-        self.filename_metadata = []
-        self.workflow = ""
-        self.img_outdir = "./output_images"
-        self.include_all_subdirs = True
-        self.tmp_dir = "."
-        self.start_date = None
-        self.end_date = None
-        self.imgformat = "all"
-        self.delimiter = "_"
-        self.metadata_filters = {}
-        self.metadata_regex = {}
-        self.timestampformat = "%Y-%m-%dT%H:%M:%S.%fZ"
-        self.writeimg = False
-        self.other_args = {}
-        self.groupby = ["filepath"]
-        self.group_name = "auto"
-        self.checkpoint = True
-        self.cleanup = True
-        self.append = False
-        self.cluster = "LocalCluster"
-        self.cluster_config = {
+        object.__setattr__(self, "input_dir", "")
+        object.__setattr__(self, "json", "")
+        object.__setattr__(self, "filename_metadata", [])
+        object.__setattr__(self, "workflow", "")
+        object.__setattr__(self, "img_outdir", "./output_images")
+        object.__setattr__(self, "include_all_subdirs", True)
+        object.__setattr__(self, "tmp_dir", ".")
+        object.__setattr__(self, "start_date", None)
+        object.__setattr__(self, "end_date", None)
+        object.__setattr__(self, "imgformat", "all")
+        object.__setattr__(self, "delimiter", "_")
+        object.__setattr__(self, "metadata_filters", {})
+        object.__setattr__(self, "metadata_regex", {})
+        object.__setattr__(self, "timestampformat", "%Y-%m-%dT%H:%M:%S.%fZ")
+        object.__setattr__(self, "writeimg", False)
+        object.__setattr__(self, "other_args", {})
+        object.__setattr__(self, "groupby", ["filepath"])
+        object.__setattr__(self, "group_name", "auto")
+        object.__setattr__(self, "checkpoint", True)
+        object.__setattr__(self, "cleanup", True)
+        object.__setattr__(self, "append", False)
+        object.__setattr__(self, "verbose", True)
+        object.__setattr__(self, "cluster", "LocalCluster")
+        object.__setattr__(self, "cluster_config", {
             "n_workers": 1,
             "cores": 1,
             "memory": "1GB",
@@ -38,9 +39,13 @@ class WorkflowConfig:
             "log_directory": None,
             "local_directory": None,
             "job_extra_directives": None
-        }
-        self.metadata_terms = self.metadata_term_definition()
+        })
+        self._metadata_terms = self.metadata_term_definition()
+
     # set metadata_terms reactively based on filename_metadata
+    def __setattr__(self, name, value):
+        _config_attr_lookup(self, name, value)
+        object.__setattr__(self, name, value)
 
     @property
     def metadata_terms(self):
@@ -49,7 +54,7 @@ class WorkflowConfig:
 
     @metadata_terms.setter
     def metadata_terms(self, new):
-        self._metadata_terms = new
+        object.__setattr__(self, "_metadata_terms", new)
 
     # Save configuration to a file
     def save_config(self, config_file):
@@ -83,7 +88,7 @@ class WorkflowConfig:
             config = json.load(fp)
             for key, value in config.items():
                 if key != "_metadata_terms":
-                    setattr(self, key, value)
+                    object.__setattr__(self, key, value)
 
     # Validation checks on current config
     def validate_config(self):
@@ -128,6 +133,17 @@ class WorkflowConfig:
             print(f"Error: the cluster type {self.cluster} is not a supported cluster provider. "
                   f"Valid clusters include: {', '.join(map(str, valid_clusters))}."
                   )
+
+        # Validate the cluster configuration
+        if (
+                self.cluster_config["n_workers"] * self.cluster_config["cores"] > os.cpu_count()
+                and self.cluster == "LocalCluster"
+        ):
+            print(f"Error: n_workers is {self.cluster_config['n_workers']} and "
+                  f"cores is {self.cluster_config['cores']} which requires "
+                  f"more than the {os.cpu_count()} available cores.")
+            checks.append(False)
+
         return all(checks)
 
     # Specify metadata terms
@@ -234,3 +250,101 @@ class WorkflowConfig:
             metadata_terms[k] = default_metadata_terms[k]
 
         return metadata_terms
+
+
+def _validate_set_attr(val, sentence, expect_type):
+    """Validate attributes before setting them in a WorkflowConfig or jupyterconfig object
+
+    Parameters
+    ----------
+    val         = type flexible, value to assign to configuration attribute.
+    sentence    = str, unformatted string to mention what the change will do.
+    expect_type = type, expected type for val.
+
+    Returns
+    -------
+    out         = minimal message about what the change does.
+
+    Raises
+    ------
+    ValueError if incompatible type between input val and expected type for attribute.
+
+    """
+    if not isinstance(val, expect_type):
+        raise ValueError("Expected " + expect_type.__name__ + ", got " + type(val).__name__)
+    if isinstance(val, list):
+        form = ', '.join(val)
+    elif isinstance(val, bool):
+        form = ['not ', ''][int(val)]
+    elif isinstance(val, dict):
+        form = ", ".join(val.keys())
+    else:
+        form = val
+    # parse form into sentence string
+    out = sentence.format(form)
+    return out
+
+
+def _config_attr_lookup(config, attr, val):
+    """Lookup attributes for a WorkflowConfig or jupyterconfig object
+
+    Parameters
+    ----------
+    config   = plantcv.parallel.workflowconfig or jupyterconfig, configuration file
+    attr     = str, name of an attribute to set.
+    val      = type flexible, value to assign to configuration attribute.
+
+    Returns
+    -------
+    message  = minimal message about what the change does.
+
+    Raises
+    ------
+    ValueError if incompatible type between input val and expected type for attribute.
+
+    """
+    # do not do this for hidden attributes
+    if attr[0] != "_" and attr != "chkpt_start_dir":
+        # for all other attributes, get their data from list
+        config_control = {
+            "input_dir": ["Images will be read from {}", str],
+            "json": ["output will be written to {}", str],
+            "filename_metadata": ["Filenames will be parsed into {}", list],
+            "workflow": ["Will run {} python script in each job", str],
+            "img_outdir": ["Output images will be written to {}", str],
+            "include_all_subdirs": ["Will {} include images from subdirectories", bool],
+            "tmp_dir": ["Writing intermediate files to {}", str],
+            "start_date": ["Will only include images from after {}", str],
+            "end_date": ["Will only include images from before {}", str],
+            "imgformat": ["Will include {} images", (str, list)],
+            "delimiter": ["Splitting file basenames by '{}'", str],
+            "metadata_filters": ["Metadata will only be kept that matches {}", dict],
+            "metadata_regex": ["Will filter for file path matches to regex pattern(s)", dict],
+            "timestampformat": ["Using timestamp format {} to parse datetimes", str],
+            "writeimg": ["Currently 'writeimg' does not control anything", bool],
+            "other_args": ["Adding additional arguments", dict],
+            "groupby": ["Grouping images by {}, matches will enter one workflow", list],
+            "group_name": ["Naming each workflow's images by {}", str],
+            "checkpoint": ["Run will {}be checkpointed", bool],
+            "cleanup": ["Run will {}be cleaned up", bool],
+            "append": ["Results will {}be appended", bool],
+            "verbose": ["Run will {}be verbose", bool],
+            "cluster": ["Using {} cluster type", str],
+            "cluster_config": ["Configuring cluster options", dict],
+            "metadata_terms": ["Setting metadata term options (overriding defaults)", dict],
+            "_notebook": ["HIDDEN Changing path to jupyter notebook (normally set to active notebook)", str],
+            "_workflow": ["HIDDEN Changing script path to {} (normally set to auto-generated script)", str],
+            "_config": ["HIDDEN Changing path to save config to {} (normally set to share notebook/script name)", str],
+            "_analysis_script": ["HIDDEN This should not generally be changed. Setting to {}ready.", bool],
+            "_results": ["HIDDEN output will be written to {}", str],
+            "chkpt_start_dir": ["HIDDEN checkpoint data will be read from {}", str],
+            "notebook": ["Changing path to jupyter notebook (normally set to active notebook)", str],
+            "config": ["Changing path to save config to {} (normally set to share notebook/script name)", str],
+            "analysis_script": ["This should not generally be changed. Setting to {}ready.", bool],
+            "results": ["output will be written to {}", str]
+        }
+        # check the proposed new attribute and make message about it
+        message = _validate_set_attr(val=val, sentence=config_control[attr][0],
+                                     expect_type=config_control[attr][1])
+        if config.verbose:
+            print(message)
