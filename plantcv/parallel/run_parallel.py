@@ -110,17 +110,3 @@ def run_parallel(config):
     # Cleanup
     if config.cleanup is True:
         shutil.rmtree(config.tmp_dir)
-
-
-def _running_in_conda():
-    """Check if Python is running in a conda env
-
-    Parameters
-    ----------
-    None
-
-    Returns
-    -------
-    Boolean, True if python is running in a conda environment
-    """
-    ex = sys.executable
