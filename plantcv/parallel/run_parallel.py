@@ -27,6 +27,19 @@ def run_parallel(config):
     # Job start time
     start_time = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     print("Starting run " + start_time + '\n', file=sys.stderr)
+    # if workflow is executed from a conda environment then activate that conda environment on workers
+    running_in_conda = re.search("conda|miniforge", sys.executable) is not None
+    if "job_script_prologue" not in config.cluster_config.keys() and running_in_conda:
+        ex_list = sys.executable.split("/")
+        # find where the conda installation is
+        index = [i for i, element in enumerate(ex_list) if re.search("conda|miniforge", element)][0]
+        activation_path = os.path.join("/".join(ex_list[0:(index + 1)]), "bin/activate")
+        # get name of env that was active to run plantcv
+        env_index = [i for i, element in enumerate(ex_list) if re.search("^env(s)?$", element)][0]
+        env_name = ex_list[env_index+1]
+        # write job prologue to activate the env
+        config.cluster_config["job_script_prologue"] = ["source " + activation_path, "conda activate " + env_name]
+
     # Create temporary directory for job
     if config.tmp_dir is not None:
         os.makedirs(os.path.join(config.tmp_dir, "_PCV_PARALLEL_CHECKPOINT_"), exist_ok=True)
@@ -97,3 +110,17 @@ def run_parallel(config):
     # Cleanup
     if config.cleanup is True:
         shutil.rmtree(config.tmp_dir)
+
+
+def _running_in_conda():
+    """Check if Python is running in a conda env
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    Boolean, True if python is running in a conda environment
+    """
+    ex = sys.executable
