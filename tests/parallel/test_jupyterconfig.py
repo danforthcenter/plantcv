@@ -1,12 +1,12 @@
-from plantcv.parallel import jupyterconfig
+from plantcv.parallel import JupyterConfig
 import os
 
 
 def test_jupcon_in_notebook(tmpdir):
     """Test for PlantCV."""
-    # initialize jupyterconfig
+    # initialize JupyterConfig
     os.chdir(tmpdir.mkdir("cache"))
-    jupcon = jupyterconfig()
+    jupcon = JupyterConfig()
     # main.__file__ is the py.test runner, so this check will be false.
     # this makes other testing potentially difficult.
     assert not jupcon.in_notebook()
@@ -14,10 +14,10 @@ def test_jupcon_in_notebook(tmpdir):
 
 def test_jupcon_save_config(parallel_test_data, tmpdir):
     """Test for PlantCV."""
-    # initialize jupyterconfig
+    # initialize JupyterConfig
     os.chdir(tmpdir.mkdir("cache"))
     os.environ["JPY_SESSION_NAME"] = "example.ipynb"
-    jupcon = jupyterconfig()
+    jupcon = JupyterConfig()
     # force this to act like there is a notebook
     object.__setattr__(jupcon, "in_notebook", lambda: True)
     jupcon.save_config()
@@ -29,7 +29,7 @@ def test_import_jupcon_file(parallel_test_data, tmpdir):
     # Create config instance
     os.chdir(tmpdir.mkdir("cache"))
     os.environ["JPY_SESSION_NAME"] = "example.ipynb"
-    jupcon = jupyterconfig()
+    jupcon = JupyterConfig()
     # import config file
     jupcon.import_config(config_file=parallel_test_data.workflowconfig_template_file)
     content = vars(jupcon)
@@ -39,10 +39,10 @@ def test_import_jupcon_file(parallel_test_data, tmpdir):
 
 def test_jupcon_inspect_dataset(parallel_test_data, tmpdir):
     """Test for PlantCV."""
-    # initialize jupyterconfig
+    # initialize JupyterConfig
     os.chdir(tmpdir.mkdir("cache"))
     os.environ["JPY_SESSION_NAME"] = "example.ipynb"
-    jupcon = jupyterconfig()
+    jupcon = JupyterConfig()
     # force this to act like there is a notebook
     object.__setattr__(jupcon, "verbose", False)
     object.__setattr__(jupcon, "in_notebook", lambda: True)
@@ -53,11 +53,11 @@ def test_jupcon_inspect_dataset(parallel_test_data, tmpdir):
 
 def test_jupcon_notebook2script(parallel_test_data, tmpdir):
     """Test for PlantCV."""
-    # initialize jupyterconfig
+    # initialize JupyterConfig
     starting_dir = os.getcwd()
     os.chdir(tmpdir.mkdir("cache"))
     os.environ["JPY_SESSION_NAME"] = "dummy.ipynb"
-    jupcon = jupyterconfig()
+    jupcon = JupyterConfig()
     object.__setattr__(jupcon, "in_notebook", lambda: True)
     jupcon.notebook = os.path.join(starting_dir, parallel_test_data.jupyternotebook)
     jupcon.workflow = os.path.join(os.getcwd(), "dummy.py")
@@ -68,10 +68,10 @@ def test_jupcon_notebook2script(parallel_test_data, tmpdir):
 
 def test_jupcon_run(parallel_test_data, tmpdir):
     """Test for PlantCV."""
-    # initialize jupyterconfig
+    # initialize JupyterConfig
     os.chdir(tmpdir.mkdir("cache"))
     os.environ["JPY_SESSION_NAME"] = "example.ipynb"
-    jupcon = jupyterconfig()
+    jupcon = JupyterConfig()
     with open("example.py", "w") as f:
         f.write("from plantcv import plantcv as pcv")
     # force this to act like there is a notebook
@@ -86,10 +86,10 @@ def test_jupcon_run(parallel_test_data, tmpdir):
 
 def test_jupcon_run_bad_input(parallel_test_data, tmpdir):
     """Test for PlantCV."""
-    # initialize jupyterconfig
+    # initialize JupyterConfig
     os.chdir(tmpdir.mkdir("cache"))
     os.environ["JPY_SESSION_NAME"] = "example.ipynb"
-    jupcon = jupyterconfig()
+    jupcon = JupyterConfig()
     # force this to act like there is a notebook
     object.__setattr__(jupcon, "in_notebook", lambda: True)
     jupcon.input_dir = parallel_test_data.flat_imgdir
