@@ -1,4 +1,3 @@
-import pytest
 import sys
 from plantcv.parallel import WorkflowConfig
 from plantcv.parallel.run_parallel import _check_for_conda
