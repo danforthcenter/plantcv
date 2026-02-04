@@ -4,7 +4,7 @@ Automatically detects a Macbeth ColorChecker or Astrobotany.com Calibration Stic
 
 **plantcv.transform.detect_color_card**(*rgb_img, color_chip_size=None, roi=None, \*\*kwargs*)
 
-**returns** labeled_mask
+**returns** color_matrix
 
 - **Parameters**
     - rgb_img          - Input RGB image data containing a color card.
@@ -17,11 +17,11 @@ Automatically detects a Macbeth ColorChecker or Astrobotany.com Calibration Stic
         - block_size      - Size of a pixel neighborhood that is used to calculate a threshold value (default = 51). We suggest using 127 if using `adaptive_method=0`.
         - radius         - Radius of circle to make the color card labeled mask (default = 20).
         - min_size         - Minimum chip size for filtering objects after edge detection (default = 1000)
-        - aspect_ratio   - Optional aspect ratio (width / height) below which objects will get removed. Orientation agnogstic since automatically set to the reciprocal if <1 (default = 1.27)
+        - aspect_ratio   - Optional aspect ratio (width / height) below which objects will get removed. Orientation agnostic since automatically set to the reciprocal if <1 (default = 1.27)
         - solidity - Optional solidity (object area / convex hull area) filter (default = 0.8)
 
 - **Returns**
-    - labeled_mask     - Labeled color card mask (useful downstream of this step in [`pcv.transform.get_color_matrix`](get_color_matrix.md) and [`pcv.transform.correct_color`](transform_correct_color.md) and [`pcv.transform.affine_color_correction`](transform_affine_color_correction.md)).
+    - color_matrix     - Detected color values as a matrix, the same format as output from [`pcv.transform.get_color_matrix`](get_color_matrix.md)).
     
 - **Context**
     - If the goal is to color correct the image colorspace to the standard color card values, consider using [`pcv.transform.auto_correct_color`](transform_auto_correct_color.md) since this new function is a one-step wrapper of plantcv.transform.detect_color_card, [plantcv.transform.std_color_matrix](std_color_matrix.md) or [plantcv.transform.astro_color_matrix](astro_color_matrix.md), and [plantcv.transform.affine_color_correction](transform_affine_color_correction.md).
@@ -63,8 +63,12 @@ corrected_img = pcv.transform.affine_color_correction(rgb_img=rgb_img,
 ```
 
 **Image automatically detected and masked**
+If `pcv.params.verbose = True` then a debug image will get created showing where the detected color card is located in the input image. 
+![Screenshot](img/documentation_images/transform_detect_color_card/detected_color_card.png)
 
-![Screenshot](img/documentation_images/correct_color_imgs/detect_color_card.png)
+Not all chips need to be detected in the cropped color card, but help with quality control of labeled mask alignment.
+
+![Screenshot](img/documentation_images/transform_detect_color_card/cropped_color_card.png)
 
 ### Suppored Color Cards
 
