@@ -42,7 +42,6 @@ class jupyterconfig:
         object.__setattr__(self, "cluster", "LocalCluster")
         object.__setattr__(self, "cluster_config", {
             "n_workers": 1,
-            "cores": 1,
             "memory": "1GB",
             "disk": "1GB",
             "log_directory": None,
@@ -143,7 +142,7 @@ class jupyterconfig:
             source, _ = exporter.from_notebook_node(nb)
             # Write the output to a Python file
             with open(self.workflow, 'w') as fh:
-                fh.writelines(source)
+                fh.writelines(re.sub(r"(.*?[.])?plot_image\(.*?\)", "", source))
             # return boolean for if self.script exists
         return os.path.exists(self.workflow)
 
