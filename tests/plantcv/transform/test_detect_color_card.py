@@ -27,7 +27,7 @@ def test_draw_nonuniform_color_chips(transform_test_data):
     rgb_img = cv2.imread(transform_test_data.colorcard_img)
     radii = [3*(i+1) for i in range(24)]
     color_matrix = detect_color_card(rgb_img=rgb_img, color_chip_size=(40, 40), radius=radii)
-    assert np.shape(color_matrix) == (24,4)
+    assert np.shape(color_matrix) == (24, 4)
 
 
 def test_draw_nonuniform_color_chips_len_mismatch(transform_test_data):
