@@ -13,7 +13,7 @@ concatenated data output file.
     - This step is built into the [PlantCV Workflow Parallelization](pipeline_parallel.md) feature. Each workflow will save
     hierarchical data files using [`pcv.outputs.save_results`](outputs.md). `process_results` step takes place after all
     images have been analyzed and combines these single workflow data files into one text file that can be used as input for
-    the [`json2csv`](tools.md#convert-output-json-data-files-to-csv-tables) function. 
+    the [`json2csv`](json2csv.md) function. 
 - **Example use:**
     - Below 
 

@@ -52,8 +52,8 @@ test = [
 
 [project.scripts]
 plantcv-run-workflow = "plantcv.parallel.cli:main"
+plantcv-sample = "plantcv.parallel.cli_sample_images:main"
 plantcv-train = "plantcv.learn.cli:main"
-plantcv-utils = "plantcv.utils.cli:main"
 
 [project.urls]
 Homepage = "https://plantcv.org"
