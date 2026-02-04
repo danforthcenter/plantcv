@@ -349,17 +349,18 @@ To identify each image within our workflow, we will name them based on the `imgt
 }
 ```
 
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/parallel/run_parallel.py)
+
 ### Convert the output JSON file into CSV tables
 
 Note this is done by default, but if for any reason you need to make csv tables again from
-json output you can manually run the `json2csv` tool from the command line as follows:
+json output you can use [`plantcv.parallel.json2csv`]().
 
 
-```bash
-plantcv-utils json2csv -j output.json -c result-table
+```python
+from plantcv import parallel as pcvpar
 
+pcvpar.json2csv("output.json", "result-table.csv")
 ```
 
-See [Accessory Tools](tools.md) for more information.
-
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/parallel/run_parallel.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/parallel/json2csv.py)
