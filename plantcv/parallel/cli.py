@@ -57,7 +57,7 @@ def options():
     if not config.validate_config():
         print("Error: Invalid configuration file. Check errors above.", file=sys.stderr)
         sys.exit(1)
-    return config
+    return config, dryrun
 ###########################################
 
 
