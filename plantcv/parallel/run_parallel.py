@@ -4,13 +4,13 @@ import time
 import datetime
 import tempfile
 import shutil
+from plantcv.plantcv.process_results import process_results
+from plantcv.plantcv.json2csv import json2csv
 from plantcv.parallel.parsers import metadata_parser
 from plantcv.parallel.job_builder import job_builder
 from plantcv.parallel.multiprocess import create_dask_cluster
 from plantcv.parallel.multiprocess import multiprocess
-from plantcv.parallel.process_results import process_results
 from plantcv.parallel.message import parallel_print
-import plantcv.utils
 
 
 def run_parallel(config):
@@ -72,7 +72,7 @@ def run_parallel(config):
     # Process results start time
     process_results_start_time = time.time()
     print("Processing results... ", file=sys.stderr)
-    process_results(config)
+    process_results(config, outformat="json")
     process_results_clock_time = time.time() - process_results_start_time
     parallel_print(f"Processing results took {process_results_clock_time} seconds.", file=sys.stderr, verbose=verbose)
     ###########################################
@@ -82,7 +82,7 @@ def run_parallel(config):
     # Convert results start time
     convert_results_start_time = time.time()
     print("Converting json to csv... ", file=sys.stderr)
-    plantcv.utils.json2csv(config.results, os.path.splitext(config.results)[0])
+    json2csv(config.results, os.path.splitext(config.results)[0])
     convert_results_clock_time = time.time() - convert_results_start_time
     parallel_print(f"Processing results took {convert_results_clock_time} seconds.", file=sys.stderr, verbose=verbose)
     ###########################################
