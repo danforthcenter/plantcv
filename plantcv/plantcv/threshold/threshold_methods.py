@@ -323,7 +323,7 @@ def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity'
         float
             Texture value
         """
-        inputs = np.reshape(inputs, newshape=[ksize, ksize])
+        inputs = np.reshape(inputs, (ksize, ksize))
         inputs = inputs.astype(np.uint8)
         # Greycomatrix takes image, distance offset, angles (in radians), symmetric, and normed
         # http://scikit-image.org/docs/dev/api/skimage.feature.html#skimage.feature.graycomatrix
