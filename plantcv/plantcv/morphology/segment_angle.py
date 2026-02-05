@@ -2,7 +2,6 @@
 import os
 import cv2
 import numpy as np
-import pandas as pd
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 from plantcv.plantcv import color_palette
@@ -44,9 +43,8 @@ def segment_angle(segmented_img, objects, label=None):
         # Find bounds for regression lines to get drawn
         rect = cv2.minAreaRect(cnt)
         pts = cv2.boxPoints(rect)
-        df = pd.DataFrame(pts, columns=('x', 'y'))
-        x_max = int(df['x'].max())
-        x_min = int(df['x'].min())
+        x_max = int(pts.max(axis=0)[0])
+        x_min = int(pts.min(axis=0)[0])
 
         # Find line fit to each segment
         [vx, vy, x, y] = cv2.fitLine(objects[i], cv2.DIST_L2, 0, 0.01, 0.01)
