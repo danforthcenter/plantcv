@@ -3,7 +3,7 @@
 import os
 import cv2
 from plantcv.plantcv import color_palette
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 
 
