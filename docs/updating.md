@@ -32,7 +32,7 @@ If conda does not update your PlantCV installation, you can try installing a spe
 ```bash
 conda install -n plantcv -c conda-forge plantcv=4.0
 
-``` 
+```
 
 You can find the version you have installed with:
 
@@ -58,6 +58,10 @@ If you installed PlantCV using the "editable" mode `pip install -e .` then your 
 automatically. Alternatively, you can run `pip install -e .` to reinstall the package from the cloned repository.
 
 ### Breaking changes between v4 and v5 <a name="breaking-changes"></a>
+
+#### plantcv.parallel.WorkflowConfig
+
+Renamed the "json" attribute to "results" for clarity about what it controls and for consistency with new [jupyterconfig](parallel_jupyterconfig.md)
 
 #### plantcv.spectral_index.egi
 
@@ -203,6 +207,46 @@ Below is an overview of all updates that are required to convert a pre-v3.0dev2
 function call to the most updated function call.
 See the individual function help
 pages for more details on the input and output variable types.
+
+#### learn.train_kmeans
+
+* pre v4.3: NA 
+* post v4.3: **learn.train_kmeans**(*img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, sigma=5, sampling=None, seed=1, num_imgs=0, n_init=10*)
+
+#### parallel.create_dask_cluster
+
+* pre v4.10: Untracked
+* post v4.10: **parallel.create_dask_cluster**(*config, cluster_config*)
+
+#### parallel.inspect_dataset
+
+* pre v4.10: NA
+* post v4.10: **parallel.inspect_dataset**(*config*)
+
+#### parallel.job_builder
+
+* pre v4.10: Untracked
+* post v4.10: **parallel.job_builder**(*meta, config*)
+
+#### parallel.metadata_parser
+
+* pre v4.10: Untracked
+* post 4.10: **parallel.metadata_parser**(*config*)
+
+#### parallel.multiprocess
+
+* pre v4.10: Untracked
+* post v4.10: **parallel.multiprocess**(*jobs, client*)
+
+#### parallel.run_parallel
+
+* pre v4.10: NA
+* post v4.10: **parallel.run_parallel**(*config*)
+
+#### parallel.workflow_inputs
+
+* pre v4.10: Untracked
+* post v4.10: **parallel.workflow_inputs**(*\*other_args*)
 
 #### plantcv.acute
 
@@ -641,11 +685,6 @@ pages for more details on the input and output variable types.
 * post v3.2: lp_filtered = **plantcv.laplace_filter**(*gray_img, ksize, scale*)
 * post v4.9: lp_filtered = **plantcv.laplace_filter**(*gray_img, ksize, scale, roi=None*)
 
-#### plantcv.learn.train_kmeans
-
-* pre v4.3: NA 
-* post v4.3: **plantcv.learn.train_kmeans**(*img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, sigma=5, sampling=None, seed=1, num_imgs=0, n_init=10*)
-
 #### plantcv.logical_and
 
 * pre v3.0dev2: device, merged = **plantcv.logical_and**(*img1, img2, device, debug=None*)
@@ -767,6 +806,11 @@ pages for more details on the input and output variable types.
 * post v3.11: labeled_img = **plantcv.morphology.segment_tangent_angle**(*segmented_img, objects, size, label="default"*)
 * post v4.0: labeled_img = **plantcv.morphology.segment_tangent_angle**(*segmented_img, objects, size, label=None*)
 
+#### plantcv.morphology.segment_width
+
+* pre v4.10: NA
+* post v4.10: labeled_img = **plantcv.morphology.segment_width**(*segmented_img, skel_img, labeled_mask, n_labels=1, label=None*)
+
 #### plantcv.morphology.skeletontize
 
 * pre v3.3: NA
@@ -820,6 +864,51 @@ pages for more details on the input and output variable types.
 
 * pre v3.12: NA
 * post v3.12: **plantcv.outputs.save_results**(*filename, outformat="json"*)
+
+#### plantcv.parallel.create_dask_cluster
+
+* pre v4.10: Untracked
+* post v4.10: **plantcv.parallel.create_dask_cluster**(*config, cluster_config*)
+
+#### plantcv.parallel.inspect_dataset
+
+* pre v4.10: NA
+* post v4.10: **plantcv.parallel.inspect_dataset**(*config*)
+
+#### plantcv.parallel.job_builder
+
+* pre v4.10: Untracked
+* post v4.10: **plantcv.parallel.job_builder**(*meta, config*)
+
+#### plantcv.parallel.jupyterconfig
+
+* pre v5: NA
+* post v5: **plantcv.parallel.jupyterconfig()**
+
+#### plantcv.parallel.metadata_parser
+
+* pre v4.10: Untracked
+* post 4.10: **plantcv.parallel.metadata_parser**(*config*)
+
+#### plantcv.parallel.multiprocess
+
+* pre v4.10: Untracked
+* post v4.10: **plantcv.parallel.multiprocess**(*jobs, client*)
+
+#### plantcv.parallel.process_results
+
+* pre v4.10: Untracked
+* post v4.10: **plantcv.parallel.process_results**(*config*)
+
+#### plantcv.parallel.workflow_inputs
+
+* pre v4.10: Untracked
+* post v4.10: **plantcv.parallel.workflow_inputs**(*\*other_args*)
+
+#### plantcv.parallel.WorkflowConfig
+
+* pre v5: Untracked
+* post v5: **plantcv.parallel.WorkflowConfig()
 
 #### plantcv.photosynthesis.analyze_fvfm
 
@@ -1002,6 +1091,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.2.1: NA
 * post v4.2.1: filtered_mask = **plantcv.roi.quick_filter**(*mask, roi*)
+* post v4.9: filtered_mask = **plantcv.roi.quick_filter**(*mask, roi, roi_type="partial"*)
 
 #### plantcv.roi_objects
 
@@ -1025,6 +1115,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.8:  NA 
 * post v4.8: color_card_mask = **plantcv.transform.mask_color_card**(*rgb_img, \*\*kwargs*)
+* post v5.0: color_card_mask = **plantcv.transform.mask_color_card**(*rgb_img, card_type="macbeth", \*\*kwargs*)
 
 #### plantcv.transform.rotate
 
@@ -1275,6 +1366,11 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev1: NA
 * post v3.0dev2: corrected_img = **plantcv.transform.apply_transformation_matrix**(*source_img, target_img, transformation_matrix*)
+* post v5.0: corrected_img = **plantcv.transform.apply_transformation_matrix**(*source_img, transformation_matrix*)
+
+#### plantcv.transform.astro_color_matrix
+* pre v5.0: NA
+* post v5.0: matrix = **plantcv.transform.astro_color_matrix**()
 
 #### plantcv.transform.calc_transformation_matrix
 
@@ -1287,6 +1383,11 @@ pages for more details on the input and output variable types.
 * post v4.6: corrected_img = **plantcv.transform.auto_correct_color**(*rgb_img, label=None, \*\*kwargs*)
 * post v4.9: corrected_img = **plantcv.transform.auto_correct_color**(*rgb_img, label=None, color_chip_size=None, roi=None, \*\*kwargs*)
 * post v5.0: corrected_img = **plantcv.transform.auto_correct_color**(*rgb_img, color_chip_size=None, roi=None, \*\*kwargs*)
+
+#### plantcv.transform.auto_correct_color_nonlinear
+
+* pre v5.0: NA
+* post v5.0: corrected_img = **plantcv.transform.auto_correct_color_nonlinear**(*rgb_img, color_chip_size=None, roi=None,  \*\*kwargs*)
 
 #### plantcv.transform.correct_color
 
@@ -1304,7 +1405,7 @@ pages for more details on the input and output variable types.
 * pre v4.0.1: NA
 * post v4.0.1: labeled_mask = **plantcv.transform.detect_color_card**(*rgb_img, label=None, \*\*kwargs*)
 * post v4.9: labeled_mask = **plantcv.transform.detect_color_card**(*rgb_img, label=None, color_chip_size=None, roi=None, \*\*kwargs*)
-* post v5.0: **plantcv.transform.detect_color_card**(*rgb_img, color_chip_size=None, roi=None, \*\*kwargs*)
+* post v5.0: color_matrix = **plantcv.transform.detect_color_card**(*rgb_img, color_chip_size=None, roi=None, \*\*kwargs*)
 
 #### plantcv.transform.find_color_card
 
@@ -1384,6 +1485,11 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: NA
 * post v4.0: chart = **plantcv.visualize.chlorophyll_fluorescence**(*ps_da, labeled_mask, n_labels=1, label="object"*)
+
+#### plantcv.visualize.color_correction_scatter
+
+* pre v4.11: NA
+* post v4.11: fig, axs = plantcv.visualize.color_correction_scatter**(*color_matrix, std_matrix, corrected_matrix=None*)
 
 #### plantcv.visualize.colorize_label_img
 

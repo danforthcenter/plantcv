@@ -21,7 +21,6 @@ nav:
     - 'Adding/Editing Documentation': documentation.md
     - 'Pull Request Review Process' : pr_review_process.md
   - "Tutorials": tutorials.md
-  - 'Workflow Parallelization': pipeline_parallel.md
   - 'Exporting Data': db-exporter.md
   - 'PlantCV Namespace':
     - 'PlantCV':
@@ -114,7 +113,7 @@ nav:
         - 'Fill Segments': fill_segments.md
         - 'Find Branches': find_branch_pts.md
         - 'Find Tips': find_tips.md
-        - 'Prune': prune.md
+        - 'Prune (by size)': prune.md
         - 'Segment Angles': segment_angle.md
         - 'Combine Segments': segment_combine.md
         - 'Segment Curvature': segment_curvature.md
@@ -127,6 +126,7 @@ nav:
         - 'Segment Sort': segment_sort.md
         - 'Segment Tangent Angle': segment_tangent_angle.md
         - 'Skeletonize': skeletonize.md
+        - 'Segment Width': segment_width.md
       - 'Naive Bayes Classifier': naive_bayes_classifier.md
       - 'Objects Class': objects.md
       - 'Opening': opening.md
@@ -179,6 +179,7 @@ nav:
       - 'Transformation Methods':
           - 'Auto-Detect Color Card': transform_detect_color_card.md
           - 'Auto Correct Color': transform_auto_correct_color.md
+          - 'Auto Correct Color (non-linear)': transform_auto_correct_color_nonlinear.md
           - 'Calibrate Camera': transform_calibrate_camera.md
           - 'Checkerboard Calibration': transform_checkerboard_calibration.md
           - 'Create Color Card Mask': create_color_card_mask.md
@@ -196,6 +197,7 @@ nav:
           - 'Resize Images': transform_resize.md
           - 'Rotate': rotate2.md
       - 'Transformation Helpers':
+            - 'Astrobotany Calibration Matrix': astro_color_matrix.md
             - 'Calculate Moore-Penrose Inverse Matrix': mp_inverse.md
             - 'Create Color Correction Matrix': transformation_matrix.md
             - 'Apply Color Correction Matrix': apply_transformation_matrix.md
@@ -204,6 +206,7 @@ nav:
       - 'Visualization Methods':
           - 'Auto Threshold Methods': visualize_auto_threshold_methods.md
           - 'Chlorophyll Fluorescence': visualize_chlorophyll_fluorescence.md
+          - 'Color Correction Scatter Plot': visualize_color_correction_scatter.md
           - 'Colorize Label Image': visualize_colorize_label_img.md
           - 'Colorize Masks': visualize_colorize_masks.md
           - 'Colorspaces': visualize_colorspace.md
@@ -223,7 +226,10 @@ nav:
       - 'Naive Bayes': naive_bayes.md
       - 'Naive Bayes Multiclass': naive_bayes_multiclass.md
     - 'Parallelization':
+        - 'Getting started in parallel': parallel_preparation.md
         - 'Configure Parallelization': parallel_config.md
+        - 'Configure Parallelization in Jupyter': parallel_jupyterconfig.md
+        - 'Inspect Configuration': parallel_inspect_config.md
         - 'Workflow Inputs Management': parallel_workflow_inputs.md
         - 'Metadata Parser': parallel_metadata_parser.md
         - 'Job Builder': parallel_job_builder.md

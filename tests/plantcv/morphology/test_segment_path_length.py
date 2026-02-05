@@ -1,6 +1,6 @@
 import cv2
 from plantcv.plantcv import outputs
-from plantcv.plantcv.morphology import segment_path_length
+from plantcv.plantcv.morphology.segment_path_length import segment_path_length
 
 
 def test_segment_path_length(morphology_test_data):
