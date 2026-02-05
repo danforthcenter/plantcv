@@ -1,6 +1,6 @@
 ## Sharpen
 
-Sharpens an image through the unmask-sharpening method. Applies a gaussian blur which is subtracted from an exaggerated version of the starting image.
+Sharpens an image through the unsharp masking method. Applies a gaussian blur which is subtracted from an exaggerated version of the starting image.
 
 **plantcv.sharpen**(*img, ksize, amount=1, threshold=0, sigma_x=0, sigma_y=None, roi=None*)
 
