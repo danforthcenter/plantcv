@@ -3,7 +3,6 @@
 import os
 import numpy as np
 from joblib import load
-from plantcv.plantcv.readimage import readimage
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._globals import params
 from plantcv.learn.patch_extract import _patch_extract

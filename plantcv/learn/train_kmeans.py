@@ -76,4 +76,3 @@ def train_kmeans(img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=1
     fitted = kmeans.fit(patches)
     dump(fitted, out_path)
     return fitted
-
