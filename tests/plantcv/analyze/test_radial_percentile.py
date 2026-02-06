@@ -1,5 +1,6 @@
 """Tests for pcv.analyze.radial"""
 import cv2
+import numpy as np
 from plantcv.plantcv.analyze.radial import radial_percentile
 from plantcv.plantcv import Objects
 from plantcv.plantcv._helpers import _cv2_findcontours
@@ -29,6 +30,6 @@ def test_radial_empty(test_data):
     """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.rgb_seed)
-    mask = cv2.imread(test_data.empty_mask, -1)
+    mask = mask = np.zeros((100,100),dtype="uint8")
     avgs = radial_percentile(img=img, mask=mask)
     assert avgs[0][0] == "nan"
