@@ -403,12 +403,12 @@ def _process_gfp_data(ps, metadata):
     """
     Create an xarray DataArray for a GFP dataset.
 
-    Inputs:
-        ps       = PSII_data instance
-        metadata = INF file metadata dictionary
-
-    :param ps: plantcv.plantcv.classes.PSII_data
-    :param metadata: dict
+    Parameters
+    ----------
+    ps : plantcv.plantcv.classes.PSII_data
+        PSII_data instance
+    metadata : dict
+        INF file metadata dictionary
     """
     bin_filepath = _dat_filepath(dataset="GFP", datapath=ps.datapath, filename=ps.filename)
     if os.path.exists(bin_filepath):
@@ -440,12 +440,13 @@ def _process_rfp_data(ps, metadata):
     """
     Create an xarray DataArray for a RFP dataset.
 
-    Inputs:
-        ps       = PSII_data instance
-        metadata = INF file metadata dictionary
+    Parameters
+    ----------
+    ps : plantcv.plantcv.classes.PSII_data
+        PSII_data instance.
+    metadata : dict
+        INF file metadata dictionary.
 
-    :param ps: plantcv.plantcv.classes.PSII_data
-    :param metadata: dict
     """
     bin_filepath = _dat_filepath(dataset="RFP", datapath=ps.datapath, filename=ps.filename)
     if os.path.exists(bin_filepath):
@@ -477,12 +478,13 @@ def _process_aph_data(ps, metadata):
     """
     Create an xarray DataArray for an APH dataset.
 
-    Inputs:
-        ps       = PSII_data instance
-        metadata = INF file metadata dictionary
+    Parameters
+    ----------
+    ps : plantcv.plantcv.classes.PSII_data
+        PSII_data instance.
+    metadata : dict
+        INF file metadata dictionary.
 
-    :param ps: plantcv.plantcv.classes.PSII_data
-    :param metadata: dict
     """
     bin_filepath = _dat_filepath(dataset="APH", datapath=ps.datapath, filename=ps.filename)
     if os.path.exists(bin_filepath):
