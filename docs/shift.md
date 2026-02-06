@@ -12,8 +12,7 @@ Shifts image, but keeps dimensions the same
     - side - "top", "bottom", "right", "left" where to add the rows or columns (default: "right")
 - **Context:**
     - Shifts image from the specified direction.
-- **Example use:**
-    - [Use In Multi-Plant Tutorial](tutorials/multi-plant_tutorial.md)
+- **Example use below:**
     
 **Input image**
 

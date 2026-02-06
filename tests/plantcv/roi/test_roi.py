@@ -2,7 +2,18 @@ import pytest
 import cv2
 import numpy as np
 from plantcv.plantcv import Objects
-from plantcv.plantcv.roi import from_binary_image, rectangle, circle, ellipse, auto_grid, multi, auto_wells, custom, filter
+from plantcv.plantcv.roi import (
+    from_binary_image,
+    rectangle,
+    circle,
+    ellipse,
+    auto_grid,
+    multi,
+    multi_rect,
+    auto_wells,
+    custom,
+    filter,
+)
 
 
 def test_from_binary_image(roi_test_data):
@@ -161,7 +172,7 @@ def test_auto_grid_multiple_cols_rows(roi_test_data):
     # Read in test binary mask
     mask = cv2.imread(roi_test_data.bin_grid_img, 0)
     rois = auto_grid(mask=mask, nrows=2, ncols=2)
-    # Assert the contours has 2 ROIs
+    # Assert the contours has 4 ROIs
     assert len(rois.contours) == 4
 
 
@@ -170,7 +181,17 @@ def test_multi(roi_test_data):
     # Read in test RGB image
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
     rois = multi(rgb_img, coord=(10, 10), radius=10, spacing=(10, 10), nrows=2, ncols=2)
-    # Assert the contours has 18 ROIs
+    # Assert the contours has 4 ROIs
+    assert len(rois.hierarchy) == 4
+
+
+def test_multi_rect(roi_test_data):
+    """Test for PlantCV."""
+    # Read in test RGB image
+    rgb_img = cv2.imread(roi_test_data.small_rgb_img)
+    rois = multi_rect(rgb_img, coord=(10, 10), h=20, w=20,
+                      spacing=(10, 10), nrows=2, ncols=2)
+    # Assert the contours has 4 ROIs
     assert len(rois.hierarchy) == 4
 
 
@@ -181,12 +202,31 @@ def test_auto_wells(test_data):
     assert len(rois.hierarchy) == 24
 
 
+def test_auto_wells_in_region(test_data):
+    """Test for PlantCV."""
+    img = cv2.imread(test_data.hough_circle, -1)
+    roi_cont = [np.array([[[50, 50]], [[50, 499]], [[399, 499]], [[399, 50]]], dtype=np.int32)]
+    roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
+    rect = Objects(contours=[roi_cont], hierarchy=[roi_str])
+    rois = auto_wells(img, 20, 50, 30, 40, 50, 4, 6, -10, roi=rect)
+    assert len(rois.hierarchy) == 12
+
+
+def test_multi_rect_input_coords(roi_test_data):
+    """Test for PlantCV."""
+    # Read in test RGB image
+    rgb_img = cv2.imread(roi_test_data.small_rgb_img)
+    rois = multi_rect(rgb_img, coord=[(25, 120), (100, 100)], h=20, w=20)
+    # Assert the contours has 2 ROIs
+    assert len(rois.hierarchy) == 2
+
+
 def test_multi_input_coords(roi_test_data):
     """Test for PlantCV."""
     # Read in test RGB image
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
     rois = multi(rgb_img, coord=[(25, 120), (100, 100)], radius=20)
-    # Assert the contours has 18 ROIs
+    # Assert the contours has 2 ROIs
     assert len(rois.hierarchy) == 2
 
 
@@ -197,6 +237,16 @@ def test_multi_bad_input(roi_test_data):
     # The user must input a list of custom coordinates OR inputs to make a grid. Not both
     with pytest.raises(RuntimeError):
         _ = multi(rgb_img, coord=[(25, 120), (100, 100)], radius=20, spacing=(10, 10), nrows=3, ncols=6)
+
+
+def test_multi_rect_bad_input(roi_test_data):
+    """Test for PlantCV."""
+    # Read in test RGB image
+    rgb_img = cv2.imread(roi_test_data.small_rgb_img)
+    # The user must input a list of custom coordinates OR inputs to make a grid. Not both
+    with pytest.raises(RuntimeError):
+        _ = multi_rect(rgb_img, coord=[(25, 120), (100, 100)],
+                       h=10, w=10, spacing=(10, 10), nrows=3, ncols=6)
 
 
 def test_multi_bad_input_no_radius(roi_test_data):
@@ -243,7 +293,7 @@ def test_custom_bad_input(roi_test_data):
         _ = custom(img=img, vertices=[[226, -1], [3130, 1848], [2404, 2029], [2205, 2298], [1617, 1761]])
 
 
-@pytest.mark.parametrize("mode,exp", [["largest", 221], ["cutto", 152], ["partial", 221]])
+@pytest.mark.parametrize("mode,exp", [["largest", 221], ["cutto", 152], ["partial", 221], ["within", 0]])
 def test_filter(mode, exp, test_data):
     """Test for PlantCV."""
     # Read in test data
@@ -258,6 +308,22 @@ def test_filter(mode, exp, test_data):
     area = cv2.countNonZero(filtered_mask)
     # Assert that the contours were filtered as expected
     assert area == exp
+
+
+def test_within_filter(test_data):
+    """Test for PlantCV."""
+    # Read in test data
+    img = cv2.imread(test_data.small_rgb_img)
+    mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
+    cnt, cnt_str = test_data.load_contours(test_data.small_contours_file)
+    cv2.drawContours(mask, cnt, -1, (255), -1, lineType=8, hierarchy=cnt_str)
+    roi = [np.array([[[100, 100]], [[100, 224]], [[249, 224]], [[249, 100]]], dtype=np.int32)]
+    roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
+    roi_Obj = Objects(contours=[roi], hierarchy=[roi_str])
+    filtered_mask = filter(mask=mask, roi=roi_Obj, roi_type="within")
+    area = cv2.countNonZero(filtered_mask)
+    # Assert that the contours were filtered as expected
+    assert area == 221
 
 
 def test_filter_multi(test_data):

@@ -4,12 +4,9 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv import params
-from plantcv.plantcv import image_subtract
-from plantcv.plantcv.morphology import segment_sort
-from plantcv.plantcv.morphology import segment_skeleton
-from plantcv.plantcv.morphology import _iterative_prune
+from plantcv.plantcv.morphology import segment_sort, segment_skeleton
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _cv2_findcontours
+from plantcv.plantcv._helpers import _cv2_findcontours, _iterative_prune, _image_subtract
 
 
 def prune(skel_img, size=0, mask=None):
@@ -40,15 +37,12 @@ def prune(skel_img, size=0, mask=None):
     debug = params.debug
     params.debug = None
 
-    pruned_img = skel_img.copy()
-
     _, objects = segment_skeleton(skel_img)
     kept_segments = []
     removed_segments = []
-
+    # Initialize pruned_img array
+    pruned_img = skel_img.copy()
     if size > 0:
-        # If size>0 then check for segments that are smaller than size pixels long
-
         # Sort through segments since we don't want to remove primary segments
         secondary_objects, _ = segment_sort(skel_img, objects)
 
@@ -65,7 +59,7 @@ def prune(skel_img, size=0, mask=None):
                          lineType=8)
 
         # Subtract all short segments from the skeleton image
-        pruned_img = image_subtract(pruned_img, removed_barbs)
+        pruned_img = _image_subtract(pruned_img, removed_barbs)
         pruned_img = _iterative_prune(pruned_img, 1)
 
     # Make debugging image

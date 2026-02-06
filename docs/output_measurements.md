@@ -143,7 +143,7 @@ suggestions for additional metadata we should track that would be useful to you,
 | other            | other information                                     |
 
 
-## Output Observations
+## Output Observations <a name="summary-of-output-observations"></a>
 
 Functions that automatically store data to the [`Outputs` class](outputs.md) are
 [analyze.bound_horizontal](analyze_bound_horizontal2.md), 
@@ -156,7 +156,7 @@ Functions that automatically store data to the [`Outputs` class](outputs.md) are
 [analyze.thermal](analyze_thermal.md), 
 [analyze.yii](analyze_yii.md), 
 [analyze.npq](analyze_npq.md), 
-[homology.acute](homology_landmark_reference_pt_dist.md), 
+[homology.acute](homology_acute.md), 
 [homology.landmark_reference_pt_dist](homology_landmark_reference_pt_dist.md), 
 [homology.x_axis_pseudolandmarks](homology_x_axis_pseudolandmarks.md), 
 [homology.y_axis_pseudolandmarks](homology_y_axis_pseudolandmarks.md), 
@@ -174,8 +174,9 @@ Functions that automatically store data to the [`Outputs` class](outputs.md) are
 [report_size_marker_area](report_size_marker.md), 
 [transform.find_color_card](find_color_card.md), 
 [transform.detect_color_card](transform_detect_color_card.md)
-[watershed_segmentation](watershed.md), and
-[within_frame](within_frame.md).
+[watershed_segmentation](watershed.md), 
+[within_frame](within_frame.md), and
+[watershed](watershed.md).
 
 All of these functions include an optional `label` parameter 
 that allows users to append custom prefixes to the unique variable identifier. 

@@ -4,11 +4,11 @@ import cv2 as cv
 import os
 import numpy as np
 from plantcv.plantcv.readimage import readimage
-from plantcv.plantcv.rgb2gray import rgb2gray
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv.transform.color_correction import save_matrix
 from plantcv.plantcv.transform.color_correction import load_matrix
+from plantcv.plantcv._helpers import _rgb2gray
 
 
 def checkerboard_calib(img_path, col_corners, row_corners, out_dir):
@@ -37,7 +37,7 @@ def checkerboard_calib(img_path, col_corners, row_corners, out_dir):
     for fname in images:
         img, _, _ = readimage(filename=os.path.join(img_path, fname), mode="native")
         img1 = np.copy(img)
-        gray_img = rgb2gray(img1)
+        gray_img = _rgb2gray(img1)
         ret, corners = cv.findChessboardCorners(gray_img, (col_corners, row_corners))
         criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
         if ret is True:

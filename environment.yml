@@ -2,12 +2,12 @@
 # optionally, change channel name with -n {plantcv-dev}
 name: plantcv
 dependencies:
-  - python=3.11
+  - python=3.13
   - matplotlib>=1.5
-  - numpy>=2
+  - numpy>=1.26
   - pandas
   - python-dateutil
-  - scipy
+  - scipy<1.16
   - scikit-image>=0.19
   - scikit-learn
   - dask
@@ -16,15 +16,17 @@ dependencies:
   - statsmodels
   - xarray>=2022.11.0
   - mkdocs
+  - nd2
   - pytest
   - pytest-cov
   - flake8
   - ipympl
   - nodejs
   - jupyterlab
-  - altair
+  - altair<6
   - vl-convert-python
   - git
+  - flyr
 
 channels:
   - conda-forge

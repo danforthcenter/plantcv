@@ -13,7 +13,8 @@ completely within the image.
 - **Parameters:**
     - mask = binary image data to be filtered
     - roi = region of interest, an instance of the Objects class, output from one of the pcv.roi subpackage functions
-    - roi_type = 'partial' (for partially inside, default), 'cutto', or 'largest' (keep only the largest contour)
+    - roi_type = 'partial' (for partially inside, default), 'cutto' (cut objects to the inside of the ROI),
+	'within' (keep only objects fully inside ROI) or 'largest' (keep only the largest contour)
 
 - **Context:**
     - Used to filter objects within a region of interest and decide which ones to keep.
@@ -22,8 +23,8 @@ completely within the image.
     - Using `roi_type='largest'` will only keep the largest outer connected region of non-zero pixels.
 
 - **Example use:**
-    - [Use In VIS Tutorial](tutorials/vis_tutorial.md)
-    - [Use In PSII Tutorial](tutorials/psII_tutorial.md)
+    - [Use In VIS Tutorial](https://plantcv.org/tutorials/simple-rgb-workflow)
+    - [Use In PSII Tutorial](https://plantcv.org/tutorials/photosynthesis)
 
 **RGB image**
 

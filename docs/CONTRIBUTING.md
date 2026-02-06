@@ -11,7 +11,7 @@
     * [Testing and documenting your code](#testdoc)
     * [Publish and Create Pull Request](#publish)
 4. [Guidelines for New Features](#newfeatures)
-    * [New Function Style Guide](#style)
+    * [New Function Style Guide](#styleguide)
 5. [Instructions for Adding A New Tutorial](#tutorial)
     * [Create Your Tutorial Repository](#repo)
     * [Add Your Tutorial to the Gallery Wall](#gallery)
@@ -102,7 +102,7 @@ using one of the methods described in the
 #### Install PlantCV Dependencies <a name="install"></a>
 
 We recommend using `conda` to set up a virtual environment for developing PlantCV. Instructions can be found in the
-[installation documentation](installation.md#installation-from-the-source-code).
+[installation documentation](installation.md).
 
 #### Create A Branch To Do Your Work <a name="branch"></a>
 
@@ -315,34 +315,30 @@ that might break wth new versions of PlantCV.
 
 #### Create Your Tutorial Repository <a name="repo"></a>
 
-1. Create a new repository on GitHub (Please consider creating your repo within an instituional account rather than a personal account e.g. Danforth Center). The name should start with plantcv-tutorial. When you make this repo you can use the option to import the tutorial template from `https://github.com/danforthcenter/plantcv-tutorial-template`
+1. Create a new repository on GitHub. To prepopulate your repository with the file layout we recommend, you can import our 
+tutorial template from `https://github.com/danforthcenter/plantcv-tutorial-template`
 
-2. If you don't import the tutorial template when you make your repo intitally you can clone the [tutorial template repository](https://github.com/danforthcenter/plantcv-tutorial-template) and copy the files and folders from the template repository to your tutorial repository
+2. If you don't import the tutorial template when you make your repo intitally you can [clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) the
+[tutorial template repository](https://github.com/danforthcenter/plantcv-tutorial-template) and copy the files and folders
+from the template repository to your tutorial repository
 
-3. Update the `README` and `index.ipynb` files with your tutorial content, including data (make sure you are updating or using the correct documentation branch, e.g. release-4.0)
+3. Update the `README`, `index.ipynb`, and `index-Colab.ipynb` files with your tutorial content, including data
 
-4. Add an image called `tutorial_card.png` to the repo, this will be used on the gallery webpage. The image should be approximately square and have a width of 200px.
+4. Add an image called `tutorial_card.png` to the repo, this will be used on the gallery webpage. The image should be
+approximately square and have a width of 200px.
 
-5. Follow the instructions to create a Binder button in the readme
+5. Follow the instructions to create Binder and Colab buttons in the README
 
-6. Commit the changes to your tutorial github repository
+6. Commit the changes to your tutorial GitHub repository
 
-7. Go to your repo online and test the 'Launch Binder' button for your repo
+7. Go to your repo online and test the 'Launch Binder' and 'Open in Colab' buttons for your repo
+
+8. To cite your tutorial in a publication or presentation you can connect your repository to
+[Zenodo to get a DOI](https://help.zenodo.org/docs/github/archive-software/github-upload/).
 
 #### Add Your Tutorial To the PlantCV Tutorial Gallery <a name="gallery"></a>
 
-1. In your PlantCV repo make a new branch (make sure your branch is based off the version you are working on e.g. release-4.0)
-
-2. Go to `/plantcv/docs/tutorials.md`, add a section for your new tutorial or update the binder links and link to your tutorial wall image
-
-3. Either go to `/plantcv/docs/tutorials/'yourtutorialname'` and update the binder links and nb viewer links for your tutorial or go to `/plantcv/docs/tutorials/`
-and add a doc with your tutorial name (use an exisiting tutorial as an example)
-
-4. While in your plantcv directory check the build of the documentation on the command line by the command: 
- ```
- mkdocs serve --theme readthedocs
-```
-5. If everything looks okay then commit changes and make a pull request (make sure that pull request is for the for version you are working on).
+1. Email the dev team at plantcv@danforthcenter.org, or open an issue [here](https://github.com/danforthcenter/plantcv/issues). 
 
 ### Thanks
 

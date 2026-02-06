@@ -13,7 +13,7 @@ This is a wrapper for the Opencv Function [bitwise_xor](https://docs.opencv.org/
 - **Context:**
     - Used to combine to images. Very useful when combining image channels that have been thresholded seperately.
 - **Example use:**
-    - [Use In VIS Tutorial](tutorials/vis_tutorial.md)
+    - Below
 
 **Input binary image 1**
 
@@ -32,8 +32,8 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 # Combine two images that have had different thresholds applied to them.
-# For logical 'and' operation object pixel must be in both images 
-# to be included in 'and' image.
+# For logical 'xor' operation object pixel must be in either images 
+# but not both to be included in 'xor' image.
 xor_image = pcv.logical_xor(s_threshold, b_threshold)
 
 ```

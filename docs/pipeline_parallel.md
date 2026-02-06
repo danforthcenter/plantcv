@@ -2,7 +2,7 @@
 
 !!! warning
     Workflows should be optimized to an image test-set before running a whole dataset.
-    See the [VIS workflow tutorial](tutorials/vis_tutorial.md) or [VIS/NIR tutorial](tutorials/vis_nir_tutorial.md).
+    See the [VIS workflow tutorial](https://plantcv.org/tutorials/simple-rgb-workflow) or [VIS/NIR tutorial](https://plantcv.org/tutorials/dual-rgb-nir-workflow).
     Our [download tool](https://github.com/danforthcenter/pheno-data-service), which talks to a LemnaTec database system,
     has a specific file structure, which may be different than yours unless you are using our tool, but we also have instructions
     to run PlantCV over a flat file directory (just keep this in mind).
@@ -85,8 +85,15 @@ AABA002948_2014-03-14 03-29-45_Pilot-031014_VIS_TV_z3500.png
 
 **Valid Metadata**
 
-Valid metadata that can be collected from filenames are `camera`, `imgtype`, `zoom`, `exposure`, `gain`, `frame`, `rotation`,
-`lifter`, `timestamp`, `id`, `barcode`, `treatment`, `cartag`, `measurementlabel`, and `other`.
+Valid metadata that can be collected from filenames (basenames) are `camera`, `imgtype`, `zoom`, `exposure`, `gain`, `frame`, `rotation`,
+`lifter`, `timestamp`, `id`, `barcode`, `treatment`, `cartag`, `measurementlabel`, and `other`. Additionally, the file path starting from
+the `input_dir` can be used as `filepath` or individual components of it as `filepath{1:N}`, the file name is available for regex filtering
+with the `basename` key, which may be useful for regex based filtering.
+
+!!! note
+    Note that if a `metadata.json` or `SnapshotInfo.csv` file exists in your `config.input_dir` directory then that file will be used to supply
+    metadata instead of any parsing specified in the `metadata` key. If one of those files exists the `filepath`, `filepath{1:N}`, and `basename`
+    keys are still available to filter your data.
 
 To correctly process timestamps, you need to specify the timestamp format (`timestampformat` configuration
 parameter) code for the
@@ -110,6 +117,7 @@ Sample image filename: `cam1_16-08-06-16:45_el1100s1_p19.jpg`
     "imgformat": "jpg",
     "delimiter": "_",
     "metadata_filters": {"camera": "cam1"},
+	"metadata_regex": {},
     "timestampformat": "%y-%m-%d-%H:%M",
     "writeimg": true,
     "other_args": {},
@@ -186,6 +194,7 @@ in a list to the `filename_metadata` parameter.
     "imgformat": "jpg",
     "delimiter": '(.{3})_(.+)_(\d{4}-\d{2}-\d{2} \d{2}_\d{2}_\d{2})',
     "metadata_filters": {},
+	"metadata_regex": {},
     "timestampformat": "%Y-%m-%d %H_%M_%S",
     "writeimg": true,
     "other_args": {},
@@ -212,6 +221,63 @@ in a list to the `filename_metadata` parameter.
 
 If you need help building a regular expression, https://regexr.com/ is a useful site to help build and interpret
 patterns. Also feel free to post an [issue](https://github.com/danforthcenter/plantcv/issues).
+
+#### Using a pattern matching-based filename metadata filter
+
+Regex patterns can be supplied as a dictionary to the `metadata_regex` parameter of the configuration json.
+
+The `filepath` key will search for a regex pattern anywhere in the absolute path to an image.
+The `filepath1` key will search for a regex pattern in the first directory starting from the `input_dir`.
+Additional keys up to `filepathN` (the max depth directory containing an image in `input_dir`) are available
+as well as `basename` if filtering with regex is easier than with exact metadata terms.
+
+In this example we filter several levels of the file path and the basename.
+Here the first component of the file path starting from the `input_dir` represents a barcode,
+which we filter to start with "barcode" followed by two 0s and a number between 5 and 9,
+then matching either AB or AD. We don't filter the second component of the filepath,
+but do filter the third to start with "snapshot".
+Finally, we filter the basename for top view rgb images with "TV_VIS.*".
+
+**Example configuration:**
+
+```bash
+{
+    "input_dir": "input_directory",
+    "json": "output.json",
+    "filename_metadata": [""],
+    "workflow": "user-workflow.py",
+    "img_outdir": "output_directory",
+    "tmp_dir": ".",
+    "start_date": null,
+    "end_date": null,
+    "imgformat": "jpg",
+    "delimiter": '_',
+    "metadata_filters": {},
+	"metadata_regex": {"filepath1":"^barcode00[5-9]A[B|D]", "filepath3":"snapshot.*", "basename":"TV_VIS.*"},
+    "timestampformat": "%Y-%m-%d %H_%M_%S",
+    "writeimg": true,
+    "other_args": {},
+    "groupby": ["filepath"],
+    "group_name": "auto",
+    "cleanup": true,
+    "append": false,
+    "cluster": "HTCondorCluster",
+    "cluster_config": {
+        "n_workers": 16,
+        "cores": 1,
+        "memory": "1GB",
+        "disk": "1GB",
+        "log_directory": null,
+        "local_directory": null,
+        "job_extra_directives": null
+    },
+    "metadata_terms": {
+    ...
+    }
+}
+
+```
+
 
 #### Grouping images for multi-image workflows
 
