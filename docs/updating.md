@@ -677,13 +677,18 @@ pages for more details on the input and output variable types.
 * post v3.11: **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r, label="default"*)
 * post v4.0: DEPRECATED see plantcv.homology.landmark_reference_pt_dist
 
-
 #### plantcv.laplace_filter
 
 * pre v3.0dev2: device, lp_filtered = **plantcv.laplace_filter**(*img, k, scale, device, debug=None*)
 * post v3.0dev2: lp_filtered = **plantcv.laplace_filter**(*gray_img, k, scale*)
 * post v3.2: lp_filtered = **plantcv.laplace_filter**(*gray_img, ksize, scale*)
 * post v4.9: lp_filtered = **plantcv.laplace_filter**(*gray_img, ksize, scale, roi=None*)
+
+#### plantcv.learn.train_kmeans
+
+* pre v4.3: NA 
+* post v4.3: **plantcv.learn.train_kmeans**(*img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, sigma=5, sampling=None, seed=1, num_imgs=0, n_init=10*)
+* post v4.6: **plantcv.learn.train_kmeans**(*img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, mode=None, sigma=5, sampling=None, seed=1, num_imgs=0, n_init=10*)
 
 #### plantcv.logical_and
 
@@ -949,6 +954,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.3: NA
 * post v4.3: **plantcv.predict_kmeans**(*img, model_path="./kmeansout.fit", patch_size=10*)
+* post v4.6: **plantcv.predict_kmeans**(*img, model_path="./kmeansout.fit", patch_size=10, mode=None*)
 
 #### plantcv.print_image
 
@@ -1155,6 +1161,10 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, sr_img = **plantcv.scharr_filter**(*img, dX, dY, scale, device, debug=None*)
 * post v3.0dev2: sr_img = **plantcv.scharr_filter**(*gray_img, dx, dy, scale*)
 * post v4.9: sr_img = **plantcv.scharr_filter**(*gray_img, dx, dy, scale, roi=None*)
+
+#### plantcv.sharpen
+* pre v5.0: NA
+* post v5.0: **plantcv.sharpen**(*img, ksize, amount=1, threshold=0, sigma_x=0, sigma_y=None, roi=None*)
 
 #### plantcv.shift_img
 

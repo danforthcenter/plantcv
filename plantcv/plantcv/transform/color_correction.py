@@ -5,7 +5,8 @@ import cv2
 import numpy as np
 import altair as alt
 import pandas as pd
-from plantcv.plantcv import params, fatal_error
+from plantcv.plantcv._globals import params
+from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.roi import circle
 from plantcv.plantcv._debug import _debug
 
