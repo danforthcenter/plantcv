@@ -99,7 +99,7 @@ def radial_percentile(img, mask, roi=None, percentile=50, label=None):
             if len(np.unique(filt)) == 1:
                 noavg = ["nan"]
                 if len(img.shape) == 3:
-                    noavg.append("nan" for _ in range(2))
+                    noavg = ["nan", "nan", "nan"]
                 avgs.append(noavg)
             else:
                 masked = apply_mask(img=img, mask=filt, mask_color='black')
