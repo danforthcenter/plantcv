@@ -172,6 +172,41 @@ function call to the most updated function call.
 See the individual function help
 pages for more details on the input and output variable types.
 
+#### learn.train_kmeans
+
+* pre v4.3: NA 
+* post v4.3: **learn.train_kmeans**(*img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, sigma=5, sampling=None, seed=1, num_imgs=0, n_init=10*)
+
+#### parallel.create_dask_cluster
+
+* pre v4.10: Untracked
+* post v4.10: **parallel.create_dask_cluster**(*config, cluster_config*)
+
+#### parallel.inspect_dataset
+
+* pre v4.10: NA
+* post v4.10: **parallel.inspect_dataset**(*config*)
+
+#### parallel.job_builder
+
+* pre v4.10: Untracked
+* post v4.10: **parallel.job_builder**(*meta, config*)
+
+#### parallel.metadata_parser
+
+* pre v4.10: Untracked
+* post 4.10: **parallel.metadata_parser**(*config*)
+
+#### parallel.multiprocess
+
+* pre v4.10: Untracked
+* post v4.10: **parallel.multiprocess**(*jobs, client*)
+
+#### parallel.workflow_inputs
+
+* pre v4.10: Untracked
+* post v4.10: **parallel.workflow_inputs**(*\*other_args*)
+
 #### plantcv.acute
 
 * pre v3.0dev2: device, homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = **plantcv.acute**(*obj, win, thresh, mask, device, debug=None*)
@@ -613,11 +648,6 @@ pages for more details on the input and output variable types.
 * post v3.2: lp_filtered = **plantcv.laplace_filter**(*gray_img, ksize, scale*)
 * post v4.9: lp_filtered = **plantcv.laplace_filter**(*gray_img, ksize, scale, roi=None*)
 
-#### plantcv.learn.train_kmeans
-
-* pre v4.3: NA 
-* post v4.3: **plantcv.learn.train_kmeans**(*img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, sigma=5, sampling=None, seed=1, num_imgs=0, n_init=10*)
-
 #### plantcv.logical_and
 
 * pre v3.0dev2: device, merged = **plantcv.logical_and**(*img1, img2, device, debug=None*)
@@ -738,6 +768,11 @@ pages for more details on the input and output variable types.
 * post v3.3: labeled_img = **plantcv.morphology.segment_tangent_angle**(*segmented_img, objects, size*)
 * post v3.11: labeled_img = **plantcv.morphology.segment_tangent_angle**(*segmented_img, objects, size, label="default"*)
 * post v4.0: labeled_img = **plantcv.morphology.segment_tangent_angle**(*segmented_img, objects, size, label=None*)
+
+#### plantcv.morphology.segment_width
+
+* pre v4.10: NA
+* post v4.10: labeled_img = **plantcv.morphology.segment_width**(*segmented_img, skel_img, labeled_mask, n_labels=1, label=None*)
 
 #### plantcv.morphology.skeletontize
 
@@ -965,10 +1000,15 @@ pages for more details on the input and output variable types.
 * post v3.1: roi_contours, roi_hierarchies = **plantcv.roi.multi**(*img, coord, radius, spacing=None, nrows=None, ncols=None*)
 * post v4.0: roi_objects = **plantcv.roi.multi**(*img, coord, radius=None, spacing=None, nrows=None, ncols=None*)
 
+#### plantcv.roi.multi_rect
+* pre v4.10: NA
+* post v4.10: roi_objects = **plantcv.roi.multi_rect**(*img, coord, h=None, w=None, spacing=None, nrows=None, ncols=None*)
+
 #### plantcv.roi.quick_filter
 
 * pre v4.2.1: NA
 * post v4.2.1: filtered_mask = **plantcv.roi.quick_filter**(*mask, roi*)
+* post v4.9: filtered_mask = **plantcv.roi.quick_filter**(*mask, roi, roi_type="partial"*)
 
 #### plantcv.roi_objects
 
@@ -1258,6 +1298,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0: NA
 * post v3.0: mask = **pcv.transform.create_color_card_mask**(*rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=[]*)
+* post v4.9: mask = **pcv.transform.create_color_card_mask**(*rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=None*)
 
 #### plantcv.transform.detect_color_card
 
@@ -1369,6 +1410,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.13: NA
 * post v3.13: fig_hist = **plantcv.visualize.hyper_histogram**(*hsi, mask=None, bins=100, lower_bound=None, upper_bound=None, title=None, wvlengths=[480, 550, 650]*)
+* post v4.9: fig_hist = **plantcv.visualize.hyper_histogram**(*hsi, mask=None, bins=100, lower_bound=None, upper_bound=None, title=None, wvlengths=None*)
 
 #### plantcv.visualize.obj_size_ecdf
 

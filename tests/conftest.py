@@ -93,7 +93,8 @@ class TestData:
         self.rgb_seed_mask = os.path.join(self.datadir, "rgb_seed_mask.jpg")
         self.small_circle = os.path.join(self.datadir, "small_circle.png")
         self.empty_mask = os.path.join(self.datadir, "seed_empty_mask.png")
-        
+        # flir thermal img
+        self.flir_img = os.path.join(self.datadir, "FLIR_test.jpg")
 
     @staticmethod
     def load_hsi(pkl_file):

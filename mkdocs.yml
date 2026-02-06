@@ -115,7 +115,7 @@ nav:
         - 'Fill Segments': fill_segments.md
         - 'Find Branches': find_branch_pts.md
         - 'Find Tips': find_tips.md
-        - 'Prune': prune.md
+        - 'Prune (by size)': prune.md
         - 'Segment Angles': segment_angle.md
         - 'Combine Segments': segment_combine.md
         - 'Segment Curvature': segment_curvature.md
@@ -128,6 +128,7 @@ nav:
         - 'Segment Sort': segment_sort.md
         - 'Segment Tangent Angle': segment_tangent_angle.md
         - 'Skeletonize': skeletonize.md
+        - 'Segment Width': segment_width.md
       - 'Naive Bayes Classifier': naive_bayes_classifier.md
       - 'Objects Class': objects.md
       - 'Opening': opening.md
@@ -154,6 +155,7 @@ nav:
         - 'Create a Custom ROI': roi_custom.md
         - 'Create ROI from Binary Image': roi_from_binary_image.md
         - 'Create Multi ROIs': 'roi_multi.md'
+        - 'Create Multi Rectangular ROIs': 'roi_multi_rect.md'
         - 'Create Grid of ROIs Automatically': roi_auto_grid.md
         - 'Create Grid of Circular ROIs Automatically': roi_auto_wells.md
         - 'Filter a mask by ROI': roi_filter.md
@@ -225,6 +227,7 @@ nav:
       - 'Naive Bayes Multiclass': naive_bayes_multiclass.md
     - 'Parallelization':
         - 'Configure Parallelization': parallel_config.md
+        - 'Inspect Configuration': parallel_inspect_config.md
         - 'Workflow Inputs Management': parallel_workflow_inputs.md
         - 'Metadata Parser': parallel_metadata_parser.md
         - 'Job Builder': parallel_job_builder.md
