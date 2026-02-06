@@ -110,7 +110,8 @@ def test_read_cropreporter_aph_only(photosynthesis_test_data, tmpdir):
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("sub")
     # Create dataset with only APH
-    shutil.copyfile(photosynthesis_test_data.cropreporter_aph, os.path.join(cache_dir, "HDR_2025-12-12_tob1_20251212205712029.INF"))
+    shutil.copyfile(photosynthesis_test_data.cropreporter_aph, os.path.join(cache_dir,
+                                                                            "HDR_2025-12-12_tob1_20251212205712029.INF"))
     aph_dat = photosynthesis_test_data.cropreporter_aph.replace("HDR", "APH")
     aph_dat = aph_dat.replace("INF", "DAT")
     shutil.copyfile(aph_dat, os.path.join(cache_dir, "APH_2025-12-12_tob1_20251212205712029.DAT"))
