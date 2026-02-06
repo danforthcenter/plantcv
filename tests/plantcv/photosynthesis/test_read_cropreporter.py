@@ -59,7 +59,6 @@ def test_read_cropreporter_spc_only(photosynthesis_test_data, tmpdir):
     shutil.copyfile(spc_dat, os.path.join(cache_dir, "PSII_SPC_test.DAT"))
     fluor_filename = os.path.join(cache_dir, "PSII_HDR_test.INF")
     ps = read_cropreporter(filename=fluor_filename)
-    print(os.listdir(cache_dir))
     assert isinstance(ps, PSII_data) and ps.spectral.array_data.shape == (966, 1296, 3)
 
 
@@ -81,7 +80,6 @@ def test_read_cropreporter_gfp_only(photosynthesis_test_data, tmpdir):
     shutil.copyfile(gfp_dat, os.path.join(cache_dir, "GFP_DYSeed_20251222191634684.DAT"))
     fluor_filename = os.path.join(cache_dir, "HDR_DYSeed_20251222191634684.INF")
     ps = read_cropreporter(filename=fluor_filename)
-    print(os.listdir(cache_dir))
     assert isinstance(ps, PSII_data)
     assert ps.gfp is not None
     # (rows, cols, frames)
@@ -99,7 +97,6 @@ def test_read_cropreporter_rfp_only(photosynthesis_test_data, tmpdir):
     shutil.copyfile(rfp_dat, os.path.join(cache_dir, "RFP_DYSeed_20251222191634684.DAT"))
     fluor_filename = os.path.join(cache_dir, "HDR_DYSeed_20251222191634684.INF")
     ps = read_cropreporter(filename=fluor_filename)
-    print(os.listdir(cache_dir))
     assert isinstance(ps, PSII_data)
     assert ps.rfp is not None
     assert ps.rfp.shape[2] in [1, 2]
