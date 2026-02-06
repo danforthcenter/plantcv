@@ -32,7 +32,7 @@ def test_sharpen_threshold(test_data):
 def test_sharpen_grayscale(test_data):
     """Test for PlantCV."""
     # Read in test data
-    gray_img = cv2.imread(test_data.small_gray_img)
+    gray_img = cv2.imread(test_data.small_gray_img, -1)
     zero_thresh = sharpen(gray_img, (5, 5), amount = 1, threshold = 0)
     thresh = sharpen(gray_img, (5, 5), amount = 1, threshold = 100)
     assert np.average(thresh) != np.average(zero_thresh)
@@ -52,7 +52,7 @@ def test_sharpen_roi(test_data):
 def test_sharpen_grayscale_roi(test_data):
     """Test for PlantCV."""
     # Read in test data
-    gray_img = cv2.imread(test_data.small_gray_img)
+    gray_img = cv2.imread(test_data.small_gray_img, -1)
     roi_con = [np.array([[[10, 20]], [[10, 200]], [[200, 200]], [[200, 20]]], dtype=np.int32)]
     roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     roi = Objects(contours=[roi_con], hierarchy=[roi_str])
