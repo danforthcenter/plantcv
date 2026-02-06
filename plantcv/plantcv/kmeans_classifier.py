@@ -3,9 +3,10 @@
 import os
 import numpy as np
 from joblib import load
-from plantcv.learn.train_kmeans import _patch_extract
-from plantcv.plantcv import readimage, params
+from plantcv.plantcv.readimage import readimage
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._globals import params
+from plantcv.learn.train_kmeans import patch_extract
 from plantcv.plantcv._helpers import _logical_operation
 
 

@@ -4,7 +4,7 @@ import cv2
 import os
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _rect_filter, _rect_replace
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 
 
 def laplace_filter(gray_img, ksize, scale, roi=None):
