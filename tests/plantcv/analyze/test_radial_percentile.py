@@ -26,7 +26,7 @@ def test_radial_gray(test_data):
     mask = cv2.imread(test_data.rgb_seed_mask, -1)
     avgs = radial_percentile(img=img, mask=mask, roi=roi)
     assert int(avgs[0]) == 96
-    
+
 
 def test_radial_empty(test_data):
     """Test for PlantCV."""
