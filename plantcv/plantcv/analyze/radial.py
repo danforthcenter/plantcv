@@ -30,6 +30,9 @@ def _calc_dists(img, mask, percentile, store_debug, ind=None):
     avgs : float or list
         average pixel values (gray or RGB) within the distance percentile
     """
+    # if mask is empty then return NaNs, nothing is in the mask.
+    if np.sum(mask) == 0:
+        return ["nan", "nan", "nan"]
     # Analyze shape properties
     m = cv2.moments(mask, binaryImage=True)
     cmx = m['m10'] / m['m00']
@@ -56,7 +59,6 @@ def _calc_dists(img, mask, percentile, store_debug, ind=None):
         avgs = [float(np.nanmean(img_cutoff[:, :, [2]])),
                 float(np.nanmean(img_cutoff[:, :, [1]])),
                 float(np.nanmean(img_cutoff[:, :, [0]]))]
-
     return avgs
 
 
@@ -110,10 +112,12 @@ def radial_percentile(img, mask, roi=None, percentile=50, label=None):
 
     else:
         masked = apply_mask(img=img, mask=mask, mask_color='black')
-        # Crop the image and the mask to the roi
-        crop_img = auto_crop(img=masked, mask=mask, padding_x=1, padding_y=1, color='black')
-        crop_mask = auto_crop(img=mask, mask=mask, padding_x=1, padding_y=1, color='black')
-
+        # Crop the image to the mask if the mask is not empty
+        crop_img = masked
+        crop_mask = mask
+        if np.sum(mask) > 0:
+            crop_img = auto_crop(img=masked, mask=mask, padding_x=1, padding_y=1, color='black')
+            crop_mask = auto_crop(img=mask, mask=mask, padding_x=1, padding_y=1, color='black')
         # Calculate averages of each channel
         avgs = [_calc_dists(img=crop_img, mask=crop_mask, percentile=percentile, store_debug=store_debug, ind=0)]
 
