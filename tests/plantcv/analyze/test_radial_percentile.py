@@ -14,6 +14,7 @@ def test_radial_RGB(test_data):
     avgs = radial_percentile(img=img, mask=mask)
     assert int(avgs[0][0]) == 138
 
+
 def test_radial_gray(test_data):
     """Test for PlantCV."""
     # Read in roi
@@ -26,10 +27,23 @@ def test_radial_gray(test_data):
     avgs = radial_percentile(img=img, mask=mask, roi=roi)
     assert int(avgs[0]) == 96
     
+
 def test_radial_empty(test_data):
     """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.rgb_seed)
     mask = mask = np.zeros((100,100),dtype="uint8")
     avgs = radial_percentile(img=img, mask=mask)
+    assert avgs[0][0] == "nan"
+
+
+def test_radial_roi_empty(test_data):
+    """Test for PlantCV."""
+    # Read in test data
+    img = cv2.imread(test_data.rgb_seed)
+    mask = mask = np.zeros((100,100),dtype="uint8")
+    circle = cv2.imread(test_data.small_circle, -1)
+    roi_contour, roi_hierarchy = _cv2_findcontours(bin_img=circle)
+    roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
+    avgs = radial_percentile(img=img, mask=mask, roi=roi)
     assert avgs[0][0] == "nan"
