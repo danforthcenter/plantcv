@@ -29,6 +29,10 @@ class ParallelTestData:
         self.new_results_file = os.path.join(self.datadir, "new_results.json")
         # Valid JSON file but invalid results
         self.valid_json_file = os.path.join(self.datadir, "valid.json")
+        # PlantCV results file
+        self.plantcv_results_file = os.path.join(self.datadir, "plantcv_results.json")
+        # Invalid results file
+        self.invalid_results_file = os.path.join(self.datadir, "invalid_results.json")
         # Dummy jupyter notebook file
         self.jupyternotebook = os.path.join(self.datadir, "dummy.ipynb")
         # checkpointing directory
