@@ -6,7 +6,7 @@ import numpy as np
 from skimage import img_as_ubyte
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv.transform import rescale
 
 
