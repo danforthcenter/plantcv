@@ -6,7 +6,6 @@ from joblib import load
 from plantcv.learn.train_kmeans import _patch_extract
 from plantcv.plantcv import readimage, params
 from plantcv.plantcv._debug import _debug
-from plantcv.learn.train_kmeans import patch_extract
 from plantcv.plantcv._helpers import _logical_operation
 
 
@@ -91,7 +90,7 @@ def mask_kmeans(labeled_img, k, cat_list=None):
         return mask_dict
     # Store debug
     debug = params.debug
-    # Change to None so that logical_or does not plot each stepwise addition
+    # Change to None so that logical_operation-or does not plot each stepwise addition
     params.debug = None
     for idx, i in enumerate(cat_list):
         if idx == 0:
