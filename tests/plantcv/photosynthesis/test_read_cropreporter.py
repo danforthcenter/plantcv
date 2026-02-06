@@ -117,7 +117,6 @@ def test_read_cropreporter_aph_only(photosynthesis_test_data, tmpdir):
     shutil.copyfile(aph_dat, os.path.join(cache_dir, "APH_2025-12-12_tob1_20251212205712029.DAT"))
     fluor_filename = os.path.join(cache_dir, "HDR_2025-12-12_tob1_20251212205712029.INF")
     ps = read_cropreporter(filename=fluor_filename)
-    print(os.listdir(cache_dir))
     assert isinstance(ps, PSII_data)
     assert ps.aph is not None
     assert ps.aph.shape[2] == 2  # Red + FarRed
