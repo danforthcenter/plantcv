@@ -42,7 +42,9 @@ def test_multiprocess(parallel_test_data, tmpdir):
     dask.config.set(temporary_directory=tmp_dir)
     image_path = parallel_test_data.image_path
     result_file = os.path.join(tmp_dir, os.path.splitext(os.path.basename(image_path))[0] + '.json')
-    jobs = [['python', parallel_test_data.workflow_script, '--outdir', tmp_dir, '--result', result_file, "--names", "vis",
+    jobs = [['python', parallel_test_data.workflow_script, '--outdir', tmp_dir,
+             '--result', result_file, "--names", "vis",
+             '--checkpoint', "False", "--tmpfile", result_file,
              '--writeimg', '--other', 'on', image_path]]
     # Create a dask LocalCluster client
     client = Client(n_workers=1)

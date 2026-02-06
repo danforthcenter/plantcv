@@ -29,6 +29,10 @@ class ParallelTestData:
         self.new_results_file = os.path.join(self.datadir, "new_results.json")
         # Valid JSON file but invalid results
         self.valid_json_file = os.path.join(self.datadir, "valid.json")
+        # Dummy jupyter notebook file
+        self.jupyternotebook = os.path.join(self.datadir, "dummy.ipynb")
+        # checkpointing directory
+        self.checkpoint = os.path.join(self.datadir, "_PCV_PARALLEL_CHECKPOINT_")
         self.image_path = os.path.join(self.snapshot_imgdir, 'snapshot57383', 'VIS_SV_0_z1_h1_g0_e82_117770.jpg')
         self.nir_path = os.path.join(self.snapshot_imgdir, 'snapshot57383', 'NIR_SV_0_z1_h1_g0_e65_117779.jpg')
 
@@ -81,8 +85,6 @@ class ParallelTestData:
             "other": [None]
             }
         df = pd.DataFrame(meta)
-        df["timestamp"] = pd.to_datetime(df.timestamp)
-        df = df.groupby(["filepath"])
         return df
 
     def metadata_snapshot_coprocess(self):
@@ -107,8 +109,6 @@ class ParallelTestData:
             "other": [None, None]
             }
         df = pd.DataFrame(meta)
-        df["timestamp"] = pd.to_datetime(df.timestamp)
-        df = df.groupby(["camera", "rotation"])
         return df
 
 
