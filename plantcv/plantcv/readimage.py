@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import nd2
 import flyr
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv._globals import params
 from plantcv.plantcv.hyperspectral.read_data import read_data
 from plantcv.plantcv._debug import _debug
