@@ -56,10 +56,7 @@ def read_cropreporter(filename):
 
     # Chlorophyll fluorescence data
     _process_chl_data(ps=ps, metadata=metadata_dict)
-
-    # Spectral measurements
-    _process_spc_data(ps=ps, metadata=metadata_dict)
-
+    
     # GFP fluorescence intensity data
     _process_gfp_data(ps=ps, metadata=metadata_dict)
 
@@ -68,6 +65,9 @@ def read_cropreporter(filename):
 
     # APH reflectance data
     _process_aph_data(ps=ps, metadata=metadata_dict)
+
+    # Spectral measurements
+    _process_spc_data(ps=ps, metadata=metadata_dict)
 
     return ps
 
