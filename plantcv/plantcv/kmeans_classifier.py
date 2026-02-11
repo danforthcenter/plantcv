@@ -20,6 +20,8 @@ def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10, mode=None):
         Path to directory where the trained model output is stored, by default "./kmeansout.fit"
     patch_size : int, optional
         Size of the NxN neighborhood around each pixel, by default 10
+    mode: str
+        "spectral" or None (the default), "spectral" for use with PlantCV Spectral Objects.
 
     Returns
     -------
@@ -29,7 +31,7 @@ def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10, mode=None):
     kmeans = load(model_path)
     if not mode:
         train_img = img.copy()
-    elif mode == "spectral":
+    elif mode.upper() == "spectral":
         train_img = img.array_data
 
     before = after = int((patch_size - 1)/2)   # odd

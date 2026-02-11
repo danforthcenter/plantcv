@@ -1,0 +1,12 @@
+ENVI
+; this file was created as a dummy
+; original file: nothing
+interleave = bil
+samples = 1
+lines = 1
+bands = 1
+data type = 5
+wavelength units = nm
+wavelength = {
+366.551
+}
