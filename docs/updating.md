@@ -1156,6 +1156,10 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: sr_img = **plantcv.scharr_filter**(*gray_img, dx, dy, scale*)
 * post v4.9: sr_img = **plantcv.scharr_filter**(*gray_img, dx, dy, scale, roi=None*)
 
+#### plantcv.sharpen
+* pre v5.0: NA
+* post v5.0: img = **plantcv.sharpen**(*img, ksize, amount=1, threshold=0, sigma_x=0, sigma_y=None, roi=None*)
+
 #### plantcv.shift_img
 
 * pre v3.0dev2: device, adjusted_img = **plantcv.shift_img**(*img, device, number, side="right", debug=None*)
