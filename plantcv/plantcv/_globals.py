@@ -17,42 +17,42 @@ class Params:
                  sample_label="default", saved_color_scale=None, verbose=True, unit="pixels", px_height=1, px_width=1):
         """Initialize parameters.
 
-        Keyword arguments/parameters:
-        device            = Device number. Used to count steps in the pipeline. (default: 0)
-        debug             = None, print, or plot. Print = save to file, Plot = print to screen. (default: None)
-        debug_outdir      = Debug images output directory. (default: .)
-        line_thickness    = Width of line drawings. (default: 5)
-        line_color        = Color of line annotations (default = (255, 0, 255))
-        dpi               = Figure plotting resolution, dots per inch. (default: 100)
-        text_size         = Size of plotting text. (default: 0.55)
-        text_thickness    = Thickness of plotting text. (default: 2)
-        marker_size       = Size of plotting markers (default: 60)
-        color_scale       = Name of plotting color scale (matplotlib colormap). (default: gist_rainbow)
-        color_sequence    = Build color scales in "sequential" or "random" order. (default: sequential)
-        sample_label      = Sample name prefix. Used in analyze functions. (default: "default")
-        saved_color_scale = Saved color scale that will be applied next time color_palette is called. (default: None)
-        verbose           = Whether or not in verbose mode. (default: True)
-        unit              = Units of size trait outputs. (default: "pixels")
-        px_height         = Size scaling information about pixel height (default: 1)
-        px_width          = Size scaling information about pixel width (default: 1)
-
-
-        :param device: int
-        :param debug: str
-        :param debug_outdir: str
-        :param line_thickness: numeric
-        :param dpi: int
-        :param text_size: float
-        :param text_thickness: int
-        :param marker_size: int
-        :param color_scale: str
-        :param color_sequence: str
-        :param sample_label: str
-        :param saved_color_scale: list
-        :param verbose: bool
-        :param unit: str
-        :param px_height: float
-        :param px_width: float
+        Parameters
+        ----------
+        device : int
+            Device number. Used to count steps in the pipeline. Default is 0.
+        debug : str, optional
+            None, print, or plot. Print = save to file, Plot = print to screen. Default is None.
+        debug_outdir : str
+            Debug images output directory. Default is ".".
+        line_thickness : int
+            Width of line drawings. Default is 5.
+        line_color : tuple
+            Color of line annotations. Default is (255, 0, 255).
+        dpi : int
+            Figure plotting resolution, dots per inch. Default is 100.
+        text_size : float
+            Size of plotting text. Default is 0.55.
+        text_thickness : int
+            Thickness of plotting text. Default is 2.
+        marker_size : int
+            Size of plotting markers. Default is 60.
+        color_scale : str
+            Name of plotting color scale (matplotlib colormap). Default is "gist_rainbow".
+        color_sequence : str
+            Build color scales in "sequential" or "random" order. Default is "sequential".
+        sample_label : str
+            Sample name prefix. Used in analyze functions. Default is "default".
+        saved_color_scale : list, optional
+            Saved color scale that will be applied next time color_palette is called. Default is None.
+        verbose : bool
+            Whether or not in verbose mode. Default is True.
+        unit : str
+            Units of size trait outputs. Default is "pixels".
+        px_height : float
+            Size scaling information about pixel height. Default is 1.
+        px_width : float
+            Size scaling information about pixel width. Default is 1.
 
         """
         self.device = device
@@ -93,30 +93,32 @@ class Outputs:
 
     # Method to add observation to outputs
     def add_observation(self, sample, variable, trait, method, scale, datatype, value, label):
-        """Keyword arguments/parameters:
-        sample       = Sample name. Used to distinguish between multiple samples
-        variable     = A local unique identifier of a variable, e.g. a short name,
-                       that is a key linking the definitions of variables with observations.
-        trait        = A name of the trait mapped to an external ontology; if there is no exact mapping, an informative
-                       description of the trait.
-        method       = A name of the measurement method mapped to an external ontology; if there is no exact mapping, an
-                       informative description of the measurement procedure
-        scale        = Units of the measurement or scale in which the observations are expressed; if possible, standard
-                       units and scales should be used and mapped to existing ontologies; in the case of non-standard
-                       scale a full explanation should be given
-        datatype     = The type of data to be stored, e.g. 'int', 'float', 'str', 'list', 'bool', etc.
-        value        = The data itself
-        label        = The label for each value (most useful when the data is a frequency table as in hue,
-                       or other tables)
+        """Add an observation to outputs.
 
-        :param sample: str
-        :param variable: str
-        :param trait: str
-        :param method: str
-        :param scale: str
-        :param datatype: type
-        :param value:
-        :param label:
+        Parameters
+        ----------
+        sample : str
+            Sample name. Used to distinguish between multiple samples.
+        variable : str
+            A local unique identifier of a variable, e.g. a short name,
+            that is a key linking the definitions of variables with observations.
+        trait : str
+            A name of the trait mapped to an external ontology; if there is no exact mapping, an informative
+            description of the trait.
+        method : str
+            A name of the measurement method mapped to an external ontology; if there is no exact mapping, an
+            informative description of the measurement procedure.
+        scale : str
+            Units of the measurement or scale in which the observations are expressed; if possible, standard
+            units and scales should be used and mapped to existing ontologies; in the case of non-standard
+            scale a full explanation should be given.
+        datatype : type
+            The type of data to be stored, e.g. 'int', 'float', 'str', 'list', 'bool', etc.
+        value : any
+            The data itself.
+        label : str or list
+            The label for each value (most useful when the data is a frequency table as in hue,
+            or other tables).
         """
         # Create an empty dictionary for the sample if it does not exist
         if sample not in self.observations:
@@ -165,12 +167,12 @@ class Outputs:
     def save_results(self, filename, outformat="json"):
         """Save results to a file.
 
-        Keyword arguments/parameters:
-        filename       = Output filename
-        outformat      = Output file format ("json" or "csv"). Default = "json"
-
-        :param filename: str
-        :param outformat: str
+        Parameters
+        ----------
+        filename : str
+            Output filename.
+        outformat : str
+            Output file format ("json" or "csv"). Default is "json".
         """
         # Add current date & time to metadata in UTC format
         run_datetime = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ")
@@ -231,14 +233,16 @@ class Outputs:
 
     def plot_dists(self, variable):
         """Plot a distribution of data.
+        Parameters
+        ----------
+        variable : str
+            A local unique identifier of a variable, e.g. a short name,
 
-        Keyword arguments/parameters:
-        variable      = A local unique identifier of a variable, e.g. a short name,
-                        that is a key linking the definitions of variables with observations.
-        Returns:
-        chart          = Altair chart object
-        :param variable: str
-        :return chart: altair.vegalite.v4.api.Chart
+        Returns
+        -------
+        chart : altair.vegalite.v4.api.Chart
+            Altair chart object displaying the distribution of the specified variable
+            across samples, with faceted rows for each sample and area plot visualization.
         """
         alt.data_transformers.disable_max_rows()
         data = {"sample": [], "value": [], "label": []}
