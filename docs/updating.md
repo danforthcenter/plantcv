@@ -1158,7 +1158,7 @@ pages for more details on the input and output variable types.
 
 #### plantcv.sharpen
 * pre v5.0: NA
-* post v5.0: **plantcv.sharpen**(*img, ksize, amount=1, threshold=0, sigma_x=0, sigma_y=None, roi=None*)
+* post v5.0: img = **plantcv.sharpen**(*img, ksize, amount=1, threshold=0, sigma_x=0, sigma_y=None, roi=None*)
 
 #### plantcv.shift_img
 
