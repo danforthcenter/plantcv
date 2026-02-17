@@ -21,7 +21,6 @@ nav:
     - 'Adding/Editing Documentation': documentation.md
     - 'Pull Request Review Process' : pr_review_process.md
   - "Tutorials": tutorials.md
-  - 'Exporting Data': db-exporter.md
   - 'PlantCV Namespace':
     - 'PlantCV':
       - 'Inputs and Outputs':
@@ -235,6 +234,7 @@ nav:
         - 'Job Builder': parallel_job_builder.md
         - 'Multiprocess': parallel_multiprocess.md
         - 'Process Results': parallel_process_results.md
+        - 'Convert JSON results to CSV': json2csv.md
         - 'Workflow Parallelization': pipeline_parallel.md
   - 'Accessory tools': tools.md
 markdown_extensions:
