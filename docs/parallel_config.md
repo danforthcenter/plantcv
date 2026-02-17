@@ -92,9 +92,9 @@ extensions should be combined (if using phenofront data this must be length 1 an
   `{"imgtype": "VIS", "frame": ["0", "90"]"}`).
 
 
-* **metadata_regex**: (dict, default = `None`): a dictionary of filepath terms (keys) and values, any specified keys
+* **metadata_regex**: (dict, default = `None`): a dictionary of metadata terms (keys) and values, any specified keys
 will be used for regex based filtering (e.g. 
-  `{"filepath1": "first[p|P]athPattern.*", "basename": "^starts_with.*"}`).
+  `{"dir1": "first[p|P]athPattern.*", "basename": "^starts_with.*"}`).
 
 
 * **timestampformat**: (str, default = '%Y-%m-%dT%H:%M:%S.%fZ'): a date format code compatible with strptime C library. 
