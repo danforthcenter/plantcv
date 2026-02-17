@@ -9,15 +9,19 @@ def _debug(visual, filename=None, verbosity_level=0, **kwargs):
 
     Parameters
     ----------
-    visual          = numpy.ndarray, An image or plot to display for debugging
-    filename        = str, An optional filename to save the visual to (default: None)
-    verbosity level = int, threshold for params.verbose to make debug image.
-                          Defaults to 0, which essentially ignores params.verbose
-    kwargs          = dict, key-value arguments to xarray.plot method
+    visual : numpy.ndarray
+        An image or plot to display for debugging
+    filename : str, optional
+        An optional filename to save the visual to (default: None)
+    verbosity_level : int, optional
+        Threshold for params.verbose to make debug image.
+        Defaults to 0, which essentially ignores params.verbose
+    **kwargs : dict
+        Key-value arguments to xarray.plot method
 
     Returns
     -------
-    No returns
+    None
     """
     # if verbose from params is at least to the verbosity level, make debug images
     if params.verbose >= verbosity_level:
