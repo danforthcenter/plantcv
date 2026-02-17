@@ -34,8 +34,14 @@ def sharpen(img, ksize, amount=1, threshold=0, sigma_x=0, sigma_y=None, roi=None
                                     "threshold": threshold})
     sharp_img = _rect_replace(img, sub_sharp_img, roi)
 
+    if len(np.shape(sharp_img)) == 3:
+        cmap = None
+    else:
+        cmap = 'gray'
+
     _debug(visual=sharp_img,
-           filename=os.path.join(params.debug_outdir, str(params.device) + '_sharpen.png'))
+           filename=os.path.join(params.debug_outdir, str(params.device) + '_sharpen.png'),
+           cmap=cmap)
 
     return sharp_img
 
