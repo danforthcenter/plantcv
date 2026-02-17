@@ -20,6 +20,9 @@ with labeled frames.
       labeled according to the metadata in .INF. The default measurement label is 't1'.
     - Measurements from chlorophyll fluorescence are stored in the attribute `chlorophyll` and include a dark frame
       (Fdark) and chlorophyll fluorescence frame (Chl).
+    - Green fluorescence protein (GFP) measurements are stored in the attribute `gfp` and include frames for dark fluorescence (Fdark), GFP fluorescence (GFP, 525 nm), and autofluorescence (Auto, 585 nm).
+    - Red fluorescence protein (RFP) measurements are stored in the attribute `rfp` and include frames for dark fluorescence (Fdark) and RFP fluorescence (585 nm).
+    - Alpha light absorption coefficient (APH) measurements are stored in the attribute `aph` and include reflected light frames for red (640 nm) and far-red (732 nm) wavelengths.
     - Spectral measurements are stored as a PlantCV [Spectral_data](Spectral_data.md) object in the attribute
       `spectral`. Frames are stored by reflectance wavelength and can include: blue (475nm), green (550nm), red (640nm),
       green2 (540nm), far-red (710nm), and near-infrared (770nm).
@@ -63,5 +66,17 @@ ps.ojip_dark.plot(col='frame_label', col_wrap=4)
 **Spectral reflectance measurements**
 
 ![Screenshot](img/documentation_images/photosynthesis_read_cropreporter/3_spectral-RGB.png)
+
+**Green fluorescence protein (GFP) measurements**
+
+![Screenshot](img/documentation_images/photosynthesis_read_cropreporter/4_gfp_frames.png)
+
+**Red fluorescence protein (RFP) measurements**
+
+![Screenshot](img/documentation_images/photosynthesis_read_cropreporter/5_rfp_frames.png)
+
+**Alpha light absorption coefficient (APH) measurements**
+
+![Screenshot](img/documentation_images/photosynthesis_read_cropreporter/6_aph_frames.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/photosynthesis/read_cropreporter.py)
