@@ -14,7 +14,7 @@ class Params:
     def __init__(self, device=0, debug=None, debug_outdir=".", line_thickness=5,
                  line_color=(255, 0, 255), dpi=100, text_size=0.55,
                  text_thickness=2, marker_size=60, color_scale="gist_rainbow", color_sequence="sequential",
-                 sample_label="default", saved_color_scale=None, verbose=True, unit="pixels", px_height=1, px_width=1):
+                 sample_label="default", saved_color_scale=None, verbose=1, unit="pixels", px_height=1, px_width=1):
         """Initialize parameters.
 
         Parameters
@@ -45,8 +45,8 @@ class Params:
             Sample name prefix. Used in analyze functions. Default is "default".
         saved_color_scale : list, optional
             Saved color scale that will be applied next time color_palette is called. Default is None.
-        verbose : bool
-            Whether or not in verbose mode. Default is True.
+        verbose : int
+            0:2 representing verbosity level. 0 is least verbose, 2 is most verbose. Default is 1.
         unit : str
             Units of size trait outputs. Default is "pixels".
         px_height : float
