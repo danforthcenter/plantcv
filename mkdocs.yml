@@ -159,6 +159,7 @@ nav:
         - 'Filter a mask by ROI (quickly)': roi_quick_filter.md
         - 'Convert ROI to Mask': roi2mask.md
       - 'Segment Image Series': segment_image_series.md
+      - 'Sharpen Image': sharpen.md
       - 'Shift Image': shift.md
       - 'Spatial Clustering': spatial_clustering.md
       - 'Spectral Index': spectral_index.md

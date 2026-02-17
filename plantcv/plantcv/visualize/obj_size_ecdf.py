@@ -2,7 +2,7 @@
 import os
 import cv2
 import pandas as pd
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours
 from statsmodels.distributions.empirical_distribution import ECDF
