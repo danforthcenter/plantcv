@@ -2,7 +2,7 @@
 import cv2
 import pytest
 import numpy as np
-from plantcv.plantcv import Objects
+from plantcv.plantcv.classes import Objects
 from plantcv.plantcv.roi.quick_filter import quick_filter
 
 
