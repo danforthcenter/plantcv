@@ -59,6 +59,10 @@ automatically. Alternatively, you can run `pip install -e .` to reinstall the pa
 
 ### Breaking changes between v4 and v5 <a name="breaking-changes"></a>
 
+#### plantcv.utils
+
+The `plantcv.utils` module has been deleted with `sample_images` and `json2csv` moving to `plantcv.parallel` and `tabulate_bayes_classes` moving to `plantcv.learn`. Command-line interfaces are still available for `sample_images` [plantcv-sample](tools.md#PlantCV-Parallel) and `tabulate_bayes_classes` as [plantcv-learn tabulate_bayes_classes](tools.md#Training-machine-learning-models).
+
 #### plantcv.parallel.WorkflowConfig
 
 Renamed the "json" attribute to "results" for clarity about what it controls and for consistency with new [jupyterconfig](parallel_jupyterconfig.md)

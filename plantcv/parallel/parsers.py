@@ -378,11 +378,11 @@ def _parse_filepath(df, config):
     for i, fp in enumerate(paths_after_input):
         # for every file path, split it and add the elements to a list
         splits = fp.split(os.sep)
-        path_metadata.append(splits[1:])
+        path_metadata.append(splits)
     # bind list into a dataframe
     path_metadata_df = pd.DataFrame(path_metadata)
-    # rename columns to filepath1:N, basename
-    path_metadata_df.columns = ["filepath"+str(i + 1) for i in range(len(path_metadata_df.columns))]
+    # rename columns to dir1:N, basename
+    path_metadata_df.columns = ["dir"+str(i + 1) for i in range(len(path_metadata_df.columns))]
     if not path_metadata_df.empty:
         path_metadata_df.rename(columns={path_metadata_df.columns[-1]: "basename"}, inplace=True)
     # bind new columns onto existing metadata
