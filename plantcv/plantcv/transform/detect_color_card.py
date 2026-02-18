@@ -311,6 +311,10 @@ def _macbeth_card_detection(rgb_img, **kwargs):
         fatal_error("No color card found")
     # check if there are aruco tags, warn about possible wrong mode
     _check_no_aruco_tags(rgb_img)
+    # Find the bounding box of the detected chips
+    x, y, w, h = cv2.boundingRect(np.vstack(filtered_contours))
+    # Draw the bound box rectangle
+    bounding_mask = cv2.rectangle(np.zeros(rgb_img.shape[0:2]), (x, y), (x + w, y + h), (255), -1).astype(np.uint8)
     # Initialize chip shape lists
     marea, mwidth, mheight = _get_contour_sizes(filtered_contours)
 
@@ -337,6 +341,10 @@ def _macbeth_card_detection(rgb_img, **kwargs):
 
     if rotations:  # if the image was rotated, find new contours for chips
         filtered_contours = _find_color_chip_like_objects(rot_img, **kwargs)
+        # Find the bounding box of the detected chips
+        x, y, w, h = cv2.boundingRect(np.vstack(filtered_contours))
+        # Draw the bound box rectangle
+        bounding_mask = cv2.rectangle(np.zeros(rot_img.shape[0:2]), (x, y), (x + w, y + h), (255), -1).astype(np.uint8)
         # Initialize chip shape lists
         marea, mwidth, mheight = _get_contour_sizes(filtered_contours)
         # Concatenate all detected centers into one array (minimum area rectangle used to find chip centers)
@@ -419,7 +427,7 @@ def _macbeth_card_detection(rgb_img, **kwargs):
     # Calculate color matrix from the cropped color card image
     _, color_matrix = get_color_matrix(rgb_img=out, mask=labeled_mask)
 
-    return color_matrix, debug_img, marea, mheight, mwidth
+    return color_matrix, debug_img, marea, mheight, mwidth, bounding_mask
 
 
 def _find_aruco_tags(img, aruco_dict):
@@ -591,10 +599,12 @@ def _astrobotany_card_detection(rgb_img, **kwargs):
     for i in np.unique(labeled_mask):
         if i != 0:
             debug_img[np.where(labeled_mask == i)] = [255, 255, 0]
-
+    # Generate color card bounding mask
+    bounding_mask = cv2.warpPerspective(np.ones(shape=(600, 700), dtype=np.uint8)*255, mat, dsize=rgb_img.shape[1::-1],
+                                        flags=cv2.INTER_NEAREST)
     # Calculate color matrix from the cropped color card image
     _, color_matrix = get_color_matrix(rgb_img=rgb_img, mask=labeled_mask)
-    return color_matrix, debug_img, marea, mheight, mwidth
+    return color_matrix, debug_img, marea, mheight, mwidth, bounding_mask
 
 
 def _set_size_scale_from_chip(color_chip_width, color_chip_height, color_chip_size):
@@ -738,7 +748,7 @@ def detect_color_card(rgb_img, color_chip_size=None, roi=None, **kwargs):
     """
     if type(color_chip_size) is str and color_chip_size.upper() == 'ASTRO':
         # Search image for astrobotany.com color card aruco tags
-        color_matrix, debug_img, marea, mheight, mwidth = _rect_filter(rgb_img,
+        color_matrix, debug_img, marea, mheight, mwidth, _ = _rect_filter(rgb_img,
                                                                        roi,
                                                                        function=_astrobotany_card_detection,
                                                                        **kwargs)
@@ -761,7 +771,7 @@ def detect_color_card(rgb_img, color_chip_size=None, roi=None, **kwargs):
 
     else:
         # apply _color_card_detection within bounding box
-        color_matrix, debug_img, marea, mheight, mwidth = _rect_filter(rgb_img,
+        color_matrix, debug_img, marea, mheight, mwidth, _ = _rect_filter(rgb_img,
                                                                        roi,
                                                                        function=_macbeth_card_detection,
                                                                        **kwargs)
