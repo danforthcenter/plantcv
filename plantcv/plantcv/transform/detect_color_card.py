@@ -248,6 +248,23 @@ def _check_corners(img, corners):
             fatal_error("Color card corners could not be detected accurately")
 
 
+def _sort_corners(img, corners):
+    """sorting"""
+    # could get the top 2 points based on Y (vertical, however numpy does that)
+    # from those top 2, find the leftmost one, label that as first corner.
+    # the rightmost one is the second corner.
+    # of the bottom
+    top_two_corners = corners[np.argsort(corners[:,1], axis=0)[:2]]
+    bottom_two_corners = corners[np.argsort(corners[:,1], axis=0)[2:]]
+    top_indices = np.argsort(top_two_corners[1,:], axis = 0)
+    top_left = top_two_corners[np.argmin(top_two_corners[:,0])].tolist()
+    top_right = top_two_corners[np.argmax(top_two_corners[:,0])].tolist()
+    bottom_indices = np.argsort(bottom_two_corners[1,:], axis = 0)
+    bottom_left = bottom_two_corners[np.argmin(bottom_two_corners[:,0])].tolist()
+    bottom_right = bottom_two_corners[np.argmax(bottom_two_corners[:,0])].tolist()
+    return top_left, top_right, bottom_right, bottom_left
+
+
 def _macbeth_card_detection(rgb_img, **kwargs):
     """Algorithm to automatically detect a color card.
 
@@ -282,12 +299,6 @@ def _macbeth_card_detection(rgb_img, **kwargs):
         fatal_error("No color card found")
     # check if there are aruco tags, warn about possible wrong mode
     _check_no_aruco_tags(rgb_img)
-    # Find the bounding box of the detected chips
-    x, y, w, h = cv2.boundingRect(np.vstack(filtered_contours))
-
-    # Draw the bound box rectangle
-    boundind_mask = cv2.rectangle(np.zeros(rgb_img.shape[0:2]), (x, y), (x + w, y + h), (255), -1).astype(np.uint8)
-
     # Initialize chip shape lists
     marea, mwidth, mheight = _get_contour_sizes(filtered_contours)
 
@@ -295,58 +306,64 @@ def _macbeth_card_detection(rgb_img, **kwargs):
     square_centroids = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
 
     # Concatenate all contours into one array and find the minimum area rectangle
-    rect = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
-    rect = cv2.minAreaRect(rect)
+    chip_rects = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours]) # object_composition might be a good replacement
+    rect = cv2.minAreaRect(chip_rects)
     # Get the corners of the rectangle
     corners = np.array(np.intp(cv2.boxPoints(rect)))
     # Check that corners are in image
     _check_corners(rgb_img, corners)
+    # reorder the points so that the top left one is first.
+    pt_A, pt_B, pt_C, pt_D = _sort_corners(rgb_img, corners)
+    corners = np.array(np.intp([pt_A, pt_B, pt_C, pt_D]))
+
     # Determine which corner most likely contains the white chip
     white_index = np.argmin([np.mean(math.dist(rgb_img[corner[1], corner[0], :], (255, 255, 255))) for corner in corners])
-    rot_img = np.rot90(rgb_img, k=white_index, axes=(1, 0)).copy()
-    # rotate the image so that the white color chip is warp-able to the top left position without mirroring the card
+
+    rot_img = np.rot90(rgb_img, k=-white_index, axes=(1, 0)).copy()
+    # rotate the image so that the white color chip is in the top left position and warp will not mirror the card
     rotations = white_index
+
     if rotations:  # if the image was rotated, find new contours for chips
         filtered_contours = _find_color_chip_like_objects(rot_img, **kwargs)
-        # Find the bounding box of the detected chips
-        x, y, w, h = cv2.boundingRect(np.vstack(filtered_contours))
-        # Draw the bound box rectangle
-        boundind_mask = cv2.rectangle(np.zeros(rot_img.shape[0:2]), (x, y), (x + w, y + h), (255), -1).astype(np.uint8)
         # Initialize chip shape lists
         marea, mwidth, mheight = _get_contour_sizes(filtered_contours)
         # Concatenate all detected centers into one array (minimum area rectangle used to find chip centers)
         square_centroids = np.concatenate([[np.array(cv2.minAreaRect(i)[0]).astype(int)] for i in filtered_contours])
 
     centers1 = cv2.approxPolyN(curve=square_centroids, nsides=4, ensure_convex=True)
-    # Determine which corner most likely contains the white chip
-    white_index = np.argmin([np.mean(math.dist(rot_img[corner[1], corner[0], :], (255, 255, 255))) for corner in centers1[0]])
-    # Get outter corners of corner chips and sort based on card orientation
+    # Get outer corners of corner chips and sort based on card orientation
     corners = cv2.approxPolyN(curve=np.concatenate(filtered_contours), nsides=4, ensure_convex=True)
+
+    empty = np.zeros(rot_img.shape[:2], dtype = np.uint8)
+    cornermask = cv2.fillPoly(empty, [corners], color=255)
+    kernel = np.ones((11, 11), dtype=np.uint8)
+    eroded_cornermask = cv2.erode(cornermask, kernel, iterations=1)
+    cornermask_contours, _ = cv2.findContours(eroded_cornermask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    inner_corners = cv2.approxPolyN(cornermask_contours[0], nsides=4, ensure_convex=True)
+    # the order of points returned by approxPolyDP and approxPolyN is reversed.
+    # to make that flexible in case cv2 changes it like they did with boxPoints/PolyN
+    # we sort the inner corners by distance to a corner so that they are in the same order.
+    corner_to_inner_corner_order = []
+    for corner in corners:
+        cornerres = []
+        for ic in inner_corners:
+            cornerres.append(math.dist((ic[0][0], ic[0][1]), (corner[0][0], corner[0][1])))
+        corner_to_inner_corner_order.append(np.argmin(cornerres))
+    inner_corners = inner_corners[corner_to_inner_corner_order]
+
     corners = np.concatenate(corners)
-    white_index = np.argmin([np.mean(math.dist(rot_img[corner[1], corner[0], :], (255, 255, 255))) for corner in corners])
-
-    bottom_right_corner_index = np.argsort(-corners.sum(axis=1))[0]
-    # Between opencv versions 4.12 and 4.13 the order of returned boxPoints and PolyN points
-    # was changed from starting at the top left ot starting at the bottom right, to be compatible
-    # with both versions we need options for how we sort the corners based on where the bottom chip
-    # coordinates are in that list of returned points.
-    sorting_list = [1, 3, 2, 0]
-    if bottom_right_corner_index == 0:
-        sorting_list = [0, 2, 3, 1]
-
-    corners = corners[np.argsort([math.dist(corner, corners[white_index]) for corner in corners])]
-    corners = corners[sorting_list]
+    inner_corners = np.concatenate(inner_corners)
 
     if params.verbose:
         # Draw new contours onto cropped card debug image
         debug_img = np.copy(rot_img)
         cv2.drawContours(debug_img, filtered_contours, -1, color=(255, 50, 250), thickness=params.line_thickness)
         cv2.drawContours(debug_img, [corners], -1, color=(255, 0, 0), thickness=params.line_thickness)
-        unrot_debug_img = np.rot90(debug_img, k=-1*rotations, axes=(1, 0)).copy()
+        unrot_debug_img = np.rot90(debug_img, k=rotations, axes=(1, 0)).copy()
         _debug(visual=unrot_debug_img, filename=os.path.join(params.debug_outdir, f'{params.device}_detected_color_card.png'))
 
     # Perspective warp the color card to unskew and square to frame
-    pt_A, pt_B, pt_C, pt_D = corners
+    pt_A, pt_B, pt_C, pt_D = _sort_corners(rot_img, corners)
     input_pts = np.float32([pt_A, pt_B, pt_C, pt_D])
 
     length_AD = np.sqrt(((pt_A[0] - pt_D[0]) ** 2) + ((pt_A[1] - pt_D[1]) ** 2))
@@ -357,8 +374,7 @@ def _macbeth_card_detection(rgb_img, **kwargs):
     length_CD = np.sqrt(((pt_C[0] - pt_D[0]) ** 2) + ((pt_C[1] - pt_D[1]) ** 2))
     length_card2 = max(int(length_AB), int(length_CD))
 
-    output_pts = np.float32([[0, 0], [0, length_card2 - 1], [length_card1 - 1, length_card2 - 1], [length_card1 - 1, 0]])
-
+    output_pts = np.float32([[0, 0], [length_card2 - 1, 0], [length_card2 - 1, length_card1 - 1], [0, length_card1 - 1]])
     # Transform the color card to crop (and unwarp)
     matrix = cv2.getPerspectiveTransform(input_pts, output_pts)
     out = cv2.warpPerspective(
@@ -368,8 +384,8 @@ def _macbeth_card_detection(rgb_img, **kwargs):
     # Increment amount is arbitrary, cell distances rescaled during perspective transform
     increment = 100
     # Create color card mask based on size of detected color card3
-    w_increment = int(length_card1 / 3.7) + 1
-    h_increment = int(length_card2 / 5.7) + 1
+    w_increment = int(length_card2 / 3.7) + 1
+    h_increment = int(length_card1 / 5.7) + 1
     increment = int((w_increment + h_increment) / 2)
     if not radius:
         radius = int(increment / 15) + 1
@@ -391,7 +407,7 @@ def _macbeth_card_detection(rgb_img, **kwargs):
     # Calculate color matrix from the cropped color card image
     _, color_matrix = get_color_matrix(rgb_img=out, mask=labeled_mask)
 
-    return color_matrix, debug_img, marea, mheight, mwidth, boundind_mask
+    return color_matrix, debug_img, marea, mheight, mwidth
 
 
 def _find_aruco_tags(img, aruco_dict):
@@ -564,12 +580,9 @@ def _astrobotany_card_detection(rgb_img, **kwargs):
         if i != 0:
             debug_img[np.where(labeled_mask == i)] = [255, 255, 0]
 
-    # Generate color card bounding mask
-    bounding_mask = cv2.warpPerspective(np.ones(shape=(600, 700), dtype=np.uint8)*255, mat, dsize=rgb_img.shape[1::-1],
-                                        flags=cv2.INTER_NEAREST)
     # Calculate color matrix from the cropped color card image
     _, color_matrix = get_color_matrix(rgb_img=rgb_img, mask=labeled_mask)
-    return color_matrix, debug_img, marea, mheight, mwidth, bounding_mask
+    return color_matrix, debug_img, marea, mheight, mwidth
 
 
 def _set_size_scale_from_chip(color_chip_width, color_chip_height, color_chip_size):
@@ -713,10 +726,10 @@ def detect_color_card(rgb_img, color_chip_size=None, roi=None, **kwargs):
     """
     if type(color_chip_size) is str and color_chip_size.upper() == 'ASTRO':
         # Search image for astrobotany.com color card aruco tags
-        color_matrix, debug_img, marea, mheight, mwidth, _ = _rect_filter(rgb_img,
-                                                                          roi,
-                                                                          function=_astrobotany_card_detection,
-                                                                          **kwargs)
+        color_matrix, debug_img, marea, mheight, mwidth = _rect_filter(rgb_img,
+                                                                       roi,
+                                                                       function=_astrobotany_card_detection,
+                                                                       **kwargs)
         # Create dataframe for easy summary stats
         chip_size = np.median(marea)
         chip_height = np.median(mheight)
@@ -736,10 +749,10 @@ def detect_color_card(rgb_img, color_chip_size=None, roi=None, **kwargs):
 
     else:
         # apply _color_card_detection within bounding box
-        color_matrix, debug_img, marea, mheight, mwidth, _ = _rect_filter(rgb_img,
-                                                                          roi,
-                                                                          function=_macbeth_card_detection,
-                                                                          **kwargs)
+        color_matrix, debug_img, marea, mheight, mwidth = _rect_filter(rgb_img,
+                                                                       roi,
+                                                                       function=_macbeth_card_detection,
+                                                                       **kwargs)
         # Create dataframe for easy summary stats
         chip_size = np.median(marea)
         chip_height = np.median(mheight)
