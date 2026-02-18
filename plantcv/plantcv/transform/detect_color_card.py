@@ -249,7 +249,19 @@ def _check_corners(img, corners):
 
 
 def _sort_corners(img, corners):
-    """sorting"""
+    """Sort corners to a consistent order
+
+    Parameters
+    ----------
+    img : numpy.ndarray
+        Input RGB image data containing a color card.
+    corners : numpy nd.array
+        4 x 2 array of X,Y points specifying the corners of a color card
+
+    Returns
+    -------
+    top_left, top_right, bottom_right, bottom_left : lists of X,Y points
+    """
     # could get the top 2 points based on Y (vertical, however numpy does that)
     # from those top 2, find the leftmost one, label that as first corner.
     # the rightmost one is the second corner.
