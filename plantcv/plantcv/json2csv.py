@@ -11,7 +11,7 @@ def json2csv(json_file, csv_prefix):
     Parameters
     ----------
     json_file : str
-        JSON file output by plantcv-run-workflow.
+        JSON file output from saving outputs or from plantcv.plantcv.process_results
     csv_prefix : str
         CSV output files prefix.
 

@@ -77,6 +77,7 @@ def test_parallel_cli_valid_config(parallel_test_data, tmpdir):
     """Test for PlantCV."""
     # Create a test tmp directory
     conf_file = tmpdir.mkdir("cache").join("config.json")
+    os.chdir(conf_file.dirpath().strpath)
     # Set the temp directory for dask
     dask.config.set(temporary_directory=str(conf_file.dirpath()))
     config = WorkflowConfig()
