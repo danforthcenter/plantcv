@@ -4,7 +4,7 @@ import os
 import numpy as np
 from joblib import load
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.learn.train_kmeans import patch_extract
 from plantcv.plantcv._helpers import _logical_operation
 
