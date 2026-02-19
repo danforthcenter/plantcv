@@ -170,6 +170,12 @@ def otsu(gray_img, object_type="light"):
 
     params.device += 1
 
+    # If the grayscale image is all zeros, return copy of input image.
+    if np.count_nonzero(gray_img) == 0:
+        bin_img = np.copy(gray_img)
+        _debug(visual=bin_img, filename=os.path.join(params.debug_outdir, f"{params.device}_otsu_empty.png"))
+        return bin_img
+
     # Threshold the image
     bin_img = _call_threshold(gray_img, 0, threshold_method, "_otsu_threshold_")
 
