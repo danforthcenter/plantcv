@@ -15,7 +15,8 @@
 
 We normally execute workflows in a shell script or in in a cluster scheduler job file. The parallelization tool
 `plantcv-run-workflow` has many configuration parameters. To make it easier to manage the number of input parameters,
-a configuration file can be edited and input.
+a configuration file can be edited and input. A similar configuration file can be made and run directly in a jupyter notebook,
+see [`jupyterconfig`](parallel_jupyterconfig.md).
 
 ### Configuration-based method
 
@@ -31,6 +32,23 @@ directly in Python as demonstrated in the [WorkflowConfig documentation](paralle
 saved at any time using the `save_config` method to save for later use. Alternatively, open the saved config
 file with your favorite text editor and adjust the parameters as needed (refer to the attributes section of
 [WorkflowConfig documentation](parallel_config.md) for details about each parameter).
+
+You can also create the configuration object in Python either to save to a .json file to run in parallel;
+
+```python
+config = plantcv.parallel.WorkflowConfig()
+# change attributes to suit your needs
+config.save_config("my_config.json")
+```
+
+Or you can create and use a configuration in a jupyter notebook to run a workflow in parallel.
+
+```python
+jupcon = plantcv.parallel.jupyterconfig()
+# change attributes to suit your needs
+jupcon.run()  # start parallel process
+```
+
 
 **Some notes on JSON format:**
 
@@ -87,12 +105,12 @@ AABA002948_2014-03-14 03-29-45_Pilot-031014_VIS_TV_z3500.png
 
 Valid metadata that can be collected from filenames (basenames) are `camera`, `imgtype`, `zoom`, `exposure`, `gain`, `frame`, `rotation`,
 `lifter`, `timestamp`, `id`, `barcode`, `treatment`, `cartag`, `measurementlabel`, and `other`. Additionally, the file path starting from
-the `input_dir` can be used as `filepath` or individual components of it as `filepath{1:N}`, the file name is available for regex filtering
+the `input_dir` can be used as `filepath` or individual directories in it as `dir{1:N}`, the file name is available for regex filtering
 with the `basename` key, which may be useful for regex based filtering.
 
 !!! note
     Note that if a `metadata.json` or `SnapshotInfo.csv` file exists in your `config.input_dir` directory then that file will be used to supply
-    metadata instead of any parsing specified in the `metadata` key. If one of those files exists the `filepath`, `filepath{1:N}`, and `basename`
+    metadata instead of any parsing specified in the `metadata` key. If one of those files exists the `filepath`, `dir{1:N}`, and `basename`
     keys are still available to filter your data.
 
 To correctly process timestamps, you need to specify the timestamp format (`timestampformat` configuration
@@ -107,7 +125,7 @@ Sample image filename: `cam1_16-08-06-16:45_el1100s1_p19.jpg`
 ```
 {
     "input_dir": "/shares/mgehan_share/raw_data/raw_image/2016-08_pat-edger/data/split-round1/split-cam1",
-    "json": "edger-round1-brassica.json",
+    "results": "edger-round1-brassica.json",
     "filename_metadata": ["camera", "timestamp", "id", "other"],
     "workflow": "/home/mgehan/pat-edger/round1-python-pipelines/2016-08_pat-edger_brassica-cam1-splitimg.py",
     "img_outdir": "/shares/mgehan_share/raw_data/raw_image/2016-08_pat-edger/data/split-round1/split-cam1/output",
@@ -123,6 +141,7 @@ Sample image filename: `cam1_16-08-06-16:45_el1100s1_p19.jpg`
     "other_args": {},
     "groupby": ["filepath"],
     "group_name": "auto",
+	"checkpoint": true,
     "cleanup": true,
     "append": false,
     "cluster": "HTCondorCluster",
@@ -184,7 +203,7 @@ in a list to the `filename_metadata` parameter.
 ```bash
 {
     "input_dir": "input_directory",
-    "json": "output.json",
+    "results": "output.json",
     "filename_metadata": ["camera", "plantbarcode", "timestamp"],
     "workflow": "user-workflow.py",
     "img_outdir": "output_directory",
@@ -200,6 +219,7 @@ in a list to the `filename_metadata` parameter.
     "other_args": {},
     "groupby": ["filepath"],
     "group_name": "auto",
+	"checkpoint": true,
     "cleanup": true,
     "append": false,
     "cluster": "HTCondorCluster",
@@ -227,8 +247,8 @@ patterns. Also feel free to post an [issue](https://github.com/danforthcenter/pl
 Regex patterns can be supplied as a dictionary to the `metadata_regex` parameter of the configuration json.
 
 The `filepath` key will search for a regex pattern anywhere in the absolute path to an image.
-The `filepath1` key will search for a regex pattern in the first directory starting from the `input_dir`.
-Additional keys up to `filepathN` (the max depth directory containing an image in `input_dir`) are available
+The `dir1` key will search for a regex pattern in the first directory starting from the `input_dir`.
+Additional keys up to `dirN` (the max depth directory containing an image in `input_dir`) are available
 as well as `basename` if filtering with regex is easier than with exact metadata terms.
 
 In this example we filter several levels of the file path and the basename.
@@ -243,7 +263,7 @@ Finally, we filter the basename for top view rgb images with "TV_VIS.*".
 ```bash
 {
     "input_dir": "input_directory",
-    "json": "output.json",
+    "results": "output.json",
     "filename_metadata": [""],
     "workflow": "user-workflow.py",
     "img_outdir": "output_directory",
@@ -253,12 +273,13 @@ Finally, we filter the basename for top view rgb images with "TV_VIS.*".
     "imgformat": "jpg",
     "delimiter": '_',
     "metadata_filters": {},
-	"metadata_regex": {"filepath1":"^barcode00[5-9]A[B|D]", "filepath3":"snapshot.*", "basename":"TV_VIS.*"},
+	"metadata_regex": {"dir1":"^barcode00[5-9]A[B|D]", "dir3":"snapshot.*", "basename":"TV_VIS.*"},
     "timestampformat": "%Y-%m-%d %H_%M_%S",
     "writeimg": true,
     "other_args": {},
     "groupby": ["filepath"],
     "group_name": "auto",
+	"checkpoint": true,
     "cleanup": true,
     "append": false,
     "cluster": "HTCondorCluster",
@@ -294,7 +315,7 @@ To identify each image within our workflow, we will name them based on the `imgt
 ```
 {
     "input_dir": "/shares/mgehan_share/raw_data/raw_image/2016-08_pat-edger/data/split-round1/split-cam1",
-    "json": "edger-round1-brassica.json",
+    "results": "edger-round1-brassica.json",
     "filename_metadata": ["imgtype", "timestamp", "id", "other"],
     "workflow": "/home/mgehan/pat-edger/round1-python-pipelines/2016-08_pat-edger_brassica-cam1-splitimg.py",
     "img_outdir": "/shares/mgehan_share/raw_data/raw_image/2016-08_pat-edger/data/split-round1/split-cam1/output",
@@ -309,6 +330,7 @@ To identify each image within our workflow, we will name them based on the `imgt
     "other_args": {},
     "groupby": ["timestamp"],
     "group_name": "imgtype",
+	"checkpoint": true,
     "cleanup": true,
     "append": false,
     "cluster": "HTCondorCluster",
@@ -325,14 +347,20 @@ To identify each image within our workflow, we will name them based on the `imgt
     ...
     }
 }
+```
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/parallel/run_parallel.py)
 
 ### Convert the output JSON file into CSV tables
 
-```bash
-plantcv-utils json2csv -j output.json -c result-table
+Note this is done by default, but if for any reason you need to make csv tables again from
+json output you can use [`plantcv.parallel.json2csv`]().
 
+
+```python
+from plantcv import parallel as pcvpar
+
+pcvpar.json2csv("output.json", "result-table.csv")
 ```
 
-See [Accessory Tools](tools.md) for more information.
-
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/parallel/cli.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/parallel/json2csv.py)
