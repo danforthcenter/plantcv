@@ -675,7 +675,7 @@ pages for more details on the input and output variable types.
 #### plantcv.json2csv
 
 * pre v5: NA
-* post v5: **json2csv**(*json_file, csv_prefix*)
+* post v5: **plantcv.json2csv**(*json_file, csv_prefix*)
 
 #### plantcv.landmark_reference_pt_dist
 
@@ -908,6 +908,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.10: Untracked
 * post v4.10: **plantcv.parallel.process_results**(*config*)
+* post v5.0: DEPRECATED, see plantcv.process_results
 
 #### plantcv.parallel.workflow_inputs
 
@@ -969,6 +970,11 @@ pages for more details on the input and output variable types.
 * pre v3.1: NA
 * post v3.1: **plantcv.print_results**(*filename*)
 * post v4.0: DEPRECATED, see plantcv.outputs.save_results
+
+#### plantcv.process_results
+
+* pre v5.0: NA
+* post v5.0: **plantcv.process_results**(*input_dir=".", filename="results", outformat="csv"*)
 
 #### plantcv.pseudocolor
 
