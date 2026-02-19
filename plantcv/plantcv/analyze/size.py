@@ -181,9 +181,6 @@ def _analyze_size(img, mask, label):
     outputs.add_observation(sample=label, variable='object_in_frame', trait='object in frame',
                             method='plantcv.plantcv.analyze.size', scale='none', datatype=bool,
                             value=in_bounds, label='none')
-    outputs.add_observation(sample=label, variable='ellipse_center', trait='ellipse center',
-                            method='plantcv.plantcv.analyze.size', scale='none', datatype=tuple,
-                            value=(ellipse_center[0], ellipse_center[1]), label=("x", "y"))
     outputs.add_observation(sample=label, variable='ellipse_center_x', trait='ellipse center x',
                             method='plantcv.plantcv.analyze.size', scale='none', datatype=int,
                             value=ellipse_center[0], label='none')
