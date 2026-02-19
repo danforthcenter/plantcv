@@ -134,7 +134,7 @@ class TestData:
         mask = np.zeros((10, 10), dtype=np.uint8)
         mask[5, 5] = 255
         return mask
-    
+
     @staticmethod
     def load_json(json_file):
         """JSON loader helper function."""
