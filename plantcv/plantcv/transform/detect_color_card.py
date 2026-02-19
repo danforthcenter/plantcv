@@ -260,16 +260,14 @@ def _sort_corners(corners):
     -------
     top_left, top_right, bottom_right, bottom_left : lists of X,Y points
     """
-    # could get the top 2 points based on Y
-    # from those top 2, find the leftmost one, label that as first corner.
-    # the rightmost one is the second corner.
-    # of the bottom 2 the rightmost is the third corner, leftmost is fourth
+    # could get the top 2 and bottom 2 points based on Y
     top_two_corners = corners[np.argsort(corners[:, 1], axis=0)[:2]]
     bottom_two_corners = corners[np.argsort(corners[:, 1], axis=0)[2:]]
-    top_indices = np.argsort(top_two_corners[1, :], axis = 0)
+    # from top 2, find the leftmost one, label that as first corner.
+    # the rightmost one is the second corner.
     top_left = top_two_corners[np.argmin(top_two_corners[:, 0])].tolist()
     top_right = top_two_corners[np.argmax(top_two_corners[:, 0])].tolist()
-    bottom_indices = np.argsort(bottom_two_corners[1, :], axis = 0)
+    # of the bottom 2 the rightmost is the third corner, leftmost is fourth
     bottom_left = bottom_two_corners[np.argmin(bottom_two_corners[:, 0])].tolist()
     bottom_right = bottom_two_corners[np.argmax(bottom_two_corners[:, 0])].tolist()
     return top_left, top_right, bottom_right, bottom_left
