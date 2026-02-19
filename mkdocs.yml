@@ -53,6 +53,8 @@ nav:
         - 'RGB to CMYK': rgb2cmyk.md
         - 'RGB to LAB': rgb2lab.md
         - 'RGB to HSV': rgb2hsv.md
+      - 'Combine multiple results files': process_results.md
+      - 'Convert JSON results to CSV': json2csv.md
       - 'Create Labels': create_labels.md
       - 'Crop': crop.md
       - 'Crop and Position Mask': crop_position_mask.md
@@ -233,8 +235,6 @@ nav:
         - 'Metadata Parser': parallel_metadata_parser.md
         - 'Job Builder': parallel_job_builder.md
         - 'Multiprocess': parallel_multiprocess.md
-        - 'Process Results': parallel_process_results.md
-        - 'Convert JSON results to CSV': json2csv.md
         - 'Workflow Parallelization': pipeline_parallel.md
   - 'Accessory tools': tools.md
 markdown_extensions:

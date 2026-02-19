@@ -61,7 +61,7 @@ automatically. Alternatively, you can run `pip install -e .` to reinstall the pa
 
 #### plantcv.utils
 
-The `plantcv.utils` module has been deleted with `sample_images` and `json2csv` moving to `plantcv.parallel` and `tabulate_bayes_classes` moving to `plantcv.learn`. Command-line interfaces are still available for `sample_images` [plantcv-sample](tools.md#PlantCV-Parallel) and `tabulate_bayes_classes` as [plantcv-learn tabulate_bayes_classes](tools.md#Training-machine-learning-models).
+The `plantcv.utils` module has been deleted with `sample_images` moving to `plantcv.parallel`, `json2csv` moving to `plantcv.plantcv`, and `tabulate_bayes_classes` moving to `plantcv.learn`. Command-line interfaces are still available for `sample_images` [plantcv-sample](tools.md#plantcv-parallel) and `tabulate_bayes_classes` as [plantcv-learn tabulate_bayes_classes](tools.md#training-machine-learning-models).
 
 #### plantcv.parallel.WorkflowConfig
 
@@ -672,6 +672,11 @@ pages for more details on the input and output variable types.
 * pre v3.14.0: NA
 * post v3.14.0:  image_dataset = **plantcv.io.read_dataset**(*source_path, pattern='', sort=True*)
 
+#### plantcv.json2csv
+
+* pre v5: NA
+* post v5: **plantcv.json2csv**(*json_file, csv_prefix*)
+
 #### plantcv.landmark_reference_pt_dist
 
 * pre v3.0dev2: device, vert_ave_c, hori_ave_c, euc_ave_c, ang_ave_c, vert_ave_b, hori_ave_b, euc_ave_b, ang_ave_b = **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r, device, debug=None*)
@@ -903,6 +908,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.10: Untracked
 * post v4.10: **plantcv.parallel.process_results**(*config*)
+* post v5.0: DEPRECATED, see plantcv.process_results
 
 #### plantcv.parallel.workflow_inputs
 
@@ -964,6 +970,11 @@ pages for more details on the input and output variable types.
 * pre v3.1: NA
 * post v3.1: **plantcv.print_results**(*filename*)
 * post v4.0: DEPRECATED, see plantcv.outputs.save_results
+
+#### plantcv.process_results
+
+* pre v5.0: NA
+* post v5.0: **plantcv.process_results**(*input_dir=".", filename="results", outformat="csv"*)
 
 #### plantcv.pseudocolor
 
