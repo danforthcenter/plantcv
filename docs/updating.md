@@ -1379,6 +1379,16 @@ pages for more details on the input and output variable types.
 * pre v4.0: NA
 * post v4.0: chart = **plantcv.visualize.chlorophyll_fluorescence**(*ps_da, labeled_mask, n_labels=1, label="object"*)
 
+#### plantcv.visualize.color_chip_comparison
+
+* pre v4.10: NA
+* post v4.10: plot = plantcv.visualize.color_chip_comparison**(*std_matrix, \*args*)
+
+#### plantcv.visualize.color_correction_scatter
+
+* pre v4.10: NA
+* post v4.10: plot = plantcv.visualize.color_correction_scatter**(*color_matrix, std_matrix, corrected_matrix*)
+
 #### plantcv.visualize.colorize_label_img
 
 * pre v3.13: NA
