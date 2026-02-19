@@ -4,6 +4,7 @@ import json
 import glob
 import pandas as pd
 import itertools
+from plantcv.parallel.message import parallel_print
 
 
 # Parse dataset metadata
@@ -18,8 +19,10 @@ def metadata_parser(config):
 
     Returns
     -------
-    pandas.core.groupby.generic.DataFrameGroupBy
-        Grouped dataframe of image metadata.
+    meta: pandas.core.frame.DataFrame
+        Dataframe of image metadata.
+    removed_df: pandas.core.frame.DataFrame
+        Dataframe of image metadata for images excluded from the workflow.
     """
     # Read the input dataset to a dictionary
     dataset = _read_dataset(config=config)
@@ -36,10 +39,70 @@ def metadata_parser(config):
     # Apply user-supplied date range filters
     meta, removed_df = _apply_date_range_filter(df=meta, config=config, removed_df=removed_df)
 
-    # Apply metadata grouping
-    meta = _group_metadata(df=meta, config=config)
+    # if resuming a checkpointed process read in that metadata
+    meta, removed_df = _read_checkpoint_data(df=meta, config=config, removed_df=removed_df)
 
     return meta, removed_df
+###########################################
+
+
+# Read metadata from a checkpoint
+###########################################
+def _read_checkpoint_data(df, config, removed_df):
+    """Reads checkpointing data to make a metadata dataframe what was already run
+
+    Parameters
+    ----------
+    df = pandas.core.frame.DataFrame, metadata dataframe
+    config = plantcv.parallel.WorkflowConfig object
+    removed_df = pandas.core.frame.DataFrame, dataframe of images removed up to this point
+
+    Returns
+    -------
+    df = pandas.core.frame.DataFrame, filtered metadata dataframe
+    removed_df = pandas.core.frame.DataFrame, dataframe of removed metadata
+    """
+    if "chkpt_start_dir" not in config.__dict__:
+        config.chkpt_start_dir = config.tmp_dir
+    # look for any json files in a checkpoint directory (made by run_parallel)
+    existing_json = []
+    for _, _, files in os.walk(os.path.join(config.chkpt_start_dir, "_PCV_PARALLEL_CHECKPOINT_")):
+        for file in files:
+            if file.lower().endswith(".json"):
+                existing_json.append(file)
+    # if there are json files in checkpoint then this is a re-run
+    if any(existing_json) and config.checkpoint:
+        ran_list = [pd.DataFrame()]
+        # look through checkpoint directory for json without "completed" companion file
+        for root, _, files in os.walk(os.path.join(config.chkpt_start_dir, "_PCV_PARALLEL_CHECKPOINT_")):
+            for file in files:
+                if file.lower().endswith(".json") and os.path.exists(
+                        os.path.join(root, os.path.splitext(file)[0]+"_complete")
+                ):
+                    with open(os.path.join(root, file), "r") as fp:
+                        j = json.load(fp)["metadata"]
+                        row = {}
+                        for var in j:
+                            row[var] = j[var]["value"]
+                        ran_list.append(pd.DataFrame.from_dict(row))
+        # bind to metadata dataframe
+        already_run = pd.concat(ran_list)
+        already_run = already_run[already_run["filepath"].notna()]
+        # message for clarity
+        parallel_print(f"Found {already_run.shape[0]} existing results in checkpoint directory, excluding those jobs.",
+                       verbose=config.verbose)
+        # remove already_run rows from metadata dataframe
+        keep_columns = df.columns
+        df = _anti_join(df, already_run, on="filepath", suffixes=(None, "_removeY"))
+        df = df[keep_columns]
+        # add stuff that already exists to the removed metadata
+        already_run["status"] = "Removed by checkpointing, results already exist"
+        keep_rm_cols = [col for col in already_run.columns if col in ["filepath", "status",
+                                                                      *config.metadata_terms.keys()]]
+        already_run = already_run.loc[:, keep_rm_cols].drop_duplicates()
+        removed_df = pd.concat([removed_df, already_run])
+
+    return df, removed_df
 ###########################################
 
 
@@ -134,7 +197,7 @@ def _apply_metadata_filters(df, config):
     # Create a metadata filter dataframe as the product of all combinations of values
     metadata_filter = pd.DataFrame(list(itertools.product(*config.metadata_filters.values())),
                                    columns=config.metadata_filters.keys(), dtype="object")
-    # If there are no filters provide the metadata_filter dataframe will be empty and we can return the input datafram
+    # If there are no filters provide the metadata_filter dataframe will be empty and we can return the input dataframe
     removed_df = pd.DataFrame()
     filtered_df = df
     if not metadata_filter.empty:
@@ -170,42 +233,30 @@ def _apply_date_range_filter(df, config, removed_df):
     filtered_df = pandas.core.frame.DataFrame, filtered metadata dataframe
     removed_df = pandas.core.frame.DataFrame, dataframe of removed metadata
     """
-    # If either the start or end date is None then do not filter
-    if None in [config.start_date, config.end_date]:
-        return df, removed_df
     # Set whether the datetime code is in UTC or not
     utc = bool("Z" in config.timestampformat)
-    # Convert start and end dates to datetimes
-    start_date = pd.to_datetime(config.start_date, format=config.timestampformat, utc=utc)
-    end_date = pd.to_datetime(config.end_date, format=config.timestampformat, utc=utc)
+
+    # Include all by default
+    after_start_date = pd.Series([True] * df.shape[0])
+    before_end_date = pd.Series([True] * df.shape[0])
+
+    # Make boolean vector for start and end date filtering if dates are not None
+    if config.start_date is not None:
+        after_start_date = df["timestamp"] >= pd.to_datetime(config.start_date, format=config.timestampformat, utc=utc)
+    if config.end_date is not None:
+        before_end_date = df["timestamp"] <= pd.to_datetime(config.end_date, format=config.timestampformat, utc=utc)
+
+    # And of boolean vectors
+    keep_dates = after_start_date & before_end_date
     # Keep rows with dates between start and end date
-    filtered_df = df.loc[df["timestamp"].between(start_date, end_date, inclusive="both")]
+    filtered_df = df.loc[keep_dates]
     not_between_df = _anti_join(df, filtered_df)
     not_between_df["status"] = "Removed by config.start_date and config.end_date"
     removed_df = pd.concat([removed_df, not_between_df])
+    removed_df["timestamp"] = removed_df["timestamp"].dt.strftime(config.timestampformat)
+    filtered_df["timestamp"] = filtered_df["timestamp"].dt.strftime(config.timestampformat)
 
     return filtered_df, removed_df
-###########################################
-
-
-# Group metadata dataframe into sets
-###########################################
-def _group_metadata(df, config):
-    """Group metadata.
-
-    Keyword arguments:
-    df = metadata dataframe
-    config = plantcv.parallel.WorkflowConfig object
-
-    Outputs:
-    groups = grouped metadata
-
-    :param df: pandas.core.frame.DataFrame
-    :param config: plantcv.parallel.WorkflowConfig
-    :return groups: pandas.core.groupby.generic.DataFrameGroupBy
-    """
-    groups = df.groupby(by=config.groupby)
-    return groups
 ###########################################
 
 
@@ -240,7 +291,7 @@ def _filename_metadata_index(config):
     """
     # if filename_metadata is not specified then estimate it
     if not bool(config.filename_metadata):
-        print("Warning: Creating config.filename_metadata based on file names.")
+        parallel_print("Warning: Creating config.filename_metadata based on file names.",  verbose=config.verbose)
         config = _estimate_filename_metadata(config)
 
     # A dictionary of metadata terms and their index position in the filename metadata term list
@@ -327,11 +378,11 @@ def _parse_filepath(df, config):
     for i, fp in enumerate(paths_after_input):
         # for every file path, split it and add the elements to a list
         splits = fp.split(os.sep)
-        path_metadata.append(splits[1:])
+        path_metadata.append(splits)
     # bind list into a dataframe
     path_metadata_df = pd.DataFrame(path_metadata)
-    # rename columns to filepath1:N, basename
-    path_metadata_df.columns = ["filepath"+str(i + 1) for i in range(len(path_metadata_df.columns))]
+    # rename columns to dir1:N, basename
+    path_metadata_df.columns = ["dir"+str(i + 1) for i in range(len(path_metadata_df.columns))]
     if not path_metadata_df.empty:
         path_metadata_df.rename(columns={path_metadata_df.columns[-1]: "basename"}, inplace=True)
     # bind new columns onto existing metadata
@@ -498,18 +549,19 @@ def _read_filenames(config):
 ###########################################
 
 
-def _anti_join(df1, df2=None):
+def _anti_join(df1, df2=None, **kwargs):
     """Anti join function for pandas dataframes
     Parameters
     ----------
     df1      = pandas.core.frame.Dataframe, dataframe of metadata
-    df2      = pandas.core.frame.Dataframe, dataframe of filtered metadata
+    df2      = pandas.core.frame.Dataframe, dataframe of filtered metadata (rows to remove)
+    **kwargs = additional arguments passed to pandas.merge
 
     Returns
     -------
     anti_joined = pandas.core.frame.Dataframe, metadata dataframe of what was removed
     """
-    outer = df1.merge(df2, how='outer', indicator=True)
+    outer = df1.merge(df2, how='outer', indicator=True, **kwargs)
     anti_joined = outer[(outer['_merge'] == 'left_only')].drop('_merge', axis=1)
     return anti_joined
 ###########################################

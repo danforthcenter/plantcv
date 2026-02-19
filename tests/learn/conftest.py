@@ -19,6 +19,8 @@ class LearnTestData:
         self.kmeans_train_dir = os.path.join(self.datadir, "kmeans_train_dir")
         # Kmeans training grayscale directory
         self.kmeans_train_gray_dir = os.path.join(self.datadir, "kmeans_train_gray_dir")
+        # ImageJ Pixel Inspector sampled RGB values
+        self.rgb_values_file = os.path.join(self.datadir, "pixel_inspector_rgb_values.txt")
 
 
 @pytest.fixture(scope="session")

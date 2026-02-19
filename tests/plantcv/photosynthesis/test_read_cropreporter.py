@@ -59,5 +59,61 @@ def test_read_cropreporter_spc_only(photosynthesis_test_data, tmpdir):
     shutil.copyfile(spc_dat, os.path.join(cache_dir, "PSII_SPC_test.DAT"))
     fluor_filename = os.path.join(cache_dir, "PSII_HDR_test.INF")
     ps = read_cropreporter(filename=fluor_filename)
-    print(os.listdir(cache_dir))
     assert isinstance(ps, PSII_data) and ps.spectral.array_data.shape == (966, 1296, 3)
+
+
+def test_read_cropreporter_npq(photosynthesis_test_data, tmpdir):
+    """Test for PlantCV."""
+    ps = read_cropreporter(filename=photosynthesis_test_data.cropreporter_npq)
+    assert isinstance(ps, PSII_data) and ps.ojip_dark.shape == (966, 1296, 3, 1)
+    assert isinstance(ps, PSII_data) and ps.ojip_light.shape == (966, 1296, 3, 1)
+
+
+def test_read_cropreporter_gfp_only(photosynthesis_test_data, tmpdir):
+    """Test GFP import."""
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+    # Create dataset with only GFP
+    shutil.copyfile(photosynthesis_test_data.cropreporter_gfp, os.path.join(cache_dir, "HDR_DYSeed_20251222191634684.INF"))
+    gfp_dat = photosynthesis_test_data.cropreporter_gfp.replace("HDR", "GFP")
+    gfp_dat = gfp_dat.replace("INF", "DAT")
+    shutil.copyfile(gfp_dat, os.path.join(cache_dir, "GFP_DYSeed_20251222191634684.DAT"))
+    fluor_filename = os.path.join(cache_dir, "HDR_DYSeed_20251222191634684.INF")
+    ps = read_cropreporter(filename=fluor_filename)
+    assert isinstance(ps, PSII_data)
+    assert ps.gfp is not None
+    # (rows, cols, frames)
+    assert ps.gfp.shape[2] in [2, 3]
+
+
+def test_read_cropreporter_rfp_only(photosynthesis_test_data, tmpdir):
+    """Test RFP import."""
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+    # Create dataset with only RFP
+    shutil.copyfile(photosynthesis_test_data.cropreporter_rfp, os.path.join(cache_dir, "HDR_DYSeed_20251222191634684.INF"))
+    rfp_dat = photosynthesis_test_data.cropreporter_rfp.replace("HDR", "RFP")
+    rfp_dat = rfp_dat.replace("INF", "DAT")
+    shutil.copyfile(rfp_dat, os.path.join(cache_dir, "RFP_DYSeed_20251222191634684.DAT"))
+    fluor_filename = os.path.join(cache_dir, "HDR_DYSeed_20251222191634684.INF")
+    ps = read_cropreporter(filename=fluor_filename)
+    assert isinstance(ps, PSII_data)
+    assert ps.rfp is not None
+    assert ps.rfp.shape[2] in [1, 2]
+
+
+def test_read_cropreporter_aph_only(photosynthesis_test_data, tmpdir):
+    """Test APH (Red / FarRed reflectance) import."""
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+    # Create dataset with only APH
+    shutil.copyfile(photosynthesis_test_data.cropreporter_aph, os.path.join(cache_dir,
+                                                                            "HDR_2025-12-12_tob1_20251212205712029.INF"))
+    aph_dat = photosynthesis_test_data.cropreporter_aph.replace("HDR", "APH")
+    aph_dat = aph_dat.replace("INF", "DAT")
+    shutil.copyfile(aph_dat, os.path.join(cache_dir, "APH_2025-12-12_tob1_20251212205712029.DAT"))
+    fluor_filename = os.path.join(cache_dir, "HDR_2025-12-12_tob1_20251212205712029.INF")
+    ps = read_cropreporter(filename=fluor_filename)
+    assert isinstance(ps, PSII_data)
+    assert ps.aph is not None
+    assert ps.aph.shape[2] == 2  # Red + FarRed
