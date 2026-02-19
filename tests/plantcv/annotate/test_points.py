@@ -1,6 +1,6 @@
 import cv2
 import matplotlib
-from plantcv.plantcv import Points
+from plantcv.plantcv import Point
 
 
 def test_points_interactive(annotate_test_data):
@@ -9,7 +9,7 @@ def test_points_interactive(annotate_test_data):
     img = cv2.imread(annotate_test_data.small_rgb_img)
 
     # initialize interactive tool
-    drawer_rgb = Points(img, figsize=(12, 6))
+    drawer_rgb = Point(img, figsize=(12, 6))
 
     # simulate mouse clicks
     # event 1, left click to add point
