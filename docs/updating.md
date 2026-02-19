@@ -61,7 +61,7 @@ automatically. Alternatively, you can run `pip install -e .` to reinstall the pa
 
 #### plantcv.utils
 
-The `plantcv.utils` module has been deleted with `sample_images` moving to `plantcv.parallel`, `json2csv` moving to `plantcv.plantcv`, and `tabulate_bayes_classes` moving to `plantcv.learn`. Command-line interfaces are still available for `sample_images` [plantcv-sample](tools.md#PlantCV-Parallel) and `tabulate_bayes_classes` as [plantcv-learn tabulate_bayes_classes](tools.md#Training-machine-learning-models).
+The `plantcv.utils` module has been deleted with `sample_images` moving to `plantcv.parallel`, `json2csv` moving to `plantcv.plantcv`, and `tabulate_bayes_classes` moving to `plantcv.learn`. Command-line interfaces are still available for `sample_images` [plantcv-sample](tools.md#plantcv-parallel) and `tabulate_bayes_classes` as [plantcv-learn tabulate_bayes_classes](tools.md#training-machine-learning-models).
 
 #### plantcv.parallel.WorkflowConfig
 
