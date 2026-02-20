@@ -4,7 +4,7 @@ import cv2
 import os
 import numpy as np
 import random
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 
 

@@ -142,7 +142,8 @@ class jupyterconfig:
             source, _ = exporter.from_notebook_node(nb)
             # Write the output to a Python file
             with open(self.workflow, 'w') as fh:
-                fh.writelines(re.sub(r"(.*?[.])?plot_image\(.*?\)", "", source))
+                pattern = pattern = r".*?(.*?[.])?plot_image\(.*?\).*\n?|.*get_ipython\(\).*\n?"
+                fh.writelines(re.sub(pattern, "", source))
             # return boolean for if self.script exists
         return os.path.exists(self.workflow)
 
