@@ -251,7 +251,7 @@ class WorkflowConfig:
 
 
 def _validate_set_attr(val, sentence, expect_type):
-    """Validate attributes before setting them in a WorkflowConfig or jupyterconfig object
+    """Validate attributes before setting them in a WorkflowConfig or JupyterConfig object
 
     Parameters
     ----------
@@ -284,11 +284,11 @@ def _validate_set_attr(val, sentence, expect_type):
 
 
 def _config_attr_lookup(config, attr, val):
-    """Lookup attributes for a WorkflowConfig or jupyterconfig object
+    """Lookup attributes for a WorkflowConfig or JupyterConfig object
 
     Parameters
     ----------
-    config   = plantcv.parallel.workflowconfig or jupyterconfig, configuration file
+    config   = plantcv.parallel.workflowconfig or JupyterConfig, configuration file
     attr     = str, name of an attribute to set.
     val      = type flexible, value to assign to configuration attribute.
 

@@ -9,7 +9,7 @@ from plantcv.parallel.inspect_dataset import inspect_dataset
 from plantcv.parallel.message import parallel_print
 
 
-class jupyterconfig:
+class JupyterConfig:
     # initialization based mainly on plantcv/parallel/WorkflowConfig class
     def __init__(self):
         object.__setattr__(self, "verbose", True)
