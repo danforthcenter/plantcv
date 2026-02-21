@@ -42,7 +42,6 @@ class jupyterconfig:
         object.__setattr__(self, "cluster", "LocalCluster")
         object.__setattr__(self, "cluster_config", {
             "n_workers": 1,
-            "cores": 1,
             "memory": "1GB",
             "disk": "1GB",
             "log_directory": None,
