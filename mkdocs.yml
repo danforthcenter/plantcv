@@ -161,6 +161,7 @@ nav:
         - 'Filter a mask by ROI (quickly)': roi_quick_filter.md
         - 'Convert ROI to Mask': roi2mask.md
       - 'Segment Image Series': segment_image_series.md
+      - 'Sharpen Image': sharpen.md
       - 'Shift Image': shift.md
       - 'Spatial Clustering': spatial_clustering.md
       - 'Spectral Index': spectral_index.md
@@ -234,6 +235,10 @@ nav:
         - 'Run Parallel': parallel_run_parallel.md
         - 'Workflow Parallelization': pipeline_parallel.md
   - 'Accessory tools': tools.md
+  - 'Developer tools':
+    - 'Parallel Job Builder': parallel_job_builder.md
+    - 'Parallel Metadata Parser': parallel_metadata_parser.md
+    - 'Parallel Multiprocess': parallel_multiprocess.md
 markdown_extensions:
   - toc:
       permalink: True
