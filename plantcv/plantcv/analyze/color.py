@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 from scipy import stats
 from plantcv.plantcv import fatal_error
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import outputs
 from plantcv.plantcv.visualize import histogram

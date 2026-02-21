@@ -6,7 +6,7 @@ import numpy as np
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import apply_mask
 from plantcv.plantcv import fatal_error
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 
 
 def _hist(img, hmax, x, y, h, w, data_type):
