@@ -1,6 +1,18 @@
 ## Why Parallelize?
 
-PlantCV's Parallel module allows for running a PlantCV workflow on many images across many cores. If you have a high throughput image phenotyping facility or other hardware allowing you to take many photos then working one photo at a time through a Jupyter notebook may be prohibitively slow and would not leverage the benefits of PlantCV over non-scripting image analysis tools.
+PlantCV's Parallel module allows for running a PlantCV workflow on many images across many cores. Sometimes this is called "multiprocessing" or "batch processing". If you have a high throughput image phenotyping facility or other hardware allowing you to take many photos then working one photo at a time through a Jupyter notebook may be prohibitively slow and would not leverage the benefits of PlantCV over non-scripting image analysis tools.
+
+In addition to making it easier for users to analyze many images parallelization also aides in making workflows reproducible since there is no need to make sure that you remember to make the right edits each time you run through a jupyter notebook or change file paths in a python script.
+
+## Taking photos with the goal of parallel analysis
+
+Ideally your images should fulfill a few criteria to make parallelization easier:
+
+1. Using a basically comparable imaging station helps make parallelization easier. If you can leave a camera in one place and put your plants in front of it at the same distance, with the same lighting, and a consistently placed color card (if you are using one) then there will be less room for things to require manual attention which would slow down your analysis.
+2. Naming your files with a consistent and meaningful schema will let tools like the [`metadata_parser`](parallel_metadata_parser.md) work well to subset your image dataset and provide meaningful metadata in the outputs without you then having to look up barcodes/labels in downstream analysis.
+3. Storing images in a consistent location with meaningful file paths will make using the right images easier. By default the a parallel configuration file will go into all the subdirectories after your `input_dir` and find all image files in those subdirectories. That means you could name intermediate directories however you want to, but tools like [`inspect_dataset`](parallel_inspect_config.md) or the regex/directory filters available in [`workflowconfig`](parallel_config.md) give you meaningful information and options.
+
+While `plantcv.parallel` is a very flexible and useful tool able to work over highly variable datasets taking some time to think about how you are going to take, name, and store images can save you and collaborators a lot of work in image analysis.
 
 ## Getting ready to parallelize
 
@@ -31,7 +43,7 @@ pcv.params.debug = args.debug
 img, path, filename = pcv.readimage(filename=args.image1)
 # ... the rest of your code
 ```
-When you are ready to run in parallel whether you make a python script manually and run with [`workflow_inputs`](parallel_config.md) or if you run the Jupyter notebook in parallel with [`jupyterconfig`](parallel_jupyterconfig.md) you would need to change the above to:
+When you are ready to run in parallel whether you make a python script manually and run with [`workflow_inputs`](parallel_config.md) or if you run the Jupyter notebook in parallel with [`JupyterConfig`](parallel_jupyterconfig.md) you would need to change the above to:
 
 ```python
 # in your .py script

@@ -16,7 +16,7 @@
 We normally execute workflows in a shell script or in in a cluster scheduler job file. The parallelization tool
 `plantcv-run-workflow` has many configuration parameters. To make it easier to manage the number of input parameters,
 a configuration file can be edited and input. A similar configuration file can be made and run directly in a jupyter notebook,
-see [`jupyterconfig`](parallel_jupyterconfig.md).
+see [`JupyterConfig`](parallel_jupyterconfig.md).
 
 ### Configuration-based method
 
@@ -147,7 +147,6 @@ Sample image filename: `cam1_16-08-06-16:45_el1100s1_p19.jpg`
     "cluster": "HTCondorCluster",
     "cluster_config": {
         "n_workers": 16,
-        "cores": 1,
         "memory": "1GB",
         "disk": "1GB",
         "log_directory": null,
@@ -225,7 +224,6 @@ in a list to the `filename_metadata` parameter.
     "cluster": "HTCondorCluster",
     "cluster_config": {
         "n_workers": 16,
-        "cores": 1,
         "memory": "1GB",
         "disk": "1GB",
         "log_directory": null,
@@ -285,7 +283,6 @@ Finally, we filter the basename for top view rgb images with "TV_VIS.*".
     "cluster": "HTCondorCluster",
     "cluster_config": {
         "n_workers": 16,
-        "cores": 1,
         "memory": "1GB",
         "disk": "1GB",
         "log_directory": null,
@@ -336,7 +333,6 @@ To identify each image within our workflow, we will name them based on the `imgt
     "cluster": "HTCondorCluster",
     "cluster_config": {
         "n_workers": 16,
-        "cores": 1,
         "memory": "1GB",
         "disk": "1GB",
         "log_directory": null,

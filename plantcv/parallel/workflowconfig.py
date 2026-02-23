@@ -33,7 +33,6 @@ class WorkflowConfig:
         object.__setattr__(self, "cluster", "LocalCluster")
         object.__setattr__(self, "cluster_config", {
             "n_workers": 1,
-            "cores": 1,
             "memory": "1GB",
             "disk": "1GB",
             "log_directory": None,
@@ -133,14 +132,13 @@ class WorkflowConfig:
             print(f"Error: the cluster type {self.cluster} is not a supported cluster provider. "
                   f"Valid clusters include: {', '.join(map(str, valid_clusters))}."
                   )
-
         # Validate the cluster configuration
         if (
-                self.cluster_config["n_workers"] * self.cluster_config["cores"] > os.cpu_count()
+                self.cluster_config["n_workers"] * self.cluster_config.get('cores', 1) > os.cpu_count()
                 and self.cluster == "LocalCluster"
         ):
             print(f"Error: n_workers is {self.cluster_config['n_workers']} and "
-                  f"cores is {self.cluster_config['cores']} which requires "
+                  f"cores is {self.cluster_config.get('cores', 1)} which requires "
                   f"more than the {os.cpu_count()} available cores.")
             checks.append(False)
 
@@ -253,7 +251,7 @@ class WorkflowConfig:
 
 
 def _validate_set_attr(val, sentence, expect_type):
-    """Validate attributes before setting them in a WorkflowConfig or jupyterconfig object
+    """Validate attributes before setting them in a WorkflowConfig or JupyterConfig object
 
     Parameters
     ----------
@@ -286,11 +284,11 @@ def _validate_set_attr(val, sentence, expect_type):
 
 
 def _config_attr_lookup(config, attr, val):
-    """Lookup attributes for a WorkflowConfig or jupyterconfig object
+    """Lookup attributes for a WorkflowConfig or JupyterConfig object
 
     Parameters
     ----------
-    config   = plantcv.parallel.workflowconfig or jupyterconfig, configuration file
+    config   = plantcv.parallel.workflowconfig or JupyterConfig, configuration file
     attr     = str, name of an attribute to set.
     val      = type flexible, value to assign to configuration attribute.
 

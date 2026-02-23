@@ -170,9 +170,6 @@ parameters:
 generally use 1 CPU per image analysis workflow, this is effectively the maximum number of concurrently running 
 workflows.
 
-* **cores**: (int, required, default = 1): the number of compute cores per workflow. This should be left as 1 unless a 
-workflow is designed to use multiple CPUs/cores/threads.
-
 * **memory**: (str, required, default = "1GB"): the amount of memory/RAM used per workflow. Can be set as a number plus 
 units (KB, MB, GB, etc.).
 
@@ -189,7 +186,7 @@ environmental variable.
 of key-value pairs (e.g. `{"getenv": "true"}`).
 
 !!! note
-    `n_workers` is the only parameter used by `LocalCluster`, all others are currently ignored. `n_workers`, `cores`,
+    `n_workers` is the only parameter used by `LocalCluster`, all others are currently ignored. `n_workers`,
     `memory`, and `disk` are required by the other clusters. All other parameters are optional. Additional parameters
     defined in the [dask-jobqueue API](https://jobqueue.dask.org/en/latest/api.html) can be supplied.
 
