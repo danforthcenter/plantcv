@@ -21,8 +21,6 @@ nav:
     - 'Adding/Editing Documentation': documentation.md
     - 'Pull Request Review Process' : pr_review_process.md
   - "Tutorials": tutorials.md
-  - 'Workflow Parallelization': pipeline_parallel.md
-  - 'Exporting Data': db-exporter.md
   - 'PlantCV Namespace':
     - 'PlantCV':
       - 'Inputs and Outputs':
@@ -161,6 +159,7 @@ nav:
         - 'Filter a mask by ROI (quickly)': roi_quick_filter.md
         - 'Convert ROI to Mask': roi2mask.md
       - 'Segment Image Series': segment_image_series.md
+      - 'Sharpen Image': sharpen.md
       - 'Shift Image': shift.md
       - 'Spatial Clustering': spatial_clustering.md
       - 'Spectral Index': spectral_index.md
@@ -178,8 +177,8 @@ nav:
         - 'Texture Threshold': texture_threshold.md
       - 'Transformation Methods':
           - 'Auto-Detect Color Card': transform_detect_color_card.md
-          - 'Auto-Detect Color Card (old)': find_color_card.md
           - 'Auto Correct Color': transform_auto_correct_color.md
+          - 'Auto Correct Color (non-linear)': transform_auto_correct_color_nonlinear.md
           - 'Calibrate Camera': transform_calibrate_camera.md
           - 'Checkerboard Calibration': transform_checkerboard_calibration.md
           - 'Create Color Card Mask': create_color_card_mask.md
@@ -197,6 +196,7 @@ nav:
           - 'Resize Images': transform_resize.md
           - 'Rotate': rotate2.md
       - 'Transformation Helpers':
+            - 'Astrobotany Calibration Matrix': astro_color_matrix.md
             - 'Calculate Moore-Penrose Inverse Matrix': mp_inverse.md
             - 'Create Color Correction Matrix': transformation_matrix.md
             - 'Apply Color Correction Matrix': apply_transformation_matrix.md
@@ -205,6 +205,7 @@ nav:
       - 'Visualization Methods':
           - 'Auto Threshold Methods': visualize_auto_threshold_methods.md
           - 'Chlorophyll Fluorescence': visualize_chlorophyll_fluorescence.md
+          - 'Color Correction Scatter Plot': visualize_color_correction_scatter.md
           - 'Colorize Label Image': visualize_colorize_label_img.md
           - 'Colorize Masks': visualize_colorize_masks.md
           - 'Colorspaces': visualize_colorspace.md
@@ -216,7 +217,6 @@ nav:
           - 'Pixel Scatter Plot': 'visualize_pixel_scatter_vis.md'
           - 'Pseudocolor': visualize_pseudocolor.md
           - 'Tile': visualize_tile.md
-          - 'Time Lapse Video': visualize_time_lapse_video.md
       - 'Watershed Segmentation': watershed.md
       - 'White balance': white_balance.md
       - 'Within Frame': within_frame.md
@@ -225,13 +225,16 @@ nav:
       - 'Naive Bayes': naive_bayes.md
       - 'Naive Bayes Multiclass': naive_bayes_multiclass.md
     - 'Parallelization':
+        - 'Getting started in parallel': parallel_preparation.md
         - 'Configure Parallelization': parallel_config.md
+        - 'Configure Parallelization in Jupyter': parallel_jupyterconfig.md
         - 'Inspect Configuration': parallel_inspect_config.md
         - 'Workflow Inputs Management': parallel_workflow_inputs.md
         - 'Metadata Parser': parallel_metadata_parser.md
         - 'Job Builder': parallel_job_builder.md
         - 'Multiprocess': parallel_multiprocess.md
         - 'Process Results': parallel_process_results.md
+        - 'Convert JSON results to CSV': json2csv.md
         - 'Workflow Parallelization': pipeline_parallel.md
   - 'Accessory tools': tools.md
 markdown_extensions:

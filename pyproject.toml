@@ -21,13 +21,15 @@ dependencies = [
     "scikit-learn",
     "dask",
     "dask-jobqueue",
-    "opencv-python",
+    "opencv-python-headless",
     "xarray >= 2022.11.0",
     "statsmodels",
     "altair < 6",
     "vl-convert-python",
     "nd2",
-    "flyr"
+    "flyr",
+    "nbconvert",
+    "nbformat"
 ]
 requires-python = ">=3.8"
 authors = [
@@ -50,8 +52,8 @@ test = [
 
 [project.scripts]
 plantcv-run-workflow = "plantcv.parallel.cli:main"
+plantcv-sample = "plantcv.parallel.cli_sample_images:main"
 plantcv-train = "plantcv.learn.cli:main"
-plantcv-utils = "plantcv.utils.cli:main"
 
 [project.urls]
 Homepage = "https://plantcv.org"

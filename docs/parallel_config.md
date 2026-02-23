@@ -47,7 +47,7 @@ Validate parameters/structure of configuration data.
 * **input_dir**: (str, required): path/name of input images directory (validates that it exists).
 
 
-* **json**: (str, required): path/name of output JSON data file (appends new data if it already exists).
+* **results**: (str, required): path/name of output JSON data file (appends new data if it already exists).
 
 
 * **filename_metadata**: (list, required): list of metadata terms used to construct filenames. for example: 
@@ -92,9 +92,9 @@ extensions should be combined (if using phenofront data this must be length 1 an
   `{"imgtype": "VIS", "frame": ["0", "90"]"}`).
 
 
-* **metadata_regex**: (dict, default = `None`): a dictionary of filepath terms (keys) and values, any specified keys
+* **metadata_regex**: (dict, default = `None`): a dictionary of metadata terms (keys) and values, any specified keys
 will be used for regex based filtering (e.g. 
-  `{"filepath1": "first[p|P]athPattern.*", "basename": "^starts_with.*"}`).
+  `{"dir1": "first[p|P]athPattern.*", "basename": "^starts_with.*"}`).
 
 
 * **timestampformat**: (str, default = '%Y-%m-%dT%H:%M:%S.%fZ'): a date format code compatible with strptime C library. 
@@ -118,7 +118,10 @@ metadata terms are listed [here](pipeline_parallel.md).
 image group (created by `groupby`), or `"auto"` to generate a numbered image sequence `image1, image2, ...`. The resulting
 names are used to access individual image filepaths in a workflow.
 
-* **cleanup**: (bool, default =`True`): remove temporary job directory if `True`.
+* **checkpoint**: (bool, default = `True`): restart from where a previous run left off and/or keep checkpointing files in
+case jobs fail for any reason. For details see the checkpointing section of ['workflow_inputs'](parallel_workflow_inputs.md).
+
+* **cleanup**: (bool, default =`True`): remove `config.tmp_dir` directory (including all temporary job directories and checkpoint files) after a complete run if `True`.
 
 
 * **append**: (bool, default = `False`): if `False`, will delete previous results stored in the specified JSON file.
@@ -135,7 +138,8 @@ names are used to access individual image filepaths in a workflow.
 
 
 * **metadata_terms**: (dict, default: as-is): a dictionary of metadata terms used to assign values in image filenames
-  (or metadata files) to metadata terms (should not be modified here). Terms from `filename_metadata` that are not present in the default dictionary of terms are added automatically.
+  (or metadata files) to metadata terms (should not be modified here). Terms from `filename_metadata`
+  that are not present in the default dictionary of terms are added automatically.
 
 
 ### Cluster configuration
@@ -202,7 +206,7 @@ config.import_config(config_file="my_config.json")
 
 # Change configuration values directly in Python as needed. At a minimum you must specify input_dir, json, filename_metadata, workflow.
 config.input_dir = "./my_images"
-config.json = "output.json"
+config.results = "output.json"
 config.filename_metadata = ["plantbarcode", "timestamp"]
 config.workflow = "my_workflow.py"
 

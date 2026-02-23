@@ -102,7 +102,7 @@ def test_cri700_bad_input(spectral_index_test_data):
 def test_egi_rgb(spectral_index_test_data):
     """Test for PlantCV."""
     rgb_img = cv2.imread(spectral_index_test_data.small_rgb_img)
-    index_array = spectral_index.egi(rgb_img=rgb_img)
+    index_array = spectral_index.egi(img=rgb_img)
     assert np.shape(index_array.array_data) == (335, 400) and np.nanmax(index_array.pseudo_rgb) == 255
 
 
@@ -115,7 +115,7 @@ def test_egi_hsi(spectral_index_test_data):
 def test_egi_hsi_bad_input(spectral_index_test_data):
     """Test for PlantCV."""
     index_array = spectral_index.egi(spectral_index_test_data.load_hsi(), distance=40)
-    assert spectral_index.egi(rgb_img=index_array, distance=40) is None
+    assert spectral_index.egi(img=index_array, distance=40) is None
 
 
 def test_evi(spectral_index_test_data):

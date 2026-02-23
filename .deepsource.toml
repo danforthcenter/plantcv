@@ -6,6 +6,7 @@ exclude_patterns = [
   "setup.py",
   "tests/conftest.py",
   "tests/*/conftest.py",
+  "tests/testdata/*",
   "versioneer.py"
 ]
 
