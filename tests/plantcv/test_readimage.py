@@ -31,7 +31,7 @@ def test_readimage_normalized(test_data):
     img, _, _ = readimage(filename=test_data.small_gray_img, mode="normalize")
     assert len(img.shape) == 2
 
-    
+
 @pytest.mark.parametrize("mode,depth", [["rgba", 4], ["native", 3]])
 def test_readimage_rgba(mode, depth, test_data):
     """Test for PlantCV."""
