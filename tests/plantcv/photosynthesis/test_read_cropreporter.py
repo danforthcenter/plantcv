@@ -117,3 +117,22 @@ def test_read_cropreporter_aph_only(photosynthesis_test_data, tmpdir):
     assert isinstance(ps, PSII_data)
     assert ps.aph is not None
     assert ps.aph.shape[2] == 2  # Red + FarRed
+
+
+def test_read_cropreporter_pmt_only(photosynthesis_test_data, tmpdir):
+    """Test PMT (PAM Time) import."""
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+    # Create dataset with only PMT
+    shutil.copyfile(photosynthesis_test_data.cropreporter_aph, os.path.join(cache_dir,
+                                                                            "HDR_2025-12-12_tob1_20251212205712029.INF"))
+    pmt_dat = photosynthesis_test_data.cropreporter_aph.replace("HDR", "PMT")
+    pmt_dat = pmt_dat.replace("INF", "DAT")
+    shutil.copyfile(pmt_dat, os.path.join(cache_dir, "PMT_2025-12-12_tob1_20251212205712029.DAT"))
+    fluor_filename = os.path.join(cache_dir, "HDR_2025-12-12_tob1_20251212205712029.INF")
+    ps = read_cropreporter(filename=fluor_filename)
+    assert isinstance(ps, PSII_data)
+    assert ps.pam_time is not Non
+    # Check that dimensions include x, y, frame_label, and measurement
+    assert "frame_label" in ps.pam_time.coords
+    assert "measurement" in ps.pam_time.coords
