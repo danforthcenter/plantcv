@@ -3,32 +3,83 @@ import random
 import shutil
 import json
 from plantcv.plantcv import fatal_error
+from plantcv.parallel.workflowconfig import WorkflowConfig
+from plantcv.parallel.parsers import metadata_parser
 
 
-def sample_images(source_path, dest_path, num=100):
+def sample_images(source, dest_path="./sampled_images", num=100):
     """Gets a sample of images from the source directory and copies them to the destination directory.
 
     Parameters
     ----------
-    source_path : str
-        The directory containing the images to be sampled
+    source : str or WorkflowConfig/JupyterConfig object
+        The directory containing the images to be sampled or a configuration file
     dest_path : str
         The directory where the sampled images will be copied
     num : int, optional
         The number of images to sample, by default 100
 
-    Raises
+    Return
     ------
-    IOError
-        Raised if the source directory does not exist
+    None
     """
-    if not os.path.exists(source_path):
-        raise IOError(f"Directory does not exist: {source_path}")
+    if not os.path.exists(source):
+        raise IOError(f"Directory does not exist: {source}")
 
-    if not os.path.exists(dest_path):
-        os.makedirs(dest_path)  # exist_ok argument does not exist in python 2
+    os.makedirs(dest_path, exist_ok=True)  # exist_ok argument does not exist in python 2
 
-    # If SnapshotInfo exists then need to make a new csv for the random image sample
+    # if source is a directory then read from it
+    if os.path.isdir(source):
+        _sample_from_directory(source, dest_path, num)
+        return None
+    # if source is a file, read that as a WorkflowConfig
+    if os.path.isfile(source):
+        config = WorkflowConfig()
+        config.import_config(source)
+        source = config
+    # `source` at this point should be a WorkflowConfig
+    _sample_from_config(source, dest_path, num)
+    return None
+
+
+def _sample_from_config(config, dest_path, num):
+    """Sample from images that a parallel configuration will use
+
+    Parameters
+    ----------
+    source      = plantcv.parallel.WorkflowConfig, configuration file for parallel workflow
+    dest_path   = str, Path to save sampled images.
+    num         = int, Number of images to sample.
+
+    Returns
+    -------
+    None
+    """
+    meta, _ = metadata_parser(config)
+    sampled = meta.sample(n=num, axis=0)
+    # I think this has filenames in it, need to make sure I know how to get those. I think image?
+    for filepath in sampled["filepath"]:
+        # recreate destination path so you can do filepath filtering
+        dst = os.path.join(dest_path, os.path.relpath(filepath, start=config.input_dir))
+        # make directories to mirror structure
+        os.makedirs(os.path.dirname(dst), exist_ok=True)
+        # copy file to new outpath
+        shutil.copy(filepath, dst)
+
+
+def _sample_from_directory(source_path, dest_path, num):
+    """Sample from various directory formats
+
+    Parameters
+    ----------
+    source_path = str, Path to phenodata images.
+    dest_path   = str, Path to save sampled images.
+    num         = int, Number of images to sample.
+
+    Returns
+    -------
+    None
+    """
     if os.path.exists(os.path.join(source_path, 'SnapshotInfo.csv')):
         _sample_phenofront(source_path, dest_path, num)
     elif os.path.exists(os.path.join(source_path, 'metadata.json')):
@@ -38,12 +89,17 @@ def sample_images(source_path, dest_path, num=100):
 
 
 def _sample_phenofront(source_path, dest_path, num=100):
-    """
-    Sample images from a phenofront dataset.
-    :param source_path: Path to phenofront images.
-    :param dest_path: Path to save sampled images.
-    :param num: Number of images to sample.
-    :return: None
+    """Sample images from a phenofront dataset.
+
+    Parameters
+    ----------
+    source_path = str, Path to phenodata images.
+    dest_path   = str, Path to save sampled images.
+    num         = int, Number of images to sample.
+
+    Returns
+    -------
+    None
     """
     line_array = []
     with open(os.path.join(source_path, 'SnapshotInfo.csv')) as fp:
@@ -77,25 +133,31 @@ def _sample_phenofront(source_path, dest_path, num=100):
 
 
 def _sample_filenames(source_path, dest_path, num=100):
-    """
-    Sample images from a filenames dataset.
-    :param source_path: Path to images.
-    :param dest_path: Path to save sampled images.
-    :param num: Number of images to sample.
-    :return: None
+    """Sample images from a generic dataset.
+
+    Parameters
+    ----------
+    source_path = str, Path to phenodata images.
+    dest_path   = str, Path to save sampled images.
+    num         = int, Number of images to sample.
+
+    Returns
+    -------
+    None
     """
     img_element_array = []
-    img_extensions = ['.png', '.jpg', '.jpeg', '.tif', '.tiff', '.gif']
+    img_extensions = ['bmp', 'dib', 'jpeg', 'jpg', 'jpe', 'jp2', 'png', 'ppm',
+                      'pgm', 'ppm', 'sr', 'ras', 'tiff', 'tif']
     for root, _, files in os.walk(source_path):
         for file in files:
             # Check file type so that only images get copied over
-            ext = os.path.splitext(file)[1]
-            if ext.lower() in img_extensions:
+            if file.lower().endswith(tuple(img_extensions)):
                 img_element_array.append(os.path.join(root, file))
 
     # Check to make sure number of imgs to select is less than number of images found
     if num > len(img_element_array):
-        fatal_error(f"Number of images found ({len(img_element_array)}) less than 'num'.")
+        print(f"Only {len(img_element_array)} images found, lowering 'num' to match.")
+        num = len(img_element_array) - 1
 
     # Get random images
     random_index = random.sample(range(0, len(img_element_array) - 1), num)
@@ -105,12 +167,17 @@ def _sample_filenames(source_path, dest_path, num=100):
 
 
 def _sample_phenodata(source_path, dest_path, num=100):
-    """
-    Sample images from a phenodata dataset.
-    :param source_path: Path to phenodata images.
-    :param dest_path: Path to save sampled images.
-    :param num: Number of images to sample.
-    :return: None
+    """Sample images from a phenodata dataset.
+
+    Parameters
+    ----------
+    source_path = str, Path to phenodata images.
+    dest_path   = str, Path to save sampled images.
+    num         = int, Number of images to sample.
+
+    Returns
+    -------
+    None
     """
     # Initialize an empty dataset
     sampled_dataset = {}

@@ -21,7 +21,6 @@ nav:
     - 'Adding/Editing Documentation': documentation.md
     - 'Pull Request Review Process' : pr_review_process.md
   - "Tutorials": tutorials.md
-  - 'Exporting Data': db-exporter.md
   - 'PlantCV Namespace':
     - 'PlantCV':
       - 'Inputs and Outputs':
@@ -55,6 +54,8 @@ nav:
         - 'RGB to CMYK': rgb2cmyk.md
         - 'RGB to LAB': rgb2lab.md
         - 'RGB to HSV': rgb2hsv.md
+      - 'Combine multiple results files': process_results.md
+      - 'Convert JSON results to CSV': json2csv.md
       - 'Create Labels': create_labels.md
       - 'Crop': crop.md
       - 'Crop and Position Mask': crop_position_mask.md
@@ -161,6 +162,7 @@ nav:
         - 'Filter a mask by ROI (quickly)': roi_quick_filter.md
         - 'Convert ROI to Mask': roi2mask.md
       - 'Segment Image Series': segment_image_series.md
+      - 'Sharpen Image': sharpen.md
       - 'Shift Image': shift.md
       - 'Spatial Clustering': spatial_clustering.md
       - 'Spectral Index': spectral_index.md
@@ -231,12 +233,13 @@ nav:
         - 'Configure Parallelization in Jupyter': parallel_jupyterconfig.md
         - 'Inspect Configuration': parallel_inspect_config.md
         - 'Workflow Inputs Management': parallel_workflow_inputs.md
-        - 'Metadata Parser': parallel_metadata_parser.md
-        - 'Job Builder': parallel_job_builder.md
-        - 'Multiprocess': parallel_multiprocess.md
-        - 'Process Results': parallel_process_results.md
+        - 'Run Parallel': parallel_run_parallel.md
         - 'Workflow Parallelization': pipeline_parallel.md
   - 'Accessory tools': tools.md
+  - 'Developer tools':
+    - 'Parallel Job Builder': parallel_job_builder.md
+    - 'Parallel Metadata Parser': parallel_metadata_parser.md
+    - 'Parallel Multiprocess': parallel_multiprocess.md
 markdown_extensions:
   - toc:
       permalink: True

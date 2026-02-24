@@ -1,5 +1,6 @@
 import pytest
 import os
+import json
 import pickle as pkl
 import numpy as np
 import xarray as xr
@@ -95,6 +96,18 @@ class TestData:
         self.empty_mask = os.path.join(self.datadir, "seed_empty_mask.png")
         # flir thermal img
         self.flir_img = os.path.join(self.datadir, "FLIR_test.jpg")
+        # parallel results to process
+        self.parallel_results_dir = os.path.join(self.datadir, "parallel_results")
+        # appended results file
+        self.appended_results_file = os.path.join(self.datadir, "appended_results.json")
+        # new results file
+        self.new_results_file = os.path.join(self.datadir, "new_results.json")
+        # valid results file
+        self.valid_json_file = os.path.join(self.datadir, "valid.json")
+        # invalid results file
+        self.invalid_results_file = os.path.join(self.datadir, "invalid_results.json")
+        # plantcv general results file
+        self.plantcv_results_file = os.path.join(self.datadir, "plantcv_results.json")
 
     @staticmethod
     def load_hsi(pkl_file):
@@ -126,6 +139,21 @@ class TestData:
         mask = np.zeros((10, 10), dtype=np.uint8)
         mask[5, 5] = 255
         return mask
+
+    @staticmethod
+    def load_json(json_file):
+        """JSON loader helper function."""
+        with open(json_file, "r") as fp:
+            data = json.load(fp)
+            return data
+
+    def new_results(self):
+        """Load appended results from file."""
+        return self.load_json(json_file=self.new_results_file)
+
+    def appended_results(self):
+        """Load appended results from file."""
+        return self.load_json(json_file=self.appended_results_file)
 
     def psii_cropreporter(self, var):
         """Create simple data for PSII"""

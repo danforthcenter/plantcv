@@ -59,9 +59,13 @@ automatically. Alternatively, you can run `pip install -e .` to reinstall the pa
 
 ### Breaking changes between v4 and v5 <a name="breaking-changes"></a>
 
+#### plantcv.utils
+
+The `plantcv.utils` module has been deleted with `sample_images` moving to `plantcv.parallel`, `json2csv` moving to `plantcv.plantcv`, and `tabulate_bayes_classes` moving to `plantcv.learn`. Command-line interfaces are still available for `sample_images` [plantcv-sample](tools.md#plantcv-parallel) and `tabulate_bayes_classes` as [plantcv-learn tabulate_bayes_classes](tools.md#training-machine-learning-models).
+
 #### plantcv.parallel.WorkflowConfig
 
-Renamed the "json" attribute to "results" for clarity about what it controls and for consistency with new [jupyterconfig](parallel_jupyterconfig.md)
+Renamed the "json" attribute to "results" for clarity about what it controls and for consistency with new [JupyterConfig](parallel_jupyterconfig.md)
 
 #### plantcv.spectral_index.egi
 
@@ -672,6 +676,11 @@ pages for more details on the input and output variable types.
 * pre v3.14.0: NA
 * post v3.14.0:  image_dataset = **plantcv.io.read_dataset**(*source_path, pattern='', sort=True*)
 
+#### plantcv.json2csv
+
+* pre v5: NA
+* post v5: **plantcv.json2csv**(*json_file, csv_prefix*)
+
 #### plantcv.landmark_reference_pt_dist
 
 * pre v3.0dev2: device, vert_ave_c, hori_ave_c, euc_ave_c, ang_ave_c, vert_ave_b, hori_ave_b, euc_ave_b, ang_ave_b = **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r, device, debug=None*)
@@ -884,10 +893,10 @@ pages for more details on the input and output variable types.
 * pre v4.10: Untracked
 * post v4.10: **plantcv.parallel.job_builder**(*meta, config*)
 
-#### plantcv.parallel.jupyterconfig
+#### plantcv.parallel.JupyterConfig
 
 * pre v5: NA
-* post v5: **plantcv.parallel.jupyterconfig()**
+* post v5: **plantcv.parallel.JupyterConfig()**
 
 #### plantcv.parallel.metadata_parser
 
@@ -903,6 +912,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.10: Untracked
 * post v4.10: **plantcv.parallel.process_results**(*config*)
+* post v5.0: DEPRECATED, see plantcv.process_results
 
 #### plantcv.parallel.workflow_inputs
 
@@ -964,6 +974,11 @@ pages for more details on the input and output variable types.
 * pre v3.1: NA
 * post v3.1: **plantcv.print_results**(*filename*)
 * post v4.0: DEPRECATED, see plantcv.outputs.save_results
+
+#### plantcv.process_results
+
+* pre v5.0: NA
+* post v5.0: **plantcv.process_results**(*input_dir=".", filename="results", outformat="csv"*)
 
 #### plantcv.pseudocolor
 
@@ -1159,6 +1174,10 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, sr_img = **plantcv.scharr_filter**(*img, dX, dY, scale, device, debug=None*)
 * post v3.0dev2: sr_img = **plantcv.scharr_filter**(*gray_img, dx, dy, scale*)
 * post v4.9: sr_img = **plantcv.scharr_filter**(*gray_img, dx, dy, scale, roi=None*)
+
+#### plantcv.sharpen
+* pre v5.0: NA
+* post v5.0: img = **plantcv.sharpen**(*img, ksize, amount=1, threshold=0, sigma_x=0, sigma_y=None, roi=None*)
 
 #### plantcv.shift_img
 
