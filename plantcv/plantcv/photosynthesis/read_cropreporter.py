@@ -337,10 +337,9 @@ def _process_pmt_data(ps, metadata):
     n_x, n_y, _ = img_cube.shape
 
     # initialize output cube: (x, y, frame_label, measurement)
-    pmt_data = np.full(
-        (n_x, n_y, len(frame_labels), len(measurement_labels)),
-        np.nan,
-        dtype=img_cube.dtype
+    pmt_data = np.zeros(
+    (n_x, n_y, len(frame_labels), len(measurement_labels)),
+    dtype=img_cube.dtype
     )
 
     idx = 0  # frame counter in raw img_cube
