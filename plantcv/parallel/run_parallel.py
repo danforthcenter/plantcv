@@ -115,15 +115,22 @@ def _check_for_conda(config):
     running_in_conda = re.search("conda|mamba|miniforge", sys.executable) is not None
     # if workflow is executed from a conda environment then activate that conda environment on workers
     if "job_script_prologue" not in config.cluster_config.keys() and running_in_conda:
-        ex_list = sys.executable.split("/")
-        # find where the conda installation is
-        index = [i for i, element in enumerate(ex_list) if re.search("conda|mamba|miniforge", element)][0]
-        activation_path = os.path.join("/".join(ex_list[0:(index + 1)]), "bin/activate")
-        # get name of env that was active to run plantcv
-        env_index = [i for i, element in enumerate(ex_list) if re.search("^env(s)?$", element)][0]
-        env_name = ex_list[env_index+1]
-        print("Setting job_script_prologue to fetch active environment:\n", "source " + activation_path, "\nconda activate " + env_name, file = sys.stderr)
+        # find where the conda installation is, replace python with activate
+        activation_path = re.sub("python.?$", "activate", sys.executable)
+        commands = ["source " + activation_path]
+        # if there is an env in the executable path after the conda/mamba/miniforge
+        # then find that env and add a commmand to activate it
+        if re.search("env(s)?", re.sub(".*(conda|mamba|miniforge)", "", sys.executable)) is not None:
+            ex_list = re.sub(".*(conda|mamba|miniforge)", "", sys.executable).split(os.sep)
+            # get name of env that was active to run plantcv
+            env_index = [i for i, element in enumerate(ex_list) if re.search("^env(s)?$", element)][0]
+            env_name = ex_list[env_index+1]
+            commands.append("conda activate" + env_name)
+        # if changing config always print a message
+        print("Setting job_script_prologue to fetch active environment:\n",
+              "source " + activation_path, "\nconda activate " + env_name,
+              file = sys.stderr)
         # write job prologue to activate the env
-        config.cluster_config["job_script_prologue"] = ["source " + activation_path, "conda activate " + env_name]
+        config.cluster_config["job_script_prologue"] = commands
 
     return config
