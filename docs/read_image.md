@@ -8,7 +8,8 @@ Reads image into numpy ndarray and splits the path and image filename (*see note
 
 - **Parameters:**
     - filename - image file to be read (possibly including a path)
-    - mode     - return mode of image ("native," "rgb", "rgba", "csv", "envi", "arcgis", "gray", "nd2", or "thermal"), defaults to "native"
+    - mode     - return mode of image ("native," "rgb", "rgba", "normalize", "csv", "envi", "arcgis", "gray", "nd2",
+    or "thermal"), defaults to "native"
     
 - **Context:**
     - Reads in file to be processed
