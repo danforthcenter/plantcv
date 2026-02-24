@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from plantcv.plantcv import outputs
-from plantcv.plantcv.morphology import segment_angle
+from plantcv.plantcv.morphology.segment_angle import segment_angle
 
 
 def test_segment_angle(morphology_test_data):
