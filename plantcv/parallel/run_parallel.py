@@ -39,7 +39,8 @@ def run_parallel(config):
     # if a logs directory is specified then add the tmpdir inside it.
     if config.cluster_config["log_directory"] is not None:
         config.cluster_config["log_directory"] = os.path.join(
-            config.cluster_config["log_directory"], os.path.basename(config.tmp_dir)
+            config.cluster_config["log_directory"],
+            "log_" + os.path.basename(config.tmp_dir)
         )
         os.makedirs(config.cluster_config["log_directory"], exist_ok=True)
     # Create img_outdir
