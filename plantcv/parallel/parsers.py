@@ -71,8 +71,7 @@ def _read_checkpoint_data(df, config, removed_df):
     for root, _, files in os.walk(os.path.join(config.chkpt_start_dir, "_PCV_PARALLEL_CHECKPOINT_")):
         for file in files:
             if file.lower().endswith(".json") and os.path.exists(
-                        os.path.join(root, os.path.splitext(file)[0]+"_complete")
-                ):
+                        os.path.join(root, os.path.splitext(file)[0]+"_complete")):
                 existing_json.append(os.path.join(root, file))
     # if there are completed checkpoint files in checkpoint then this is a re-run with existing data
     if any(existing_json) and config.checkpoint:
