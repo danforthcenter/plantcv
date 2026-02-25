@@ -116,7 +116,8 @@ def _check_for_conda(config):
     # if workflow is executed from a conda environment then activate that conda environment on workers
     if "job_script_prologue" not in config.cluster_config.keys() and running_in_conda:
         # find where the conda installation is, replace python with activate
-        activation_path = re.sub("(.*conda|mamba|miniforge)(\\d)?.*$", os.path.join("\\1\\2", "bin", "activate"), sys.executable)
+        activation_path = re.sub("(.*conda|mamba|miniforge)(\\d)?.*$",
+                                 os.path.join("\\1\\2", "bin", "activate"), sys.executable)
         commands = ["source " + activation_path]
         # if there is an env in the executable path after the conda/mamba/miniforge
         # then find that env and add a commmand to activate it
@@ -129,7 +130,7 @@ def _check_for_conda(config):
         # if changing config always print a message
         print("Setting job_script_prologue to fetch active environment:\n",
               commands,
-              file = sys.stderr)
+              file=sys.stderr)
         # write job prologue to activate the env
         config.cluster_config["job_script_prologue"] = commands
 
