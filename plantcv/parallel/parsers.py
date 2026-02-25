@@ -65,26 +65,25 @@ def _read_checkpoint_data(df, config, removed_df):
     if "chkpt_start_dir" not in config.__dict__:
         config.chkpt_start_dir = config.tmp_dir
     # look for any json files in a checkpoint directory (made by run_parallel)
+    # any that have a "completed" companion file should be appended to list
+    # to read in as existing results
     existing_json = []
-    for _, _, files in os.walk(os.path.join(config.chkpt_start_dir, "_PCV_PARALLEL_CHECKPOINT_")):
+    for root, _, files in os.walk(os.path.join(config.chkpt_start_dir, "_PCV_PARALLEL_CHECKPOINT_")):
         for file in files:
-            if file.lower().endswith(".json"):
-                existing_json.append(file)
-    # if there are json files in checkpoint then this is a re-run
-    if any(existing_json) and config.checkpoint:
-        ran_list = [pd.DataFrame()]
-        # look through checkpoint directory for json without "completed" companion file
-        for root, _, files in os.walk(os.path.join(config.chkpt_start_dir, "_PCV_PARALLEL_CHECKPOINT_")):
-            for file in files:
-                if file.lower().endswith(".json") and os.path.exists(
+            if file.lower().endswith(".json") and os.path.exists(
                         os.path.join(root, os.path.splitext(file)[0]+"_complete")
                 ):
-                    with open(os.path.join(root, file), "r") as fp:
-                        j = json.load(fp)["metadata"]
-                        row = {}
-                        for var in j:
-                            row[var] = j[var]["value"]
-                        ran_list.append(pd.DataFrame.from_dict(row))
+                existing_json.append(os.path.join(root, file))
+    # if there are completed checkpoint files in checkpoint then this is a re-run with existing data
+    if any(existing_json) and config.checkpoint:
+        ran_list = [pd.DataFrame()]
+        for file in existing_json:
+            with open(file, "r") as fp:
+                j = json.load(fp)["metadata"]
+                row = {}
+                for var in j:
+                    row[var] = j[var]["value"]
+                ran_list.append(pd.DataFrame.from_dict(row))
         # bind to metadata dataframe
         already_run = pd.concat(ran_list)
         already_run = already_run[already_run["filepath"].notna()]
