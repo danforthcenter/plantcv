@@ -312,7 +312,7 @@ def _process_pmt_data(ps, metadata):
     if not os.path.exists(bin_filepath):
         return
 
-    img_cube, _, frame_nums = _read_dat_file(
+    img_cube, _, _ = _read_dat_file(
         dataset="PMT",
         filename=bin_filepath,
         height=int(metadata["ImageRows"]),
