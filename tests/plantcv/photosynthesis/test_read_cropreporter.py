@@ -136,3 +136,17 @@ def test_read_cropreporter_pmt_only(photosynthesis_test_data, tmpdir):
     # Check that dimensions include x, y, frame_label, and measurement
     assert "frame_label" in ps.pam_time.coords
     assert "measurement" in ps.pam_time.coords
+    
+    # Verify the shape (x, y, 13 labels, N measurements)
+    # The 13 comes from 'frame_labels' list in read_cropreporter.py
+    assert ps.pam_time.shape[2] == 13 
+    
+    # Check that at least one measurement label was created (t0, t1...)
+    assert "t0" in ps.pam_time.measurement.values
+    
+    # Access a value to ensure the loops actually ran
+    # This forces the test to "touch" the data assigned inside the loops
+    assert ps.pam_time.sel(frame_label="Fdark", measurement="t0").any()
+    
+    # Verify the F0p (the very last line of your function)
+    assert "F0p" in ps.pam_time.frame_label.values
