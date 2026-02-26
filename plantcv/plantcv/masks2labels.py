@@ -1,4 +1,4 @@
-# Create labels base on clean mask and optionally, multiple ROIs
+# Create single labeled img from a list of masks
 import os
 import numpy as np
 from skimage.color import label2rgb
