@@ -321,7 +321,7 @@ def _process_pmt_data(ps, metadata):
 
     # metadata-driven measurement counts
     n_fqfm = int(metadata.get("TmPamMeasFqfm", 0))
-    n_fvfm = int(metadata.get("TmPamMeasFvfm", 0)) - 1 
+    n_fvfm = int(metadata.get("TmPamMeasFvfm", 0)) - 1
 
     # t0 = initial dark, then fqfm blocks, then fvfm blocks
     measurement_labels = [f"t{i}" for i in range(1 + n_fqfm + n_fvfm)]
@@ -338,9 +338,9 @@ def _process_pmt_data(ps, metadata):
 
     # initialize output cube: (x, y, frame_label, measurement)
     pmt_data = np.zeros(
-    (n_x, n_y, len(frame_labels), len(measurement_labels)),
-    dtype=img_cube.dtype
-    )
+        (n_x, n_y, len(frame_labels), len(measurement_labels)),
+        dtype=img_cube.dtype
+        )
 
     idx = 0  # frame counter in raw img_cube
 
