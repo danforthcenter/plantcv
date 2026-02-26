@@ -298,8 +298,6 @@ def _process_pml_data(ps, metadata):
                col_wrap=int(np.ceil(ps.pam_light.frame_label.size / 4)))
 
 
-
-
 def _process_pmt_data(ps, metadata):
     """
     Create an xarray DataArray for a PMT dataset with measurements stored
@@ -326,53 +324,30 @@ def _process_pmt_data(ps, metadata):
     # TmPamMeasFvfm=1 means only the baseline dark-adapted block exists, so n_fvfm should be 0
     n_fvfm = max(0, int(metadata.get("TmPamMeasFvfm", 0)) - 1)
 
-    # Build frame_labels dynamically based on what actually exists
-    frame_labels = ["Fdark", "F0", "Fm", "Fdarksat"]
-    
+    # Define blocks and their labels
+    blocks = [
+        {"labels": ["Fdark", "F0", "Fm", "Fdarksat"], "count": 1, "start_meas": 0}
+    ]
     if n_fqfm > 0:
-        frame_labels.extend(["Flight", "Fsp", "Fmp", "Flightsat"])
-        
+        blocks.append({"labels": ["Flight", "Fsp", "Fmp", "Flightsat"], "count": n_fqfm, "start_meas": 1})
     if n_fvfm > 0:
-        frame_labels.extend(["Fdarkpp", "F0pp", "Fmpp", "Fdarksatpp"])
-        
-    # Final frame is a standard for Phenovation PMT files
-    frame_labels.append("F0p")
+        blocks.append({"labels": ["Fdarkpp", "F0pp", "Fmpp", "Fdarksatpp"], "count": n_fvfm, "start_meas": 1 + n_fqfm})
 
-    # Define measurement timepoints (t0, t1, ...)
+    # Flatten labels for the xarray coordinate
+    frame_labels = [label for b in blocks for label in b["labels"]] + ["F0p"]
     measurement_labels = [f"t{i}" for i in range(1 + n_fqfm + n_fvfm)]
 
+    # Initialize and fill data
     n_x, n_y, n_frames = img_cube.shape
-
-    # initialize output cube: (x, y, frame_label, measurement)
-    pmt_data = np.zeros(
-        (n_x, n_y, len(frame_labels), len(measurement_labels)),
-        dtype=img_cube.dtype
-        )
-
-    idx = 0  # frame counter in raw img_cube
-
-    # Block 1: Initial Dark-Adapted (Always exists)
-    for f in ["Fdark", "F0", "Fm", "Fdarksat"]:
-        if idx < n_frames:
-            pmt_data[:, :, frame_labels.index(f), 0] = img_cube[:, :, idx]
-            idx += 1
-
-    # Block 2: Light-Adapted (Fq'/Fm')
-    if n_fqfm > 0:
-        for meas in range(1, 1 + n_fqfm):
-            for f in ["Flight", "Fsp", "Fmp", "Flightsat"]:
+    pmt_data = np.zeros((n_x, n_y, len(frame_labels), len(measurement_labels)), dtype=img_cube.dtype)
+    
+    idx = 0
+    for block in blocks:
+        for m_offset in range(block["count"]):
+            meas_idx = block["start_meas"] + m_offset
+            for label in block["labels"]:
                 if idx < n_frames:
-                    pmt_data[:, :, frame_labels.index(f), meas] = img_cube[:, :, idx]
-                    idx += 1
-
-    # Block 3: Second Dark-Adapted (Fq''/Fm'')
-    if n_fvfm > 0:
-        base_idx = 1 + n_fqfm
-        for j in range(n_fvfm):
-            meas = base_idx + j
-            for f in ["Fdarkpp", "F0pp", "Fmpp", "Fdarksatpp"]:
-                if idx < n_frames:
-                    pmt_data[:, :, frame_labels.index(f), meas] = img_cube[:, :, idx]
+                    pmt_data[:, :, frame_labels.index(label), meas_idx] = img_cube[:, :, idx]
                     idx += 1
 
     # Final Frame: F0p
