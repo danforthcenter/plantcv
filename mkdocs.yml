@@ -107,6 +107,7 @@ nav:
         - 'Logical Operations-And': logical_and.md
         - 'Logical Operations-Or': logical_or.md
         - 'Logical Operations-XOr': logical_xor.md
+      - 'Masks to Labels': masks2labels.md
       - 'Median Blur': median_blur.md
       - 'Morphology Functions':
         - 'Analyze_stem': analyze_stem.md

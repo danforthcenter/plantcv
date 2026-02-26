@@ -1,17 +1,16 @@
-## Create labeled mask
+## Masks to Labels
 
-Create a labeled mask for analyzing multiple objects in the same image
+Convert a list of masks to a single labeled mask
 
-**plantcv.create_labels**(*mask, rois=None, roi_type="partial"*)
+**plantcv.masks2labels**(*mask_list*)
 
-**returns** labeled mask, number of objects
+**returns** labeled mask, colored img, number of objects
 
 - **Parameters:**
-    - mask - Binary mask
-    - rois - Objects class instance, typically output from [`pcv.roi.multi`](roi_multi.md) or [`pcv.roi.auto_grid`](roi_auto_grid.md), or `None` (default) in the case where each blob is to be treated as a separate object
-    - roi_type - 'partial' (for partially inside, default), 'cutto' (hard cut off at ROI boundary), or 'largest' (keep only the largest contour). Will get ignored if `rois=None`. 
+    - mask_list - List of masks to convert to a labeled mask, empty masks will be removed
+
 - **Context:**
-    - Used to identify and separate multiple objects from a binary mask for downstream analysis. Such as grid of pots or seed scatter images. In the case of single plant and singular Region of Interest, see [`pcv.roi.filter`](roi_filter.md). 
+    - Used to convert a list of masks to a single labeled mask 
 
 
 ```python
@@ -23,22 +22,18 @@ from plantcv import plantcv as pcv
 
 pcv.params.debug = "plot"
 
-# Label grid of seeds using ROIs
-grid_rois = pcv.roi.multi(img=img, coord=(31,31), radius=20, spacing=(67, 67), nrows=4, ncols=7)
-labeled_mask, num_seeds = pcv.create_labels(mask=clean_mask, rois=grid_rois, roi_type="partial")
-
-# Don't use ROIs but instead assume one "object of interest" per contour
-labeled_mask2, num_seeds2 = pcv.create_labels(mask=clean_mask)
+# Change list of masks to a single labeled mask
+labeled_mask, colored_img, num_label = pcv.masks2labels(filtered_area1)
 
 ```
+**Original Image**
+
+![Screenshot](img/documentation_images/masks2labels/stomata.png)
+
 
 **Debug Labeled Image**
 
-![Screenshot](img/documentation_images/create_labels/colorful_labels.jpg)
+![Screenshot](img/documentation_images/masks2labels/colored_img.png)
 
 
-**Output Mask Image**
-
-![Screenshot](img/documentation_images/create_labels/grayscale_labeled_mask.jpg)
-
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/create_labels.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/masks2labels.py)

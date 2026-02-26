@@ -1,5 +1,4 @@
 # Create labels base on clean mask and optionally, multiple ROIs
-#import cv2
 import os
 import numpy as np
 from skimage.color import label2rgb
@@ -14,7 +13,7 @@ def masks2labels(mask_list):
 
     Inputs:
     mask            = list of masks
-    
+
     Returns:
     mask            = Labeled mask
     colored_img     = Labeled color image for visualization
@@ -30,15 +29,18 @@ def masks2labels(mask_list):
     params.debug = None
 
     labeled_mask = np.zeros(mask_list[0].shape[:2], dtype=np.int32)
-    label1 = []
+    label1 = [0]
     mask1 = []
-    for label, mask in enumerate(mask_list, start=1):
-        labeled_mask[mask > 0] = label
-        mask1.append(mask)
-        label1.append(label)
-    num_label = len(label1)
+    for _, mask in enumerate(mask_list, start=1):
+        if np.sum(mask) > 0:
+            value = label1[-1]+1
+            labeled_mask[mask > 0] = value
+            mask1.append(mask)
+            label1.append(value)
+    num_label = len(label1)-1
 
     # Restore debug parameter
+
     params.debug = debug
     colorful = label2rgb(labeled_mask)
     colorful2 = (255*colorful).astype(np.uint8)
