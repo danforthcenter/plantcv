@@ -326,10 +326,10 @@ def _process_pmt_data(ps, metadata):
 
     # Define blocks and their labels
     blocks = [{"labels": ["Fdark", "F0", "Fm", "Fdarksat"], "count": 1, "start_meas": 0}]
-    
+
     if n_fqfm > 0:
         blocks.append({"labels": ["Flight", "Fsp", "Fmp", "Flightsat"], "count": n_fqfm, "start_meas": 1})
-    
+
     if n_fvfm > 0:
         blocks.append({"labels": ["Fdarkpp", "F0pp", "Fmpp", "Fdarksatpp"], "count": n_fvfm, "start_meas": 1 + n_fqfm})
 
