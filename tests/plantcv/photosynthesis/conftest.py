@@ -34,7 +34,7 @@ class PhotosynthesisTestData:
         self.cropreporter_gfp = os.path.join(self.datadir_gfp, "HDR_DYSeed_20251222191634684.INF")
         self.cropreporter_rfp = os.path.join(self.datadir_rfp, "HDR_DYSeed_20251222191634684.INF")
         self.cropreporter_aph = os.path.join(self.datadir_aph, "HDR_2025-12-12_tob1_20251212205712029.INF")
-        self.cropreporter_pmt = os.path.join(self.datadir_pmt, "HDR_2025-12-12_tob1_20251212205712029.INF")
+        self.cropreporter_pmt = os.path.join(self.datadir_pmt, "HDR_E0001P0007N0001_GCU24100090_20260226.INF")
         # Mask image
         self.ps_mask = os.path.join(self.datadir_v441, "PSII_HDR_020321_WT_TOP_1_mask.png")
 
