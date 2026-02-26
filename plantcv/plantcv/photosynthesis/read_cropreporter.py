@@ -340,7 +340,7 @@ def _process_pmt_data(ps, metadata):
     # Initialize and fill data
     n_x, n_y, n_frames = img_cube.shape
     pmt_data = np.zeros((n_x, n_y, len(frame_labels), len(measurement_labels)), dtype=img_cube.dtype)
-    
+
     idx = 0
     for block in blocks:
         for m_offset in range(block["count"]):
