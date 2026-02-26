@@ -137,9 +137,16 @@ def test_read_cropreporter_pmt_only(photosynthesis_test_data, tmpdir):
     assert "frame_label" in ps.pam_time.coords
     assert "measurement" in ps.pam_time.coords
     
-    # Verify the shape (x, y, 13 labels, N measurements)
-    # The 13 comes from 'frame_labels' list in read_cropreporter.py
-    assert ps.pam_time.shape[2] == 13 
+    # Verify the shape (x, y, 9 or 13 labels, N measurements)
+    # The 9 or 13 comes from 'frame_labels' list in read_cropreporter.py, and depends on the presence of second dark adaptation
+    num_labels = len(ps.pam_time.frame_label)
+    assert num_labels in [9, 13]
+
+    # If Fdarkpp exists, we must have 13 labels
+    if "Fdarkpp" in ps.pam_time.frame_label.values:
+        assert num_labels == 13
+    else:
+        assert num_labels == 9
     
     # Check that at least one measurement label was created (t0, t1...)
     assert "t0" in ps.pam_time.measurement.values
