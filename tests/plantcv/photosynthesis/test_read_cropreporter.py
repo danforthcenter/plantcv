@@ -132,7 +132,7 @@ def test_read_cropreporter_pmt_only(photosynthesis_test_data, tmpdir):
     fluor_filename = os.path.join(cache_dir, "HDR_E0001P0007N0001_GCU24100090_20260226.INF")
     ps = read_cropreporter(filename=fluor_filename)
     assert isinstance(ps, PSII_data)
-    assert ps.pam_time is not Non
+    assert ps.pam_time is not None
     # Check that dimensions include x, y, frame_label, and measurement
     assert "frame_label" in ps.pam_time.coords
     assert "measurement" in ps.pam_time.coords
