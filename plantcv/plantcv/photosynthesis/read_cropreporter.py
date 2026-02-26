@@ -246,7 +246,7 @@ def _process_pmd_data(ps, metadata):
         img_cube, frame_labels, frame_nums = _read_dat_file(dataset="PMD", filename=bin_filepath,
                                                             height=int(metadata["ImageRows"]),
                                                             width=int(metadata["ImageCols"]))
-        frame_labels = ["Fdark", "F0", "Fm", "Fs"]
+        frame_labels = ["Fdark", "F0", "Fm", "Fdarksat"]
         pmd = xr.DataArray(
             data=img_cube[..., None],
             dims=('x', 'y', 'frame_label', 'measurement'),
@@ -280,7 +280,7 @@ def _process_pml_data(ps, metadata):
         img_cube, frame_labels, frame_nums = _read_dat_file(dataset="PML", filename=bin_filepath,
                                                             height=int(metadata["ImageRows"]),
                                                             width=int(metadata["ImageCols"]))
-        frame_labels = ["Flight", "Fp", "Fmp", "Fs"]
+        frame_labels = ["Flight", "Fp", "Fmp", "Flightsat"]
         pml = xr.DataArray(
             data=img_cube[..., None],
             dims=('x', 'y', 'frame_label', 'measurement'),
