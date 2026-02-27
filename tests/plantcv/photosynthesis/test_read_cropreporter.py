@@ -152,7 +152,7 @@ def test_read_cropreporter_pmt_only_9_labels(photosynthesis_test_data, tmpdir):
     # Verify the F0p (the very last line of your function)
     assert "F0p" in ps.pam_time.frame_label.values
 
-def test_read_cropreporter_pmt_only_13_labels(photosynthesis_test_data, tmpdir):
+def test_read_cropreporter_pmt_only_13_labels(photosynthesis_test_data, tmpdir, monkeypatch):
     """Test PMT (PAM Time) import with 13 frames."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("sub")
