@@ -165,7 +165,7 @@ def test_read_cropreporter_pmt_only_13_labels(photosynthesis_test_data, tmpdir, 
     fluor_filename = os.path.join(cache_dir, "HDR_E0001P0008N0001_GCU24100090_20260226.INF")
 
     # Mock numpy to return 13 frames worth of data (1280*960*13)
-    monkeypatch.setattr(np, "fromfile", lambda *args, **kwargs: np.ones(15974400, dtype=np.uint16))
+    monkeypatch.setattr(np, "fromfile", lambda *args, **kwargs: np.ones(15360000, dtype=np.uint16))
 
     ps = read_cropreporter(filename=fluor_filename)
     assert isinstance(ps, PSII_data)
