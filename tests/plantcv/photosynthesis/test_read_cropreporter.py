@@ -1,6 +1,7 @@
 """Tests for plantcv.photosynthesis.read_cropreporter."""
 import os
 import shutil
+import numpy as np
 from plantcv.plantcv import PSII_data
 from plantcv.plantcv.photosynthesis import read_cropreporter
 
@@ -118,9 +119,8 @@ def test_read_cropreporter_aph_only(photosynthesis_test_data, tmpdir):
     assert ps.aph is not None
     assert ps.aph.shape[2] == 2  # Red + FarRed
 
-
-def test_read_cropreporter_pmt_only(photosynthesis_test_data, tmpdir):
-    """Test PMT (PAM Time) import."""
+def test_read_cropreporter_pmt_only_9_labels(photosynthesis_test_data, tmpdir):
+    """Test PMT (PAM Time) import wiht 9 frames."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("sub")
     # Create dataset with only PMT
@@ -137,17 +137,48 @@ def test_read_cropreporter_pmt_only(photosynthesis_test_data, tmpdir):
     assert "frame_label" in ps.pam_time.coords
     assert "measurement" in ps.pam_time.coords
     
-    # Verify the shape (x, y, 9 or 13 labels, N measurements)
+    # Verify the shape (x, y, 9 labels, N measurements)
     # The 9 or 13 comes from 'frame_labels' list in read_cropreporter.py, and depends on the presence of second dark adaptation
     num_labels = len(ps.pam_time.frame_label)
-    assert num_labels in [9, 13]
+    assert num_labels == 9
 
-    # If Fdarkpp exists, we must have 13 labels
-    if "Fdarkpp" in ps.pam_time.frame_label.values:
-        assert num_labels == 13
-    else:
-        assert num_labels == 9
+    # Check that at least one measurement label was created (t0, t1...)
+    assert "t0" in ps.pam_time.measurement.values
     
+    # Access a value to ensure the loops actually ran
+    # This forces the test to "touch" the data assigned inside the loops
+    assert ps.pam_time.sel(frame_label="Fdark", measurement="t0").any()
+    
+    # Verify the F0p (the very last line of your function)
+    assert "F0p" in ps.pam_time.frame_label.values
+
+def test_read_cropreporter_pmt_only_13_labels(photosynthesis_test_data, tmpdir):
+    """Test PMT (PAM Time) import with 13 frames."""
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+    # Create dataset with only PMT
+    shutil.copyfile(photosynthesis_test_data.cropreporter_pmt, os.path.join(cache_dir,
+                                                                            "HDR_E0001P0008N0001_GCU24100090_20260226.INF"))
+    pmt_dat = photosynthesis_test_data.cropreporter_pmt.replace("HDR", "PMT")
+    pmt_dat = pmt_dat.replace("INF", "DAT")
+    shutil.copyfile(pmt_dat, os.path.join(cache_dir, "PMT_E0001P0007N0001_GCU24100090_20260226.DAT"))
+    fluor_filename = os.path.join(cache_dir, "HDR_E0001P0008N0001_GCU24100090_20260226.INF")
+
+    # Mock numpy to return 13 frames worth of data (1280*960*13)
+    monkeypatch.setattr(np, "fromfile", lambda *args, **kwargs: np.ones(15974400, dtype=np.uint16))
+
+    ps = read_cropreporter(filename=fluor_filename)
+    assert isinstance(ps, PSII_data)
+    assert ps.pam_time is not None
+    # Check that dimensions include x, y, frame_label, and measurement
+    assert "frame_label" in ps.pam_time.coords
+    assert "measurement" in ps.pam_time.coords
+    
+    # Verify the shape (x, y, 13 labels, N measurements)
+    # The 9 or 13 comes from 'frame_labels' list in read_cropreporter.py, and depends on the presence of second dark adaptation
+    num_labels = len(ps.pam_time.frame_label)
+    assert num_labels == 13
+
     # Check that at least one measurement label was created (t0, t1...)
     assert "t0" in ps.pam_time.measurement.values
     
