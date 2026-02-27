@@ -714,6 +714,12 @@ pages for more details on the input and output variable types.
 * pre v4.3: NA 
 * post v4.3: **plantcv.mask_kmeans**(*labeled_img, k, patch_size, cat_list=None*)
 
+#### plantcv.masks2labels
+
+* pre v5.0: NA
+* post v5.0: labeled_mask, colored_img, number_of_objects = 
+**plantcv.masks2labels**(*mask_list*)
+
 #### plantcv.median_blur
 
 * pre v3.0dev2: device, img_mblur = **plantcv.median_blur**(*img, ksize, device, debug=None*)

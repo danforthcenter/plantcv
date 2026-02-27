@@ -103,6 +103,8 @@ class TestData:
         self.invalid_results_file = os.path.join(self.datadir, "invalid_results.json")
         # plantcv general results file
         self.plantcv_results_file = os.path.join(self.datadir, "plantcv_results.json")
+        # List of masks
+        self.masks_list = os.path.join(self.datadir, "masks_list.pkl")
 
     @staticmethod
     def load_hsi(pkl_file):
