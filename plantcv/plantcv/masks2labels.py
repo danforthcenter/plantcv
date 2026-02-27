@@ -11,18 +11,19 @@ def masks2labels(mask_list):
     pixels are assigned a label value based on the provided
     region of interest (ROI).
 
-    Inputs:
-    mask            = list of masks
-
-    Returns:
-    mask            = Labeled mask
-    colored_img     = Labeled color image for visualization
-    num_labels      = Number of labeled objects
-
-    :param mask: List of numpy.ndarray
-    :return labeled_mask: numpy.ndarray
-    :return colored_img: numpy.ndarray
-    :return num_labels: int
+    Parameters
+    ----------
+    mask : list of numpy.ndarray
+        List of masks
+        
+    Returns
+    ----------
+    mask : numpy.ndarray
+        Labeled mask
+    colored_img : numpy.ndarray
+        Labeled color image for visualization
+    num_labels : int
+        Number of labeled objects
     """
     # Store debug mode
     debug = params.debug
