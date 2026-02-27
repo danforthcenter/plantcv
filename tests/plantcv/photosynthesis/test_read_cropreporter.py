@@ -161,7 +161,7 @@ def test_read_cropreporter_pmt_only_13_labels(photosynthesis_test_data, tmpdir, 
                                                                             "HDR_E0001P0008N0001_GCU24100090_20260226.INF"))
     pmt_dat = photosynthesis_test_data.cropreporter_pmt.replace("HDR", "PMT")
     pmt_dat = pmt_dat.replace("INF", "DAT")
-    shutil.copyfile(pmt_dat, os.path.join(cache_dir, "PMT_E0001P0007N0001_GCU24100090_20260226.DAT"))
+    shutil.copyfile(pmt_dat, os.path.join(cache_dir, "PMT_E0001P0008N0001_GCU24100090_20260226.DAT"))
     fluor_filename = os.path.join(cache_dir, "HDR_E0001P0008N0001_GCU24100090_20260226.INF")
 
     # Mock numpy to return 13 frames worth of data (1280*960*13)
