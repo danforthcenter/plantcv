@@ -15,7 +15,7 @@ def masks2labels(mask_list):
     ----------
     mask : list of numpy.ndarray
         List of masks
-        
+
     Returns
     ----------
     mask : numpy.ndarray
