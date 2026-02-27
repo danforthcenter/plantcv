@@ -156,18 +156,21 @@ def test_read_cropreporter_pmt_only_13_labels(photosynthesis_test_data, tmpdir, 
     """Test PMT (PAM Time) import with 13 frames."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("sub")
+    # 1. Align filenames (P0008 for both) so the reader finds the DAT file
+    inf_dest = os.path.join(cache_dir, "HDR_E0001P0008N0001_GCU24100090_20260226.INF")
+    dat_dest = os.path.join(cache_dir, "PMT_E0001P0008N0001_GCU24100090_20260226.DAT")
+    
     # Create dataset with only PMT
-    shutil.copyfile(photosynthesis_test_data.cropreporter_pmt, os.path.join(cache_dir,
-                                                                            "HDR_E0001P0008N0001_GCU24100090_20260226.INF"))
-    pmt_dat = photosynthesis_test_data.cropreporter_pmt.replace("HDR", "PMT")
-    pmt_dat = pmt_dat.replace("INF", "DAT")
-    shutil.copyfile(pmt_dat, os.path.join(cache_dir, "PMT_E0001P0008N0001_GCU24100090_20260226.DAT"))
-    fluor_filename = os.path.join(cache_dir, "HDR_E0001P0008N0001_GCU24100090_20260226.INF")
+    shutil.copyfile(photosynthesis_test_data.cropreporter_pmt, inf_dest)
+    
+    pmt_dat_src = photosynthesis_test_data.cropreporter_pmt.replace("HDR", "PMT").replace("INF", "DAT")
+    shutil.copyfile(pmt_dat_src, dat_dest)
+    
+    # 2. Mock numpy with the correct 13-frame size (1280 * 960 * 13 = 15974400)
+    # Using ones * 50 to ensure .any() assertions pass
+    monkeypatch.setattr(np, "fromfile", lambda *args, **kwargs: np.ones(15974400, dtype=np.uint16) * 50)
 
-    # Mock numpy to return 13 frames worth of data (1280*960*13)
-    monkeypatch.setattr(np, "fromfile", lambda *args, **kwargs: np.ones(15360000, dtype=np.uint16))
-
-    ps = read_cropreporter(filename=fluor_filename)
+    ps = read_cropreporter(filename=inf_dest)
     assert isinstance(ps, PSII_data)
     assert ps.pam_time is not None
     # Check that dimensions include x, y, frame_label, and measurement
