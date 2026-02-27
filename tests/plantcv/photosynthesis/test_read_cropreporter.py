@@ -168,7 +168,7 @@ def test_read_cropreporter_pmt_only_13_labels(photosynthesis_test_data, tmpdir, 
     
     # 2. Mock numpy with the correct 13-frame size (1280 * 960 * 13 = 15974400)
     # Using ones * 50 to ensure .any() assertions pass
-    monkeypatch.setattr(np, "fromfile", lambda *args, **kwargs: np.ones(15974400, dtype=np.uint16) * 50)
+    monkeypatch.setattr(np, "fromfile", lambda *args, **kwargs: np.ones(39936000, dtype=np.uint16) * 50)
 
     ps = read_cropreporter(filename=inf_dest)
     assert isinstance(ps, PSII_data)
