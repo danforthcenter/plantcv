@@ -51,8 +51,11 @@ def read_cropreporter(filename):
     # Dark-adapted PAM measurements
     _process_pmd_data(ps=ps, metadata=metadata_dict)
 
-    # Light-adapted PAM Pmeasurements
+    # Light-adapted PAM measurements
     _process_pml_data(ps=ps, metadata=metadata_dict)
+
+    # PAM time (dark, light, and second dark adapted) measurements
+    _process_pmt_data(ps=ps, metadata=metadata_dict)
 
     # Chlorophyll fluorescence data
     _process_chl_data(ps=ps, metadata=metadata_dict)
@@ -293,6 +296,95 @@ def _process_pml_data(ps, metadata):
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PML-frames.png"),
                col='frame_label',
                col_wrap=int(np.ceil(ps.pam_light.frame_label.size / 4)))
+
+
+def _process_pmt_data(ps, metadata):
+    """
+    Create an xarray DataArray for a PMT dataset with measurements stored
+    along the `measurement` dimension (t0, t1, ...), not encoded in frame labels.
+
+    Inputs:
+        ps       = PSII_data instance
+        metadata = INF file metadata dictionary
+    """
+    bin_filepath = _dat_filepath(dataset="PMT", datapath=ps.datapath, filename=ps.filename)
+
+    if not os.path.exists(bin_filepath):
+        return
+
+    img_cube, _, _ = _read_dat_file(
+        dataset="PMT",
+        filename=bin_filepath,
+        height=int(metadata["ImageRows"]),
+        width=int(metadata["ImageCols"])
+    )
+
+    # metadata-driven measurement counts
+    n_fqfm = int(metadata.get("TmPamMeasFqfm", 0))
+    # TmPamMeasFvfm=1 means only the baseline dark-adapted block exists, so n_fvfm should be 0
+    n_fvfm = max(0, int(metadata.get("TmPamMeasFvfm", 0)) - 1)
+
+    # Define blocks and their labels
+    blocks = [{"labels": ["Fdark", "F0", "Fm", "Fdarksat"], "count": 1, "start_meas": 0}]
+
+    if n_fqfm > 0:
+        blocks.append({"labels": ["Flight", "Fsp", "Fmp", "Flightsat"], "count": n_fqfm, "start_meas": 1})
+
+    if n_fvfm > 0:
+        blocks.append({"labels": ["Fdarkpp", "F0pp", "Fmpp", "Fdarksatpp"], "count": n_fvfm, "start_meas": 1 + n_fqfm})
+
+    # Flatten labels explicitly so coverage tools can "see" each step
+    frame_labels = []
+    for b in blocks:
+        for label in b["labels"]:
+            frame_labels.append(label)
+    frame_labels.append("F0p")
+
+    measurement_labels = [f"t{i}" for i in range(1 + n_fqfm + n_fvfm)]
+
+    # Initialize and fill data
+    n_x, n_y, n_frames = img_cube.shape
+    pmt_data = np.zeros((n_x, n_y, len(frame_labels), len(measurement_labels)), dtype=img_cube.dtype)
+
+    idx = 0
+    for block in blocks:
+        for m_offset in range(block["count"]):
+            meas_idx = block["start_meas"] + m_offset
+            for label in block["labels"]:
+                if idx < n_frames:
+                    # Map raw data to the dynamic label index
+                    pmt_data[:, :, frame_labels.index(label), meas_idx] = img_cube[:, :, idx]
+                    idx += 1
+
+    # Final Frame: F0p
+    # Phenovation places F0p at the very end of the binary file
+    if n_frames > 0:
+        pmt_data[:, :, frame_labels.index("F0p"), -1] = img_cube[:, :, -1]
+
+    # build DataArray
+    pmt = xr.DataArray(
+        data=pmt_data,
+        dims=("x", "y", "frame_label", "measurement"),
+        coords={
+            "frame_label": frame_labels,
+            "measurement": measurement_labels
+        },
+        name="pam_time"
+    )
+
+    pmt.attrs["long_name"] = "pam time measurements"
+    ps.add_data(pmt)
+
+    # debug visualization
+    _debug(
+        visual=ps.pam_time.isel(measurement=-1),
+        filename=os.path.join(
+            params.debug_outdir,
+            f"{str(params.device)}_PMT-frames.png"
+        ),
+        col="frame_label",
+        col_wrap=int(np.ceil(len(frame_labels) / 4))
+    )
 
 
 def _process_chl_data(ps, metadata):
