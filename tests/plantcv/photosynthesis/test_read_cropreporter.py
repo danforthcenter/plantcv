@@ -129,7 +129,7 @@ def test_read_cropreporter_pmt_only(photosynthesis_test_data, tmpdir):
     pmt_dat = photosynthesis_test_data.cropreporter_pmt.replace("HDR", "PMT")
     pmt_dat = pmt_dat.replace("INF", "DAT")
     shutil.copyfile(pmt_dat, os.path.join(cache_dir, "PMT_E0001P0007N0001_GCU24100090_20260226.DAT"))
-    fluor_filename = os.path.join(cache_dir, "HDR_E0001P0007N0001_GCU24100090_20260226.INF")
+    fluor_filename = os.path.join(cache_dir, "HDR_E0001P0008N0001_GCU24100090_20260226.INF")
     ps = read_cropreporter(filename=fluor_filename)
     assert isinstance(ps, PSII_data)
     assert ps.pam_time is not None
