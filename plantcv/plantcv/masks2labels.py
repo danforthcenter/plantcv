@@ -30,15 +30,13 @@ def masks2labels(mask_list):
     params.debug = None
 
     labeled_mask = np.zeros(mask_list[0].shape[:2], dtype=np.int32)
-    label1 = [0]
-    mask1 = []
-    for _, mask in enumerate(mask_list, start=1):
+    label1 = 1
+    for mask in mask_list:
         if np.sum(mask) > 0:
-            value = label1[-1]+1
+            value = label1
             labeled_mask[mask > 0] = value
-            mask1.append(mask)
-            label1.append(value)
-    num_label = len(label1)-1
+            label1 += 1
+    num_label = label1 - 1
 
     # Restore debug parameter
 
