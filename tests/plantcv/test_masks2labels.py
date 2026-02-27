@@ -1,4 +1,4 @@
-from plantcv.plantcv import masks2labels
+from plantcv.plantcv.masks2labels import masks2labels
 import pickle
 
 
