@@ -10,7 +10,7 @@ Convert a list of masks to a single labeled mask
     - mask_list - List of masks to convert to a labeled mask, empty masks will be removed
 
 - **Context:**
-    - Used to convert a list of masks to a single labeled mask, also provides a list of objects (number of masks)
+    - Used to convert a list of masks to a single labeled mask 
 
 
 ```python
