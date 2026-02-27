@@ -190,6 +190,12 @@ of key-value pairs (e.g. `{"getenv": "true"}`).
     `memory`, and `disk` are required by the other clusters. All other parameters are optional. Additional parameters
     defined in the [dask-jobqueue API](https://jobqueue.dask.org/en/latest/api.html) can be supplied.
 
+!!! note
+    The fields available in `job_extra_directives` vary by cluster type. For example, `{"getenv": "true"}` will work to start
+    the active conda environment on each worker in an HTCondor cluster but not on a PBS cluster.
+    `plantcv.parallel.run_parallel` and `JupyterConfig.run()` will check for an active conda environment
+    and attempt to start that environment on each worker if the `cluster_config` does not have a `job_script_prologue` already.
+
 ### Example
 
 ```python

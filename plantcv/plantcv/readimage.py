@@ -15,20 +15,22 @@ from plantcv.plantcv._debug import _debug
 def readimage(filename, mode="native"):
     """Read image from file.
 
-    Inputs:
-    filename = name of image file
-    mode     = mode of imread ("native", "rgb", "rgba", "gray", "csv", "envi", "arcgis", "nd2", "thermal")
+    Parameters
+    ----------
+    filename : str
+        Name of image file
+    mode : str
+        Mode of readimage. Options: "native", "rgb", "rgba", "gray", "normalize",
+        "csv", "envi", "arcgis", "nd2", "thermal"
 
-    Returns:
-    img      = image object as numpy array
-    path     = path to image file
-    img_name = name of image file
-
-    :param filename: str
-    :param mode: str
-    :return img: numpy.ndarray
-    :return path: str
-    :return img_name: str
+    Returns
+    -------
+    img : numpy.ndarray
+        Image object as numpy array
+    path : str
+        Path to image file
+    img_name : str
+        Name of image file
     """
     if mode.upper() in ("GRAY", "GREY"):
         img = cv2.imread(filename, 0)
@@ -36,6 +38,8 @@ def readimage(filename, mode="native"):
         img = cv2.imread(filename)
     elif mode.upper() == "RGBA":
         img = cv2.imread(filename, -1)
+    elif mode.upper() == "NORMALIZE":
+        img = cv2.normalize(cv2.imread(filename, cv2.IMREAD_UNCHANGED), None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
     elif mode.upper() == "CSV":
         inputarray = pd.read_csv(filename, sep=',', header=None)
         img = inputarray.values
