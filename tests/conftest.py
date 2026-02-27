@@ -89,6 +89,11 @@ class TestData:
         self.kmeans_classifier_gray_dir = os.path.join(self.datadir, "kmeans_classifier_gray_dir")
         # nd2 file
         self.nd2_img = os.path.join(self.datadir, "test_nd2_img.nd2")
+        # Image, mask, and roi for radial percentile
+        self.rgb_seed = os.path.join(self.datadir, "rgb_seed.jpg")
+        self.rgb_seed_mask = os.path.join(self.datadir, "rgb_seed_mask.jpg")
+        self.small_circle = os.path.join(self.datadir, "small_circle.png")
+        self.empty_mask = os.path.join(self.datadir, "seed_empty_mask.png")
         # flir thermal img
         self.flir_img = os.path.join(self.datadir, "FLIR_test.jpg")
         # parallel results to process
