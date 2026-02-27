@@ -165,8 +165,12 @@ def test_read_cropreporter_pmt_only_13_labels(photosynthesis_test_data, tmpdir, 
     
     pmt_dat_src = photosynthesis_test_data.cropreporter_pmt.replace("HDR", "PMT").replace("INF", "DAT")
     shutil.copyfile(pmt_dat_src, dat_dest)
-    
-    # 2. Mock numpy with the correct 13-frame size (1280 * 960 * 13 = 15974400)
+
+    # Force the INF to trigger the 13-label logic (n_fvfm > 0)
+    with open(inf_dest, "a") as f:
+        f.write("\nTmPamMeasFvfm=3") 
+
+    # Mock numpy with the correct 13-frame size (1280 * 960 * 13 = 15974400)
     # Using ones * 50 to ensure .any() assertions pass
     monkeypatch.setattr(np, "fromfile", lambda *args, **kwargs: np.ones(39936000, dtype=np.uint16) * 50)
 
