@@ -191,7 +191,7 @@ def test_read_cropreporter_pmt_only_13_labels(photosynthesis_test_data, tmpdir, 
     
     # Access a value to ensure the loops actually ran
     # This forces the test to "touch" the data assigned inside the loops
-    assert ps.pam_time.sel(frame_label="Fdark", measurement="t0").any()
+    assert ps.pam_time.sel(frame_label="Fdark", measurement="t0").values.any()
     
     # Verify the F0p (the very last line of your function)
     assert "F0p" in ps.pam_time.frame_label.values
