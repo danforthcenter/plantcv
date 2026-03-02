@@ -332,7 +332,7 @@ def _process_pmt_data(ps, metadata):
         # Logic for when Light blocks are NOT present
         pass
     else:
-        blocks.append({"labels": ["Flight", "Fsp", "Fmp", "Flightsat"], "count": n_fqfm, "start_meas": 1})
+        blocks.append({"labels": ["Flight", "Fp", "Fmp", "Flightsat"], "count": n_fqfm, "start_meas": 1})
 
     # Handle the absence of Variable Fluorescence measurements
     if n_fvfm == 0:
