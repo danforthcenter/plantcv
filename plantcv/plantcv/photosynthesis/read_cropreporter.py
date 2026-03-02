@@ -359,7 +359,8 @@ def _process_pmt_data(ps, metadata):
         for m_offset in range(block["count"]):
             meas_idx = block["start_meas"] + m_offset
             for label in block["labels"]:
-                if idx < n_frames:
+                # Check (idx < n_frames - 1) to reserve the final frame for F0p
+                if idx < n_frames - 1:
                     # Map raw data to the dynamic label index
                     pmt_data[:, :, frame_labels.index(label), meas_idx] = img_cube[:, :, idx]
                     idx += 1
