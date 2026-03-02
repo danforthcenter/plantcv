@@ -63,7 +63,7 @@ ps.ojip_dark.plot(col='frame_label', col_wrap=4)
 
 **PAM Time fluorescence measurements**
 
-![Screenshot](img/documentation_images/photosynthesis_read_cropreporter/7-PMT-frames.png)
+![Screenshot](img/documentation_images/photosynthesis_read_cropreporter/7_PMT-frames.png)
 
 **Chlorophyll fluorescence measurements**
 
