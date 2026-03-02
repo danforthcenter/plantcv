@@ -61,9 +61,11 @@ class PhotosynthesisTestData:
         if var == 'ojip_dark':
             frame_labels = ['Fdark', 'F0', 'Fm', '3']
             measurements = ['t0']
+            data = np.dstack([f0, f1, f2, f3])[..., None]
         elif var == 'ojip_light':
             frame_labels = ['Fdark', 'Fp', '2', 'Fmp']
             measurements = ['t1']
+            data = np.dstack([f0, f1, f2, f3])[..., None]
         elif var == 'pam_time':
             # Create a mock 4D cube for PMT (x, y, frame, measurement)
             frame_labels = ["Fdark", "F0", "Fm", "Fdarksat", "Flight", "Fsp", "Fmp", "Flightsat", "F0p", "Fdarkpp", "F0pp", "Fmpp", "Fdarksatpp"]
@@ -72,10 +74,13 @@ class PhotosynthesisTestData:
             data = np.zeros((10, 10, len(frame_labels), len(measurements)))
             data[5, 5, :, :] = 50  # Mock intensity
 
+        # Generate a frame_num list that matches the length of frame_labels
+        frame_numbers = list(range(len(frame_labels)))
+        
         # Create DataArray
-        da = xr.DataArray(data=np.dstack([f0, f1, f2, f3])[..., None],
+        da = xr.DataArray(data=data,
                           dims=('x', 'y', 'frame_label', 'measurement'),
-                          coords={'frame_label': frame_labels, 'frame_num': ('frame_label', [0, 1, 2, 3]),
+                          coords={'frame_label': frame_labels, 'frame_num': ('frame_label', frame_numbers),
                                   'measurement': measurements}, name=var)
         return da
 
