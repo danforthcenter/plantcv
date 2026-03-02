@@ -324,14 +324,23 @@ def _process_pmt_data(ps, metadata):
     # TmPamMeasFvfm=1 means only the baseline dark-adapted block exists, so n_fvfm should be 0
     n_fvfm = max(0, int(metadata.get("TmPamMeasFvfm", 0)) - 1)
 
-    # Define blocks and their labels
+    # Initialize with the base requirement
     blocks = [{"labels": ["Fdark", "F0", "Fm", "Fdarksat"], "count": 1, "start_meas": 0}]
 
-    if n_fqfm > 0:
+    # Handle the absence of Light/Quenching measurements
+    if not n_fqfm > 0:
+        # Logic for when Light blocks are NOT present
+        pass 
+    else:
         blocks.append({"labels": ["Flight", "Fsp", "Fmp", "Flightsat"], "count": n_fqfm, "start_meas": 1})
 
-    if n_fvfm > 0:
+    # Handle the absence of Variable Fluorescence measurements
+    if n_fvfm == 0:
+        # Logic for when Dark++ blocks are NOT present
+        pass
+    else:
         blocks.append({"labels": ["Fdarkpp", "F0pp", "Fmpp", "Fdarksatpp"], "count": n_fvfm, "start_meas": 1 + n_fqfm})
+    
 
     # Flatten labels explicitly so coverage tools can "see" each step
     frame_labels = []
