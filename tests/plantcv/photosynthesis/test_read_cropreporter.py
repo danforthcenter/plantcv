@@ -120,7 +120,7 @@ def test_read_cropreporter_aph_only(photosynthesis_test_data, tmpdir):
     assert ps.aph.shape[2] == 2  # Red + FarRed
 
 def test_read_cropreporter_pmt_only_9_labels(photosynthesis_test_data, tmpdir):
-    """Test PMT (PAM Time) import wiht 9 frames."""
+    """Test PMT (PAM Time) import with 9 frames."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("sub")
     # Create dataset with only PMT
