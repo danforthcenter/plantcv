@@ -335,7 +335,7 @@ def _process_pmt_data(ps, metadata):
         blocks.append({"labels": ["Flight", "Fsp", "Fmp", "Flightsat"], "count": n_fqfm, "start_meas": 1})
 
     # Handle the absence of Variable Fluorescence measurements
-    if n_fvfm <= 0:
+    if n_fvfm == 0:
         # Logic for when Dark++ blocks are NOT present
         pass
     else:
