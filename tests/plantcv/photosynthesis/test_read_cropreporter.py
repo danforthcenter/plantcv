@@ -170,7 +170,7 @@ def test_read_cropreporter_pmt_only_13_labels(photosynthesis_test_data, tmpdir, 
     with open(inf_dest, "a") as f:
         f.write("\nTmPamMeasFvfm=3") 
 
-    # Mock numpy with the correct 13-frame size (1280 * 960 * 13 = 15974400)
+    # Mock numpy with the correct 13-frame size (2048 * 1500 * 13 = 39936000, matching the INF metadata)
     # Using ones * 50 to ensure .any() assertions pass
     monkeypatch.setattr(np, "fromfile", lambda *args, **kwargs: np.ones(39936000, dtype=np.uint16) * 50)
 
