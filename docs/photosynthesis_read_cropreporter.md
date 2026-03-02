@@ -18,8 +18,8 @@ with labeled frames.
       labeled according to the metadata in .INF. The default measurement label is 't0'.
     - Measurements from light-adapted plant state are stored in the attribute `ojip_light` or `pam_light`, depending on the measurement protocol. Frames Fp and Fmp are
       labeled according to the metadata in .INF. The default measurement label is 't1'.
-    - Measurements from dark-adapted, light-adapted, and optional second dark adapted plant state are stored in the attribute `npq` or `pam_time`, depending on the measurement protocol. Frames F0, Fm, Fp, Fmp, F0pp, and Fmpp are
-      labeled according to the metadata in .INF. The default measurement label is 't1'.
+    - Time-resolved PAM fluorescence measurements are stored in the attribute `pam_time`. Frames F0, Fm, Fp, Fmp, F0pp, and Fmpp are
+      labeled according to the metadata in .INF, with measurement labels starting at 't0' (e.g. t0, t1, t2, ...).
     - Measurements from chlorophyll fluorescence are stored in the attribute `chlorophyll` and include a dark frame
       (Fdark) and chlorophyll fluorescence frame (Chl).
     - Green fluorescence protein (GFP) measurements are stored in the attribute `gfp` and include frames for dark fluorescence (Fdark), GFP fluorescence (GFP, 525 nm), and autofluorescence (Auto, 585 nm).
