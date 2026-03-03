@@ -329,16 +329,10 @@ def _process_pmt_data(ps, metadata):
 
     # Handle the absence of Light/Quenching measurements
     if n_fqfm > 0:
-        # Logic for when Light blocks are NOT present
-        pass
-    else:
         blocks.append({"labels": ["Flight", "Fp", "Fmp", "Flightsat"], "count": n_fqfm, "start_meas": 1})
 
     # Handle the absence of Variable Fluorescence measurements
-    if n_fvfm == 0:
-        # Logic for when Dark++ blocks are NOT present
-        pass
-    else:
+    if n_fvfm > 0:
         blocks.append({"labels": ["Fdarkpp", "F0pp", "Fmpp", "Fdarksatpp"], "count": n_fvfm, "start_meas": 1 + n_fqfm})
 
     # Flatten labels explicitly so coverage tools can "see" each step
