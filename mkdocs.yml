@@ -235,7 +235,7 @@ nav:
         - 'Workflow Parallelization': pipeline_parallel.md
   - 'Accessory tools': tools.md
   - 'Extensions':
-    - 'PlantCV Geospatial': https://plantcv.readthedocs.io/projects/geospatial
+    - 'PlantCV Geospatial': https://docs.plantcv.org/projects/geospatial
 markdown_extensions:
   - toc:
       permalink: True
