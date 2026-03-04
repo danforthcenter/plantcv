@@ -1,7 +1,7 @@
 ![builds](https://github.com/danforthcenter/plantcv/workflows/builds/badge.svg)
 [![DeepSource](https://app.deepsource.com/gh/danforthcenter/plantcv.svg/?label=code+coverage&show_trend=true&token=og8rSyKxywOCGkIk8UNiF7B_)](https://app.deepsource.com/gh/danforthcenter/plantcv/)
 [![DeepSource](https://app.deepsource.com/gh/danforthcenter/plantcv.svg/?label=active+issues&show_trend=true&token=og8rSyKxywOCGkIk8UNiF7B_)](https://app.deepsource.com/gh/danforthcenter/plantcv/)
-[![Documentation Status](https://readthedocs.org/projects/plantcv/badge/?version=stable)](https://plantcv.readthedocs.io/en/stable/?badge=stable)
+[![Documentation Status](https://readthedocs.org/projects/plantcv/badge/?version=stable)](https://docs.plantcv.org/en/stable/?badge=stable)
 [![GitHub release](https://img.shields.io/github/release/danforthcenter/plantcv.svg)](https://github.com/danforthcenter/plantcv/releases)
 [![PyPI version](https://badge.fury.io/py/plantcv.svg)](https://badge.fury.io/py/plantcv)
 ![Conda](https://img.shields.io/conda/v/conda-forge/plantcv)
@@ -13,7 +13,7 @@
 
 # PlantCV: Plant phenotyping using computer vision
 
-Please use, cite, and [contribute to](http://plantcv.readthedocs.io/en/latest/CONTRIBUTING/) PlantCV!
+Please use, cite, and [contribute to](https://docs.plantcv.org/CONTRIBUTING/) PlantCV!
 If you have questions, please submit them via the
 [GitHub issues page](https://github.com/danforthcenter/plantcv/issues).
 Follow us on twitter [@plantcv](https://twitter.com/plantcv).
@@ -31,13 +31,13 @@ links to recorded presentations, and publications using PlantCV, please visit ou
 
 ### Quick Links
 
-* [Documentation](http://plantcv.readthedocs.io/)
+* [Documentation](https://docs.plantcv.org/)
 * [Tutorial Gallery](https://plantcv.org/tutorials)
-* [Installation Instructions](https://plantcv.readthedocs.io/en/stable/installation/)
-* [Updating/Changelog](https://plantcv.readthedocs.io/en/stable/updating/)
+* [Installation Instructions](https://docs.plantcv.org/installation/)
+* [Updating/Changelog](https://docs.plantcv.org/updating/)
 * [Public Image Datasets](https://datasci.danforthcenter.org/data/)
-* [Contribution Guide](https://plantcv.readthedocs.io/en/stable/CONTRIBUTING/)
-* [Code of Conduct](https://plantcv.readthedocs.io/en/stable/CODE_OF_CONDUCT/)
+* [Contribution Guide](https://docs.plantcv.org/CONTRIBUTING/)
+* [Code of Conduct](https://docs.plantcv.org/CODE_OF_CONDUCT/)
 * Downloads
   * [GitHub](https://github.com/danforthcenter/plantcv)
   * [PyPI](https://pypi.org/project/plantcv/)
