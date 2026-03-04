@@ -236,6 +236,8 @@ nav:
         - 'Run Parallel': parallel_run_parallel.md
         - 'Workflow Parallelization': pipeline_parallel.md
   - 'Accessory tools': tools.md
+  - 'Extensions':
+    - 'PlantCV Geospatial': https://plantcv.readthedocs.io/projects/geospatial
   - 'Developer tools':
     - 'Parallel Job Builder': parallel_job_builder.md
     - 'Parallel Metadata Parser': parallel_metadata_parser.md
