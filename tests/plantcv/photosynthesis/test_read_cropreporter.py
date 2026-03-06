@@ -168,11 +168,14 @@ def test_read_cropreporter_pmt_only_13_labels(photosynthesis_test_data, tmpdir, 
 
     # Force the INF to trigger the 13-label logic (n_fvfm > 0)
     with open(inf_dest, "a") as f:
-        f.write("\nTmPamMeasFvfm=3") 
+        f.write("\nTmPamMeasFvfm=3")
+        # Override image size to keep memory usage small in tests
+        f.write("\nImageRows=10")
+        f.write("\nImageCols=10")
 
-    # Mock numpy with the correct 13-frame size (2048 * 1500 * 13 = 39936000, matching the INF metadata)
+    # Mock numpy with the correct 13-frame size for the overridden metadata (10 * 10 * 13 = 1300)
     # Using ones * 50 to ensure .any() assertions pass
-    monkeypatch.setattr(np, "fromfile", lambda *args, **kwargs: np.ones(39936000, dtype=np.uint16) * 50)
+    monkeypatch.setattr(np, "fromfile", lambda *args, **kwargs: np.ones(1300, dtype=np.uint16) * 50)
 
     ps = read_cropreporter(filename=inf_dest)
     assert isinstance(ps, PSII_data)
