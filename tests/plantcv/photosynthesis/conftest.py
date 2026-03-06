@@ -68,7 +68,7 @@ class PhotosynthesisTestData:
             data = np.dstack([f0, f1, f2, f3])[..., None]
         elif var == 'pam_time':
             # Create a mock 4D cube for PMT (x, y, frame, measurement)
-            frame_labels = ["Fdark", "F0", "Fm", "Fdarksat", "Flight", "Fsp", "Fmp", "Flightsat", "F0p", "Fdarkpp", "F0pp", "Fmpp", "Fdarksatpp"]
+            frame_labels = ["Fdark", "F0", "Fm", "Fdarksat", "Flight", "Fp", "Fmp", "Flightsat", "F0p", "Fdarkpp", "F0pp", "Fmpp", "Fdarksatpp"]
             measurements = ["t0", "t1", "t2"]
             # Generate dummy data for 13 labels across 3 timepoints
             data = np.zeros((10, 10, len(frame_labels), len(measurements)))
