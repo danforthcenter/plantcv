@@ -234,6 +234,8 @@ nav:
         - 'Process Results': parallel_process_results.md
         - 'Workflow Parallelization': pipeline_parallel.md
   - 'Accessory tools': tools.md
+  - 'Extensions':
+    - 'PlantCV Geospatial': https://docs.plantcv.org/projects/geospatial
 markdown_extensions:
   - toc:
       permalink: True
