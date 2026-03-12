@@ -393,6 +393,111 @@ def gli(img, distance=20):
     return _package_index(hsi=hsi, raw_index=index_array_raw, method="GLI")
 
 
+def sci(img):
+    """Soil Color Index.
+
+    SCI = (R - G) / (R + G)
+
+    The theoretical range for SCI is [-1.0, 1.0].
+
+    Inputs:
+    img            = Color image (np.array)
+
+    Returns:
+    index_array    = Index data as a Spectral_data instance
+
+    :param img: np.array
+    :return index_array: __main__.Spectral_data
+    """
+    if type(img) is not np.ndarray:
+        warn("Input image type is not supported for SCI. Please use an RGB image.")
+        return None
+
+    # Split the RGB image into component channels
+    _, green, red = cv2.split(img)
+
+    with np.errstate(divide="ignore", invalid="ignore"):
+        r = red.astype(np.float32)
+        g = green.astype(np.float32)
+        index_array_raw = (r - g) / (r + g)
+
+    hsi = Spectral_data(array_data=None, max_wavelength=0, min_wavelength=0, max_value=255, min_value=0,
+                        d_type=np.uint8, wavelength_dict={}, samples=None, lines=None, interleave=None,
+                        wavelength_units=None, array_type=None, pseudo_rgb=None, filename=None, default_bands=None)
+
+    return _package_index(hsi=hsi, raw_index=index_array_raw, method="SCI")
+
+
+def bgr(img):
+    """Blue Green Ratio.
+
+    BGR = B / G
+
+    The theoretical range for BGR is [0.0, Inf).
+
+    Inputs:
+    img            = Color image (np.array)
+
+    Returns:
+    index_array    = Index data as a Spectral_data instance
+
+    :param img: np.array
+    :return index_array: __main__.Spectral_data
+    """
+    if type(img) is not np.ndarray:
+        warn("Input image type is not supported for BGR. Please use an RGB image.")
+        return None
+
+    # Split the RGB image into component channels
+    blue, green, _ = cv2.split(img)
+
+    with np.errstate(divide="ignore", invalid="ignore"):
+        b = blue.astype(np.float32)
+        g = green.astype(np.float32)
+        index_array_raw = b / g
+
+    hsi = Spectral_data(array_data=None, max_wavelength=0, min_wavelength=0, max_value=255, min_value=0,
+                        d_type=np.uint8, wavelength_dict={}, samples=None, lines=None, interleave=None,
+                        wavelength_units=None, array_type=None, pseudo_rgb=None, filename=None, default_bands=None)
+
+    return _package_index(hsi=hsi, raw_index=index_array_raw, method="BGR")
+
+
+def bgi(img):
+    """Blue Green Index.
+
+    BGI = (G - B) / (G + B)
+
+    The theoretical range for BGI is [-1.0, 1.0].
+
+    Inputs:
+    img            = Color image (np.array)
+
+    Returns:
+    index_array    = Index data as a Spectral_data instance
+
+    :param img: np.array
+    :return index_array: __main__.Spectral_data
+    """
+    if type(img) is not np.ndarray:
+        warn("Input image type is not supported for BGI. Please use an RGB image.")
+        return None
+
+    # Split the RGB image into component channels
+    blue, green, _ = cv2.split(img)
+
+    with np.errstate(divide="ignore", invalid="ignore"):
+        b = blue.astype(np.float32)
+        g = green.astype(np.float32)
+        index_array_raw = (g - b) / (g + b)
+
+    hsi = Spectral_data(array_data=None, max_wavelength=0, min_wavelength=0, max_value=255, min_value=0,
+                        d_type=np.uint8, wavelength_dict={}, samples=None, lines=None, interleave=None,
+                        wavelength_units=None, array_type=None, pseudo_rgb=None, filename=None, default_bands=None)
+
+    return _package_index(hsi=hsi, raw_index=index_array_raw, method="BGI")
+
+
 def mari(hsi, distance=20):
     """Modified Anthocyanin Reflectance Index.
 
