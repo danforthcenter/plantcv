@@ -791,6 +791,30 @@ def _rgb2gray(rgb_img):
     return gray
 
 
+def _rgb2rgb(rgb_img, channel):
+    """Return the specified RGB subchannel as a grayscale image.
+
+    Parameters
+    ----------
+    rgb_img : numpy.ndarray
+        RGB image data
+    channel : str
+        color subchannel (r = red, g = green, b = blue)
+
+    Returns
+    -------
+    numpy.ndarray
+        grayscale image from one RGB color channel
+    """
+    channel = channel.lower()
+    if channel not in ["r", "g", "b"]:
+        fatal_error("Channel " + str(channel) + " is not r, g or b!")
+
+    # Images are BGR when read by OpenCV/PlantCV.
+    channels = {"b": rgb_img[:, :, 0], "g": rgb_img[:, :, 1], "r": rgb_img[:, :, 2]}
+    return channels[channel]
+
+
 def _logical_operation(bin_img1, bin_img2, operation):
     """Perform a logical operation on two binary images.
 
