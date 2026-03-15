@@ -137,7 +137,7 @@ def test_read_cropreporter_pmt_only_9_labels(photosynthesis_test_data, tmpdir):
     # Check that dimensions include x, y, frame_label, and measurement
     assert "frame_label" in ps.pam_time.coords
     assert "measurement" in ps.pam_time.coords
-    
+
     # Verify the shape (x, y, 9 labels, N measurements)
     # The 9 or 13 comes from 'frame_labels' list in read_cropreporter.py, and depends on the presence of second dark adaptation
     num_labels = len(ps.pam_time.frame_label)
@@ -145,11 +145,11 @@ def test_read_cropreporter_pmt_only_9_labels(photosynthesis_test_data, tmpdir):
 
     # Check that at least one measurement label was created (t0, t1...)
     assert "t0" in ps.pam_time.measurement.values
-    
+
     # Access a value to ensure the loops actually ran
     # This forces the test to "touch" the data assigned inside the loops
     assert ps.pam_time.sel(frame_label="Fdark", measurement="t0").values.any()
-    
+
     # Verify the F0p (the very last line of your function)
     assert "F0p" in ps.pam_time.frame_label.values
 
@@ -161,10 +161,10 @@ def test_read_cropreporter_pmt_only_13_labels(photosynthesis_test_data, tmpdir, 
     # 1. Align filenames (P0008 for both) so the reader finds the DAT file
     inf_dest = os.path.join(cache_dir, "HDR_E0001P0008N0001_GCU24100090_20260226.INF")
     dat_dest = os.path.join(cache_dir, "PMT_E0001P0008N0001_GCU24100090_20260226.DAT")
-    
+
     # Create dataset with only PMT
     shutil.copyfile(photosynthesis_test_data.cropreporter_pmt, inf_dest)
-    
+
     pmt_dat_src = photosynthesis_test_data.cropreporter_pmt.replace("HDR", "PMT").replace("INF", "DAT")
     shutil.copyfile(pmt_dat_src, dat_dest)
 
@@ -185,7 +185,7 @@ def test_read_cropreporter_pmt_only_13_labels(photosynthesis_test_data, tmpdir, 
     # Check that dimensions include x, y, frame_label, and measurement
     assert "frame_label" in ps.pam_time.coords
     assert "measurement" in ps.pam_time.coords
-    
+
     # Verify the shape (x, y, 13 labels, N measurements)
     # The 9 or 13 comes from 'frame_labels' list in read_cropreporter.py, and depends on the presence of second dark adaptation
     num_labels = len(ps.pam_time.frame_label)
@@ -193,10 +193,10 @@ def test_read_cropreporter_pmt_only_13_labels(photosynthesis_test_data, tmpdir, 
 
     # Check that at least one measurement label was created (t0, t1...)
     assert "t0" in ps.pam_time.measurement.values
-    
+
     # Access a value to ensure the loops actually ran
     # This forces the test to "touch" the data assigned inside the loops
     assert ps.pam_time.sel(frame_label="Fdark", measurement="t0").values.any()
-    
+
     # Verify the F0p (the very last line of your function)
     assert "F0p" in ps.pam_time.frame_label.values
