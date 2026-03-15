@@ -300,12 +300,19 @@ def _process_pml_data(ps, metadata):
 
 def _process_pmt_data(ps, metadata):
     """
-    Create an xarray DataArray for a PMT dataset with measurements stored
-    along the `measurement` dimension (t0, t1, ...), not encoded in frame labels.
+    Create an xarray DataArray for a PMT dataset.
 
-    Inputs:
-        ps       = PSII_data instance
-        metadata = INF file metadata dictionary
+    Parameters
+    ----------
+    ps : plantcv.plantcv.classes.PSII_data
+        PSII_data instance.
+    metadata : dict
+        INF file metadata dictionary.
+
+    Notes
+    -----
+    Measurements are stored along the `measurement` dimension (t0, t1, ...),
+    not encoded in frame labels.
     """
     bin_filepath = _dat_filepath(dataset="PMT", datapath=ps.datapath, filename=ps.filename)
 
