@@ -1,0 +1,21 @@
+ENVI
+; this file was created using PlantCV version 3.6.dev124+gf033097d
+; original file: ./RC5-9B3D54_000000_20240603_010000
+interleave = bil
+samples = 2
+lines = 1
+bands = 10
+data type = 1
+wavelength units = nm
+wavelength = {
+0.0,
+475.0,
+500.0,
+526.0,
+595.0,
+630.0,
+665.0,
+740.0,
+850.0,
+940.0
+}
