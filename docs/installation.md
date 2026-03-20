@@ -29,8 +29,8 @@ Click through our step-by-step guide below to install PlantCV through conda.
 
 
 !!!note
-    Once you have installed PlantCV, to get started see our [guide to using PlantCV with Jupyter Notebooks](https://plantcv.readthedocs.io/en/stable/jupyter/) 
-    and our [guide to developing workflows in PlantCV](https://plantcv.readthedocs.io/en/stable/analysis_approach/#developing-image-processing-workflows-workflow-development).
+    Once you have installed PlantCV, to get started see our [guide to using PlantCV with Jupyter Notebooks](jupyter.md) 
+    and our [guide to developing workflows in PlantCV](analysis_approach.md#developing-image-processing-workflows-workflow-development).
 
 ---
 

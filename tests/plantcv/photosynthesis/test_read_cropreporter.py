@@ -42,9 +42,9 @@ def test_read_cropreporter(photosynthesis_test_data, tmpdir):
     assert all(a == b for a, b in zip(ps.ojip_dark.coords['frame_label'].to_dict()['data'], true_dark_labels))
     true_light_labels = ['Flight', 'Fp', 'Fmp', 'PSL3', 'PSL4', 'PSL5', 'PSL6']
     assert all(a == b for a, b in zip(ps.ojip_light.coords['frame_label'].to_dict()['data'], true_light_labels))
-    true_pam_dark_labels = ["Fdark", "F0", "Fm", "Fs"]
+    true_pam_dark_labels = ["Fdark", "F0", "Fm", "Fdarksat"]
     assert all(a == b for a, b in zip(ps.pam_dark.coords['frame_label'].to_dict()['data'], true_pam_dark_labels))
-    true_pam_light_labels = ["Flight", "Fp", "Fmp", "Fs"]
+    true_pam_light_labels = ["Flight", "Fp", "Fmp", "Flightsat"]
     assert all(a == b for a, b in zip(ps.pam_light.coords['frame_label'].to_dict()['data'], true_pam_light_labels))
 
 
