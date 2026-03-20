@@ -397,34 +397,30 @@ def _process_pmt_data(ps, metadata):
 
 def _process_chl_data(ps, metadata):
     """
-    Create an xarray DataArray for a CHL dataset.
+    Read CHL dataset and keep only the Chlorophyll frame as a NumPy array.
 
     Inputs:
         ps       = PSII_data instance
         metadata = INF file metadata dictionary
-
-    :param ps: plantcv.plantcv.classes.PSII_data
-    :param metadata: dict
     """
     bin_filepath = _dat_filepath(dataset="CHL", datapath=ps.datapath, filename=ps.filename)
+    
     if os.path.exists(bin_filepath):
-        img_cube, frame_labels, _ = _read_dat_file(dataset="CHL", filename=bin_filepath,
-                                                   height=int(metadata["ImageRows"]),
-                                                   width=int(metadata["ImageCols"]))
-        frame_labels = ["Fdark", "Chl"]
-        chl = xr.DataArray(
-            data=img_cube,
-            dims=('x', 'y', 'frame_label'),
-            coords={'frame_label': frame_labels},
-            name='chlorophyll'
-        )
-        chl.attrs["long_name"] = "chlorophyll measurements"
-        ps.add_data(chl)
+        # Read the raw data cube (contains Fdark and Chl)
+        img_cube, _, _ = _read_dat_file(dataset="CHL", filename=bin_filepath,
+                                        height=int(metadata["ImageRows"]),
+                                        width=int(metadata["ImageCols"]))
+        
+        # The CHL file typically has: index 0 = Fdark, index 1 = Chl
+        # We extract only the Chl frame (index 1)
+        chl_frame = img_cube[:, :, 1]
+        
+        # Store as a standard attribute 
+        ps.chlorophyll = chl_frame 
 
+        # Debugging (modified to handle NumPy array instead of xarray)
         _debug(visual=ps.chlorophyll,
-               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_CHL-frames.png"),
-               col='frame_label',
-               col_wrap=int(np.ceil(ps.chlorophyll.frame_label.size / 4)))
+               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_CHL-frame.png"))
 
 
 def _process_spc_data(ps, metadata):
