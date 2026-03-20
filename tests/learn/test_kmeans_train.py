@@ -1,6 +1,7 @@
 import os
 import cv2
-from plantcv.learn.train_kmeans import train_kmeans
+import numpy as np
+from plantcv.learn.train_kmeans import train_kmeans, _read_by_mode
 
 
 def test_train_kmeans_subset(learn_test_data, tmpdir):
@@ -70,4 +71,4 @@ def test_train_kmeans_spectral(test_data, learn_test_data, tmpdir, monkeypatch):
 def test_read_by_mode(test_data):
     """Test for PlantCV."""
     img = _read_by_mode(test_data.envi_sample_data, mode="spectral")
-    assert img
+    assert isinstance(img, np.ndarray)
