@@ -29,6 +29,42 @@ Index range: -∞, ∞
     - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
     - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
 
+### BGI
+
+Calculates the Blue Green Index.
+
+```
+BGI = (G - B) / (G + B)
+```
+
+Index range: -1, 1
+
+**plantcv.spectral_index.bgi**(*img*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - img         - Color image as a numpy array.
+
+
+### BGR
+
+Calculates the Blue Green Ratio.
+
+```
+BGR = B / G
+```
+
+Index range: 0, ∞
+
+**plantcv.spectral_index.bgr**(*img*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - img         - Color image as a numpy array.
+
+
 ### CI_REDEDGE
 
 Calculates the Chlorophyll Index Rededge using reflectance values ([Gitelson et al., 2003](#references)):
@@ -532,6 +568,25 @@ Index range: -1.2, 1.2
 - **Parameters:**
     - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
     - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
+
+
+### SCI
+
+Calculates the Soil Color Index.
+
+```
+SCI = (R - G) / (R + G)
+```
+
+Index range: -1, 1
+
+**plantcv.spectral_index.sci**(*img*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - img         - Color image as a numpy array.
+
 
 ### SIPI
 
