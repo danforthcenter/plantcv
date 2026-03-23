@@ -52,6 +52,7 @@ class PSII_data:
         self.ojip_light = None
         self.pam_dark = None
         self.pam_light = None
+        self.pam_time = None
         self.spectral = None
         self.chlorophyll = None
         self.gfp = None
