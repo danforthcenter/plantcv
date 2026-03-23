@@ -404,19 +404,19 @@ def _process_chl_data(ps, metadata):
         metadata = INF file metadata dictionary
     """
     bin_filepath = _dat_filepath(dataset="CHL", datapath=ps.datapath, filename=ps.filename)
-    
+
     if os.path.exists(bin_filepath):
         # Read the raw data cube (contains Fdark and Chl)
         img_cube, _, _ = _read_dat_file(dataset="CHL", filename=bin_filepath,
                                         height=int(metadata["ImageRows"]),
                                         width=int(metadata["ImageCols"]))
-        
+
         # The CHL file typically has: index 0 = Fdark, index 1 = Chl
         # We extract only the Chl frame (index 1)
         chl_frame = img_cube[:, :, 1]
-        
-        # Store as a standard attribute 
-        ps.chlorophyll = chl_frame 
+
+        # Store as a standard attribute
+        ps.chlorophyll = chl_frame
 
         # Debugging (modified to handle NumPy array instead of xarray)
         _debug(visual=ps.chlorophyll,
