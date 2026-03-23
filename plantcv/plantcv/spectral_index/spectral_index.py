@@ -400,14 +400,13 @@ def sci(img):
 
     The theoretical range for SCI is [-1.0, 1.0].
 
-    Inputs:
-    img            = Color image (np.array)
+    Parameters
+    ----------
+    img            = np.array, Color image
 
-    Returns:
-    index_array    = Index data as a Spectral_data instance
-
-    :param img: np.array
-    :return index_array: __main__.Spectral_data
+    Returns
+    -------
+    index_array    = plantcv.plantcv.Spectral_data, Index data
     """
     if type(img) is not np.ndarray:
         warn("Input image type is not supported for SCI. Please use an RGB image.")
@@ -435,14 +434,13 @@ def bgr(img):
 
     The theoretical range for BGR is [0.0, Inf).
 
-    Inputs:
-    img            = Color image (np.array)
+    Parameters
+    ----------
+    img            = np.array, Color image
 
-    Returns:
-    index_array    = Index data as a Spectral_data instance
-
-    :param img: np.array
-    :return index_array: __main__.Spectral_data
+    Returns
+    -------
+    index_array    = plantcv.plantcv.Spectral_data, Index data
     """
     if type(img) is not np.ndarray:
         warn("Input image type is not supported for BGR. Please use an RGB image.")
@@ -470,14 +468,13 @@ def bgi(img):
 
     The theoretical range for BGI is [-1.0, 1.0].
 
-    Inputs:
-    img            = Color image (np.array)
+    Parameters
+    ----------
+    img            = np.array, Color image
 
-    Returns:
-    index_array    = Index data as a Spectral_data instance
-
-    :param img: np.array
-    :return index_array: __main__.Spectral_data
+    Returns
+    -------
+    index_array    = plantcv.plantcv.Spectral_data, Index data
     """
     if type(img) is not np.ndarray:
         warn("Input image type is not supported for BGI. Please use an RGB image.")
@@ -505,16 +502,16 @@ def mari(hsi, distance=20):
 
     The theoretical range for MARI is (-Inf, Inf).
 
-    Inputs:
-    hsi         = hyperspectral image (PlantCV Spectral_data instance)
-    distance    = how lenient to be if the required wavelengths are not available
+    Parameters
+    ----------
+    hsi         = plantcv.plantcv.Spectral_data,
+        hyperspectral image (PlantCV Spectral_data instance)
+    distance    = int,
+        How lenient to be if the required wavelengths are not available.
+        Defines a an upper and lower range around max/min wavelengths of the HSI object
 
     Returns:
-    index_array = Index data as a Spectral_data instance
-
-    :param hsi: __main__.Spectral_data
-    :param distance: int
-    :return index_array: __main__.Spectral_data
+    index_array = plantcv.plantcv.Spectral_data, Index data
     """
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 550:
         r550_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 550)
