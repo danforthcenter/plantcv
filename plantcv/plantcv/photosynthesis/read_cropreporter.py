@@ -17,7 +17,7 @@ def read_cropreporter(filename):
         filename = .INF filename
 
     Returns:
-        ps = PSII_data instance; photosynthesis data in 
+        ps = PSII_data instance; photosynthesis data in
              xarray or NumPy (CHL) format.
 
     :param filename: str
