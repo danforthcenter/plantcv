@@ -414,10 +414,7 @@ def _process_chl_data(ps, metadata):
 
         # The CHL file typically has: index 0 = Fdark, index 1 = Chl.
         # Some acquisitions may only contain a single frame (e.g. Chl only, no dark frame).
-        # Select the chlorophyll frame based on the number of frames present and fail
-        # with a clear error if no frames are available.
-        if img_cube.ndim < 3 or img_cube.shape[2] == 0:
-            raise ValueError("CHL DAT file contains no frames; expected at least one frame.")
+        # Select the chlorophyll frame based on the number of frames present
         num_frames = img_cube.shape[2]
         # Use the last frame as the chlorophyll frame:
         # - When there are two frames, indices are [0]=Fdark, [1]=Chl -> use index 1.
