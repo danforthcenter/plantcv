@@ -11,7 +11,7 @@ from skimage.util import img_as_ubyte
 
 def read_cropreporter(filename):
     """
-    Read datacubes from PhenoVation B.V. CropReporter or PlantExplorer cameras into a PSII_Data instance.
+    Read datacubes from PhenoVation B.V. CropReporter or PlantExplorer cameras into a PSII_data instance.
 
     Inputs:
         filename = .INF filename
