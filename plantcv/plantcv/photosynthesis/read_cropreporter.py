@@ -14,10 +14,11 @@ def read_cropreporter(filename):
     Read datacubes from PhenoVation B.V. CropReporter or PlantExplorer cameras into a PSII_Data instance.
 
     Inputs:
-        filename        = .INF filename
+        filename = .INF filename
 
     Returns:
-        ps               = photosynthesis data in xarray DataArray format or NumPy array format (for chlorophyll), stored in a PSII_data instance
+        ps = PSII_data instance; photosynthesis data in 
+             xarray or NumPy (CHL) format.
 
     :param filename: str
     :return ps: plantcv.plantcv.classes.PSII_data
