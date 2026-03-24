@@ -1,8 +1,7 @@
 ## Read CropReporter Fluorescence Image Files
 
 Reads .INF/.DAT image data from a [PhenoVation CropReporter system](https://phenovation.com/cropreporter/) into a
-PSII_data instance containing [xarray DataArrays](http://xarray.pydata.org/en/stable/generated/xarray.DataArray.html) and numpy DataArrays
-with labeled frames.
+PSII_data instance containing [xarray DataArrays](http://xarray.pydata.org/en/stable/generated/xarray.DataArray.html) with labeled frames and NumPy array/ndarray, depending on the input files.
 
 **plantcv.photosynthesis.read_cropreporter**(*filename*)
 
@@ -20,7 +19,7 @@ with labeled frames.
       labeled according to the metadata in .INF. The default measurement label is 't1'.
     - Time-resolved PAM fluorescence measurements are stored in the attribute `pam_time`. Frames F0, Fm, Fp, Fmp, F0pp, and Fmpp are
       labeled according to the metadata in .INF, with measurement labels starting at 't0' (e.g. t0, t1, t2, ...).
-    - Measurements from chlorophyll fluorescence are stored in the attribute `chlorophyll` and include a chlorophyll fluorescence frame (Chl) stored as numpy DataArray. The Fdark frame, if collected, is not stored. 
+    - Measurements from chlorophyll fluorescence are stored in the attribute `chlorophyll` and include a chlorophyll fluorescence frame (Chl) stored as NumPy aray/ndarray. The Fdark frame, if collected, is not stored.
     - Green fluorescence protein (GFP) measurements are stored in the attribute `gfp` and include frames for dark fluorescence (Fdark), GFP fluorescence (GFP, 525 nm), and autofluorescence (Auto, 585 nm).
     - Red fluorescence protein (RFP) measurements are stored in the attribute `rfp` and include frames for dark fluorescence (Fdark) and RFP fluorescence (585 nm).
     - Alpha light absorption coefficient (APH) measurements are stored in the attribute `aph` and include reflected light frames for red (640 nm) and far-red (732 nm) wavelengths.
