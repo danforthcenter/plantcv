@@ -65,7 +65,7 @@ ps.ojip_dark.plot(col='frame_label', col_wrap=4)
 
 **Chlorophyll fluorescence measurements**
 
-![Screenshot](img/documentation_images/photosynthesis_read_cropreporter/2_CHL-frames.png)
+![Screenshot](img/documentation_images/photosynthesis_read_cropreporter/2_CHL-frame.png)
 
 **Spectral reflectance measurements**
 
