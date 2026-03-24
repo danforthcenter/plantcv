@@ -411,9 +411,18 @@ def _process_chl_data(ps, metadata):
                                         height=int(metadata["ImageRows"]),
                                         width=int(metadata["ImageCols"]))
 
-        # The CHL file typically has: index 0 = Fdark, index 1 = Chl
-        # We extract only the Chl frame (index 1)
-        chl_frame = img_cube[:, :, 1]
+        # The CHL file typically has: index 0 = Fdark, index 1 = Chl.
+        # Some acquisitions may only contain a single frame (e.g. Chl only, no dark frame).
+        # Select the chlorophyll frame based on the number of frames present and fail
+        # with a clear error if no frames are available.
+        if img_cube.ndim < 3 or img_cube.shape[2] == 0:
+            raise ValueError("CHL DAT file contains no frames; expected at least one frame.")
+        num_frames = img_cube.shape[2]
+        # Use the last frame as the chlorophyll frame:
+        # - When there are two frames, indices are [0]=Fdark, [1]=Chl -> use index 1.
+        # - When there is one frame, index [0] is Chl -> use index 0.
+        chl_index = num_frames - 1
+        chl_frame = img_cube[:, :, chl_index]
 
         # Store as a standard attribute
         ps.chlorophyll = chl_frame
