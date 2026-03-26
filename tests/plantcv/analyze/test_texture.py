@@ -37,6 +37,6 @@ def test_analyze_texture(test_data):
 def test_analyze_texture_rgb(test_data):
     """Test for PlantCV."""
     rgb_img = cv2.imread(test_data.small_rgb_img)
-    mask = cv2.imread(test_data.small_bin_img)
+    mask = cv2.imread(test_data.small_bin_img, -1)
     _ = texture(rgb_img, mask)
     assert isinstance(outputs.observations["default_1"]["contrast"]["value"], np.float64)
