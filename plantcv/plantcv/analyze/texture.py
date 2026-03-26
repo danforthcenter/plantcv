@@ -1,8 +1,8 @@
 """Analyzes the texture of objects and outputs data."""
 from skimage.feature import graycomatrix, graycoprops
 from plantcv.plantcv._globals import params, outputs
-from plantcv.plantcv._helpers import _iterate_analysis
-from plantcv.plantcv._debug import _debug, _rgb2gray
+from plantcv.plantcv._helpers import _iterate_analysis, _rgb2gray
+from plantcv.plantcv._debug import _debug
 import numpy as np
 import cv2
 import os
