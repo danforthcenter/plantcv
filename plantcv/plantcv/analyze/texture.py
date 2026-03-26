@@ -1,16 +1,15 @@
 """Analyzes the texture of objects and outputs data."""
 from skimage.feature import graycomatrix, graycoprops
-from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv._globals import params, outputs
 from plantcv.plantcv._helpers import _iterate_analysis
-from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._debug import _debug, _rgb2gray
 import numpy as np
 import cv2
 import os
 
 
 def texture(img, labeled_mask, methods=None,
-            distances=[1], angles=[0], levels=None,
+            distances=None, angles=None, levels=None,
             symmetric=False, normalize=False,
             n_labels=1, label=None):
     """A function that analyzes the texture of objects and outputs data.
@@ -45,6 +44,10 @@ def texture(img, labeled_mask, methods=None,
     -------
     analysis_image = numpy.ndarray, Diagnostic image showing measurements.
     """
+    if distances is None:
+        distances = [1]
+    if angles is None:
+        angles = [0]
     if len(np.shape(img)) > 2:
         img = _rgb2gray(img)
     if label is None:
@@ -66,7 +69,7 @@ def texture(img, labeled_mask, methods=None,
     mat = np.squeeze(mat)
     # removing 0 -> 1 transitions since the background mask of 0s is not informative for plotting
     mat = mat[1:, 1:]
-    mat = (255*(mat - np.min(mat) )/ (np.max(mat) - np.min(mat)) )
+    mat = (255 * (mat - np.min(mat)) / (np.max(mat) - np.min(mat)))
 
     _debug(visual=mat, cmap="turbo",
            filename=os.path.join(params.debug_outdir, str(params.device) + "_textures.png"))
@@ -120,7 +123,7 @@ def _analyze_texture(img, mask, label, methods, distances, angles, levels, symme
                     sample=label, variable=method, trait=method,
                     method='plantcv.plantcv.analyze.texture',
                     scale="none", datatype=float,
-                    value=props[i,j], label="none"
+                    value=props[i, j], label="none"
                 )
     return glcm
 

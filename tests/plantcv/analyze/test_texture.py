@@ -1,5 +1,4 @@
 import cv2
-import pytest
 import numpy as np
 from plantcv.plantcv._globals import outputs
 from plantcv.plantcv.analyze.texture import texture, _default_levels
@@ -28,7 +27,8 @@ def test_analyze_texture_default_levels_uint16(test_data):
 
 
 def test_analyze_texture(test_data):
+    """Test for PlantCV."""
     gray = cv2.imread(test_data.small_gray_img, -1)
     mask = cv2.imread(test_data.small_bin_img, -1)
-    out = texture(gray, mask)
+    _ = texture(gray, mask)
     assert isinstance(outputs.observations["default_1"]["contrast"]["value"], np.float64)
