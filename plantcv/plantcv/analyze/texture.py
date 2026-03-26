@@ -17,7 +17,8 @@ def texture(img, labeled_mask, methods=None,
 
     Parameters
     ----------
-    img          = numpy.ndarray, grayscale image data
+    img          = numpy.ndarray, grayscale image data. If data is not grayscale then
+                   it will be coerced to grayscale using pcv._helpers._rgb2gray.
     labeled_mask = numpy.ndarray, Labeled mask of objects (32-bit).
     methods      = list, List of str specifying phenotypes to return. Options
                    come from skimage.feature.graycoprops and include "contrast",
@@ -44,6 +45,8 @@ def texture(img, labeled_mask, methods=None,
     -------
     analysis_image = numpy.ndarray, Diagnostic image showing measurements.
     """
+    if len(np.shape(img)) > 2:
+        img = _rgb2gray(img)
     if label is None:
         label = params.sample_label
     if methods is None:
@@ -59,9 +62,15 @@ def texture(img, labeled_mask, methods=None,
                                'levels': levels, 'symmetric': symmetric,
                                'methods': methods, 'normalize': normalize}
                             )
+    # prepare glcm matrix for plotting
+    mat = np.squeeze(mat)
+    # removing 0 -> 1 transitions since the background mask of 0s is not informative for plotting
+    mat = mat[1:, 1:]
+    mat = (255*(mat - np.min(mat) )/ (np.max(mat) - np.min(mat)) )
 
-    _debug(visual=mat, filename=os.path.join(params.debug_outdir, str(params.device) + "_textures.png"))
-    return img
+    _debug(visual=mat, cmap="turbo",
+           filename=os.path.join(params.debug_outdir, str(params.device) + "_textures.png"))
+    return mat
 
 
 def _analyze_texture(img, mask, label, methods, distances, angles, levels, symmetric, normalize):
@@ -98,7 +107,7 @@ def _analyze_texture(img, mask, label, methods, distances, angles, levels, symme
     # get levels if None
     levels = _default_levels(img, levels)
     # keep only section of image in mask
-    subimg = cv2.bitwise_and(img, img, mask=mask)
+    subimg = cv2.bitwise_and(img, img, mask=mask).astype(np.uint8)
     # get gray level cooccurence matrix
     glcm = graycomatrix(subimg, distances=distances, angles=angles,
                         levels=levels, symmetric=symmetric, normed=normalize)
