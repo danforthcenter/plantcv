@@ -107,6 +107,7 @@ nav:
         - 'Logical Operations-And': logical_and.md
         - 'Logical Operations-Or': logical_or.md
         - 'Logical Operations-XOr': logical_xor.md
+      - 'Masks to Labels': masks2labels.md
       - 'Median Blur': median_blur.md
       - 'Morphology Functions':
         - 'Analyze_stem': analyze_stem.md
@@ -235,6 +236,8 @@ nav:
         - 'Run Parallel': parallel_run_parallel.md
         - 'Workflow Parallelization': pipeline_parallel.md
   - 'Accessory tools': tools.md
+  - 'Extensions':
+    - 'PlantCV Geospatial': https://docs.plantcv.org/projects/geospatial
   - 'Developer tools':
     - 'Parallel Job Builder': parallel_job_builder.md
     - 'Parallel Metadata Parser': parallel_metadata_parser.md
