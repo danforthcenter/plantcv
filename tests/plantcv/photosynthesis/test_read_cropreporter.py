@@ -11,7 +11,7 @@ def test_read_cropreporter(photosynthesis_test_data, tmpdir):
     ps = read_cropreporter(filename=photosynthesis_test_data.cropreporter)
     assert isinstance(ps, PSII_data) and ps.ojip_dark.shape == (966, 1296, 21, 1)
 
-    # Check with different naming conventioned of phenovation
+    # Check with different naming convention of Phenovation
     ps = read_cropreporter(filename=photosynthesis_test_data.cropreporter_v653)
     assert isinstance(ps, PSII_data) and ps.ojip_dark.shape == (1500, 2048, 7, 1)
     # check labels
@@ -69,6 +69,25 @@ def test_read_cropreporter_npq(photosynthesis_test_data, tmpdir):
     assert isinstance(ps, PSII_data) and ps.ojip_dark.shape == (966, 1296, 3, 1)
     assert isinstance(ps, PSII_data) and ps.ojip_light.shape == (966, 1296, 3, 1)
 
+
+def test_read_cropreporter_chl_only(photosynthesis_test_data, tmpdir):
+    """Test CHL import."""
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+    # Create dataset with only CHL
+    shutil.copyfile(photosynthesis_test_data.cropreporter,
+                    os.path.join(cache_dir,
+                                 os.path.basename(photosynthesis_test_data.cropreporter)))
+    chl_dat = photosynthesis_test_data.cropreporter.replace("HDR", "CHL")
+    chl_dat = chl_dat.replace("INF", "DAT")
+    shutil.copyfile(chl_dat, os.path.join(cache_dir, os.path.basename(chl_dat)))
+    fluor_filename = os.path.join(cache_dir, os.path.basename(photosynthesis_test_data.cropreporter))
+    ps = read_cropreporter(filename=fluor_filename)
+    assert isinstance(ps, PSII_data)
+    assert ps.chlorophyll is not None
+    # Check for a 2D NumPy array (Height, Width) 
+    assert len(ps.chlorophyll.shape) == 2
+    assert isinstance(ps.chlorophyll, np.ndarray)
 
 def test_read_cropreporter_gfp_only(photosynthesis_test_data, tmpdir):
     """Test GFP import."""
