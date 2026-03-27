@@ -58,7 +58,7 @@ Validate parameters/structure of configuration data.
 
 
 * **include_all_subdirs**: (bool, default = `True`): If `False`, only images directly in `input_dir` (no 
-  subdirectories) will be analyzed.
+  subdirectories) will be analyzed. Note that even if this is `True` hidden files and directories are excluded.
 
 
 * **img_outdir**: (str, default = "."): path/name of output directory where images will be saved.

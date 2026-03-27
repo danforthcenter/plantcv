@@ -10,17 +10,17 @@ from skimage.util import img_as_ubyte
 
 
 def read_cropreporter(filename):
-    """
-    Read datacubes from PhenoVation B.V. CropReporter into a PSII_Data instance.
+    """Read datacubes from PhenoVation B.V. CropReporter or PlantExplorer cameras into a PSII_data instance.
 
-    Inputs:
-        filename        = CropReporter .INF filename
+    Parameters
+    ----------
+    filename : str
+        .INF filename
 
-    Returns:
-        ps               = photosynthesis data in xarray DataArray format
-
-    :param filename: str
-    :return ps: plantcv.plantcv.classes.PSII_data
+    Returns
+    -------
+    plantcv.plantcv.classes.PSII_data
+        photosynthesis data in xarray or NumPy format.
     """
     # Initialize metadata dictionary
     metadata_dict = {}
@@ -396,35 +396,39 @@ def _process_pmt_data(ps, metadata):
 
 
 def _process_chl_data(ps, metadata):
-    """
-    Create an xarray DataArray for a CHL dataset.
+    """Read CHL dataset and keep only the Chlorophyll frame as a NumPy array.
 
-    Inputs:
-        ps       = PSII_data instance
-        metadata = INF file metadata dictionary
-
-    :param ps: plantcv.plantcv.classes.PSII_data
-    :param metadata: dict
+    Parameters
+    ----------
+    ps : plantcv.plantcv.classes.PSII_data
+        PSII_data instance.
+    metadata : dict
+        INF file metadata dictionary.
     """
     bin_filepath = _dat_filepath(dataset="CHL", datapath=ps.datapath, filename=ps.filename)
-    if os.path.exists(bin_filepath):
-        img_cube, frame_labels, _ = _read_dat_file(dataset="CHL", filename=bin_filepath,
-                                                   height=int(metadata["ImageRows"]),
-                                                   width=int(metadata["ImageCols"]))
-        frame_labels = ["Fdark", "Chl"]
-        chl = xr.DataArray(
-            data=img_cube,
-            dims=('x', 'y', 'frame_label'),
-            coords={'frame_label': frame_labels},
-            name='chlorophyll'
-        )
-        chl.attrs["long_name"] = "chlorophyll measurements"
-        ps.add_data(chl)
 
+    if os.path.exists(bin_filepath):
+        # Read the raw data cube (contains Fdark and Chl)
+        img_cube, _, _ = _read_dat_file(dataset="CHL", filename=bin_filepath,
+                                        height=int(metadata["ImageRows"]),
+                                        width=int(metadata["ImageCols"]))
+
+        # The CHL file typically has: index 0 = Fdark, index 1 = Chl.
+        # Some acquisitions may only contain a single frame (e.g. Chl only, no dark frame).
+        # Select the chlorophyll frame based on the number of frames present
+        num_frames = img_cube.shape[2]
+        # Use the last frame as the chlorophyll frame:
+        # - When there are two frames, indices are [0]=Fdark, [1]=Chl -> use index 1.
+        # - When there is one frame, index [0] is Chl -> use index 0.
+        chl_index = num_frames - 1
+        chl_frame = img_cube[:, :, chl_index]
+
+        # Store as a standard attribute
+        ps.chlorophyll = chl_frame
+
+        # Debugging (modified to handle NumPy array instead of xarray)
         _debug(visual=ps.chlorophyll,
-               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_CHL-frames.png"),
-               col='frame_label',
-               col_wrap=int(np.ceil(ps.chlorophyll.frame_label.size / 4)))
+               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_CHL-frame.png"))
 
 
 def _process_spc_data(ps, metadata):
