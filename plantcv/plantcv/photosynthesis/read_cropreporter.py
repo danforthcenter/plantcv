@@ -10,17 +10,17 @@ from skimage.util import img_as_ubyte
 
 
 def read_cropreporter(filename):
-    """
-    Read datacubes from PhenoVation B.V. CropReporter or PlantExplorer cameras into a PSII_data instance.
+    """Read datacubes from PhenoVation B.V. CropReporter or PlantExplorer cameras into a PSII_data instance.
 
     Parameters
     ----------
-        filename : str, .INF filename
+    filename : str
+        .INF filename
 
     Returns
     -------
-        ps : plantcv.plantcv.classes.PSII_data,
-             photosynthesis data in xarray or NumPy (CHL) format.
+    plantcv.plantcv.classes.PSII_data
+        photosynthesis data in xarray or NumPy format.
     """
     # Initialize metadata dictionary
     metadata_dict = {}
@@ -396,13 +396,14 @@ def _process_pmt_data(ps, metadata):
 
 
 def _process_chl_data(ps, metadata):
-    """
-    Read CHL dataset and keep only the Chlorophyll frame as a NumPy array.
+    """Read CHL dataset and keep only the Chlorophyll frame as a NumPy array.
 
     Parameters
     ----------
-        ps       : PSII_data instance
-        metadata : INF file metadata dictionary
+    ps : plantcv.plantcv.classes.PSII_data
+        PSII_data instance.
+    metadata : dict
+        INF file metadata dictionary.
     """
     bin_filepath = _dat_filepath(dataset="CHL", datapath=ps.datapath, filename=ps.filename)
 
