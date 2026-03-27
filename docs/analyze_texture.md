@@ -21,7 +21,7 @@ Texture analysis outputs numeric properties for individual plants, seeds, leaves
 
 - **Context:**
     - Used to output texture characteristics of individual objects (labeled regions). 
-    - About the analysis image: The analysis image is less obvious than for [analyze.size](analyze_size.md) because phenotypes are calculated based on the co-occurence matrix rather than the raw image. The final co-occurence matrix is returned as a debug image with the first row/column removed to show changes within the object more clearly instead of from the empty area to the object.
+    - About the analysis image: The analysis image is a scatterplot of the extracted phenotypes.
 
 - **Example use:**
     - [Use In Seed Analysis Tutorial](https://plantcv.org/tutorials/seed-analysis-workflow)
@@ -44,7 +44,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 # Characterize object texture from 3rd Channel Grayscale image
-glcm = pcv.analyze.texture(img=img[:,:,2], labeled_mask=mask)
+_ = pcv.analyze.texture(img=img[:,:,2], labeled_mask=mask)
 
 # Access data stored out from analyze.texture
 plant_contrast = pcv.outputs.observations['default_1']['contrast']['value']
@@ -53,6 +53,6 @@ plant_contrast = pcv.outputs.observations['default_1']['contrast']['value']
 
 **Gray Level Co-Occurence Matrix**
 
-![Screenshot](img/documentation_images/analyze_texture/texture_glcm.jpg)
+![Screenshot](img/documentation_images/analyze_texture/texture_debug.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/analyze/texture.py)

@@ -3,6 +3,8 @@ from skimage.feature import graycomatrix, graycoprops
 from plantcv.plantcv._globals import params, outputs
 from plantcv.plantcv._helpers import _iterate_analysis, _rgb2gray
 from plantcv.plantcv._debug import _debug
+import altair as alt
+import pandas as pd
 import numpy as np
 import cv2
 import os
@@ -42,7 +44,7 @@ def texture(img, labeled_mask, methods=None,
 
     Returns
     -------
-    analysis_image = numpy.ndarray, Diagnostic image showing measurements.
+    plot = altair.vegalite.v5.api.FacetChart, Diagnostic image showing measurements.
     """
     if distances is None:
         distances = [1]
@@ -58,22 +60,17 @@ def texture(img, labeled_mask, methods=None,
                    "mean", "variance", "std", "entropy"]
     # for the debug image I would like to have a mix of matrices, but for non-uint8
     # that could get really large if there is a multi-object mask.
-    mat = _iterate_analysis(img=img, labeled_mask=labeled_mask,
-                            n_labels=n_labels, label=label,
-                            function=_analyze_texture,
-                            **{'distances': distances, 'angles': angles,
-                               'levels': levels, 'symmetric': symmetric,
-                               'methods': methods, 'normalize': normalize}
-                            )
-    # prepare glcm matrix for plotting
-    mat = np.squeeze(mat)
-    # removing 0 -> 1 transitions since the background mask of 0s is not informative for plotting
-    mat = mat[1:, 1:]
-    mat = (255 * (mat - np.min(mat)) / (np.max(mat) - np.min(mat)))
-
-    _debug(visual=mat, cmap="turbo",
+    _ = _iterate_analysis(img=img, labeled_mask=labeled_mask,
+                          n_labels=n_labels, label=label,
+                          function=_analyze_texture,
+                          **{'distances': distances, 'angles': angles,
+                             'levels': levels, 'symmetric': symmetric,
+                             'methods': methods, 'normalize': normalize}
+                          )
+    plot = _make_texture_debug_plot()
+    _debug(visual=plot, cmap="turbo",
            filename=os.path.join(params.debug_outdir, str(params.device) + "_textures.png"))
-    return mat
+    return plot
 
 
 def _analyze_texture(img, mask, label, methods, distances, angles, levels, symmetric, normalize):
@@ -104,7 +101,7 @@ def _analyze_texture(img, mask, label, methods, distances, angles, levels, symme
 
     Returns
     -------
-    analysis_image = numpy.ndarray, Diagnostic image showing measurements.
+    glcm         = numpy.ndarray, currently not used.
     """
     params.device += 1
     # get levels if None
@@ -147,3 +144,29 @@ def _default_levels(img, levels):
         else:
             levels = np.max(img) + 1
     return levels
+
+
+def _make_texture_debug_plot():
+    """Makes a plot using the outputs from analyze.texture to use as a debug image"""
+    rows = []
+    for key, value in outputs.observations.items():
+        for k, v in value.items():
+            if v["method"] == 'plantcv.plantcv.analyze.texture':
+                row = [key, k, v["value"]]
+                rows.append(row)
+    df = pd.DataFrame(rows)
+    df.columns = ["label", "variable", "value"]
+    df["facet"] = np.where(
+        df['variable'].isin(
+            ["ASM", "correlation", "dissimilarity",
+             "energy", "entropy", "homogeneity",
+             "mean"]),
+        'Bounded', 'Unbounded')
+    plot = alt.Chart(df).mark_point().encode(
+        x='variable:N',
+        y='value:Q'
+    ).facet("facet:N").resolve_scale(
+        y='independent',
+        x='independent'
+    )
+    return plot
