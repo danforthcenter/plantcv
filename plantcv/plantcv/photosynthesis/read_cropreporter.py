@@ -13,15 +13,14 @@ def read_cropreporter(filename):
     """
     Read datacubes from PhenoVation B.V. CropReporter or PlantExplorer cameras into a PSII_data instance.
 
-    Inputs:
-        filename = .INF filename
+    Parameters
+    ----------
+        filename : str, .INF filename
 
-    Returns:
-        ps = PSII_data instance; photosynthesis data in
-             xarray or NumPy (CHL) format.
-
-    :param filename: str
-    :return ps: plantcv.plantcv.classes.PSII_data
+    Returns
+    -------
+        ps : plantcv.plantcv.classes.PSII_data,
+             photosynthesis data in xarray or NumPy (CHL) format.
     """
     # Initialize metadata dictionary
     metadata_dict = {}
@@ -400,9 +399,10 @@ def _process_chl_data(ps, metadata):
     """
     Read CHL dataset and keep only the Chlorophyll frame as a NumPy array.
 
-    Inputs:
-        ps       = PSII_data instance
-        metadata = INF file metadata dictionary
+    Parameters
+    ----------
+        ps       : PSII_data instance
+        metadata : INF file metadata dictionary
     """
     bin_filepath = _dat_filepath(dataset="CHL", datapath=ps.datapath, filename=ps.filename)
 
