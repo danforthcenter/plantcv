@@ -18,8 +18,6 @@ class PhotosynthesisTestData:
                                         "..", "..", "testdata", "cropreporter_npq")
         self.datadir_v653 = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                          "..", "..", "testdata", "cropreporter_v653")
-        self.datadir_chl = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                        "..", "..", "testdata", "cropreporter_chl")
         self.datadir_gfp = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                         "..", "..", "testdata", "cropreporter_gfp")
         self.datadir_rfp = os.path.join(os.path.dirname(os.path.abspath(__file__)),
@@ -33,7 +31,6 @@ class PhotosynthesisTestData:
         self.cropreporter = os.path.join(self.datadir_v441, "PSII_HDR_020321_WT_TOP_1.INF")
         self.cropreporter_v653 = os.path.join(self.datadir_v653, "HDR_dark_light.INF")
         self.cropreporter_npq = os.path.join(self.datadir_npq, "PSII_HDR_020321_WT_TOP_1.INF")
-        self.cropreporter_chl = os.path.join(self.datadir_chl, "HDR_2025-12-12_tob1-ojip_20251212213103380.INF")
         self.cropreporter_gfp = os.path.join(self.datadir_gfp, "HDR_DYSeed_20251222191634684.INF")
         self.cropreporter_rfp = os.path.join(self.datadir_rfp, "HDR_DYSeed_20251222191634684.INF")
         self.cropreporter_aph = os.path.join(self.datadir_aph, "HDR_2025-12-12_tob1_20251212205712029.INF")

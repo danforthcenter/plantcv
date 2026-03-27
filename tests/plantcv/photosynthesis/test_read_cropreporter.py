@@ -75,11 +75,13 @@ def test_read_cropreporter_chl_only(photosynthesis_test_data, tmpdir):
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("sub")
     # Create dataset with only CHL
-    shutil.copyfile(photosynthesis_test_data.cropreporter_chl, os.path.join(cache_dir, "HDR_2025-12-12_tob1-ojip_20251212213103380.INF"))
-    chl_dat = photosynthesis_test_data.cropreporter_chl.replace("HDR", "CHL")
+    shutil.copyfile(photosynthesis_test_data.cropreporter,
+                    os.path.join(cache_dir,
+                                 os.path.basename(photosynthesis_test_data.cropreporter)))
+    chl_dat = photosynthesis_test_data.cropreporter.replace("HDR", "CHL")
     chl_dat = chl_dat.replace("INF", "DAT")
-    shutil.copyfile(chl_dat, os.path.join(cache_dir, "CHL_2025-12-12_tob1-ojip_20251212213103380.DAT"))
-    fluor_filename = os.path.join(cache_dir, "HDR_2025-12-12_tob1-ojip_20251212213103380.INF")
+    shutil.copyfile(chl_dat, os.path.join(cache_dir, os.path.basename(chl_dat)))
+    fluor_filename = os.path.join(cache_dir, os.path.basename(photosynthesis_test_data.cropreporter))
     ps = read_cropreporter(filename=fluor_filename)
     assert isinstance(ps, PSII_data)
     assert ps.chlorophyll is not None
