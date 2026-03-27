@@ -57,7 +57,7 @@ plantcv-train = "plantcv.learn.cli:main"
 
 [project.urls]
 Homepage = "https://plantcv.org"
-Documentation = "https://plantcv.readthedocs.io"
+Documentation = "https://docs.plantcv.org"
 Repository = "https://github.com/danforthcenter/plantcv"
 
 [tool.setuptools_scm]

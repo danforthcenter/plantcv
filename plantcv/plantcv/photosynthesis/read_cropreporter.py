@@ -10,17 +10,17 @@ from skimage.util import img_as_ubyte
 
 
 def read_cropreporter(filename):
-    """
-    Read datacubes from PhenoVation B.V. CropReporter into a PSII_Data instance.
+    """Read datacubes from PhenoVation B.V. CropReporter or PlantExplorer cameras into a PSII_data instance.
 
-    Inputs:
-        filename        = CropReporter .INF filename
+    Parameters
+    ----------
+    filename : str
+        .INF filename
 
-    Returns:
-        ps               = photosynthesis data in xarray DataArray format
-
-    :param filename: str
-    :return ps: plantcv.plantcv.classes.PSII_data
+    Returns
+    -------
+    plantcv.plantcv.classes.PSII_data
+        photosynthesis data in xarray or NumPy format.
     """
     # Initialize metadata dictionary
     metadata_dict = {}
@@ -51,8 +51,11 @@ def read_cropreporter(filename):
     # Dark-adapted PAM measurements
     _process_pmd_data(ps=ps, metadata=metadata_dict)
 
-    # Light-adapted PAM Pmeasurements
+    # Light-adapted PAM measurements
     _process_pml_data(ps=ps, metadata=metadata_dict)
+
+    # PAM time (dark, light, and second dark adapted) measurements
+    _process_pmt_data(ps=ps, metadata=metadata_dict)
 
     # Chlorophyll fluorescence data
     _process_chl_data(ps=ps, metadata=metadata_dict)
@@ -295,36 +298,137 @@ def _process_pml_data(ps, metadata):
                col_wrap=int(np.ceil(ps.pam_light.frame_label.size / 4)))
 
 
-def _process_chl_data(ps, metadata):
+def _process_pmt_data(ps, metadata):
     """
-    Create an xarray DataArray for a CHL dataset.
+    Create an xarray DataArray for a PMT dataset.
 
-    Inputs:
-        ps       = PSII_data instance
-        metadata = INF file metadata dictionary
+    Parameters
+    ----------
+    ps : plantcv.plantcv.classes.PSII_data
+        PSII_data instance.
+    metadata : dict
+        INF file metadata dictionary.
 
-    :param ps: plantcv.plantcv.classes.PSII_data
-    :param metadata: dict
+    Notes
+    -----
+    Measurements are stored along the `measurement` dimension (t0, t1, ...),
+    not encoded in frame labels.
+    """
+    bin_filepath = _dat_filepath(dataset="PMT", datapath=ps.datapath, filename=ps.filename)
+
+    if os.path.exists(bin_filepath):
+        img_cube, _, _ = _read_dat_file(
+            dataset="PMT",
+            filename=bin_filepath,
+            height=int(metadata["ImageRows"]),
+            width=int(metadata["ImageCols"])
+        )
+
+        # metadata-driven measurement counts
+        n_fqfm = int(metadata.get("TmPamMeasFqfm", 0))
+        # TmPamMeasFvfm=1 means only the baseline dark-adapted block exists, so n_fvfm should be 0
+        n_fvfm = max(0, int(metadata.get("TmPamMeasFvfm", 0)) - 1)
+
+        # Initialize with the base requirement
+        blocks = [{"labels": ["Fdark", "F0", "Fm", "Fdarksat"], "count": 1, "start_meas": 0}]
+
+        # Handle the absence of Light/Quenching measurements
+        if n_fqfm > 0:
+            blocks.append({"labels": ["Flight", "Fp", "Fmp", "Flightsat"], "count": n_fqfm, "start_meas": 1})
+
+        # Handle the absence of Variable Fluorescence measurements
+        if n_fvfm > 0:
+            blocks.append({"labels": ["Fdarkpp", "F0pp", "Fmpp", "Fdarksatpp"], "count": n_fvfm, "start_meas": 1 + n_fqfm})
+
+        # Flatten labels explicitly so coverage tools can "see" each step
+        frame_labels = []
+        for b in blocks:
+            for label in b["labels"]:
+                frame_labels.append(label)
+        frame_labels.append("F0p")
+
+        measurement_labels = [f"t{i}" for i in range(1 + n_fqfm + n_fvfm)]
+
+        # Initialize and fill data
+        n_x, n_y, n_frames = img_cube.shape
+        pmt_data = np.zeros((n_x, n_y, len(frame_labels), len(measurement_labels)), dtype=img_cube.dtype)
+
+        idx = 0
+        for block in blocks:
+            for m_offset in range(block["count"]):
+                meas_idx = block["start_meas"] + m_offset
+                for label in block["labels"]:
+                    # Check (idx < n_frames - 1) to reserve the final frame for F0p
+                    if idx < n_frames - 1:
+                        # Map raw data to the dynamic label index
+                        pmt_data[:, :, frame_labels.index(label), meas_idx] = img_cube[:, :, idx]
+                        idx += 1
+
+        # Final Frame: F0p
+        # Phenovation places F0p at the very end of the binary file
+        if n_frames > 0:
+            pmt_data[:, :, frame_labels.index("F0p"), -1] = img_cube[:, :, -1]
+
+        # build DataArray
+        pmt = xr.DataArray(
+            data=pmt_data,
+            dims=("x", "y", "frame_label", "measurement"),
+            coords={
+                "frame_label": frame_labels,
+                "measurement": measurement_labels
+            },
+            name="pam_time"
+        )
+
+        pmt.attrs["long_name"] = "pam time measurements"
+        ps.add_data(pmt)
+
+        # debug visualization
+        _debug(
+            visual=ps.pam_time.isel(measurement=-1),
+            filename=os.path.join(
+                params.debug_outdir,
+                f"{str(params.device)}_PMT-frames.png"
+            ),
+            col="frame_label",
+            col_wrap=int(np.ceil(len(frame_labels) / 4))
+        )
+
+
+def _process_chl_data(ps, metadata):
+    """Read CHL dataset and keep only the Chlorophyll frame as a NumPy array.
+
+    Parameters
+    ----------
+    ps : plantcv.plantcv.classes.PSII_data
+        PSII_data instance.
+    metadata : dict
+        INF file metadata dictionary.
     """
     bin_filepath = _dat_filepath(dataset="CHL", datapath=ps.datapath, filename=ps.filename)
-    if os.path.exists(bin_filepath):
-        img_cube, frame_labels, _ = _read_dat_file(dataset="CHL", filename=bin_filepath,
-                                                   height=int(metadata["ImageRows"]),
-                                                   width=int(metadata["ImageCols"]))
-        frame_labels = ["Fdark", "Chl"]
-        chl = xr.DataArray(
-            data=img_cube,
-            dims=('x', 'y', 'frame_label'),
-            coords={'frame_label': frame_labels},
-            name='chlorophyll'
-        )
-        chl.attrs["long_name"] = "chlorophyll measurements"
-        ps.add_data(chl)
 
+    if os.path.exists(bin_filepath):
+        # Read the raw data cube (contains Fdark and Chl)
+        img_cube, _, _ = _read_dat_file(dataset="CHL", filename=bin_filepath,
+                                        height=int(metadata["ImageRows"]),
+                                        width=int(metadata["ImageCols"]))
+
+        # The CHL file typically has: index 0 = Fdark, index 1 = Chl.
+        # Some acquisitions may only contain a single frame (e.g. Chl only, no dark frame).
+        # Select the chlorophyll frame based on the number of frames present
+        num_frames = img_cube.shape[2]
+        # Use the last frame as the chlorophyll frame:
+        # - When there are two frames, indices are [0]=Fdark, [1]=Chl -> use index 1.
+        # - When there is one frame, index [0] is Chl -> use index 0.
+        chl_index = num_frames - 1
+        chl_frame = img_cube[:, :, chl_index]
+
+        # Store as a standard attribute
+        ps.chlorophyll = chl_frame
+
+        # Debugging (modified to handle NumPy array instead of xarray)
         _debug(visual=ps.chlorophyll,
-               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_CHL-frames.png"),
-               col='frame_label',
-               col_wrap=int(np.ceil(ps.chlorophyll.frame_label.size / 4)))
+               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_CHL-frame.png"))
 
 
 def _process_spc_data(ps, metadata):
