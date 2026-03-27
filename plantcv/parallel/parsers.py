@@ -533,7 +533,7 @@ def _read_filenames(config):
             for file in files:
                 if (
                     file.lower().endswith(tuple(extensions)) and
-                    re.search(os.sep+"[.]{1}(\w)", os.path.join(root, file)) is None
+                    re.search(os.sep+r"[.]{1}(\w)", os.path.join(root, file)) is None
                 ):
                     # Keep the files that end with the image extension
                     fns.append(os.path.join(root, file))
