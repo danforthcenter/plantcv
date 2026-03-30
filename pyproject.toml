@@ -13,7 +13,7 @@ license = {file = "LICENSE"}
 dynamic = ["version"]
 dependencies = [
     "matplotlib >= 1.5",
-    "numpy >= 2",
+    "numpy >= 1.26",
     "pandas",
     "python-dateutil",
     "scipy <1.16",
@@ -52,12 +52,12 @@ test = [
 
 [project.scripts]
 plantcv-run-workflow = "plantcv.parallel.cli:main"
+plantcv-sample = "plantcv.parallel.cli_sample_images:main"
 plantcv-train = "plantcv.learn.cli:main"
-plantcv-utils = "plantcv.utils.cli:main"
 
 [project.urls]
 Homepage = "https://plantcv.org"
-Documentation = "https://plantcv.readthedocs.io"
+Documentation = "https://docs.plantcv.org"
 Repository = "https://github.com/danforthcenter/plantcv"
 
 [tool.setuptools_scm]

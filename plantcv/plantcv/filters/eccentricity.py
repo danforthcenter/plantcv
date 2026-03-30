@@ -2,7 +2,7 @@
 import os
 import numpy as np
 from skimage.measure import label, regionprops
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 
 

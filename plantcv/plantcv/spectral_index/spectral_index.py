@@ -3,7 +3,7 @@
 import os
 import numpy as np
 import cv2
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import warn
 from plantcv.plantcv import Spectral_data

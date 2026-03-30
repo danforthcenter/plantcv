@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 
 
 def constellaqc(denovo_groups, annotated_groups):
