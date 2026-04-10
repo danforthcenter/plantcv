@@ -402,11 +402,13 @@ def sci(img):
 
     Parameters
     ----------
-    img            = np.array, Color image
+    img : np.ndarray
+        Color image
 
     Returns
     -------
-    index_array    = plantcv.plantcv.Spectral_data, Index data
+    index_array : plantcv.plantcv.Spectral_data
+        Index data
     """
     if type(img) is not np.ndarray:
         warn("Input image type is not supported for SCI. Please use an RGB image.")
@@ -436,11 +438,13 @@ def bgr(img):
 
     Parameters
     ----------
-    img            = np.array, Color image
+    img : np.ndarray
+        Color image
 
     Returns
     -------
-    index_array    = plantcv.plantcv.Spectral_data, Index data
+    index_array : plantcv.plantcv.Spectral_data
+        Index data
     """
     if type(img) is not np.ndarray:
         warn("Input image type is not supported for BGR. Please use an RGB image.")
@@ -470,11 +474,13 @@ def bgi(img):
 
     Parameters
     ----------
-    img            = np.array, Color image
+    img : np.ndarray
+        Color image
 
     Returns
     -------
-    index_array    = plantcv.plantcv.Spectral_data, Index data
+    index_array : plantcv.plantcv.Spectral_data
+        Index data
     """
     if type(img) is not np.ndarray:
         warn("Input image type is not supported for BGI. Please use an RGB image.")
