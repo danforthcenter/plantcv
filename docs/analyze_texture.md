@@ -13,7 +13,6 @@ Texture analysis outputs numeric properties for individual plants, seeds, leaves
 	- methods - A list of texture phenotypes to return. If None (the default) then the entire list of possible methods is used (`["contrast", "dissimilarity", "homogeneity", "ASM", "energy", "correlation", "mean", "variance", "std", "entropy"]`)
 	- distances - A list of distances between pixels to use, defaults to None which will use `[1]` to only compare adjacent pixels.
 	- angles - A list of angles between pixels to compare, defaults to None, which will use `[0]`.
-	- levels - Optionally an integer representing the number of grayscale values possible in the data, if left None (the default) then it is inferred from the image. For non-8-bit images it may be useful to bin the image instead.
 	- symmetric - Logical, Should the order of values pairs be ignored? The default, False, will not always have [i, j] in the gray co-occurence matrix equal to [j, i] and will calculate both values.
 	- normalize - Logical, should the matrix be rescaled to sum to 1? Defaults to False.
     - n_labels - Total number expected individual objects (default = 1).

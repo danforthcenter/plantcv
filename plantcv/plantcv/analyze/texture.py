@@ -11,7 +11,7 @@ import os
 
 
 def texture(img, labeled_mask, methods=None,
-            distances=None, angles=None, levels=None,
+            distances=None, angles=None,
             symmetric=False, normalize=False,
             n_labels=1, label=None):
     """A function that analyzes the texture of objects and outputs data.
@@ -30,9 +30,6 @@ def texture(img, labeled_mask, methods=None,
                    adjacent pixels.
     angles       = list of float, angles or direction to check travel for each
                    distance.
-    levels       = Int, optional. If None (the default) then it will be inferred from the
-                   dtype of the image. Represents the number of different options for a
-                   value in each channel, IE an 8bit image would have levels=256.
     symmetric    = bool, optional
                    If True, the output is symmetric because the order of value pairs
                    is ignored so that (i, j) and (j, i) the same. The default is False.
@@ -64,8 +61,8 @@ def texture(img, labeled_mask, methods=None,
                           n_labels=n_labels, label=label,
                           function=_analyze_texture,
                           **{'distances': distances, 'angles': angles,
-                             'levels': levels, 'symmetric': symmetric,
-                             'methods': methods, 'normalize': normalize}
+                             'symmetric': symmetric, 'methods': methods,
+                             'normalize': normalize}
                           )
     plot = _make_texture_debug_plot()
     _debug(visual=plot, cmap="turbo",
@@ -73,7 +70,7 @@ def texture(img, labeled_mask, methods=None,
     return plot
 
 
-def _analyze_texture(img, mask, label, methods, distances, angles, levels, symmetric, normalize):
+def _analyze_texture(img, mask, label, methods, distances, angles, symmetric, normalize):
     """Analyze the texture of individual objects.
 
     Parameters
@@ -90,9 +87,6 @@ def _analyze_texture(img, mask, label, methods, distances, angles, levels, symme
                    adjacent pixels.
     angles       = list of float, angles or direction to check travel for each
                    distance.
-    levels       = Int, optional. If None (the default) then it will be inferred from the
-                   dtype of the image. Represents the number of different options for a
-                   value in each channel, IE an 8bit image would have levels=256.
     symmetric    = bool, optional
                    If True, the output is symmetric because the order of value pairs
                    is ignored so that (i, j) and (j, i) the same. The default is False.
@@ -112,11 +106,11 @@ def _analyze_texture(img, mask, label, methods, distances, angles, levels, symme
     # loop over methods, distances, and angles
     for method in methods:
         props = graycoprops(glcm, method)
-        for i in range(len(distances)):
-            for j in range(len(angles)):
+        for i, dis in enumerate(distances):
+            for j, ang in enumerate(angles):
                 outputs.add_observation(
                     sample=label,
-                    variable=method + "_" + str(distances[i]) + "_" + str(angles[j]),
+                    variable=method + "_" + str(dis) + "_" + str(ang),
                     trait=method,
                     method='plantcv.plantcv.analyze.texture',
                     scale="none", datatype=float,
