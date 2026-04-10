@@ -142,7 +142,8 @@ def _default_levels(img, levels):
         if img.dtype == "uint8":
             levels = 256
         else:
-            levels = np.max(img) + 1
+            max_val = int(np.max(img))
+            levels = max_val + 1
     return levels
 
 
