@@ -104,47 +104,25 @@ def _analyze_texture(img, mask, label, methods, distances, angles, levels, symme
     glcm         = numpy.ndarray, currently not used.
     """
     params.device += 1
-    # get levels if None
-    levels = _default_levels(img, levels)
     # keep only section of image in mask
     subimg = cv2.bitwise_and(img, img, mask=mask).astype(np.uint8)
     # get gray level cooccurence matrix
     glcm = graycomatrix(subimg, distances=distances, angles=angles,
-                        levels=levels, symmetric=symmetric, normed=normalize)
+                        levels=256, symmetric=symmetric, normed=normalize)
     # loop over methods, distances, and angles
     for method in methods:
         props = graycoprops(glcm, method)
         for i in range(len(distances)):
             for j in range(len(angles)):
                 outputs.add_observation(
-                    sample=label, variable=method, trait=method,
+                    sample=label,
+                    variable=method + "_" + str(distances[i]) + "_" + str(angles[j]),
+                    trait=method,
                     method='plantcv.plantcv.analyze.texture',
                     scale="none", datatype=float,
                     value=props[i, j], label="none"
                 )
     return glcm
-
-
-def _default_levels(img, levels):
-    """Get default number of levels for an image based on dtype
-    For non-8 bit images this will default to the max of the image plus 1,
-    but it may be preferable to bin the images in those scenarios.
-
-    Parameters
-    ----------
-    img = numpy.ndarray, grayscale image data used to make gray-level cooccurence matrix
-
-    Returns
-    -------
-    n_levels = int, number of levels
-    """
-    if levels is None:
-        if img.dtype == "uint8":
-            levels = 256
-        else:
-            max_val = int(np.max(img))
-            levels = max_val + 1
-    return levels
 
 
 def _make_texture_debug_plot():
