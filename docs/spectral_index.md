@@ -29,6 +29,42 @@ Index range: -∞, ∞
     - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
     - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
 
+### BGI
+
+Calculates the Blue Green Index ([Zarco-Tejada et al., 2005](#references)):
+
+```
+BGI = (G - B) / (G + B)
+```
+
+Index range: -1, 1
+
+**plantcv.spectral_index.bgi**(*img*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - img         - Color image as a numpy array.
+
+
+### BGR
+
+Calculates the Blue Green Ratio ([Zarco-Tejada et al., 2005](#references)):
+
+```
+BGR = B / G
+```
+
+Index range: 0, ∞
+
+**plantcv.spectral_index.bgr**(*img*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - img         - Color image as a numpy array.
+
+
 ### CI_REDEDGE
 
 Calculates the Chlorophyll Index Rededge using reflectance values ([Gitelson et al., 2003](#references)):
@@ -533,6 +569,25 @@ Index range: -1.2, 1.2
     - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
     - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
 
+
+### SCI
+
+Calculates the Soil Color Index ([Mathieu et al., 1998](#references)):
+
+```
+SCI = (R - G) / (R + G)
+```
+
+Index range: -1, 1
+
+**plantcv.spectral_index.sci**(*img*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - img         - Color image as a numpy array.
+
+
 ### SIPI
 
 Calculates the Structure-Independent Pigment Index using reflectance values ([Penuelas et al., 1995b](#references)):
@@ -835,6 +890,9 @@ Louhaichi, M., Borman, M.M., Johnson, D.E., 2001. Spatially Located Platform and
 Photography for Documentation of Grazing Impacts on Wheat. Geocarto International, Volume 16(1), pp. 65–70. DOI: 
 [10.1080/10106040108542184](https://doi.org/10.1080/10106040108542184)
 
+Mathieu R, Pouget M, Cervelle B, Escadafal R. 1998. Relationships between satellite-based radiometric indices simulated using laboratory reflectance data and typic soil color of an arid environment. Remote Sensing of Environment 66(1):17–28. DOI: https://doi.org/10.1016/S0034-4257(98)00030-3
+Zarco-Tejada PJ, Berjón A, López-Lozano R, Miller JR, Martín P, Cachorro V, González MR, de Frutos A. 2005. Assessing vineyard condition with hyperspectral indices: Leaf and canopy reflectance simulation in a row-structured discontinuous canopy. Remote Sensing of Environment 99(3):271–287. ISSN 0034-4257. DOI: [10.1016/j.rse.2005.09.002](https://doi.org/10.1016/j.rse.2005.09.002)
+
 Merton R, Huntington J. 1999. Early simulation results of the ARIES-1 satellite sensor for multi-temporal vegetation 
 research derived from AVIRIS. [LINK](https://aviris.jpl.nasa.gov/proceedings/workshops/99_docs/41.pdf).
 
@@ -872,3 +930,5 @@ Nitrogen Requirements in Corn. Agronomy Journal 98:968–977. DOI:
 Woebbecke DM, Meyer GE, Von Bargen K, Mortensen DA. 1995. Color indices for weed identification under various 
 soil, residue, and lighting conditions. Transactions of the ASAE. American Society of Agricultural Engineers 38:259–269.
 DOI: [10.13031/2013.27838](https://doi.org/10.13031/2013.27838).
+
+Zarco-Tejada PJ, Berjón A, López-Lozano R, Miller JR, Martín P, Cachorro V, González MR, de Frutos A. 2005. Assessing vineyard condition with hyperspectral indices: Leaf and canopy reflectance simulation in a row-structured discontinuous canopy. Remote Sensing of Environment 99(3):271–287. ISSN 0034-4257. DOI: [10.1016/j.rse.2005.09.002](https://doi.org/10.1016/j.rse.2005.09.002).
