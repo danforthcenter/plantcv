@@ -50,7 +50,7 @@ plant_contrast = pcv.outputs.observations['default_1']['contrast']['value']
 
 ```
 
-**Gray Level Co-Occurence Matrix**
+**Texture Features Plot**
 
 ![Screenshot](img/documentation_images/analyze_texture/texture_debug.png)
 

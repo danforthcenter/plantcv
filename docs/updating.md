@@ -386,7 +386,7 @@ pages for more details on the input and output variable types.
 
 #### plantcv.analyze.texture
 
-* post v5.0 glcm_image = **plantcv.analyze.texture**(*img, labeled_mask, methods=None, distances=None, angles=None, levels=None, symmetric=False, normalize=False, n_labels=1, label=None*)
+* post v5.0 texture_chart = **plantcv.analyze.texture**(*img, labeled_mask, methods=None, distances=None, angles=None, levels=None, symmetric=False, normalize=False, n_labels=1, label=None*)
 
 #### plantcv.analyze.thermal
 
