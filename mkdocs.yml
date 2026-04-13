@@ -40,6 +40,7 @@ nav:
         - 'Analyze Spectral Index': analyze_spectral_index.md
         - 'Analyze YII': analyze_yii.md
         - 'Analyze NPQ': analyze_npq.md
+        - 'Analyze Radial Average': analyze_radial_percentile.md
       - 'Annotation Tools':
           - 'Points': Points.md
       - 'Apply Mask': apply_mask.md
