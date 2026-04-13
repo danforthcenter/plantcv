@@ -66,7 +66,7 @@ corrected_img = pcv.transform.affine_color_correction(rgb_img=rgb_img,
 
 ![Screenshot](img/documentation_images/correct_color_imgs/detect_color_card.png)
 
-### Suppored Color Cards
+### Supported Color Cards
 
 **[Calibrite ColorChecker Passport](https://calibrite.com/us/product/colorchecker-passport-photo-2/)** 
 
@@ -92,7 +92,7 @@ Chip dimensions: 11mm x 11mm
 
 Chip dimensions: 3mm x 4mm
 
-**[AstroBotany Calibration Sticker](https://astrobotany.com/product/airi-bio-imaging-spectrum-5cm/)**
+**[AstroBotany Calibration Sticker](https://www.stickermule.com/drb2025/item/19181049)**
 
 ![Screenshot](img/documentation_images/correct_color_imgs/astro-sticker.png)
 
