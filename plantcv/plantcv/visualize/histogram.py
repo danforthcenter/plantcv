@@ -1,7 +1,7 @@
 """Visualize histograms from image data."""
 import os
 import numpy as np
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv._debug import _debug
 import pandas as pd

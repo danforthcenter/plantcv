@@ -36,10 +36,10 @@ def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area", roi=None):
     # Check if cut_side is valid
     if cut_side not in ("upper", "lower"):
         fatal_error("Must specify either 'upper' or 'lower' for cut_side")
+    # subset binary image for ROI
+    sub_bin_img = _rect_filter(bin_img, roi=roi)
     # Skip empty masks
-    if np.count_nonzero(bin_img) != 0:
-        # subset binary image for ROI
-        sub_bin_img = _rect_filter(bin_img, roi=roi)
+    if np.count_nonzero(sub_bin_img) != 0:
         # label connected regions in ROI
         labeled_img = label(sub_bin_img)
         # measure region properties
@@ -68,8 +68,6 @@ def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area", roi=None):
                 gray_val = 255 if getattr(obj, regprop) < thresh else 0
             # Add the object to the filtered mask (255 if it passes, 0 if it does not)
             sub_filtered_mask += np.where(labeled_img == obj.label, gray_val, 0).astype(np.uint8)
-        # slice subset back into full size binary image
-        filtered_mask = _rect_replace(bin_img, sub_filtered_mask, roi)
 
         if params.debug == "plot":
             print(f"Min value = {min(valueslist)}")
@@ -77,7 +75,10 @@ def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area", roi=None):
             print(f"Mean value = {sum(valueslist)/len(valueslist)}")
 
     else:
-        filtered_mask = np.copy(bin_img)
+        sub_filtered_mask = np.copy(sub_bin_img)
+    # slice subset back into full size binary image
+    filtered_mask = _rect_replace(bin_img, sub_filtered_mask, roi)
+
     _debug(visual=filtered_mask, filename=os.path.join(params.debug_outdir,
                                                        f"{params.device}_filter_mask_{regprop}_{thresh}.png"))
     return filtered_mask

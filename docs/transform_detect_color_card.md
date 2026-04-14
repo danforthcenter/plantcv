@@ -2,14 +2,14 @@
 
 Automatically detects a Macbeth ColorChecker or Astrobotany.com Calibration Sticker style color card and creates a labeled mask.
 
-**plantcv.transform.detect_color_card**(*rgb_img, label=None, color_chip_size=None, roi=None, \*\*kwargs*)
+**plantcv.transform.detect_color_card**(*rgb_img, color_chip_size=None, roi=None, \*\*kwargs*)
 
-**returns** labeled_mask
+**returns** color_matrix
 
 - **Parameters**
     - rgb_img          - Input RGB image data containing a color card.
     - label            - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
-    - color_chip_size - Type of color card to be detected, ("classic", "passport", "nano", "cameratrax", or "astro", by default `None`) or a tuple of the `(width, height)` dimensions of the color card chips in millimeters. If set then size scalings parameters `pcv.params.unit`, `pcv.params.px_width`, and `pcv.params.px_height`
+    - color_chip_size - Type of color card to be detected, ("classic", "passport", "nano", "mini", "cameratrax", or "astro", by default `None`) or a tuple of the `(width, height)` dimensions of the color card chips in millimeters. If set then size scalings parameters `pcv.params.unit`, `pcv.params.px_width`, and `pcv.params.px_height`
             are automatically set, and utilized throughout linear and area type measurements stored to `Outputs`. 
     - roi              - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to look for the color card. (default = None)
     - **kwargs         - Other keyword arguments passed to `cv2.adaptiveThreshold` and `cv2.circle`.
@@ -17,11 +17,11 @@ Automatically detects a Macbeth ColorChecker or Astrobotany.com Calibration Stic
         - block_size      - Size of a pixel neighborhood that is used to calculate a threshold value (default = 51). We suggest using 127 if using `adaptive_method=0`.
         - radius         - Radius of circle to make the color card labeled mask (default = 20).
         - min_size         - Minimum chip size for filtering objects after edge detection (default = 1000)
-        - aspect_ratio   - Optional aspect ratio (width / height) below which objects will get removed. Orientation agnogstic since automatically set to the reciprocal if <1 (default = 1.27)
+        - aspect_ratio   - Optional aspect ratio (width / height) below which objects will get removed. Orientation agnostic since automatically set to the reciprocal if <1 (default = 1.27)
         - solidity - Optional solidity (object area / convex hull area) filter (default = 0.8)
 
 - **Returns**
-    - labeled_mask     - Labeled color card mask (useful downstream of this step in [`pcv.transform.get_color_matrix`](get_color_matrix.md) and [`pcv.transform.correct_color`](transform_correct_color.md) and [`pcv.transform.affine_color_correction`](transform_affine_color_correction.md)).
+    - color_matrix     - Detected color values as a matrix, the same format as output from [`pcv.transform.get_color_matrix`](get_color_matrix.md)).
     
 - **Context**
     - If the goal is to color correct the image colorspace to the standard color card values, consider using [`pcv.transform.auto_correct_color`](transform_auto_correct_color.md) since this new function is a one-step wrapper of plantcv.transform.detect_color_card, [plantcv.transform.std_color_matrix](std_color_matrix.md) or [plantcv.transform.astro_color_matrix](astro_color_matrix.md), and [plantcv.transform.affine_color_correction](transform_affine_color_correction.md).
@@ -63,30 +63,40 @@ corrected_img = pcv.transform.affine_color_correction(rgb_img=rgb_img,
 ```
 
 **Image automatically detected and masked**
+If `pcv.params.verbose = True` then a debug image will get created showing where the detected color card is located in the input image. 
+![Screenshot](img/documentation_images/transform_detect_color_card/detected_color_card.png)
 
-![Screenshot](img/documentation_images/correct_color_imgs/detect_color_card.png)
+Not all chips need to be detected in the cropped color card, but help with quality control of labeled mask alignment.
+
+![Screenshot](img/documentation_images/transform_detect_color_card/cropped_color_card.png)
 
 ### Supported Color Cards
 
-**[Calibrite ColorChecker Passport](https://calibrite.com/us/product/colorchecker-passport-photo-2/)** 
+**[Calibrite ColorChecker "Passport"](https://calibrite.com/us/product/colorchecker-passport-photo-2/)** 
 
 ![Screenshot](img/documentation_images/correct_color_imgs/calibrite-passport.png)
 
 Chip dimensions: 12mm x 12mm
 
-**[Calibrite ColorChecker Classic](https://calibrite.com/us/product/colorchecker-classic/)** 
+**[Calibrite ColorChecker "Classic"](https://calibrite.com/us/product/colorchecker-classic/)** 
 
 ![Screenshot](img/documentation_images/correct_color_imgs/classic.png)
 
 Chip dimensions: 40mm x 40mm
 
-**[CameraTrax 24ColorCard-2x3](https://www.cameratrax.com/cardorder.php)** 
+**[Calibrite ColorChecker Classic "Mini"](https://calibrite.com/us/product/colorchecker-classic-mini/)** 
+
+![Screenshot](img/documentation_images/correct_color_imgs/colorchecker-classic-mini.jpg)
+
+Chip dimensions: 12mm x 12mm
+
+**["CameraTrax" 24ColorCard-2x3](https://www.cameratrax.com/cardorder.php)** 
 
 ![Screenshot](img/documentation_images/correct_color_imgs/camera-trax.png)
 
 Chip dimensions: 11mm x 11mm
 
-**[ColorChecker Classic Nano](https://calibrite.com/us/product/colorchecker-classic-nano/)** 
+**[ColorChecker Classic "Nano"](https://calibrite.com/us/product/colorchecker-classic-nano/)** 
 
 ![Screenshot](img/documentation_images/correct_color_imgs/nano.jpeg)
 

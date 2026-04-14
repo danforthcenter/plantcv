@@ -9,11 +9,11 @@ def test_job_builder_single_image(parallel_test_data, tmpdir):
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.snapshot_imgdir
-    config.json = "output.json"
-    config.tmp_dir = tmp_dir
+    config.results = "output.json"
+    config.tmp_dir = str(tmp_dir)
     config.filename_metadata = ["imgtype", "camera", "rotation", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = parallel_test_data.workflow_script
-    config.img_outdir = tmp_dir
+    config.img_outdir = str(tmp_dir)
     config.metadata_filters = {"imgtype": "VIS", "camera": "SV"}
     config.start_date = "2014-10-21 00:00:00.0"
     config.end_date = "2014-10-23 00:00:00.0"
@@ -41,11 +41,11 @@ def test_job_builder_coprocess(parallel_test_data, tmpdir):
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.snapshot_imgdir
-    config.json = "output.json"
-    config.tmp_dir = tmp_dir
+    config.results = "output.json"
+    config.tmp_dir = str(tmp_dir)
     config.filename_metadata = ["imgtype", "camera", "rotation", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = parallel_test_data.workflow_script
-    config.img_outdir = tmp_dir
+    config.img_outdir = str(tmp_dir)
     config.metadata_filters = {"camera": "SV"}
     config.start_date = "2014-10-21 00:00:00.0"
     config.end_date = "2014-10-23 00:00:00.0"
@@ -74,11 +74,11 @@ def test_job_builder_auto_name(parallel_test_data, tmpdir):
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.snapshot_imgdir
-    config.json = "output.json"
-    config.tmp_dir = tmp_dir
+    config.results = "output.json"
+    config.tmp_dir = str(tmp_dir)
     config.filename_metadata = ["imgtype", "camera", "rotation", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = parallel_test_data.workflow_script
-    config.img_outdir = tmp_dir
+    config.img_outdir = str(tmp_dir)
     config.metadata_filters = {"imgtype": "VIS", "camera": "SV"}
     config.start_date = "2014-10-21 00:00:00.0"
     config.end_date = "2014-10-23 00:00:00.0"

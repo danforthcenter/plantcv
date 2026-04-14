@@ -198,9 +198,8 @@ def test_apply_transformation(transform_test_data):
     # read in matrices
     matrix_t = transform_test_data.load_npz(transform_test_data.transformation_matrix_file)
     # read in images
-    target_img = cv2.imread(transform_test_data.target_img)
     source_img = cv2.imread(transform_test_data.source1_img)
-    corrected_img = apply_transformation_matrix(source_img, target_img, matrix_t)
+    corrected_img = apply_transformation_matrix(source_img, matrix_t)
     # assert source and corrected have same shape
     assert np.array_equal(corrected_img, corrected_compare)
 
@@ -210,10 +209,9 @@ def test_apply_transformation_incorrect_t(transform_test_data):
     # read in matrices
     matrix_t = transform_test_data.load_npz(transform_test_data.matrix_b1_file)
     # read in images
-    target_img = cv2.imread(transform_test_data.target_img)
     source_img = cv2.imread(transform_test_data.source1_img)
     with pytest.raises(RuntimeError):
-        _ = apply_transformation_matrix(source_img, target_img, matrix_t)
+        _ = apply_transformation_matrix(source_img, matrix_t)
 
 
 def test_apply_transformation_incorrect_img(transform_test_data):
@@ -221,10 +219,9 @@ def test_apply_transformation_incorrect_img(transform_test_data):
     # read in matrices
     matrix_t = transform_test_data.load_npz(transform_test_data.transformation_matrix_file)
     # read in images
-    target_img = cv2.imread(transform_test_data.target_img)
     source_img = cv2.imread(transform_test_data.colorcard_mask, -1)
     with pytest.raises(RuntimeError):
-        _ = apply_transformation_matrix(source_img, target_img, matrix_t)
+        _ = apply_transformation_matrix(source_img, matrix_t)
 
 
 def test_save_matrix(transform_test_data, tmpdir):
@@ -321,20 +318,16 @@ def test_cameratrax_and_astro_consistent_color_calibration(transform_test_data):
     rgb_img = cv2.imread(transform_test_data.cameratrax_astro_img)
 
     # Correct with cameratrax card and measure corrected astrocard values
-    ctrax_mask = detect_color_card(rgb_img=rgb_img)
-    _, ctrax_mat = get_color_matrix(rgb_img=rgb_img, mask=ctrax_mask)
+    ctrax_mat = detect_color_card(rgb_img=rgb_img)
     ctrax_std_mat = std_color_matrix(pos=3)
     ctrax_corr_img = affine_color_correction(rgb_img=rgb_img, source_matrix=ctrax_mat, target_matrix=ctrax_std_mat)
 
     # Correct with astrocard and measure corrected astrocard values
-    astro_mask = detect_color_card(rgb_img=rgb_img, color_chip_size="astro")
-    _, astro_mat = get_color_matrix(rgb_img=rgb_img, mask=astro_mask)
+    astro_mat = detect_color_card(rgb_img=rgb_img, color_chip_size="astro")
     astro_std_mat = astro_color_matrix()
     astro_corr_img = affine_color_correction(rgb_img=rgb_img, source_matrix=astro_mat, target_matrix=astro_std_mat)
 
-    # Get astrocard color matrix in both corrected images
-    _, ctrax_corr_mat = get_color_matrix(rgb_img=ctrax_corr_img, mask=astro_mask)
-    _, astro_corr_mat = get_color_matrix(rgb_img=astro_corr_img, mask=astro_mask)
-
+    diff = np.abs(ctrax_corr_img - astro_corr_img)
+    channel_diffs = np.sum(diff, axis=(0, 1)) / (diff.shape[0] * diff.shape[1])
     # Check for similarity in corrected color: mean absolute color difference less than 2.5 (1% of range)
-    assert np.mean(np.abs(255*ctrax_corr_mat[1:] - 255*astro_corr_mat[1:])) < 2.5
+    assert all(channel_diffs < 3) and np.mean(channel_diffs) < 2.5

@@ -2,7 +2,7 @@
 import numpy as np
 import math
 import numbers
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv import outputs
 
 
