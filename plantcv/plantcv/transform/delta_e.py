@@ -1,4 +1,5 @@
 """Calculate Delta E between color cards"""
+import os
 import cv2
 import numpy as np
 from skimage import color
@@ -7,7 +8,7 @@ from plantcv.plantcv._globals import params, outputs
 from plantcv.plantcv.transform.color_correction import std_color_matrix, astro_color_matrix
 
 
-def _delta_e(obs_rgb, card_type = None, obs = "uncalibrated", method="deltaE_ciede2000"):
+def _delta_e(obs_rgb, card_type=None, obs="uncalibrated", method="deltaE_ciede2000"):
     """Calculate summary of Delta E between two color cards
 
     Parameters
@@ -25,7 +26,7 @@ def _delta_e(obs_rgb, card_type = None, obs = "uncalibrated", method="deltaE_cie
 
     Returns
     -------
-    deltaE
+    delta_e_mat
         numpy.ndarray, Delta E values between color chips.
     """
     if card_type is None or isinstance(card_type, tuple):
@@ -45,16 +46,16 @@ def _delta_e(obs_rgb, card_type = None, obs = "uncalibrated", method="deltaE_cie
     # get function from skimage color
     delta_e_fun = getattr(color, method)
     # there are other parameters we could allow changes to but I don't think we need to yet.
-    deltaE = delta_e_fun(obs_lab, exp_lab)
+    delta_e_mat = delta_e_fun(obs_lab, exp_lab)
     # store metadata describing delta E
-    outputs.add_metadata(term="mean_deltaE_" + obs, datatype=float, value=np.mean(deltaE))
-    outputs.add_metadata(term="std_deltaE_" + obs, datatype=float, value=np.std(deltaE))
-    outputs.add_metadata(term="max_deltaE_" + obs, datatype=float, value=np.max(deltaE))
-    outputs.add_metadata(term="min_deltaE_" + obs, datatype=float, value=np.min(deltaE))
+    outputs.add_metadata(term="mean_deltaE_" + obs, datatype=float, value=np.mean(delta_e_mat))
+    outputs.add_metadata(term="std_deltaE_" + obs, datatype=float, value=np.std(delta_e_mat))
+    outputs.add_metadata(term="max_deltaE_" + obs, datatype=float, value=np.max(delta_e_mat))
+    outputs.add_metadata(term="min_deltaE_" + obs, datatype=float, value=np.min(delta_e_mat))
     # make a debug plot
     if params.debug:
         params.device += 1
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
+        _, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
         ax1.imshow(obs_mat)
         ax1.set_title(obs.title() + ' Color Card')
         ax2.imshow(exp_mat)
@@ -64,4 +65,4 @@ def _delta_e(obs_rgb, card_type = None, obs = "uncalibrated", method="deltaE_cie
     if params.debug == "plot":
         plt.show()
 
-    return deltaE
+    return delta_e_mat

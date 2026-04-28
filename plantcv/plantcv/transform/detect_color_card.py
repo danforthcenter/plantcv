@@ -740,15 +740,15 @@ def deltaE(rgb_img, color_chip_size=None, roi=None, obs="calibrated", method="de
 
     Returns
     -------
-    deltaE
+    delta_E
         numpy.ndarray, Delta E values between color chips.
     """
     obs_rgb = detect_color_card(rgb_img, color_chip_size, roi, deltaE=False, **kwargs)
-    deltaE = _delta_e(obs_rgb, color_chip_size, obs, method)
-    return deltaE
+    delta_E = _delta_e(obs_rgb, color_chip_size, obs, method)
+    return delta_E
 
 
-def detect_color_card(rgb_img, color_chip_size=None, roi=None, deltaE=True, **kwargs):
+def detect_color_card(rgb_img, color_chip_size=None, roi=None, delta_E=True, **kwargs):
     """Automatically detects a Macbeth ColorChecker or Astrobotany.com Calibration Sticker style color card.
 
     Parameters
@@ -760,7 +760,7 @@ def detect_color_card(rgb_img, color_chip_size=None, roi=None, deltaE=True, **kw
         in millimeters (default = None)
     roi : plantcv.plantcv.Objects, optional
         A rectangular ROI as returned from pcv.roi.rectangle to detect a color card only in that region.
-    deltaE : Boolean, optional
+    delta_E : Boolean, optional
         Should DeltaE be calculated between the observed vs expected color card? Defaults to True.
     **kwargs
         Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle.
@@ -825,7 +825,7 @@ def detect_color_card(rgb_img, color_chip_size=None, roi=None, deltaE=True, **kw
     # Debugging
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f"{params.device}_color_card.png"))
     # Calculate Delta E
-    if deltaE:
+    if delta_E:
         _ = _delta_e(color_matrix, card_type=color_chip_size)
 
     return color_matrix
