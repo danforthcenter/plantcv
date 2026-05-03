@@ -608,11 +608,16 @@ def _process_aph_data(ps, metadata):
         # Store as a standard attribute
         ps.aph = aph_frames
 
-        # Debugging
-        _debug(visual=ps.aph[:, :, 0],
-               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_APH-red-frame.png"))
-        _debug(visual=ps.aph[:, :, 1],
-               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_APH-farred-frame.png"))
+        # Debugging — wrap in a temporary DataArray so frame labels appear in the plot
+        aph_debug = xr.DataArray(
+            data=ps.aph,
+            dims=('x', 'y', 'frame_label'),
+            coords={'frame_label': ['Red', 'FarRed']}
+        )
+        _debug(visual=aph_debug,
+               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_APH-frames.png"),
+               col='frame_label',
+               col_wrap=2)
 
 
 def _dat_filepath(dataset, datapath, filename):
