@@ -81,6 +81,6 @@ ps.ojip_dark.plot(col='frame_label', col_wrap=4)
 
 **Alpha light absorption coefficient (APH) measurements**
 
-![Screenshot](img/documentation_images/photosynthesis_read_cropreporter/6_aph_frames.png)
+![Screenshot](img/documentation_images/photosynthesis_read_cropreporter/6_APH-frames.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/photosynthesis/read_cropreporter.py)
