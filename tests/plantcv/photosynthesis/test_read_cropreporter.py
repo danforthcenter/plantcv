@@ -139,6 +139,24 @@ def test_read_cropreporter_aph_only(photosynthesis_test_data, tmpdir):
     assert ps.aph.shape[2] == 2  # Red + FarRed
 
 
+def test_read_cropreporter_aph_insufficient_frames(photosynthesis_test_data, tmpdir, monkeypatch):
+    """Test that APH import raises RuntimeError when DAT file contains fewer than 2 frames."""
+    cache_dir = tmpdir.mkdir("sub_aph_err")
+    inf_dest = os.path.join(cache_dir, "HDR_2025-12-12_tob1_20251212205712029.INF")
+    dat_dest = os.path.join(cache_dir, "APH_2025-12-12_tob1_20251212205712029.DAT")
+    shutil.copyfile(photosynthesis_test_data.cropreporter_aph, inf_dest)
+    aph_dat = photosynthesis_test_data.cropreporter_aph.replace("HDR", "APH").replace("INF", "DAT")
+    shutil.copyfile(aph_dat, dat_dest)
+    # Override image dimensions so monkeypatched data is the right size
+    with open(inf_dest, "a") as f:
+        f.write("\nImageRows=10")
+        f.write("\nImageCols=10")
+    # Return only 1 frame worth of data (10 * 10 * 1 = 100) to trigger the error
+    monkeypatch.setattr(np, "fromfile", lambda *args, **kwargs: np.ones(100, dtype=np.uint16))
+    with pytest.raises(RuntimeError):
+        read_cropreporter(filename=inf_dest)
+
+
 def test_read_cropreporter_pmt_only_9_labels(photosynthesis_test_data, tmpdir):
     """Test PMT (PAM Time) import with 9 frames."""
     # Create a test tmp directory
