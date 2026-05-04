@@ -603,6 +603,8 @@ def _process_aph_data(ps, metadata):
         # - When there are 3 frames, indices are [0]=Fdark, [1]=Red, [2]=FarRed -> use indices 1 and 2.
         # - When there are 2 frames, indices are [0]=Red, [1]=FarRed -> use indices 0 and 1.
         num_frames = img_cube.shape[2]
+        if num_frames < 2:
+            raise RuntimeError(f"APH DAT file contains {num_frames} frame(s); expected at least 2 (Red and FarRed).")
         aph_frames = img_cube[:, :, num_frames - 2:num_frames]
 
         # Store as a standard attribute
