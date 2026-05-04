@@ -153,8 +153,12 @@ def test_read_cropreporter_aph_insufficient_frames(photosynthesis_test_data, tmp
         f.write("\nImageCols=10")
     # Return only 1 frame worth of data (10 * 10 * 1 = 100) to trigger the error
     monkeypatch.setattr(np, "fromfile", lambda *args, **kwargs: np.ones(100, dtype=np.uint16))
-    with pytest.raises(RuntimeError):
+    error_raised = False
+    try:
         read_cropreporter(filename=inf_dest)
+    except RuntimeError:
+        error_raised = True
+    assert error_raised
 
 
 def test_read_cropreporter_pmt_only_9_labels(photosynthesis_test_data, tmpdir):
