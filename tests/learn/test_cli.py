@@ -73,6 +73,31 @@ def test_run_naive_bayes_multiclass(tmpdir, learn_test_data):
     assert main() is None
 
 
+def test_run_tabulate_bayes_classes(learn_test_data, tmpdir):
+    """Test for PlantCV."""
+    # Create tmp directory
+    tmp_dir = tmpdir.mkdir("cache")
+    # Mock ARGV
+    import sys
+    sys.argv = ["plantcv-train", "tabulate_bayes_classes",
+                "--file", learn_test_data.rgb_values_file,
+                "--outfile", os.path.join(str(tmp_dir), "rgb_table.txt")]
+    assert main() is None
+
+
+def test_run_tabulate_bayes_classes_bad_file(tmpdir):
+    """Test for PlantCV."""
+    # Create tmp directory
+    tmp_dir = tmpdir.mkdir("cache")
+    # Mock ARGV
+    import sys
+    sys.argv = ["plantcv-train", "tabulate_bayes_classes",
+                "--file", "thisfiledoesnotexist.txt",
+                "--outfile", os.path.join(str(tmp_dir), "rgb_table.txt")]
+    with pytest.raises(IOError):
+        main()
+
+
 def test_run_naive_bayes_multiclass_bad_file():
     """Test for PlantCV."""
     # Mock ARGV

@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.cluster.hierarchy import dendrogram, linkage
 from scipy.cluster.hierarchy import cut_tree
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 
 
 def _get_empty_count(cur_index_id):

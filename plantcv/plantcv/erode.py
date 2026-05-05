@@ -3,7 +3,7 @@
 import os
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _erode
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 
 
 def erode(gray_img, ksize, i, roi=None):
