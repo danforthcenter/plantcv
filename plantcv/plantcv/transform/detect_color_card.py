@@ -258,8 +258,8 @@ def _set_size_scale_from_chip(color_chip_width, color_chip_height, color_chip_si
     color_chip_height : float
         Height in pixels of the detected color chips
     color_chip_size : str, tuple
-        Type of supported color card target ("classic", "passport", "nano", or "cameratrax"), or a tuple of
-        (width, height) of the color card chip real-world dimensions in milimeters.
+        Type of supported color card target ("classic", "passport", "nano", "mini", or "cameratrax"),
+        or a tuple of (width, height) of the color card chip real-world dimensions in milimeters.
     """
     # Define known color chip dimensions, all in milimeters
     card_types = {
@@ -278,6 +278,10 @@ def _set_size_scale_from_chip(color_chip_width, color_chip_height, color_chip_si
         "NANO": {
             "chip_width": 4,
             "chip_height": 3
+        },
+        "MINI": {
+            "chip_width": 12,
+            "chip_height": 12
         }
     }
 
@@ -355,7 +359,7 @@ def detect_color_card(rgb_img, label=None, color_chip_size=None, roi=None, **kwa
     label : str, optional
         modifies the variable name of observations recorded (default = pcv.params.sample_label).
     color_chip_size: str, tuple, optional
-        "passport", "classic", "nano", or "cameratrax"; or tuple formatted (width, height)
+        "passport", "classic", "nano", "mini", or "cameratrax"; or tuple formatted (width, height)
         in millimeters (default = None)
     roi : plantcv.plantcv.Objects, optional
         A rectangular ROI as returned from pcv.roi.rectangle to detect a color card only in that region.

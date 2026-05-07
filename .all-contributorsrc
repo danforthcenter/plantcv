@@ -733,6 +733,37 @@
       "contributions": [
         "tutorial"
       ]
+    },
+    {
+      "login": "JalissaPirro",
+      "name": "JalissaPirro",
+      "avatar_url": "https://avatars.githubusercontent.com/u/214848039?v=4",
+      "profile": "https://github.com/JalissaPirro",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "Sam-Taylor-UIOWA",
+      "name": "Samuel Kalevi Zebarth Taylor",
+      "avatar_url": "https://avatars.githubusercontent.com/u/116521490?v=4",
+      "profile": "https://github.com/Sam-Taylor-UIOWA",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "marcusdgriff",
+      "name": "Marcus Griffiths",
+      "avatar_url": "https://avatars.githubusercontent.com/u/44459040?v=4",
+      "profile": "https://www.marcusgriffiths.com",
+      "contributions": [
+        "code",
+        "doc",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,

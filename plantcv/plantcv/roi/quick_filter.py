@@ -10,7 +10,7 @@ from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _logical_operation
 
 
-def quick_filter(mask, roi):
+def quick_filter(mask, roi, roi_type="partial"):
     """Quickly filter a binary mask using a region of interest.
 
     Parameters
@@ -19,12 +19,17 @@ def quick_filter(mask, roi):
         Binary mask to filter.
     roi : plantcv.plantcv.classes.Objects
         PlantCV ROI object.
+    roi_type : str, optional
+        filter method, one of "partial", "cutto", or "within"
 
     Returns
     -------
     numpy.ndarray
         Filtered binary mask.
     """
+    # process for cutto is different, so if roi_type is cutto then use helper function
+    if roi_type == "cutto":
+        return _quick_cutto(mask, roi)[0]
     # Increment the device counter
     params.device += 1
 
@@ -51,12 +56,17 @@ def quick_filter(mask, roi):
     # For each label, if at least one pixel of the object overlaps the ROI
     # set all the label values to the label plus 0.5
     for i in range(1, num + 1):
-        if i + 0.5 in summed:
+        # For each label, if at least one pixel of the object overlaps the ROI
+        # set all the label values to the label plus 0.5
+        if roi_type.upper() == "PARTIAL" and i + 0.5 in summed:
             summed[np.where(summed == i)] = i + 0.5
-
+        # If one pixel of the object falls outside the ROI
+        # set all the label values to zero
+        elif roi_type.upper() == "WITHIN" and i in summed:
+            summed[np.where(labels == i)] = 0
     # Objects that do not overlap the ROI will round to an integer and have
     # the same value before and after rounding.
-    # Objecs that overlap the ROI will round up/down and will not have the same value
+    # Objects that overlap the ROI will round up/down and will not have the same value
     # Where the values are equal (not overlapping)
     summed[np.where(summed == summed.round())] = 0
 

@@ -9,7 +9,7 @@ Automatically detects a Macbeth ColorChecker style color card and creates a labe
 - **Parameters**
     - rgb_img          - Input RGB image data containing a color card.
     - label            - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
-    - color_chip_size - Type of color card to be detected, ("classic", "passport", "nano", or "cameratrax", by default `None`) or a tuple of the `(width, height)` dimensions of the color card chips in millimeters. If set then size scalings parameters `pcv.params.unit`, `pcv.params.px_width`, and `pcv.params.px_height`
+    - color_chip_size - Type of color card to be detected, ("classic", "passport", "nano", "mini", or "cameratrax", by default `None`) or a tuple of the `(width, height)` dimensions of the color card chips in millimeters. If set then size scalings parameters `pcv.params.unit`, `pcv.params.px_width`, and `pcv.params.px_height`
             are automatically set, and utilized throughout linear and area type measurements stored to `Outputs`. 
     - roi              - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to look for the color card. (default = None)
     - **kwargs         - Other keyword arguments passed to `cv2.adaptiveThreshold` and `cv2.circle`.
@@ -79,6 +79,12 @@ Chip dimensions: 12mm x 12mm
 ![Screenshot](img/documentation_images/correct_color_imgs/classic.png)
 
 Chip dimensions: 40mm x 40mm
+
+**[Calibrite ColorChecker Classic Mini](https://calibrite.com/us/product/colorchecker-classic-mini/)** 
+
+![Screenshot](img/documentation_images/correct_color_imgs/colorchecker-classic-mini.jpg)
+
+Chip dimensions: 12mm x 12mm
 
 **[CameraTrax 24ColorCard-2x3](https://www.cameratrax.com/cardorder.php)** 
 

@@ -8,7 +8,8 @@ Reads image into numpy ndarray and splits the path and image filename (*see note
 
 - **Parameters:**
     - filename - image file to be read (possibly including a path)
-    - mode     - return mode of image ("native," "rgb", "rgba", "csv", "envi", "arcgis", "gray", "nd2", or "thermal"), defaults to "native"
+    - mode     - return mode of image ("native," "rgb", "rgba", "normalize", "csv", "envi", "arcgis", "gray", "nd2",
+    or "thermal"), defaults to "native"
     
 - **Context:**
     - Reads in file to be processed
@@ -26,7 +27,8 @@ Reads image into numpy ndarray and splits the path and image filename (*see note
     to the corresponding wavelength. An instance of the [`Spectral_data` class](Spectral_data.md) is created while reading in the data and this instance 
     is returned to the user rather than the usual `img, path, filename` that is returned under other modes of `pcv.readimage`. There is some flexibility 
     in formats of images supported but encourage people to reach out on [GitHub](https://github.com/danforthcenter/plantcv/issues) and collaborate with the
-    PlantCV community to expand our support. 
+    PlantCV community to expand our support.
+	- A wide variety of images can be read with `mode=normalize` which may be useful for special cases, such as 16-bit color images that otherwise may behave unexpectedly. This mode will normalize images to values to be between 0 and 255 using `cv2.normalize`.
 - **Example use:**
     - [Use In Color Correction Tutorial](https://plantcv.org/tutorials/color-correction) 
     - [Use In Grayscale Tutorial](https://plantcv.org/tutorials/grayscale)

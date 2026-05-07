@@ -1,7 +1,7 @@
 import pytest
 import cv2
 from plantcv.plantcv import outputs
-from plantcv.plantcv.morphology import segment_tangent_angle
+from plantcv.plantcv.morphology.segment_tangent_angle import segment_tangent_angle
 
 
 @pytest.mark.parametrize("size", [3, 100])

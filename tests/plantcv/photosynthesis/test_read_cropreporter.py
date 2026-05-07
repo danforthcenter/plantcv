@@ -42,9 +42,9 @@ def test_read_cropreporter(photosynthesis_test_data, tmpdir):
     assert all(a == b for a, b in zip(ps.ojip_dark.coords['frame_label'].to_dict()['data'], true_dark_labels))
     true_light_labels = ['Flight', 'Fp', 'Fmp', 'PSL3', 'PSL4', 'PSL5', 'PSL6']
     assert all(a == b for a, b in zip(ps.ojip_light.coords['frame_label'].to_dict()['data'], true_light_labels))
-    true_pam_dark_labels = ["Fdark", "F0", "Fm", "Fs"]
+    true_pam_dark_labels = ["Fdark", "F0", "Fm", "Fdarksat"]
     assert all(a == b for a, b in zip(ps.pam_dark.coords['frame_label'].to_dict()['data'], true_pam_dark_labels))
-    true_pam_light_labels = ["Flight", "Fp", "Fmp", "Fs"]
+    true_pam_light_labels = ["Flight", "Fp", "Fmp", "Flightsat"]
     assert all(a == b for a, b in zip(ps.pam_light.coords['frame_label'].to_dict()['data'], true_pam_light_labels))
 
 
@@ -61,3 +61,10 @@ def test_read_cropreporter_spc_only(photosynthesis_test_data, tmpdir):
     ps = read_cropreporter(filename=fluor_filename)
     print(os.listdir(cache_dir))
     assert isinstance(ps, PSII_data) and ps.spectral.array_data.shape == (966, 1296, 3)
+
+
+def test_read_cropreporter_npq(photosynthesis_test_data, tmpdir):
+    """Test for PlantCV."""
+    ps = read_cropreporter(filename=photosynthesis_test_data.cropreporter_npq)
+    assert isinstance(ps, PSII_data) and ps.ojip_dark.shape == (966, 1296, 3, 1)
+    assert isinstance(ps, PSII_data) and ps.ojip_light.shape == (966, 1296, 3, 1)
