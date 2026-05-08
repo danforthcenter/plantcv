@@ -114,8 +114,9 @@ def _check_for_conda(config):
     config = plantcv.parallel.WorkflowConfig object
     """
     running_in_conda = re.search("conda|mamba|miniforge", sys.executable) is not None
+    unix_like = os.name == "posix"
     # if workflow is executed from a conda environment then activate that conda environment on workers
-    if "job_script_prologue" not in config.cluster_config.keys() and running_in_conda:
+    if "job_script_prologue" not in config.cluster_config.keys() and running_in_conda and unix_like:
         # find where the conda installation is, replace python with activate
         activation_path = re.sub("(.*conda|mamba|miniforge)(\\d)?.*$",
                                  os.path.join("\\1\\2", "bin", "activate"), sys.executable)
