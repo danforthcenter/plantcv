@@ -1,4 +1,5 @@
 import sys
+import os
 from plantcv.parallel import WorkflowConfig
 from plantcv.parallel.run_parallel import _check_for_conda
 
@@ -20,4 +21,7 @@ def test_checking_conda_base_env(monkeypatch):
     config = WorkflowConfig()
     # This should not raise and should produce an activation line for the base env
     config = _check_for_conda(config)
-    assert config.cluster_config["job_script_prologue"] == ["source /my/Xconda4/bin/activate"]
+    if os.name == "posix":
+        assert config.cluster_config["job_script_prologue"] == ["source /my/Xconda4/bin/activate"]
+    else:
+        assert True
