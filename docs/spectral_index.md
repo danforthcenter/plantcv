@@ -44,7 +44,7 @@ Index range: -1, 1
 **returns** calculated index array (instance of the `Spectral_data` class)
 
 - **Parameters:**
-    - img         - Color image as a numpy array.
+    - img         - Color image or hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
 	- distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
 
 
@@ -63,7 +63,7 @@ Index range: 0, ∞
 **returns** calculated index array (instance of the `Spectral_data` class)
 
 - **Parameters:**
-    - img         - Color image as a numpy array.
+    - img         - Color image or hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
 	- distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
 
 
@@ -587,7 +587,7 @@ Index range: -1, 1
 **returns** calculated index array (instance of the `Spectral_data` class)
 
 - **Parameters:**
-    - img         - Color image as a numpy array.
+    - img         - Color image or hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`) 
 	- distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
 
 
