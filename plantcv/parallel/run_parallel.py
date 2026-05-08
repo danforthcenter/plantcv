@@ -117,17 +117,23 @@ def _check_for_conda(config):
     # if workflow is executed from a conda environment then activate that conda environment on workers
     if "job_script_prologue" not in config.cluster_config.keys() and running_in_conda:
         # find where the conda installation is, replace python with activate
+        # Use "/" since "source activate" is Unix-only and os.path.join produces backslash
+        # escape sequences (\b, \a) in re.sub replacement strings on Windows
         activation_path = re.sub("(.*conda|mamba|miniforge)(\\d)?.*$",
-                                 os.path.join("\\1\\2", "bin", "activate"), sys.executable)
+                                 "\\1\\2/bin/activate", sys.executable)
         commands = ["source " + activation_path]
         # if there is an env in the executable path after the conda/mamba/miniforge
         # then find that env and add a commmand to activate it
-        if re.search("env(s)?", re.sub(".*(conda|mamba|miniforge)", "", sys.executable)) is not None:
-            ex_list = re.sub(".*(conda|mamba|miniforge)", "", sys.executable).split(os.sep)
+        remaining = re.sub(".*(conda|mamba|miniforge)", "", sys.executable)
+        if re.search("env(s)?", remaining) is not None:
+            # Split on "/" since sys.executable on Unix uses forward slashes
+            ex_list = remaining.split("/")
             # get name of env that was active to run plantcv
-            env_index = [i for i, element in enumerate(ex_list) if re.search("^env(s)?$", element)][0]
-            env_name = ex_list[env_index+1]
-            commands.append("conda activate" + env_name)
+            env_indices = [i for i, element in enumerate(ex_list) if re.search("^env(s)?$", element)]
+            if env_indices:
+                env_index = env_indices[0]
+                env_name = ex_list[env_index+1]
+                commands.append("conda activate" + env_name)
         # if changing config always print a message
         print("Setting job_script_prologue to fetch active environment:\n",
               commands,
