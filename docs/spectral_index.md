@@ -39,12 +39,13 @@ BGI = (G - B) / (G + B)
 
 Index range: -1, 1
 
-**plantcv.spectral_index.bgi**(*img*)
+**plantcv.spectral_index.bgi**(*img, distance=40*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
 - **Parameters:**
     - img         - Color image as a numpy array.
+	- distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
 
 
 ### BGR
@@ -57,12 +58,13 @@ BGR = B / G
 
 Index range: 0, ∞
 
-**plantcv.spectral_index.bgr**(*img*)
+**plantcv.spectral_index.bgr**(*img, distance=40*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
 - **Parameters:**
     - img         - Color image as a numpy array.
+	- distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
 
 
 ### CI_REDEDGE
@@ -580,12 +582,13 @@ SCI = (R - G) / (R + G)
 
 Index range: -1, 1
 
-**plantcv.spectral_index.sci**(*img*)
+**plantcv.spectral_index.sci**(*img, distance=40*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
 - **Parameters:**
     - img         - Color image as a numpy array.
+	- distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
 
 
 ### SIPI
