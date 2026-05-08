@@ -193,7 +193,7 @@ of key-value pairs (e.g. `{"getenv": "true"}`).
 !!! note
     The fields available in `job_extra_directives` vary by cluster type. For example, `{"getenv": "true"}` will work to start
     the active conda environment on each worker in an HTCondor cluster but not on a PBS cluster.
-    `plantcv.parallel.run_parallel` and `JupyterConfig.run()` will check for an active conda environment
+    `plantcv.parallel.run_parallel` and `JupyterConfig.run()` will check for an active conda environment on a unix-like OS
     and attempt to start that environment on each worker if the `cluster_config` does not have a `job_script_prologue` already.
 
 ### Example
