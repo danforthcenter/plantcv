@@ -635,6 +635,6 @@ def _replace_string_extension(imgformat):
     """
     extensions = [imgformat]
     if imgformat == "all":
-        extensions = ['bmp', 'dib', 'jpeg', 'jpg', 'jpe', 'jp2', 'png', 'ppm', 'pgm', 'ppm', 'sr', 'ras', 'tiff', 'tif', 'INF']
+        extensions = ['bmp', 'dib', 'jpeg', 'jpg', 'jpe', 'jp2', 'png', 'ppm', 'pgm', 'ppm', 'sr', 'ras', 'tiff', 'tif']
     return extensions
 ###########################################
