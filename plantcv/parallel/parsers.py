@@ -532,7 +532,7 @@ def _read_filenames(config):
         for root, _, files in os.walk(config.input_dir):
             for file in files:
                 if (
-                    file.lower().endswith(tuple(extensions)) and
+                    file.lower().endswith(tuple([ext.lower() for ext in extensions])) and
                     re.search(os.sep+r"[.]{1}(\w)", os.path.join(root, file)) is None
                 ):
                     # Keep the files that end with the image extension
@@ -635,6 +635,6 @@ def _replace_string_extension(imgformat):
     """
     extensions = [imgformat]
     if imgformat == "all":
-        extensions = ['bmp', 'dib', 'jpeg', 'jpg', 'jpe', 'jp2', 'png', 'ppm', 'pgm', 'ppm', 'sr', 'ras', 'tiff', 'tif']
+        extensions = ['bmp', 'dib', 'jpeg', 'jpg', 'jpe', 'jp2', 'png', 'ppm', 'pgm', 'ppm', 'sr', 'ras', 'tiff', 'tif', 'INF']
     return extensions
 ###########################################
