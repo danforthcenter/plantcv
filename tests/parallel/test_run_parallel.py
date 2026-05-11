@@ -13,6 +13,7 @@ def test_checking_conda_env(parallel_test_data, monkeypatch, tmpdir):
     config = _check_for_conda(config)
     if os.name == "posix":
         assert config.cluster_config["job_script_prologue"][0] == "source /my/Xconda3/bin/activate"
+        assert config.cluster_config["job_script_prologue"][1] == "conda activate example"
 
 
 def test_checking_conda_base_env(monkeypatch):
