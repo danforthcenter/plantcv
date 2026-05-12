@@ -128,7 +128,7 @@ def _check_for_conda(config):
             # get name of env that was active to run plantcv
             env_index = [i for i, element in enumerate(ex_list) if re.search("^env(s)?$", element)][0]
             env_name = ex_list[env_index+1]
-            commands.append("conda activate" + env_name)
+            commands.append("conda activate " + env_name)
         # if changing config always print a message
         print("Setting job_script_prologue to fetch active environment:\n",
               commands,
