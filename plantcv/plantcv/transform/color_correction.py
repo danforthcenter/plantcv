@@ -3,8 +3,6 @@ import os
 import math
 import cv2
 import numpy as np
-import altair as alt
-import pandas as pd
 from plantcv.plantcv import params, fatal_error
 from plantcv.plantcv.roi import circle
 from plantcv.plantcv._debug import _debug
@@ -597,5 +595,3 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
     _debug(visual=canvas, filename=os.path.join(params.debug_outdir, str(params.device) + '_color_card_mask_rois.png'))
     _debug(visual=mask, filename=os.path.join(params.debug_outdir, str(params.device) + '_color_card_mask.png'))
     return mask
-
-
