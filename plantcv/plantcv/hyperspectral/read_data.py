@@ -25,13 +25,7 @@ def _find_closest(spectral_array, target):
     :param target: float
     :return spectral_array: __main__.Spectral_data
     """
-    # Array must be sorted
-    idx = spectral_array.searchsorted(target)
-    idx = np.clip(idx, 1, len(spectral_array) - 1)
-    left = spectral_array[idx - 1]
-    right = spectral_array[idx]
-    idx -= target - left < right - target
-    return idx
+    return np.argmin(np.abs(spectral_array - target))
 
 
 def _make_pseudo_rgb(spectral_array):
