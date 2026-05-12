@@ -268,15 +268,17 @@ def egi(img, distance=40):
 
     The theoretical range for EGI is (-1, 2).
 
-    Inputs:
-    img            = Color image (np.array) or hyperspectral image (PlantCV Spectral_data instance)
+    Parameters:
+    ----------
+    img       : np.array or plantcv.plantcv.Spectral_data
+        Color image (np.array) or hyperspectral image (PlantCV Spectral_data instance)
+    distance  : int
+        maximum acceptable distance from desired wavelengths to use.
 
     Returns:
-    index_array    = Index data as a Spectral_data instance
-
-    :param distance: int
-    :param img: np.array
-    :return index_array: np.array
+    --------
+    index_array    = plantcv.plantcv.Spectral_data
+        Index data
     """
     if type(img) is Spectral_data:
         # If the available wavelengths completely cover the required range of data
@@ -393,7 +395,7 @@ def gli(img, distance=20):
     return _package_index(hsi=hsi, raw_index=index_array_raw, method="GLI")
 
 
-def sci(img):
+def sci(img, distance=40):
     """Soil Color Index.
 
     SCI = (R - G) / (R + G)
@@ -402,20 +404,28 @@ def sci(img):
 
     Parameters
     ----------
-    img : np.ndarray
-        Color image
+    img : np.ndarray or plantcv.plantcv.Spectral_data
+        Color or hyperspectral image
 
     Returns
     -------
     index_array : plantcv.plantcv.Spectral_data
         Index data
     """
-    if type(img) is not np.ndarray:
-        warn("Input image type is not supported for SCI. Please use an RGB image.")
-        return None
-
-    # Split the RGB image into component channels
-    _, green, red = cv2.split(img)
+    if type(img) is Spectral_data:
+        # If the available wavelengths completely cover the required range of data
+        if (float(img.max_wavelength) + distance) >= 700 and (float(img.min_wavelength) - distance) <= 530:
+            r530_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 530)
+            r700_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 700)
+            green = (img.array_data[:, :, r530_index])
+            red = (img.array_data[:, :, r700_index])
+        # If the required range of data is outside the available wavelengths
+        else:
+            warn("Available wavelengths are not suitable for calculating SCI. Try increasing distance.")
+            return None
+    if type(img) is np.ndarray:
+        # Split the RGB image into component channels
+        _, green, red = cv2.split(img)
 
     with np.errstate(divide="ignore", invalid="ignore"):
         r = red.astype(np.float32)
@@ -429,7 +439,7 @@ def sci(img):
     return _package_index(hsi=hsi, raw_index=index_array_raw, method="SCI")
 
 
-def bgr(img):
+def bgr(img, distance=40):
     """Blue Green Ratio.
 
     BGR = B / G
@@ -440,18 +450,28 @@ def bgr(img):
     ----------
     img : np.ndarray
         Color image
+    distance : int
+        Maximum acceptable distance from desired wavelengths to use.
 
     Returns
     -------
     index_array : plantcv.plantcv.Spectral_data
         Index data
     """
-    if type(img) is not np.ndarray:
-        warn("Input image type is not supported for BGR. Please use an RGB image.")
-        return None
-
-    # Split the RGB image into component channels
-    blue, green, _ = cv2.split(img)
+    if type(img) is Spectral_data:
+        # If the available wavelengths completely cover the required range of data
+        if (float(img.max_wavelength) + distance) >= 530 and (float(img.min_wavelength) - distance) <= 460:
+            r460_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 460)
+            r530_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 530)
+            blue = (img.array_data[:, :, r460_index])
+            green = (img.array_data[:, :, r530_index])
+        # If the required range of data is outside the available wavelengths
+        else:
+            warn("Available wavelengths are not suitable for calculating BGR. Try increasing distance.")
+            return None
+    if type(img) is np.ndarray:
+        # Split the RGB image into component channels
+        blue, green, _ = cv2.split(img)
 
     with np.errstate(divide="ignore", invalid="ignore"):
         b = blue.astype(np.float32)
@@ -465,7 +485,7 @@ def bgr(img):
     return _package_index(hsi=hsi, raw_index=index_array_raw, method="BGR")
 
 
-def bgi(img):
+def bgi(img, distance=40):
     """Blue Green Index.
 
     BGI = (G - B) / (G + B)
@@ -476,18 +496,28 @@ def bgi(img):
     ----------
     img : np.ndarray
         Color image
+    distance : int
+        Maximum acceptable distance from desired wavelengths to use.
 
     Returns
     -------
     index_array : plantcv.plantcv.Spectral_data
         Index data
     """
-    if type(img) is not np.ndarray:
-        warn("Input image type is not supported for BGI. Please use an RGB image.")
-        return None
-
-    # Split the RGB image into component channels
-    blue, green, _ = cv2.split(img)
+    if type(img) is Spectral_data:
+        # If the available wavelengths completely cover the required range of data
+        if (float(img.max_wavelength) + distance) >= 530 and (float(img.min_wavelength) - distance) <= 460:
+            r460_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 460)
+            r530_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 530)
+            blue = (img.array_data[:, :, r460_index])
+            green = (img.array_data[:, :, r530_index])
+        # If the required range of data is outside the available wavelengths
+        else:
+            warn("Available wavelengths are not suitable for calculating BGI. Try increasing distance.")
+            return None
+    if type(img) is np.ndarray:
+        # Split the RGB image into component channels
+        blue, green, _ = cv2.split(img)
 
     with np.errstate(divide="ignore", invalid="ignore"):
         b = blue.astype(np.float32)
