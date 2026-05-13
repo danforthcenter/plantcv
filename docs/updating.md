@@ -384,6 +384,9 @@ pages for more details on the input and output variable types.
 * pre v4.0: (see plantcv.hyperspectral.analyze_spectral)
 * post v4.0: analysis_image = **plantcv.analyze.spectral_reflectance**(*hsi, labeled_mask, n_labels=1, label=None*)
 
+#### plantcv.analyze.texture
+
+* post v5.0 texture_chart = **plantcv.analyze.texture**(*img, labeled_mask, methods=None, distances=None, angles=None, levels=None, symmetric=False, normalize=False, n_labels=1, label=None*)
 
 #### plantcv.analyze.thermal
 
