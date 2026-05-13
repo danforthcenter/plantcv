@@ -1207,11 +1207,11 @@ pages for more details on the input and output variable types.
 
 #### plantcv.spectral_index.bgi
 
-* post v5.0: array = **plantcv.spectral_index.ari**(*img*)
+* post v5.0: array = **plantcv.spectral_index.bgi**(*img, distance=40*)
 
 #### plantcv.spectral_index.bgr
 
-* post v5.0: array = **plantcv.spectral_index.ari**(*img*)
+* post v5.0: array = **plantcv.spectral_index.bgr**(*img, distance=40*)
 
 #### plantcv.spectral_index.ci_rededge
 
@@ -1313,7 +1313,7 @@ pages for more details on the input and output variable types.
 
 #### plantcv.spectral_index.sci
 
-* post v5.0: array = **plantcv.spectral_index.sci**(*img*)
+* post v5.0: array = **plantcv.spectral_index.sci**(*img, distance=40*)
 
 #### plantcv.spectral_index.sipi
 

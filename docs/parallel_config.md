@@ -79,8 +79,10 @@ current working directory.
 
 
 * **imgformat**: (str, default = "all"): image file format/extension in lowercase. The string "all" can be used
-as shorthand to match all file extensions readable by `cv2.imread`. This can accept a list if multiple
-extensions should be combined (if using phenofront data this must be length 1 and "png" is the default).
+as shorthand to match all file extensions readable by `cv2.imread`.
+This can accept a list if multiple extensions should be combined (if using phenofront data this must be length 1
+and "png" is the default).
+You can use other file types such as `INF` or `data` but they are not included in the default list.
 
 
 * **delimiter**: (str, default = "_"): image filename metadata term delimiter character. Alternatively, a regular 
@@ -193,7 +195,7 @@ of key-value pairs (e.g. `{"getenv": "true"}`).
 !!! note
     The fields available in `job_extra_directives` vary by cluster type. For example, `{"getenv": "true"}` will work to start
     the active conda environment on each worker in an HTCondor cluster but not on a PBS cluster.
-    `plantcv.parallel.run_parallel` and `JupyterConfig.run()` will check for an active conda environment
+    `plantcv.parallel.run_parallel` and `JupyterConfig.run()` will check for an active conda environment on a unix-like OS
     and attempt to start that environment on each worker if the `cluster_config` does not have a `job_script_prologue` already.
 
 ### Example

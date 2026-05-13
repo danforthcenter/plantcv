@@ -37,7 +37,7 @@ def fill(bin_img, size, roi=None):
     bool_img = _rect_filter(bool_img,
                             roi=roi,
                             function=remove_small_objects,
-                            **{"min_size" : size})
+                            **{"max_size" : size})
     # Cast boolean image to binary and make a copy of the binary image for returning
     filtered_img = np.copy(bool_img.astype(np.uint8) * 255)
     # slice the subset image back into full size binary image
