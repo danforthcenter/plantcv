@@ -2,7 +2,7 @@
 
 Automatically detects a Macbeth ColorChecker or Astrobotany.com Calibration Sticker style color card and creates a labeled mask.
 
-**plantcv.transform.detect_color_card**(*rgb_img, color_chip_size=None, roi=None, \*\*kwargs*)
+**plantcv.transform.detect_color_card**(*rgb_img, color_chip_size=None, roi=None, deltaE=True, \*\*kwargs*)
 
 **returns** color_matrix
 
@@ -12,6 +12,7 @@ Automatically detects a Macbeth ColorChecker or Astrobotany.com Calibration Stic
     - color_chip_size - Type of color card to be detected, ("classic", "passport", "nano", "mini", "cameratrax", or "astro", by default `None`) or a tuple of the `(width, height)` dimensions of the color card chips in millimeters. If set then size scalings parameters `pcv.params.unit`, `pcv.params.px_width`, and `pcv.params.px_height`
             are automatically set, and utilized throughout linear and area type measurements stored to `Outputs`. 
     - roi              - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to look for the color card. (default = None)
+	- delta_E           - Boolean, should Delta E be calculated between the observed and expected color card values? This will add mean, std deviation, max, and min delta E values to `outputs.metadata`. See [`pcv.transform.deltaE`](transform_deltaE.md)
     - **kwargs         - Other keyword arguments passed to `cv2.adaptiveThreshold` and `cv2.circle`.
         - adaptive_method - Adaptive threhold method. 0 (mean) or 1 (Gaussian) (default = 1).
         - block_size      - Size of a pixel neighborhood that is used to calculate a threshold value (default = 51). We suggest using 127 if using `adaptive_method=0`.
@@ -45,9 +46,9 @@ Automatically detects a Macbeth ColorChecker or Astrobotany.com Calibration Stic
 from plantcv import plantcv as pcv
 rgb_img, path, filename = pcv.readimage("target_img.png")
 # Using a supported color card size will automatically set size scaling parameters
-cc_mask = pcv.transform.detect_color_card(rgb_img=rgb_img, color_chip_size="passport")
+cc_matrix = pcv.transform.detect_color_card(rgb_img=rgb_img, color_chip_size="passport")
 # Or if using another Macbeth ColorChecker you can explicitly set the color chip size (in millimeters)
-cc_mask = pcv.transform.detect_color_card(rgb_img=rgb_img, color_chip_size=(12, 12))
+cc_matrix = pcv.transform.detect_color_card(rgb_img=rgb_img, color_chip_size=(12, 12))
 
 avg_chip_size = pcv.outputs.metadata['median_color_chip_size']['value'][0]
 avg_chip_w = pcv.outputs.metadata['median_color_chip_width']['value'][0]
@@ -55,9 +56,8 @@ avg_chip_h = pcv.outputs.metadata['median_color_chip_height']['value'][0]
 
 # When using detect_color_card, you will always set pos=3
 tgt_matrix = pcv.transform.std_color_matrix(pos=3)
-headers, card_matrix = pcv.transform.get_color_matrix(rgb_img=rgb_img, mask=cc_mask)
 corrected_img = pcv.transform.affine_color_correction(rgb_img=rgb_img,
-                                                      source_matrix=card_matrix,
+                                                      source_matrix=cc_matrix,
                                                       target_matrix=tgt_matrix)
 
 ```

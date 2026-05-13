@@ -190,6 +190,8 @@ nav:
           - 'Create Color Card Mask': create_color_card_mask.md
           - 'Convert Color Card to Matrix': get_color_matrix.md
           - 'Color Correction Workflow': transform_correct_color.md
+          - 'Quick Color Check': quick_color_check.md
+          - 'Delta E Metric': transform_deltaE.md
           - 'Affine Color Correction': transform_affine_color_correction.md
           - 'Standard Color Matrix': std_color_matrix.md
           - 'Gamma Correction': transform_gamma_correct.md

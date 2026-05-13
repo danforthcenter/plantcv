@@ -1438,12 +1438,17 @@ pages for more details on the input and output variable types.
 * post v3.0: mask = **pcv.transform.create_color_card_mask**(*rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=[]*)
 * post v4.9: mask = **pcv.transform.create_color_card_mask**(*rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=None*)
 
+#### plantcv.transform.deltaE
+
+* pre v5.0: NA
+* post v5.0: deltaE_matrix = **plantcv.transform.deltaE**(*rgb_img, color_chip_size=None, roi=None, obs="calibrated", method="deltaE_ciede2000", \*\*kwargs*)
+
 #### plantcv.transform.detect_color_card
 
 * pre v4.0.1: NA
 * post v4.0.1: labeled_mask = **plantcv.transform.detect_color_card**(*rgb_img, label=None, \*\*kwargs*)
 * post v4.9: labeled_mask = **plantcv.transform.detect_color_card**(*rgb_img, label=None, color_chip_size=None, roi=None, \*\*kwargs*)
-* post v5.0: color_matrix = **plantcv.transform.detect_color_card**(*rgb_img, color_chip_size=None, roi=None, \*\*kwargs*)
+* post v5.0: color_matrix = **plantcv.transform.detect_color_card**(*rgb_img, color_chip_size=None, roi=None, delta_E=True, \*\*kwargs*)
 
 #### plantcv.transform.find_color_card
 
