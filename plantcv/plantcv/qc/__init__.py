@@ -6,4 +6,4 @@ from plantcv.plantcv.qc.plot_delta_e import plot_deltaE
 
 
 __all__ = ["exposure", "quick_color_check", "color_correction_plot", "color_chip_comparison",
-           "plot_delta_e"]
+           "plot_deltaE"]

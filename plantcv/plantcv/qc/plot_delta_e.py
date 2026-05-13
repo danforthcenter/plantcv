@@ -48,7 +48,7 @@ def plot_deltaE(deltaE_matrix):
     """
     n_chips = math.prod(np.shape(deltaE_matrix))
     # chip color swatches below x-axis
-    std_mat = std_color_matrix(pos=3)    
+    std_mat = std_color_matrix(pos=3)
     if n_chips == 15:
         # astrobotany stuff
         std_mat = astro_color_matrix()
@@ -99,7 +99,7 @@ def plot_deltaE(deltaE_matrix):
     )
     swatch_chip_nos = (std_mat[:, 0] / 10).astype(int)
     swatch_hex = [
-        "#{:02X}{:02X}{:02X}".format(int(r * 255), int(g * 255), int(b * 255))
+        f"#{:02X}{:02X}{:02X}".format(int(r * 255), int(g * 255), int(b * 255))
         for r, g, b in std_mat[:, 1:4]
     ]
     swatch_df = pd.DataFrame({
