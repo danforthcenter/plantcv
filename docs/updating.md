@@ -994,6 +994,11 @@ pages for more details on the input and output variable types.
 * pre v4.3.1: NA
 * post v4.3.1: chart = **plantcv.qc.exposure**(*rgb_img, warning_threshold=0.05*)
 
+#### plantcv.qc.quick_color_check
+
+* pre v5.0: NA, see `plantcv.transform.quick_color_check`
+* post v5.0: chart = **plantcv.transform.quick_color_check**(*target_matrix, source_matrix, num_chips*)
+
 #### plantcv.readbayer
 
 * pre v3.0: NA
@@ -1497,6 +1502,7 @@ pages for more details on the input and output variable types.
 * pre v3.0: NA
 * post v3.0: **plantcv.transform.quick_color_check**(*target_matrix, source_matrix, num_chips*)
 * post v4.0: chart = **plantcv.transform.quick_color_check**(*target_matrix, source_matrix, num_chips*)
+* post v5.0: NA, moved to `plantcv.qc.quick_color_check`
 
 #### plantcv.transform.save_matrix
 
