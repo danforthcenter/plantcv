@@ -1,6 +1,6 @@
 import numpy as np
 import altair.vegalite.v5.api as alt
-from plantcv.plantcv.visualize import color_chip_comparison
+from plantcv.plantcv.qc import color_chip_comparison
 
 
 def test_color_chip_comparison():

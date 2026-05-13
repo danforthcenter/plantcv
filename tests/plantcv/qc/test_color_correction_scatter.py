@@ -1,6 +1,6 @@
 import numpy as np
 from matplotlib import figure as mpfig
-from plantcv.plantcv.visualize import color_correction_plot
+from plantcv.plantcv.qc import color_correction_plot
 
 
 def test_color_correction_scatter():
