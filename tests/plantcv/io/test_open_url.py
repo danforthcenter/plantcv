@@ -1,5 +1,4 @@
 """Tests for the open_url function."""
-import os
 import numpy as np
 import imageio.v3 as iio
 import pytest
