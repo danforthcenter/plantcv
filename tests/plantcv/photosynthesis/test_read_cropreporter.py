@@ -85,9 +85,10 @@ def test_read_cropreporter_chl_only(photosynthesis_test_data, tmpdir):
     ps = read_cropreporter(filename=fluor_filename)
     assert isinstance(ps, PSII_data)
     assert ps.chlorophyll is not None
-    # Check for a 2D NumPy array (Height, Width) 
+    # Check for a 2D NumPy array (Height, Width)
     assert len(ps.chlorophyll.shape) == 2
     assert isinstance(ps.chlorophyll, np.ndarray)
+
 
 def test_read_cropreporter_gfp_only(photosynthesis_test_data, tmpdir):
     """Test GFP import."""
@@ -136,7 +137,8 @@ def test_read_cropreporter_aph_only(photosynthesis_test_data, tmpdir):
     ps = read_cropreporter(filename=fluor_filename)
     assert isinstance(ps, PSII_data)
     assert ps.aph is not None
-    assert ps.aph.shape[2] == 2  # Red + FarRed
+    assert hasattr(ps.aph, "red")
+    assert hasattr(ps.aph, "farred")
 
 
 def test_read_cropreporter_aph_insufficient_frames(photosynthesis_test_data, tmpdir, monkeypatch):

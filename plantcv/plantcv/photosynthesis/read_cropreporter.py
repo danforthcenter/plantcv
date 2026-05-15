@@ -6,6 +6,7 @@ from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import PSII_data
 from plantcv.plantcv import Spectral_data
+from plantcv.plantcv.classes import NamedImageCollection
 from skimage.util import img_as_ubyte
 
 
@@ -608,11 +609,11 @@ def _process_aph_data(ps, metadata):
         aph_frames = img_cube[:, :, num_frames - 2:num_frames]
 
         # Store as a standard attribute
-        ps.aph = aph_frames
+        ps.aph = NamedImageCollection(red=aph_frames[:, :, 0], farred=aph_frames[:, :, 1])
 
         # Debugging — wrap in a temporary DataArray so frame labels appear in the plot
         aph_debug = xr.DataArray(
-            data=ps.aph,
+            data=aph_frames,
             dims=('x', 'y', 'frame_label'),
             coords={'frame_label': ['Red', 'FarRed']}
         )
