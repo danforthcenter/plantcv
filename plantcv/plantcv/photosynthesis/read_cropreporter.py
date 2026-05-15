@@ -6,6 +6,7 @@ from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import PSII_data
 from plantcv.plantcv import Spectral_data
+from plantcv.plantcv.classes import NamedImageCollection
 from skimage.util import img_as_ubyte
 
 
@@ -579,8 +580,7 @@ def _process_rfp_data(ps, metadata):
 
 
 def _process_aph_data(ps, metadata):
-    """
-    Create an xarray DataArray for an APH dataset.
+    """Read APH dataset and keep the Red and FarRed frames as a NumPy array.
 
     Parameters
     ----------
@@ -588,33 +588,39 @@ def _process_aph_data(ps, metadata):
         PSII_data instance.
     metadata : dict
         INF file metadata dictionary.
-
     """
     bin_filepath = _dat_filepath(dataset="APH", datapath=ps.datapath, filename=ps.filename)
-    if os.path.exists(bin_filepath):
-        img_cube, frame_labels, frame_nums = _read_dat_file(dataset="APH", filename=bin_filepath,
-                                                            height=int(metadata["ImageRows"]),
-                                                            width=int(metadata["ImageCols"]))
-        frame_labels = ["Red", "FarRed"]
-        aph = xr.DataArray(
-            data=img_cube,
-            dims=('x', 'y', 'frame_label'),
-            coords={'frame_label': frame_labels,
-                    'frame_num': ('frame_label', frame_nums)},
-            name='aph'
-        )
-        aph.attrs["long_name"] = "Alpha Light absorption coefficient (Reflection) (640nm Red, 732nm FarRed)"
-        aph.attrs["dark_comp_on"] = int(metadata.get("AphDarkCompOn", metadata.get("AlphaDarkCompOn", "0")))
-        aph.attrs["gain_red"] = float(metadata.get("AphGainRed", metadata.get("AlphaGainRed", "nan")))
-        aph.attrs["gain_farred"] = float(metadata.get("AphGainFarRed", metadata.get("AlphaGainFarRed", "nan")))
-        ps.add_data(aph)
 
-        _debug(
-            visual=ps.aph,
-            filename=os.path.join(params.debug_outdir, f"{str(params.device)}_APH-frames.png"),
-            col='frame_label',
-            col_wrap=int(np.ceil(ps.aph.frame_label.size / 4))
+    if os.path.exists(bin_filepath):
+        # Read the raw data cube (contains Fdark, Red, and FarRed or just Red and FarRed)
+        img_cube, _, _ = _read_dat_file(dataset="APH", filename=bin_filepath,
+                                        height=int(metadata["ImageRows"]),
+                                        width=int(metadata["ImageCols"]))
+
+        # The APH file typically has: index 0 = Fdark, index 1 = Red, index 2 = FarRed.
+        # Some acquisitions may only contain two frames (e.g. no dark frame).
+        # Select the Red and FarRed frames based on the number of frames present.
+        # Use the last 2 frames as Red and FarRed:
+        # - When there are 3 frames, indices are [0]=Fdark, [1]=Red, [2]=FarRed -> use indices 1 and 2.
+        # - When there are 2 frames, indices are [0]=Red, [1]=FarRed -> use indices 0 and 1.
+        num_frames = img_cube.shape[2]
+        if num_frames < 2:
+            raise RuntimeError(f"APH DAT file contains {num_frames} frame(s); expected at least 2 (Red and FarRed).")
+        aph_frames = img_cube[:, :, num_frames - 2:num_frames]
+
+        # Store as a standard attribute
+        ps.aph = NamedImageCollection(red=aph_frames[:, :, 0], farred=aph_frames[:, :, 1])
+
+        # Debugging — wrap in a temporary DataArray so frame labels appear in the plot
+        aph_debug = xr.DataArray(
+            data=aph_frames,
+            dims=('x', 'y', 'frame_label'),
+            coords={'frame_label': ['Red', 'FarRed']}
         )
+        _debug(visual=aph_debug,
+               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_APH-frames.png"),
+               col='frame_label',
+               col_wrap=2)
 
 
 def _dat_filepath(dataset, datapath, filename):
