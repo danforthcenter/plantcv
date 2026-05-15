@@ -144,7 +144,10 @@ nav:
       - 'Print Image': print_image.md
       - 'Plot Image': plot_image.md
       - "Quality Control Tools":
+        - 'Color Correction Scatter Plot': qc_color_correction_scatter.md
+        - 'Color Chip Comparison Plot': qc_color_chip_comparison.md
         - "Exposure": qc_exposure.md
+        - "Quick Color Check": quick_color_check.md
       - 'Read Image': read_image.md
       - 'Read Bayer Raw Image': read_bayer.md
       - 'Report Size Marker': report_size_marker.md
@@ -188,6 +191,7 @@ nav:
           - 'Convert Color Card to Matrix': get_color_matrix.md
           - 'Color Correction Workflow': transform_correct_color.md
           - 'Quick Color Check': quick_color_check.md
+          - 'Delta E Metric': transform_deltaE.md
           - 'Affine Color Correction': transform_affine_color_correction.md
           - 'Standard Color Matrix': std_color_matrix.md
           - 'Gamma Correction': transform_gamma_correct.md
@@ -208,7 +212,6 @@ nav:
       - 'Visualization Methods':
           - 'Auto Threshold Methods': visualize_auto_threshold_methods.md
           - 'Chlorophyll Fluorescence': visualize_chlorophyll_fluorescence.md
-          - 'Color Correction Scatter Plot': visualize_color_correction_scatter.md
           - 'Colorize Label Image': visualize_colorize_label_img.md
           - 'Colorize Masks': visualize_colorize_masks.md
           - 'Colorspaces': visualize_colorspace.md
