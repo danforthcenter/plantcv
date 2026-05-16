@@ -34,7 +34,7 @@ def read_cropreporter(filename):
                 metadata_dict[key] = value
 
     # Initialize PSII_data class
-    ps = PSII_data()
+    ps = PSII_data(metadata=metadata_dict)
 
     # INF file prefix and path
     ps.filename = os.path.split(filename)[-1]

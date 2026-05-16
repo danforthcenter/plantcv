@@ -47,19 +47,24 @@ class Spectral_data:
 class PSII_data:
     """PSII data class"""
 
-    def __init__(self):
+    def __init__(self, metadata: dict = None):
+        self.metadata = metadata
+        if self.metadata is None:
+            self.metadata = {}
+        self.datapath = None
+        self.filename = None
+        # Dataset attributes: None = file not present, lazy-loaded object = file present
+        self.aph = None
+        self.chl = None
+        self.clr = None
         self.ojip_dark = None
         self.ojip_light = None
         self.pam_dark = None
         self.pam_light = None
         self.pam_time = None
         self.spectral = None
-        self.chlorophyll = None
         self.gfp = None
         self.rfp = None
-        self.aph = None
-        self.datapath = None
-        self.filename = None
 
     def __repr__(self):
         mvars = []
