@@ -117,7 +117,7 @@ def _process_psd_data(ps, metadata):
             name='ojip_dark'
         )
         psd.attrs["long_name"] = "OJIP dark-adapted measurements"
-        ps.add_data(psd)
+        ps.ojip_dark = psd
 
         _debug(visual=ps.ojip_dark.squeeze('measurement', drop=True),
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSD-frames.png"),
@@ -166,7 +166,7 @@ def _process_psl_data(ps, metadata):
             name='ojip_light'
         )
         psl.attrs["long_name"] = "OJIP light-adapted measurements"
-        ps.add_data(psl)
+        ps.ojip_light = psl
 
         _debug(visual=ps.ojip_light.squeeze('measurement', drop=True),
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSL-frames.png"),
@@ -203,7 +203,7 @@ def _process_npq_data(ps, metadata):
             name='ojip_dark'
         )
         psd.attrs["long_name"] = "OJIP dark-adapted measurements"
-        ps.add_data(psd)
+        ps.ojip_dark = psd
 
         _debug(visual=ps.ojip_dark.squeeze('measurement', drop=True),
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSD-frames.png"),
@@ -223,7 +223,7 @@ def _process_npq_data(ps, metadata):
             name='ojip_light'
         )
         psd.attrs["long_name"] = "OJIP light-adapted measurements"
-        ps.add_data(psd)
+        ps.ojip_light = psd
 
         _debug(visual=ps.ojip_light.squeeze('measurement', drop=True),
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSL-frames.png"),
@@ -257,7 +257,7 @@ def _process_pmd_data(ps, metadata):
             name='pam_dark'
         )
         pmd.attrs["long_name"] = "pam dark-adapted measurements"
-        ps.add_data(pmd)
+        ps.pam_dark = pmd
 
         _debug(visual=ps.pam_dark.squeeze('measurement', drop=True),
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PMD-frames.png"),
@@ -291,7 +291,7 @@ def _process_pml_data(ps, metadata):
             name='pam_light'
         )
         pml.attrs["long_name"] = "pam light-adapted measurements"
-        ps.add_data(pml)
+        ps.pam_light = pml
 
         _debug(visual=ps.pam_light.squeeze('measurement', drop=True),
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PML-frames.png"),
@@ -382,7 +382,7 @@ def _process_pmt_data(ps, metadata):
         )
 
         pmt.attrs["long_name"] = "pam time measurements"
-        ps.add_data(pmt)
+        ps.pam_time = pmt
 
         # debug visualization
         _debug(
@@ -425,10 +425,10 @@ def _process_chl_data(ps, metadata):
         chl_frame = img_cube[:, :, chl_index]
 
         # Store as a standard attribute
-        ps.chlorophyll = chl_frame
+        ps.chl = chl_frame
 
         # Debugging (modified to handle NumPy array instead of xarray)
-        _debug(visual=ps.chlorophyll,
+        _debug(visual=ps.chl,
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_CHL-frame.png"))
 
 
@@ -533,7 +533,7 @@ def _process_gfp_data(ps, metadata):
         gfp.attrs["calib_factor"] = float(metadata.get("GfpCalibFactor", metadata.get("GfpCalFactor", "nan")))
         gfp.attrs["meas_power"] = float(metadata.get("GfpMeasPower", "nan"))
         gfp.attrs["shutter"] = float(metadata.get("GfpShutter", metadata.get("GfpShutterFrames", "nan")))
-        ps.add_data(gfp)
+        ps.gfp = gfp
 
         _debug(visual=ps.gfp,
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_GFP-frames.png"),
@@ -571,7 +571,7 @@ def _process_rfp_data(ps, metadata):
         rfp.attrs["calib_factor"] = float(metadata.get("RfpCalibFactor", "nan"))
         rfp.attrs["meas_power"] = float(metadata.get("RfpMeasPower", "nan"))
         rfp.attrs["shutter"] = float(metadata.get("RfpShutter", metadata.get("RfpShutterFrames", "nan")))
-        ps.add_data(rfp)
+        ps.rfp = rfp
 
         _debug(visual=ps.rfp,
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_RFP-frames.png"),

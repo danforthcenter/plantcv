@@ -66,19 +66,6 @@ class PSII_data:
         self.gfp = None
         self.rfp = None
 
-    def __repr__(self):
-        mvars = []
-        for k, v in self.__dict__.items():
-            if v is not None:
-                mvars.append(k)
-        return "PSII variables defined:\n" + '\n'.join(mvars)
-
-    def add_data(self, protocol):
-        """Input:
-        protocol: xr.DataArray with name equivalent to initialized attributes
-        """
-        self.__dict__[protocol.name] = protocol
-
 
 class Point:
     """Point annotation/collection class to use in Jupyter notebooks. It allows the user to
