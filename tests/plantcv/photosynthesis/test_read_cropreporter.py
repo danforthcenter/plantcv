@@ -84,10 +84,11 @@ def test_read_cropreporter_chl_only(photosynthesis_test_data, tmpdir):
     fluor_filename = os.path.join(cache_dir, os.path.basename(photosynthesis_test_data.cropreporter))
     ps = read_cropreporter(filename=fluor_filename)
     assert isinstance(ps, PSII_data)
-    assert ps.chl is not None
+    assert ps.chl
+    assert "loaded=False" in repr(ps.chl)
     # Check for a 2D NumPy array (Height, Width)
-    assert len(ps.chl.shape) == 2
-    assert isinstance(ps.chl, np.ndarray)
+    assert len(ps.chl.chlorophyll.shape) == 2
+    assert isinstance(ps.chl.chlorophyll, np.ndarray)
 
 
 def test_read_cropreporter_gfp_only(photosynthesis_test_data, tmpdir):
