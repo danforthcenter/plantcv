@@ -48,6 +48,44 @@ class CHL:
         self._chlorophyll = img_cube[:, :, img_cube.shape[2] - 1]
 
 
+class CLR:
+    """Color dataset. Stores the file path at init; image data is loaded on first access."""
+
+    def __init__(self, filepath, height, width):
+        """Initialize CLR dataset with file path and image dimensions."""
+        self._filepath = filepath
+        self._height = height
+        self._width = width
+        self._color = None
+
+    def __bool__(self):
+        """The existence of the CLR class is true."""
+        return True
+
+    def __repr__(self):
+        """String representation of the CLR dataset, indicating whether the data has been loaded."""
+        loaded = self._color is not None
+        return f"CLR(filepath={self._filepath!r}, loaded={loaded})"
+
+    @property
+    def color(self):
+        """Return the color frame as a NumPy array."""
+        if self._color is None:
+            self._load()
+        return self._color
+
+    def _load(self):
+        """Load the color frames from the .DAT file."""
+        img_cube, _, _ = _read_dat_file(
+            dataset="CLR",
+            filename=str(self._filepath),
+            height=self._height,
+            width=self._width,
+        )
+        # Store the color data as BGR uint8
+        self._color = img_as_ubyte(img_cube[:, :, [2, 1, 0]])
+
+
 def read_cropreporter(filename):
     """Read datacubes from PhenoVation B.V. CropReporter or PlantExplorer cameras into a PSII_data instance.
 
@@ -86,6 +124,8 @@ def read_cropreporter(filename):
     dataset_classes = {
         # Chlorophyll fluorescence data
         "CHL": lambda fp: CHL(filepath=fp, height=height, width=width),
+        # Color data
+        "CLR": lambda fp: CLR(filepath=fp, height=height, width=width),
     }
 
     # Process datasets
