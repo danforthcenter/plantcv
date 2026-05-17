@@ -14,25 +14,30 @@ class CHL:
     """Chlorophyll dataset. Stores the file path at init; image data is loaded on first access."""
 
     def __init__(self, filepath, height, width):
+        """Initialize CHL dataset with file path and image dimensions."""
         self._filepath = filepath
         self._height = height
         self._width = width
         self._chlorophyll = None
 
     def __bool__(self):
+        """The existence of the CHL class is true."""
         return True
 
     def __repr__(self):
+        """String representation of the CHL dataset, indicating whether the data has been loaded."""
         loaded = self._chlorophyll is not None
         return f"CHL(filepath={self._filepath!r}, loaded={loaded})"
 
     @property
     def chlorophyll(self):
+        """Return the chlorophyll frame as a NumPy array."""
         if self._chlorophyll is None:
             self._load()
         return self._chlorophyll
 
     def _load(self):
+        """Load the chlorophyll frame from the .DAT file."""
         img_cube, _, _ = _read_dat_file(
             dataset="CHL",
             filename=str(self._filepath),
