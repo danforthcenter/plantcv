@@ -33,6 +33,8 @@ Calculates Delta E between a Macbeth ColorChecker or Astrobotany.com Calibration
 	and a debug image is generated showing the differences in the color card against the expected colors.
 	This function will use `plantcv.transform.detect_color_card` to find the color card, potentially in an image that has already
 	been color-corrected so that the delta E values can be compared pre vs post calibration.
+	Delta E is also calculated by color correction functions in `plantcv.transform` if `deltaE` metrics exist in the outputs,
+	which is the default. Running `plantcv.transform.auto_correct_color` will add uncalibrated and corrected deltaE metrics by default.
 
 ```python
 from plantcv import plantcv as pcv

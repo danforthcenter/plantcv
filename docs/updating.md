@@ -1441,7 +1441,7 @@ pages for more details on the input and output variable types.
 #### plantcv.transform.deltaE
 
 * pre v5.0: NA
-* post v5.0: deltaE_matrix = **plantcv.transform.deltaE**(*rgb_img, color_chip_size=None, roi=None, obs="calibrated", method="deltaE_ciede2000", \*\*kwargs*)
+* post v5.0: deltaE_matrix = **plantcv.transform.deltaE**(*rgb_img, color_chip_size=None, roi=None, obs="calibrated", \*\*kwargs*)
 
 #### plantcv.transform.detect_color_card
 
