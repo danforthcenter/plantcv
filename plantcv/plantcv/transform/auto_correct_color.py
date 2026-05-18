@@ -2,13 +2,11 @@
 from plantcv.plantcv.transform.detect_color_card import detect_color_card
 from plantcv.plantcv.transform.color_correction import (
     apply_transformation_matrix,
-    std_color_matrix,
     affine_color_correction,
-    calc_transformation_matrix,
-    get_matrix_m,
-    astro_color_matrix
+    calc_transformation_matrix
 )
-
+from plantcv.plantcv.transform.get_color_matrix import get_matrix_m
+from plantcv.plantcv.transform.standard_matrices import std_color_matrix, astro_color_matrix
 
 def auto_correct_color(rgb_img, color_chip_size=None, roi=None, **kwargs):
     """Automatically detect a color card.
