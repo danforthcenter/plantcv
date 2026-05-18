@@ -352,7 +352,7 @@ def _parse_filename(filename, config, metadata_index):
             if term in metadata_index:
                 mi_term = metadata_index[term]
                 img_meta[term] = None
-                if i <= len(meta_list) - 1:
+                if i <= len(meta_list):
                     img_meta[term] = meta_list[mi_term]
     img_meta["n_metadata_terms"] = len(meta_list)
     return img_meta
