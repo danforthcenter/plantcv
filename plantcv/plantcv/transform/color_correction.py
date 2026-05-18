@@ -1,6 +1,5 @@
 """Color Corrections Functions."""
 import os
-import math
 import cv2
 import numpy as np
 from plantcv.plantcv import params, fatal_error
@@ -8,7 +7,6 @@ from plantcv.plantcv.roi import circle
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv.transform.rerun_delta_e import _rerun_delta_e
 from plantcv.plantcv.transform.get_color_matrix import get_color_matrix, get_matrix_m
-from plantcv.plantcv.transform.standard_matrices import std_color_matrix, astro_color_matrix
 
 
 def affine_color_correction(rgb_img, source_matrix, target_matrix):
@@ -77,7 +75,7 @@ def affine_color_correction(rgb_img, source_matrix, target_matrix):
     corrected_img = np.stack((img_b_cc, img_g_cc, img_r_cc), axis=1).reshape(h, w, c)
 
     # rerun deltaE calculation if it was previously run
-    _ = _rerun_delta_e(corrected_img, fun="affine_color_correction")
+    _rerun_delta_e(corrected_img, fun="affine_color_correction")
 
     # For debugging, create a horizontal view of the image before and after color correction
     debug_img = np.hstack([rgb_img, corrected_img])
@@ -209,7 +207,7 @@ def apply_transformation_matrix(source_img, transformation_matrix):
     _debug(visual=out_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_corrected.png'))
 
     # rerun deltaE calculation if it was previously run
-    _ = _rerun_delta_e(corrected_img, fun="apply_transformation_matrix")
+    _rerun_delta_e(corrected_img, fun="apply_transformation_matrix")
 
     # return the corrected image
     return corrected_img

@@ -1,10 +1,6 @@
 """Get RGB color values from a color card matrix"""
-import math
-import cv2
 import numpy as np
-from plantcv.plantcv import params, fatal_error
-from plantcv.plantcv.roi import circle
-from plantcv.plantcv._debug import _debug
+from plantcv.plantcv import fatal_error
 
 
 def get_color_matrix(rgb_img, mask):
@@ -125,5 +121,3 @@ def get_matrix_m(target_matrix, source_matrix):
     # create matrix_b
     matrix_b = np.concatenate((t_r, t_r2, t_r3, t_g, t_g2, t_g3, t_b, t_b2, t_b3), 1)
     return matrix_a, matrix_m, matrix_b
-
-

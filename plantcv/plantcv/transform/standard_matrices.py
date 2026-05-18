@@ -1,5 +1,4 @@
 """Define standard color matrices"""
-import cv2
 import math
 import numpy as np
 from plantcv.plantcv.fatal_error import fatal_error

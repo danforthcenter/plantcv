@@ -27,6 +27,6 @@ def gamma_correct(img, gamma=1, gain=1):
            filename=os.path.join(params.debug_outdir, str(params.device) + '_gamma_corrected.png'))
 
     # rerun deltaE calculation if it was previously run
-    _ = _rerun_delta_e(corrected_img, fun="gamma_correct")
+    _rerun_delta_e(corrected_img, fun="gamma_correct")
 
     return corrected_img

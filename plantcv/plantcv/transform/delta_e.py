@@ -1,6 +1,5 @@
 """Calculate Delta E between color cards"""
 import os
-import re
 import cv2
 import numpy as np
 from skimage import color
@@ -51,7 +50,7 @@ def _delta_e(obs_rgb, card_type=None, obs="uncalibrated"):
     outputs.add_metadata(term="max_deltaE_" + obs, datatype=float, value=np.max(delta_e_mat))
     outputs.add_metadata(term="min_deltaE_" + obs, datatype=float, value=np.min(delta_e_mat))
     # make a debug plot
-    if params.debug.lower() != "none":
+    if params.debug:
         params.device += 1
         _, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
         ax1.imshow(obs_mat)
@@ -59,7 +58,7 @@ def _delta_e(obs_rgb, card_type=None, obs="uncalibrated"):
         ax2.imshow(exp_mat)
         ax2.set_title('Reference Colors')
     if params.debug == "print":
-        plt.savefig(fname=os.path.join(params.debug_outdir, f"{params.device}_{obs}_{method}.png"))
+        plt.savefig(fname=os.path.join(params.debug_outdir, f"{params.device}_{obs}_{params.deltaE}.png"))
     if params.debug == "plot":
         plt.show()
 
