@@ -1,14 +1,15 @@
 """Calculate Delta E between color cards"""
 import os
+import re
 import cv2
 import numpy as np
 from skimage import color
 from matplotlib import pyplot as plt
 from plantcv.plantcv._globals import params, outputs
-from plantcv.plantcv.transform.color_correction import std_color_matrix, astro_color_matrix
+from plantcv.plantcv.transform.standard_matrices import std_color_matrix, astro_color_matrix
 
 
-def _delta_e(obs_rgb, card_type=None, obs="uncalibrated", method="deltaE_ciede2000"):
+def _delta_e(obs_rgb, card_type=None, obs="uncalibrated"):
     """Calculate summary of Delta E between two color cards
 
     Parameters
@@ -20,9 +21,6 @@ def _delta_e(obs_rgb, card_type=None, obs="uncalibrated", method="deltaE_ciede20
     obs : str
         string describing what the obs_rgb data is, typically "uncalibrated" for an image input into color correction
         or "calibrated" for an image that has been through color correction.
-    method : str
-        function name from skimage.color to calculate delta E. Currently deltaE_(cie76|ciede2000|ciede94|cmc) are
-        supported
 
     Returns
     -------
@@ -44,7 +42,7 @@ def _delta_e(obs_rgb, card_type=None, obs="uncalibrated", method="deltaE_ciede20
     obs_lab = cv2.cvtColor(obs_mat, cv2.COLOR_RGB2LAB)
     exp_lab = cv2.cvtColor(exp_mat, cv2.COLOR_RGB2LAB)
     # get function from skimage color
-    delta_e_fun = getattr(color, method)
+    delta_e_fun = getattr(color, params.deltaE)
     # there are other parameters we could allow changes to but I don't think we need to yet.
     delta_e_mat = delta_e_fun(obs_lab, exp_lab)
     # store metadata describing delta E
@@ -53,7 +51,7 @@ def _delta_e(obs_rgb, card_type=None, obs="uncalibrated", method="deltaE_ciede20
     outputs.add_metadata(term="max_deltaE_" + obs, datatype=float, value=np.max(delta_e_mat))
     outputs.add_metadata(term="min_deltaE_" + obs, datatype=float, value=np.min(delta_e_mat))
     # make a debug plot
-    if params.debug:
+    if params.debug.lower() != "none":
         params.device += 1
         _, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
         ax1.imshow(obs_mat)
