@@ -10,7 +10,7 @@ import numpy as np
 from plantcv.plantcv import params, outputs, fatal_error, warn
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _rgb2hsv, _rgb2gray, _cv2_findcontours, _object_composition, _rect_filter
-from plantcv.plantcv.transform.color_correction import get_color_matrix
+from plantcv.plantcv.transform.get_color_matrix import get_color_matrix
 from plantcv.plantcv.transform.delta_e import _delta_e
 
 
@@ -709,7 +709,7 @@ def mask_color_card(rgb_img, card_type="macbeth", **kwargs):
     return bounding_mask
 
 
-def deltaE(rgb_img, color_chip_size=None, roi=None, obs="calibrated", method="deltaE_ciede2000", **kwargs):
+def deltaE(rgb_img, color_chip_size=None, roi=None, obs="calibrated", **kwargs):
     """Calculate Delta E from an rgb image with a color card
 
     Parameters
@@ -724,9 +724,6 @@ def deltaE(rgb_img, color_chip_size=None, roi=None, obs="calibrated", method="de
     obs : str
         string describing what the obs_rgb data is, typically "uncalibrated" for an image input into color correction
         or "calibrated" for an image that has been through color correction.
-    method : str
-        function name from skimage.color to calculate delta E. Currently deltaE_(cie76|ciede2000|ciede94|cmc) are
-        supported
     **kwargs
         Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle via plantcv.transform.detect_color_card.
 
@@ -744,7 +741,7 @@ def deltaE(rgb_img, color_chip_size=None, roi=None, obs="calibrated", method="de
         numpy.ndarray, Delta E values between color chips.
     """
     obs_rgb = detect_color_card(rgb_img, color_chip_size, roi, deltaE=False, **kwargs)
-    delta_E = _delta_e(obs_rgb, color_chip_size, obs, method)
+    delta_E = _delta_e(obs_rgb, color_chip_size, obs)
     return delta_E
 
 
@@ -826,6 +823,9 @@ def detect_color_card(rgb_img, color_chip_size=None, roi=None, delta_E=True, **k
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f"{params.device}_color_card.png"))
     # Calculate Delta E
     if delta_E:
+        params.function_args["detect_color_card"] = {"color_chip_size": color_chip_size,
+                                                     "roi": roi,
+                                                     "kwargs": kwargs}
         _ = _delta_e(color_matrix, card_type=color_chip_size)
 
     return color_matrix
