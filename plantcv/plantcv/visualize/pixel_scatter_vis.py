@@ -1,5 +1,5 @@
 # Visualize a scatter plot of pixels
-
+import os
 import numpy as np
 import cv2
 from matplotlib import pyplot as plt
@@ -45,30 +45,42 @@ def _not_valid(*args):
     return fatal_error("channel not valid, use R, G, B, l, a, b, h, s, v, c, m, y, k, gray, or index")
 
 
-def pixel_scatter_plot(paths_to_imgs, x_channel, y_channel):
+def pixel_scatter_plot(source, x_channel, y_channel, n=20, ext="png"):
     """
     Plot a 2D pixel scatter plot visualization for a dataset of images.
     The horizontal and vertical coordinates are defined by the intensity of the
     pixels in the specified channels.
     The color of each dot is given by the original RGB color of the pixel.
 
-    Inputs:
-    paths_to_imgs  = List of paths to the images
-    x_channel      = Channel to use for the horizontal coordinate of the scatter plot.
-                     Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'c', 'm', 'y', 'k', 'gray', and 'index'
-    y_channel      = Channel to use for the vertical coordinate of the scatter plot.
-                     Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'c', 'm', 'y', 'k', 'gray', and 'index'
+    Parameters
+    ----------
+    source : list or str,
+        List of paths to the images or a path to a starting directory to find images in
+    x_channel : str,
+        Channel to use for the horizontal coordinate of the scatter plot.
+        Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'c', 'm', 'y', 'k', 'gray', and 'index'
+    y_channel : str,
+        Channel to use for the vertical coordinate of the scatter plot.
+        Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'c', 'm', 'y', 'k', 'gray', and 'index'
+    n : int,
+        max number of images to use if source is a string
+    ext : str,
+        image file extension to search for if source is a string
 
-    Returns:
-    fig = matplotlib pyplot Figure object of the visualization
-    ax  = matplotlib pyplot Axes object of the visualization
-
-    :param paths_to_imgs: list of str
-    :param x_channel: str
-    :param y_channel: str
-    :return fig: matplotlib.pyplot Figure object
-    :return ax: matplotlib.pyplot Axes object
+    Returns
+    -------
+    fig : matplotlib pyplot Figure object of the visualization
+    ax : matplotlib pyplot Axes object of the visualization
     """
+    paths_to_imgs = source
+    N = len(paths_to_imgs)
+    if isinstance(source, str):
+        N = n
+        paths_to_imgs = []
+        for root, _, files in os.walk(source):
+            for file in files:
+                if file.lower().endswith(ext) and len(paths_to_imgs) < n:
+                    paths_to_imgs.append(os.path.join(root, file))
     # dictionary returns the function that gets the required image channel
     channel_dict = {
         'R': _get_R,
@@ -91,8 +103,6 @@ def pixel_scatter_plot(paths_to_imgs, x_channel, y_channel):
     # store debug mode
     debug = params.debug
     params.debug = None
-
-    N = len(paths_to_imgs)
 
     fig, ax = plt.subplots()
     # load and plot the set of images sequentially
