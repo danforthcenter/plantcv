@@ -14,6 +14,7 @@ from plantcv.plantcv.transform.standard_matrices import std_color_matrix, astro_
 
 def _bin_deltaE(v):
     """Helper for discretizing delta E
+
     Parameters
     ----------
     v = float, delta E value
@@ -65,11 +66,10 @@ def plot_deltaE(source, n=20, ext="png", **kwargs):
         colored by deltaE category, reference lines,
         and standard chip color swatches below the x-axis
     """
-
     if isinstance(source, np.ndarray):
         chart = _plot_single_deltaE(source)
     else:
-        chart = _plot_dataset_deltaE(source, n, ext, **kwargs )
+        chart = _plot_dataset_deltaE(source, n, ext, **kwargs)
     return chart.interactive()
 
 
@@ -197,7 +197,7 @@ def _plot_dataset_deltaE(source, n=20, ext="png", **kwargs):
     params.debug = debug
     return plot
 
-        
+
 def _plot_single_deltaE(deltaE_matrix):
     """
     Plot a bar chart of deltaE values for color checker chips.
