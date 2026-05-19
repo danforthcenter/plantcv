@@ -2,7 +2,7 @@
 
 This function plots a 2D pixel scatter plot visualization for a dataset of images. The horizontal and vertical coordinates are defined by the intensity of the pixels in the specified channels. The color of each dot is given by the original RGB color of the pixel.
 
-**plantcv.visualize.pixel_scatter_plot**(*source, x_channel, y_channel*)
+**plantcv.visualize.pixel_scatter_plot**(*source, x_channel, y_channel, n=20, ext="png"*)
 
 **returns** fig, ax
 
