@@ -92,6 +92,10 @@ Removed `label` parameter since size marker data is now stored as metadata in th
 Deprecated the function in favor of the new
 [`plantcv.transform.detect_color_card`](transform_detect_color_card.md) function.
 
+#### plantcv.visualize.pixel_scatter_plot
+
+Changed `paths_to_imgs` argument to `source` to reflect that it can use an `str` path or a list of paths.
+
 #### plantcv.visualize.time_lapse_video
 
 Deprecated the function to enable compatibility with the opencv-headless package. Will be readded in a future release.
@@ -1575,7 +1579,8 @@ pages for more details on the input and output variable types.
 #### plantcv.visualize.pixel_scatter_plot
 
 * pre v4.0: NA
-* post v4.0: fig, ax = **pcv.visualize.pixel_scatter_plot**(*paths_to_imgs, x_channel, y_channel*)
+* pre v5.0: fig, ax = **pcv.visualize.pixel_scatter_plot**(*paths_to_imgs, x_channel, y_channel*)
+* post v5.0: fig, ax = **pcv.visualize.pixel_scatter_plot**(*source, x_channel, y_channel, n=20, ext="png"*)
 
 #### plantcv.visualize.tile
 
