@@ -2,20 +2,20 @@
 
 Texture analysis outputs numeric properties for individual plants, seeds, leaves, etc.
  
-**plantcv.analyze.texture**(*img, labeled_mask, methods=None, distances=None, angles=None,
-                            levels=None, symmetric=False, normalize=False, n_labels=1, label=None*)
+**plantcv.analyze.texture**(*img, labeled_mask, n_labels=1, methods=None, distances=None, angles=None,
+                            levels=None, symmetric=False, normalize=False, label=None*)
 
 **returns** analysis_image
 
 - **Parameters:**
     - img - Grayscale image data for plotting. If img has multiple channels it will be coerced to grayscale.
     - labeled_mask - Labeled mask of objects (32-bit, output from [`pcv.create_labels`](create_labels.md) or [`pcv.roi.filter`](roi_filter.md)).
+	- n_labels - Total number expected individual objects (default = 1).
 	- methods - A list of texture phenotypes to return. If None (the default) then the entire list of possible methods is used (`["contrast", "dissimilarity", "homogeneity", "ASM", "energy", "correlation", "mean", "variance", "std", "entropy"]`)
 	- distances - A list of distances between pixels to use, defaults to None which will use `[1]` to only compare adjacent pixels.
 	- angles - A list of angles between pixels to compare, defaults to None, which will use `[0]`.
 	- symmetric - Logical, Should the order of values pairs be ignored? The default, False, will not always have [i, j] in the gray co-occurence matrix equal to [j, i] and will calculate both values.
 	- normalize - Logical, should the matrix be rescaled to sum to 1? Defaults to False.
-    - n_labels - Total number expected individual objects (default = 1).
     - label - Optional label parameter, modifies the variable name of observations recorded. Can be a prefix or list (default = pcv.params.sample_label).
 
 - **Context:**

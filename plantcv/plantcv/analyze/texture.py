@@ -10,10 +10,10 @@ import cv2
 import os
 
 
-def texture(img, labeled_mask, methods=None,
+def texture(img, labeled_mask, n_labels=1, methods=None,
             distances=None, angles=None,
             symmetric=False, normalize=False,
-            n_labels=1, label=None):
+            label=None):
     """A function that analyzes the texture of objects and outputs data.
 
     Parameters
@@ -21,6 +21,7 @@ def texture(img, labeled_mask, methods=None,
     img          = numpy.ndarray, grayscale image data. If data is not grayscale then
                    it will be coerced to grayscale using pcv._helpers._rgb2gray.
     labeled_mask = numpy.ndarray, Labeled mask of objects (32-bit).
+    n_labels     = Int, Total number expected individual objects (default = 1).
     methods      = list, List of str specifying phenotypes to return. Options
                    come from skimage.feature.graycoprops and include "contrast",
                    "dissimilarity", "homogeneity", "ASM", "energy", "correlation",
@@ -35,7 +36,6 @@ def texture(img, labeled_mask, methods=None,
                    is ignored so that (i, j) and (j, i) the same. The default is False.
     normalize    = bool, optional
                    If True then the matrix is rescaled to sum to 1. Default is False.
-    n_labels     = Int, Total number expected individual objects (default = 1).
     label        = str, Optional label parameter, modifies the variable name of
                    observations recorded (default = pcv.params.sample_label).
 
