@@ -254,6 +254,9 @@ def _process_psd_data(ps, metadata):
         frame_labels[0] = 'Fdark'
         frame_labels[f0_frame] = 'F0'
         frame_labels[fm_frame] = 'Fm'
+        # Replace frame_num with time, skip timepoint 0
+        for i in range(len(frame_nums) - 1):
+            frame_nums[i + 1] = int(metadata.get(f"FvFmTimePoint{i}", frame_nums[i + 1]))
         psd = xr.DataArray(
             data=img_cube[..., None],
             dims=('x', 'y', 'frame_label', 'measurement'),
@@ -303,6 +306,9 @@ def _process_psl_data(ps, metadata):
         frame_labels[0] = "Flight"
         frame_labels[fsp_frame] = 'Fp'
         frame_labels[fmp_frame] = 'Fmp'
+        # Replace frame_num with time, skip timepoint 0
+        for i in range(len(frame_nums) - 1):
+            frame_nums[i + 1] = int(metadata.get(f"FqFmTimePoint{i}", frame_nums[i + 1]))
         psl = xr.DataArray(
             data=img_cube[..., None],
             dims=('x', 'y', 'frame_label', 'measurement'),
