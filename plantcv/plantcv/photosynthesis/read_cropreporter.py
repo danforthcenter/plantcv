@@ -132,6 +132,70 @@ class CLR:
         self._color = img_as_ubyte(img_cube[:, :, [2, 1, 0]])
 
 
+class PSD:
+    """OJIP dark-adapted measurements dataset. Stores the file path at init; image data is loaded on first access."""
+
+    def __init__(self, filepath, height, width, metadata):
+        """Initialize PSD dataset with file path and image dimensions."""
+        self._filepath = filepath
+        self._height = height
+        self._width = width
+        self._metadata = metadata
+        self._ojip_dark = None
+
+    def __bool__(self):
+        """The existence of the PSD class is true."""
+        return True
+
+    def __repr__(self):
+        """String representation of the PSD dataset, indicating whether the data has been loaded."""
+        loaded = self._ojip_dark is not None
+        return f"PSD(filepath={self._filepath!r}, loaded={loaded})"
+
+    @property
+    def ojip_dark(self):
+        """Return the OJIP dark-adapted measurements as an xarray DataArray."""
+        if self._ojip_dark is None:
+            self._load()
+        return self._ojip_dark
+
+    def _load(self):
+        """Load the OJIP dark-adapted measurements from the .DAT file."""
+        img_cube, frame_labels, frame_nums = _read_dat_file(
+            dataset="PSD",
+            filename=str(self._filepath),
+            height=self._height,
+            width=self._width,
+        )
+        # If not all frames are saved the order is fixed
+        # Phenovation does not update the framenumbers in the references.
+        # Default frames (when SaveAllFrames == 0)
+        f0_frame = 1
+        fm_frame = 2
+        # If the method is labeled FvFm
+        if 'FvFmFrameF0' in self._metadata and self._metadata["SaveAllFrames"] != "0":
+            f0_frame = int(self._metadata["FvFmFrameF0"]) + 1
+            fm_frame = int(self._metadata["FvFmFrameFm"]) + 1
+        # If the method is labeled DkOjip
+        if 'DkOjipFrameF0' in self._metadata and self._metadata["SaveAllFrames"] != "0":
+            f0_frame = int(self._metadata["DkOjipFrameF0"]) + 1  # data cube includes Fdark at the beginning
+            fm_frame = int(self._metadata["DkOjipFrameFm"]) + 1
+        frame_labels[0] = 'Fdark'
+        frame_labels[f0_frame] = 'F0'
+        frame_labels[fm_frame] = 'Fm'
+        # Replace frame_num with time, skip timepoint 0
+        for i in range(len(frame_nums) - 1):
+            frame_nums[i + 1] = int(self._metadata.get(f"FvFmTimePoint{i}", frame_nums[i + 1]))
+        self._ojip_dark = xr.DataArray(
+            data=img_cube[..., None],
+            dims=('x', 'y', 'frame_label', 'measurement'),
+            coords={'frame_label': frame_labels,
+                    'frame_num': ('frame_label', frame_nums),
+                    'measurement': ['t0']},
+            name='ojip_dark'
+        )
+
+
 def read_cropreporter(filename):
     """Read datacubes from PhenoVation B.V. CropReporter or PlantExplorer cameras into a PSII_data instance.
 
@@ -174,6 +238,8 @@ def read_cropreporter(filename):
         "CHL": lambda fp: CHL(filepath=fp, height=height, width=width),
         # Color data
         "CLR": lambda fp: CLR(filepath=fp, height=height, width=width),
+        # OJIP dark data
+        "PSD": lambda fp: PSD(filepath=fp, height=height, width=width, metadata=ps.metadata),
     }
 
     # Process datasets
@@ -188,9 +254,6 @@ def read_cropreporter(filename):
             if constructor is not None:
                 # Set the attribute on the PSII_data instance to a lazy-loading object
                 setattr(ps, key, constructor(bin_filepath))
-
-    # Dark-adapted measurements
-    _process_psd_data(ps=ps, metadata=metadata_dict)
 
     # Light-adapted measurements
     _process_psl_data(ps=ps, metadata=metadata_dict)
