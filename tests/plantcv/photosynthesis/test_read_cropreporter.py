@@ -84,10 +84,33 @@ def test_read_cropreporter_chl_only(photosynthesis_test_data, tmpdir):
     fluor_filename = os.path.join(cache_dir, os.path.basename(photosynthesis_test_data.cropreporter))
     ps = read_cropreporter(filename=fluor_filename)
     assert isinstance(ps, PSII_data)
-    assert ps.chlorophyll is not None
-    # Check for a 2D NumPy array (Height, Width) 
-    assert len(ps.chlorophyll.shape) == 2
-    assert isinstance(ps.chlorophyll, np.ndarray)
+    assert ps.chl
+    assert "loaded=False" in repr(ps.chl)
+    # Check for a 2D NumPy array (Height, Width)
+    assert len(ps.chl.chlorophyll.shape) == 2
+    assert isinstance(ps.chl.chlorophyll, np.ndarray)
+
+
+def test_read_cropreporter_clr_only(photosynthesis_test_data, tmpdir):
+    """Test CLR import."""
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+    # Create dataset with only CLR
+    shutil.copyfile(photosynthesis_test_data.cropreporter,
+                    os.path.join(cache_dir,
+                                 os.path.basename(photosynthesis_test_data.cropreporter)))
+    clr_dat = photosynthesis_test_data.cropreporter.replace("HDR", "CLR")
+    clr_dat = clr_dat.replace("INF", "DAT")
+    shutil.copyfile(clr_dat, os.path.join(cache_dir, os.path.basename(clr_dat)))
+    fluor_filename = os.path.join(cache_dir, os.path.basename(photosynthesis_test_data.cropreporter))
+    ps = read_cropreporter(filename=fluor_filename)
+    assert isinstance(ps, PSII_data)
+    assert ps.clr
+    assert "loaded=False" in repr(ps.clr)
+    # Check for a 3D NumPy array (Height, Width, Channels)
+    assert len(ps.clr.color.shape) == 3
+    assert isinstance(ps.clr.color, np.ndarray)
+
 
 def test_read_cropreporter_gfp_only(photosynthesis_test_data, tmpdir):
     """Test GFP import."""
@@ -136,7 +159,30 @@ def test_read_cropreporter_aph_only(photosynthesis_test_data, tmpdir):
     ps = read_cropreporter(filename=fluor_filename)
     assert isinstance(ps, PSII_data)
     assert ps.aph is not None
-    assert ps.aph.shape[2] == 2  # Red + FarRed
+    assert hasattr(ps.aph, "red")
+    assert hasattr(ps.aph, "farred")
+
+
+def test_read_cropreporter_aph_insufficient_frames(photosynthesis_test_data, tmpdir, monkeypatch):
+    """Test that APH import raises RuntimeError when DAT file contains fewer than 2 frames."""
+    cache_dir = tmpdir.mkdir("sub_aph_err")
+    inf_dest = os.path.join(cache_dir, "HDR_2025-12-12_tob1_20251212205712029.INF")
+    dat_dest = os.path.join(cache_dir, "APH_2025-12-12_tob1_20251212205712029.DAT")
+    shutil.copyfile(photosynthesis_test_data.cropreporter_aph, inf_dest)
+    aph_dat = photosynthesis_test_data.cropreporter_aph.replace("HDR", "APH").replace("INF", "DAT")
+    shutil.copyfile(aph_dat, dat_dest)
+    # Override image dimensions so monkeypatched data is the right size
+    with open(inf_dest, "a") as f:
+        f.write("\nImageRows=10")
+        f.write("\nImageCols=10")
+    # Return only 1 frame worth of data (10 * 10 * 1 = 100) to trigger the error
+    monkeypatch.setattr(np, "fromfile", lambda *args, **kwargs: np.ones(100, dtype=np.uint16))
+    error_raised = False
+    try:
+        read_cropreporter(filename=inf_dest)
+    except RuntimeError:
+        error_raised = True
+    assert error_raised
 
 
 def test_read_cropreporter_pmt_only_9_labels(photosynthesis_test_data, tmpdir):
