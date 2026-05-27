@@ -90,7 +90,7 @@ def pixel_scatter_plot(source, x_channel, y_channel, n=20, ext="png"):
         'y': _rgb2cmyk,
         'k': _rgb2cmyk
     }
-    if (isinstance(source, np.ndarray)):
+    if isinstance(source, np.ndarray):
         fig, ax = _px_scatter_from_img(source, x_channel, y_channel, channel_dict)
         return fig, ax
     # if not an image then keep going
@@ -157,7 +157,7 @@ def _px_scatter_from_img(source, x_channel, y_channel, channel_dict):
         Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'c', 'm', 'y', 'k', 'gray', and 'index'
     channel_dict : dict,
         dictionary of functions to pull channels. Defined internally in user facing function.
-    
+
     Returns
     -------
     fig : matplotlib pyplot Figure object of the visualization
@@ -170,7 +170,7 @@ def _px_scatter_from_img(source, x_channel, y_channel, channel_dict):
     img_height = int(IMG_WIDTH*ratio)
     # nearest interpolation avoids mixing pixel values
     sub_img = cv2.resize(source, (IMG_WIDTH, img_height), interpolation=cv2.INTER_NEAREST)
-    
+
     # organize the channels as RGB to use as facecolor for the markers
     sub_img_rgb = cv2.cvtColor(sub_img, cv2.COLOR_BGR2RGB)
     fcolors = sub_img_rgb.reshape(img_height*IMG_WIDTH, c)/255
