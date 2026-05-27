@@ -51,3 +51,14 @@ def test_pixel_scatter_plot_str_source(tmpdir):
     _, _ = pixel_scatter_plot(source=str(cache_dir), x_channel="R", y_channel="index")
     assert 1
 
+
+def test_pixel_scatter_plot_img_source():
+    """Test for PlantCV."""
+    # Create an image
+    rng = np.random.default_rng()
+    img_size = (10, 10, 3)
+    # create a random image and write it to the temp directory
+    img = rng.integers(low=0, high=255, size=img_size, dtype=np.uint8, endpoint=True)
+    # test the function with an str path
+    _, _ = pixel_scatter_plot(source=img, x_channel="l", y_channel="a")
+    assert 1

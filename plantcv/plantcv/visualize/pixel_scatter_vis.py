@@ -54,8 +54,8 @@ def pixel_scatter_plot(source, x_channel, y_channel, n=20, ext="png"):
 
     Parameters
     ----------
-    source : list or str,
-        List of paths to the images or a path to a starting directory to find images in
+    source : list, numpy.ndarray, or str,
+        List of paths to the images, an image as a numpy array, or a path to a starting directory to find images in
     x_channel : str,
         Channel to use for the horizontal coordinate of the scatter plot.
         Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'c', 'm', 'y', 'k', 'gray', and 'index'
@@ -72,15 +72,6 @@ def pixel_scatter_plot(source, x_channel, y_channel, n=20, ext="png"):
     fig : matplotlib pyplot Figure object of the visualization
     ax : matplotlib pyplot Axes object of the visualization
     """
-    paths_to_imgs = source
-    N = len(paths_to_imgs)
-    if isinstance(source, str):
-        N = n
-        paths_to_imgs = []
-        for root, _, files in os.walk(source):
-            for file in files:
-                if file.lower().endswith(ext) and len(paths_to_imgs) < n:
-                    paths_to_imgs.append(os.path.join(root, file))
     # dictionary returns the function that gets the required image channel
     channel_dict = {
         'R': _get_R,
@@ -99,6 +90,19 @@ def pixel_scatter_plot(source, x_channel, y_channel, n=20, ext="png"):
         'y': _rgb2cmyk,
         'k': _rgb2cmyk
     }
+    if (isinstance(source, np.ndarray)):
+        fig, ax = _px_scatter_from_img(source, x_channel, y_channel, channel_dict)
+        return fig, ax
+    # if not an image then keep going
+    paths_to_imgs = source
+    N = len(paths_to_imgs)
+    if isinstance(source, str):
+        N = n
+        paths_to_imgs = []
+        for root, _, files in os.walk(source):
+            for file in files:
+                if file.lower().endswith(ext) and len(paths_to_imgs) < n:
+                    paths_to_imgs.append(os.path.join(root, file))
 
     # store debug mode
     debug = params.debug
@@ -134,5 +138,53 @@ def pixel_scatter_plot(source, x_channel, y_channel, n=20, ext="png"):
 
     # reset debug
     params.debug = debug
+
+    return fig, ax
+
+
+def _px_scatter_from_img(source, x_channel, y_channel, channel_dict):
+    """Make pixel scatter plot from an image
+
+    Parameters
+    ----------
+    source : numpy.ndarray
+        List of paths to the images, an image as a numpy array, or a path to a starting directory to find images in
+    x_channel : str,
+        Channel to use for the horizontal coordinate of the scatter plot.
+        Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'c', 'm', 'y', 'k', 'gray', and 'index'
+    y_channel : str,
+        Channel to use for the vertical coordinate of the scatter plot.
+        Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'c', 'm', 'y', 'k', 'gray', and 'index'
+    channel_dict : dict,
+        dictionary of functions to pull channels. Defined internally in user facing function.
+    
+    Returns
+    -------
+    fig : matplotlib pyplot Figure object of the visualization
+    ax : matplotlib pyplot Axes object of the visualization
+    """
+    fig, ax = plt.subplots()
+    h, _, c = source.shape
+    # resizing to predetermined width to reduce the number of pixels
+    ratio = h/IMG_WIDTH
+    img_height = int(IMG_WIDTH*ratio)
+    # nearest interpolation avoids mixing pixel values
+    sub_img = cv2.resize(source, (IMG_WIDTH, img_height), interpolation=cv2.INTER_NEAREST)
+    
+    # organize the channels as RGB to use as facecolor for the markers
+    sub_img_rgb = cv2.cvtColor(sub_img, cv2.COLOR_BGR2RGB)
+    fcolors = sub_img_rgb.reshape(img_height*IMG_WIDTH, c)/255
+
+    # get channels
+    sub_img_x_ch = channel_dict.get(x_channel, _not_valid)(sub_img, x_channel)
+    sub_img_y_ch = channel_dict.get(y_channel, _not_valid)(sub_img, y_channel)
+
+    ax.scatter(sub_img_x_ch.reshape(-1),
+               sub_img_y_ch.reshape(-1),
+               alpha=0.05, s=MAX_MARKER_SIZE,
+               edgecolors=None, facecolors=fcolors)
+
+    plt.xlabel(x_channel)
+    plt.ylabel(y_channel)
 
     return fig, ax

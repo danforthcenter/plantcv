@@ -7,7 +7,7 @@ This function plots a 2D pixel scatter plot visualization for a dataset of image
 **returns** fig, ax
 
 - **Parameters:**
-    - source   - String file path to a directory of images or list of paths to the images.
+    - source   - Image as a numpy array, string file path to a directory of images, or list of paths to the images.
     - x_channel       - Channel to use for the horizontal coordinate of the scatter plot.
     Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'c', 'm', 'y', 'k', 'gray', and 'index'.
     - y_channel       - Channel to use for the vertical coordinate of the scatter plot.
@@ -66,6 +66,8 @@ from plantcv import plantcv as pcv
 fig1, ax1 = pcv.visualize.pixel_scatter_plot(source=file_paths, x_channel='b', y_channel='a')
 
 fig2, ax2 = pcv.visualize.pixel_scatter_plot(source="/path/to/images/", x_channel='G', y_channel='b')
+
+fig3, ax3 = pcv.visualize.pixel_scatter_plot(source=img, x_channel='G', y_channel='b')
 
 ```
 

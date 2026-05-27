@@ -94,7 +94,8 @@ Deprecated the function in favor of the new
 
 #### plantcv.visualize.pixel_scatter_plot
 
-Changed `paths_to_imgs` argument to `source` to reflect that it can use an `str` path or a list of paths.
+Changed `paths_to_imgs` argument to `source` to reflect that it can use a `numpy.ndarray`, `str` path,
+or a list of paths where it previously only could use a list of paths.
 
 #### plantcv.visualize.time_lapse_video
 
