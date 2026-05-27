@@ -1,6 +1,7 @@
 import pytest
 import os
 import dask
+from unittest.mock import MagicMock, patch
 from dask.distributed import Client
 from plantcv.parallel import create_dask_cluster, multiprocess
 from plantcv.parallel.multiprocess import _process_images_multiproc
@@ -17,14 +18,15 @@ def test_create_dask_cluster_local(tmpdir):
     assert status == "running"
 
 
-def test_create_dask_cluster(tmpdir):
+def test_create_dask_cluster():
     """Test for PlantCV."""
-    # Create tmp directory
-    tmp_dir = tmpdir.mkdir("cache")
-    # Set the temp directory for dask
-    dask.config.set(temporary_directory=tmp_dir)
-    client = create_dask_cluster(cluster="HTCondorCluster", cluster_config={"cores": 1, "memory": "1GB", "disk": "1GB"})
-    status = client.status
+    mock_cluster = MagicMock()
+    mock_client = MagicMock()
+    mock_client.status = "running"
+    with patch("dask_jobqueue.HTCondorCluster", return_value=mock_cluster), \
+         patch("plantcv.parallel.multiprocess.Client", return_value=mock_client):
+        client = create_dask_cluster(cluster="HTCondorCluster", cluster_config={"cores": 1, "memory": "1GB", "disk": "1GB"})
+        status = client.status
     assert status == "running"
 
 
