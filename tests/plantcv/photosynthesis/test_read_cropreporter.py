@@ -84,10 +84,32 @@ def test_read_cropreporter_chl_only(photosynthesis_test_data, tmpdir):
     fluor_filename = os.path.join(cache_dir, os.path.basename(photosynthesis_test_data.cropreporter))
     ps = read_cropreporter(filename=fluor_filename)
     assert isinstance(ps, PSII_data)
-    assert ps.chlorophyll is not None
+    assert ps.chl
+    assert "loaded=False" in repr(ps.chl)
     # Check for a 2D NumPy array (Height, Width)
-    assert len(ps.chlorophyll.shape) == 2
-    assert isinstance(ps.chlorophyll, np.ndarray)
+    assert len(ps.chl.chlorophyll.shape) == 2
+    assert isinstance(ps.chl.chlorophyll, np.ndarray)
+
+
+def test_read_cropreporter_clr_only(photosynthesis_test_data, tmpdir):
+    """Test CLR import."""
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+    # Create dataset with only CLR
+    shutil.copyfile(photosynthesis_test_data.cropreporter,
+                    os.path.join(cache_dir,
+                                 os.path.basename(photosynthesis_test_data.cropreporter)))
+    clr_dat = photosynthesis_test_data.cropreporter.replace("HDR", "CLR")
+    clr_dat = clr_dat.replace("INF", "DAT")
+    shutil.copyfile(clr_dat, os.path.join(cache_dir, os.path.basename(clr_dat)))
+    fluor_filename = os.path.join(cache_dir, os.path.basename(photosynthesis_test_data.cropreporter))
+    ps = read_cropreporter(filename=fluor_filename)
+    assert isinstance(ps, PSII_data)
+    assert ps.clr
+    assert "loaded=False" in repr(ps.clr)
+    # Check for a 3D NumPy array (Height, Width, Channels)
+    assert len(ps.clr.color.shape) == 3
+    assert isinstance(ps.clr.color, np.ndarray)
 
 
 def test_read_cropreporter_gfp_only(photosynthesis_test_data, tmpdir):
