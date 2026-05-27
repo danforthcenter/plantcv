@@ -9,11 +9,19 @@ from plantcv.plantcv.photosynthesis import read_cropreporter
 def test_read_cropreporter(photosynthesis_test_data, tmpdir):
     """Test for PlantCV."""
     ps = read_cropreporter(filename=photosynthesis_test_data.cropreporter)
-    assert isinstance(ps, PSII_data) and ps.psd.load().shape == (966, 1296, 21, 1)
+    assert isinstance(ps, PSII_data)
+    assert ps.psd.load().shape == (966, 1296, 21, 1)
+    assert ps.psl.load().shape == (966, 1296, 21, 1)
+    assert ps.psd
+    assert "PSD" in repr(ps.psd)
+    assert ps.psl
+    assert "PSL" in repr(ps.psl)
 
     # Check with different naming convention of Phenovation
     ps = read_cropreporter(filename=photosynthesis_test_data.cropreporter_v653)
-    assert isinstance(ps, PSII_data) and ps.psd.load().shape == (1500, 2048, 7, 1)
+    assert isinstance(ps, PSII_data)
+    assert ps.psd.load().shape == (1500, 2048, 7, 1)
+    assert ps.psl.load().shape == (1500, 2048, 7, 1)
     # check labels
     true_labels = ['Fdark', 'F0', 'PSD2', 'PSD3', 'Fm', 'PSD5', 'PSD6']
     assert all(a == b for a, b in zip(ps.psd.load().coords['frame_label'].to_dict()['data'], true_labels))
