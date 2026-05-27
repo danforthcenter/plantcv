@@ -13,21 +13,21 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
     Quickly plot target matrix values against source matrix values to determine
     over saturated color chips or other issues.
 
-    Inputs:
-    source_matrix      = an nrowsXncols matrix containing the avg red, green, and blue values for each color chip
-                            of the source image
-    target_matrix      = an nrowsXncols matrix containing the avg red, green, and blue values for each color chip
-                            of the target image
-    num_chips          = number of color card chips included in th        # Test data directory
-        self.datadir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "testdata")e matrices (integer)
+    Parameters:
+    -----------
+    source_matrix      = numpy.ndarray,
+        an nrowsXncols matrix containing the avg red, green, and blue values for each color chip
+        of the source image
+    target_matrix      = numpy.ndarray,
+        an nrowsXncols matrix containing the avg red, green, and blue values for each color chip
+        of the target image
+    num_chips          = int,
+        number of color card chips included in the matrices (integer)
 
     Returns:
-    p1                 = an altair plot of the target and source color values
-
-    :param source_matrix: numpy.ndarray
-    :param target_matrix: numpy.ndarray
-    :param num_chips: int
-    :return p1: altair.vegalite.v5.api.Chart
+    --------
+    p1                 = altair.vegalite.v5.api.Chart,
+        an altair plot of the target and source color values
     """
     # Scale matrices to 0-255
     target_matrix = 255*target_matrix
