@@ -242,6 +242,50 @@ class PSL:
         )
 
 
+class NPQ:
+    """NPQ measurements dataset. Stores the file path at init; image data is loaded on first access."""
+
+    def __init__(self, filepath, height, width, metadata):
+        """Initialize NPQ dataset with file path and image dimensions."""
+        self._filepath = filepath
+        self._height = height
+        self._width = width
+        self._metadata = metadata
+
+    def __bool__(self):
+        """The existence of the NPQ class is true."""
+        return True
+
+    def __repr__(self):
+        """String representation of the NPQ dataset, indicating whether the data has been loaded."""
+        return f"NPQ(filepath={self._filepath!r})"
+
+    def load(self):
+        """Load the NPQ measurements from the .DAT file."""
+        img_cube, frame_labels, frame_nums = _read_dat_file(
+            dataset="NPQ",
+            filename=str(self._filepath),
+            height=self._height,
+            width=self._width,
+        )
+        frame_labels = ['Fdark', 'F0', 'Fm', 'Flight', 'Fp', 'Fmp']
+        n_x, n_y = img_cube.shape[:2]
+        data = np.zeros((n_x, n_y, 6, 2), dtype=img_cube.dtype)
+        data[:, :, :3, 0] = img_cube[:, :, :3]   # Fdark/F0/Fm → t0
+        data[:, :, 3:, 1] = img_cube[:, :, 3:]   # Flight/Fp/Fmp → t1
+        frame_nums_2d = np.zeros((6, 2), dtype=frame_nums.dtype)
+        frame_nums_2d[:3, 0] = frame_nums[:3]
+        frame_nums_2d[3:, 1] = frame_nums[3:]
+        return xr.DataArray(
+            data=data,
+            dims=('x', 'y', 'frame_label', 'measurement'),
+            coords={'frame_label': frame_labels,
+                    'frame_num': (['frame_label', 'measurement'], frame_nums_2d),
+                    'measurement': ['t0', 't1']},
+            name='npq'
+        )
+
+
 def read_cropreporter(filename):
     """Read datacubes from PhenoVation B.V. CropReporter or PlantExplorer cameras into a PSII_data instance.
 
@@ -288,6 +332,8 @@ def read_cropreporter(filename):
         "PSD": lambda fp: PSD(filepath=fp, height=height, width=width, metadata=ps.metadata),
         # OJIP light data
         "PSL": lambda fp: PSL(filepath=fp, height=height, width=width, metadata=ps.metadata),
+        # OJIP dark and light data
+        "NPQ": lambda fp: NPQ(filepath=fp, height=height, width=width, metadata=ps.metadata),
     }
 
     # Process datasets
@@ -301,9 +347,6 @@ def read_cropreporter(filename):
             constructor = dataset_classes.get(dataset)
             if constructor is not None:
                 setattr(ps, key, constructor(bin_filepath))
-
-    # NPQ measurements
-    _process_npq_data(ps=ps, metadata=metadata_dict)
 
     # Dark-adapted PAM measurements
     _process_pmd_data(ps=ps, metadata=metadata_dict)
@@ -327,63 +370,6 @@ def read_cropreporter(filename):
     # _process_aph_data(ps=ps, metadata=metadata_dict)
 
     return ps
-
-
-def _process_npq_data(ps, metadata):
-    """
-    Create an xarray DataArray for a NPQ dataset.
-
-    Parameters
-    ----------
-    ps : plantcv.plantcv.classes.PSII_data
-        PSII_data instance
-    metadata : dict
-        INF file metadata dictionary
-    """
-    bin_filepath = _dat_filepath(dataset="NPQ", datapath=ps.datapath, filename=ps.filename)
-    if os.path.exists(bin_filepath):
-        img_cube, frame_labels, frame_nums = _read_dat_file(dataset="NPQ", filename=bin_filepath,
-                                                            height=int(metadata["ImageRows"]),
-                                                            width=int(metadata["ImageCols"]))
-        # Add the OJIP dark frames
-        frame_labels[0] = 'Fdark'
-        frame_labels[1] = 'F0'
-        frame_labels[2] = 'Fm'
-        psd = xr.DataArray(
-            data=img_cube[:, :, 0:3, None],
-            dims=('x', 'y', 'frame_label', 'measurement'),
-            coords={'frame_label': frame_labels[0:3],
-                    'frame_num': ('frame_label', frame_nums[0:3]),
-                    'measurement': ['t0']},
-            name='ojip_dark'
-        )
-        psd.attrs["long_name"] = "OJIP dark-adapted measurements"
-        ps.ojip_dark = psd
-
-        _debug(visual=ps.ojip_dark.squeeze('measurement', drop=True),
-               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSD-frames.png"),
-               col='frame_label',
-               col_wrap=int(np.ceil(ps.ojip_dark.frame_label.size / 4)))
-
-        # Add the OJIP light frames
-        frame_labels[3] = 'Flight'
-        frame_labels[4] = 'Fp'
-        frame_labels[5] = 'Fmp'
-        psd = xr.DataArray(
-            data=img_cube[:, :, 3:6, None],
-            dims=('x', 'y', 'frame_label', 'measurement'),
-            coords={'frame_label': frame_labels[3:6],
-                    'frame_num': ('frame_label', frame_nums[3:6]),
-                    'measurement': ['t0']},
-            name='ojip_light'
-        )
-        psd.attrs["long_name"] = "OJIP light-adapted measurements"
-        ps.ojip_light = psd
-
-        _debug(visual=ps.ojip_light.squeeze('measurement', drop=True),
-               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSL-frames.png"),
-               col='frame_label',
-               col_wrap=int(np.ceil(ps.ojip_light.frame_label.size / 4)))
 
 
 def _process_pmd_data(ps, metadata):
