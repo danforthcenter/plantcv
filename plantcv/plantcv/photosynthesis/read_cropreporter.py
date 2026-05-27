@@ -6,7 +6,84 @@ from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import PSII_data
 from plantcv.plantcv import Spectral_data
+from plantcv.plantcv.classes import NamedImageCollection
 from skimage.util import img_as_ubyte
+
+
+class CHL:
+    """Chlorophyll dataset. Stores the file path at init; image data is loaded on first access."""
+
+    def __init__(self, filepath, height, width):
+        """Initialize CHL dataset with file path and image dimensions."""
+        self._filepath = filepath
+        self._height = height
+        self._width = width
+        self._chlorophyll = None
+
+    def __bool__(self):
+        """The existence of the CHL class is true."""
+        return True
+
+    def __repr__(self):
+        """String representation of the CHL dataset, indicating whether the data has been loaded."""
+        loaded = self._chlorophyll is not None
+        return f"CHL(filepath={self._filepath!r}, loaded={loaded})"
+
+    @property
+    def chlorophyll(self):
+        """Return the chlorophyll frame as a NumPy array."""
+        if self._chlorophyll is None:
+            self._load()
+        return self._chlorophyll
+
+    def _load(self):
+        """Load the chlorophyll frame from the .DAT file."""
+        img_cube, _, _ = _read_dat_file(
+            dataset="CHL",
+            filename=str(self._filepath),
+            height=self._height,
+            width=self._width,
+        )
+        # index 0 = Fdark (when present), last index = Chl
+        self._chlorophyll = img_cube[:, :, img_cube.shape[2] - 1]
+
+
+class CLR:
+    """Color dataset. Stores the file path at init; image data is loaded on first access."""
+
+    def __init__(self, filepath, height, width):
+        """Initialize CLR dataset with file path and image dimensions."""
+        self._filepath = filepath
+        self._height = height
+        self._width = width
+        self._color = None
+
+    def __bool__(self):
+        """The existence of the CLR class is true."""
+        return True
+
+    def __repr__(self):
+        """String representation of the CLR dataset, indicating whether the data has been loaded."""
+        loaded = self._color is not None
+        return f"CLR(filepath={self._filepath!r}, loaded={loaded})"
+
+    @property
+    def color(self):
+        """Return the color frame as a NumPy array."""
+        if self._color is None:
+            self._load()
+        return self._color
+
+    def _load(self):
+        """Load the color frames from the .DAT file."""
+        img_cube, _, _ = _read_dat_file(
+            dataset="CLR",
+            filename=str(self._filepath),
+            height=self._height,
+            width=self._width,
+        )
+        # Store the color data as BGR uint8
+        self._color = img_as_ubyte(img_cube[:, :, [2, 1, 0]])
 
 
 def read_cropreporter(filename):
@@ -33,11 +110,36 @@ def read_cropreporter(filename):
                 metadata_dict[key] = value
 
     # Initialize PSII_data class
-    ps = PSII_data()
+    ps = PSII_data(metadata=metadata_dict)
 
     # INF file prefix and path
     ps.filename = os.path.split(filename)[-1]
     ps.datapath = os.path.dirname(filename)
+
+    # Image dimensions (assumed to be consistent across all datasets for a given acquisition)
+    height = int(ps.metadata["ImageRows"])
+    width = int(ps.metadata["ImageCols"])
+
+    # Dataset-specific processing functions. Class constructors for lazy loading.
+    dataset_classes = {
+        # Chlorophyll fluorescence data
+        "CHL": lambda fp: CHL(filepath=fp, height=height, width=width),
+        # Color data
+        "CLR": lambda fp: CLR(filepath=fp, height=height, width=width),
+    }
+
+    # Process datasets
+    for dataset in ["APH", "CHL", "CLR", "NPQ", "PMD", "PML", "PMT", "PSD", "PSL", "SPC"]:
+        # Construct the expected binary file path for the dataset
+        bin_filepath = _dat_filepath(dataset=dataset, datapath=ps.datapath, filename=ps.filename)
+        # Check if the file exists
+        if os.path.exists(bin_filepath):
+            key = dataset.lower()
+            # Get the class constructor
+            constructor = dataset_classes.get(dataset)
+            if constructor is not None:
+                # Set the attribute on the PSII_data instance to a lazy-loading object
+                setattr(ps, key, constructor(bin_filepath))
 
     # Dark-adapted measurements
     _process_psd_data(ps=ps, metadata=metadata_dict)
@@ -56,9 +158,6 @@ def read_cropreporter(filename):
 
     # PAM time (dark, light, and second dark adapted) measurements
     _process_pmt_data(ps=ps, metadata=metadata_dict)
-
-    # Chlorophyll fluorescence data
-    _process_chl_data(ps=ps, metadata=metadata_dict)
 
     # Spectral measurements
     _process_spc_data(ps=ps, metadata=metadata_dict)
@@ -116,7 +215,7 @@ def _process_psd_data(ps, metadata):
             name='ojip_dark'
         )
         psd.attrs["long_name"] = "OJIP dark-adapted measurements"
-        ps.add_data(psd)
+        ps.ojip_dark = psd
 
         _debug(visual=ps.ojip_dark.squeeze('measurement', drop=True),
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSD-frames.png"),
@@ -165,7 +264,7 @@ def _process_psl_data(ps, metadata):
             name='ojip_light'
         )
         psl.attrs["long_name"] = "OJIP light-adapted measurements"
-        ps.add_data(psl)
+        ps.ojip_light = psl
 
         _debug(visual=ps.ojip_light.squeeze('measurement', drop=True),
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSL-frames.png"),
@@ -202,7 +301,7 @@ def _process_npq_data(ps, metadata):
             name='ojip_dark'
         )
         psd.attrs["long_name"] = "OJIP dark-adapted measurements"
-        ps.add_data(psd)
+        ps.ojip_dark = psd
 
         _debug(visual=ps.ojip_dark.squeeze('measurement', drop=True),
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSD-frames.png"),
@@ -222,7 +321,7 @@ def _process_npq_data(ps, metadata):
             name='ojip_light'
         )
         psd.attrs["long_name"] = "OJIP light-adapted measurements"
-        ps.add_data(psd)
+        ps.ojip_light = psd
 
         _debug(visual=ps.ojip_light.squeeze('measurement', drop=True),
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSL-frames.png"),
@@ -256,7 +355,7 @@ def _process_pmd_data(ps, metadata):
             name='pam_dark'
         )
         pmd.attrs["long_name"] = "pam dark-adapted measurements"
-        ps.add_data(pmd)
+        ps.pam_dark = pmd
 
         _debug(visual=ps.pam_dark.squeeze('measurement', drop=True),
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PMD-frames.png"),
@@ -290,7 +389,7 @@ def _process_pml_data(ps, metadata):
             name='pam_light'
         )
         pml.attrs["long_name"] = "pam light-adapted measurements"
-        ps.add_data(pml)
+        ps.pam_light = pml
 
         _debug(visual=ps.pam_light.squeeze('measurement', drop=True),
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PML-frames.png"),
@@ -381,7 +480,7 @@ def _process_pmt_data(ps, metadata):
         )
 
         pmt.attrs["long_name"] = "pam time measurements"
-        ps.add_data(pmt)
+        ps.pam_time = pmt
 
         # debug visualization
         _debug(
@@ -393,42 +492,6 @@ def _process_pmt_data(ps, metadata):
             col="frame_label",
             col_wrap=int(np.ceil(len(frame_labels) / 4))
         )
-
-
-def _process_chl_data(ps, metadata):
-    """Read CHL dataset and keep only the Chlorophyll frame as a NumPy array.
-
-    Parameters
-    ----------
-    ps : plantcv.plantcv.classes.PSII_data
-        PSII_data instance.
-    metadata : dict
-        INF file metadata dictionary.
-    """
-    bin_filepath = _dat_filepath(dataset="CHL", datapath=ps.datapath, filename=ps.filename)
-
-    if os.path.exists(bin_filepath):
-        # Read the raw data cube (contains Fdark and Chl)
-        img_cube, _, _ = _read_dat_file(dataset="CHL", filename=bin_filepath,
-                                        height=int(metadata["ImageRows"]),
-                                        width=int(metadata["ImageCols"]))
-
-        # The CHL file typically has: index 0 = Fdark, index 1 = Chl.
-        # Some acquisitions may only contain a single frame (e.g. Chl only, no dark frame).
-        # Select the chlorophyll frame based on the number of frames present
-        num_frames = img_cube.shape[2]
-        # Use the last frame as the chlorophyll frame:
-        # - When there are two frames, indices are [0]=Fdark, [1]=Chl -> use index 1.
-        # - When there is one frame, index [0] is Chl -> use index 0.
-        chl_index = num_frames - 1
-        chl_frame = img_cube[:, :, chl_index]
-
-        # Store as a standard attribute
-        ps.chlorophyll = chl_frame
-
-        # Debugging (modified to handle NumPy array instead of xarray)
-        _debug(visual=ps.chlorophyll,
-               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_CHL-frame.png"))
 
 
 def _process_spc_data(ps, metadata):
@@ -532,7 +595,7 @@ def _process_gfp_data(ps, metadata):
         gfp.attrs["calib_factor"] = float(metadata.get("GfpCalibFactor", metadata.get("GfpCalFactor", "nan")))
         gfp.attrs["meas_power"] = float(metadata.get("GfpMeasPower", "nan"))
         gfp.attrs["shutter"] = float(metadata.get("GfpShutter", metadata.get("GfpShutterFrames", "nan")))
-        ps.add_data(gfp)
+        ps.gfp = gfp
 
         _debug(visual=ps.gfp,
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_GFP-frames.png"),
@@ -570,7 +633,7 @@ def _process_rfp_data(ps, metadata):
         rfp.attrs["calib_factor"] = float(metadata.get("RfpCalibFactor", "nan"))
         rfp.attrs["meas_power"] = float(metadata.get("RfpMeasPower", "nan"))
         rfp.attrs["shutter"] = float(metadata.get("RfpShutter", metadata.get("RfpShutterFrames", "nan")))
-        ps.add_data(rfp)
+        ps.rfp = rfp
 
         _debug(visual=ps.rfp,
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_RFP-frames.png"),
@@ -579,8 +642,7 @@ def _process_rfp_data(ps, metadata):
 
 
 def _process_aph_data(ps, metadata):
-    """
-    Create an xarray DataArray for an APH dataset.
+    """Read APH dataset and keep the Red and FarRed frames as a NumPy array.
 
     Parameters
     ----------
@@ -588,33 +650,39 @@ def _process_aph_data(ps, metadata):
         PSII_data instance.
     metadata : dict
         INF file metadata dictionary.
-
     """
     bin_filepath = _dat_filepath(dataset="APH", datapath=ps.datapath, filename=ps.filename)
-    if os.path.exists(bin_filepath):
-        img_cube, frame_labels, frame_nums = _read_dat_file(dataset="APH", filename=bin_filepath,
-                                                            height=int(metadata["ImageRows"]),
-                                                            width=int(metadata["ImageCols"]))
-        frame_labels = ["Red", "FarRed"]
-        aph = xr.DataArray(
-            data=img_cube,
-            dims=('x', 'y', 'frame_label'),
-            coords={'frame_label': frame_labels,
-                    'frame_num': ('frame_label', frame_nums)},
-            name='aph'
-        )
-        aph.attrs["long_name"] = "Alpha Light absorption coefficient (Reflection) (640nm Red, 732nm FarRed)"
-        aph.attrs["dark_comp_on"] = int(metadata.get("AphDarkCompOn", metadata.get("AlphaDarkCompOn", "0")))
-        aph.attrs["gain_red"] = float(metadata.get("AphGainRed", metadata.get("AlphaGainRed", "nan")))
-        aph.attrs["gain_farred"] = float(metadata.get("AphGainFarRed", metadata.get("AlphaGainFarRed", "nan")))
-        ps.add_data(aph)
 
-        _debug(
-            visual=ps.aph,
-            filename=os.path.join(params.debug_outdir, f"{str(params.device)}_APH-frames.png"),
-            col='frame_label',
-            col_wrap=int(np.ceil(ps.aph.frame_label.size / 4))
+    if os.path.exists(bin_filepath):
+        # Read the raw data cube (contains Fdark, Red, and FarRed or just Red and FarRed)
+        img_cube, _, _ = _read_dat_file(dataset="APH", filename=bin_filepath,
+                                        height=int(metadata["ImageRows"]),
+                                        width=int(metadata["ImageCols"]))
+
+        # The APH file typically has: index 0 = Fdark, index 1 = Red, index 2 = FarRed.
+        # Some acquisitions may only contain two frames (e.g. no dark frame).
+        # Select the Red and FarRed frames based on the number of frames present.
+        # Use the last 2 frames as Red and FarRed:
+        # - When there are 3 frames, indices are [0]=Fdark, [1]=Red, [2]=FarRed -> use indices 1 and 2.
+        # - When there are 2 frames, indices are [0]=Red, [1]=FarRed -> use indices 0 and 1.
+        num_frames = img_cube.shape[2]
+        if num_frames < 2:
+            raise RuntimeError(f"APH DAT file contains {num_frames} frame(s); expected at least 2 (Red and FarRed).")
+        aph_frames = img_cube[:, :, num_frames - 2:num_frames]
+
+        # Store as a standard attribute
+        ps.aph = NamedImageCollection(red=aph_frames[:, :, 0], farred=aph_frames[:, :, 1])
+
+        # Debugging — wrap in a temporary DataArray so frame labels appear in the plot
+        aph_debug = xr.DataArray(
+            data=aph_frames,
+            dims=('x', 'y', 'frame_label'),
+            coords={'frame_label': ['Red', 'FarRed']}
         )
+        _debug(visual=aph_debug,
+               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_APH-frames.png"),
+               col='frame_label',
+               col_wrap=2)
 
 
 def _dat_filepath(dataset, datapath, filename):
