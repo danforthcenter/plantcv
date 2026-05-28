@@ -3,7 +3,7 @@
 Texture analysis outputs numeric properties for individual plants, seeds, leaves, etc.
  
 **plantcv.analyze.texture**(*img, labeled_mask, n_labels=1, methods=None, distances=None, angles=None,
-                            levels=None, symmetric=False, normalize=False, label=None*)
+                            symmetric=False, normalize=False, label=None*)
 
 **returns** analysis_image
 
