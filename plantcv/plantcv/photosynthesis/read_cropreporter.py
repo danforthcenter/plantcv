@@ -6,8 +6,54 @@ from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import PSII_data
 from plantcv.plantcv import Spectral_data
-from plantcv.plantcv.classes import NamedImageCollection
 from skimage.util import img_as_ubyte
+
+
+class APH:
+    """Alpha light absorption coefficient (APH) dataset. Stores the file path at init; image data is loaded on first access."""
+
+    def __init__(self, filepath, height, width):
+        """Initialize APH dataset with file path and image dimensions."""
+        self._filepath = filepath
+        self._height = height
+        self._width = width
+        self._red = None
+        self._farred = None
+
+    def __bool__(self):
+        """The existence of the APH class is true."""
+        return True
+
+    def __repr__(self):
+        """String representation of the APH dataset, indicating whether the data has been loaded."""
+        loaded = self._red is not None and self._farred is not None
+        return f"APH(filepath={self._filepath!r}, loaded={loaded})"
+
+    @property
+    def red(self):
+        """Return the red frame as a NumPy array."""
+        if self._red is None:
+            self._load()
+        return self._red
+
+    @property
+    def farred(self):
+        """Return the far-red frame as a NumPy array."""
+        if self._farred is None:
+            self._load()
+        return self._farred
+
+    def _load(self):
+        """Load the APH frames from the .DAT file."""
+        img_cube, _, _ = _read_dat_file(
+            dataset="APH",
+            filename=str(self._filepath),
+            height=self._height,
+            width=self._width,
+        )
+        # red = second to last frame, far-red = last frame. Fdark frame, if collected, is not stored.
+        self._red = img_cube[:, :, -2]
+        self._farred = img_cube[:, :, -1]
 
 
 class CHL:
@@ -122,6 +168,8 @@ def read_cropreporter(filename):
 
     # Dataset-specific processing functions. Class constructors for lazy loading.
     dataset_classes = {
+        # Alpha light absorption coefficient (APH) data
+        "APH": lambda fp: APH(filepath=fp, height=height, width=width),
         # Chlorophyll fluorescence data
         "CHL": lambda fp: CHL(filepath=fp, height=height, width=width),
         # Color data
@@ -169,7 +217,7 @@ def read_cropreporter(filename):
     _process_rfp_data(ps=ps, metadata=metadata_dict)
 
     # APH reflectance data
-    _process_aph_data(ps=ps, metadata=metadata_dict)
+    # _process_aph_data(ps=ps, metadata=metadata_dict)
 
     return ps
 
@@ -639,50 +687,6 @@ def _process_rfp_data(ps, metadata):
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_RFP-frames.png"),
                col='frame_label',
                col_wrap=int(np.ceil(ps.rfp.frame_label.size / 4)))
-
-
-def _process_aph_data(ps, metadata):
-    """Read APH dataset and keep the Red and FarRed frames as a NumPy array.
-
-    Parameters
-    ----------
-    ps : plantcv.plantcv.classes.PSII_data
-        PSII_data instance.
-    metadata : dict
-        INF file metadata dictionary.
-    """
-    bin_filepath = _dat_filepath(dataset="APH", datapath=ps.datapath, filename=ps.filename)
-
-    if os.path.exists(bin_filepath):
-        # Read the raw data cube (contains Fdark, Red, and FarRed or just Red and FarRed)
-        img_cube, _, _ = _read_dat_file(dataset="APH", filename=bin_filepath,
-                                        height=int(metadata["ImageRows"]),
-                                        width=int(metadata["ImageCols"]))
-
-        # The APH file typically has: index 0 = Fdark, index 1 = Red, index 2 = FarRed.
-        # Some acquisitions may only contain two frames (e.g. no dark frame).
-        # Select the Red and FarRed frames based on the number of frames present.
-        # Use the last 2 frames as Red and FarRed:
-        # - When there are 3 frames, indices are [0]=Fdark, [1]=Red, [2]=FarRed -> use indices 1 and 2.
-        # - When there are 2 frames, indices are [0]=Red, [1]=FarRed -> use indices 0 and 1.
-        num_frames = img_cube.shape[2]
-        if num_frames < 2:
-            raise RuntimeError(f"APH DAT file contains {num_frames} frame(s); expected at least 2 (Red and FarRed).")
-        aph_frames = img_cube[:, :, num_frames - 2:num_frames]
-
-        # Store as a standard attribute
-        ps.aph = NamedImageCollection(red=aph_frames[:, :, 0], farred=aph_frames[:, :, 1])
-
-        # Debugging — wrap in a temporary DataArray so frame labels appear in the plot
-        aph_debug = xr.DataArray(
-            data=aph_frames,
-            dims=('x', 'y', 'frame_label'),
-            coords={'frame_label': ['Red', 'FarRed']}
-        )
-        _debug(visual=aph_debug,
-               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_APH-frames.png"),
-               col='frame_label',
-               col_wrap=2)
 
 
 def _dat_filepath(dataset, datapath, filename):
