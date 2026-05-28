@@ -163,14 +163,13 @@ class PSD:
         # Default frames (when SaveAllFrames == 0)
         f0_frame = 1
         fm_frame = 2
-        # If the method is labeled FvFm
-        if 'FvFmFrameF0' in self._metadata and self._metadata["SaveAllFrames"] != "0":
-            f0_frame = int(self._metadata["FvFmFrameF0"]) + 1
-            fm_frame = int(self._metadata["FvFmFrameFm"]) + 1
-        # If the method is labeled DkOjip
-        if 'DkOjipFrameF0' in self._metadata and self._metadata["SaveAllFrames"] != "0":
-            f0_frame = int(self._metadata["DkOjipFrameF0"]) + 1  # data cube includes Fdark at the beginning
-            fm_frame = int(self._metadata["DkOjipFrameFm"]) + 1
+        # F0 and Fm keys
+        f0_key = "FvFmFrameF0" if "FvFmFrameF0" in self._metadata else "DkOjipFrameF0"
+        fm_key = "FvFmFrameFm" if "FvFmFrameFm" in self._metadata else "DkOjipFrameFm"
+        # Get the F0 and Fm frames based on the metadata if all frames are saved
+        if f0_key in self._metadata and self._metadata["SaveAllFrames"] != "0":
+            f0_frame = int(self._metadata[f0_key]) + 1
+            fm_frame = int(self._metadata[fm_key]) + 1
         frame_labels[0] = 'Fdark'
         frame_labels[f0_frame] = 'F0'
         frame_labels[fm_frame] = 'Fm'
@@ -218,14 +217,13 @@ class PSL:
         # Default frames (when SaveAllFrames == 0)
         fsp_frame = 1
         fmp_frame = 2
-        # If the method is labeled FqFm
-        if 'FqFmFrameFsp' in self._metadata and self._metadata["SaveAllFrames"] != "0":
-            fsp_frame = int(self._metadata["FqFmFrameFsp"]) + 1
-            fmp_frame = int(self._metadata["FqFmFrameFmp"]) + 1
-        # If the method is labeled LtOjip
-        if 'LtOjipFrameFsp' in self._metadata and self._metadata["SaveAllFrames"] != "0":
-            fsp_frame = int(self._metadata["LtOjipFrameFsp"]) + 1
-            fmp_frame = int(self._metadata["LtOjipFrameFmp"]) + 1
+        # F' and Fm' keys
+        fsp_key = "FqFmFrameFsp" if "FqFmFrameFsp" in self._metadata else "LtOjipFrameFsp"
+        fmp_key = "FqFmFrameFmp" if "FqFmFrameFmp" in self._metadata else "LtOjipFrameFmp"
+        # Get the F' and Fm' frames based on the metadata if all frames are saved
+        if fsp_key in self._metadata and self._metadata["SaveAllFrames"] != "0":
+            fsp_frame = int(self._metadata[fsp_key]) + 1
+            fmp_frame = int(self._metadata[fmp_key]) + 1
         frame_labels[0] = "Flight"
         frame_labels[fsp_frame] = 'Fp'
         frame_labels[fmp_frame] = 'Fmp'
