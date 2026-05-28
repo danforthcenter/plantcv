@@ -166,6 +166,7 @@ def _plot_dataset_deltaE(source, n=20, ext="png", **kwargs):
         "y": [1.0, 2.0, 10.0, 49.0],
         "stroke": ["#3D8C3D", "#5A9E28", "#A09000", "#CC7700"],
     })
+    hline_df = hline_df.loc[hline_df['y'] <= max([1, df["deltaE"].max()])]
     hlines = alt.Chart(hline_df).mark_rule(strokeDash=[8, 4]).encode(
         y="y:Q",
         color=alt.Color("stroke:N", scale=None),
@@ -260,6 +261,7 @@ def _plot_single_deltaE(deltaE_matrix):
         "y": [1.0, 2.0, 10.0, 49.0],
         "stroke": ["#3D8C3D", "#5A9E28", "#A09000", "#CC7700"],
     })
+    hline_df = hline_df.loc[hline_df['y'] <= max([1, df["deltaE"].max()])]
     hlines = alt.Chart(hline_df).mark_rule(strokeDash=[8, 4]).encode(
         y="y:Q",
         color=alt.Color("stroke:N", scale=None),
