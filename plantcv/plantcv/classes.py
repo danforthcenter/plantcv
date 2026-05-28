@@ -140,11 +140,3 @@ class Objects:
         file = np.load(filename)
         obj = Objects(file['contours'].tolist(), file['hierarchy'])
         return obj
-
-
-class NamedImageCollection:
-    """Class for managing a collection of images with associated names."""
-
-    def __init__(self, **images):
-        for name, img in images.items():
-            setattr(self, name, img)
