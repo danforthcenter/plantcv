@@ -92,6 +92,10 @@ Removed `label` parameter since size marker data is now stored as metadata in th
 Deprecated the function in favor of the new
 [`plantcv.transform.detect_color_card`](transform_detect_color_card.md) function.
 
+#### plantcv.transform.quick_color_check
+
+Function moved to `plantcv.qc.quick_color_check` and the `num_chips` argument is now optional.
+
 #### plantcv.visualize.time_lapse_video
 
 Deprecated the function to enable compatibility with the opencv-headless package. Will be readded in a future release.
@@ -997,7 +1001,7 @@ pages for more details on the input and output variable types.
 #### plantcv.qc.quick_color_check
 
 * pre v5.0: NA, see `plantcv.transform.quick_color_check`
-* post v5.0: chart = **plantcv.transform.quick_color_check**(*target_matrix, source_matrix, num_chips*)
+* post v5.0: chart = **plantcv.transform.quick_color_check**(*target_matrix, source_matrix, num_chips=None*)
 
 #### plantcv.readbayer
 
