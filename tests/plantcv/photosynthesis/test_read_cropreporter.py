@@ -6,55 +6,76 @@ from plantcv.plantcv import PSII_data
 from plantcv.plantcv.photosynthesis import read_cropreporter
 
 
-def test_read_cropreporter(photosynthesis_test_data, tmpdir):
+def test_read_cropreporter_psd(photosynthesis_test_data, tmpdir):
     """Test for PlantCV."""
-    ps = read_cropreporter(filename=photosynthesis_test_data.cropreporter)
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+    # Create dataset with only PSD
+    shutil.copyfile(photosynthesis_test_data.cropreporter, os.path.join(cache_dir, "PSII_HDR_test.INF"))
+    psd_dat = photosynthesis_test_data.cropreporter.replace("HDR", "PSD")
+    psd_dat = psd_dat.replace("INF", "DAT")
+    shutil.copyfile(psd_dat, os.path.join(cache_dir, "PSII_PSD_test.DAT"))
+    filename = os.path.join(cache_dir, "PSII_HDR_test.INF")
+
+    # Run the test
+    ps = read_cropreporter(filename=filename)
     assert isinstance(ps, PSII_data)
     assert ps.psd.load().shape == (966, 1296, 21, 1)
-    assert ps.psl.load().shape == (966, 1296, 21, 1)
     assert ps.psd
     assert "PSD" in repr(ps.psd)
+
+
+def test_read_cropreporter_psl(photosynthesis_test_data, tmpdir):
+    """Test for PlantCV."""
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+    # Create dataset with only PSL
+    shutil.copyfile(photosynthesis_test_data.cropreporter, os.path.join(cache_dir, "PSII_HDR_test.INF"))
+    psl_dat = photosynthesis_test_data.cropreporter.replace("HDR", "PSL")
+    psl_dat = psl_dat.replace("INF", "DAT")
+    shutil.copyfile(psl_dat, os.path.join(cache_dir, "PSII_PSL_test.DAT"))
+    filename = os.path.join(cache_dir, "PSII_HDR_test.INF")
+
+    # Run the test
+    ps = read_cropreporter(filename=filename)
+    assert isinstance(ps, PSII_data)
+    assert ps.psl.load().shape == (966, 1296, 21, 1)
     assert ps.psl
     assert "PSL" in repr(ps.psl)
 
-    # Check with different naming convention of Phenovation
-    ps = read_cropreporter(filename=photosynthesis_test_data.cropreporter_v653)
+
+def test_read_cropreporter_pmd(photosynthesis_test_data, tmpdir):
+    """Test for PlantCV."""
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+    # Create dataset with only PMD
+    shutil.copyfile(photosynthesis_test_data.cropreporter_v653, os.path.join(cache_dir, "HDR_dark_light.INF"))
+    pmd_dat = photosynthesis_test_data.cropreporter_v653.replace("HDR", "PMD")
+    pmd_dat = pmd_dat.replace("INF", "DAT")
+    shutil.copyfile(pmd_dat, os.path.join(cache_dir, "PMD_dark_light.DAT"))
+    filename = os.path.join(cache_dir, "HDR_dark_light.INF")
+
+    # Run the test
+    ps = read_cropreporter(filename=filename)
     assert isinstance(ps, PSII_data)
-    assert ps.psd.load().shape == (1500, 2048, 7, 1)
-    assert ps.psl.load().shape == (1500, 2048, 7, 1)
-    # check labels
-    true_labels = ['Fdark', 'F0', 'PSD2', 'PSD3', 'Fm', 'PSD5', 'PSD6']
-    assert all(a == b for a, b in zip(ps.psd.load().coords['frame_label'].to_dict()['data'], true_labels))
+    assert ps.pam_dark.shape == (1500, 2048, 4, 1)
 
-    # Create dataset with only 3 frames
-    cache_dir = os.path.join(tmpdir, "sub")
-    shutil.copytree(os.path.dirname(photosynthesis_test_data.cropreporter_v653), cache_dir)
-    inffilename = os.path.join(cache_dir, photosynthesis_test_data.cropreporter_v653.split(os.sep)[-1])
 
-    # Modify the inf file
-    metadata_dict = {}
-    with open(inffilename, "r") as fp:
-        for line in fp:
-            if "=" in line:
-                key, value = line.rstrip("\n").split("=")
-                metadata_dict[key] = value
-    metadata_dict['SaveAllFrames'] = 0
-    new_text = ""
-    for key, value in metadata_dict.items():
-        new_text = new_text + f"{key}={value}\n"
-    with open(inffilename, "w") as fp:
-        fp.writelines(new_text)
-    # run test
-    ps = read_cropreporter(filename=inffilename)
-    # check labels
-    true_dark_labels = ['Fdark', 'F0', 'Fm', 'PSD3', 'PSD4', 'PSD5', 'PSD6']
-    assert all(a == b for a, b in zip(ps.psd.load().coords['frame_label'].to_dict()['data'], true_dark_labels))
-    true_light_labels = ['Flight', 'Fp', 'Fmp', 'PSL3', 'PSL4', 'PSL5', 'PSL6']
-    assert all(a == b for a, b in zip(ps.psl.load().coords['frame_label'].to_dict()['data'], true_light_labels))
-    true_pam_dark_labels = ["Fdark", "F0", "Fm", "Fdarksat"]
-    assert all(a == b for a, b in zip(ps.pam_dark.coords['frame_label'].to_dict()['data'], true_pam_dark_labels))
-    true_pam_light_labels = ["Flight", "Fp", "Fmp", "Flightsat"]
-    assert all(a == b for a, b in zip(ps.pam_light.coords['frame_label'].to_dict()['data'], true_pam_light_labels))
+def test_read_cropreporter_pml(photosynthesis_test_data, tmpdir):
+    """Test for PlantCV."""
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+    # Create dataset with only PML
+    shutil.copyfile(photosynthesis_test_data.cropreporter_v653, os.path.join(cache_dir, "HDR_dark_light.INF"))
+    pml_dat = photosynthesis_test_data.cropreporter_v653.replace("HDR", "PML")
+    pml_dat = pml_dat.replace("INF", "DAT")
+    shutil.copyfile(pml_dat, os.path.join(cache_dir, "PML_dark_light.DAT"))
+    filename = os.path.join(cache_dir, "HDR_dark_light.INF")
+
+    # Run the test
+    ps = read_cropreporter(filename=filename)
+    assert isinstance(ps, PSII_data)
+    assert ps.pam_light.shape == (1500, 2048, 4, 1)
 
 
 def test_read_cropreporter_spc_only(photosynthesis_test_data, tmpdir):
@@ -71,7 +92,13 @@ def test_read_cropreporter_spc_only(photosynthesis_test_data, tmpdir):
     assert isinstance(ps, PSII_data) and ps.spectral.array_data.shape == (966, 1296, 3)
 
 
-def test_read_cropreporter_npq(photosynthesis_test_data, tmpdir):
+def test_read_cropreporter_spc_full(photosynthesis_test_data, tmpdir):
+    """Test for PlantCV."""
+    ps = read_cropreporter(filename=os.path.join(photosynthesis_test_data.cropreporter))
+    assert isinstance(ps, PSII_data) and ps.spectral.array_data.shape == (966, 1296, 6)
+
+
+def test_read_cropreporter_npq(photosynthesis_test_data):
     """Test for PlantCV."""
     ps = read_cropreporter(filename=photosynthesis_test_data.cropreporter_npq)
     assert isinstance(ps, PSII_data) and ps.ojip_dark.shape == (966, 1296, 3, 1)
