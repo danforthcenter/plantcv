@@ -1,6 +1,5 @@
 """Calculate Delta E between color cards"""
 import os
-import cv2
 import numpy as np
 from skimage import color
 from matplotlib import pyplot as plt
@@ -41,8 +40,8 @@ def _delta_e(obs_rgb, card_type=None, obs="uncalibrated", method="deltaE_ciede20
         obs_mat = (255 * np.delete(obs_rgb, 0, axis=1).reshape(6, 4, 3)).astype("uint8")
         exp_mat = (255 * np.rot90(np.delete(std, 0, axis=1).reshape(4, 6, 3), 3)).astype("uint8")
     # convert to LAB for skimage color functions
-    obs_lab = cv2.cvtColor(obs_mat, cv2.COLOR_RGB2LAB)
-    exp_lab = cv2.cvtColor(exp_mat, cv2.COLOR_RGB2LAB)
+    obs_lab = color.rgb2lab(obs_mat)
+    exp_lab = color.rgb2lab(exp_mat)
     # get function from skimage color
     delta_e_fun = getattr(color, method)
     # there are other parameters we could allow changes to but I don't think we need to yet.
@@ -55,14 +54,15 @@ def _delta_e(obs_rgb, card_type=None, obs="uncalibrated", method="deltaE_ciede20
     # make a debug plot
     if params.debug:
         params.device += 1
-        _, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
         ax1.imshow(obs_mat)
         ax1.set_title(obs.title() + ' Color Card')
         ax2.imshow(exp_mat)
         ax2.set_title('Reference Colors')
-    if params.debug == "print":
-        plt.savefig(fname=os.path.join(params.debug_outdir, f"{params.device}_{obs}_{method}.png"))
-    if params.debug == "plot":
-        plt.show()
+        if params.debug == "print":
+            fig.savefig(fname=os.path.join(params.debug_outdir, f"{params.device}_{obs}_{method}.png"))
+        if params.debug == "plot":
+            plt.show()
+        plt.close(fig)
 
     return delta_e_mat
