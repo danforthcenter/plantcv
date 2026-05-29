@@ -39,14 +39,21 @@ def _format_kernel(k, to=int):
         ----------
         k : int, tuple, or numpy.ndarray
             a kernel size or kernel
-        to : a format to convert k to (int, tuple, or np.ndarray)
+        to : tuple, accepted classes to convert k to including any of
+            int, tuple, or np.ndarray. This should be set internally
+            and depends on how the kernel argument is going to be used.
 
         Returns
         -------
-        kernel specified as class from `to`
+        kernel specified as 'most complex' class from `to`
         """
         if isinstance(k, to):
             return k
+        if not isinstance(to, tuple):
+            to = [to]
+
+        # if not, pick the next most informative specification from `to`
+        convert_to = [cls for cls in [np.ndarray, tuple, int] if cls in to][0]
 
         conversions = {
             (int, np.ndarray): lambda v: get_kernel((v, v), "rectangle"),
@@ -57,4 +64,4 @@ def _format_kernel(k, to=int):
             (np.ndarray, int): lambda v: np.shape(v)[0],
         }
 
-        return conversions[(type(k), to)](k)
+        return conversions[(type(k), convert_to)](k)
