@@ -9,6 +9,7 @@ from plantcv.plantcv.transform.color_correction import create_color_card_mask
 from plantcv.plantcv.transform.color_correction import std_color_matrix
 from plantcv.plantcv.transform.color_correction import astro_color_matrix
 from plantcv.plantcv.transform.color_correction import affine_color_correction
+from plantcv.plantcv.transform.detect_color_card import deltaE
 from plantcv.plantcv.transform.detect_color_card import detect_color_card
 from plantcv.plantcv.transform.detect_color_card import mask_color_card
 from plantcv.plantcv.transform.rescale import rescale
@@ -25,6 +26,6 @@ from plantcv.plantcv.transform.auto_correct_color import auto_correct_color_nonl
 __all__ = ["get_color_matrix", "get_matrix_m", "calc_transformation_matrix", "apply_transformation_matrix",
            "save_matrix", "load_matrix", "correct_color", "create_color_card_mask",
            "std_color_matrix", "affine_color_correction", "rescale", "nonuniform_illumination", "resize",
-           "resize_factor", "warp", "rotate", "warp", "warp_align", "gamma_correct", "detect_color_card", "checkerboard_calib",
-           "calibrate_camera", "merge_images", "auto_correct_color", "mask_color_card", "auto_correct_color_nonlinear",
-           "astro_color_matrix"]
+           "resize_factor", "warp", "rotate", "warp", "warp_align", "gamma_correct", "deltaE",
+           "detect_color_card", "checkerboard_calib", "calibrate_camera", "merge_images", "auto_correct_color",
+           "mask_color_card", "auto_correct_color_nonlinear", "astro_color_matrix"]

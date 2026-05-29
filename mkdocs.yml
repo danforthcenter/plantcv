@@ -35,6 +35,7 @@ nav:
         - 'Analyze Size and Shape': analyze_size.md
         - 'Horizontal Boundary Tool': analyze_bound_horizontal2.md
         - 'Vertical Boundary Tool': analyze_bound_vertical2.md
+        - 'Analyze Texture': analyze_texture.md
         - 'Analyze Thermal': analyze_thermal.md
         - 'Analyze Spectral Reflectance': analyze_spectral_reflectance.md
         - 'Analyze Spectral Index': analyze_spectral_index.md
@@ -190,6 +191,8 @@ nav:
           - 'Create Color Card Mask': create_color_card_mask.md
           - 'Convert Color Card to Matrix': get_color_matrix.md
           - 'Color Correction Workflow': transform_correct_color.md
+          - 'Quick Color Check': quick_color_check.md
+          - 'Delta E Metric': transform_deltaE.md
           - 'Affine Color Correction': transform_affine_color_correction.md
           - 'Standard Color Matrix': std_color_matrix.md
           - 'Gamma Correction': transform_gamma_correct.md
