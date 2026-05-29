@@ -55,14 +55,15 @@ def _delta_e(obs_rgb, card_type=None, obs="uncalibrated", method="deltaE_ciede20
     # make a debug plot
     if params.debug:
         params.device += 1
-        _, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
         ax1.imshow(obs_mat)
         ax1.set_title(obs.title() + ' Color Card')
         ax2.imshow(exp_mat)
         ax2.set_title('Reference Colors')
-    if params.debug == "print":
-        plt.savefig(fname=os.path.join(params.debug_outdir, f"{params.device}_{obs}_{method}.png"))
-    if params.debug == "plot":
-        plt.show()
+        if params.debug == "print":
+            fig.savefig(fname=os.path.join(params.debug_outdir, f"{params.device}_{obs}_{method}.png"))
+        if params.debug == "plot":
+            plt.show()
+        plt.close(fig)
 
     return delta_e_mat
