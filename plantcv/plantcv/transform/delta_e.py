@@ -41,8 +41,8 @@ def _delta_e(obs_rgb, card_type=None, obs="uncalibrated", method="deltaE_ciede20
         obs_mat = (255 * np.delete(obs_rgb, 0, axis=1).reshape(6, 4, 3)).astype("uint8")
         exp_mat = (255 * np.rot90(np.delete(std, 0, axis=1).reshape(4, 6, 3), 3)).astype("uint8")
     # convert to LAB for skimage color functions
-    obs_lab = cv2.cvtColor(obs_mat, cv2.COLOR_RGB2LAB)
-    exp_lab = cv2.cvtColor(exp_mat, cv2.COLOR_RGB2LAB)
+    obs_lab = color.rgb2lab(obs_mat)
+    exp_lab = color.rgb2lab(exp_mat)
     # get function from skimage color
     delta_e_fun = getattr(color, method)
     # there are other parameters we could allow changes to but I don't think we need to yet.
