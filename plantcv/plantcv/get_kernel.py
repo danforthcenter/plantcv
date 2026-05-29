@@ -1,6 +1,7 @@
 # Create a kernel structuring element
 
 import cv2
+import numpy as np
 from plantcv.plantcv import fatal_error
 
 
@@ -30,3 +31,30 @@ def get_kernel(size, shape):
         fatal_error("Shape " + str(shape) + " is not rectangle, ellipse or cross!")
 
     return kernel
+
+
+def _format_kernel(k, to=int):
+        """turn a kernel/ksize into an array/tuple kernel
+        Parameters
+        ----------
+        k : int, tuple, or numpy.ndarray
+            a kernel size or kernel
+        to : a format to convert k to (int, tuple, or np.ndarray)
+
+        Returns
+        -------
+        kernel specified as class from `to`
+        """
+        if isinstance(k, to):
+            return k
+
+        conversions = {
+            (int, np.ndarray): lambda v: get_kernel((v, v), "rectangle"),
+            (tuple, np.ndarray): lambda v: get_kernel(v, "rectangle"),
+            (int, tuple): lambda v: (v, v),
+            (np.ndarray, tuple): np.shape,
+            (tuple, int): lambda v: v[0],
+            (np.ndarray, int): lambda v: np.shape(v)[0],
+        }
+
+        return conversions[(type(k), to)](k)
