@@ -2,7 +2,7 @@
 
 Automatically detects a Macbeth ColorChecker or Astrobotany.com Calibration Sticker style color card and creates a labeled mask.
 
-**plantcv.transform.detect_color_card**(*rgb_img, color_chip_size=None, roi=None, deltaE=True, \*\*kwargs*)
+**plantcv.transform.detect_color_card**(*rgb_img, color_chip_size=None, roi=None, delta_E=True, \*\*kwargs*)
 
 **returns** color_matrix
 

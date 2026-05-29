@@ -740,7 +740,7 @@ def deltaE(rgb_img, color_chip_size=None, roi=None, obs="calibrated", **kwargs):
     delta_E
         numpy.ndarray, Delta E values between color chips.
     """
-    obs_rgb = detect_color_card(rgb_img, color_chip_size, roi, deltaE=False, **kwargs)
+    obs_rgb = detect_color_card(rgb_img, color_chip_size, roi, delta_E=False, **kwargs)
     delta_E = _delta_e(obs_rgb, color_chip_size, obs)
     return delta_E
 
