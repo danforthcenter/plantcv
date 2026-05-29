@@ -1,6 +1,5 @@
 """Calculate Delta E between color cards"""
 import os
-import cv2
 import numpy as np
 from skimage import color
 from matplotlib import pyplot as plt
