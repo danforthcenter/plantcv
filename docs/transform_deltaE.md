@@ -51,7 +51,7 @@ corrected_img = pcv.transform.affine_color_correction(rgb_img=rgb_img,
                                                       target_matrix=tgt_matrix)
 
 # Delta E on the corrected image
-e_matrix = deltaE(corrected_img)
+e_matrix = pcv.transform.deltaE(corrected_img)
 # outputs metadata will have min, mean, max, std dev of deltaE
 print(pcv.outputs.metadata["deltaE_uncalibrated"])  # the uncalibrated metadata is added by detect_color_card
 print(pcv.outputs.metadata["deltaE_calibrated"]) # the calibrated metadata is added by deltaE
