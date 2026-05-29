@@ -13,9 +13,9 @@ PSII_data instance containing [xarray DataArrays](http://xarray.pydata.org/en/st
 - **Context:**
     - Reads in binary image files to be processed and does so using the metadata contained within a corresponding .INF
       file.
-    - Measurements from dark-adapted plant state are stored in the attribute `ojip_dark` or `pam_dark`, depending on the measurement protocol. Frames F0 and Fm are
+    - Measurements from dark-adapted plant state are stored in the attribute `psd` (ojip) or `pam_dark`, depending on the measurement protocol. Frames F0 and Fm are
       labeled according to the metadata in .INF. The default measurement label is 't0'.
-    - Measurements from light-adapted plant state are stored in the attribute `ojip_light` or `pam_light`, depending on the measurement protocol. Frames Fp and Fmp are
+    - Measurements from light-adapted plant state are stored in the attribute `psl` (ojip) or `pam_light`, depending on the measurement protocol. Frames Fp and Fmp are
       labeled according to the metadata in .INF. The default measurement label is 't1'.
     - Time-resolved PAM fluorescence measurements are stored in the attribute `pam_time`. Frames F0, Fm, Fp, Fmp, F0pp, and Fmpp are
       labeled according to the metadata in .INF, with measurement labels starting at 't0' (e.g. t0, t1, t2, ...).
@@ -48,7 +48,7 @@ ps = pcv.photosynthesis.read_cropreporter(filename="PSII_HDR_020321_WT_TOP_1.INF
 ps
 
 # to see the frames you imported use xarray plot methods e.g.
-ps.ojip_dark.plot(col='frame_label', col_wrap=4)
+ps.psd.load().plot(col='frame_label', col_wrap=4)
 
 ```
 
