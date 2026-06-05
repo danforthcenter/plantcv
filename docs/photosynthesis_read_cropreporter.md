@@ -1,8 +1,7 @@
 ## Read CropReporter Fluorescence Image Files
 
 Reads .INF/.DAT image data from a [PhenoVation CropReporter system](https://phenovation.com/cropreporter/) into a
-PSII_data instance containing [xarray DataArrays](http://xarray.pydata.org/en/stable/generated/xarray.DataArray.html)
-with labeled frames.
+PSII_data instance containing [xarray DataArrays](http://xarray.pydata.org/en/stable/generated/xarray.DataArray.html) with labeled frames and NumPy array/ndarray, depending on the input files.
 
 **plantcv.photosynthesis.read_cropreporter**(*filename*)
 
@@ -14,12 +13,17 @@ with labeled frames.
 - **Context:**
     - Reads in binary image files to be processed and does so using the metadata contained within a corresponding .INF
       file.
-    - Measurements from dark-adapted plant state are stored in the attribute `ojip_dark` or `pam_dark`, depending on the measurement protocol. Frames F0 and Fm are
+    - Measurements from dark-adapted plant state are stored in the attribute `psd` (ojip) or `pam_dark`, depending on the measurement protocol. Frames F0 and Fm are
       labeled according to the metadata in .INF. The default measurement label is 't0'.
-    - Measurements from light-adapted plant state are stored in the attribute `ojip_light` or `pam_light`, depending on the measurement protocol. Frames Fp and Fmp are
+    - Measurements from light-adapted plant state are stored in the attribute `psl` (ojip) or `pam_light`, depending on the measurement protocol. Frames Fp and Fmp are
       labeled according to the metadata in .INF. The default measurement label is 't1'.
-    - Measurements from chlorophyll fluorescence are stored in the attribute `chlorophyll` and include a dark frame
-      (Fdark) and chlorophyll fluorescence frame (Chl).
+    - Time-resolved PAM fluorescence measurements are stored in the attribute `pam_time`. Frames F0, Fm, Fp, Fmp, F0pp, and Fmpp are
+      labeled according to the metadata in .INF, with measurement labels starting at 't0' (e.g. t0, t1, t2, ...).
+    - Measurements from chlorophyll fluorescence are stored in the attribute `chl` and include a chlorophyll fluorescence frame (Chl) stored as NumPy array/ndarray access as `ps.chl.chlorophyll`. The Fdark frame, if collected, is not stored.
+    - Measurements from color are stored in the attribute `clr` and include a color image frame (CLR) stored as NumPy array/ndarray access as `ps.clr.color`.
+    - Green fluorescence protein (GFP) measurements are stored in the attribute `gfp` and include frames for dark fluorescence (Fdark), GFP fluorescence (GFP, 525 nm), and autofluorescence (Auto, 585 nm).
+    - Red fluorescence protein (RFP) measurements are stored in the attribute `rfp` and include frames for dark fluorescence (Fdark) and RFP fluorescence (585 nm).
+    - Alpha light absorption coefficient (APH) measurements are stored in the attribute `aph` and include reflected light frames for red (640 nm) and far-red (732 nm) wavelengths. `ps.aph` contains the red and far-red frames, which are accessed as `ps.aph.red` and `ps.aph.farred`, respectively. The Fdark frame, if collected, is not stored. 
     - Spectral measurements are stored as a PlantCV [Spectral_data](Spectral_data.md) object in the attribute
       `spectral`. Frames are stored by reflectance wavelength and can include: blue (475nm), green (550nm), red (640nm),
       green2 (540nm), far-red (710nm), and near-infrared (770nm).
@@ -44,7 +48,7 @@ ps = pcv.photosynthesis.read_cropreporter(filename="PSII_HDR_020321_WT_TOP_1.INF
 ps
 
 # to see the frames you imported use xarray plot methods e.g.
-ps.ojip_dark.plot(col='frame_label', col_wrap=4)
+ps.psd.load().plot(col='frame_label', col_wrap=4)
 
 ```
 
@@ -56,12 +60,28 @@ ps.ojip_dark.plot(col='frame_label', col_wrap=4)
 
 ![Screenshot](img/documentation_images/photosynthesis_read_cropreporter/1_PSL-frames.png)
 
+**PAM Time fluorescence measurements**
+
+![Screenshot](img/documentation_images/photosynthesis_read_cropreporter/7_PMT-frames.png)
+
 **Chlorophyll fluorescence measurements**
 
-![Screenshot](img/documentation_images/photosynthesis_read_cropreporter/2_CHL-frames.png)
+![Screenshot](img/documentation_images/photosynthesis_read_cropreporter/2_CHL-frame.png)
 
 **Spectral reflectance measurements**
 
 ![Screenshot](img/documentation_images/photosynthesis_read_cropreporter/3_spectral-RGB.png)
+
+**Green fluorescence protein (GFP) measurements**
+
+![Screenshot](img/documentation_images/photosynthesis_read_cropreporter/4_gfp_frames.png)
+
+**Red fluorescence protein (RFP) measurements**
+
+![Screenshot](img/documentation_images/photosynthesis_read_cropreporter/5_rfp_frames.png)
+
+**Alpha light absorption coefficient (APH) measurements**
+
+![Screenshot](img/documentation_images/photosynthesis_read_cropreporter/6_APH-frames.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/photosynthesis/read_cropreporter.py)

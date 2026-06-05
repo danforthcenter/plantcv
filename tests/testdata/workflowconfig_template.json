@@ -1,6 +1,6 @@
 {
     "input_dir": "",
-    "json": "",
+    "results": "",
     "filename_metadata": [],
     "include_all_subdirs": true,
     "workflow": "",
@@ -17,12 +17,13 @@
     "other_args": {},
     "groupby": ["filepath"],
     "group_name": "auto",
+    "checkpoint": true,
     "cleanup": true,
     "append": false,
+    "verbose": true,
     "cluster": "LocalCluster",
     "cluster_config": {
         "n_workers": 1,
-        "cores": 1,
         "memory": "1GB",
         "disk": "1GB",
         "log_directory": null,

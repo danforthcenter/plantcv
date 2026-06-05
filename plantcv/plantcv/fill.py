@@ -3,7 +3,7 @@
 import numpy as np
 import os
 from plantcv.plantcv import fatal_error
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _rect_filter, _rect_replace
 from skimage.morphology import remove_small_objects
@@ -37,7 +37,7 @@ def fill(bin_img, size, roi=None):
     bool_img = _rect_filter(bool_img,
                             roi=roi,
                             function=remove_small_objects,
-                            **{"min_size" : size})
+                            **{"max_size" : size})
     # Cast boolean image to binary and make a copy of the binary image for returning
     filtered_img = np.copy(bool_img.astype(np.uint8) * 255)
     # slice the subset image back into full size binary image
