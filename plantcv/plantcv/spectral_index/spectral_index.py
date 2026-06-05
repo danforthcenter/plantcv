@@ -98,7 +98,7 @@ def gndvi(hsi, distance=20):
         r550 = (hsi.array_data[:, :, r550_index])
         # Naturally ranges from -1 to 1
         index_array_raw = (r800 - r550) / (r800 + r550)
-        return _package_index(hsi=hsi, raw_index=index_array_raw, method="GDVI")
+        return _package_index(hsi=hsi, raw_index=index_array_raw, method="GNDVI")
     warn("Available wavelengths are not suitable for calculating GNDVI. Try increasing distance.")
     return None
 
