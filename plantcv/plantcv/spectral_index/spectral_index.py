@@ -72,6 +72,7 @@ def gdvi(hsi, distance=20):
     warn("Available wavelengths are not suitable for calculating GDVI. Try increasing distance.")
     return None
 
+
 def gndvi(hsi, distance=20):
     """Green Normalized Difference Vegetation Index.
 
@@ -100,6 +101,7 @@ def gndvi(hsi, distance=20):
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="GDVI")
     warn("Available wavelengths are not suitable for calculating GNDVI. Try increasing distance.")
     return None
+
 
 def savi(hsi, distance=20):
     """Soil Adjusted Vegetation Index.

@@ -1,6 +1,6 @@
 from plantcv.plantcv.spectral_index.spectral_index import ndvi
 from plantcv.plantcv.spectral_index.spectral_index import gdvi
-from plantcv.plantcv.spectral_index.spectral_index import gndiv
+from plantcv.plantcv.spectral_index.spectral_index import gndvi
 from plantcv.plantcv.spectral_index.spectral_index import savi
 from plantcv.plantcv.spectral_index.spectral_index import pri
 from plantcv.plantcv.spectral_index.spectral_index import ari
