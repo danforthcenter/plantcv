@@ -210,7 +210,7 @@ Here, we use ~R800 for NIR and ~R550 for GREEN:
 GDVI = (R800 - R550)
 ```
 
-Index range: -2.0, 2.0
+Index range: -1.0, 1.0
 
 **plantcv.spectral_index.gdvi**(*hsi, distance=20*)
 
