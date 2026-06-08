@@ -38,7 +38,8 @@ def _format_kernel(k, to=int):
         Parameters
         ----------
         k : int, tuple, or numpy.ndarray
-            a kernel size or kernel
+            Kernel specified as a binary numpy.ndarray for arbitrary shapes,
+            shape tuple for a rectangular kernel, or integer for a square kernel.
         to : tuple, accepted classes to convert k to including any of
             int, tuple, or np.ndarray. This should be set internally
             and depends on how the kernel argument is going to be used.

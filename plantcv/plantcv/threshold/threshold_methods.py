@@ -6,6 +6,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from plantcv.plantcv import fatal_error, warn, params
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv.get_kernel import _format_kernel
 from plantcv.plantcv._helpers import _rgb2lab, _rgb2hsv, _rgb2gray, _rgb2cmyk
 from skimage.feature import graycomatrix, graycoprops
 from scipy.ndimage import generic_filter
@@ -58,25 +59,27 @@ def gaussian(gray_img, ksize, offset, object_type="light"):
     In the Gaussian adaptive threshold, the local average is a weighed average of the pixel values
     in the block, where the weights are a 2D Gaussian centered in the middle.
 
-    Inputs:
-    gray_img     = Grayscale image data
-    ksize        = Size of the block of pixels used to compute the local average
-    offset       = Value substracted from the local average to compute the local threshold.
-                    A negative offset sets the local threshold above the local average.
-    object_type  = "light" or "dark" (default: "light")
-                   - "light" (for objects brighter than the background) sets the pixels above
-                        the local threshold to 255 and the pixels below to 0.
-                   - "dark" (for objects darker than the background) sets the pixels below the
-                        local threshold to 255 and the pixels above to 0.
+    Parameters:
+    -------
+    gray_img     = numpy.ndarray,
+        Grayscale image data
+    ksize        = int, numpy.ndarray, or tuple
+        Kernel specified as a binary numpy.ndarray for arbitrary shapes,
+        shape tuple for a rectangular kernel, or integer for a square kernel.
+    offset       = float,
+        Value substracted from the local average to compute the local threshold.
+        A negative offset sets the local threshold above the local average.
+    object_type  = str,
+        "light" or "dark" (default: "light")
+               - "light" (for objects brighter than the background) sets the pixels above
+                    the local threshold to 255 and the pixels below to 0.
+               - "dark" (for objects darker than the background) sets the pixels below the
+                    local threshold to 255 and the pixels above to 0.
 
     Returns:
-    bin_img      = Thresholded, binary image
-
-    :param gray_img: numpy.ndarray
-    :param ksize: int
-    :param offset: float
-    :param object_type: str
-    :return bin_img: numpy.ndarray
+    --------
+    bin_img      = numpy.ndarray,
+        Thresholded binary image
     """
     # Set the threshold method
     threshold_method = ""
@@ -88,8 +91,8 @@ def gaussian(gray_img, ksize, offset, object_type="light"):
         fatal_error('Object type ' + str(object_type) + ' is not "light" or "dark"!')
 
     params.device += 1
-
-    bin_img = _call_adaptive_threshold(gray_img, ksize, offset, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+    k = _format_kernel(ksize, to=int)
+    bin_img = _call_adaptive_threshold(gray_img, k, offset, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
                                        threshold_method, "_gaussian_threshold_")
 
     return bin_img
@@ -105,25 +108,27 @@ def mean(gray_img, ksize, offset, object_type="light"):
 
     In the mean adaptive threshold, the local average is the average of the pixel values in the block.
 
-    Inputs:
-    gray_img     = Grayscale image data
-    ksize        = Size of the block of pixels used to compute the local average
-    offset       = Value substracted from the local average to compute the local threshold.
-                    A negative offset sets the local threshold above the local average.
-    object_type  = "light" or "dark" (default: "light")
-                   - "light" (for objects brighter than the background) sets the pixels above
-                        the local threshold to 255 and the pixels below to 0.
-                   - "dark" (for objects darker than the background) sets the pixels below the
-                        local threshold to 255 and the pixels above to 0.
+    Parameters:
+    -------
+    gray_img     = numpy.ndarray,
+        Grayscale image data
+    ksize        = int, numpy.ndarray, or tuple
+        Kernel specified as a binary numpy.ndarray for arbitrary shapes,
+        shape tuple for a rectangular kernel, or integer for a square kernel.
+    offset       = float,
+        Value substracted from the local average to compute the local threshold.
+        A negative offset sets the local threshold above the local average.
+    object_type  = str,
+        "light" or "dark" (default: "light")
+               - "light" (for objects brighter than the background) sets the pixels above
+                    the local threshold to 255 and the pixels below to 0.
+               - "dark" (for objects darker than the background) sets the pixels below the
+                    local threshold to 255 and the pixels above to 0.
 
     Returns:
-    bin_img      = Thresholded, binary image
-
-    :param gray_img: numpy.ndarray
-    :param ksize: int
-    :param offset: float
-    :param object_type: str
-    :return bin_img: numpy.ndarray
+    --------
+    bin_img      = numpy.ndarray,
+        Thresholded binary image
     """
     # Set the threshold method
     threshold_method = ""
@@ -135,7 +140,7 @@ def mean(gray_img, ksize, offset, object_type="light"):
         fatal_error('Object type ' + str(object_type) + ' is not "light" or "dark"!')
 
     params.device += 1
-
+    k = _format_kernel(ksize, to=int)
     bin_img = _call_adaptive_threshold(gray_img, ksize, offset, cv2.ADAPTIVE_THRESH_MEAN_C,
                                        threshold_method, "_mean_threshold_")
 
@@ -287,28 +292,31 @@ def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity'
     This function is quite slow.
 
     Inputs:
-    gray_img       = Grayscale image data
-    ksize          = Kernel size for texture measure calculation
-    threshold      = Threshold value (0-255)
-    offset         = Distance offsets
-    texture_method = Feature of a grey level co-occurrence matrix, either
-                     'contrast', 'dissimilarity', 'homogeneity', 'ASM', 'energy',
-                     or 'correlation'.For equations of different features see
-                     scikit-image.
-    borders        = How the array borders are handled, either 'reflect',
-                     'constant', 'nearest', 'mirror', or 'wrap'
+    gray_img       = numpy.ndarray,
+        Grayscale image data
+    ksize        = int, numpy.ndarray, or tuple
+        Kernel specified as a binary numpy.ndarray for arbitrary shapes,
+        shape tuple for a rectangular kernel, or integer for a square kernel.
+    threshold      = int,
+        Threshold value (0-255)
+    offset         = float,
+        Distance offsets
+    texture_method = str,
+        Feature of a grey level co-occurrence matrix, either
+        'contrast', 'dissimilarity', 'homogeneity', 'ASM', 'energy',
+        or 'correlation'.For equations of different features see
+        scikit-image.
+    borders        = str,
+        How the array borders are handled, either 'reflect',
+        'constant', 'nearest', 'mirror', or 'wrap'
 
     Returns:
-    bin_img        = Thresholded, binary image
-
-    :param gray_img: numpy.ndarray
-    :param ksize: int
-    :param threshold: int
-    :param offset: int
-    :param texture_method: str
-    :param borders: str
-    :return bin_img: numpy.ndarray
+    --------
+    bin_img        = numpy.ndarray,
+        Thresholded binary image
     """
+    # format kernel
+    k = _format_kernel(ksize, to=int)
     # Function that calculates the texture of a kernel
     def calc_texture(inputs):
         """Kernel calculate texture function.
@@ -323,7 +331,7 @@ def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity'
         float
             Texture value
         """
-        inputs = np.reshape(inputs, (ksize, ksize))
+        inputs = np.reshape(inputs, (k, k))
         inputs = inputs.astype(np.uint8)
         # Greycomatrix takes image, distance offset, angles (in radians), symmetric, and normed
         # http://scikit-image.org/docs/dev/api/skimage.feature.html#skimage.feature.graycomatrix
@@ -335,7 +343,7 @@ def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity'
     output = np.zeros(gray_img.shape, dtype=gray_img.dtype)
 
     # Apply the texture function over the whole image
-    generic_filter(gray_img, calc_texture, size=ksize, output=output, mode=borders)
+    generic_filter(gray_img, calc_texture, size=k, output=output, mode=borders)
 
     # Threshold so higher texture measurements stand out
     bin_img = binary(gray_img=output, threshold=threshold, object_type='light')
