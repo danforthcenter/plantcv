@@ -141,7 +141,7 @@ def mean(gray_img, ksize, offset, object_type="light"):
 
     params.device += 1
     k = _format_kernel(ksize, to=int)
-    bin_img = _call_adaptive_threshold(gray_img, ksize, offset, cv2.ADAPTIVE_THRESH_MEAN_C,
+    bin_img = _call_adaptive_threshold(gray_img, k, offset, cv2.ADAPTIVE_THRESH_MEAN_C,
                                        threshold_method, "_mean_threshold_")
 
     return bin_img
@@ -317,7 +317,9 @@ def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity'
     """
     # format kernel
     k = _format_kernel(ksize, to=int)
+
     # Function that calculates the texture of a kernel
+
     def calc_texture(inputs):
         """Kernel calculate texture function.
 
