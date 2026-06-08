@@ -4,7 +4,6 @@ import os
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _rect_filter, _rect_replace
 from plantcv.plantcv._globals import params
-from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.get_kernel import _format_kernel
 from scipy.ndimage import median_filter
 
