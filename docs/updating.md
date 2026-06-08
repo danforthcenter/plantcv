@@ -94,7 +94,7 @@ Deprecated the function in favor of the new
 
 #### plantcv.transform.quick_color_check
 
-Function moved to `plantcv.qc.quick_color_check` and the `num_chips` argument is now optional.
+Function moved to `plantcv.qc.quick_color_check` and the `num_chips`/`target_matrix` arguments are now optional.
 
 #### plantcv.visualize.time_lapse_video
 
@@ -1004,7 +1004,7 @@ pages for more details on the input and output variable types.
 #### plantcv.qc.quick_color_check
 
 * pre v5.0: NA, see `plantcv.transform.quick_color_check`
-* post v5.0: chart = **plantcv.transform.quick_color_check**(*target_matrix, source_matrix, num_chips=None*)
+* post v5.0: chart = **plantcv.transform.quick_color_check**(*source_matrix, target_matrix=None, num_chips=None*)
 
 #### plantcv.readbayer
 
