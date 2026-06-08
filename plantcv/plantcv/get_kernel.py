@@ -48,6 +48,8 @@ def _format_kernel(k, to=int):
     -------
     kernel specified as 'most complex' class from `to`
     """
+    if k is None:
+        return k
     if isinstance(k, to):
         return k
     if not isinstance(to, tuple):

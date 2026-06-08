@@ -4,6 +4,7 @@ import math
 from skimage import morphology
 from plantcv.plantcv import fatal_error, warn
 from plantcv.plantcv._globals import params
+from plantcv.plantcv.get_kernel import _format_kernel
 import pandas as pd
 
 
@@ -16,8 +17,10 @@ def _closing(gray_img, kernel=None, roi=None):
     ----------
     gray_img = numpy.ndarray
              input image (grayscale or binary)
-    kernel   = numpy.ndarray
-             optional neighborhood, expressed as an array of 1s and 0s. If None, use cross-shaped structuring element.
+    kernel = int, numpy.ndarray, or tuple
+        Kernel specified as a binary numpy.ndarray for arbitrary shapes,
+        shape tuple for a rectangular kernel, or integer for a square kernel.
+        If None, uses cross-shaped structuring element.
     roi : Objects class
              Optional rectangular ROI to erode within
 
@@ -34,11 +37,12 @@ def _closing(gray_img, kernel=None, roi=None):
     # Make sure the image is binary/grayscale
     if len(np.shape(gray_img)) != 2:
         fatal_error("Input image must be grayscale or binary")
+    k = _format_kernel(kernel, to=np.ndarray)
 
     if len(np.unique(gray_img)) <= 2:
         bool_img = gray_img.astype(bool)
         sub_img = _rect_filter(bool_img, roi=roi, function=morphology.binary_closing,
-                               **{"footprint": kernel})
+                               **{"footprint": k})
         filtered_img = sub_img.astype(np.uint8) * 255
         replaced_img = _rect_replace(bool_img.astype(np.uint8) * 255, filtered_img, roi)
     # Otherwise use method appropriate for grayscale images
@@ -46,7 +50,7 @@ def _closing(gray_img, kernel=None, roi=None):
         filtered_img = _rect_filter(gray_img,
                                     roi=roi,
                                     function=morphology.closing,
-                                    **{"footprint": kernel})
+                                    **{"footprint": k})
         replaced_img = _rect_replace(gray_img, filtered_img, roi)
 
     return replaced_img
@@ -96,8 +100,11 @@ def _erode(gray_img, ksize, i, roi=None):
     ----------
     gray_img : numpy.ndarray
              Grayscale (usually binary) image data
-    ksize : int
-             Kernel size (int). A ksize x ksize kernel will be built. Must be greater than 1 to have an effect.
+    ksize    : int, numpy.ndarray, or tuple
+        Kernel specified as a binary numpy.ndarray for arbitrary shapes,
+        shape tuple for a rectangular kernel, or integer for a square kernel.
+        If ksize is an int then a k x k kernel will be built and ksize must
+        be greater than 1 to have an effect.
     i : int
              interations, i.e. number of consecutive filtering passes
     roi : Objects class
@@ -113,13 +120,11 @@ def _erode(gray_img, ksize, i, roi=None):
     ValueError
         If ksize is less than or equal to 1.
     """
-    if ksize <= 1:
+    if isinstance(ksize, int) and ksize <= 1:
         raise ValueError('ksize needs to be greater than 1 for the function to have an effect')
-
-    kernel1 = int(ksize)
-    kernel2 = np.ones((kernel1, kernel1), np.uint8)
+    k = _format_kernel(ksize, to=np.ndarray)
     sub_er_img = _rect_filter(img=gray_img, roi=roi, function=cv2.erode,
-                              **{"kernel": kernel2, "iterations": i})
+                              **{"kernel": k, "iterations": i})
     er_img = _rect_replace(gray_img, sub_er_img, roi)
 
     return er_img
@@ -132,8 +137,11 @@ def _dilate(gray_img, ksize, i, roi=None):
     ----------
     gray_img : numpy.ndarray
         Grayscale image data to be dilated
-    ksize : int
-        Kernel size (int). A k x k kernel will be built. Must be greater than 1 to have an effect.
+    ksize : : int, numpy.ndarray, or tuple
+        Kernel specified as a binary numpy.ndarray for arbitrary shapes,
+        shape tuple for a rectangular kernel, or integer for a square kernel.
+        If ksize is an int then a k x k kernel will be built and ksize must
+        be greater than 1 to have an effect.
     i : int
         Number of iterations (i.e. how many times to apply the dilation).
     roi : Objects class
@@ -149,13 +157,12 @@ def _dilate(gray_img, ksize, i, roi=None):
     ValueError
         If ksize is less than or equal to 1.
     """
-    if ksize <= 1:
+    if isinstance(ksize, int) and ksize <= 1:
         raise ValueError('ksize needs to be greater than 1 for the function to have an effect')
 
-    kernel1 = int(ksize)
-    kernel2 = np.ones((kernel1, kernel1), np.uint8)
+    k = _format_kernel(ksize, to=np.ndarray)
     sub_dil_img = _rect_filter(img=gray_img, roi=roi, function=cv2.dilate,
-                               **{"kernel": kernel2, "iterations": i})
+                               **{"kernel": k, "iterations": i})
     dil_img = _rect_replace(gray_img, sub_dil_img, roi)
 
     return dil_img
