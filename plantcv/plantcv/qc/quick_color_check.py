@@ -22,7 +22,7 @@ def quick_color_check(source_matrix, target_matrix=None, num_chips=None):
     target_matrix      = None or numpy.ndarray,
         an N x 4 matrix containing the avg red, green, and blue values for each color chip
         of the target image. If None will default to output of either
-        plantcv.plantcv.transform.std_color_matrix or astro_color_matrix 
+        plantcv.plantcv.transform.std_color_matrix or astro_color_matrix
     num_chips          = None or int,
         number of color card chips included in the matrices
 
