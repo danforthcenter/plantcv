@@ -4,6 +4,7 @@ import os
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _erode
 from plantcv.plantcv._globals import params
+from plantcv.plantcv.get_kernel import _format_kernel
 
 
 def erode(gray_img, ksize, i, roi=None):
@@ -16,8 +17,10 @@ def erode(gray_img, ksize, i, roi=None):
     ----------
     gray_img : numpy.ndarray
              Grayscale (usually binary) image data
-    ksize : int
-             Kernel size (int). A ksize x ksize kernel will be built. Must be greater than 1 to have an effect.
+    ksize : int, numpy.ndarray, or tuple
+        Kernel specified as a binary numpy.ndarray for arbitrary shapes,
+        shape tuple for a rectangular kernel, or integer for a square kernel.
+        Here any input will be coerced to int.
     i : int
              interations, i.e. number of consecutive filtering passes
     roi : plantcv.plantcv.Objects
@@ -33,11 +36,12 @@ def erode(gray_img, ksize, i, roi=None):
     ValueError
         If ksize is less than or equal to 1.
     """
-    er_img = _erode(gray_img, ksize, i, roi=roi)
+    k = _format_kernel(ksize, int)
+    er_img = _erode(gray_img, k, i, roi=roi)
 
     _debug(er_img,
            filename=os.path.join(params.debug_outdir,
-                                 str(params.device) + '_er_image' + str(ksize) + '_itr_' + str(i) + '.png'),
+                                 str(params.device) + '_er_image' + str(k) + '_itr_' + str(i) + '.png'),
            cmap='gray')
 
     return er_img

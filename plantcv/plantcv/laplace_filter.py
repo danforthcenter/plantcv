@@ -5,6 +5,7 @@ import os
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _rect_filter, _rect_replace
 from plantcv.plantcv._globals import params
+from plantcv.plantcv.get_kernel import _format_kernel
 
 
 def laplace_filter(gray_img, ksize, scale, roi=None):
@@ -13,24 +14,26 @@ def laplace_filter(gray_img, ksize, scale, roi=None):
     sensetive method to highlight edges but will also amplify background noise. ddepth = -1 specifies that the
     dimensions of output image will be the same as the input image.
 
-    Inputs:
-    gray_img    = Grayscale image data
-    ksize       = apertures size used to calculate 2nd derivative filter, specifies the size of the kernel
-                  (must be an odd integer: 1,3,5...)
-    scale       = scaling factor applied (multiplied) to computed Laplacian values (scale = 1 is unscaled)
-    roi         = Optional rectangular ROI to apply filter in.
+    Parameters:
+    -----------
+    gray_img    = numpy.ndarray,
+        Grayscale image data
+    ksize       = int, tuple, or numpy.ndarray,
+        tuples or numpy arrays are simplified to be an integer for compatibility with cv2.Laplacian.
+        Must be an odd integer (1,3,5...)
+    scale       = int,
+        scaling factor applied (multiplied) to computed Laplacian values (scale = 1 is unscaled)
+    roi         = plantcv.plantcv.Objects,
+        Optional rectangular ROI to apply filter in.
 
     Returns:
-    lp_filtered = laplacian filtered image
-
-    :param gray_img: numpy.ndarray
-    :param ksize: int
-    :param scale: int
-    :param roi: plantcv.plantcv.Objects
-    :return lp_filtered: numpy.ndarray
+    --------
+    lp_filtered = numpy.ndarray,
+        laplacian filtered image
     """
+    k = _format_kernel(ksize, int)
     sub_lp_filtered = _rect_filter(gray_img, roi, cv2.Laplacian,
-                                   **{"ddepth": -1, "ksize": ksize, "scale": scale})
+                                   **{"ddepth": -1, "ksize": k, "scale": scale})
     lp_filtered = _rect_replace(gray_img, sub_lp_filtered, roi)
 
     _debug(visual=lp_filtered,
