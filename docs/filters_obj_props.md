@@ -1,7 +1,7 @@
 ## Filter on calculated object properties
 
 Calculates properties of objects in a binary image. 
-Keeps objects that are either above or below a specified threshold for a specified property.
+Keeps objects that are either above, below, within, or between a specified threshold for a specified property.
 When debug set to "plot," also prints the min, max, and mean of the specified property.
 
 **plantcv.filters.obj_props**(*bin_img, cut_side = "upper", thresh=0, regprop="area", roi=None*)
@@ -10,8 +10,8 @@ When debug set to "plot," also prints the min, max, and mean of the specified pr
 
 - **Parameters:**
     - bin_img - Binary image containing the connected regions to consider
-    - cut_side - "upper" or "lower", side to keep when objects are divided by the "thresh" value
-    - thresh - Threshold for keeping objects. 
+    - cut_side - "upper", "lower", "in", or "out". "upper" and "lower" specify the side to keep when objects are divided by the "thresh" value, "in" and "out" specify to keep things in or out of a range of values, in which case thresh must be a tuple.
+    - thresh - Threshold for keeping objects as an int, float, or tuple. Floats or Ints are used for "upper" and "lower" cut_side, tuples are used for "in" and "out". 
     - regprop - Which object property to filter on
 	- roi - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to apply this function. (default = None, which uses the entire image)
 - **Context:**

@@ -40,6 +40,8 @@ def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area", roi=None):
         fatal_error("Must specify either 'upper', 'lower', 'in', or 'out' for cut_side")
     if cut_side.lower() in ("in", "out") and not isinstance(thresh, tuple):
         fatal_error("If cut_side is 'in' or 'out' then thresh must be a tuple")
+    if cut_side.lower() in ("upper", "lower") and isinstance(thresh, tuple):
+        fatal_error("If cut_side is 'upper' or 'lower' then thresh must be an int or float")
     # subset binary image for ROI
     sub_bin_img = _rect_filter(bin_img, roi=roi)
     # Skip empty masks
@@ -104,10 +106,10 @@ def _apply_cut_side(cut_side, thresh, val):
     """
     # If it is an upper threshold, keep the objects that are above the threshold
     if cut_side == "upper":
-        gray_val = 255 if val > max(thresh) else 0
+        gray_val = 255 if val > thresh else 0
     # If it is a lower threshold, keep the objects that are below the threshold
     elif cut_side == "lower":
-        gray_val = 255 if val < min(thresh) else 0
+        gray_val = 255 if val < thresh else 0
     # If it is 'in' threshold, keep the objects that are within the thresholds
     elif cut_side == "in":
         gray_val = 255 if val > min(thresh) or val < max(thresh) else 0
