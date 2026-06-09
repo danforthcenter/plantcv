@@ -5,6 +5,7 @@ import os
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _rect_filter, _rect_replace
 from plantcv.plantcv._globals import params
+from plantcv.plantcv.get_kernel import _format_kernel
 
 
 def sobel_filter(gray_img, dx, dy, ksize, roi=None):
@@ -14,25 +15,29 @@ def sobel_filter(gray_img, dx, dy, ksize, roi=None):
     Performance is quite similar to Scharr filter. Used to detect edges / changes in pixel intensity. ddepth = -1
     specifies that the dimensions of output image will be the same as the input image.
 
-    Inputs:
-    gray_img = Grayscale image data
-    dx       = derivative of x to analyze
-    dy       = derivative of x to analyze
-    ksize    = specifies the size of the kernel (must be an odd integer: 1,3,5, ... , 31)
-    roi      = optional rectangular roi to apply sobel filter within
+    Parameters:
+    -----------
+    gray_img = numpy.ndarray,
+        Grayscale image data
+    dx       = int,
+        derivative of x to analyze
+    dy       = int,
+        derivative of x to analyze
+    ksize        = int, numpy.ndarray, or tuple
+        Kernel specified as a binary numpy.ndarray for arbitrary shapes,
+        shape tuple for a rectangular kernel, or integer for a square kernel.
+        ksize will be coerced to int here.
+    roi      = plantcv.plantcv.Objects,
+        optional rectangular roi to apply sobel filter within
 
     Returns:
-    sb_img   = Sobel filtered image
-
-    :param gray_img: numpy.ndarray
-    :param dx: int
-    :param dy: int
-    :param ksize: int
-    :param roi: plantcv.plantcv.Objects
-    :return sb_img: numpy.ndarray
+    --------
+    sb_img   = numpy.ndarray,
+        Sobel filtered image
     """
+    k = _format_kernel(ksize, int)
     sub_sb_img = _rect_filter(gray_img, roi, function=cv2.Sobel,
-                              **{"ddepth": -1, "dx": dx, "dy": dy, "ksize": ksize})
+                              **{"ddepth": -1, "dx": dx, "dy": dy, "ksize": k})
     sb_img = _rect_replace(gray_img, sub_sb_img, roi)
 
     fname = str(params.device) + '_sb_img_dx' + str(dx) + '_dy' + str(dy) + '_kernel' + str(ksize) + '.png'
