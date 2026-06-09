@@ -1239,6 +1239,10 @@ pages for more details on the input and output variable types.
 
 * post v3.8: array = **plantcv.spectral_index.gdvi**(*hsi, distance=20*)
 
+#### plantcv.spectral_index.gndvi
+
+* post v5.0: array = **plantcv.spectral_index.gndvi**(*hsi, distance=20*)
+
 #### plantcv.spectral_index.gli
 
 * post v4.4: array = **plantcv.spectral_index.gli**(*img, distance=20*)

@@ -73,6 +73,36 @@ def gdvi(hsi, distance=20):
     return None
 
 
+def gndvi(hsi, distance=20):
+    """Green Normalized Difference Vegetation Index.
+
+    GNDVI = (R800 - R550) / (R800 + R550)
+
+    The theoretical range for GNDVI is [-1.0, 1.0].
+
+    Inputs:
+    hsi         = hyperspectral image (PlantCV Spectral_data instance)
+    distance    = how lenient to be if the required wavelengths are not available
+
+    Returns:
+    index_array = Index data as a Spectral_data instance
+
+    :param hsi: __main__.Spectral_data
+    :param distance: int
+    :return index_array: __main__.Spectral_data
+    """
+    if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 550:
+        r800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
+        r550_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 550)
+        r800 = (hsi.array_data[:, :, r800_index])
+        r550 = (hsi.array_data[:, :, r550_index])
+        # Naturally ranges from -1 to 1
+        index_array_raw = (r800 - r550) / (r800 + r550)
+        return _package_index(hsi=hsi, raw_index=index_array_raw, method="GNDVI")
+    warn("Available wavelengths are not suitable for calculating GNDVI. Try increasing distance.")
+    return None
+
+
 def savi(hsi, distance=20):
     """Soil Adjusted Vegetation Index.
 
