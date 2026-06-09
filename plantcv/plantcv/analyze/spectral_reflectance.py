@@ -97,7 +97,7 @@ def _analyze_spectral(img, mask, label):
     wavelength_labels = []
     for i in img.wavelength_dict.keys():
         # coerce np.integers to standard int for json.dump-ing outputs
-        if (isinstance(i, (np.integer))):
+        if isinstance(i, (np.integer)):
             i = int(i)
         wavelength_labels.append(i)
 
