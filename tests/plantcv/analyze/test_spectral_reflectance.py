@@ -20,6 +20,6 @@ def test_spectral_reflectance_key_conversion(test_data):
     outputs.clear()
     mask = cv2.imread(test_data.hsi_mask_file, -1)
     hsi = test_data.load_hsi(test_data.hsi_file)
-    hsi.wavelength_dict = {np.array(k, dtype=np.int64).tolist(): v for k, v in hsi.wavelength_dict.items()}
+    hsi.wavelength_dict = {np.int_(k): v for k, v in hsi.wavelength_dict.items()}
     _ = spectral_reflectance(hsi=hsi, labeled_mask=mask)
     assert len(outputs.observations['default_1']['wavelength_means']['value']) == 622
