@@ -10,7 +10,7 @@ texture calculation for thresholding.
 
 - **Parameters:**
     - gray_img - Grayscale image data
-    - ksize - Kernel size for texture measure calculation
+    - ksize - Kernel specified as a binary numpy.ndarray for arbitrary shapes, shape tuple for a rectangular kernel, or integer for a square kernel. Here any input will be simplified to an integer specifying a square kernel.
     - threshold - Threshold value (0-255)
     - offset - Distance offsets (default offset=3)
     - texture_method - Feature of a grey level co-occurrence matrix, either
