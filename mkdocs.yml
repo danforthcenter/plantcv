@@ -146,6 +146,7 @@ nav:
       - 'Plot Image': plot_image.md
       - "Quality Control Tools":
         - "Exposure": qc_exposure.md
+        - "Quick Color Check": quick_color_check.md
       - 'Read Image': read_image.md
       - 'Read Bayer Raw Image': read_bayer.md
       - 'Report Size Marker': report_size_marker.md
