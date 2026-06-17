@@ -8,7 +8,7 @@ Corrects the color of the input image based on the target color matrix using a n
 
 - **Parameters**
     - rgb_img          - Input RGB image data containing a color card.
-    - color_chip_size  - Type of color card to be detected, (case insensitive, either "classic", "passport", "nano", "mini",
+    - color_chip_size  - [Type of color card](transform_detect_color_card.md#Supported Color Card) to be detected, (case insensitive, either "classic", "passport", "nano", "mini",
     or "cameratrax", by default `None`). Or provide `(width, height)` of your specific color card in millimeters. If set then
     size scalings parameters `pcv.params.unit`, `pcv.params.px_width`, and `pcv.params.px_height` are automatically set, and
     utilized throughout linear and area type measurements stored to `Outputs`.

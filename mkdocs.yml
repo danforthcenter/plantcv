@@ -188,7 +188,7 @@ nav:
           - 'Checkerboard Calibration': transform_checkerboard_calibration.md
           - 'Create Color Card Mask': create_color_card_mask.md
           - 'Convert Color Card to Matrix': get_color_matrix.md
-          - 'Color Correction Workflow': transform_correct_color.md
+          - 'Color Correct to Target Image': transform_correct_color.md
           - 'Quick Color Check': quick_color_check.md
           - 'Delta E Metric': transform_deltaE.md
           - 'Affine Color Correction': transform_affine_color_correction.md
