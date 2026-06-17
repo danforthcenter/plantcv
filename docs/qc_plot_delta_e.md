@@ -25,7 +25,6 @@ from plantcv import plantcv as pcv
 from plantcv.plantcv.transform.detect_color_card import deltaE
 
 # Calculate Delta E values for each chip relative to the standard color matrix
-# Note this is 
 de_matrix = deltaE(rgb_img=img, color_chip_size="classic")
 
 # Plot the Delta E values

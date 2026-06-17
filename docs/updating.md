@@ -1540,7 +1540,8 @@ pages for more details on the input and output variable types.
 #### plantcv.visualize.color_chip_comparison
 
 * pre v4.10: NA
-* post v4.10: plot = plantcv.visualize.color_chip_comparison**(*std_matrix, \*args*)
+* post v4.10: plot = **plantcv.visualize.color_chip_comparison**(*std_matrix, \*args*)
+* post v5.0: moved to **plantcv.qc.color_chip_comparison**
 
 #### plantcv.visualize.color_correction_scatter
 
