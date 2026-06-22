@@ -85,6 +85,7 @@ from plantcv.plantcv import qc
 from plantcv.plantcv.process_results import process_results
 from plantcv.plantcv.json2csv import json2csv
 from plantcv.plantcv.masks2labels import masks2labels
+from plantcv.plantcv.submask import sub_mask
 # add new functions to end of lists
 
 __all__ = [
@@ -167,5 +168,6 @@ __all__ = [
     "qc",
     "process_results",
     "json2csv",
-    "masks2labels"
+    "masks2labels",
+    "sub_mask"
 ]
