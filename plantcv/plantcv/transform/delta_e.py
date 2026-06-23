@@ -58,8 +58,8 @@ def _delta_e(obs_rgb, card_type=None, obs="uncalibrated"):
         ax2.set_title('Reference Colors')
         if params.debug == "print":
             fig.savefig(fname=os.path.join(params.debug_outdir, f"{params.device}_{obs}_{params.deltaE}.png"))
-        if params.debug == "plot":
-            plt.show()
-        plt.close(fig)
+            plt.close(fig)
+        elif params.debug == "plot":
+            plt.show(block=False)
 
     return delta_e_mat

@@ -99,7 +99,7 @@ def plot_deltaE(deltaE_matrix):
     )
     swatch_chip_nos = (std_mat[:, 0] / 10).astype(int)
     swatch_hex = [
-        f"{int(r * 255):02X}{int(g * 255):02X}{int(b * 255):02X}"
+        f"#{int(r * 255):02X}{int(g * 255):02X}{int(b * 255):02X}"
         for r, g, b in std_mat[:, 1:4]
     ]
     swatch_df = pd.DataFrame({
