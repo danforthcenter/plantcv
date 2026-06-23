@@ -29,7 +29,9 @@ dependencies = [
     "nd2",
     "flyr",
     "nbconvert",
-    "nbformat"
+    "nbformat",
+    "imageio >= 2.28",
+    "imageio-ffmpeg"
 ]
 requires-python = ">=3.8"
 authors = [
