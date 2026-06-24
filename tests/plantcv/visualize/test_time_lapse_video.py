@@ -1,12 +1,10 @@
-import pytest
 import os
 import cv2
 import numpy as np
 from plantcv.plantcv.visualize.time_lapse_video import time_lapse_video
 
 
-@pytest.mark.parametrize("display", [False, True])
-def test_plantcv_visualize_time_lapse_video_passes(display, tmpdir):
+def test_plantcv_visualize_time_lapse_video_passes(tmpdir):
     """Test for PlantCV."""
     # Generate 3 test images and saved in tmpdir
     list_im = []
@@ -19,7 +17,7 @@ def test_plantcv_visualize_time_lapse_video_passes(display, tmpdir):
         list_im.append(img_i_path)
 
     vid_name = os.path.join(tmpdir, 'test_time_lapse_video.mp4')
-    _ = time_lapse_video(img_list=list_im, out_filename=vid_name, fps=29.97, display=display)
+    _ = time_lapse_video(img_list=list_im, out_filename=vid_name, fps=29.97)
     assert os.path.exists(vid_name)
 
 
@@ -37,7 +35,7 @@ def test_plantcv_visualize_time_lapse_video_different_img_sizes_warns(tmpdir, ca
         list_im.append(img_i_path)
 
     vid_name = os.path.join(tmpdir, 'test_time_lapse_video.mp4')
-    _ = time_lapse_video(img_list=list_im, out_filename=vid_name, fps=29.97, display=True)
+    _ = time_lapse_video(img_list=list_im, out_filename=vid_name, fps=29.97)
     _, err = capsys.readouterr()
 
     assert "Warning" in err and os.path.exists(vid_name)

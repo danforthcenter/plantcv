@@ -2,7 +2,7 @@
 
 This function generates and saves the time-lapse video based on a list of paths to the images.
 
-**plantcv.visualize.time_lapse_video**(*img_list, out_filename='./time_lapse_video.mp4', fps=29.97, display=True*)
+**plantcv.visualize.time_lapse_video**(*img_list, out_filename='./time_lapse_video.mp4', fps=29.97*)
 
 **returns** frame_size
 
@@ -10,7 +10,6 @@ This function generates and saves the time-lapse video based on a list of paths 
     - list_img       - List of paths to the images to create the video.    
     - out_filename   - Name of file to save the generated video to.
     - fps            - Frame rate (frames per second) By default fps=29.97. Commonly used values: 23.98, 24, 25, 29.97, 30, 50, 59.94, 60   
-    - display        - if True (default), displays the path to the generated video.
 
 - **Context:**
     - Used to generate time-lapse video given a list of images.
@@ -27,8 +26,7 @@ img_directory = './path_to_images_directory/'
 img_paths_list = pcv.io.read_dataset(source_path=img_directory, sort=True)
 
 frame_size = pcv.visualize.time_lapse_video(img_list=img_paths_list,
-                                                    out_filename='./eg_time_lapse.mp4',
-                                                    fps=29.97, display=True)
+                                                    out_filename='./eg_time_lapse.mp4')
 ```
 
 **Video generated**
