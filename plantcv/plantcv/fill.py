@@ -1,5 +1,6 @@
 # Object fill device
 
+import inspect
 import numpy as np
 import os
 from plantcv.plantcv import fatal_error
@@ -7,6 +8,8 @@ from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _rect_filter, _rect_replace
 from skimage.morphology import remove_small_objects
+
+_SKIMAGE_USE_MAX_SIZE = "max_size" in inspect.signature(remove_small_objects).parameters
 
 
 def fill(bin_img, size, roi=None):
@@ -34,10 +37,11 @@ def fill(bin_img, size, roi=None):
     bool_img = bin_img.astype(bool)
 
     # Find and fill contours, possibly within bounding rectangle
+    _size_kwarg = {"max_size": size} if _SKIMAGE_USE_MAX_SIZE else {"min_size": size}
     bool_img = _rect_filter(bool_img,
                             roi=roi,
                             function=remove_small_objects,
-                            **{"min_size" : size})
+                            **_size_kwarg)
     # Cast boolean image to binary and make a copy of the binary image for returning
     filtered_img = np.copy(bool_img.astype(np.uint8) * 255)
     # slice the subset image back into full size binary image
