@@ -25,6 +25,14 @@ def test_deltaE_astro(transform_test_data):
     assert outputs.metadata["max_deltaE_calibrated"]["value"] == [pytest.approx(np.float64(35.899), 0.001)]
 
 
+def test_deltaE_bad_param(transform_test_data, monkeypatch):
+    """Test for PlantCV."""
+    monkeypatch.setattr(params, "deltaE", "bad_input")
+    rgb_img = cv2.imread(transform_test_data.astrocard_img)
+    with pytest.raises(RuntimeError):
+        _ =  deltaE(rgb_img=rgb_img, color_chip_size="astro")
+
+
 @pytest.mark.parametrize("debug", ["print", "plot", None])
 def test_deltaE_plotting(debug, transform_test_data, tmpdir):
     """Test for PlantCV."""
