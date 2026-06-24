@@ -8,7 +8,7 @@ dependencies:
   - pandas
   - python-dateutil
   - scipy<1.16
-  - scikit-image>=0.19
+  - scikit-image>=0.26
   - scikit-learn
   - dask
   - dask-jobqueue
