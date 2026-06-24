@@ -32,10 +32,10 @@ def _delta_e(obs_rgb, card_type=None, obs="uncalibrated"):
         obs_mat = (255 * np.delete(obs_rgb, 0, axis=1).reshape(3, 5, 3)).astype("uint8")
         exp_mat = (255 * np.delete(std, 0, axis=1).reshape(3, 5, 3)).astype("uint8")
     else:
-        std = std_color_matrix()
+        std = std_color_matrix(pos=3)
         # format both rgb colors into 6x4 uint8 image
         obs_mat = (255 * np.delete(obs_rgb, 0, axis=1).reshape(6, 4, 3)).astype("uint8")
-        exp_mat = (255 * np.rot90(np.delete(std, 0, axis=1).reshape(4, 6, 3), 3)).astype("uint8")
+        exp_mat = (255 * np.delete(std, 0, axis=1).reshape(6, 4, 3)).astype("uint8")
     # convert to LAB for skimage color functions
     obs_lab = color.rgb2lab(obs_mat)
     exp_lab = color.rgb2lab(exp_mat)
