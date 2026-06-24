@@ -31,8 +31,6 @@ def time_lapse_video(img_list, out_filename='./time_lapse_video.mp4', fps=29.97)
     list_c = []
     for file in img_list:
         img = iio.imread(file)
-        # if img is None:
-        #     fatal_error(f"Unable to read {file}")
         list_r.append(img.shape[0])
         list_c.append(img.shape[1])
         imgs.append(img)
