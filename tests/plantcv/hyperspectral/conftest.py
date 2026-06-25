@@ -24,6 +24,8 @@ class HyperspectralTestData:
         self.hsi_whiteref_file = os.path.join(self.datadir, "hsi_whiteref.pkl")
         self.hsi_darkref_file = os.path.join(self.datadir, "hsi_darkref.pkl")
         self.savi_file = os.path.join(self.datadir, "savi.pkl")
+        self.hsi_uint8 = os.path.join(self.datadir, "test-hyperpectral-uint8.raw")
+        self.hsi_uint8_hdr = os.path.join(self.datadir, "test-hyperpectral-uint8.hdr")
 
     @staticmethod
     def load_hsi(pkl_file):
