@@ -147,6 +147,7 @@ nav:
       - "Quality Control Tools":
         - 'Color Correction Scatter Plot': qc_color_correction_scatter.md
         - 'Color Chip Comparison Plot': qc_color_chip_comparison.md
+        - 'Plot Delta E': qc_plot_delta_e.md
         - "Exposure": qc_exposure.md
         - "Quick Color Check": quick_color_check.md
       - 'Read Image': read_image.md

@@ -1006,6 +1006,21 @@ pages for more details on the input and output variable types.
 * pre v5.0: NA, see `plantcv.transform.quick_color_check`
 * post v5.0: chart = **plantcv.transform.quick_color_check**(*source_matrix, target_matrix=None, num_chips=None*)
 
+#### plantcv.qc.color_correction_plot
+
+* pre v5.0: NA, see `plantcv.visualize.color_correction_scatterplot`
+* post v5.0: fig = **plantcv.qc.color_correction_plot**(*color_matrix, std_matrix, corrected_matrix=None*)
+
+#### plantcv.qc.color_chip_comparison
+
+* pre v5.0: NA
+* post v5.0: fig = **plantcv.qc.color_chip_comparison**(*std_matrix, \*args*)
+
+#### plantcv.qc.plot_deltaE
+
+* pre v5.0: NA
+* post v5.0: fig = **plantcv.qc.plot_deltaE**(*deltaE_matrix*)
+
 #### plantcv.readbayer
 
 * pre v3.0: NA
@@ -1247,6 +1262,10 @@ pages for more details on the input and output variable types.
 #### plantcv.spectral_index.gdvi
 
 * post v3.8: array = **plantcv.spectral_index.gdvi**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.gndvi
+
+* post v5.0: array = **plantcv.spectral_index.gndvi**(*hsi, distance=20*)
 
 #### plantcv.spectral_index.gli
 
@@ -1540,7 +1559,8 @@ pages for more details on the input and output variable types.
 #### plantcv.visualize.color_chip_comparison
 
 * pre v4.10: NA
-* post v4.10: plot = plantcv.visualize.color_chip_comparison**(*std_matrix, \*args*)
+* post v4.10: plot = **plantcv.visualize.color_chip_comparison**(*std_matrix, \*args*)
+* post v5.0: moved to **plantcv.qc.color_chip_comparison**
 
 #### plantcv.visualize.color_correction_scatter
 
