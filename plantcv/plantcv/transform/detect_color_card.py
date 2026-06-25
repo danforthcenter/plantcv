@@ -4,7 +4,6 @@ Algorithm written by mtwatso2-eng (github). Updated and implemented into PlantCV
 """
 
 import os
-import re
 import cv2
 import math
 import numpy as np
@@ -741,10 +740,9 @@ def deltaE(rgb_img, color_chip_size=None, roi=None, obs="calibrated", **kwargs):
     delta_E
         numpy.ndarray, Delta E values between color chips.
     """
-    delta_terms = [i for i in outputs.metadata if re.search("deltaE", i)]
     obs_rgb = detect_color_card(rgb_img, color_chip_size, roi, delta_E=False, **kwargs)
     delta_E = _delta_e(obs_rgb, color_chip_size, obs)
-    if not delta_terms:
+    if "detect_color_card" not in params.function_args:
         params.function_args["detect_color_card"] = {"color_chip_size": kwargs.get("color_chip_size"),
                                                      "roi": kwargs.get("roi"),
                                                      "kwargs": kwargs}
