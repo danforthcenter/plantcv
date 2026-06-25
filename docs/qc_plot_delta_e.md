@@ -22,11 +22,9 @@ This function creates an interactive bar chart visualizing per-chip Delta E (col
 ```python
 
 from plantcv import plantcv as pcv
-from plantcv.plantcv.transform.detect_color_card import deltaE
 
 # Calculate Delta E values for each chip relative to the standard color matrix
-# Note this is 
-de_matrix = deltaE(rgb_img=img, color_chip_size="classic")
+de_matrix = pcv.transform.deltaE(rgb_img=img, color_chip_size="classic")
 
 # Plot the Delta E values
 chart = pcv.qc.plot_deltaE(deltaE_matrix=de_matrix)

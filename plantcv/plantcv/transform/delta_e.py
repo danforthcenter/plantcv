@@ -4,6 +4,7 @@ import numpy as np
 from skimage import color
 from matplotlib import pyplot as plt
 from plantcv.plantcv._globals import params, outputs
+from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.transform.standard_matrices import std_color_matrix, astro_color_matrix
 
 
@@ -40,6 +41,9 @@ def _delta_e(obs_rgb, card_type=None, obs="uncalibrated"):
     obs_lab = color.rgb2lab(obs_mat)
     exp_lab = color.rgb2lab(exp_mat)
     # get function from skimage color
+    if params.deltaE not in ['deltaE_cie76', 'deltaE_ciede2000', 'deltaE_ciede94', 'deltaE_cmc']:
+        fatal_error("params.deltaE function must by one of 'deltaE_cie76'," +
+                    "'deltaE_ciede2000', 'deltaE_ciede94', or 'deltaE_cmc'")
     delta_e_fun = getattr(color, params.deltaE)
     # there are other parameters we could allow changes to but I don't think we need to yet.
     delta_e_mat = delta_e_fun(obs_lab, exp_lab)
@@ -55,8 +59,8 @@ def _delta_e(obs_rgb, card_type=None, obs="uncalibrated"):
         ax2.set_title('Reference Colors')
         if params.debug == "print":
             fig.savefig(fname=os.path.join(params.debug_outdir, f"{params.device}_{obs}_{params.deltaE}.png"))
-        if params.debug == "plot":
-            plt.show()
-        plt.close(fig)
+            plt.close(fig)
+        elif params.debug == "plot":
+            plt.show(block=False)
 
     return delta_e_mat

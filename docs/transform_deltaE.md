@@ -2,7 +2,7 @@
 
 Calculates Delta E between a Macbeth ColorChecker or Astrobotany.com Calibration sticker style color card and the expected color values.
 
-**plantcv.transform.deltaE**(*rgb_img, color_chip_size=None, roi=None, obs="calibrated", method="deltaE_ciede2000", \*\*kwargs*)
+**plantcv.transform.deltaE**(*rgb_img, color_chip_size=None, roi=None, obs="calibrated", \*\*kwargs*)
 
 **returns** Delta E matrix
 
@@ -12,7 +12,6 @@ Calculates Delta E between a Macbeth ColorChecker or Astrobotany.com Calibration
             are automatically set, and utilized throughout linear and area type measurements stored to `Outputs`. 
     - roi              - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to look for the color card. (default = None)
 	- obs              - label for metadata and debug images, typically "calibrated" or "uncalibrated" depending on whether the `rgb_img` has been color corrected.
-	- method           - Function name from `skimage.color` as a string to use to calculate delta E. Currently `deltaE_cie76`, `deltaE_ciede2000`, `deltaE_ciede94`, and `deltaE_cmc` are supported
     - **kwargs         - Other keyword arguments passed to `cv2.adaptiveThreshold` and `cv2.circle`.
         - adaptive_method - Adaptive threhold method. 0 (mean) or 1 (Gaussian) (default = 1).
         - block_size      - Size of a pixel neighborhood that is used to calculate a threshold value (default = 51). We suggest using 127 if using `adaptive_method=0`.
@@ -25,7 +24,7 @@ Calculates Delta E between a Macbeth ColorChecker or Astrobotany.com Calibration
     - deltaE            - Delta E values per each color chip as a matrix.
 
 - **Context**
-    - Delta E is a perception-based metric for the difference between colors. 0 indicates no perceptual difference and higher values indicate more difference. Generally a delta E value less than 1 is imperceptibly different and values greater than 3.5 are clearly distinct. Whether a particular color chip's delta E value matters for your experimental goals depends on your hypothesis and analysis plan.
+    - Delta E is a perception-based metric for the difference between colors. 0 indicates no perceptual difference and higher values indicate more difference. Generally a delta E value less than 1 is imperceptibly different and values greater than 3.5 are clearly distinct. Whether a particular color chip's delta E value matters for your experimental goals depends on your hypothesis and analysis plan. The particular method used to calculate delta E is controlled by `pcv.params.deltaE` which expects a string function name and defaults to `deltaE_ciede2000` from `skimage.color`.
 
 
 !!! note
