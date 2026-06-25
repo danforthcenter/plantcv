@@ -3,18 +3,19 @@
 import os
 import imageio.v3 as iio
 import numpy as np
-from plantcv.plantcv import params
-from plantcv.plantcv.transform import resize
-from plantcv.plantcv import warn
+from plantcv.plantcv._globals import params
+from plantcv.plantcv.transform.resize import resize
+from plantcv.plantcv.io.read_dataset import read_dataset
+from plantcv.plantcv.warn import warn
 
 
-def time_lapse_video(img_list, out_filename='./time_lapse_video.mp4', fps=29.97):
+def time_lapse_video(source, out_filename='./time_lapse_video.mp4', fps=29.97):
     """Generate time-lapse video given a list of paths to the images
 
     Parameters:
     -----------
-    img_list       = list,
-        the desired list of paths to the images to create the video
+    source         = string or list,
+        Path to a folder of images to use or list of paths to the images to create the video
     out_filename   = string,
         name of file to save the generated video to
     fps            = float,
@@ -26,6 +27,9 @@ def time_lapse_video(img_list, out_filename='./time_lapse_video.mp4', fps=29.97)
         the frame size of the generated video
     """
     params.debug = None
+    img_list = source
+    if isinstance(source, str):
+        img_list = read_dataset(source, sort=True)
 
     imgs = []
     list_r = []
