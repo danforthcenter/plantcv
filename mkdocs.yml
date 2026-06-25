@@ -165,6 +165,7 @@ nav:
         - 'Create Grid of Circular ROIs Automatically': roi_auto_wells.md
         - 'Filter a mask by ROI': roi_filter.md
         - 'Filter a mask by ROI (quickly)': roi_quick_filter.md
+        - 'Filter a mask by ROI (fast)': roi_fast_filter.md
         - 'Convert ROI to Mask': roi2mask.md
       - 'Segment Image Series': segment_image_series.md
       - 'Sharpen Image': sharpen.md
