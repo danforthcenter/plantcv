@@ -743,7 +743,7 @@ def deltaE(rgb_img, color_chip_size=None, roi=None, obs="calibrated", **kwargs):
     """
     obs_rgb = detect_color_card(rgb_img, color_chip_size, roi, delta_E=False, **kwargs)
     delta_E = _delta_e(obs_rgb, color_chip_size, obs)
-    if not "detect_color_card" in pcv.params.function_args:
+    if not "detect_color_card" in params.function_args:
         params.function_args["detect_color_card"] = {"color_chip_size": kwargs.get("color_chip_size"),
                                                      "roi": kwargs.get("roi"),
                                                      "kwargs": kwargs}
