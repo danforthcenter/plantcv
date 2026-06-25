@@ -18,7 +18,7 @@ def test_plantcv_visualize_time_lapse_video_passes(tmpdir):
 
     vid_name = os.path.join(tmpdir, 'test_time_lapse_video.mp4')
     _ = time_lapse_video(img_list=list_im, out_filename=vid_name, fps=29.97)
-    assert os.path.exists(vid_name)
+    assert os.path.exists(vid_name) and os.path.getsize(vid_name) > 100
 
 
 # not all images have the same size (essential to generate a video)
