@@ -10,13 +10,16 @@ def _rerun_delta_e(corrected_img, fun="affine_color_correction"):
 
     Parameters
     ----------
+    corrected_img : numpy.ndarray,
+        Color corrected image
+    fun : str,
+        Name of function
 
     Returns
     -------
+    None
     """
-    delta_terms = [i for i in outputs.metadata if re.search("deltaE", i)]
-
-    if delta_terms:
+    if "detect_color_card" in params.function_args:
         color_chip_size = params.function_args["detect_color_card"]["color_chip_size"]
         roi = params.function_args["detect_color_card"]["roi"]
         kwargs_obj = params.function_args["detect_color_card"]["kwargs"]
