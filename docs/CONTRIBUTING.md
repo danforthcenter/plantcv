@@ -37,10 +37,10 @@ There are many ways to contribute:
 If you need any help, please contact us. 
 
 ## Installing PlantCV for contributors <a name="installing"></a>
-Before getting started, please read our [contributor guidelines](CONTRIBUTING.md) and [code of conduct](CODE_OF_CONDUCT.md).
+Before getting started, please read our [contributor guidelines](/docs/CONTRIBUTING.md) and [code of conduct](/docs/CODE_OF_CONDUCT.md).
 
 You can build PlantCV from the source code if you are a developer or want the absolute latest version available.
-As noted in the [installation documentation](installation.md), we recommend installing PlantCV in a virtual environment. We will outline how to do this using `conda`.
+As noted in the [installation documentation](/docs/installation.md), we recommend installing PlantCV in a virtual environment. We will outline how to do this using `conda`.
 You will also need a [GitHub](https://github.com) account. You will need to
 [clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) the PlantCV
 repository from GitHub before getting started.
@@ -102,7 +102,7 @@ using one of the methods described in the
 #### Install PlantCV Dependencies <a name="install"></a>
 
 We recommend using `conda` to set up a virtual environment for developing PlantCV. Instructions can be found in the
-[installation documentation](installation.md).
+[installation documentation](/docs/installation.md).
 
 #### Create A Branch To Do Your Work <a name="branch"></a>
 
@@ -145,7 +145,7 @@ py.test --cov=plantcv -k analyze
 
 ```
 
-Add documentation for your new feature (see [Adding/editing Documentation](documentation.md) for more details). A new 
+Add documentation for your new feature (see [Adding/editing Documentation](/docs/documentation.md) for more details). A new 
 Markdown file should be added to the docs folder, and a reference to your new doc file should
 be added to the `mkdocs.yml` file. You can test that your new documentation can be built correctly locally using 
 mkdocs from the root of your local plantcv repository.
@@ -217,7 +217,7 @@ from plantcv.plantcv._debug import _debug
 Here is a sample of a new function. Arguments should be defined.
 Generally, functions should utilize the private function `_debug` to produce visualization results.
 Users can set `pcv.params.debug`
-to `None` (default), "print" (to file), or "plot" (to screen if using [Jupyter](jupyter.md) notebooks or X11).
+to `None` (default), "print" (to file), or "plot" (to screen if using [Jupyter](/docs/jupyter.md) notebooks or X11).
 Functions should also increment the `device` number, which is a counter for image processing steps that is 
 autoincremented by functions that use `params`. Note that the inputs and outputs are documented with Python docstrings.
 
