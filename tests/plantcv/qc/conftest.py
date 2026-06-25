@@ -27,6 +27,7 @@ class QCTestData:
         data = np.load(npz_file, encoding="latin1")
         return data['arr_0']
 
+
 @pytest.fixture(scope="session")
 def qc_test_data():
     """Test data object for the PlantCV transform submodule."""

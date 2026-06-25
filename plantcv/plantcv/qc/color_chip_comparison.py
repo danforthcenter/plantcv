@@ -1,4 +1,4 @@
-# Visualize a scatter plot representation of color correction
+# Compare observed vs standard color card chips using a "greenness rank" visualization.
 
 import pandas as pd
 import altair as alt
@@ -6,10 +6,7 @@ import altair as alt
 
 def color_chip_comparison(std_matrix, *args):
     """
-    Plot 4 panels showing the difference in observed vs expected colors and optionally
-    the calibrated colors in a color card.
-    The color of each dot is given by the RGB value either of the original image, known color card, or corrected image.
-
+    Compare one or more observed color matrices to a standard color matrix using a "greenness rank" plot.
     Parameters
     ----------
     std_matrix   : numpy.ndarray
@@ -40,7 +37,7 @@ def color_chip_comparison(std_matrix, *args):
         df["std_B"] = stddf["std_B"]
         df_list.append(df)
     # rbind all dataframes from list
-    fulldf = pd.concat(*[df_list], ignore_index=True)
+    fulldf = pd.concat(df_list, ignore_index=True)
     # rescale rgb values to 0-255
     fulldf["R"] = fulldf["R"] * 255
     fulldf["G"] = fulldf["G"] * 255
@@ -59,7 +56,7 @@ def color_chip_comparison(std_matrix, *args):
         method="first", ascending=False
     )
     # label chips 1 to 24
-    fulldf["chip"] = fulldf["chip"] / 10
+    fulldf["chip"] = (fulldf["chip"] / 10).astype(int)
     # initiate base of upper color chip chart
     base = (
         alt.Chart(fulldf)
