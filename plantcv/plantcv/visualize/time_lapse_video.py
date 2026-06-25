@@ -11,18 +11,19 @@ from plantcv.plantcv import warn
 def time_lapse_video(img_list, out_filename='./time_lapse_video.mp4', fps=29.97):
     """Generate time-lapse video given a list of paths to the images
 
-    Inputs:
-    img_list       = the desired list of paths to the images to create the video
-    out_filename   = name of file to save the generated video to
-    fps            = frame rate (frames per second)
+    Parameters:
+    -----------
+    img_list       = list,
+        the desired list of paths to the images to create the video
+    out_filename   = string,
+        name of file to save the generated video to
+    fps            = float,
+        frame rate (frames per second)
 
-    Outputs:
-    frame_size     = the frame size of the generated video
-
-    :param img_list: list
-    :param fps: float
-    :param out_filename: string
-    :return frame_size: tuple
+    Returns:
+    --------
+    frame_size     = tuple,
+        the frame size of the generated video
     """
     params.debug = None
 
@@ -48,6 +49,6 @@ def time_lapse_video(img_list, out_filename='./time_lapse_video.mp4', fps=29.97)
     out_filename = out_path + '.mp4'
 
     frames = [resize(img, frame_size, interpolation=None) for img in imgs]
-    iio.imwrite(out_filename, frames, fps=fps, codec="libx264")
+    iio.imwrite(out_filename, frames, plugin="FFMPEG", fps=fps, codec="libx264")
 
     return frame_size
