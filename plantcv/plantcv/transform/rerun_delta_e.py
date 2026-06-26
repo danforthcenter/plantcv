@@ -23,6 +23,7 @@ def _rerun_delta_e(corrected_img, fun="affine_color_correction"):
         color_chip_size = params.function_args["detect_color_card"]["color_chip_size"]
         roi = params.function_args["detect_color_card"]["roi"]
         kwargs_obj = params.function_args["detect_color_card"]["kwargs"]
+        _ = kwargs_obj.pop("deltaE", None)
         debug = params.debug
         params.debug = None
         obs_rgb = detect_color_card(corrected_img,
