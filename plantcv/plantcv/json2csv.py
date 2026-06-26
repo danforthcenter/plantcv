@@ -148,11 +148,19 @@ def _create_metadata_row(meta_vars, metadata):
         val = "NA"
         if var in metadata:
             vals = metadata[var]["value"]
-            vals = ["none" if v is None else v for v in vals]
-            # Create a unique list if there are multiple values
-            u_list = np.unique(vals).tolist()
+            # For non-deltaE metadata create a unique list if there are multiple values
+            if "deltaE" not in var:
+                vals = ["none" if v is None else v for v in vals]
+                uniques, indices = np.unique(vals, return_index=True)
+                vals = uniques[np.argsort(indices)].tolist()
+            else:
+                # Flatten a deltaE list of lists
+                vals = list(itertools.chain.from_iterable(
+                    v if isinstance(v, (list, tuple)) else [v] for v in vals
+                ))
+                vals = ["none" if v is None else v for v in vals]
             # If there are multiple values, join them with an underscore
-            val = "_".join(map(str, u_list))
+            val = "_".join(map(str, vals))
         meta_row.append(val)
     return meta_row
 
