@@ -10,9 +10,14 @@ def _rerun_delta_e(corrected_img, fun="affine_color_correction"):
 
     Parameters
     ----------
+    corrected_img : numpy.ndarray
+        Corrected image to rerun delta E calculation on
+    fun : str
+        Name of the function that was used to correct the image
 
     Returns
     -------
+    None
     """
     delta_terms = [i for i in outputs.metadata if re.search("deltaE", i)]
 
