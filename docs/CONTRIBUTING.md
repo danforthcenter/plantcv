@@ -340,6 +340,24 @@ approximately square and have a width of 200px.
 
 1. Email the dev team at plantcv@danforthcenter.org, or open an issue [here](https://github.com/danforthcenter/plantcv/issues). 
 
+### AI Contributions
+
+You are welcome to use generative AI tools to help you contribution to PlantCV. You should review any generative AI contributions that you are making closely and if your AI's contribution is blocked by one of the PlantCV team's hooks then please abide by the style those hooks are trying to enforce. Please keep these points in mind.
+
+* You are responsible for your contributions and should be able to engage with the core development team regarding goals, specific code, and use cases for functions that you add. Please do not copy and paste AI responses to our team when discussing edits made/guided by an AI.
+* Do not use AI to bypass tests or change assertions in tests to make them pass, fix underlying issues when tests fail/lines are not covered by tests.
+* Make small pull requests, AI can very easily edit a lot of files at once and make a very hard pull request for the core team to review.
+* We
+
+#### AI Agent Hooks
+
+PlantCV makes an attempt to guide AI contributions with hooks that execute on read/edit/write tools for Claude-Code (we aim to add more supported tools soon). Currently those aim to:
+
+* Mark generative AI edits with comments at the start and end of a section of code. These may be removed by reviewers but help provide context in the review process.
+* Reject Try/Except/Finally logic in AI contributions. We want to limit these functions as much as possible, if you feel that Try/Except/Finally is necessary then you should write it and include a rationale for that choice when opening a Pull Request.
+
+If you have helpful hooks in mind please feel free to contribute to this list with new hooks.
+
 ### Thanks
 
 Parts of this contribution guide are based on the
