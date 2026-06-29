@@ -59,6 +59,10 @@ automatically. Alternatively, you can run `pip install -e .` to reinstall the pa
 
 ### Breaking changes between v4 and v5 <a name="breaking-changes"></a>
 
+#### plantcv.filters.eccentricity
+
+Deprecated the function in favor of `plantcv.filters.obj_props(..., regprop="eccentricity")`.
+
 #### plantcv.utils
 
 The `plantcv.utils` module has been deleted with `sample_images` moving to `plantcv.parallel`, `json2csv` moving to `plantcv.plantcv`, and `tabulate_bayes_classes` moving to `plantcv.learn`. Command-line interfaces are still available for `sample_images` [plantcv-sample](tools.md#plantcv-parallel) and `tabulate_bayes_classes` as [plantcv-learn tabulate_bayes_classes](tools.md#training-machine-learning-models).
@@ -514,6 +518,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.3:  NA 
 * post v4.3: filtered_mask = **plantcv.filters.eccentricity**(*bin_img, ecc_thresh=0*)
+* post v5: NA
 
 #### plantcv.filters.obj_props
 
