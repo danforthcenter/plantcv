@@ -8,18 +8,21 @@ from plantcv.plantcv.transform.rerun_delta_e import _rerun_delta_e
 
 
 def gamma_correct(img, gamma=1, gain=1):
-    """
-    Apply a gamma correction to the input image.
+    """Apply gamma correction to an input image.
 
-    Inputs:
-    img     = input image (RGB or grayscale)
-    gamma   = Non negative real number. Default value is 1.
-    gain    = The constant multiplier. Default value is 1.
+    Parameters
+    ----------
+    img : numpy.ndarray
+        Input image (RGB or grayscale).
+    gamma : float, optional
+        Non-negative real number. Default is 1.
+    gain : float, optional
+        Constant multiplier. Default is 1.
 
-    :param img: numpy.ndarray
-    :param gamma: float
-    :param gain: float
-    :return corrected_img: numpy.ndarray
+    Returns
+    -------
+    numpy.ndarray
+        Gamma-corrected image.
     """
     corrected_img = exposure.adjust_gamma(image=img, gamma=gamma, gain=gain)
 
