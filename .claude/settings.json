@@ -1,0 +1,26 @@
+{
+    "hooks": {
+	"PreToolUse": [
+	    {
+		"matcher": "Read",
+		"hooks": [
+		    {
+			"type": "command",
+			"command": "~/plantcv/.claude/hooks/demon_read_any_pcv.sh"
+		    }
+		]
+	    }
+	],
+	"PostToolUse" : [
+	    {
+		"matcher": "Edit|Write",
+		"hooks": [
+		    {
+			"type": "command",
+			"command": "~/plantcv/.claude/hooks/demon_enforce_standards.sh"
+		    }
+		]
+	    }
+	]
+    }
+}
