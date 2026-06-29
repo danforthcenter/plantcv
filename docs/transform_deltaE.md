@@ -52,10 +52,8 @@ corrected_img = pcv.transform.affine_color_correction(rgb_img=rgb_img,
 # Delta E on the corrected image
 e_matrix = pcv.transform.deltaE(corrected_img)
 # outputs metadata will have min, mean, max, std dev of deltaE
-print(pcv.outputs.metadata["max_deltaE_uncalibrated"])  # the uncalibrated metadata is added by detect_color_card
-# [np.float64(49.5516548320252)]
-print(pcv.outputs.metadata["max_deltaE_calibrated"]) # the calibrated metadata is added by deltaE
-# [np.float64(15.730570870191682)]
+print(pcv.outputs.metadata["deltaE_uncalibrated"])  # the uncalibrated metadata is added by detect_color_card
+print(pcv.outputs.metadata["deltaE_calibrated"]) # the calibrated metadata is added by deltaE
 ```
 
 Calling `plantcv.transform.detect_color_card` on the uncorrected image:

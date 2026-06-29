@@ -47,11 +47,8 @@ def _delta_e(obs_rgb, card_type=None, obs="uncalibrated"):
     delta_e_fun = getattr(color, params.deltaE)
     # there are other parameters we could allow changes to but I don't think we need to yet.
     delta_e_mat = delta_e_fun(obs_lab, exp_lab)
-    # store metadata describing delta E
-    outputs.add_metadata(term="mean_deltaE_" + obs, datatype=float, value=np.mean(delta_e_mat))
-    outputs.add_metadata(term="std_deltaE_" + obs, datatype=float, value=np.std(delta_e_mat))
-    outputs.add_metadata(term="max_deltaE_" + obs, datatype=float, value=np.max(delta_e_mat))
-    outputs.add_metadata(term="min_deltaE_" + obs, datatype=float, value=np.min(delta_e_mat))
+    # store delta E
+    outputs.add_metadata(term="deltaE_" + obs, datatype=list, value=delta_e_mat.flatten().tolist())
     # make a debug plot
     if params.debug:
         params.device += 1
