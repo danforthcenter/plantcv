@@ -3,6 +3,7 @@
 import os
 import cv2
 import numpy as np
+from skimage.color import label2rgb
 from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 
@@ -10,26 +11,35 @@ from plantcv.plantcv._debug import _debug
 def roi2mask(img, roi):
     """
     Create a binary mask from an ROI contour
-    Inputs:
-    img                  = RGB or grayscale image data
-    roi                  = A region of interest as an instance of the class Objects
+
+    Parameters:
+    -----------
+    img = numpy.ndarray,
+        RGB or grayscale image data
+    roi = plantcv.plantcv.classes.Objects,
+        A region of interest as an instance of the class Objects
 
     Returns:
-    mask   = Binary mask
-
-    :param img: numpy.ndarray
-    :param roi: plantcv.plantcv.classes.Objects
-    :return mask: numpy.ndarray
+    --------
+    mask   = numpy.ndarray,
+        Labeled mask or binary mask if only one ROI is given
     """
     # create a blank image of same size
-    shape_info = np.shape(img)
-    mask = np.zeros((shape_info[0], shape_info[1]), dtype=np.uint8)
+    labeled_mask = np.zeros(img.shape[:2], dtype=np.int32)
+    # get number of labels
+    num_labels = len(roi.contours)
+    for i, obj in enumerate(roi):
+        # Pixel intensity of (i+1) such that the first object has value 1
+        cv2.drawContours(labeled_mask, obj.contours[0], -1, (i+1), -1)
 
-    for single_roi_cnt in roi:
-        _ = cv2.drawContours(mask, single_roi_cnt.contours[0], 0, 255, -1)
+    colorful = label2rgb(labeled_mask)
+    colorful2 = (255*colorful).astype(np.uint8)
 
-    _debug(visual=mask,
-           filename=os.path.join(params.debug_outdir, str(params.device) + '_roi_mask.png'),
-           cmap='gray')
+    if num_labels == 1:
+        labeled_mask = (labeled_mask*255).astype(np.uint8)
 
-    return mask
+    _debug(visual=colorful2,
+           filename=os.path.join(params.debug_outdir,
+                                 f"{params.device}_roi2mask.png"))
+
+    return labeled_mask
