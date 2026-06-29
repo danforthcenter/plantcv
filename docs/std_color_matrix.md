@@ -65,4 +65,4 @@ print(std_color_matrix)
          [240.     0.2    0.2    0.2 ]]
 
 ```
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/transform/color_correction.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/transform/standard_matrices.py)
