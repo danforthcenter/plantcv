@@ -33,6 +33,6 @@ def roi2mask(img, roi):
         cv2.drawContours(labeled_mask, obj.contours[0], -1, (i+1), -1)
 
     if num_labels == 1:
-        labeled_mask = labeled_mask * 255
+        labeled_mask = (labeled_mask * 255).astype(np.uint8)
 
     return labeled_mask
