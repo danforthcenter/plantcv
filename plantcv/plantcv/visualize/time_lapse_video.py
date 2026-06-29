@@ -15,7 +15,8 @@ def time_lapse_video(source, out_filename='./time_lapse_video.mp4', fps=29.97):
     Parameters:
     -----------
     source         = string or list,
-        Path to a folder of images to use or list of paths to the images to create the video
+        Path to a folder of images to use, list of paths to the images,
+        or list of numpy.ndarray objects to create the video
     out_filename   = string,
         name of file to save the generated video to
     fps            = float,
@@ -30,15 +31,21 @@ def time_lapse_video(source, out_filename='./time_lapse_video.mp4', fps=29.97):
     img_list = source
     if isinstance(source, str):
         img_list = read_dataset(source, sort=True)
+    # for file paths read the images
+    if isinstance(img_list[0], str):
+        imgs = []
+        list_r = []
+        list_c = []
+        for file in img_list:
+            img = iio.imread(file)
+            list_r.append(img.shape[0])
+            list_c.append(img.shape[1])
+            imgs.append(img)
+    else:
+        list_c = [img.shape[0] for img in img_list]
+        list_r = [img.shape[1] for img in img_list]
+        imgs = img_list
 
-    imgs = []
-    list_r = []
-    list_c = []
-    for file in img_list:
-        img = iio.imread(file)
-        list_r.append(img.shape[0])
-        list_c.append(img.shape[1])
-        imgs.append(img)
     max_c, max_r = np.max(list_c), np.max(list_r)
 
     # use the largest size of the images as the frame size
