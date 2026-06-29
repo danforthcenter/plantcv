@@ -23,8 +23,8 @@ from plantcv import plantcv as pcv
 # Note you will have to change this part on your own path
 img_directory = './path_to_images_directory/'
 
-_ = pcv.visualize.time_lapse_video(source=img_directory,
-                                   out_filename='./eg_time_lapse.mp4')
+pcv.visualize.time_lapse_video(source=img_directory,
+                               out_filename='./eg_time_lapse.mp4')
 ```
 
 **Video generated**

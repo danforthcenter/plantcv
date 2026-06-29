@@ -17,7 +17,7 @@ def test_plantcv_visualize_time_lapse_video_path_list_input(tmpdir):
         list_im.append(img_i_path)
 
     vid_name = os.path.join(tmpdir, 'test_time_lapse_video.mp4')
-    _ = time_lapse_video(source=list_im, out_filename=vid_name, fps=29.97)
+    time_lapse_video(source=list_im, out_filename=vid_name, fps=29.97)
     assert os.path.exists(vid_name) and os.path.getsize(vid_name) > 100
 
 
@@ -31,7 +31,7 @@ def test_plantcv_visualize_time_lapse_video_array_list_input(tmpdir):
         temp_img = np.interp(temp_img, (min_, max_), (0, 255)).astype('uint8')
         list_im.append(temp_img)
     vid_name = os.path.join(tmpdir, 'test_time_lapse_video.mp4')
-    _ = time_lapse_video(source=list_im, out_filename=vid_name, fps=29.97)
+    time_lapse_video(source=list_im, out_filename=vid_name, fps=29.97)
     assert os.path.exists(vid_name) and os.path.getsize(vid_name) > 100
 
 
@@ -46,7 +46,7 @@ def test_plantcv_visualize_time_lapse_video_str_input(tmpdir):
         cv2.imwrite(img_i_path, temp_img)
 
     vid_name = os.path.join(tmpdir, 'test_time_lapse_video.mp4')
-    _ = time_lapse_video(source=str(tmpdir), out_filename=vid_name, fps=29.97)
+    time_lapse_video(source=str(tmpdir), out_filename=vid_name, fps=29.97)
     assert os.path.exists(vid_name) and os.path.getsize(vid_name) > 100
 
 
@@ -64,7 +64,7 @@ def test_plantcv_visualize_time_lapse_video_different_img_sizes_warns(tmpdir, ca
         list_im.append(img_i_path)
 
     vid_name = os.path.join(tmpdir, 'test_time_lapse_video.mp4')
-    _ = time_lapse_video(source=list_im, out_filename=vid_name, fps=29.97)
+    time_lapse_video(source=list_im, out_filename=vid_name, fps=29.97)
     _, err = capsys.readouterr()
 
     assert "Warning" in err and os.path.exists(vid_name)
