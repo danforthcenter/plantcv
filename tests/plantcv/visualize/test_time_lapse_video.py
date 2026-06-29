@@ -25,7 +25,7 @@ def test_plantcv_visualize_time_lapse_video_array_list_input(tmpdir):
     """Test for PlantCV."""
     # Generate 3 test images and saved in tmpdir
     list_im = []
-    for i in range(3):
+    for _ in range(3):
         temp_img = np.random.rand(3, 3)
         min_, max_ = np.nanmin(temp_img), np.nanmax(temp_img)
         temp_img = np.interp(temp_img, (min_, max_), (0, 255)).astype('uint8')
