@@ -1,6 +1,6 @@
 ## Region of interest to mask
 
-Convert a region of interest/object contour to a binary mask of the same shape
+Convert a region of interest/object contour to a labeled or binary mask of the same shape
 
 **plantcv.roi.roi2mask**(*img, roi*)
 
@@ -12,6 +12,7 @@ Convert a region of interest/object contour to a binary mask of the same shape
 
 - **Context:**
     - `img` parameter is only used to determine the size of the mask getting created.
+	- If `roi` contains multiple contours then a labeled mask (0, 1, 2, ..., n) is returned, otherwise a binary (0, 255) mask is returned.
 - **Example use:**
     - below
 
