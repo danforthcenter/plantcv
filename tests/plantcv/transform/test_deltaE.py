@@ -31,7 +31,7 @@ def test_deltaE_bad_param(transform_test_data, monkeypatch):
     monkeypatch.setattr(params, "deltaE", "bad_input")
     rgb_img = cv2.imread(transform_test_data.astrocard_img)
     with pytest.raises(RuntimeError):
-        _ =  deltaE(rgb_img=rgb_img, color_chip_size="astro")
+        _ = deltaE(rgb_img=rgb_img, color_chip_size="astro")
 
 
 @pytest.mark.parametrize("debug", ["print", "plot", None])
