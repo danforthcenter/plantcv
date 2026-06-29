@@ -61,5 +61,3 @@ def time_lapse_video(source, out_filename='./time_lapse_video.mp4', fps=29.97):
 
     frames = [resize(img, frame_size, interpolation=None) for img in imgs]
     iio.imwrite(out_filename, frames, plugin="FFMPEG", fps=fps, codec="libx264")
-
-    return frame_size

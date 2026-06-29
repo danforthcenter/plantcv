@@ -4,7 +4,7 @@ This function generates and saves the time-lapse video based on a list of paths 
 
 **plantcv.visualize.time_lapse_video**(*source, out_filename='./time_lapse_video.mp4', fps=29.97*)
 
-**returns** frame_size
+**returns** None
 
 - **Parameters:**
     - source         - File path to a directory of images to use, list of paths to the images, or list of `numpy.ndarray` objects to create the video
@@ -23,8 +23,8 @@ from plantcv import plantcv as pcv
 # Note you will have to change this part on your own path
 img_directory = './path_to_images_directory/'
 
-frame_size = pcv.visualize.time_lapse_video(source=img_directory,
-                                            out_filename='./eg_time_lapse.mp4')
+_ = pcv.visualize.time_lapse_video(source=img_directory,
+                                   out_filename='./eg_time_lapse.mp4')
 ```
 
 **Video generated**
