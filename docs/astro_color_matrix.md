@@ -45,4 +45,4 @@ print(astro_color_matrix)
          [150.,    0.22,   0.23,   0.23]]
 
 ```
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/transform/color_correction.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/transform/standard_matrices.py)
