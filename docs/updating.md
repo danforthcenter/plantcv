@@ -389,6 +389,9 @@ pages for more details on the input and output variable types.
 * pre v4.0: (see plantcv.hyperspectral.analyze_spectral)
 * post v4.0: analysis_image = **plantcv.analyze.spectral_reflectance**(*hsi, labeled_mask, n_labels=1, label=None*)
 
+#### plantcv.analyze.texture
+
+* post v5.0 texture_chart = **plantcv.analyze.texture**(*img, labeled_mask, n_labels=1, methods=None, distances=None, angles=None, symmetric=False, normalize=False, label=None*)
 
 #### plantcv.analyze.thermal
 
@@ -999,6 +1002,26 @@ pages for more details on the input and output variable types.
 * pre v4.3.1: NA
 * post v4.3.1: chart = **plantcv.qc.exposure**(*rgb_img, warning_threshold=0.05*)
 
+#### plantcv.qc.quick_color_check
+
+* pre v5.0: NA, see `plantcv.transform.quick_color_check`
+* post v5.0: chart = **plantcv.transform.quick_color_check**(*target_matrix, source_matrix, num_chips*)
+
+#### plantcv.qc.color_correction_plot
+
+* pre v5.0: NA, see `plantcv.visualize.color_correction_scatterplot`
+* post v5.0: fig = **plantcv.qc.color_correction_plot**(*color_matrix, std_matrix, corrected_matrix=None*)
+
+#### plantcv.qc.color_chip_comparison
+
+* pre v5.0: NA
+* post v5.0: fig = **plantcv.qc.color_chip_comparison**(*std_matrix, \*args*)
+
+#### plantcv.qc.plot_deltaE
+
+* pre v5.0: NA
+* post v5.0: fig = **plantcv.qc.plot_deltaE**(*deltaE_matrix*)
+
 #### plantcv.readbayer
 
 * pre v3.0: NA
@@ -1241,6 +1264,10 @@ pages for more details on the input and output variable types.
 
 * post v3.8: array = **plantcv.spectral_index.gdvi**(*hsi, distance=20*)
 
+#### plantcv.spectral_index.gndvi
+
+* post v5.0: array = **plantcv.spectral_index.gndvi**(*hsi, distance=20*)
+
 #### plantcv.spectral_index.gli
 
 * post v4.4: array = **plantcv.spectral_index.gli**(*img, distance=20*)
@@ -1438,12 +1465,17 @@ pages for more details on the input and output variable types.
 * post v3.0: mask = **pcv.transform.create_color_card_mask**(*rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=[]*)
 * post v4.9: mask = **pcv.transform.create_color_card_mask**(*rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=None*)
 
+#### plantcv.transform.deltaE
+
+* pre v5.0: NA
+* post v5.0: deltaE_matrix = **plantcv.transform.deltaE**(*rgb_img, color_chip_size=None, roi=None, obs="calibrated", \*\*kwargs*)
+
 #### plantcv.transform.detect_color_card
 
 * pre v4.0.1: NA
 * post v4.0.1: labeled_mask = **plantcv.transform.detect_color_card**(*rgb_img, label=None, \*\*kwargs*)
 * post v4.9: labeled_mask = **plantcv.transform.detect_color_card**(*rgb_img, label=None, color_chip_size=None, roi=None, \*\*kwargs*)
-* post v5.0: color_matrix = **plantcv.transform.detect_color_card**(*rgb_img, color_chip_size=None, roi=None, \*\*kwargs*)
+* post v5.0: color_matrix = **plantcv.transform.detect_color_card**(*rgb_img, color_chip_size=None, roi=None, delta_E=True, \*\*kwargs*)
 
 #### plantcv.transform.find_color_card
 
@@ -1502,6 +1534,7 @@ pages for more details on the input and output variable types.
 * pre v3.0: NA
 * post v3.0: **plantcv.transform.quick_color_check**(*target_matrix, source_matrix, num_chips*)
 * post v4.0: chart = **plantcv.transform.quick_color_check**(*target_matrix, source_matrix, num_chips*)
+* post v5.0: NA, moved to `plantcv.qc.quick_color_check`
 
 #### plantcv.transform.save_matrix
 
@@ -1523,6 +1556,12 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: NA
 * post v4.0: chart = **plantcv.visualize.chlorophyll_fluorescence**(*ps_da, labeled_mask, n_labels=1, label="object"*)
+
+#### plantcv.visualize.color_chip_comparison
+
+* pre v4.10: NA
+* post v4.10: plot = **plantcv.visualize.color_chip_comparison**(*std_matrix, \*args*)
+* post v5.0: moved to **plantcv.qc.color_chip_comparison**
 
 #### plantcv.visualize.color_correction_scatter
 
@@ -1592,7 +1631,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: NA
 * post v4.0: frame_size = **pcv.visualize.time_lapse_video**(*img_list, out_filename='./time_lapse_video.mp4', fps=29.97, display=True*)
-* post v5.0: deprecated.
+* post v5.0: frame_size = **pcv.visualize.time_lapse_video**(*source, out_filename='./time_lapse_video.mp4', fps=29.97*)
 
 #### plantcv.watershed_segmentation
 

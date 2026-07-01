@@ -57,8 +57,9 @@ class PSII_data:
         self.aph = None
         self.chl = None
         self.clr = None
-        self.ojip_dark = None
-        self.ojip_light = None
+        self.ojip = None
+        self.psd = None
+        self.psl = None
         self.pam_dark = None
         self.pam_light = None
         self.pam_time = None
