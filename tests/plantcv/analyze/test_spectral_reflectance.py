@@ -13,7 +13,6 @@ def test_spectral_reflectance(test_data):
     assert len(outputs.observations['default_1']['wavelength_means']['value']) == 978
 
 
-
 def test_spectral_reflectance_key_conversion(test_data):
     """Test for PlantCV."""
     # Clear previous outputs
