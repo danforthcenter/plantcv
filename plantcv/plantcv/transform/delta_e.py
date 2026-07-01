@@ -1,0 +1,66 @@
+"""Calculate Delta E between color cards"""
+import os
+import numpy as np
+from skimage import color
+from matplotlib import pyplot as plt
+from plantcv.plantcv._globals import params, outputs
+from plantcv.plantcv.fatal_error import fatal_error
+from plantcv.plantcv.transform.standard_matrices import std_color_matrix, astro_color_matrix
+
+
+def _delta_e(obs_rgb, card_type=None, obs="uncalibrated"):
+    """Calculate summary of Delta E between two color cards
+
+    Parameters
+    ----------
+    obs_rgb : numpy.ndarray
+        Observed RGB color chip values as returned from plantcv.transform.detect_color_card
+    card_type : str
+        either "macbeth" or "astro" for color card type, defaults to None for compatibility with detection.
+    obs : str
+        string describing what the obs_rgb data is, typically "uncalibrated" for an image input into color correction
+        or "calibrated" for an image that has been through color correction.
+
+    Returns
+    -------
+    delta_e_mat
+        numpy.ndarray, Delta E values between color chips.
+    """
+    if card_type is None or isinstance(card_type, tuple):
+        card_type = "macbeth"
+    if card_type.upper() == "ASTRO":
+        std = astro_color_matrix()
+        obs_mat = (255 * np.delete(obs_rgb, 0, axis=1).reshape(3, 5, 3)).astype("uint8")
+        exp_mat = (255 * np.delete(std, 0, axis=1).reshape(3, 5, 3)).astype("uint8")
+    else:
+        std = std_color_matrix()
+        # format both rgb colors into 6x4 uint8 image
+        obs_mat = (255 * np.delete(obs_rgb, 0, axis=1).reshape(6, 4, 3)).astype("uint8")
+        exp_mat = (255 * np.rot90(np.delete(std, 0, axis=1).reshape(4, 6, 3), 3)).astype("uint8")
+    # convert to LAB for skimage color functions
+    obs_lab = color.rgb2lab(obs_mat)
+    exp_lab = color.rgb2lab(exp_mat)
+    # get function from skimage color
+    if params.deltaE not in ['deltaE_cie76', 'deltaE_ciede2000', 'deltaE_ciede94', 'deltaE_cmc']:
+        fatal_error("params.deltaE function must by one of 'deltaE_cie76'," +
+                    "'deltaE_ciede2000', 'deltaE_ciede94', or 'deltaE_cmc'")
+    delta_e_fun = getattr(color, params.deltaE)
+    # there are other parameters we could allow changes to but I don't think we need to yet.
+    delta_e_mat = delta_e_fun(obs_lab, exp_lab)
+    # store delta E
+    outputs.add_metadata(term="deltaE_" + obs, datatype=list, value=delta_e_mat.flatten().tolist())
+    # make a debug plot
+    if params.debug:
+        params.device += 1
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
+        ax1.imshow(obs_mat)
+        ax1.set_title(obs.title() + ' Color Card')
+        ax2.imshow(exp_mat)
+        ax2.set_title('Reference Colors')
+        if params.debug == "print":
+            fig.savefig(fname=os.path.join(params.debug_outdir, f"{params.device}_{obs}_{params.deltaE}.png"))
+            plt.close(fig)
+        elif params.debug == "plot":
+            plt.show(block=False)
+
+    return delta_e_mat

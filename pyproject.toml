@@ -14,7 +14,7 @@ dynamic = ["version"]
 dependencies = [
     "matplotlib >= 1.5",
     "numpy >= 1.26",
-    "pandas",
+    "pandas != 3.0.4",
     "python-dateutil",
     "scipy <1.16",
     "scikit-image >= 0.19",
@@ -29,7 +29,9 @@ dependencies = [
     "nd2",
     "flyr",
     "nbconvert",
-    "nbformat"
+    "nbformat",
+    "imageio >= 2.28",
+    "imageio-ffmpeg"
 ]
 requires-python = ">=3.8"
 authors = [
