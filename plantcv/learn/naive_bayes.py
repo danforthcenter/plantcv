@@ -128,7 +128,8 @@ def naive_bayes_multiclass(samples_file, outfile, mkplots=False):
     # For each class
     for cls in class_list:
         # Create a blue, green, red-formatted image ndarray with the class RGB values
-        bgr_img = cv2.merge((np.asarray(sample_points[cls]["blue"], dtype=np.uint8),
+        # Use np.dstack rather than cv2.merge so the array keeps an explicit channel dimension across OpenCV versions
+        bgr_img = np.dstack((np.asarray(sample_points[cls]["blue"], dtype=np.uint8),
                              np.asarray(sample_points[cls]["green"], dtype=np.uint8),
                              np.asarray(sample_points[cls]["red"], dtype=np.uint8)))
         # Convert the BGR ndarray to an HSV ndarray
