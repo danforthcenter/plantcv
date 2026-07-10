@@ -5,7 +5,7 @@ be better off excluded from analysis . A quick way to examine this is by plottin
 masked in the color card.
 
 
-**plantcv.transform.quick_color_check**(*source_matrix, target_matrix, num_chips*)
+**plantcv.qc.quick_color_check**(*source_matrix, target_matrix, num_chips*)
 
 **returns** Altair chart
 
@@ -23,9 +23,9 @@ masked in the color card.
 
 from plantcv import plantcv as pcv
 
-chart = pcv.transform.quick_color_check(source_matrix=s_matrix,
-                                        target_matrix=t_matrix,
-                                        num_chips=24)
+chart = pcv.qc.quick_color_check(source_matrix=s_matrix,
+                                 target_matrix=t_matrix,
+                                 num_chips=24)
 
 ```
 **Perfect Color Correlation**
@@ -36,4 +36,4 @@ chart = pcv.transform.quick_color_check(source_matrix=s_matrix,
 
 ![Screenshot](img/documentation_images/quick_color_check/quick_color_plot2.png)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/transform/color_correction.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/qc/quick_color_check.py)
