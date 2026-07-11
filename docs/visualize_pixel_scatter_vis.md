@@ -2,16 +2,18 @@
 
 This function plots a 2D pixel scatter plot visualization for a dataset of images. The horizontal and vertical coordinates are defined by the intensity of the pixels in the specified channels. The color of each dot is given by the original RGB color of the pixel.
 
-**plantcv.visualize.pixel_scatter_plot**(*paths_to_imgs, x_channel, y_channel*)
+**plantcv.visualize.pixel_scatter_plot**(*source, x_channel, y_channel, n=20, ext="png"*)
 
 **returns** fig, ax
 
 - **Parameters:**
-    - paths_to_imgs   - List of paths to the images.
+    - source   - Image as a numpy array, string file path to a directory of images, or list of paths to the images.
     - x_channel       - Channel to use for the horizontal coordinate of the scatter plot.
     Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'c', 'm', 'y', 'k', 'gray', and 'index'.
     - y_channel       - Channel to use for the vertical coordinate of the scatter plot.
     Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'c', 'm', 'y', 'k', 'gray', and 'index'.
+    - n   - Max number of images to use if `source` is a filepath.
+	- ext   - Image file extension to search for if `source` is a filepath.
 
 
 - **Context:**
@@ -37,9 +39,9 @@ This function plots a 2D pixel scatter plot visualization for a dataset of image
 
 from plantcv import plantcv as pcv
 
-fig1, ax1 = pcv.visualize.pixel_scatter_plot(paths_to_imgs=file_paths, x_channel='index', y_channel='G')
+fig1, ax1 = pcv.visualize.pixel_scatter_plot(source=file_paths, x_channel='index', y_channel='G')
 
-fig2, ax2 = pcv.visualize.pixel_scatter_plot(paths_to_imgs=file_paths, x_channel='index', y_channel='s')
+fig2, ax2 = pcv.visualize.pixel_scatter_plot(source=file_paths, x_channel='index', y_channel='s')
 
 ```
 
@@ -61,9 +63,11 @@ fig2, ax2 = pcv.visualize.pixel_scatter_plot(paths_to_imgs=file_paths, x_channel
 
 from plantcv import plantcv as pcv
 
-fig1, ax1 = pcv.visualize.pixel_scatter_plot(paths_to_imgs=file_paths, x_channel='b', y_channel='a')
+fig1, ax1 = pcv.visualize.pixel_scatter_plot(source=file_paths, x_channel='b', y_channel='a')
 
-fig2, ax2 = pcv.visualize.pixel_scatter_plot(paths_to_imgs=file_paths, x_channel='G', y_channel='b')
+fig2, ax2 = pcv.visualize.pixel_scatter_plot(source="/path/to/images/", x_channel='G', y_channel='b')
+
+fig3, ax3 = pcv.visualize.pixel_scatter_plot(source=img, x_channel='G', y_channel='b')
 
 ```
 
