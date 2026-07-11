@@ -201,18 +201,42 @@ Index range: -1, 1
 Calculates the Green Difference Vegetation Index using reflectance values ([Sripada et al., 2006](#references)):
 
 ```
-GDVI = (NIR - GREEN) / (NIR + GREEN)
+GDVI = (NIR - GREEN)
 ```
 
 Here, we use ~R800 for NIR and ~R550 for GREEN:
 
 ```
-GDVI = (R800 - R550) / (R800 + R550)
+GDVI = (R800 - R550)
 ```
 
-Index range: -2.0, 2.0
+Index range: -1.0, 1.0
 
 **plantcv.spectral_index.gdvi**(*hsi, distance=20*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
+    - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
+
+### GNDVI
+
+Calculates the Green Normalized Difference Vegetation Index using reflectance values ([Gitelson et al., 1996](#references)):
+
+```
+GNDVI = (NIR - GREEN) / (NIR + GREEN)
+```
+
+Here, we use ~R800 for NIR and ~R550 for GREEN:
+
+```
+GNDVI = (R800 - R550) / (R800 + R550)
+```
+
+Index range: -1.0, 1.0
+
+**plantcv.spectral_index.gndvi**(*hsi, distance=20*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -721,6 +745,9 @@ ndvi_array = pcv.spectral_index.ndvi(hsi=spectral_data, distance=20)
 # Extract GDVI index from the datacube
 gdvi_array = pcv.spectral_index.gdvi(hsi=spectral_data, distance=20)
 
+# Extract GNDVI index from the datacube
+gndvi_array = pcv.spectral_index.gndvi(hsi=spectral_data, distance=20)
+
 # Extract SAVI index from the datacube
 savi_array = pcv.spectral_index.savi(hsi=spectral_data, distance=20)
 
@@ -858,6 +885,8 @@ DOI: [10.1080/0143116042000274015](https://doi.org/10.1080/0143116042000274015).
 
 Gamon JA, Surfus JS. 1999. Assessing leaf pigment content and activity with a reflectometer. The New Phytologist 
 143:105–117. DOI: [10.1046/j.1469-8137.1999.00424.x](https://doi.org/10.1046/j.1469-8137.1999.00424.x).
+
+Gitelson AA, Kaufman YJ, & Merzlyak MN. (1996). Use of a green channel in remote sensing of global vegetation from EOS-MODIS. Remote sensing of Environment, 58(3), 289-298. DOI: [10.1016/S0034-4257(96)00072-7](https://doi.org/10.1016/S0034-4257(96)00072-7)
 
 Gitelson AA, Zur Y, Chivkunova OB, Merzlyak MN. 2002. Assessing carotenoid content in plant leaves with reflectance 
 spectroscopy. Photochemistry and Photobiology 75:272–281. DOI: 
