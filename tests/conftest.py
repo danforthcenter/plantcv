@@ -168,22 +168,36 @@ class TestData:
         if var == 'ojip_dark':
             frame_labels = ['Fdark', 'F0', 'Fm', '3']
             measurements = ['t0']
+            keyname = "psd"
         elif var == 'ojip_light':
             frame_labels = ['Fdark', 'Fp', '2', 'Fmp']
             measurements = ['t1']
+            keyname = "psl"
+        elif var == "ojip_bad":
+            frame_labels = ['Fdark', 'Fp', '2', 'Fmp']
+            measurements = ['t1']
+            keyname = "bad"
 
         # Create DataArray
         da = xr.DataArray(data=np.dstack([f0, f1, f2, f3])[..., None],
                           dims=('x', 'y', 'frame_label', 'measurement'),
                           coords={'frame_label': frame_labels, 'frame_num': ('frame_label', [0, 1, 2, 3]),
                                   'measurement': measurements}, name=var)
-        return da
+        ps = type("psdata", (object,), {
+            'metadata': {
+                "ImageRows": 10,
+                "ImageCols": 10
+            },
+            keyname: da
+        })
+        return ps
 
     @staticmethod
     def psii_walz(var):
         """Create and return synthetic psii dataarrays from walz"""
         # create darkadapted
         if var == 'ojip_dark':
+            keyname = "psd"
             i = 0
             fmin = np.ones((10, 10), dtype='uint8') * ((i+15)*2)
             fmax = np.ones((10, 10), dtype='uint8') * (200-i*15)
@@ -204,6 +218,7 @@ class TestData:
         elif var == 'ojip_light':
             da_list = []
             measurement = []
+            keyname = "psl"
 
             for i in np.arange(1, 3):
                 indf = ['Fp', 'Fmp']
@@ -225,8 +240,15 @@ class TestData:
             ps_da = xr.concat(da_list, 'measurement')
             ps_da.name = 'ojip_light'
             ps_da.coords['measurement'] = prop_idx
-
-        return ps_da
+        
+        ps = type("psdata", (object,), {
+            'metadata': {
+                "ImageRows": 10,
+                "ImageCols": 10
+            },
+            keyname: ps_da
+        })
+        return ps
 
 
 @pytest.fixture(scope="session")
