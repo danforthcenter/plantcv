@@ -3,12 +3,12 @@
 Extract estimates of the efficiency (YII) of Photosystem II (PSII).
 The photosynthesis subpackage is dependent on a PSII_Data instance file structure as created by photosynthesis.read_* files.
 
-**plantcv.analyze.yii**(*ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None*)
+**plantcv.analyze.yii**(*ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None*)
 
-**returns** YII DataArray, YII histograms
+**returns** list of YII DataArray, list of YII histograms (one for each of the `psd` or `psl` arrays)
 
 - **Parameters:**
-    - ps_da - Photosynthesis xarray DataArray (either `ojip_dark`, `ojip_light`, `pam_dark`, or `pam_light`).
+    - ps - PSII_data instance (from [read_cropreporter](photosynthesis_read_cropreporter.md)) containing `psd` and/or `psl` data.
     Can either have a pair of frames F0, Fm or pair(s) of Fp, Fmp.
     - labeled_mask - Labeled mask of objects (32-bit).
     - n_labels - Total number expected individual objects (default = 1).
