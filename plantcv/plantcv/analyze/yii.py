@@ -8,123 +8,122 @@ from plantcv.plantcv import params, outputs, fatal_error
 from plantcv.plantcv.photosynthesis import reassign_frame_labels
 
 
-def yii(ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None):
-    """
-    Calculate and analyze PSII efficiency estimates from fluorescence image data.
+def yii(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None):
+    """Calculate and analyze PSII efficiency estimates from fluorescence image data.
 
-    Inputs:
-    ps_da               = Photosynthesis xarray DataArray (either ojip_dark, ojip_light, pam_dark, or pam_light)
-    labeled_mask        = Labeled mask of objects (32-bit).
-    n_labels            = Total number expected individual objects (default = 1).
-    auto_fm             = Automatically calculate the frame with maximum fluorescence per label, otherwise
-                          use a fixed frame for all labels (default = False).
-    measurement_labels  = labels for each measurement, modifies the variable name of observations recorded
-    label               = optional label parameter, modifies the variable name of observations recorded
+    Parameters
+    ----------
+    ps                  = plantcv.plantcv.classes.PSII_data
+        Photosynthesis data as read by plantcv.plantcv.photosynthesis.read_cropreporter
+        Will analyze PSD (photosynthesis/ojip dark) and PSL (photosynthesis/ojip light)
+        if present.
+    labeled_mask        = numpy.ndarray,
+        Labeled mask of objects (32-bit).
+    n_labels            = int,
+        Total number expected individual objects (default = 1).
+    auto_fm             = boolean,
+        Automatically calculate the frame with maximum fluorescence per label, otherwise
+        use a fixed frame for all labels (default = False).
+    measurement_labels  = list,
+        labels for each measurement, modifies the variable name of observations recorded
+    label               = str,
+        optional label parameter, modifies the variable name of observations recorded
 
-    Returns:
-    yii_global          = DataArray of efficiency estimate values
-    yii_chart           = Histograms of efficiency estimate
-
-    :param ps_da: xarray.core.dataarray.DataArray
-    :param labeled_mask: numpy.ndarray
-    :param n_labels: int
-    :param auto_fm: bool
-    :param measurement_labels: list
-    :param label: str
-    :return yii_global: xarray.core.dataarray.DataArray
-    :return yii_chart: altair.vegalite.v4.api.FacetChart
+    Returns
+    -------
+    yii_global          = list of xarray.core.dataarray.DataArray,
+        DataArray of efficiency estimate values
+    yii_chart           = list of altair.vegalite.v4.api.FacetChart,
+        Histograms of efficiency estimate
     """
     # Set labels
     labels = _set_labels(label, n_labels)
 
     # Validate that the input mask has the same 2D shape as the input DataArray
-    if labeled_mask.shape != ps_da.shape[:2]:
-        fatal_error(f"Mask needs to have shape {ps_da.shape[:2]}")
+    ps_shape = (int(ps.metadata["ImageRows"]), int(ps.metadata["ImageCols"]))
+    if labeled_mask.shape != ps_shape:
+        fatal_error(f"Mask needs to have shape {ps_shape}")
 
-    # Validate that the input measurement_labels is the same length as the number of measurements in the DataArray
-    if (measurement_labels is not None) and (len(measurement_labels) != ps_da.coords['measurement'].shape[0]):
-        fatal_error('measurement_labels must be the same length as the number of measurements in the DataArray')
+    # Here the edit needs to check the frames of the data, if there are PSD or PSL frames then
+    # it's good (ojip measurements are present)
+    # This will need to be expanded to include PMD and PML
+        # Validate that var is a supported type
+    if not hasattr(ps, "psl") and not hasattr(ps, "psd"):
+        fatal_error(f"Unsupported DataArray type, psl or psd frames are required")
 
-    # The name of the DataArray
-    var = ps_da.name.lower()
+    yii_charts = []
+    yii_globals = []
 
-    # Validate that var is a supported type
-    if var not in ['ojip_dark', 'ojip_light', 'pam_dark', 'pam_light']:
-        fatal_error(f"Unsupported DataArray type: {var}")
+    for frame in ["psl", "psd"]:
+        if (hasattr(ps, frame)):
+            ps_da_loader = getattr(ps, frame)
+            ps_da = ps_da_loader.load()
+            # Validate that the input measurement_labels is the same length as the number of measurements in the DataArray
+            # this is going to the inside of the if/for loop I think.
+            if (measurement_labels is not None) and (len(measurement_labels) != ps_da.coords['measurement'].shape[0]):
+                fatal_error('measurement_labels must be the same length as the number of measurements in the DataArray')
+            # Make an zeroed array of the same shape as the input DataArray
+            yii_global = xr.zeros_like(ps_da, dtype=float)
+            # Drop the frame_label coordinate
+            yii_global = yii_global[:, :, 0, :].drop_vars('frame_label')
+            # Make a copy of the labeled mask
+            mask_copy = np.copy(labeled_mask)
+            # If the labeled mask is a binary mask with values 0 and 255, convert to 0 and 1
+            if len(np.unique(mask_copy)) == 2 and np.max(mask_copy) == 255:
+                mask_copy = np.where(mask_copy == 255, 1, 0).astype(np.uint8)
+            # Iterate over the label values 1 to n_labels
+            for i in range(1, n_labels + 1):
+                # Create a binary submask for each label
+                submask = np.where(mask_copy == i, 255, 0).astype(np.uint8)
+                # Expand the submask to the same shape as the input DataArray
+                submask = submask[..., None, None]
+                # If auto_fm is True, reassign frame labels to choose the best Fm or Fm' for each labeled region
+                if auto_fm:
+                    ps_da = reassign_frame_labels(ps_da=ps_da, mask=submask.squeeze().squeeze())
+                # Mask the input DataArray with the submask
+                yii_masked = ps_da.astype('float').where(submask > 0, other=np.nan)
+                # Dark-adapted datasets (Fv/Fm)
+                print(frame)
+                print(yii_masked.coords['frame_label'])
+                if frame == 'psd':
+                    # Calculate Fv/Fm
+                    yii_lbl = (yii_masked.sel(frame_label='Fm') - yii_masked.sel(frame_label='F0')) / yii_masked.sel(frame_label='Fm')
+                # Light-adapted datasets (Fq'/Fm')
+                if frame == 'psl':
+                    # Calculate Fq'/Fm'
+                    yii_lbl = yii_masked.groupby('measurement', squeeze=False).map(_calc_yii)
+                # Drop the frame_label coordinate
+                yii_lbl = yii_lbl.drop_vars('frame_label')
+                # Fill NaN values with 0 so that we can add DataArrays together
+                yii_lbl = yii_lbl.fillna(0)
+                # Add the Fv/Fm values for this label to the yii DataArray
+                yii_global = yii_global + yii_lbl
+                # Record observations for each labeled region
+                _add_observations(yii_da=yii_lbl, measurements=ps_da.measurement.values, label=f"{labels[i - 1]}_{i}",
+                                  measurement_labels=measurement_labels)
+            # Convert the labeled mask to a binary mask
+            bin_mask = np.where(labeled_mask > 0, 255, 0)
+            # Expand the binary mask to the same shape as the YII DataArray
+            bin_mask = bin_mask[..., None]
+            # Set the background values to NaN
+            yii_global = yii_global.where(bin_mask > 0, other=np.nan)
+            # drop coords identifying frames if they exist
+            res = [i for i in list(yii_global.coords) if 'frame' in i]
+            yii_global = yii_global.drop_vars(res)  # does not fail if res is []
+            # Create a ridgeline plot of the YII values
+            yii_chart = _ridgeline_plots(measurements=ps_da.measurement.values, measurement_labels=measurement_labels)
+            yii_charts.append(yii_chart)
 
-    # Make an zeroed array of the same shape as the input DataArray
-    yii_global = xr.zeros_like(ps_da, dtype=float)
-    # Drop the frame_label coordinate
-    yii_global = yii_global[:, :, 0, :].drop_vars('frame_label')
+            # Create a pseudocolor image of the YII values
+            _debug(visual=yii_global,
+                   filename=os.path.join(params.debug_outdir, str(params.device) + "_YII_dataarray.png"),
+                   robust=True,
+                   col='measurement',
+                   col_wrap=int(np.ceil(yii_global.measurement.size / 4)),
+                   vmin=0, vmax=1)
+            yii_globals.append(yii_global.squeeze())
 
-    # Make a copy of the labeled mask
-    mask_copy = np.copy(labeled_mask)
-
-    # If the labeled mask is a binary mask with values 0 and 255, convert to 0 and 1
-    if len(np.unique(mask_copy)) == 2 and np.max(mask_copy) == 255:
-        mask_copy = np.where(mask_copy == 255, 1, 0).astype(np.uint8)
-
-    # Iterate over the label values 1 to n_labels
-    for i in range(1, n_labels + 1):
-        # Create a binary submask for each label
-        submask = np.where(mask_copy == i, 255, 0).astype(np.uint8)
-
-        # Expand the submask to the same shape as the input DataArray
-        submask = submask[..., None, None]
-
-        # If auto_fm is True, reassign frame labels to choose the best Fm or Fm' for each labeled region
-        if auto_fm:
-            ps_da = reassign_frame_labels(ps_da=ps_da, mask=submask.squeeze().squeeze())
-
-        # Mask the input DataArray with the submask
-        yii_masked = ps_da.astype('float').where(submask > 0, other=np.nan)
-
-        # Dark-adapted datasets (Fv/Fm)
-        if var in ['ojip_dark', 'pam_dark']:
-            # Calculate Fv/Fm
-            yii_lbl = (yii_masked.sel(frame_label='Fm') - yii_masked.sel(frame_label='F0')) / yii_masked.sel(frame_label='Fm')
-
-        # Light-adapted datasets (Fq'/Fm')
-        if var in ['ojip_light', 'pam_light']:
-            # Calculate Fq'/Fm'
-            yii_lbl = yii_masked.groupby('measurement', squeeze=False).map(_calc_yii)
-
-        # Drop the frame_label coordinate
-        yii_lbl = yii_lbl.drop_vars('frame_label')
-        # Fill NaN values with 0 so that we can add DataArrays together
-        yii_lbl = yii_lbl.fillna(0)
-        # Add the Fv/Fm values for this label to the yii DataArray
-        yii_global = yii_global + yii_lbl
-
-        # Record observations for each labeled region
-        _add_observations(yii_da=yii_lbl, measurements=ps_da.measurement.values, label=f"{labels[i - 1]}_{i}",
-                          measurement_labels=measurement_labels)
-
-    # Convert the labeled mask to a binary mask
-    bin_mask = np.where(labeled_mask > 0, 255, 0)
-
-    # Expand the binary mask to the same shape as the YII DataArray
-    bin_mask = bin_mask[..., None]
-
-    # Set the background values to NaN
-    yii_global = yii_global.where(bin_mask > 0, other=np.nan)
-
-    # drop coords identifying frames if they exist
-    res = [i for i in list(yii_global.coords) if 'frame' in i]
-    yii_global = yii_global.drop_vars(res)  # does not fail if res is []
-
-    # Create a ridgeline plot of the YII values
-    yii_chart = _ridgeline_plots(measurements=ps_da.measurement.values, measurement_labels=measurement_labels)
-
-    # Create a pseudocolor image of the YII values
-    _debug(visual=yii_global,
-           filename=os.path.join(params.debug_outdir, str(params.device) + "_YII_dataarray.png"),
-           robust=True,
-           col='measurement',
-           col_wrap=int(np.ceil(yii_global.measurement.size / 4)),
-           vmin=0, vmax=1)
-
-    return yii_global.squeeze(), yii_chart
+    return yii_globals, yii_charts
 
 
 def _set_labels(label, n_labels):
