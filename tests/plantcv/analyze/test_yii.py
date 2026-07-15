@@ -14,7 +14,7 @@ def test_yii_cropreporter(prot, mlabels, exp, test_data):
     """Test for PlantCV."""
     # Clear results
     outputs.clear()
-    _ = analyze_yii(ps_da=test_data.psii_cropreporter(prot),
+    _ = analyze_yii(ps=test_data.psii_cropreporter(prot),
                     labeled_mask=test_data.create_ps_mask(),
                     n_labels=1, auto_fm=True,
                     measurement_labels=mlabels)
@@ -31,7 +31,7 @@ def test_yii_waltz(prot, mlabels, exp, test_data):
     """Test for PlantCV."""
     # Clear results
     outputs.clear()
-    _ = analyze_yii(ps_da=test_data.psii_walz(prot),
+    _ = analyze_yii(ps=test_data.psii_walz(prot),
                     labeled_mask=test_data.create_ps_mask(),
                     n_labels=1, auto_fm=False,
                     measurement_labels=mlabels, label="default")
@@ -48,22 +48,21 @@ def test_yii_fatalerror(mlabels, tmask, test_data):
     """Test for PlantCV."""
     tmask[0, 0] = 255
     with pytest.raises(RuntimeError):
-        _ = analyze_yii(ps_da=test_data.psii_cropreporter('ojip_dark'), labeled_mask=tmask,
+        _ = analyze_yii(ps=test_data.psii_cropreporter('ojip_dark'), labeled_mask=tmask,
                         measurement_labels=mlabels, label="default")
 
 
 def test_yii_bad_var(test_data):
     """Test for PlantCV."""
-    da = test_data.psii_cropreporter('ojip_dark')
-    da.name = 'bad'
+    da = test_data.psii_cropreporter('ojip_bad')
     with pytest.raises(RuntimeError):
-        _ = analyze_yii(ps_da=da, labeled_mask=test_data.create_ps_mask(),
+        _ = analyze_yii(ps=da, labeled_mask=test_data.create_ps_mask(),
                         measurement_labels=None, label="default")
 
 
 def test_yii_wrong_num_labels(test_data):
     """Test for PlantCV."""
     with pytest.raises(RuntimeError):
-        _ = analyze_yii(ps_da=test_data.psii_cropreporter('ojip_dark'),
+        _ = analyze_yii(ps=test_data.psii_cropreporter('ojip_dark'),
                         labeled_mask=test_data.create_ps_mask(),
                         measurement_labels=None, label=["prefix", "prefix"])
