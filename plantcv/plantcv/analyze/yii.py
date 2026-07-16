@@ -44,18 +44,19 @@ def yii(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, la
     if labeled_mask.shape != ps_shape:
         fatal_error(f"Mask needs to have shape {ps_shape}")
 
-    # Here the edit needs to check the frames of the data, if there are PSD or PSL frames then
-    # it's good (ojip measurements are present)
-    # This will need to be expanded to include PMD and PML
-        # Validate that var is a supported type
     if not hasattr(ps, "psl") and not hasattr(ps, "psd"):
-        fatal_error(f"Unsupported DataArray type, psl or psd frames are required")
+        fatal_error("Unsupported DataArray type, psl or psd frames are required")
 
     yii_charts = []
     yii_globals = []
 
+    frame_functions = {
+        "psl": lambda yii_masked: _psl_calc_fqfm(yii_masked),
+        "psd": lambda yii_masked: _psd_calc_fvfm(yii_masked)
+    }
+
     for frame in ["psl", "psd"]:
-        if (hasattr(ps, frame)):
+        if hasattr(ps, frame):
             ps_da_loader = getattr(ps, frame)
             ps_da = ps_da_loader.load()
             # Validate that the input measurement_labels is the same length as the number of measurements in the DataArray
@@ -82,16 +83,8 @@ def yii(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, la
                     ps_da = reassign_frame_labels(ps_da=ps_da, mask=submask.squeeze().squeeze())
                 # Mask the input DataArray with the submask
                 yii_masked = ps_da.astype('float').where(submask > 0, other=np.nan)
-                # Dark-adapted datasets (Fv/Fm)
-                print(frame)
-                print(yii_masked.coords['frame_label'])
-                if frame == 'psd':
-                    # Calculate Fv/Fm
-                    yii_lbl = (yii_masked.sel(frame_label='Fm') - yii_masked.sel(frame_label='F0')) / yii_masked.sel(frame_label='Fm')
-                # Light-adapted datasets (Fq'/Fm')
-                if frame == 'psl':
-                    # Calculate Fq'/Fm'
-                    yii_lbl = yii_masked.groupby('measurement', squeeze=False).map(_calc_yii)
+                lbl_fun = frame_functions.get(frame)
+                yii_lbl = lbl_fun(yii_masked)
                 # Drop the frame_label coordinate
                 yii_lbl = yii_lbl.drop_vars('frame_label')
                 # Fill NaN values with 0 so that we can add DataArrays together
@@ -124,6 +117,19 @@ def yii(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, la
             yii_globals.append(yii_global.squeeze())
 
     return yii_globals, yii_charts
+
+
+def _psl_calc_fqfm(yii_masked):
+    """Helper to calculate fq/fm from psl array"""
+    yii_lbl = yii_masked.groupby('measurement', squeeze=False).map(_calc_yii)
+    return(yii_lbl)
+
+
+def _psd_calc_fvfm(yii_masked):
+    """Helper to calculate fv/fm from psd array"""
+    yii_lbl = (yii_masked.sel(frame_label='Fm') -
+               yii_masked.sel(frame_label='F0')) / yii_masked.sel(frame_label='Fm')
+    return(yii_lbl)
 
 
 def _set_labels(label, n_labels):
