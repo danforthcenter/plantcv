@@ -51,8 +51,8 @@ def yii(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, la
     yii_globals = []
 
     frame_functions = {
-        "psl": lambda yii_masked: _psl_calc_fqfm(yii_masked),
-        "psd": lambda yii_masked: _psd_calc_fvfm(yii_masked)
+        "psl": _psl_calc_fqfm,
+        "psd": _psd_calc_fvfm
     }
 
     for frame in ["psl", "psd"]:
@@ -122,14 +122,14 @@ def yii(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, la
 def _psl_calc_fqfm(yii_masked):
     """Helper to calculate fq/fm from psl array"""
     yii_lbl = yii_masked.groupby('measurement', squeeze=False).map(_calc_yii)
-    return(yii_lbl)
+    return yii_lbl
 
 
 def _psd_calc_fvfm(yii_masked):
     """Helper to calculate fv/fm from psd array"""
     yii_lbl = (yii_masked.sel(frame_label='Fm') -
                yii_masked.sel(frame_label='F0')) / yii_masked.sel(frame_label='Fm')
-    return(yii_lbl)
+    return yii_lbl
 
 
 def _set_labels(label, n_labels):
