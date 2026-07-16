@@ -141,6 +141,7 @@ class PSD:
         self._height = height
         self._width = width
         self._metadata = metadata
+        self._ojip_dark = None
 
     def __bool__(self):
         """The existence of the PSD class is true."""
@@ -150,8 +151,15 @@ class PSD:
         """String representation of the PSD dataset, indicating whether the data has been loaded."""
         return f"PSD(filepath={self._filepath!r})"
 
-    def load(self):
-        """Load the OJIP dark-adapted measurements from the .DAT file."""
+    @property
+    def ojip_dark(self):
+        """Return the ojip dark data"""
+        if self._ojip_dark is None:
+            self._load()
+        return self._ojip_dark
+
+    def _load(self):
+        """Load the ojip dark frames from the .DAT file."""
         img_cube, frame_labels, frame_nums = _read_dat_file(
             dataset="PSD",
             filename=str(self._filepath),
@@ -176,7 +184,8 @@ class PSD:
         # Replace frame_num with time, skip timepoint 0
         for i in range(len(frame_nums) - 1):
             frame_nums[i + 1] = int(self._metadata.get(f"FvFmTimePoint{i}", frame_nums[i + 1]))
-        return xr.DataArray(
+
+        self._ojip_dark = xr.DataArray(
             data=img_cube[..., None],
             dims=('x', 'y', 'frame_label', 'measurement'),
             coords={'frame_label': frame_labels,
@@ -195,6 +204,7 @@ class PSL:
         self._height = height
         self._width = width
         self._metadata = metadata
+        self._ojip_light = None
 
     def __bool__(self):
         """The existence of the PSL class is true."""
@@ -204,7 +214,14 @@ class PSL:
         """String representation of the PSL dataset, indicating whether the data has been loaded."""
         return f"PSL(filepath={self._filepath!r})"
 
-    def load(self):
+    @property
+    def ojip_light(self):
+        """Return the ojip light data"""
+        if self._ojip_light is None:
+            self._load()
+        return self._ojip_light
+
+    def _load(self):
         """Load the OJIP light-adapted measurements from the .DAT file."""
         img_cube, frame_labels, frame_nums = _read_dat_file(
             dataset="PSL",
@@ -230,7 +247,8 @@ class PSL:
         # Replace frame_num with time, skip timepoint 0
         for i in range(len(frame_nums) - 1):
             frame_nums[i + 1] = int(self._metadata.get(f"FqFmTimePoint{i}", frame_nums[i + 1]))
-        return xr.DataArray(
+
+        self._ojip_light = xr.DataArray(
             data=img_cube[..., None],
             dims=('x', 'y', 'frame_label', 'measurement'),
             coords={'frame_label': frame_labels,

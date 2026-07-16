@@ -54,11 +54,15 @@ def yii(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, la
         "psl": _psl_calc_fqfm,
         "psd": _psd_calc_fvfm
     }
+    frame_properties = {
+        "psl": "ojip_light",
+        "psd": "ojip_dark"
+    }
 
     for frame in ["psl", "psd"]:
         if hasattr(ps, frame):
             ps_da_loader = getattr(ps, frame)
-            ps_da = ps_da_loader.load()
+            ps_da = getattr(ps_da_loader, frame_properties.get(frame))
             # Validate that the input measurement_labels is the same length as the number of measurements in the DataArray
             # this is going to the inside of the if/for loop I think.
             if (measurement_labels is not None) and (len(measurement_labels) != ps_da.coords['measurement'].shape[0]):
