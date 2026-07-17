@@ -107,6 +107,10 @@ def test_read_cropreporter_npq(photosynthesis_test_data):
     ps = read_cropreporter(filename=photosynthesis_test_data.cropreporter_npq)
     assert isinstance(ps, PSII_data) and ps.npq.ojip_light.shape == (966, 1296, 3, 1)
     assert isinstance(ps, PSII_data) and ps.npq.ojip_dark.shape == (966, 1296, 3, 1)
+    # check shortcut
+    ps = read_cropreporter(filename=photosynthesis_test_data.cropreporter_npq)
+    assert isinstance(ps, PSII_data) and ps.ojip_light.shape == (966, 1296, 3, 1)
+    assert isinstance(ps, PSII_data) and ps.ojip_dark.shape == (966, 1296, 3, 1)
     # check class traits
     assert ps.npq
     assert "NPQ" in repr(ps.npq)
