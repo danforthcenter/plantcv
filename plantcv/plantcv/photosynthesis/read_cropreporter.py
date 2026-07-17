@@ -260,6 +260,7 @@ class PSL:
 
 class NPQ:
     """NPQ measurements dataset. Stores the file path at init; image data is loaded on first access."""
+
     def __init__(self, filepath, height, width, metadata):
         """Initialize PSL dataset with file path and image dimensions."""
         self._filepath = filepath
@@ -268,7 +269,7 @@ class NPQ:
         self._metadata = metadata
         self._ojip_light = None
         self._ojip_dark = None
-    
+
     def __bool__(self):
         """The existence of the PSL class is true."""
         return True
