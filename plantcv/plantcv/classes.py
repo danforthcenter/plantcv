@@ -72,7 +72,7 @@ class PSII_data:
     @property
     def ojip_dark(self):
         if isinstance(self._ojip_dark, str):
-            self._ojip_dark = getattr(self.__dict__[self._ojip_dark], "ojip_dark")
+            self._ojip_dark = getattr(self.__dict__[self._ojip_dark], "ojip_dark", None)
         return self._ojip_dark
 
     @ojip_dark.setter
@@ -82,7 +82,7 @@ class PSII_data:
     @property
     def ojip_light(self):
         if isinstance(self._ojip_light, str):
-            self._ojip_light = getattr(self.__dict__[self._ojip_light], "ojip_light")
+            self._ojip_light = getattr(self.__dict__[self._ojip_light], "ojip_light", None)
         return self._ojip_light
 
     @ojip_light.setter
