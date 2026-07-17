@@ -39,7 +39,7 @@ pcv.params.debug = "plot"
 pcv.params.sample_label = "plant"
 
 # Analyze NPQ   
-npq, npq_hist = pcv.analyze.npq(ps_da_light=ps.ojip_light, ps_da_dark=ps.ojip_dark, labeled_mask=kept_mask)
+npq, npq_hist = pcv.analyze.npq(ps_da_light=ps.npq.ojip_light, ps_da_dark=ps.npq.ojip_dark, labeled_mask=kept_mask)
 
 # Access the NPQ median value
 # the default measurement label for cropreporter data is t1
