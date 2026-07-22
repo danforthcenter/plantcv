@@ -69,7 +69,7 @@ def chlorophyll_fluorescence(ps_da, labeled_mask, n_labels=1, label="object"):
         fluor_values = ps_da.where(submask[..., None, None]).mean(['x', 'y', 'measurement']).values
 
         # Append fluorescence values to data dictionary
-        data["Timepoints"].extend(range(0, ind_size))
+        data["Timepoints"].extend(list(ps_da.frame_num.values))
         data["Fluorescence"].extend(list(fluor_values))
         data["Labels"].extend(list(ps_da.frame_label.values))
         data["Group"].extend([f"{label}{i}"] * ind_size)
@@ -91,7 +91,7 @@ def chlorophyll_fluorescence(ps_da, labeled_mask, n_labels=1, label="object"):
     rule = (
         alt.Chart(df)
         .mark_rule(strokeDash=[10, 10], color="gray")
-        .encode(x=alt.datum(idx))
+        .encode(x=alt.datum(ps_da.frame_num.values[idx]))
     )
     # Label the chart with the Fm or Fm' value
     text = (

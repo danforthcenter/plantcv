@@ -2,51 +2,39 @@
 import cv2
 import numpy as np
 import os
-from plantcv.plantcv import params, outputs, fatal_error, apply_mask, warn, deprecation_warning
+from plantcv.plantcv import params, outputs, fatal_error, apply_mask, warn
 from plantcv.plantcv.threshold import binary as binary_threshold
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition, _roi_filter, _rgb2hsv
 
 
-def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_channel=None,
-                            thresh=None, label=None):
-    """
-    Detects a size marker in a specified region and reports its size and eccentricity
+def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_channel=None, thresh=None):
+    """Detects a size marker in a specified region and reports its size and eccentricity
 
-    Inputs:
-    img             = An RGB or grayscale image to plot the marker object on
-    roi             = A region of interest (e.g. output from pcv.roi.rectangle or other methods)
-    marker          = 'define' or 'detect'. If define it means you set an area, if detect it means you want to
+    Parameters
+    ----------
+    filename : str
+        Name of image file
+    roi : plantcv.plantcv.Objects
+        A region of interest (e.g. output from pcv.roi.rectangle or other methods)
+    marker : str, optional
+        'define' or 'detect'. If define it means you set an area, if detect it means you want to
                       detect within an area
-    objcolor        = Object color is 'dark' or 'light' (is the marker darker or lighter than the background)
-    thresh_channel  = 'h', 's', or 'v' for hue, saturation or value
-    thresh          = Binary threshold value (integer)
-    label           = Optional label parameter, modifies the variable name of
-                      observations recorded (default = pcv.params.sample_label).
+    objcolor : str, optional
+        Object color is 'dark' or 'light' (is the marker darker or lighter than the background)
+    thresh_channel : str, optional
+        'h', 's', or 'v' for hue, saturation or value
+    thresh : int, optional
+        Binary threshold value
 
-    Returns:
-    analysis_images = List of output images
-
-    :param img: numpy.ndarray
-    :param roi: plantcv.plantcv.classes.Objects
-    :param marker: str
-    :param objcolor: str
-    :param thresh_channel: str
-    :param thresh: int
-    :param label: str
-    :return: analysis_images: list
+    Returns
+    -------
+    numpy.ndarray
+        Analysis image
     """
-    deprecation_warning(
-        "the 'label' parameter is no longer utilized, since size marker is now metadata. "
-        "It will be removed in PlantCV 5.0."
-        )
-
     # Store debug
     debug = params.debug
     params.debug = None
-    # Set lable to params.sample_label if None
-    if label is None:
-        label = params.sample_label
 
     params.device += 1
     # Make a copy of the reference image

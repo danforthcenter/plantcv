@@ -4,7 +4,7 @@ import os
 import cv2
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 
 
 def readbayer(filename, bayerpattern='BG', alg='default'):

@@ -25,12 +25,6 @@ def inspect_dataset(config):
             config.input_dir = input_dir
     # run the metadata parser to find images and return dataframes
     meta, removed = metadata_parser(config)
-    # make dataframe out of groupby object
-    meta_filepaths = []
-    for i, _ in meta["filepath"]:
-        meta_filepaths.append(i[0])
-    meta = meta.apply(lambda x: x, include_groups=False)
-    meta["filepath"] = meta_filepaths
     # flag kept images
     meta["status"] = "Kept"
     # combine both dataframes

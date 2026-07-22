@@ -7,7 +7,7 @@ import os
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _grayscale_to_rgb
 from plantcv.plantcv import fatal_error
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 
 
 def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):

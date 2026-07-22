@@ -6,7 +6,7 @@ import cv2
 import numpy as np
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import fatal_error, warn
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 
 
 def background_subtraction(background_image, foreground_image):

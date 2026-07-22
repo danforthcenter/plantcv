@@ -1,4 +1,5 @@
 from plantcv.parallel import WorkflowConfig
+import pytest
 
 
 def test_save_config_file(parallel_test_data, tmpdir):
@@ -42,10 +43,10 @@ def test_validate_config(parallel_test_data, tmpdir):
     config = WorkflowConfig()
     # Set valid values in config
     config.input_dir = parallel_test_data.flat_imgdir
-    config.json = "valid_config.json"
+    config.results = "valid_config.json"
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = parallel_test_data.workflow_script
-    config.img_outdir = img_outdir
+    config.img_outdir = str(img_outdir)
     # Validate config
     assert config.validate_config()
 
@@ -58,10 +59,10 @@ def test_invalid_startdate(parallel_test_data, tmpdir):
     config = WorkflowConfig()
     # Set valid values in config
     config.input_dir = parallel_test_data.flat_imgdir
-    config.json = "valid_config.json"
+    config.results = "valid_config.json"
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = parallel_test_data.workflow_script
-    config.img_outdir = img_outdir
+    config.img_outdir = str(img_outdir)
     config.start_date = "2020-05-10"
     # Validate config
     assert not config.validate_config()
@@ -75,10 +76,10 @@ def test_invalid_enddate(parallel_test_data, tmpdir):
     config = WorkflowConfig()
     # Set valid values in config
     config.input_dir = config.input_dir = parallel_test_data.flat_imgdir
-    config.json = "valid_config.json"
+    config.results = "valid_config.json"
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = config.workflow = parallel_test_data.workflow_script
-    config.img_outdir = img_outdir
+    config.img_outdir = str(img_outdir)
     config.end_date = "2020-05-10"
     config.timestampformat = "%Y%m%d"
     # Validate config
@@ -93,5 +94,31 @@ def test_invalid_cluster():
     # input_dir and json are not defined by default, but are required
     # Set invalid cluster type
     config.cluster = "MyCluster"
+    # Validate config
+    assert not config.validate_config()
+
+
+def test_bad_config_setting():
+    """Test for PlantCV."""
+    # create config instance
+    config = WorkflowConfig()
+    # try to set groupby (list) to a string
+    with pytest.raises(ValueError):
+        config.groupby = "bad"
+
+
+def test_too_many_cluster_config_cores(parallel_test_data):
+    """Test for PlantCV."""
+    # Create config instance
+    config = WorkflowConfig()
+    config.input_dir = config.input_dir = parallel_test_data.flat_imgdir
+    config.results = "valid_config.json"
+    config.workflow = config.workflow = parallel_test_data.workflow_script
+    # Set invalid values in config
+    # input_dir and json are not defined by default, but are required
+    # Set invalid cluster type
+    config.cluster = "LocalCluster"
+    config.cluster_config["n_workers"] = 1000
+    config.cluster_config["cores"] = 1000
     # Validate config
     assert not config.validate_config()

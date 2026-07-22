@@ -50,7 +50,7 @@ the morphology sub-package. Default = 2.
 
 **saved_color_scale**: Using the `color_palette` function will save the color scale here for reuse in downstream functions. Set to `None` to remove. Default = `None`.
 
-**verbose**: Set the status of verboseness. When in "verbose" mode, the deprecation warning will always be printed once triggered. Default: `True`. Users can turn off deprecation warnings by setting `verbose=False`.
+**verbose**: Set the status of verboseness as an integer between 0 and 2. When in the most verbose mode (2), the deprecation warning will always be printed once triggered. Default: `1`. Users can turn off messages by setting `verbose=0` or opt for more messages/debug images with `verbose=2`.
 
 **unit**: Set the units of the size outputs. Users can scale size measurements by updating the `unit`, `px_height` and `px_width` Default: `pixels`
 

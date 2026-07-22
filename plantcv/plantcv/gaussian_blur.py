@@ -5,7 +5,7 @@ import os
 import numpy as np
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _rect_filter, _rect_replace
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 
 
 def gaussian_blur(img, ksize, sigma_x=0, sigma_y=None, roi=None):

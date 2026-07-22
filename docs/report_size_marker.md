@@ -2,8 +2,7 @@
 
 Get and record the size of a size marker or set an area as a size marker.
 
-**plantcv.report_size_marker_area**(*img, roi, marker='define', objcolor='dark', thresh_channel=None,
-                            thresh=None, label=None*)
+**plantcv.report_size_marker_area**(*img, roi, marker='define', objcolor='dark', thresh_channel=None, thresh=None*)
 
 **returns** analysis_image
 
@@ -15,7 +14,6 @@ Get and record the size of a size marker or set an area as a size marker.
     - objcolor        = Object color is 'dark' (default) or 'light' (is the marker darker or lighter than the background)
     - thresh_channel  = 'h', 's', or 'v' for hue, saturation or value, default set to None
     - thresh          = Binary threshold value (integer), default set to None.
-    - label           =  Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`) In PlantCV v4.9 and later, the 'label' parameter is no longer utilized, since size marker is now metadata.
 - **Context:**
     - Allows user to add size marker data, so that shape data can be normalized between images/cameras
 - **Output metadata stored:** Data ('marker_area', 'marker_ellipse_major_axis', 'marker_ellipse_minor_axis', 'marker_ellipse_eccentricity') 

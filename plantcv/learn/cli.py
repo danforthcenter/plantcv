@@ -45,6 +45,14 @@ def options():
                          required=False, type=int, default=20)
     nbm_cmd.set_defaults(func=run_naive_bayes_multiclass)
 
+    # Create the tabulate_bayes_classes subcommand
+    nbm_cmd = subparsers.add_parser("tabulate_bayes_classes", help="Convert pixel samples to a Bayes class table.")
+    nbm_cmd.add_argument("-f", "--file",
+                         help="Input file containing a table of pixel RGB values sampled for each input class.",
+                         required=True)
+    nbm_cmd.add_argument("-o", "--outfile", help="Output tab-delimited table file.", required=True)
+    nbm_cmd.set_defaults(func=run_tabulate_bayes_classes)
+
     # Create the Kmeans subcommand
     nbm_cmd = subparsers.add_parser("kmeans", help="Run the Kmeans training method.")
     nbm_cmd.add_argument("-i", "--imgdir", help="Input directory containing images.", required=True)
@@ -99,6 +107,16 @@ def run_naive_bayes_multiclass(args):
     print("Running the naive Bayes multiclass training method...")
     plantcv.learn.naive_bayes_multiclass(samples_file=args.file, outfile=args.outfile, mkplots=args.plots,
                                          max_errors=args.max_errors)
+###########################################
+
+
+# Run the naive Bayes tabulation method
+###########################################
+def run_tabulate_bayes_classes(args):
+    """Run the naive Bayes tabulation method"""
+    if not os.path.exists(args.file):
+        raise IOError(f"File does not exist: {args.file}")
+    plantcv.learn.tabulate_bayes_classes(input_file=args.file, output_file=args.outfile)
 ###########################################
 
 

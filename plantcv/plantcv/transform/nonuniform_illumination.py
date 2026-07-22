@@ -3,7 +3,7 @@
 import os
 import cv2
 import numpy as np
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv import gaussian_blur
 from plantcv.plantcv.transform import rescale
 from plantcv.plantcv._debug import _debug

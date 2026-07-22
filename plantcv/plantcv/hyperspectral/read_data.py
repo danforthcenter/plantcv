@@ -4,11 +4,11 @@ import os
 import re
 import cv2
 import numpy as np
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import Spectral_data
+from plantcv.plantcv.classes import Spectral_data
 from plantcv.plantcv.transform import rescale
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv.fatal_error import fatal_error
 
 
 def _find_closest(spectral_array, target):
