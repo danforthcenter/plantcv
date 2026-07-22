@@ -43,9 +43,8 @@ def yii(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, la
     ps_shape = (int(ps.metadata["ImageRows"]), int(ps.metadata["ImageCols"]))
     if labeled_mask.shape != ps_shape:
         fatal_error(f"Mask needs to have shape {ps_shape}")
-
-    if not (hasattr(ps, "psl") or hasattr(ps, "psd")) or (ps.psl is None and ps.psd is None):
-        fatal_error("Unsupported DataArray type, psl or psd frames are required")
+    # Validate that ps has the right frames with information in them
+    _validate_psii_yii_frames(ps)
 
     yii_charts = []
     yii_globals = []
@@ -116,6 +115,12 @@ def yii(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, la
             yii_globals.append(yii_global.squeeze())
 
     return yii_globals, yii_charts
+
+
+def _validate_psii_yii_frames(ps):
+    """Helper to validate psii_data object has yii frames with information"""
+    if not (hasattr(ps, "psl") or hasattr(ps, "psd")) or (ps.psl is None and ps.psd is None):
+        fatal_error("Unsupported DataArray type, psl or psd frames are required")
 
 
 def _psl_calc_fqfm(yii_masked):
