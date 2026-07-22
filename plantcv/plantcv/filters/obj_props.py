@@ -112,7 +112,7 @@ def _apply_cut_side(cut_side, thresh, val):
         gray_val = 255 if val < thresh else 0
     # If it is 'in' threshold, keep the objects that are within the thresholds
     elif cut_side == "in":
-        gray_val = 255 if val > min(thresh) and val < max(thresh) else 0
+        gray_val = 255 if min(thresh) < val < max(thresh) else 0
     # If it is 'out' threshold, keep the objects that are outside of the thresholds
     elif cut_side == "out":
         gray_val = 255 if val < min(thresh) or val > max(thresh) else 0

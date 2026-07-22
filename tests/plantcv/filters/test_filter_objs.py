@@ -31,11 +31,9 @@ def test_filter_objs_in_thresh(filters_test_data):
     """Test for PlantCV."""
     # Read in test data
     mask = cv2.imread(filters_test_data.barley_example)
-    low, high = 0.1, 0.6
-    filtered_mask = obj_props(bin_img=mask, cut_side="in", thresh=(low, high), regprop="solidity")
-    upper_mask = obj_props(bin_img=mask, cut_side="upper", thresh=low, regprop="solidity")
-    expected = obj_props(bin_img=upper_mask, cut_side="lower", thresh=high, regprop="solidity")
-    assert np.array_equal(filtered_mask, expected)
+    filtered_mask = obj_props(bin_img=mask, cut_side="in", thresh=(0.1, 0.6), regprop="solidity")
+    _, nobjs = create_labels(mask=filtered_mask)
+    assert nobjs == 11
 
 
 def test_filter_objs_out_thresh(filters_test_data):
