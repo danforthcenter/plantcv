@@ -14,7 +14,7 @@ In the Gaussian adaptive threshold, the local average is a weighted average of t
 
 - **Parameters:**
     - gray_img - Grayscale image data.
-    - ksize - Size of the block of pixels used to compute the local average.
+    - ksize - Kernel specified as a binary numpy.ndarray for arbitrary shapes, shape tuple for a rectangular kernel, or integer for a square kernel. Here any input will be simplified to an integer specifying a square kernel.
     - offset - Value substracted from the local average to compute the local threshold.
     A negative offset sets the local threshold above the local average.
     - object_type - "light" or "dark" (default: "light").
