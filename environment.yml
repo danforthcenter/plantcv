@@ -29,6 +29,8 @@ dependencies:
   - flyr
   - nbconvert
   - nbformat
+  - imageio >= 2.28
+  - imageio-ffmpeg
 
 channels:
   - conda-forge
