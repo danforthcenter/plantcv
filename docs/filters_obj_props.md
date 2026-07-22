@@ -1,7 +1,7 @@
 ## Filter on calculated object properties
 
 Calculates properties of objects in a binary image. 
-Keeps objects that are either above, below, within, or between a specified threshold for a specified property.
+Keeps objects that are either above, below, within, or outside a specified range of values for a specified property.
 When debug set to "plot," also prints the min, max, and mean of the specified property.
 
 **plantcv.filters.obj_props**(*bin_img, cut_side = "upper", thresh=0, regprop="area", roi=None*)
