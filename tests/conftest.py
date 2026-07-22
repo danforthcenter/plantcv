@@ -196,14 +196,17 @@ class TestData:
             frame_labels = ['Fdark', 'F0', 'Fm', '3']
             measurements = ['t0']
             keyname = "psd"
+            other_keyname = "psl"
         elif var == 'ojip_light':
             frame_labels = ['Fdark', 'Fp', '2', 'Fmp']
             measurements = ['t1']
             keyname = "psl"
+            other_keyname = "psd"
         elif var == "ojip_bad":
             frame_labels = ['Fdark', 'Fp', '2', 'Fmp']
             measurements = ['t1']
             keyname = "bad"
+            other_keyname = "also_bad"
 
         # Create DataArray
         da = xr.DataArray(data=np.dstack([f0, f1, f2, f3])[..., None],
@@ -215,8 +218,9 @@ class TestData:
                 "ImageRows": 10,
                 "ImageCols": 10
             },
-            keyname: da
-        })()
+            keyname: da,
+            other_keyname: None
+        })
         return ps
 
     @staticmethod
@@ -274,6 +278,7 @@ class TestData:
         # create darkadapted
         if var == 'ojip_dark':
             keyname = "psd"
+            other_keyname = "psl"
             i = 0
             fmin = np.ones((10, 10), dtype='uint8') * ((i+15)*2)
             fmax = np.ones((10, 10), dtype='uint8') * (200-i*15)
@@ -295,6 +300,7 @@ class TestData:
             da_list = []
             measurement = []
             keyname = "psl"
+            other_keyname = "psd"
 
             for i in np.arange(1, 3):
                 indf = ['Fp', 'Fmp']
@@ -322,8 +328,9 @@ class TestData:
                 "ImageRows": 10,
                 "ImageCols": 10
             },
-            keyname: ps_da
-        })()
+            keyname: ps_da,
+            other_keyname: None
+        })
         return ps
 
 
