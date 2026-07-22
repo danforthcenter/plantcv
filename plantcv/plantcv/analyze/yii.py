@@ -44,7 +44,7 @@ def yii(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, la
     if labeled_mask.shape != ps_shape:
         fatal_error(f"Mask needs to have shape {ps_shape}")
 
-    if not hasattr(ps, "psl") and not hasattr(ps, "psd"):
+    if ps.psl is None and ps.psd is None:
         fatal_error("Unsupported DataArray type, psl or psd frames are required")
 
     yii_charts = []
@@ -56,11 +56,10 @@ def yii(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, la
     }
 
     for frame in ["psl", "psd"]:
-        if hasattr(ps, frame):
+        if getattr(ps, frame) is None:
             ps_da_loader = getattr(ps, frame)
             ps_da = ps_da_loader.load()
             # Validate that the input measurement_labels is the same length as the number of measurements in the DataArray
-            # this is going to the inside of the if/for loop I think.
             if (measurement_labels is not None) and (len(measurement_labels) != ps_da.coords['measurement'].shape[0]):
                 fatal_error('measurement_labels must be the same length as the number of measurements in the DataArray')
             # Make an zeroed array of the same shape as the input DataArray
@@ -109,7 +108,7 @@ def yii(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, la
 
             # Create a pseudocolor image of the YII values
             _debug(visual=yii_global,
-                   filename=os.path.join(params.debug_outdir, str(params.device) + "_YII_dataarray.png"),
+                   filename=os.path.join(params.debug_outdir, str(params.device) + "_" + frame  + "_YII_dataarray.png"),
                    robust=True,
                    col='measurement',
                    col_wrap=int(np.ceil(yii_global.measurement.size / 4)),

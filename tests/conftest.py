@@ -216,7 +216,7 @@ class TestData:
                 "ImageCols": 10
             },
             keyname: da
-        })
+        })()
         return ps
 
     @staticmethod
@@ -323,7 +323,7 @@ class TestData:
                 "ImageCols": 10
             },
             keyname: ps_da
-        })
+        })()
         return ps
 
 

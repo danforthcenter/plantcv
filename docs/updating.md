@@ -406,7 +406,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: NA
 * post v4.0: yii, yii_hist = **plantcv.analyze.yii**(*ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None*)
-* post v4.0: list_of_yii, list_of_yii_hist = **plantcv.analyze.yii**(*ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None*)
+* post v5.0: list_of_yii, list_of_yii_hist = **plantcv.analyze.yii**(*ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None*)
 
 #### plantcv.apply_mask
 
