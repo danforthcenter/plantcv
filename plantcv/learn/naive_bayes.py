@@ -97,6 +97,15 @@ def check_samples_file(samples_file, max_errors=20):
     totals = {category: 0 for category in labels}
 
     def _record(category, message):
+        """Records error messages for each category until max_errors reached.
+
+        Parameters
+        ----------
+        category : str
+            Type of error.
+        message : str
+            Error message for category
+        """
         totals[category] += 1
         if len(messages[category]) < max_errors:
             messages[category].append(message)
