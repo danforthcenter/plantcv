@@ -22,7 +22,7 @@ def sobel_filter(gray_img, dx, dy, ksize, roi=None):
     dx       = int,
         derivative of x to analyze
     dy       = int,
-        derivative of x to analyze
+        derivative of y to analyze
     ksize        = int, numpy.ndarray, or tuple
         Kernel specified as a binary numpy.ndarray for arbitrary shapes,
         shape tuple for a rectangular kernel, or integer for a square kernel.
@@ -40,7 +40,7 @@ def sobel_filter(gray_img, dx, dy, ksize, roi=None):
                               **{"ddepth": -1, "dx": dx, "dy": dy, "ksize": k})
     sb_img = _rect_replace(gray_img, sub_sb_img, roi)
 
-    fname = str(params.device) + '_sb_img_dx' + str(dx) + '_dy' + str(dy) + '_kernel' + str(ksize) + '.png'
+    fname = str(params.device) + '_sb_img_dx' + str(dx) + '_dy' + str(dy) + '_kernel' + str(k) + '.png'
     _debug(visual=sb_img,
            filename=os.path.join(params.debug_outdir, fname),
            cmap='gray')

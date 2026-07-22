@@ -17,8 +17,8 @@ def stdev_filter(img, ksize, borders='nearest', roi=None):
 
     Parameters:
     -----------
-    gray_img       = numpy.ndarray,
-        Grayscale image data
+    img          = numpy.ndarray,
+        Image data
     ksize        = int, numpy.ndarray, or tuple
         Kernel specified as a binary numpy.ndarray for arbitrary shapes,
         shape tuple for a rectangular kernel, or integer for a square kernel.
