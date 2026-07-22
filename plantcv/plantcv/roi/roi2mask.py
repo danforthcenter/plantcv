@@ -1,4 +1,4 @@
-# Helper function to take an ROI and turn it into a binary mask
+# Helper function to take an ROI and turn it into a binary or labeled mask
 
 import os
 import cv2
@@ -10,7 +10,7 @@ from plantcv.plantcv._debug import _debug
 
 def roi2mask(img, roi):
     """
-    Create a binary mask from an ROI contour
+    Create a labeled or binary mask from an ROI contour
 
     Parameters:
     -----------
