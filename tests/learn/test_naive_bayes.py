@@ -76,7 +76,7 @@ def test_check_samples_file_reports_every_category(learn_test_data, capsys):
     assert "class label 'class1' is used in both column 1 and column 2" in output
     assert "class label is empty" in output
     assert "Wrong column count" in output
-    assert "Line 7: row has 3 tab-delimited column(s) but the header defines 4 class(es)" in output
+    assert "Line 7: row has 3 column(s) but the header defines 4 class(es)" in output
     assert "Invalid RGB values" in output
     assert "Classes with no samples" in output
     assert "Class 'class2' has zero valid sampled pixels" in output

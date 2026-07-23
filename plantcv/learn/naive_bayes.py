@@ -76,6 +76,68 @@ def naive_bayes(imgdir, maskdir, outfile, mkplots=False):
                 # If mkplots is True, make the PDF charts
                 _plot_pdf(channel, os.path.dirname(outfile), plant=plant_pdf, background=bg_pdf)
 
+        
+def _check_header(class_list):
+    """Checks the header of a naive bayes input file for mistakes.
+
+    Parameters
+    ----------
+    class_list : list
+        list of column headers
+
+    Returns
+    -------
+    messages : list
+        list of header error messages
+    """
+    messages = []
+    # Assume a header with one column isn't tab-delimited
+    if len(class_list) == 1:
+        messages.append("Line 1: only 1 column found in the header. Is this file tab-delimited?")
+
+    # Check for empty or duplicate class labels
+    if "" in class_list:
+        messages.append(f"Line 1, column {class_list.index("") + 1}: "
+                        "class label is empty. Every column needs a label")
+        
+    seen_labels = {}
+    for i, cls in enumerate(class_list):
+        if cls in seen_labels:
+            messages.append(f"Line 1: class label '{cls}' is used in both column {seen_labels[cls] + 1} and "
+                   f"column {i + 1}. Class labels must be unique")
+        else:
+            seen_labels[cls] = i
+    return messages
+
+def _check_lines(points, line_num, class_list):
+    messages = []
+    # Count valid samples per class so we can flag if there are classes with no valid points
+    sample_counts = {cls: 0 for cls in class_list}
+    for i, point in enumerate(points):
+        valid_point = 1
+        # A row longer than the header has no class to attribute this column to
+        if i < len(class_list) and len(point) != 0:
+            values = point.split(",")
+            if len(values) != 3:
+                messages.append(f"Line {line_num}, class '{class_list[i]}' (column {i + 1}): "
+                                f"expected 3 comma-separated values, found {len(values)} ('{point}')")
+                valid_point = 0
+            else:   
+                for channel, value in zip(("red", "green", "blue"), values):
+                    if not value.strip().lstrip("-").isdigit():
+                        messages.append(f"Line {line_num}, class '{class_list[i]}' (column {i + 1}): "
+                                        f"{channel} value '{value}' is not an integer")
+                        valid_point = 0
+                        continue
+                    ivalue = int(value)
+                    if ivalue < 0 or ivalue > 255:
+                        messages.append(f"Line {line_num}, class '{class_list[i]}' (column {i + 1}): "
+                                        f"{channel} value {ivalue} is outside the valid 8-bit range (0-255)")
+                        valid_point = 0
+            sample_counts[class_list[i]] += valid_point
+   
+    return messages, sample_counts
+
 
 def check_samples_file(samples_file, max_errors=20):
     """Quality control check of a naive Bayes multiclass samples file.
@@ -90,99 +152,42 @@ def check_samples_file(samples_file, max_errors=20):
     :return valid: bool
     """
     # Example messages (capped at max_errors) and total occurrence counts, per error category
-    labels = {"delimiter": "Delimiter problems", "header": "Header problems",
-              "column_count": "Wrong column count", "rgb_value": "Invalid RGB values",
-              "empty_class": "Classes with no samples"}
+    labels = {"header": "Header problems", "column_count": "Wrong column count",
+              "rgb_value": "Invalid RGB values", "empty_class": "Classes with no samples"}
     messages = {category: [] for category in labels}
-    totals = {category: 0 for category in labels}
-
-    def _record(category, message):
-        """Records error messages for each category until max_errors reached.
-
-        Parameters
-        ----------
-        category : str
-            Type of error.
-        message : str
-            Error message for category
-        """
-        totals[category] += 1
-        if len(messages[category]) < max_errors:
-            messages[category].append(message)
 
     with open(samples_file, "r") as f:
         # Read the first line and use the column headers as class labels
         header = f.readline().rstrip("\n")
         class_list = header.split("\t")
 
-        # Assume a header with one column isn't tab-delimited
-        if len(class_list) == 1:
-            msg = "Line 1: only 1 column found in the header. Is this file tab-delimited, with one column per class?"
-            _record("delimiter", msg)
-
-        # Check for empty or duplicate class labels
-        seen_labels = {}
-        for i, cls in enumerate(class_list):
-            if cls == "":
-                _record("header", f"Line 1, column {i + 1}: class label is empty. Every column needs a label")
-            elif cls in seen_labels:
-                msg = (f"Line 1: class label '{cls}' is used in both column {seen_labels[cls] + 1} and "
-                       f"column {i + 1}. Class labels must be unique")
-                _record("header", msg)
-            else:
-                seen_labels[cls] = i
-
-        # Count valid samples per class so we can flag classes that ended up with none
+        messages["header"] = _check_header(class_list)
+        
+        # Count valid samples per class so we can flag if there are classes with no valid points
         sample_counts = {cls: 0 for cls in class_list}
-
+            
         # Loop over the rest of the data in the input file
         for line_num, row in enumerate(f, start=2):
             # Remove newlines and quotes
             row = row.rstrip("\n").replace('"', '')
-            # Skip blank lines
-            if len(row) == 0:
-                continue
-            # Split the row into a list of points per class
             points = row.split("\t")
-            if len(points) != len(class_list):
-                msg = (f"Line {line_num}: row has {len(points)} tab-delimited column(s) but the header defines "
-                       f"{len(class_list)} class(es)")
-                _record("column_count", msg)
-            for i, point in enumerate(points):
-                # A row longer than the header has no class to attribute this column to
-                if i >= len(class_list) or len(point) == 0:
-                    continue
-                cls = class_list[i]
-                values = point.split(",")
-                if len(values) != 3:
-                    msg = (f"Line {line_num}, class '{cls}' (column {i + 1}): expected 3 comma-separated RGB "
-                           f"values, found {len(values)} ('{point}')")
-                    _record("rgb_value", msg)
-                    continue
-                valid_point = True
-                for channel, value in zip(("red", "green", "blue"), values):
-                    if not value.strip().lstrip("-").isdigit():
-                        msg = (f"Line {line_num}, class '{cls}' (column {i + 1}): {channel} value '{value}' is "
-                               "not an integer")
-                        _record("rgb_value", msg)
-                        valid_point = False
-                        continue
-                    ivalue = int(value)
-                    if ivalue < 0 or ivalue > 255:
-                        msg = (f"Line {line_num}, class '{cls}' (column {i + 1}): {channel} value {ivalue} is "
-                               "outside the valid 8-bit range (0-255)")
-                        _record("rgb_value", msg)
-                        valid_point = False
-                if valid_point:
-                    sample_counts[cls] += 1
+            if len(points) != len(class_list) and len(row) != 0:
+                    messages["column_count"].append(f"Line {line_num}: row has {len(points)} column(s) "
+                            f"but the header defines {len(class_list)} class(es)")
+            if len(row) != 0:
+                rgb_messages, valid_counts = _check_lines(points, line_num, class_list)
+                messages["rgb_value"].extend(rgb_messages)
+                for cls in class_list:
+                    sample_counts[cls] += valid_counts[cls]
 
         # Flag any labeled class that never got a valid sample
         for cls, n in sample_counts.items():
             if cls != "" and n == 0:
-                msg = (f"Class '{cls}' has zero valid sampled pixels. Add at least one row with a valid value "
-                       "in this column")
-                _record("empty_class", msg)
+                messages["empty_class"].append(f"Class '{cls}' has zero valid sampled pixels. "
+                                               "Add at least one row with a valid value in this column")
+  
 
+    totals = {category: len(messages[category]) for category in labels}
     total_problems = sum(totals.values())
     if total_problems == 0:
         print(f"{samples_file} looks good: {len(class_list)} classes, "
@@ -195,7 +200,7 @@ def check_samples_file(samples_file, max_errors=20):
         if count == 0:
             continue
         print(f"{label} ({min(count, max_errors)} of {count} shown):")
-        for message in messages[category]:
+        for message in messages[category][0:max_errors]:
             print(f"  {message}")
         if count > max_errors:
             print(f"  ...and {count - max_errors} more.")
