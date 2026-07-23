@@ -76,7 +76,7 @@ def naive_bayes(imgdir, maskdir, outfile, mkplots=False):
                 # If mkplots is True, make the PDF charts
                 _plot_pdf(channel, os.path.dirname(outfile), plant=plant_pdf, background=bg_pdf)
 
-        
+    
 def _check_header(class_list):
     """Checks the header of a naive bayes input file for mistakes.
 
@@ -98,18 +98,37 @@ def _check_header(class_list):
     # Check for empty or duplicate class labels
     if "" in class_list:
         messages.append(f"Line 1, column {class_list.index("") + 1}: "
-                        "class label is empty. Every column needs a label")
-        
+                        f"class label is empty. Every column needs a label")
+
     seen_labels = {}
     for i, cls in enumerate(class_list):
         if cls in seen_labels:
             messages.append(f"Line 1: class label '{cls}' is used in both column {seen_labels[cls] + 1} and "
-                   f"column {i + 1}. Class labels must be unique")
+                            f"column {i + 1}. Class labels must be unique")
         else:
             seen_labels[cls] = i
     return messages
 
+
 def _check_lines(points, line_num, class_list):
+    """Checks each line in an input file for pixel errors.
+
+    Parameters
+    ----------
+    points : list
+        List of pixel values in a file line
+    line_num : int
+        Line number in file for error message output
+    class_list : list
+        List of categories in input file
+
+    Returns
+    -------
+    messages : list
+        List of error messages
+    sample_counts : dict
+        Number of valid pixels per category in line
+    """
     messages = []
     # Count valid samples per class so we can flag if there are classes with no valid points
     sample_counts = {cls: 0 for cls in class_list}
@@ -122,7 +141,7 @@ def _check_lines(points, line_num, class_list):
                 messages.append(f"Line {line_num}, class '{class_list[i]}' (column {i + 1}): "
                                 f"expected 3 comma-separated values, found {len(values)} ('{point}')")
                 valid_point = 0
-            else:   
+            else:
                 for channel, value in zip(("red", "green", "blue"), values):
                     if not value.strip().lstrip("-").isdigit():
                         messages.append(f"Line {line_num}, class '{class_list[i]}' (column {i + 1}): "
@@ -135,7 +154,7 @@ def _check_lines(points, line_num, class_list):
                                         f"{channel} value {ivalue} is outside the valid 8-bit range (0-255)")
                         valid_point = 0
             sample_counts[class_list[i]] += valid_point
-   
+
     return messages, sample_counts
 
 
@@ -162,18 +181,18 @@ def check_samples_file(samples_file, max_errors=20):
         class_list = header.split("\t")
 
         messages["header"] = _check_header(class_list)
-        
+
         # Count valid samples per class so we can flag if there are classes with no valid points
         sample_counts = {cls: 0 for cls in class_list}
-            
+
         # Loop over the rest of the data in the input file
         for line_num, row in enumerate(f, start=2):
             # Remove newlines and quotes
             row = row.rstrip("\n").replace('"', '')
             points = row.split("\t")
             if len(points) != len(class_list) and len(row) != 0:
-                    messages["column_count"].append(f"Line {line_num}: row has {len(points)} column(s) "
-                            f"but the header defines {len(class_list)} class(es)")
+                messages["column_count"].append(f"Line {line_num}: row has {len(points)} column(s) "
+                                                f"but the header defines {len(class_list)} class(es)")
             if len(row) != 0:
                 rgb_messages, valid_counts = _check_lines(points, line_num, class_list)
                 messages["rgb_value"].extend(rgb_messages)
@@ -184,8 +203,7 @@ def check_samples_file(samples_file, max_errors=20):
         for cls, n in sample_counts.items():
             if cls != "" and n == 0:
                 messages["empty_class"].append(f"Class '{cls}' has zero valid sampled pixels. "
-                                               "Add at least one row with a valid value in this column")
-  
+                                               f"Add at least one row with a valid value in this column")
 
     totals = {category: len(messages[category]) for category in labels}
     total_problems = sum(totals.values())
