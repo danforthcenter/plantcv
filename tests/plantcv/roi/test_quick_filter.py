@@ -3,10 +3,10 @@ import cv2
 import pytest
 import numpy as np
 from plantcv.plantcv import Objects
-from plantcv.plantcv.roi.quick_filter import quick_filter
+from plantcv.plantcv.roi.quick_filter import quick_filter, quick_rect_filter
 
 
-@pytest.mark.parametrize("mode,exp", [["partial", 221], ["cutto", 7], ["within", 0]])
+@pytest.mark.parametrize("mode,exp", [["partial", 221], ["cutto", 7], ["within", 0], ["largest", 221]])
 def test_quick_filter(test_data, mode, exp):
     """Test for PlantCV."""
     # Read in test data
@@ -20,4 +20,17 @@ def test_quick_filter(test_data, mode, exp):
     filtered_mask = quick_filter(mask=mask, roi=roi_obj, roi_type=mode)
     area = cv2.countNonZero(filtered_mask)
     # Assert that the contours were filtered as expected
+    assert area == exp
+
+
+@pytest.mark.parametrize("mode,exp", [["partial", 221], ["cutto", 15], ["within", 0], ["largest", 221]])
+def test_quick_rect_filter(test_data, mode, exp):
+    """Test for PlantCV."""
+    img = cv2.imread(test_data.small_rgb_img)
+    mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
+    cnt, cnt_str = test_data.load_contours(test_data.small_contours_file)
+    cv2.drawContours(mask, cnt, -1, (255), -1, lineType=8, hierarchy=cnt_str)
+    rois = [(0, 0, 210, 210)]
+    filtered_mask = quick_rect_filter(mask=mask, rois=rois, roi_type=mode)
+    area = cv2.countNonZero(filtered_mask)
     assert area == exp
