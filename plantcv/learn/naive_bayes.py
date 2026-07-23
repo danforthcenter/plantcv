@@ -158,17 +158,24 @@ def _check_lines(points, line_num, class_list):
     return messages, sample_counts
 
 
-def check_samples_file(samples_file, max_errors=20):
-    """Quality control check of a naive Bayes multiclass samples file.
-    Reports formatting problems with line numbers.
+def _tabulate_errors(samples_file):
+    """Checks for types of errors present in a naive bayes multiclass input file.
 
-    Inputs:
-    samples_file = Input text file containing sampled pixel RGB values for each training class.
-    max_errors   = Maximum number of example messages to print per error category.
-
-    :param samples_file: str
-    :param max_errors: int
-    :return valid: bool
+    Parameters
+    ----------
+    samples_file : str
+        Input text file containing sampled pixel RGB values for each training class.
+        
+    Returns
+    -------
+    labels : dict
+        Error types and descriptions
+    messages : dict
+        Error messages belonging to each type in labels
+    sample_counts: dict
+        Number of valid samples per category in input file
+    class_list: list
+        List of categories in input file
     """
     # Example messages (capped at max_errors) and total occurrence counts, per error category
     labels = {"header": "Header problems", "column_count": "Wrong column count",
@@ -204,7 +211,25 @@ def check_samples_file(samples_file, max_errors=20):
             if cls != "" and n == 0:
                 messages["empty_class"].append(f"Class '{cls}' has zero valid sampled pixels. "
                                                f"Add at least one row with a valid value in this column")
+    return messages, labels, sample_counts, class_list
 
+def check_samples_file(samples_file, max_errors=20):
+    """Quality control check of a naive Bayes multiclass samples file.
+    Reports formatting problems with line numbers.
+
+    Parameters
+    ----------
+    samples_file : str
+        Input text file containing sampled pixel RGB values for each training class.
+    max_errors : int, optional
+        Max number of error messages printed per category, by default 20
+
+    Returns
+    -------
+    bool
+        Pass or Fail on samples file to allow naive bayes training to proceed
+    """
+    messages, labels, sample_counts, class_list = _tabulate_errors(samples_file)
     totals = {category: len(messages[category]) for category in labels}
     total_problems = sum(totals.values())
     if total_problems == 0:
