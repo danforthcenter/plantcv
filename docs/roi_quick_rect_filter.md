@@ -1,19 +1,19 @@
-## Filter a Mask using a Region of Interest
+## Filter a Mask using a Rectangular Region
 
-Filter objects (connected regions of non-zero pixels) within a region of interest.
+Filter objects (connected regions of non-zero pixels) within a rectangle.
 
-**plantcv.roi.quick_filter**(*mask, roi, roi_type="partial"*)
+**plantcv.roi.quick_rect_filter**(*mask, roi, roi_type="partial"*)
 
 **returns** filtered_mask
 
 - **Parameters:**
     - mask = binary image data to be filtered
-    - roi = region of interest, an instance of the Objects class, output from one of the pcv.roi subpackage functions
+    - roi = region of interest specified as a list of (x, y, w, h) tuples.
 	- roi_type = 'partial' (for partially inside, default), 'cutto' (cut objects to the inside of the ROI),
 	'within' (keep only objects fully inside ROI), or 'largest' (largest object partially inside ROI)
 
 - **Context:**
-    - Used to filter objects within a region of interest and decide which ones to keep.
+    - This might not end up being front facing?
 
 - **Example use:**
     - Below
