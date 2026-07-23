@@ -76,7 +76,7 @@ def naive_bayes(imgdir, maskdir, outfile, mkplots=False):
                 # If mkplots is True, make the PDF charts
                 _plot_pdf(channel, os.path.dirname(outfile), plant=plant_pdf, background=bg_pdf)
 
-    
+
 def _check_header(class_list):
     """Checks the header of a naive bayes input file for mistakes.
 
@@ -165,7 +165,7 @@ def _tabulate_errors(samples_file):
     ----------
     samples_file : str
         Input text file containing sampled pixel RGB values for each training class.
-        
+
     Returns
     -------
     labels : dict
@@ -212,6 +212,7 @@ def _tabulate_errors(samples_file):
                 messages["empty_class"].append(f"Class '{cls}' has zero valid sampled pixels. "
                                                f"Add at least one row with a valid value in this column")
     return messages, labels, sample_counts, class_list
+
 
 def check_samples_file(samples_file, max_errors=20):
     """Quality control check of a naive Bayes multiclass samples file.
