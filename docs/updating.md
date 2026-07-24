@@ -92,6 +92,11 @@ Removed `label` parameter since size marker data is now stored as metadata in th
 Deprecated the function in favor of the new
 [`plantcv.transform.detect_color_card`](transform_detect_color_card.md) function.
 
+#### plantcv.visualize.pixel_scatter_plot
+
+Changed `paths_to_imgs` argument to `source` to reflect that it can use a `numpy.ndarray`, `str` path,
+or a list of paths where it previously only could use a list of paths.
+
 #### plantcv.visualize.time_lapse_video
 
 Deprecated the function to enable compatibility with the opencv-headless package. Will be readded in a future release.
@@ -1463,7 +1468,7 @@ pages for more details on the input and output variable types.
 #### plantcv.transform.deltaE
 
 * pre v5.0: NA
-* post v5.0: deltaE_matrix = **plantcv.transform.deltaE**(*rgb_img, color_chip_size=None, roi=None, obs="calibrated", method="deltaE_ciede2000", \*\*kwargs*)
+* post v5.0: deltaE_matrix = **plantcv.transform.deltaE**(*rgb_img, color_chip_size=None, roi=None, obs="calibrated", \*\*kwargs*)
 
 #### plantcv.transform.detect_color_card
 
@@ -1614,7 +1619,8 @@ pages for more details on the input and output variable types.
 #### plantcv.visualize.pixel_scatter_plot
 
 * pre v4.0: NA
-* post v4.0: fig, ax = **pcv.visualize.pixel_scatter_plot**(*paths_to_imgs, x_channel, y_channel*)
+* pre v5.0: fig, ax = **pcv.visualize.pixel_scatter_plot**(*paths_to_imgs, x_channel, y_channel*)
+* post v5.0: fig, ax = **pcv.visualize.pixel_scatter_plot**(*source, x_channel, y_channel, n=20, ext="png"*)
 
 #### plantcv.visualize.tile
 
@@ -1625,7 +1631,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: NA
 * post v4.0: frame_size = **pcv.visualize.time_lapse_video**(*img_list, out_filename='./time_lapse_video.mp4', fps=29.97, display=True*)
-* post v5.0: deprecated.
+* post v5.0: **pcv.visualize.time_lapse_video**(*source, out_filename='./time_lapse_video.mp4', fps=29.97*)
 
 #### plantcv.watershed_segmentation
 

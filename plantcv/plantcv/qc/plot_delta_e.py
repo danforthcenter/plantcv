@@ -7,7 +7,7 @@ import pandas as pd
 import altair as alt
 from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv.transform.color_correction import std_color_matrix, astro_color_matrix
+from plantcv.plantcv.transform.standard_matrices import std_color_matrix, astro_color_matrix
 
 
 def _bin_deltaE(v):
