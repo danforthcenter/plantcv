@@ -34,6 +34,21 @@ def quick_filter(mask, roi, roi_type="partial"):
 
 
 def _roi2masks(mask, roi):
+    """Turn a list of ROIs into binary masks
+
+    Parameters
+    ----------
+    mask : numpy.ndarray
+        Binary mask to filter.
+    roi : plantcv.plantcv.classes.Objects
+        PlantCV ROI object.
+
+    Returns
+    -------
+    list
+        ROI Masks, numpy.ndarray objects
+
+    """
     roi_masks = []
     for single_roi in roi:
         roi_mask = np.zeros(mask.shape[:2], dtype=np.uint8)
@@ -43,6 +58,22 @@ def _roi2masks(mask, roi):
 
 
 def _filter_by_roi_masks(mask, roi_masks, roi_type):
+    """Filter by ROI masks
+
+    Parameters
+    ----------
+    mask : numpy.ndarray
+        Binary mask to filter.
+    roi_masks : list
+        numpy.ndarrays of binary masks
+    roi_type : str, optional
+        Type of ROI filtering: "partial", "cutto", "within", or "largest".
+
+    Returns
+    -------
+    numpy.ndarray
+        Binary Mask
+    """
     roi_type = roi_type.lower()
     binary = (mask > 0).astype(np.uint8) * 255
     # elementwise max across all roi_masks, i.e. OR them together into one combined mask
@@ -95,42 +126,40 @@ def _filter_by_roi_masks(mask, roi_masks, roi_type):
 
 
 def _largest_in_each_roi(binary, roi_masks):
-      output = np.zeros(binary.shape[:2], dtype=np.uint8)
-      # label the whole, uncut mask once — same as "partial" — so area and
-      # extent always refer to the full object, never a ROI-clipped sliver
-      num_labels, labels, stats, _ = cv2.connectedComponentsWithStats(binary, connectivity=8)
-      if num_labels <= 1:
-          return output
-      label_ids = labels.ravel()
-      for roi_mask in roi_masks:
-          inside = roi_mask > 0
-          # same overlap test "partial" uses: does this label touch the ROI at all?
-          overlap_counts = np.bincount(
-              label_ids,
-              weights=inside.ravel().astype(np.uint8),
-              minlength=num_labels,
-          )
-          candidates = np.flatnonzero(overlap_counts > 0)
-          candidates = candidates[candidates != 0]  # exclude background label 0
-          if candidates.size == 0:
-              continue
-          # rank candidates by their full area, not the portion inside the ROI
-          best = candidates[np.argmax(stats[candidates, cv2.CC_STAT_AREA])]
-          output[labels == best] = 255
-      return output
+    """Find largest object partially in each mask
 
+    Parameters
+    ----------
+    binary : numpy.ndarray
+        Binary Mask
+    roi_masks : list
+        List of ROI masks
 
-def _legacy_largest_in_each_roi(binary, roi_masks):
+    Returns
+    numpy.ndarray
+        Binary Mask of the largest object touching each ROI
+    -------
+    """
     output = np.zeros(binary.shape[:2], dtype=np.uint8)
+    # label the whole, uncut mask once — same as "partial" — so area and
+    # extent always refer to the full object, never a ROI-clipped sliver
+    num_labels, labels, stats, _ = cv2.connectedComponentsWithStats(binary, connectivity=8)
+    if num_labels <= 1:
+        return output
+    label_ids = labels.ravel()
     for roi_mask in roi_masks:
-        # restrict the binary mask to just this one ROI's pixels
-        # Not how this should work, need to run partial THEN largest
-        clipped = cv2.bitwise_and(binary, roi_mask)
-        # label connected blobs within this ROI; stats gives area
-        num_labels, labels, stats, _ = cv2.connectedComponentsWithStats((clipped > 0).astype(np.uint8), connectivity=8)
-        if num_labels <= 1:
+        inside = roi_mask > 0
+        # same overlap test "partial" uses: does this label touch the ROI at all?
+        overlap_counts = np.bincount(
+            label_ids,
+            weights=inside.ravel().astype(np.uint8),
+            minlength=num_labels,
+        )
+        candidates = np.flatnonzero(overlap_counts > 0)
+        candidates = candidates[candidates != 0]  # exclude background label 0
+        if candidates.size == 0:
             continue
-        # find the index of the roi with the largest area from cv2 above
-        best = 1 + int(np.argmax(stats[1:, cv2.CC_STAT_AREA]))
+        # rank candidates by their full area, not the portion inside the ROI
+        best = candidates[np.argmax(stats[candidates, cv2.CC_STAT_AREA])]
         output[labels == best] = 255
     return output
