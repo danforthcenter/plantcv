@@ -415,6 +415,7 @@ pages for more details on the input and output variable types.
 
 #### plantcv.analyze.yii_ojip
 
+* pre v5.0: See `plantcv.analyze.yii`
 * post v5.0: list_of_yii, list_of_yii_hist = **plantcv.analyze.yii_ojip**(*ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None*)
 
 #### plantcv.apply_mask

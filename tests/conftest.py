@@ -212,7 +212,6 @@ class TestData:
         })
         return ps
 
-
     def psii_cropreporter_new(self, var):
         """Create simple data for PSII"""
         # sample images
@@ -230,14 +229,17 @@ class TestData:
             frame_labels = ['Fdark', 'F0', 'Fm', '3']
             measurements = ['t0']
             keyname = "psd"
+            other_keyname = "psl"
         elif var == 'ojip_light':
             frame_labels = ['Fdark', 'Fp', '2', 'Fmp']
             measurements = ['t1']
             keyname = "psl"
+            other_keyname = "psd"
         elif var == "ojip_bad":
             frame_labels = ['Fdark', 'Fp', '2', 'Fmp']
             measurements = ['t1']
             keyname = "bad"
+            other_keyname = "also_bad"
         elif var == "ojip_both":
             ps = self._make_dummy_npq(f0, f1, f2, f3)
             return ps
@@ -247,7 +249,6 @@ class TestData:
                           dims=('x', 'y', 'frame_label', 'measurement'),
                           coords={'frame_label': frame_labels, 'frame_num': ('frame_label', [0, 1, 2, 3]),
                                   'measurement': measurements}, name=var)
-
         sub_ps = type("subpsdata", (object,), {
             var: da
         })
@@ -258,10 +259,9 @@ class TestData:
                 "ImageCols": 10
             },
             keyname: sub_ps,
-            var: da
+            other_keyname: None
         })
         return ps
-
 
     @staticmethod
     def psii_walz(var):
@@ -318,6 +318,7 @@ class TestData:
         # create darkadapted
         if var in ['ojip_dark', 'ojip_both']:
             keyname = "psd"
+            other_keyname = "psl"
             i = 0
             fmin = np.ones((10, 10), dtype='uint8') * ((i+15)*2)
             fmax = np.ones((10, 10), dtype='uint8') * (200-i*15)
@@ -344,6 +345,7 @@ class TestData:
                         "ImageCols": 10
                     },
                     keyname: sub_ps,
+                    other_keyname: None,
                     var: ps_dad
                 })
                 return ps
@@ -353,6 +355,7 @@ class TestData:
             da_list = []
             measurement = []
             keyname = "psl"
+            other_keyname = "psd"
 
             for i in np.arange(1, 3):
                 indf = ['Fp', 'Fmp']
@@ -379,13 +382,13 @@ class TestData:
                 sub_ps = type("subpsdata", (object,), {
                     var: ps_dal
                 })
-
                 ps = type("psdata", (object,), {
                     'metadata': {
                         "ImageRows": 10,
                         "ImageCols": 10
                     },
                     keyname: sub_ps,
+                    other_keyname: None,
                     var: ps_dal
                 })
                 return ps
@@ -409,7 +412,6 @@ class TestData:
                 "ojip_dark": ps_dad
             })
             return ps
-
 
 @pytest.fixture(scope="session")
 def test_data():
