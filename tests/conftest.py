@@ -178,7 +178,7 @@ class TestData:
                           coords={'frame_label': frame_labels, 'frame_num': ('frame_label', [0, 1, 2, 3]),
                                   'measurement': measurements}, name=var)
         return da
-    
+
     def psii_cropreporter_new(self, var):
         """Create simple data for PSII"""
         # sample images
