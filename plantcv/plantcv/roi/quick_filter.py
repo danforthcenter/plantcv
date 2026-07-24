@@ -157,9 +157,8 @@ def _largest_in_each_roi(binary, roi_masks):
         )
         candidates = np.flatnonzero(overlap_counts > 0)
         candidates = candidates[candidates != 0]  # exclude background label 0
-        if candidates.size == 0:
-            continue
-        # rank candidates by their full area, not the portion inside the ROI
-        best = candidates[np.argmax(stats[candidates, cv2.CC_STAT_AREA])]
-        output[labels == best] = 255
+        if candidates.size > 0:
+            # rank candidates by their full area, not the portion inside the ROI
+            best = candidates[np.argmax(stats[candidates, cv2.CC_STAT_AREA])]
+            output[labels == best] = 255
     return output
