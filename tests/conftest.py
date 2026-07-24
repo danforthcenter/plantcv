@@ -239,10 +239,10 @@ class TestData:
             frame_labels = ['Fdark', 'Fp', '2', 'Fmp']
             measurements = ['t1']
             keyname = "bad"
+            other_keyname = "also_bad"
         elif var == "ojip_both":
             ps = self._make_dummy_npq(f0, f1, f2, f3)
             return ps
-            other_keyname = "also_bad"
 
         # Create DataArray
         da = xr.DataArray(data=np.dstack([f0, f1, f2, f3])[..., None],
@@ -345,6 +345,7 @@ class TestData:
                         "ImageCols": 10
                     },
                     keyname: sub_ps,
+                    other_keyname: None,
                     var: ps_dad
                 })
                 return ps
@@ -387,6 +388,7 @@ class TestData:
                         "ImageCols": 10
                     },
                     keyname: sub_ps,
+                    other_keyname: None,
                     var: ps_dal
                 })
                 return ps
