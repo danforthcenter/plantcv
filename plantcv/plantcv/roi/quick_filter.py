@@ -33,53 +33,12 @@ def quick_filter(mask, roi, roi_type="partial"):
     return filtered_mask
 
 
-def quick_rect_filter(mask, rois, roi_type="partial"):
-    """Filter a binary mask using one or more rectangular ROIs.
-
-    Parameters
-    ----------
-    mask : numpy.ndarray
-        Binary mask to filter.
-    rois : list
-        Rectangular ROIs as `(x, y, width, height)` tuples.
-    roi_type : str, optional
-        Type of ROI filtering: "partial", "cutto", "within", or "largest".
-
-    Returns
-    -------
-    numpy.ndarray
-        Filtered binary mask.
-    """
-    roi_masks = _rects2masks(shape=mask.shape[:2], rois=rois)
-    filtered_mask = _filter_by_roi_masks(mask=mask, roi_masks=roi_masks, roi_type=roi_type)
-    _debug(visual=filtered_mask,
-           filename=os.path.join(params.debug_outdir, f"{params.device}_roi_filter.png"),
-           cmap="gray")
-    return filtered_mask
-
-
 def _roi2masks(mask, roi):
     roi_masks = []
     for single_roi in roi:
         roi_mask = np.zeros(mask.shape[:2], dtype=np.uint8)
         cv2.drawContours(roi_mask, single_roi.contours[0], -1, 255, -1)
         roi_masks.append(roi_mask)
-    return roi_masks
-
-
-def _rects2masks(shape, rois):
-    roi_masks = []
-    height, width = shape
-    for x, y, w, h in rois:
-        # clamp each rectangle corner to the image bounds so slicing below never goes out of range
-        x0 = max(0, min(width, int(round(x))))
-        y0 = max(0, min(height, int(round(y))))
-        x1 = max(0, min(width, int(round(x + w))))
-        y1 = max(0, min(height, int(round(y + h))))
-        if x1 > x0 and y1 > y0:
-            roi_mask = np.zeros(shape, dtype=np.uint8)
-            roi_mask[y0:y1, x0:x1] = 255
-            roi_masks.append(roi_mask)
     return roi_masks
 
 
