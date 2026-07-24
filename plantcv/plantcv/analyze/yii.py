@@ -43,9 +43,8 @@ def yii(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, la
     ps_shape = (int(ps.metadata["ImageRows"]), int(ps.metadata["ImageCols"]))
     if labeled_mask.shape != ps_shape:
         fatal_error(f"Mask needs to have shape {ps_shape}")
-
-    if not hasattr(ps, "psl") and not hasattr(ps, "psd"):
-        fatal_error("Unsupported DataArray type, psl or psd frames are required")
+    # Validate that ps has the right frames with information in them
+    _validate_psii_yii_frames(ps)
 
     yii_charts = []
     yii_globals = []
@@ -60,11 +59,10 @@ def yii(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, la
     }
 
     for frame in ["psl", "psd"]:
-        if hasattr(ps, frame):
+        if getattr(ps, frame) is not None:
             ps_da_loader = getattr(ps, frame)
             ps_da = getattr(ps_da_loader, frame_properties.get(frame))
             # Validate that the input measurement_labels is the same length as the number of measurements in the DataArray
-            # this is going to the inside of the if/for loop I think.
             if (measurement_labels is not None) and (len(measurement_labels) != ps_da.coords['measurement'].shape[0]):
                 fatal_error('measurement_labels must be the same length as the number of measurements in the DataArray')
             # Make an zeroed array of the same shape as the input DataArray
@@ -113,7 +111,7 @@ def yii(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, la
 
             # Create a pseudocolor image of the YII values
             _debug(visual=yii_global,
-                   filename=os.path.join(params.debug_outdir, str(params.device) + "_YII_dataarray.png"),
+                   filename=os.path.join(params.debug_outdir, str(params.device) + "_" + frame + "_YII_dataarray.png"),
                    robust=True,
                    col='measurement',
                    col_wrap=int(np.ceil(yii_global.measurement.size / 4)),
@@ -121,6 +119,12 @@ def yii(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, la
             yii_globals.append(yii_global.squeeze())
 
     return yii_globals, yii_charts
+
+
+def _validate_psii_yii_frames(ps):
+    """Helper to validate psii_data object has yii frames with information"""
+    if not (hasattr(ps, "psl") or hasattr(ps, "psd")) or (ps.psl is None and ps.psd is None):
+        fatal_error("Unsupported DataArray type, psl or psd frames are required")
 
 
 def _psl_calc_fqfm(yii_masked):
