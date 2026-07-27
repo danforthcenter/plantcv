@@ -8,19 +8,19 @@ from matplotlib import pyplot as plt
 
 
 def naive_bayes(imgdir, maskdir, outfile, mkplots=False):
-    """Naive Bayes training function
+    """Naive Bayes training function.
 
-    Inputs:
-    imgdir  = Path to a directory of original 8-bit RGB images.
-    maskdir = Path to a directory of binary mask images. Mask images must have the same name as their corresponding
-              color images.
-    outfile = Name of the output text file that will store the color channel probability density functions.
-    mkplots = Make PDF plots (True or False).
-
-    :param imgdir: str
-    :param maskdir: str
-    :param outfile: str
-    :param mkplots: bool
+    Parameters
+    ----------
+    imgdir : str
+        Path to a directory of original 8-bit RGB images.
+    maskdir : str
+        Path to a directory of binary mask images. Mask images must have the same name as their corresponding
+        color images.
+    outfile : str
+        Name of the output text file that will store the color channel probability density functions.
+    mkplots : bool, optional
+        Make PDF plots, by default False.
     """
     # Initialize color channel ndarrays for plant (foreground) and background
     plant = {"hue": np.array([], dtype=np.uint8), "saturation": np.array([], dtype=np.uint8),
@@ -254,23 +254,26 @@ def check_samples_file(samples_file, max_errors=20):
 
 
 def naive_bayes_multiclass(samples_file, outfile, mkplots=False, max_errors=20):
-    """Naive Bayes training function for two or more classes from sampled pixel RGB values.
+    """Naive Bayes training for two or more classes from sampled pixel RGB values.
 
-    Inputs:
-    samples_file = Input text file containing sampled pixel RGB values for each training class. The file should be a
-                   tab-delimited table with one training class per column. The required first row must contain header
-                   labels for each class. The row values for each class must be comma-delimited RGB values.
-                   You must have at least 2 classes. See the file plantcv/tests/data/sampled_rgb_points.txt for
-                   an example.
-    outfile      = Name of the output text file that will store the color channel probability density functions.
-    mkplots      = Make PDF plots (True or False).
-    max_errors   = Maximum number of example messages printed per formatting problem category if samples_file
-                   fails quality control. See check_samples_file.
-
-    :param samples_file: str
-    :param outfile: str
-    :param mkplots: bool
-    :param max_errors: int
+    Parameters
+    ----------
+    samples_file : str
+        Input text file containing sampled pixel RGB values for each training class.
+        The file should be a tab-delimited table with one training class per column.
+        The required first row must contain header labels for each class.
+        The row values for each class must be comma-delimited RGB values.
+        You must have at least 2 classes. See
+        ``plantcv/tests/data/sampled_rgb_points.txt`` for an example.
+    outfile : str
+        Name of the output text file that will store the color channel
+        probability density functions.
+    mkplots : bool
+        Make PDF plots (True or False).
+    max_errors : int
+        Maximum number of example messages printed per formatting problem
+        category if ``samples_file`` fails quality control.
+        See :func:`check_samples_file`.
     """
     # Quality control check of the input samples file. Abort before training on a file we can't parse correctly
     if not check_samples_file(samples_file, max_errors=max_errors):
