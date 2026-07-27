@@ -377,7 +377,7 @@ def read_cropreporter(filename):
     }
 
     # Process datasets
-    for dataset in ["APH", "CHL", "CLR", "NPQ", "PMD", "PML", "PMT", "PSD", "PSL", "SPC"]:
+    for dataset in ["APH", "CHL", "CLR", "PMD", "PML", "PMT", "PSD", "PSL", "SPC", "NPQ"]:
         # Construct the expected binary file path for the dataset
         bin_filepath = _dat_filepath(dataset=dataset, datapath=ps.datapath, filename=ps.filename)
         # Check if the file exists
@@ -387,6 +387,10 @@ def read_cropreporter(filename):
             constructor = dataset_classes.get(dataset)
             if constructor is not None:
                 setattr(ps, key, constructor(bin_filepath))
+            if dataset in ["PSL", "NPQ"]:
+                setattr(ps, "ojip_light", key)
+            if dataset in ["PSD", "NPQ"]:
+                setattr(ps, "ojip_dark", key)
 
     # Dark-adapted PAM measurements
     _process_pmd_data(ps=ps, metadata=metadata_dict)
