@@ -233,6 +233,7 @@ nav:
       - 'Kmeans Clustering': train_kmeans.md
       - 'Naive Bayes': naive_bayes.md
       - 'Naive Bayes Multiclass': naive_bayes_multiclass.md
+      - 'Naive Bayes Multiclass Samples File QC': naive_bayes_check_samples_file.md
     - 'Parallelization':
         - 'Getting started in parallel': parallel_preparation.md
         - 'Configure Parallelization': parallel_config.md
