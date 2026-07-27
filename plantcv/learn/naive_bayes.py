@@ -349,12 +349,21 @@ def naive_bayes_multiclass(samples_file, outfile, mkplots=False, max_errors=20):
 
 
 def _split_plant_background_signal(channel, mask):
-    """Split a single-channel image by foreground and background using a mask
+    """Split a single-channel image into foreground and background signals.
 
-    :param channel: ndarray
-    :param mask: ndarray
-    :return plant: ndarray
-    :return background: ndarray
+    Parameters
+    ----------
+    channel : ndarray
+        Single-channel image data.
+    mask : ndarray
+        Binary mask where foreground pixels are 255 and background pixels are 0.
+
+    Returns
+    -------
+    plant : ndarray
+        Foreground pixel values from ``channel``.
+    background : ndarray
+        Background pixel values from ``channel``.
     """
     plant = channel[np.where(mask == 255)]
     background = channel[np.where(mask == 0)]
@@ -363,11 +372,16 @@ def _split_plant_background_signal(channel, mask):
 
 
 def _plot_pdf(channel, outdir, **kwargs):
-    """Plot the probability density function of one or more classes for the given channel
+    """Plot the probability density function for one or more classes.
 
-    :param channel: str
-    :param outdir: str
-    :param kwargs: dict
+    Parameters
+    ----------
+    channel : str
+        Channel name used in the output filename.
+    outdir : str
+        Directory where the plot will be saved.
+    **kwargs : dict
+        Mapping of class names to probability density values.
     """
     for class_name, pdf in kwargs.items():
         plt.plot(pdf, label=class_name)
@@ -378,22 +392,23 @@ def _plot_pdf(channel, outdir, **kwargs):
 
 def tabulate_bayes_classes(input_file, output_file):
     """Tabulate pixel RGB values into a table for naive Bayes training.
-    Inputs:
-    input_file   = Input text file of class names and RGB values
-    output_file  = Output file for storing the tab-delimited naive Bayes training data
 
-    The input file should have class names preceded by the "#" character. RGB values can be pasted
-    directly from ImageJ without reformatting. E.g.:
+    The input file should have class names preceded by the ``#`` character.
+    RGB values can be pasted directly from ImageJ without reformatting. Example:
 
     #plant
-    96,154,72	95,153,72	91,155,71	91,160,70	90,155,67	92,152,66	92,157,70
-    54,104,39	56,104,38	59,106,41	57,105,43	54,104,40	54,103,35	56,101,39	58,99,41	59,99,41
+    96,154,72  95,153,72  91,155,71  91,160,70  90,155,67  92,152,66  92,157,70
+    54,104,39  56,104,38  59,106,41  57,105,43  54,104,40  54,103,35  56,101,39  58,99,41  59,99,41
     #background
-    114,127,121	117,135,125	120,137,131	132,145,138	142,154,148	151,166,158	160,182,172
-    115,125,121	118,131,123	122,132,135	133,142,144	141,151,152	150,166,158	159,179,172
+    114,127,121  117,135,125  120,137,131  132,145,138  142,154,148  151,166,158  160,182,172
+    115,125,121  118,131,123  122,132,135  133,142,144  141,151,152  150,166,158  159,179,172
 
-    :param input_file: str
-    :param output_file: str
+    Parameters
+    ----------
+    input_file : str
+        Input text file of class names and RGB values.
+    output_file : str
+        Output file for storing tab-delimited naive Bayes training data.
     """
     # If the input file does not exist raise an error
     if not os.path.exists(input_file):
