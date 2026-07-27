@@ -392,7 +392,7 @@ class TestData:
                     var: ps_dal
                 })
                 return ps
-    
+
         if var == "ojip_both":
             sub_psd = type("subpsdata", (object,), {
                 "ojip_dark": ps_dad
@@ -412,6 +412,7 @@ class TestData:
                 "ojip_dark": ps_dad
             })
             return ps
+
 
 @pytest.fixture(scope="session")
 def test_data():
