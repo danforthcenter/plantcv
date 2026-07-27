@@ -10,7 +10,7 @@ def test_npq_cropreporter(test_data):
     # Clear results
     outputs.clear()
     psdata = test_data.psii_cropreporter_new('ojip_both')
-    _ = analyze_npq(ps = psdata, labeled_mask=test_data.create_ps_mask(),
+    _ = analyze_npq(ps=psdata, labeled_mask=test_data.create_ps_mask(),
                     auto_fm=False,
                     measurement_labels=["Fq/Fm"], label="prefix", min_bin="auto", max_bin="auto")
     assert np.isclose(outputs.observations["prefix_1"]["npq_median_Fq/Fm"]["value"], 0.25)
