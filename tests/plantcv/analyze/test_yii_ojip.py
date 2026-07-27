@@ -2,7 +2,7 @@
 import pytest
 import numpy as np
 from plantcv.plantcv import outputs
-from plantcv.plantcv.analyze import yii as analyze_yii
+from plantcv.plantcv.analyze import yii_ojip as analyze_yii
 
 
 @pytest.mark.parametrize("prot,mlabels,exp", [

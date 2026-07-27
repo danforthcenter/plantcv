@@ -8,7 +8,7 @@ from plantcv.plantcv import params, outputs, fatal_error
 from plantcv.plantcv.photosynthesis import reassign_frame_labels
 
 
-def yii(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None):
+def yii_ojip(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None):
     """Calculate and analyze PSII efficiency estimates from fluorescence image data.
 
     Parameters
