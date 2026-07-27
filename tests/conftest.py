@@ -213,12 +213,16 @@ class TestData:
                           dims=('x', 'y', 'frame_label', 'measurement'),
                           coords={'frame_label': frame_labels, 'frame_num': ('frame_label', [0, 1, 2, 3]),
                                   'measurement': measurements}, name=var)
+        sub_ps = type("subpsdata", (object,), {
+            var: da
+        })
+
         ps = type("psdata", (object,), {
             'metadata': {
                 "ImageRows": 10,
                 "ImageCols": 10
             },
-            keyname: da,
+            keyname: sub_ps,
             other_keyname: None
         })
         return ps
@@ -322,13 +326,17 @@ class TestData:
             ps_da = xr.concat(da_list, 'measurement')
             ps_da.name = 'ojip_light'
             ps_da.coords['measurement'] = prop_idx
-        
+
+        sub_ps = type("subpsdata", (object,), {
+            var: ps_da
+        })
+
         ps = type("psdata", (object,), {
             'metadata': {
                 "ImageRows": 10,
                 "ImageCols": 10
             },
-            keyname: ps_da,
+            keyname: sub_ps,
             other_keyname: None
         })
         return ps
