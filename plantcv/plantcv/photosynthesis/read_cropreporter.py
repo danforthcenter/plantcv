@@ -614,6 +614,94 @@ class PMT:
         )
 
 
+class SPC:
+    """Class to hold a SPC dataset"""
+
+    def __init__(self, filepath, height, width, metadata):
+        """Initialize SPC dataset with file path and image dimensions."""
+        self._filepath = filepath
+        self._height = height
+        self._width = width
+        self._metadata = metadata
+        self._spectral = None
+
+    def __bool__(self):
+        """The existence of the SPC class is true."""
+        return True
+
+    def __repr__(self):
+        """String representation of the SPC dataset, indicating whether the data has been loaded."""
+        loaded = self._spectral is not None
+        return f"SPC(filepath={self._filepath!r}, loaded={loaded})"
+
+    @property
+    def spectral(self):
+        """Return the spectral data"""
+        if self._spectral is None:
+            self._load()
+        return self._spectral
+
+    def _load(self):
+        """Load the spectral data from the .DAT file."""
+        img_cubes = []
+        wavelengths = []
+        datapath = os.path.dirname(self._metadata["filename"])
+        filename = os.path.split(self._metadata["filename"])[-1]
+        clr_filepath = _dat_filepath(dataset="CLR", datapath=datapath, filename=filename)
+        spc_filepath = _dat_filepath(dataset="SPC", datapath=datapath, filename=filename)
+        rgb = None
+        if os.path.exists(clr_filepath):
+            rgb_cube, _, _ = _read_dat_file(dataset="CLR", filename=clr_filepath,
+                                            height=self._height,
+                                            width=self._width)
+            img_cubes.append(rgb_cube)
+            wavelengths += [640, 550, 475]
+            rgb = img_as_ubyte(rgb_cube[:, :, [2, 1, 0]])
+        if os.path.exists(spc_filepath):
+            spc_cube, _, _ = _read_dat_file(dataset="SPC", filename=spc_filepath,
+                                            height=self._height,
+                                            width=self._width)
+            img_cubes.append(spc_cube)
+            wavelengths += [540, 710, 770]
+            if rgb is None:
+                rgb = img_as_ubyte(spc_cube)
+
+        if len(img_cubes) > 0:
+            if len(img_cubes) == 2:
+                # Concatenate the images on the depth/spectral (z) axis
+                array_data = np.concatenate(img_cubes, axis=2)
+            else:
+                array_data = img_cubes[0]
+
+            # sort all wavelengths
+            wavelengths = np.array(wavelengths)
+            ind = np.argsort(wavelengths)
+            wavelengths = wavelengths[ind]
+
+            wavelength_dict = {}
+            for (idx, wv) in enumerate(wavelengths):
+                wavelength_dict[wv] = float(idx)
+
+            # sort array_data based on wavelengths
+            array_data = array_data[:, :, ind]
+            # Scale the array data to 0-1 by dividing by the maximum data type value
+            array_data = (array_data / np.iinfo(array_data.dtype).max).astype(np.float32)
+
+            # Create a Spectral_data object
+            rows, columns = array_data.shape[0:2]
+            multispec = Spectral_data(array_data=array_data,
+                                      max_wavelength=float(max(wavelengths)),
+                                      min_wavelength=float(min(wavelengths)),
+                                      max_value=float(np.amax(array_data)),
+                                      min_value=float(np.amin(array_data)),
+                                      d_type=array_data.dtype,
+                                      wavelength_dict=wavelength_dict,
+                                      samples=columns, lines=rows, interleave="NA",
+                                      wavelength_units="nm", array_type="multispectral",
+                                      pseudo_rgb=rgb, filename="NA", default_bands=None)
+            self._spectral = multispec
+
+
 def read_cropreporter(filename):
     """Read datacubes from PhenoVation B.V. CropReporter or PlantExplorer cameras into a PSII_data instance.
 
@@ -641,6 +729,7 @@ def read_cropreporter(filename):
     ps = PSII_data(metadata=metadata_dict)
 
     # INF file prefix and path
+    metadata_dict["filename"] = filename
     ps.filename = os.path.split(filename)[-1]
     ps.datapath = os.path.dirname(filename)
 
@@ -671,7 +760,9 @@ def read_cropreporter(filename):
         # GFP data
         "GFP": lambda fp: GFP(filepath=fp, height=height, width=width, metadata=ps.metadata),
         # RFP data
-        "RFP": lambda fp: RFP(filepath=fp, height=height, width=width, metadata=ps.metadata)
+        "RFP": lambda fp: RFP(filepath=fp, height=height, width=width, metadata=ps.metadata),
+        # SPC data
+        "SPC": lambda fp: SPC(filepath=fp, height=height, width=width, metadata=ps.metadata)
     }
 
     # Process datasets
@@ -690,82 +781,7 @@ def read_cropreporter(filename):
             if dataset in ["PSD", "NPQ"]:
                 setattr(ps, "ojip_dark", key)
 
-    # Spectral measurements
-    _process_spc_data(ps=ps, metadata=metadata_dict)
-
     return ps
-
-
-def _process_spc_data(ps, metadata):
-    """
-    Create a Spectral_data object for the SPC and CLR datasets.
-
-    Inputs:
-        ps       = PSII_data instance
-        metadata = INF file metadata dictionary
-
-    :param ps: plantcv.plantcv.classes.PSII_data
-    :param metadata: dict
-    """
-    img_cubes = []
-    wavelengths = []
-    clr_filepath = _dat_filepath(dataset="CLR", datapath=ps.datapath, filename=ps.filename)
-    spc_filepath = _dat_filepath(dataset="SPC", datapath=ps.datapath, filename=ps.filename)
-    rgb = None
-    if os.path.exists(clr_filepath):
-        rgb_cube, _, _ = _read_dat_file(dataset="CLR", filename=clr_filepath,
-                                        height=int(metadata["ImageRows"]),
-                                        width=int(metadata["ImageCols"]))
-        img_cubes.append(rgb_cube)
-        wavelengths += [640, 550, 475]
-        rgb = img_as_ubyte(rgb_cube[:, :, [2, 1, 0]])
-    if os.path.exists(spc_filepath):
-        spc_cube, _, _ = _read_dat_file(dataset="SPC", filename=spc_filepath,
-                                        height=int(metadata["ImageRows"]),
-                                        width=int(metadata["ImageCols"]))
-        img_cubes.append(spc_cube)
-        wavelengths += [540, 710, 770]
-        if rgb is None:
-            rgb = img_as_ubyte(spc_cube)
-
-    if len(img_cubes) > 0:
-        if len(img_cubes) == 2:
-            # Concatenate the images on the depth/spectral (z) axis
-            array_data = np.concatenate(img_cubes, axis=2)
-        else:
-            array_data = img_cubes[0]
-
-        # sort all wavelengths
-        wavelengths = np.array(wavelengths)
-        ind = np.argsort(wavelengths)
-        wavelengths = wavelengths[ind]
-
-        wavelength_dict = {}
-        for (idx, wv) in enumerate(wavelengths):
-            wavelength_dict[wv] = float(idx)
-
-        # sort array_data based on wavelengths
-        array_data = array_data[:, :, ind]
-        # Scale the array data to 0-1 by dividing by the maximum data type value
-        array_data = (array_data / np.iinfo(array_data.dtype).max).astype(np.float32)
-
-        # Create a Spectral_data object
-        rows, columns = array_data.shape[0:2]
-        multispec = Spectral_data(array_data=array_data,
-                                  max_wavelength=float(max(wavelengths)),
-                                  min_wavelength=float(min(wavelengths)),
-                                  max_value=float(np.amax(array_data)),
-                                  min_value=float(np.amin(array_data)),
-                                  d_type=array_data.dtype,
-                                  wavelength_dict=wavelength_dict,
-                                  samples=columns, lines=rows, interleave="NA",
-                                  wavelength_units="nm", array_type="multispectral",
-                                  pseudo_rgb=rgb, filename="NA", default_bands=None)
-
-        ps.spectral = multispec
-
-        _debug(visual=ps.spectral.pseudo_rgb,
-               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_spectral-RGB.png"))
 
 
 def _dat_filepath(dataset, datapath, filename):

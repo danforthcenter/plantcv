@@ -91,13 +91,19 @@ def test_read_cropreporter_spc_only(photosynthesis_test_data, tmpdir):
     shutil.copyfile(spc_dat, os.path.join(cache_dir, "PSII_SPC_test.DAT"))
     fluor_filename = os.path.join(cache_dir, "PSII_HDR_test.INF")
     ps = read_cropreporter(filename=fluor_filename)
-    assert isinstance(ps, PSII_data) and ps.spectral.array_data.shape == (966, 1296, 3)
+    assert isinstance(ps, PSII_data)
+    assert ps.spc
+    assert "SPC" in repr(ps.spc)
+    assert ps.spc.spectral.array_data.shape == (966, 1296, 3)
 
 
 def test_read_cropreporter_spc_full(photosynthesis_test_data, tmpdir):
     """Test for PlantCV."""
     ps = read_cropreporter(filename=os.path.join(photosynthesis_test_data.cropreporter))
-    assert isinstance(ps, PSII_data) and ps.spectral.array_data.shape == (966, 1296, 6)
+    assert isinstance(ps, PSII_data)
+    assert ps.spc
+    assert "SPC" in repr(ps.spc)
+    assert ps.spc.spectral.array_data.shape == (966, 1296, 6)
 
 
 def test_read_cropreporter_npq(photosynthesis_test_data):
