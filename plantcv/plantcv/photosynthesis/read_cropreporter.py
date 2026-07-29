@@ -2,8 +2,6 @@
 import os
 import numpy as np
 import xarray as xr
-from plantcv.plantcv._globals import params
-from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import PSII_data
 from plantcv.plantcv import Spectral_data
 from skimage.util import img_as_ubyte
