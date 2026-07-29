@@ -503,7 +503,6 @@ def read_cropreporter(filename):
     return ps
 
 
-
 def _process_pmt_data(ps, metadata):
     """
     Create an xarray DataArray for a PMT dataset.
