@@ -149,7 +149,8 @@ class PSD:
 
     def __repr__(self):
         """String representation of the PSD dataset, indicating whether the data has been loaded."""
-        return f"PSD(filepath={self._filepath!r})"
+        loaded = self._ojip_dark is not None
+        return f"PSD(filepath={self._filepath!r}, loaded={loaded})"
 
     @property
     def ojip_dark(self):
@@ -212,7 +213,8 @@ class PSL:
 
     def __repr__(self):
         """String representation of the PSL dataset, indicating whether the data has been loaded."""
-        return f"PSL(filepath={self._filepath!r})"
+        loaded = self._ojip_light is not None
+        return f"PSL(filepath={self._filepath!r}, loaded={loaded})"
 
     @property
     def ojip_light(self):
@@ -276,7 +278,8 @@ class NPQ:
 
     def __repr__(self):
         """String representation of the NPQ dataset, indicating whether the data has been loaded."""
-        return f"NPQ(filepath={self._filepath!r})"
+        loaded = self._ojip_light is not None and self._ojip_dark is not None
+        return f"NPQ(filepath={self._filepath!r}, loaded={loaded})"
 
     @property
     def ojip_light(self):
@@ -343,7 +346,8 @@ class PMD:
 
     def __repr__(self):
         """String representation of the PMD dataset, indicating whether the data has been loaded."""
-        return f"PMD(filepath={self._filepath!r})"
+        loaded = self._pam_dark is not None
+        return f"PMD(filepath={self._filepath!r}, loaded={loaded})"
 
     @property
     def pam_dark(self):
@@ -389,7 +393,8 @@ class PML:
 
     def __repr__(self):
         """String representation of the PML dataset, indicating whether the data has been loaded."""
-        return f"PML(filepath={self._filepath!r})"
+        loaded = self._pam_light is not None
+        return f"PML(filepath={self._filepath!r}, loaded={loaded})"
 
     @property
     def pam_light(self):
