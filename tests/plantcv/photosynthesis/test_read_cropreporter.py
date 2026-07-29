@@ -241,6 +241,8 @@ def test_read_cropreporter_pmt_only_9_labels(photosynthesis_test_data, tmpdir):
     ps = read_cropreporter(filename=fluor_filename)
     assert isinstance(ps, PSII_data)
     assert ps.pmt.pam_time is not None
+    assert ps.pmt
+    assert "PMT" in repr(ps.pmt)
     # Check that dimensions include x, y, frame_label, and measurement
     assert "frame_label" in ps.pmt.pam_time.coords
     assert "measurement" in ps.pmt.pam_time.coords
@@ -289,6 +291,8 @@ def test_read_cropreporter_pmt_only_13_labels(photosynthesis_test_data, tmpdir, 
     ps = read_cropreporter(filename=inf_dest)
     assert isinstance(ps, PSII_data)
     assert ps.pmt.pam_time is not None
+    assert ps.pmt
+    assert "PMT" in repr(ps.pmt)
     # Check that dimensions include x, y, frame_label, and measurement
     assert "frame_label" in ps.pmt.pam_time.coords
     assert "measurement" in ps.pmt.pam_time.coords
