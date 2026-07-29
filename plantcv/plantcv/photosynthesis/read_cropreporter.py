@@ -440,7 +440,8 @@ class PMT:
 
     def __repr__(self):
         """String representation of the PMT dataset, indicating whether the data has been loaded."""
-        return f"PMT(filepath={self._filepath!r})"
+        loaded = self._pam_time is not None
+        return f"PMT(filepath={self._filepath!r}, loaded={loaded})"
 
     @property
     def pam_time(self):
