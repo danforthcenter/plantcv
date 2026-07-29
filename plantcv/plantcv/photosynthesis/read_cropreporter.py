@@ -180,7 +180,7 @@ class GFP:
         gfp.attrs["shutter"] = float(self._metadata.get("GfpShutter", self._metadata.get("GfpShutterFrames", "nan")))
         self._gfp = gfp
 
-        
+
 class RFP:
     """RFP dataset. Stores the file path at init; image data is loaded on first access."""
 
