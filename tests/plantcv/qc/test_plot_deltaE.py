@@ -57,4 +57,3 @@ def test_plot_deltaE_filepath(qc_test_data, tmpdir):
     cv2.imwrite(path_to_img, img)
     p = plot_deltaE(str(cache_dir))
     assert isinstance(p, alt.LayerChart)
-    
