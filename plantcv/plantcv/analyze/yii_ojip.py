@@ -43,22 +43,190 @@ def yii_ojip(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=Non
     ps_shape = (int(ps.metadata["ImageRows"]), int(ps.metadata["ImageCols"]))
     if labeled_mask.shape != ps_shape:
         fatal_error(f"Mask needs to have shape {ps_shape}")
+    
+    if not hasattr(ps, "pmt"):
+        frame_functions = {
+            "psl": _psl_calc_fqfm,
+            "psd": _psd_calc_fvfm
+        }
+        frame_properties = {
+            "psl": "ojip_light",
+            "psd": "ojip_dark"
+        }
+        frames = ["psl", "psd"]
+        yii_globals, yii_charts = _yii_single(ps, labeled_mask,
+                                              frame_functions, frame_properties,
+                                              frames, n_labels, auto_fm,
+                                              measurement_labels, labels)
+    else:
+        print("this isn't implemented yet")
+
+    return yii_globals, yii_charts
+
+
+def _yii_multi(ps, labeled_mask,
+                n_labels=1, auto_fm=False, measurement_labels=None, labels=None):
+    """Calculate and analyze PSII efficiency estimates from pam time fluorescence image data.
+
+    Parameters
+    ----------
+    ps                  = plantcv.plantcv.classes.PSII_data
+        Photosynthesis data as read by plantcv.plantcv.photosynthesis.read_cropreporter
+        Will analyze PMT (pam time) data.
+    labeled_mask        = numpy.ndarray,
+        Labeled mask of objects (32-bit).
+    n_labels            = int,
+        Total number expected individual objects (default = 1).
+    auto_fm             = boolean,
+        Automatically calculate the frame with maximum fluorescence per label, otherwise
+        use a fixed frame for all labels (default = False).
+    measurement_labels  = list,
+        labels for each measurement, modifies the variable name of observations recorded
+    labels              = list,
+        optional label parameter, modifies the variable name of observations recorded
+
+    Returns
+    -------
+    yii_global          = list of xarray.core.dataarray.DataArray,
+        DataArray of efficiency estimate values
+    yii_chart           = list of altair.vegalite.v4.api.FacetChart,
+        Histograms of efficiency estimate
+    """
+    # Follow similar logic to the single, but now there is only one frame that I might be interested in
+    # from that data:
+    # calculate Fv/Fm
+    # map calculation of fq'/fm'
+    # calculate Fv''/Fm'' if it exists
+    # profit
+    yii_charts = []
+    yii_globals = []
+
+    ps_da = ps.pmt.pam_time
+    # Validate that the input measurement_labels is the same length as the number of measurements in the DataArray
+    if (measurement_labels is not None) and (len(measurement_labels) != ps_da.coords['measurement'].shape[0]):
+        fatal_error('measurement_labels must be the same length as the number of measurements in the DataArray')
+    # Make an zeroed array of the same shape as the input DataArray
+    yii_global_fvfm = xr.zeros_like(ps_da, dtype=float)
+    yii_global_fqfm = xr.zeros_like(ps_da, dtype=float)
+    yii_global_fvfm_pp = xr.zeros_like(ps_da, dtype=float)
+    # Drop the frame_label coordinate
+    yii_global_fvfm = yii_global_fvfm[:, :, 0, :].drop_vars('frame_label')
+    yii_global_fqfm = yii_global_fqfm[:, :, 0, :].drop_vars('frame_label')
+    yii_global_fvfm_pp = yii_global_fvfm_pp[:, :, 0, :].drop_vars('frame_label')
+    # Make a copy of the labeled mask
+    mask_copy = np.copy(labeled_mask)
+    # If the labeled mask is a binary mask with values 0 and 255, convert to 0 and 1
+    if len(np.unique(mask_copy)) == 2 and np.max(mask_copy) == 255:
+        mask_copy = np.where(mask_copy == 255, 1, 0).astype(np.uint8)
+    # Iterate over the label values 1 to n_labels
+    for i in range(1, n_labels + 1):
+        # Create a binary submask for each label
+        submask = np.where(mask_copy == i, 255, 0).astype(np.uint8)
+        # Expand the submask to the same shape as the input DataArray
+        submask = submask[..., None, None]
+        # If auto_fm is True, reassign frame labels to choose the best Fm or Fm' for each labeled region
+        if auto_fm:
+            ps_da = reassign_frame_labels(ps_da=ps_da, mask=submask.squeeze().squeeze())
+        # Mask the input DataArray with the submask
+        yii_masked = ps_da.astype('float').where(submask > 0, other=np.nan)
+
+        # Calculate Fv/Fm
+        yii_fvfm = _psd_calc_fvfm(yii_masked)
+        yii_fvfm = yii_fvfm.drop_vars('frame_label')
+        yii_fvfm = yii_fvfm.fillna(0)
+        yii_global_fvfm = yii_global_fvfm + yii_fvfm
+        _add_observations( # NOTE need to update with label for variable
+                yii_da=yii_lbl,
+                measurements=ps_da.measurement.values,
+                label=f"{labels[i - 1]}_{i}",
+                measurement_labels=measurement_labels)
+
+        # Calculate Fq'/Fm' series
+        yii_fqfm = _psl_calc_fqfm(yii_masked)
+        yii_fqfm = yii_fqfm.drop_vars('frame_label')
+        yii_fqfm = yii_fqfm.fillna(0)
+        yii_global_fqfm = yii_global_fqfm + yii_fvfm
+        _add_observations( # NOTE need to update with label for variable
+                yii_da=yii_lbl,
+                measurements=ps_da.measurement.values,
+                label=f"{labels[i - 1]}_{i}",
+                measurement_labels=measurement_labels)
+
+        # Calculate Fv''/Fm'' if exists
+        if yii_masked.frame_label.str.contains("pp").any():
+            yii_fvfm_pp = _psd_calc_fvfm_double_prime(yii_masked)
+            yii_fvfm_pp = yii_fvfm_pp.drop_vars('frame_label')
+            yii_fvfm_pp = yii_fvfm_pp.fillna(0)
+            yii_global_fvfm_pp = yii_global_fvfm_pp + yii_fvfm_pp
+            _add_observations( # NOTE need to update with label for variable
+                yii_da=yii_lbl,
+                measurements=ps_da.measurement.values,
+                label=f"{labels[i - 1]}_{i}",
+                measurement_labels=measurement_labels)
+
+        # NOTE not sure yet how I want to handle the plotting
+        # Could keep it at the end and use a loop, could mix it throughout and do
+        # everything fully in series?
+
+        # Convert the labeled mask to a binary mask
+        bin_mask = np.where(labeled_mask > 0, 255, 0)
+        # Expand the binary mask to the same shape as the YII DataArray
+        bin_mask = bin_mask[..., None]
+        # Set the background values to NaN
+        yii_global = yii_global.where(bin_mask > 0, other=np.nan)
+        # drop coords identifying frames if they exist
+        res = [i for i in list(yii_global.coords) if 'frame' in i]
+        yii_global = yii_global.drop_vars(res)  # does not fail if res is []
+        # Create a ridgeline plot of the YII values
+        yii_chart = _ridgeline_plots(measurements=ps_da.measurement.values, measurement_labels=measurement_labels)
+        yii_charts.append(yii_chart)
+
+    return yii_globals, yii_charts
+
+
+def _yii_single(ps, labeled_mask,
+                frame_functions, frame_properties, frames,
+                n_labels=1, auto_fm=False, measurement_labels=None, labels=None):
+    """Calculate and analyze PSII efficiency estimates from fluorescence image data.
+
+    Parameters
+    ----------
+    ps                  = plantcv.plantcv.classes.PSII_data
+        Photosynthesis data as read by plantcv.plantcv.photosynthesis.read_cropreporter
+        Will analyze PSD (photosynthesis/ojip dark) and PSL (photosynthesis/ojip light)
+        if present.
+    labeled_mask        = numpy.ndarray,
+        Labeled mask of objects (32-bit).
+    frame_functions     = dict
+        Dictionary of helper functions named for the frame they are made to work with
+    frame_properties    = dict
+        Dictionary of property names for frames to access xarray/data objects
+    frames              = list
+        list of frames to iterate over
+    n_labels            = int,
+        Total number expected individual objects (default = 1).
+    auto_fm             = boolean,
+        Automatically calculate the frame with maximum fluorescence per label, otherwise
+        use a fixed frame for all labels (default = False).
+    measurement_labels  = list,
+        labels for each measurement, modifies the variable name of observations recorded
+    labels              = list,
+        optional label parameter, modifies the variable name of observations recorded
+
+    Returns
+    -------
+    yii_global          = list of xarray.core.dataarray.DataArray,
+        DataArray of efficiency estimate values
+    yii_chart           = list of altair.vegalite.v4.api.FacetChart,
+        Histograms of efficiency estimate
+    """
     # Validate that ps has the right frames with information in them
     _validate_psii_yii_frames(ps)
 
     yii_charts = []
     yii_globals = []
 
-    frame_functions = {
-        "psl": _psl_calc_fqfm,
-        "psd": _psd_calc_fvfm
-    }
-    frame_properties = {
-        "psl": "ojip_light",
-        "psd": "ojip_dark"
-    }
-
-    for frame in ["psl", "psd"]:
+    for frame in frames:
         if getattr(ps, frame) is not None:
             ps_da_loader = getattr(ps, frame)
             ps_da = getattr(ps_da_loader, frame_properties.get(frame))
@@ -124,7 +292,7 @@ def yii_ojip(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=Non
 def _validate_psii_yii_frames(ps):
     """Helper to validate psii_data object has yii frames with information"""
     if not (hasattr(ps, "psl") or hasattr(ps, "psd")) or (ps.psl is None and ps.psd is None):
-        fatal_error("Unsupported DataArray type, psl or psd frames are required")
+        fatal_error("Unsupported DataArray type, pmt or psl and/or psd frames are required")
 
 
 def _psl_calc_fqfm(yii_masked):
@@ -137,6 +305,13 @@ def _psd_calc_fvfm(yii_masked):
     """Helper to calculate fv/fm from psd array"""
     yii_lbl = (yii_masked.sel(frame_label='Fm') -
                yii_masked.sel(frame_label='F0')) / yii_masked.sel(frame_label='Fm')
+    return yii_lbl
+
+
+def _psd_calc_fvfm_double_prime(yii_masked):
+    """Helper to calculate fv/fm from psd array"""
+    yii_lbl = (yii_masked.sel(frame_label='Fmpp') -
+               yii_masked.sel(frame_label='F0pp')) / yii_masked.sel(frame_label='Fmpp')
     return yii_lbl
 
 
