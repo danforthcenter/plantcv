@@ -22,7 +22,7 @@ PSII_data instance containing [xarray DataArrays](http://xarray.pydata.org/en/st
       labeled according to the metadata in .INF. The default measurement label is 't1'. These measurements are also accessible in the `ojip_light` attribute
 	  if `psl` or `npq` data is available.
 	- Measurements from PAM light and dark images are stored in the `pml` and `pmd` attributes, which have attributes `pam_light` and `pam_dark` containing xarrays.
-    - Time-resolved PAM fluorescence measurements are stored in the attribute `pam_time`. Frames F0, Fm, Fp, Fmp, F0pp, and Fmpp are
+    - Time-resolved PAM fluorescence measurements are stored in the attribute `pmt` which has an attribute `pam_time` containing an xarray. Frames F0, Fm, Fp, Fmp, F0pp, and Fmpp are
       labeled according to the metadata in .INF, with measurement labels starting at 't0' (e.g. t0, t1, t2, ...).
     - Measurements from chlorophyll fluorescence are stored in the attribute `chl` and include a chlorophyll fluorescence frame (Chl) stored as NumPy array/ndarray access as `ps.chl.chlorophyll`. The Fdark frame, if collected, is not stored.
     - Measurements from color are stored in the attribute `clr` and include a color image frame (CLR) stored as NumPy array/ndarray access as `ps.clr.color`.
