@@ -445,6 +445,7 @@ class PMT:
         return self._pam_time
 
     def _load(self):
+        """Load the pam time frames from the .DAT file."""
         img_cube, _, _ = _read_dat_file(
             dataset="PMT",
             filename=str(self._filepath),
