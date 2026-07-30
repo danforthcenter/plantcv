@@ -240,25 +240,27 @@ def test_read_cropreporter_pmt_only_9_labels(photosynthesis_test_data, tmpdir):
     fluor_filename = os.path.join(cache_dir, "HDR_E0001P0007N0001_GCU24100090_20260226.INF")
     ps = read_cropreporter(filename=fluor_filename)
     assert isinstance(ps, PSII_data)
-    assert ps.pam_time is not None
+    assert ps.pmt.pam_time is not None
+    assert ps.pmt
+    assert "PMT" in repr(ps.pmt)
     # Check that dimensions include x, y, frame_label, and measurement
-    assert "frame_label" in ps.pam_time.coords
-    assert "measurement" in ps.pam_time.coords
+    assert "frame_label" in ps.pmt.pam_time.coords
+    assert "measurement" in ps.pmt.pam_time.coords
 
     # Verify the shape (x, y, 9 labels, N measurements)
     # The 9 or 13 comes from 'frame_labels' list in read_cropreporter.py, and depends on the presence of second dark adaptation
-    num_labels = len(ps.pam_time.frame_label)
+    num_labels = len(ps.pmt.pam_time.frame_label)
     assert num_labels == 9
 
     # Check that at least one measurement label was created (t0, t1...)
-    assert "t0" in ps.pam_time.measurement.values
+    assert "t0" in ps.pmt.pam_time.measurement.values
 
     # Access a value to ensure the loops actually ran
     # This forces the test to "touch" the data assigned inside the loops
-    assert ps.pam_time.sel(frame_label="Fdark", measurement="t0").values.any()
+    assert ps.pmt.pam_time.sel(frame_label="Fdark", measurement="t0").values.any()
 
     # Verify the F0p (the very last line of your function)
-    assert "F0p" in ps.pam_time.frame_label.values
+    assert "F0p" in ps.pmt.pam_time.frame_label.values
 
 
 def test_read_cropreporter_pmt_only_13_labels(photosynthesis_test_data, tmpdir, monkeypatch):
@@ -288,22 +290,24 @@ def test_read_cropreporter_pmt_only_13_labels(photosynthesis_test_data, tmpdir, 
 
     ps = read_cropreporter(filename=inf_dest)
     assert isinstance(ps, PSII_data)
-    assert ps.pam_time is not None
+    assert ps.pmt.pam_time is not None
+    assert ps.pmt
+    assert "PMT" in repr(ps.pmt)
     # Check that dimensions include x, y, frame_label, and measurement
-    assert "frame_label" in ps.pam_time.coords
-    assert "measurement" in ps.pam_time.coords
+    assert "frame_label" in ps.pmt.pam_time.coords
+    assert "measurement" in ps.pmt.pam_time.coords
 
     # Verify the shape (x, y, 13 labels, N measurements)
     # The 9 or 13 comes from 'frame_labels' list in read_cropreporter.py, and depends on the presence of second dark adaptation
-    num_labels = len(ps.pam_time.frame_label)
+    num_labels = len(ps.pmt.pam_time.frame_label)
     assert num_labels == 13
 
     # Check that at least one measurement label was created (t0, t1...)
-    assert "t0" in ps.pam_time.measurement.values
+    assert "t0" in ps.pmt.pam_time.measurement.values
 
     # Access a value to ensure the loops actually ran
     # This forces the test to "touch" the data assigned inside the loops
-    assert ps.pam_time.sel(frame_label="Fdark", measurement="t0").values.any()
+    assert ps.pmt.pam_time.sel(frame_label="Fdark", measurement="t0").values.any()
 
     # Verify the F0p (the very last line of your function)
-    assert "F0p" in ps.pam_time.frame_label.values
+    assert "F0p" in ps.pmt.pam_time.frame_label.values
