@@ -60,14 +60,13 @@ def yii(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, la
                                               measurement_labels, labels)
     else:
         yii_globals, yii_charts = _yii_multi(ps, labeled_mask,
-                                             n_labels, auto_fm,
-                                             measurement_labels, labels)
+                                             n_labels, measurement_labels, labels)
 
     return yii_globals, yii_charts
 
 
 def _yii_multi(ps, labeled_mask,
-                n_labels=1, auto_fm=False, measurement_labels=None, labels=None):
+                n_labels=1, measurement_labels=None, labels=None):
     """Calculate and analyze PSII efficiency estimates from pam time fluorescence image data.
 
     Parameters
@@ -79,9 +78,6 @@ def _yii_multi(ps, labeled_mask,
         Labeled mask of objects (32-bit).
     n_labels            = int,
         Total number expected individual objects (default = 1).
-    auto_fm             = boolean,
-        Automatically calculate the frame with maximum fluorescence per label, otherwise
-        use a fixed frame for all labels (default = False).
     measurement_labels  = list,
         labels for each measurement, modifies the variable name of observations recorded
     labels              = list,
