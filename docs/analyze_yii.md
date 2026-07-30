@@ -9,12 +9,12 @@ The photosynthesis subpackage is dependent on a PSII_data instance file structur
 **returns** list of YII DataArray, list of YII histograms (one for each of the `psd` or `psl` arrays)
 
 - **Parameters:**
-    - ps - PSII_data instance (from [read_cropreporter](photosynthesis_read_cropreporter.md)) containing `psd` and/or `psl` data.
-    Can either have a pair of frames F0, Fm or pair(s) of Fp, Fmp.
+    - ps - PSII_data instance (from [read_cropreporter](photosynthesis_read_cropreporter.md)) containing `psd` and/or `psl` data or `pmt` (PAM time) data.
+    Can either have a pair of frames F0, Fm or pair(s) of Fp, Fmp in the case of `psd`/`psl` data or F0, Fm, Fp, Fmp, Fpp, Fmpp, etc frames in `pmt` data.
     - labeled_mask - Labeled mask of objects (32-bit).
     - n_labels - Total number expected individual objects (default = 1).
-    - auto_fm - Automatically calculate the frame with maximum fluorescence per label, otherwise use a fixed frame for all labels (default = False).
-    - measurement_labels - list of label(s) for each measurement, modifies the default variable names of observations. must have same length as number of measurements in ps_da
+    - auto_fm - Automatically calculate the frame with maximum fluorescence per label, otherwise use a fixed frame for all labels (default = False). This is not used for PAM time data.
+    - measurement_labels - list of label(s) for each measurement, modifies the default variable names of observations. must have same length as number of measurements in the frame of ps being used.
     - label - Optional label parameter, modifies the variable name of observations recorded. Can be a prefix or list (default = pcv.params.sample_label).
 - **Context:**
     - Used to extract Fv/Fm, Fv'/Fm' or Fq'/Fm' per identified plant pixel.
