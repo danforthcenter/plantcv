@@ -226,29 +226,48 @@ class TestData:
 
         # set specific labels for xarray for dark and light adapted
         if var == 'ojip_dark':
+            d = np.dstack([f0, f1, f2, f3])[..., None]
             frame_labels = ['Fdark', 'F0', 'Fm', '3']
+            frame_nums = [0, 1, 2, 3]
             measurements = ['t0']
             keyname = "psd"
             other_keyname = "psl"
         elif var == 'ojip_light':
+            d = np.dstack([f0, f1, f2, f3])[..., None]
             frame_labels = ['Fdark', 'Fp', '2', 'Fmp']
+            frame_nums = [0, 1, 2, 3]
             measurements = ['t1']
             keyname = "psl"
             other_keyname = "psd"
         elif var == "ojip_bad":
+            d = np.dstack([f0, f1, f2, f3])[..., None]
             frame_labels = ['Fdark', 'Fp', '2', 'Fmp']
+            frame_nums = [0, 1, 2, 3]
             measurements = ['t1']
             keyname = "bad"
             other_keyname = "also_bad"
         elif var == "ojip_both":
             ps = self._make_dummy_npq(f0, f1, f2, f3)
             return ps
+        elif var == "pam_time":
+            d = np.dstack([f0, f1, f2, f3,
+                           f3, f3, f3, f3,
+                           f3, f3, f3, f3])[..., None]
+            frame_labels = ["Fdark", "F0", "Fm", "Fdarksat",
+                            "Flight", "Fp", "Fmp", "Flightsat",
+                            "Fdarkpp", "F0pp", "Fmpp", "Fdarksatpp"]
+            frame_nums = [i for i in range(12)]
+            measurements = [f"t{i}" for i in range(4)]
+            keyname = "pmt"
+            other_keyname = "chl"
 
         # Create DataArray
-        da = xr.DataArray(data=np.dstack([f0, f1, f2, f3])[..., None],
+        da = xr.DataArray(data=d,
                           dims=('x', 'y', 'frame_label', 'measurement'),
-                          coords={'frame_label': frame_labels, 'frame_num': ('frame_label', [0, 1, 2, 3]),
-                                  'measurement': measurements}, name=var)
+                          coords={'frame_label': frame_labels,
+                                  'frame_num': ('frame_label', frame_nums),
+                                  'measurement': measurements},
+                          name=var)
         sub_ps = type("subpsdata", (object,), {
             var: da
         })
