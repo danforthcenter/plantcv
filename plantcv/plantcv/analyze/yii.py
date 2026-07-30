@@ -44,16 +44,20 @@ def yii(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, la
     if labeled_mask.shape != ps_shape:
         fatal_error(f"Mask needs to have shape {ps_shape}")
 
-    if not hasattr(ps, "pmt"):
+    if getattr(ps, "pmt") is None:
         frame_functions = {
             "psl": _psl_calc_fqfm,
-            "psd": _psd_calc_fvfm
+            "psd": _psd_calc_fvfm,
+            "pml": _psl_calc_fqfm,
+            "pmd": _psd_calc_fvfm
         }
         frame_properties = {
             "psl": "ojip_light",
-            "psd": "ojip_dark"
+            "psd": "ojip_dark",
+            "pml": "pam_light",
+            "pmd": "pam_dark"
         }
-        frames = ["psl", "psd"]
+        frames = ["psl", "psd", "pml", "pmd"]
         yii_globals, yii_charts = _yii_single(ps, labeled_mask,
                                               frame_functions, frame_properties,
                                               frames, n_labels, auto_fm,
