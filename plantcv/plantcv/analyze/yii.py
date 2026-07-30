@@ -44,7 +44,7 @@ def yii(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, la
     if labeled_mask.shape != ps_shape:
         fatal_error(f"Mask needs to have shape {ps_shape}")
 
-    if getattr(ps, "pmt") is None:
+    if getattr(ps, "pmt", None) is None:
         frame_functions = {
             "psl": _psl_calc_fqfm,
             "psd": _psd_calc_fvfm,
