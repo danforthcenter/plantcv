@@ -207,6 +207,8 @@ class TestData:
             },
             "psl": sub_psl,
             "psd": sub_psd,
+            "pml": None,
+            "pmd": None,
             "ojip_dark": ojip_dark,
             "ojip_light": ojip_light
         })
@@ -224,6 +226,8 @@ class TestData:
         f3 = self.create_ps_mask()
         f3[5, 5] = 8
 
+        atts = ["APH", "CHL", "CLR", "PMD", "PML", "PMT", "PSD", "PSL", "SPC", "NPQ", "GFP", "RFP"]
+
         # set specific labels for xarray for dark and light adapted
         if var == 'ojip_dark':
             d = np.dstack([f0, f1, f2, f3])[..., None]
@@ -231,21 +235,19 @@ class TestData:
             frame_nums = [0, 1, 2, 3]
             measurements = ['t0']
             keyname = "psd"
-            other_keyname = "psl"
         elif var == 'ojip_light':
             d = np.dstack([f0, f1, f2, f3])[..., None]
             frame_labels = ['Fdark', 'Fp', '2', 'Fmp']
             frame_nums = [0, 1, 2, 3]
             measurements = ['t1']
             keyname = "psl"
-            other_keyname = "psd"
         elif var == "ojip_bad":
             d = np.dstack([f0, f1, f2, f3])[..., None]
             frame_labels = ['Fdark', 'Fp', '2', 'Fmp']
             frame_nums = [0, 1, 2, 3]
             measurements = ['t1']
             keyname = "bad"
-            other_keyname = "also_bad"
+            atts = ["pmt", "worse", "terrible", "nogood"]
         elif var == "ojip_both":
             ps = self._make_dummy_npq(f0, f1, f2, f3)
             return ps
@@ -259,7 +261,6 @@ class TestData:
             frame_nums = [i for i in range(12)]
             measurements = ["t1"]
             keyname = "pmt"
-            other_keyname = "chl"
 
         # Create DataArray
         da = xr.DataArray(data=d,
@@ -277,9 +278,12 @@ class TestData:
                 "ImageRows": 10,
                 "ImageCols": 10
             },
-            keyname: sub_ps,
-            other_keyname: None
+            keyname: sub_ps
         })
+        # set other attributes to None
+        for att in atts:
+            if not hasattr(ps, att.lower()):
+                setattr(ps, att.lower(), None)
         return ps
 
     @staticmethod
@@ -365,6 +369,9 @@ class TestData:
                     },
                     keyname: sub_ps,
                     other_keyname: None,
+                    "pmt": None,
+                    "pml": None,
+                    "pmd": None,
                     var: ps_dad
                 })
                 return ps
@@ -408,6 +415,9 @@ class TestData:
                     },
                     keyname: sub_ps,
                     other_keyname: None,
+                    "pmt": None,
+                    "pml": None,
+                    "pmd": None,
                     var: ps_dal
                 })
                 return ps
@@ -428,7 +438,10 @@ class TestData:
                 "psd": sub_psd,
                 "psl": sub_psl,
                 "ojip_light": ps_dal,
-                "ojip_dark": ps_dad
+                "ojip_dark": ps_dad,
+                "pmt": None,
+                "pml": None,
+                "pmd": None
             })
             return ps
 
