@@ -43,7 +43,7 @@ def yii(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, la
     ps_shape = (int(ps.metadata["ImageRows"]), int(ps.metadata["ImageCols"]))
     if labeled_mask.shape != ps_shape:
         fatal_error(f"Mask needs to have shape {ps_shape}")
-    
+
     if not hasattr(ps, "pmt"):
         frame_functions = {
             "psl": _psl_calc_fqfm,
@@ -66,7 +66,7 @@ def yii(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, la
 
 
 def _yii_multi(ps, labeled_mask,
-                n_labels=1, measurement_labels=None, labels=None):
+               n_labels=1, measurement_labels=None, labels=None):
     """Calculate and analyze PSII efficiency estimates from pam time fluorescence image data.
 
     Parameters
@@ -150,6 +150,7 @@ def _yii_multi(ps, labeled_mask,
             measurement_labels=measurement_labels,
             yii_trait="fvfm")
         yii_charts_fvfm.append(yii_chart_fvfm)
+        yii_globals_fvfm.append(yii_global_fvfm)
 
         # Calculate Fq'/Fm' series
         yii_fqfm = _psl_calc_fqfm(yii_masked)
@@ -174,6 +175,7 @@ def _yii_multi(ps, labeled_mask,
             measurement_labels=measurement_labels,
             yii_trait="fqfm")
         yii_charts_fqfm.append(yii_chart_fqfm)
+        yii_globals_fqfm.append(yii_global_fqfm)
 
         # Calculate Fv''/Fm'' if exists
         if yii_masked.frame_label.str.contains("pp").any():
@@ -198,7 +200,8 @@ def _yii_multi(ps, labeled_mask,
                 measurements=ps_da.measurement.values,
                 measurement_labels=measurement_labels,
                 yii_trait="fvfmpp")
-            yii_charts_fqfm.append(yii_chart_fqfm)
+            yii_charts_fvfm_pp.append(yii_chart_fvfm_pp)
+            yii_globals_fvfm_pp.append(yii_global_fvfm_pp)
 
     yii_globals = [yii_global_fvfm, yii_global_fqfm]
     yii_charts = [yii_charts_fvfm, yii_charts_fqfm]
@@ -410,19 +413,19 @@ def _add_observations(yii_da, measurements, measurement_labels, label, yii_trait
             mlabel = measurement_labels[n]
 
         # mean value
-        var = "_".join(s.strip() for s in ["yii", "mean", mlabel, yii_trait] if s and s.strip())
+        var = "_".join(s.strip() for s in ["yii", "mean", mlabel, yii_trait] if s.strip())
         outputs.add_observation(sample=label, variable=var,
                                 trait=f"mean yii{yii_trait}value",
                                 method='plantcv.plantcv.analyze.yii', scale='none', datatype=float,
                                 value=float(yii_mean[n]), label='none')
         # median value
-        var = "_".join(s.strip() for s in ["yii", "median", mlabel, yii_trait] if s and s.strip())
+        var = "_".join(s.strip() for s in ["yii", "median", mlabel, yii_trait] if s.strip())
         outputs.add_observation(sample=label, variable=var,
                                 trait=f"median yii{yii_trait}value",
                                 method='plantcv.plantcv.analyze.yii', scale='none', datatype=float,
                                 value=float(yii_median[n]), label='none')
         # max value
-        var = "_".join(s.strip() for s in ["yii", "max", mlabel, yii_trait] if s and s.strip())
+        var = "_".join(s.strip() for s in ["yii", "max", mlabel, yii_trait] if s.strip())
         outputs.add_observation(sample=label, variable=var,
                                 trait=f"peak yii{yii_trait}value",
                                 method='plantcv.plantcv.analyze.yii', scale='none', datatype=float,
@@ -431,13 +434,13 @@ def _add_observations(yii_da, measurements, measurement_labels, label, yii_trait
         hist_df, yii_mode = _create_histogram(yii_da.isel({'measurement': n}).values, mlabel)
 
         # mode value
-        var = "_".join(s.strip() for s in ["yii", "mode", mlabel, yii_trait] if s and s.strip())
+        var = "_".join(s.strip() for s in ["yii", "mode", mlabel, yii_trait] if s.strip())
         outputs.add_observation(sample=label, variable=var,
                                 trait=f"mode yii{yii_trait}value",
                                 method='plantcv.plantcv.analyze.yii', scale='none', datatype=float,
                                 value=float(yii_mode), label='none')
         # hist frequencies
-        var = "_".join(s.strip() for s in ["yii", "hist", mlabel, yii_trait] if s and s.strip())
+        var = "_".join(s.strip() for s in ["yii", "hist", mlabel, yii_trait] if s.strip())
         outputs.add_observation(sample=label, variable=var,
                                 trait=f"yii{yii_trait}frequencies",
                                 method='plantcv.plantcv.analyze.yii', scale='none', datatype=list,
