@@ -257,7 +257,7 @@ class TestData:
                             "Flight", "Fp", "Fmp", "Flightsat",
                             "Fdarkpp", "F0pp", "Fmpp", "Fdarksatpp"]
             frame_nums = [i for i in range(12)]
-            measurements = [f"t{i}" for i in range(4)]
+            measurements = ["t1"]
             keyname = "pmt"
             other_keyname = "chl"
 

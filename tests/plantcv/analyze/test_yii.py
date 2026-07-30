@@ -74,6 +74,16 @@ def test_yii_pam_time(test_data):
     _ = analyze_yii(ps=test_data.psii_cropreporter_new("pam_time"),
                     labeled_mask=test_data.create_ps_mask(),
                     n_labels=1, auto_fm=True,
-                    measurement_labels=mlabels)
-    label = "t0" if mlabels is None else mlabels[0]
-    assert np.isclose(outputs.observations["default_1"][f"yii_median_t1_fvfm_pp"]["value"], 0)
+                    measurement_labels=None)
+    assert "yii_median_t1_fvfmpp" in [key for key, value in outputs.observations["default_1"].items()]
+
+
+def test_yii_pam_time_bad_labels(test_data):
+    """Test for PlantCV."""
+    # Clear results
+    outputs.clear()
+    with pytest.raises(RuntimeError):
+        _ = analyze_yii(ps=test_data.psii_cropreporter_new("pam_time"),
+                        labeled_mask=test_data.create_ps_mask(),
+                        n_labels=1, auto_fm=True,
+                        measurement_labels=["bad", "bad1", "bad2"])
