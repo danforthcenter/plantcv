@@ -128,9 +128,6 @@ def _yii_multi(ps, labeled_mask,
         submask = np.where(mask_copy == i, 255, 0).astype(np.uint8)
         # Expand the submask to the same shape as the input DataArray
         submask = submask[..., None, None]
-        # If auto_fm is True, reassign frame labels to choose the best Fm or Fm' for each labeled region
-        #if auto_fm:
-        #    ps_da = reassign_frame_labels(ps_da=ps_da, mask=submask.squeeze().squeeze())
         # Mask the input DataArray with the submask
         yii_masked = ps_da.astype('float').where(submask > 0, other=np.nan)
 
