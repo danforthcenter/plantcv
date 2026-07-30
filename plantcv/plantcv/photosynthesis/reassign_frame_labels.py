@@ -30,13 +30,13 @@ def reassign_frame_labels(ps_da, mask):
     params.device += 1
 
     try:
-        if ps_da.name not in ["ojip_light", "ojip_dark"]:
-            fatal_error("You must provide a xarray DataArray with name ojip_light or ojip_dark")
+        if ps_da.name not in ["ojip_light", "ojip_dark", "pam_light", "pam_dark"]:
+            fatal_error("Error reassigning frame labels")
     except AttributeError:
         if isinstance(ps_da, PSII_data):
-            fatal_error("You need to provide the `ojip_dark` or `ojip_light` dataarray")
+            fatal_error("You need to provide the `[ojip|pam]_dark` or `[ojip|pam]_light` dataarray")
         else:
-            fatal_error("You must provide a xarray DataArray with name ojip_light or ojip_dark")
+            fatal_error("You must provide a xarray DataArray with name ojip_light, ojip_dark, pam_light, or pam_dark")
 
     if mask.shape != ps_da.shape[:2] or len(np.unique(mask)) > 2:
         fatal_error(f"Mask needs to be binary and have shape {ps_da.shape[:2]}")
@@ -51,6 +51,16 @@ def reassign_frame_labels(ps_da, mask):
         "ojip_dark": {
             "prime": "",
             "label": "PSD",
+            "F": "F0"
+        },
+        "pam_light": {
+            "prime": "p",
+            "label": "PML",
+            "F": "Fp"
+        },
+        "pam_dark": {
+            "prime": "",
+            "label": "PMD",
             "F": "F0"
         }
     }
