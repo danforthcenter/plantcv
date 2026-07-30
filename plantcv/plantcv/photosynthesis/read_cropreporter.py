@@ -149,7 +149,8 @@ class PSD:
 
     def __repr__(self):
         """String representation of the PSD dataset, indicating whether the data has been loaded."""
-        return f"PSD(filepath={self._filepath!r})"
+        loaded = self._ojip_dark is not None
+        return f"PSD(filepath={self._filepath!r}, loaded={loaded})"
 
     @property
     def ojip_dark(self):
@@ -212,7 +213,8 @@ class PSL:
 
     def __repr__(self):
         """String representation of the PSL dataset, indicating whether the data has been loaded."""
-        return f"PSL(filepath={self._filepath!r})"
+        loaded = self._ojip_light is not None
+        return f"PSL(filepath={self._filepath!r}, loaded={loaded})"
 
     @property
     def ojip_light(self):
@@ -276,7 +278,8 @@ class NPQ:
 
     def __repr__(self):
         """String representation of the NPQ dataset, indicating whether the data has been loaded."""
-        return f"NPQ(filepath={self._filepath!r})"
+        loaded = self._ojip_light is not None and self._ojip_dark is not None
+        return f"NPQ(filepath={self._filepath!r}, loaded={loaded})"
 
     @property
     def ojip_light(self):
@@ -323,6 +326,100 @@ class NPQ:
                     'frame_num': ('frame_label', frame_nums[3:6]),
                     'measurement': ['t0']},
             name='ojip_light'
+        )
+
+
+class PMD:
+    """Class to hold a PMD dataset"""
+
+    def __init__(self, filepath, height, width, metadata):
+        """Initialize PMD dataset with file path and image dimensions."""
+        self._filepath = filepath
+        self._height = height
+        self._width = width
+        self._metadata = metadata
+        self._pam_dark = None
+
+    def __bool__(self):
+        """The existence of the PMD class is true."""
+        return True
+
+    def __repr__(self):
+        """String representation of the PMD dataset, indicating whether the data has been loaded."""
+        loaded = self._pam_dark is not None
+        return f"PMD(filepath={self._filepath!r}, loaded={loaded})"
+
+    @property
+    def pam_dark(self):
+        """Return the pam dark data"""
+        if self._pam_dark is None:
+            self._load()
+        return self._pam_dark
+
+    def _load(self):
+        """Load the pam dark frames from the .DAT file."""
+        img_cube, frame_labels, frame_nums = _read_dat_file(
+            dataset="PMD",
+            filename=str(self._filepath),
+            height=self._height,
+            width=self._width,
+        )
+
+        frame_labels = ["Fdark", "F0", "Fm", "Fdarksat"]
+        self._pam_dark = xr.DataArray(
+            data=img_cube[..., None],
+            dims=('x', 'y', 'frame_label', 'measurement'),
+            coords={'frame_label': frame_labels,
+                    'frame_num': ('frame_label', frame_nums),
+                    'measurement': ['t0']},
+            name='pam_dark'
+        )
+
+
+class PML:
+    """Class to hold a PML dataset"""
+
+    def __init__(self, filepath, height, width, metadata):
+        """Initialize PML dataset with file path and image dimensions."""
+        self._filepath = filepath
+        self._height = height
+        self._width = width
+        self._metadata = metadata
+        self._pam_light = None
+
+    def __bool__(self):
+        """The existence of the PML class is true."""
+        return True
+
+    def __repr__(self):
+        """String representation of the PML dataset, indicating whether the data has been loaded."""
+        loaded = self._pam_light is not None
+        return f"PML(filepath={self._filepath!r}, loaded={loaded})"
+
+    @property
+    def pam_light(self):
+        """Return the pam light data"""
+        if self._pam_light is None:
+            self._load()
+        return self._pam_light
+
+    def _load(self):
+        """Load the pam light frames from the .DAT file."""
+        img_cube, frame_labels, frame_nums = _read_dat_file(
+            dataset="PML",
+            filename=str(self._filepath),
+            height=self._height,
+            width=self._width,
+        )
+
+        frame_labels = ["Fdark", "F0", "Fm", "Fdarksat"]
+        self._pam_light = xr.DataArray(
+            data=img_cube[..., None],
+            dims=('x', 'y', 'frame_label', 'measurement'),
+            coords={'frame_label': frame_labels,
+                    'frame_num': ('frame_label', frame_nums),
+                    'measurement': ['t0']},
+            name='pam_light'
         )
 
 
@@ -373,7 +470,11 @@ def read_cropreporter(filename):
         # OJIP light data
         "PSL": lambda fp: PSL(filepath=fp, height=height, width=width, metadata=ps.metadata),
         # NPQ data
-        "NPQ": lambda fp: NPQ(filepath=fp, height=height, width=width, metadata=ps.metadata)
+        "NPQ": lambda fp: NPQ(filepath=fp, height=height, width=width, metadata=ps.metadata),
+        # PMD data
+        "PMD": lambda fp: PMD(filepath=fp, height=height, width=width, metadata=ps.metadata),
+        # PML data
+        "PML": lambda fp: PML(filepath=fp, height=height, width=width, metadata=ps.metadata)
     }
 
     # Process datasets
@@ -392,12 +493,6 @@ def read_cropreporter(filename):
             if dataset in ["PSD", "NPQ"]:
                 setattr(ps, "ojip_dark", key)
 
-    # Dark-adapted PAM measurements
-    _process_pmd_data(ps=ps, metadata=metadata_dict)
-
-    # Light-adapted PAM measurements
-    _process_pml_data(ps=ps, metadata=metadata_dict)
-
     # PAM time (dark, light, and second dark adapted) measurements
     _process_pmt_data(ps=ps, metadata=metadata_dict)
 
@@ -411,74 +506,6 @@ def read_cropreporter(filename):
     _process_rfp_data(ps=ps, metadata=metadata_dict)
 
     return ps
-
-
-def _process_pmd_data(ps, metadata):
-    """
-    Create an xarray DataArray for a PMD dataset.
-
-    Inputs:
-        ps       = PSII_data instance
-        metadata = INF file metadata dictionary
-
-    :param ps: plantcv.plantcv.classes.PSII_data
-    :param metadata: dict
-    """
-    bin_filepath = _dat_filepath(dataset="PMD", datapath=ps.datapath, filename=ps.filename)
-    if os.path.exists(bin_filepath):
-        img_cube, frame_labels, frame_nums = _read_dat_file(dataset="PMD", filename=bin_filepath,
-                                                            height=int(metadata["ImageRows"]),
-                                                            width=int(metadata["ImageCols"]))
-        frame_labels = ["Fdark", "F0", "Fm", "Fdarksat"]
-        pmd = xr.DataArray(
-            data=img_cube[..., None],
-            dims=('x', 'y', 'frame_label', 'measurement'),
-            coords={'frame_label': frame_labels,
-                    'frame_num': ('frame_label', frame_nums),
-                    'measurement': ['t0']},
-            name='pam_dark'
-        )
-        pmd.attrs["long_name"] = "pam dark-adapted measurements"
-        ps.pam_dark = pmd
-
-        _debug(visual=ps.pam_dark.squeeze('measurement', drop=True),
-               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PMD-frames.png"),
-               col='frame_label',
-               col_wrap=int(np.ceil(ps.pam_dark.frame_label.size / 4)))
-
-
-def _process_pml_data(ps, metadata):
-    """
-    Create an xarray DataArray for a PML dataset.
-
-    Inputs:
-        ps       = PSII_data instance
-        metadata = INF file metadata dictionary
-
-    :param ps: plantcv.plantcv.classes.PSII_data
-    :param metadata: dict
-    """
-    bin_filepath = _dat_filepath(dataset="PML", datapath=ps.datapath, filename=ps.filename)
-    if os.path.exists(bin_filepath):
-        img_cube, frame_labels, frame_nums = _read_dat_file(dataset="PML", filename=bin_filepath,
-                                                            height=int(metadata["ImageRows"]),
-                                                            width=int(metadata["ImageCols"]))
-        frame_labels = ["Flight", "Fp", "Fmp", "Flightsat"]
-        pml = xr.DataArray(
-            data=img_cube[..., None],
-            dims=('x', 'y', 'frame_label', 'measurement'),
-            coords={'frame_label': frame_labels,
-                    'frame_num': ('frame_label', frame_nums),
-                    'measurement': ['t0']},
-            name='pam_light'
-        )
-        pml.attrs["long_name"] = "pam light-adapted measurements"
-        ps.pam_light = pml
-
-        _debug(visual=ps.pam_light.squeeze('measurement', drop=True),
-               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PML-frames.png"),
-               col='frame_label',
-               col_wrap=int(np.ceil(ps.pam_light.frame_label.size / 4)))
 
 
 def _process_pmt_data(ps, metadata):

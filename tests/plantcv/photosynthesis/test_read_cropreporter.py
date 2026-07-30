@@ -54,11 +54,12 @@ def test_read_cropreporter_pmd(photosynthesis_test_data, tmpdir):
     pmd_dat = pmd_dat.replace("INF", "DAT")
     shutil.copyfile(pmd_dat, os.path.join(cache_dir, "PMD_dark_light.DAT"))
     filename = os.path.join(cache_dir, "HDR_dark_light.INF")
-
     # Run the test
     ps = read_cropreporter(filename=filename)
     assert isinstance(ps, PSII_data)
-    assert ps.pam_dark.shape == (1500, 2048, 4, 1)
+    assert ps.pmd.pam_dark.shape == (1500, 2048, 4, 1)
+    assert ps.pmd
+    assert "PMD" in repr(ps.pmd)
 
 
 def test_read_cropreporter_pml(photosynthesis_test_data, tmpdir):
@@ -71,11 +72,12 @@ def test_read_cropreporter_pml(photosynthesis_test_data, tmpdir):
     pml_dat = pml_dat.replace("INF", "DAT")
     shutil.copyfile(pml_dat, os.path.join(cache_dir, "PML_dark_light.DAT"))
     filename = os.path.join(cache_dir, "HDR_dark_light.INF")
-
     # Run the test
     ps = read_cropreporter(filename=filename)
     assert isinstance(ps, PSII_data)
-    assert ps.pam_light.shape == (1500, 2048, 4, 1)
+    assert ps.pml.pam_light.shape == (1500, 2048, 4, 1)
+    assert ps.pml
+    assert "PML" in repr(ps.pml)
 
 
 def test_read_cropreporter_spc_only(photosynthesis_test_data, tmpdir):
