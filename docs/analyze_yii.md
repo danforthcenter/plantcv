@@ -4,7 +4,7 @@ Extract estimates of the efficiency (YII) of Photosystem II (PSII).
 
 The photosynthesis subpackage is dependent on a PSII_data instance file structure as created by photosynthesis.read_* files.
 
-**plantcv.analyze.yii_ojip**(*ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None*)
+**plantcv.analyze.yii**(*ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None*)
 
 **returns** list of YII DataArray, list of YII histograms (one for each of the `psd` or `psl` arrays)
 
@@ -47,7 +47,7 @@ pcv.params.sample_label = "plant"
 ps = pcv.photosynthesis.read_cropreporter(filename="mydata.inf")
 
 # Analyze Fv/Fm    
-fvfm, fvfm_hist = pcv.analyze.yii_ojip(ps_da=ps.ojip_dark, labeled_mask=kept_mask)
+fvfm, fvfm_hist = pcv.analyze.yii(ps_da=ps.ojip_dark, labeled_mask=kept_mask)
 
 # Access Fv/Fm median value
 fvfm_median = pcv.outputs.observations['plant_1']['yii_median_t0']['value']
@@ -79,7 +79,7 @@ pcv.params.debug = "plot"
 pcv.params.sample_label = "plant"
 
 # Analyze Fq'/Fm'    
-fqfm, fqfm_hist = pcv.analyze.yii_ojip(ps=ps.ojip_light, labeled_mask=kept_mask)
+fqfm, fqfm_hist = pcv.analyze.yii(ps=ps.ojip_light, labeled_mask=kept_mask)
 
 # Access Fq'/Fm' median value
 fqfm_median = pcv.outputs.observations['plant_1']["yii_median_t1"]['value']
@@ -103,4 +103,4 @@ fqfm.plot(col_wrap='measurement')
 The grayscale YII images can be used with the [pcv.visualize.pseudocolor](visualize_pseudocolor.md) function 
 which allows the user to pick a colormap for plotting.
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/analyze/yii_ojip.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/analyze/yii.py)

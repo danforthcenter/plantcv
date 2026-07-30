@@ -2,7 +2,7 @@
 import pytest
 import numpy as np
 from plantcv.plantcv import outputs
-from plantcv.plantcv.analyze import yii_ojip as analyze_yii
+from plantcv.plantcv.analyze import yii as analyze_yii
 
 
 @pytest.mark.parametrize("prot,mlabels,exp", [
@@ -66,3 +66,14 @@ def test_yii_wrong_num_labels(test_data):
         _ = analyze_yii(ps=test_data.psii_cropreporter_new('ojip_dark'),
                         labeled_mask=test_data.create_ps_mask(),
                         measurement_labels=None, label=["prefix", "prefix"])
+
+def test_yii_pam_time(test_data):
+    """Test for PlantCV."""
+    # Clear results
+    outputs.clear()
+    _ = analyze_yii(ps=test_data.psii_cropreporter_new("pam_time"),
+                    labeled_mask=test_data.create_ps_mask(),
+                    n_labels=1, auto_fm=True,
+                    measurement_labels=mlabels)
+    label = "t0" if mlabels is None else mlabels[0]
+    assert np.isclose(outputs.observations["default_1"][f"yii_median_t1_fvfm_pp"]["value"], 0)

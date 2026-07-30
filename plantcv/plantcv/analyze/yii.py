@@ -8,7 +8,7 @@ from plantcv.plantcv import params, outputs, fatal_error
 from plantcv.plantcv.photosynthesis import reassign_frame_labels
 
 
-def yii_ojip(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None):
+def yii(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None):
     """Calculate and analyze PSII efficiency estimates from fluorescence image data.
 
     Parameters
@@ -59,7 +59,9 @@ def yii_ojip(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=Non
                                               frames, n_labels, auto_fm,
                                               measurement_labels, labels)
     else:
-        print("this isn't implemented yet")
+        yii_globals, yii_charts = _yii_multi(ps, labeled_mask,
+                                             n_labels, auto_fm,
+                                             measurement_labels, labels)
 
     return yii_globals, yii_charts
 
@@ -92,14 +94,12 @@ def _yii_multi(ps, labeled_mask,
     yii_chart           = list of altair.vegalite.v4.api.FacetChart,
         Histograms of efficiency estimate
     """
-    # Follow similar logic to the single, but now there is only one frame that I might be interested in
-    # from that data:
-    # calculate Fv/Fm
-    # map calculation of fq'/fm'
-    # calculate Fv''/Fm'' if it exists
-    # profit
-    yii_charts = []
-    yii_globals = []
+    yii_charts_fvfm = []
+    yii_globals_fvfm = []
+    yii_charts_fqfm = []
+    yii_globals_fqfm = []
+    yii_charts_fvfm_pp = []
+    yii_globals_fvfm_pp = []
 
     ps_da = ps.pmt.pam_time
     # Validate that the input measurement_labels is the same length as the number of measurements in the DataArray
@@ -118,6 +118,10 @@ def _yii_multi(ps, labeled_mask,
     # If the labeled mask is a binary mask with values 0 and 255, convert to 0 and 1
     if len(np.unique(mask_copy)) == 2 and np.max(mask_copy) == 255:
         mask_copy = np.where(mask_copy == 255, 1, 0).astype(np.uint8)
+    # Convert the labeled mask to a binary mask
+    bin_mask = np.where(labeled_mask > 0, 255, 0)
+    # Expand the binary mask to the same shape as the YII DataArray
+    bin_mask = bin_mask[..., None]
     # Iterate over the label values 1 to n_labels
     for i in range(1, n_labels + 1):
         # Create a binary submask for each label
@@ -125,8 +129,8 @@ def _yii_multi(ps, labeled_mask,
         # Expand the submask to the same shape as the input DataArray
         submask = submask[..., None, None]
         # If auto_fm is True, reassign frame labels to choose the best Fm or Fm' for each labeled region
-        if auto_fm:
-            ps_da = reassign_frame_labels(ps_da=ps_da, mask=submask.squeeze().squeeze())
+        #if auto_fm:
+        #    ps_da = reassign_frame_labels(ps_da=ps_da, mask=submask.squeeze().squeeze())
         # Mask the input DataArray with the submask
         yii_masked = ps_da.astype('float').where(submask > 0, other=np.nan)
 
@@ -135,22 +139,48 @@ def _yii_multi(ps, labeled_mask,
         yii_fvfm = yii_fvfm.drop_vars('frame_label')
         yii_fvfm = yii_fvfm.fillna(0)
         yii_global_fvfm = yii_global_fvfm + yii_fvfm
-        _add_observations( # NOTE need to update with label for variable
-                yii_da=yii_lbl,
+        _add_observations(
+                yii_da=yii_fvfm,
                 measurements=ps_da.measurement.values,
                 label=f"{labels[i - 1]}_{i}",
-                measurement_labels=measurement_labels)
+                measurement_labels=measurement_labels,
+                yii_trait="fvfm"
+        )
+        # Set the background values to NaN
+        yii_global_fvfm = yii_global_fvfm.where(bin_mask > 0, other=np.nan)
+        # drop coords identifying frames if they exist
+        res = [i for i in list(yii_global_fvfm.coords) if 'frame' in i]
+        yii_global_fvfm = yii_global_fvfm.drop_vars(res)  # does not fail if res is []
+        # Create a ridgeline plot of the YII values
+        yii_chart_fvfm = _ridgeline_plots(
+            measurements=ps_da.measurement.values,
+            measurement_labels=measurement_labels,
+            yii_trait="fvfm")
+        yii_charts_fvfm.append(yii_chart_fvfm)
 
         # Calculate Fq'/Fm' series
         yii_fqfm = _psl_calc_fqfm(yii_masked)
         yii_fqfm = yii_fqfm.drop_vars('frame_label')
         yii_fqfm = yii_fqfm.fillna(0)
         yii_global_fqfm = yii_global_fqfm + yii_fvfm
-        _add_observations( # NOTE need to update with label for variable
-                yii_da=yii_lbl,
+        _add_observations(
+                yii_da=yii_fqfm,
                 measurements=ps_da.measurement.values,
                 label=f"{labels[i - 1]}_{i}",
-                measurement_labels=measurement_labels)
+                measurement_labels=measurement_labels,
+                yii_trait="fqfm"
+        )
+        # Set the background values to NaN
+        yii_global_fqfm = yii_global_fqfm.where(bin_mask > 0, other=np.nan)
+        # drop coords identifying frames if they exist
+        res = [i for i in list(yii_global_fqfm.coords) if 'frame' in i]
+        yii_global_fqfm = yii_global_fqfm.drop_vars(res)
+        # Create a ridgeline plot of the YII values
+        yii_chart_fqfm = _ridgeline_plots(
+            measurements=ps_da.measurement.values,
+            measurement_labels=measurement_labels,
+            yii_trait="fqfm")
+        yii_charts_fqfm.append(yii_chart_fqfm)
 
         # Calculate Fv''/Fm'' if exists
         if yii_masked.frame_label.str.contains("pp").any():
@@ -158,28 +188,30 @@ def _yii_multi(ps, labeled_mask,
             yii_fvfm_pp = yii_fvfm_pp.drop_vars('frame_label')
             yii_fvfm_pp = yii_fvfm_pp.fillna(0)
             yii_global_fvfm_pp = yii_global_fvfm_pp + yii_fvfm_pp
-            _add_observations( # NOTE need to update with label for variable
-                yii_da=yii_lbl,
+            _add_observations(
+                yii_da=yii_fvfm_pp,
                 measurements=ps_da.measurement.values,
                 label=f"{labels[i - 1]}_{i}",
-                measurement_labels=measurement_labels)
+                measurement_labels=measurement_labels,
+                yii_trait="fvfmpp"
+            )
+            # Set the background values to NaN
+            yii_global_fvfm_pp = yii_global_fvfm_pp.where(bin_mask > 0, other=np.nan)
+            # drop coords identifying frames if they exist
+            res = [i for i in list(yii_global_fvfm_pp.coords) if 'frame' in i]
+            yii_global_fvfm_pp = yii_global_fvfm_pp.drop_vars(res)
+            # Create a ridgeline plot of the YII values
+            yii_chart_fvfm_pp = _ridgeline_plots(
+                measurements=ps_da.measurement.values,
+                measurement_labels=measurement_labels,
+                yii_trait="fvfmpp")
+            yii_charts_fqfm.append(yii_chart_fqfm)
 
-        # NOTE not sure yet how I want to handle the plotting
-        # Could keep it at the end and use a loop, could mix it throughout and do
-        # everything fully in series?
-
-        # Convert the labeled mask to a binary mask
-        bin_mask = np.where(labeled_mask > 0, 255, 0)
-        # Expand the binary mask to the same shape as the YII DataArray
-        bin_mask = bin_mask[..., None]
-        # Set the background values to NaN
-        yii_global = yii_global.where(bin_mask > 0, other=np.nan)
-        # drop coords identifying frames if they exist
-        res = [i for i in list(yii_global.coords) if 'frame' in i]
-        yii_global = yii_global.drop_vars(res)  # does not fail if res is []
-        # Create a ridgeline plot of the YII values
-        yii_chart = _ridgeline_plots(measurements=ps_da.measurement.values, measurement_labels=measurement_labels)
-        yii_charts.append(yii_chart)
+    yii_globals = [yii_global_fvfm, yii_global_fqfm]
+    yii_charts = [yii_charts_fvfm, yii_charts_fqfm]
+    if ps_da.frame_label.str.contains("pp").any():
+        yii_globals = [yii_global_fvfm, yii_global_fqfm, yii_global_fvfm_pp]
+        yii_charts = [yii_charts_fvfm, yii_charts_fqfm, yii_charts_fvfm_pp]
 
     return yii_globals, yii_charts
 
@@ -358,6 +390,9 @@ def _create_histogram(yii_img, mlabel):
     # midpoints = yii_bins[:-1] + 0.5 * np.diff(yii_bins)
 
     # Calculate which non-zero bin has the maximum Fv/Fm value
+    print(yii_hist)
+    print(float(np.sum(yii_hist)))
+    print("\n")
     yii_mode = yii_bins[np.argmax(yii_hist)]
 
     # Convert the histogram pixel counts to proportional frequencies
@@ -369,7 +404,7 @@ def _create_histogram(yii_img, mlabel):
     return hist_df, yii_mode
 
 
-def _add_observations(yii_da, measurements, measurement_labels, label):
+def _add_observations(yii_da, measurements, measurement_labels, label, yii_trait=" "):
     """Add observations for each labeled region."""
     # compute observations to store in Outputs, per labeled region
     yii_mean = yii_da.where(yii_da > 0).groupby('measurement').mean(['x', 'y']).values
@@ -382,26 +417,36 @@ def _add_observations(yii_da, measurements, measurement_labels, label):
             mlabel = measurement_labels[n]
 
         # mean value
-        outputs.add_observation(sample=label, variable=f"yii_mean_{mlabel}", trait="mean yii value",
+        var = "_".join(s.strip() for s in ["yii", "mean", mlabel, yii_trait] if s and s.strip())
+        outputs.add_observation(sample=label, variable=var,
+                                trait=f"mean yii{yii_trait}value",
                                 method='plantcv.plantcv.analyze.yii', scale='none', datatype=float,
                                 value=float(yii_mean[n]), label='none')
         # median value
-        outputs.add_observation(sample=label, variable=f"yii_median_{mlabel}", trait="median yii value",
+        var = "_".join(s.strip() for s in ["yii", "median", mlabel, yii_trait] if s and s.strip())
+        outputs.add_observation(sample=label, variable=var,
+                                trait=f"median yii{yii_trait}value",
                                 method='plantcv.plantcv.analyze.yii', scale='none', datatype=float,
                                 value=float(yii_median[n]), label='none')
         # max value
-        outputs.add_observation(sample=label, variable=f"yii_max_{mlabel}", trait="peak yii value",
+        var = "_".join(s.strip() for s in ["yii", "max", mlabel, yii_trait] if s and s.strip())
+        outputs.add_observation(sample=label, variable=var,
+                                trait=f"peak yii{yii_trait}value",
                                 method='plantcv.plantcv.analyze.yii', scale='none', datatype=float,
                                 value=float(yii_max[n]), label='none')
 
         hist_df, yii_mode = _create_histogram(yii_da.isel({'measurement': n}).values, mlabel)
 
         # mode value
-        outputs.add_observation(sample=label, variable=f"yii_mode_{mlabel}", trait="mode yii value",
+        var = "_".join(s.strip() for s in ["yii", "mode", mlabel, yii_trait] if s and s.strip())
+        outputs.add_observation(sample=label, variable=var,
+                                trait=f"mode yii{yii_trait}value",
                                 method='plantcv.plantcv.analyze.yii', scale='none', datatype=float,
                                 value=float(yii_mode), label='none')
         # hist frequencies
-        outputs.add_observation(sample=label, variable=f"yii_hist_{mlabel}", trait="yii frequencies",
+        var = "_".join(s.strip() for s in ["yii", "hist", mlabel, yii_trait] if s and s.strip())
+        outputs.add_observation(sample=label, variable=var,
+                                trait=f"yii{yii_trait}frequencies",
                                 method='plantcv.plantcv.analyze.yii', scale='none', datatype=list,
                                 value=hist_df['proportion of pixels (%)'].values.tolist(),
                                 label=np.around(hist_df[mlabel].values.tolist(), decimals=2).tolist())
@@ -412,12 +457,15 @@ def _calc_yii(da):
     return (da.sel(frame_label='Fmp') - da.sel(frame_label='Fp')) / da.sel(frame_label='Fmp')
 
 
-def _ridgeline_plots(measurements, measurement_labels):
+def _ridgeline_plots(measurements, measurement_labels, yii_trait=""):
     """Create ridgeline plots of YII values."""
     yii_chart = None
     for i, mlabel in enumerate(measurements):
         if measurement_labels is not None:
             mlabel = measurement_labels[i]
-        yii_chart = outputs.plot_dists(variable=f"yii_hist_{mlabel}")
+        var = ["yii", "hist", mlabel, yii_trait]
+        yii_chart = outputs.plot_dists(
+            variable="_".join(s.strip() for s in var if s and s.strip())
+        )
         _debug(visual=yii_chart, filename=os.path.join(params.debug_outdir, str(params.device) + '_yii_hist.png'))
     return yii_chart
