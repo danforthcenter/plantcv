@@ -159,6 +159,7 @@ class GFP:
         if self._green is None:
             self._load()
         return self._green
+
     @property
     def auto(self):
         """Return the auto frame as a Numpy array."""
