@@ -174,9 +174,12 @@ def test_read_cropreporter_gfp_only(photosynthesis_test_data, tmpdir):
     assert isinstance(ps, PSII_data)
     assert ps.gfp
     assert "GFP" in repr(ps.gfp)
-    assert ps.gfp.flourescence is not None
+    assert ps.gfp.green is not None
     # (rows, cols, frames)
-    assert ps.gfp.flourescence.shape[2] in [2, 3]
+    assert len(ps.gfp.green.shape) == 2
+    # reach other attribute first
+    ps = read_cropreporter(filename=fluor_filename)
+    assert ps.gfp.auto is not None
 
 
 def test_read_cropreporter_rfp_only(photosynthesis_test_data, tmpdir):
@@ -193,8 +196,8 @@ def test_read_cropreporter_rfp_only(photosynthesis_test_data, tmpdir):
     assert isinstance(ps, PSII_data)
     assert ps.rfp
     assert "RFP" in repr(ps.rfp)
-    assert ps.rfp.flourescence is not None
-    assert ps.rfp.flourescence.shape[2] in [1, 2]
+    assert ps.rfp.red is not None
+    assert len(ps.rfp.red.shape) == 2
 
 
 def test_read_cropreporter_aph_only(photosynthesis_test_data, tmpdir):
