@@ -531,7 +531,7 @@ class PMT:
         self._pam_time = None
 
     def __bool__(self):
-        """The existence of the PML class is true."""
+        """The existence of the PMT class is true."""
         return True
 
     def __repr__(self):
