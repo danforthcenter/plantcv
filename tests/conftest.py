@@ -187,9 +187,9 @@ class TestData:
                                  coords={'frame_label': ['Fdark', 'F0', 'Fm', '3'],
                                          'frame_num': ('frame_label', [0, 1, 2, 3]),
                                          'measurement': ['t0']}, name="ojip_dark")
-        ojip_light = xr.DataArray(data=np.dstack([f0, f1, f2, f3])[..., None],
+        ojip_light = xr.DataArray(data=np.dstack([f1, f2, f3, f0])[..., None],
                                   dims=('x', 'y', 'frame_label', 'measurement'),
-                                  coords={'frame_label': ['Fdark', 'Fp', '2', 'Fmp'],
+                                  coords={'frame_label': ['Flight', 'Fp', 'Fmp', 'Flightsat'],
                                           'frame_num': ('frame_label', [0, 1, 2, 3]),
                                           'measurement': ['t1']}, name="ojip_light")
 
@@ -226,7 +226,7 @@ class TestData:
         f3 = self.create_ps_mask()
         f3[5, 5] = 8
 
-        atts = ["APH", "CHL", "CLR", "PMD", "PML", "PMT", "PSD", "PSL", "SPC", "NPQ", "GFP", "RFP"]
+        atts = ["APH", "CHL", "CLR", "PSD", "PSL", "SPECTRAL", "NPQ", "GFP", "RFP", "OJIP_LIGHT", "OJIP_DARK", "PAM_TIME",  "PAM_LIGHT", "PAM_DARK"]
 
         # set specific labels for xarray for dark and light adapted
         if var == 'ojip_dark':
@@ -234,13 +234,15 @@ class TestData:
             frame_labels = ['Fdark', 'F0', 'Fm', '3']
             frame_nums = [0, 1, 2, 3]
             measurements = ['t0']
-            keyname = "psd"
+            keyname = "ojip_dark"
+            var = "psd"
         elif var == 'ojip_light':
             d = np.dstack([f0, f1, f2, f3])[..., None]
             frame_labels = ['Fdark', 'Fp', '2', 'Fmp']
             frame_nums = [0, 1, 2, 3]
             measurements = ['t1']
-            keyname = "psl"
+            keyname = "ojip_light"
+            var = "psl"
         elif var == "ojip_bad":
             d = np.dstack([f0, f1, f2, f3])[..., None]
             frame_labels = ['Fdark', 'Fp', '2', 'Fmp']
@@ -248,9 +250,10 @@ class TestData:
             measurements = ['t1']
             keyname = "bad"
             atts = ["pmt", "worse", "terrible", "nogood"]
+            var = "bad"
         elif var == "ojip_both":
             ps = self._make_dummy_npq(f0, f1, f2, f3)
-            return ps
+            var = "npq"
         elif var == "pam_time":
             d = np.dstack([f0, f1, f2, f3,
                            f3, f3, f3, f3,
@@ -261,25 +264,28 @@ class TestData:
             frame_nums = [i for i in range(12)]
             measurements = ["t1"]
             keyname = "pmt"
+        if var != "npq":
+            # Create DataArray
+            da = xr.DataArray(data=d,
+                              dims=('x', 'y', 'frame_label', 'measurement'),
+                              coords={'frame_label': frame_labels,
+                                      'frame_num': ('frame_label', frame_nums),
+                                      'measurement': measurements},
+                              name=var)
+            if var not in ["ojip_light", "ojip_dark"]:
+                sub_ps = type("subpsdata", (object,), {
+                    keyname: da
+                })
+            else:
+                sub_ps = da
 
-        # Create DataArray
-        da = xr.DataArray(data=d,
-                          dims=('x', 'y', 'frame_label', 'measurement'),
-                          coords={'frame_label': frame_labels,
-                                  'frame_num': ('frame_label', frame_nums),
-                                  'measurement': measurements},
-                          name=var)
-        sub_ps = type("subpsdata", (object,), {
-            var: da
-        })
-
-        ps = type("psdata", (object,), {
-            'metadata': {
-                "ImageRows": 10,
-                "ImageCols": 10
-            },
-            keyname: sub_ps
-        })
+            ps = type("psdata", (object,), {
+                'metadata': {
+                    "ImageRows": 10,
+                    "ImageCols": 10
+                },
+                var: sub_ps
+            })
         # set other attributes to None
         for att in atts:
             if not hasattr(ps, att.lower()):
