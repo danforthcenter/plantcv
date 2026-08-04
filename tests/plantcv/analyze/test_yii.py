@@ -9,7 +9,8 @@ from plantcv.plantcv.analyze import yii as analyze_yii
     # test ojip_dark control seq
     ["ojip_dark", None, 0.8],
     # test lightadapted control seq and measurement_labels arg
-    ["ojip_light", ["Fq/Fm"], 0.8]])
+    ["ojip_light", ["Fq/Fm"], 0.8],
+    ["ojip_both", None, 0.8]])
 def test_yii_cropreporter(prot, mlabels, exp, test_data):
     """Test for PlantCV."""
     # Clear results
