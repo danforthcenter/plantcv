@@ -44,22 +44,22 @@ def yii(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, la
     if labeled_mask.shape != ps_shape:
         fatal_error(f"Mask needs to have shape {ps_shape}")
 
-    if getattr(ps, "pam_time", None) is None:
+    if getattr(ps, "pmt", None) is None:
         frame_functions = {
             "psl": {"ojip_light": _psl_calc_fqfm},
             "psd": {"ojip_dark": _psd_calc_fvfm},
-            "pam_light": {"pam_light": _psl_calc_fqfm},
-            "pam_dark": {"pam_dark": _psd_calc_fvfm},
+            "pml": {"pam_light": _psl_calc_fqfm},
+            "pmd": {"pam_dark": _psd_calc_fvfm},
             "npq": {"ojip_light": _psl_calc_fqfm, "ojip_dark": _psd_calc_fvfm}
         }
         frame_properties = {
             "psl": ["ojip_light"],
             "psd": ["ojip_dark"],
-            "pam_light": ["pam_light"],
-            "pam_dark": ["pam_dark"],
+            "pml": ["pam_light"],
+            "pmd": ["pam_dark"],
             "npq": ["ojip_light", "ojip_dark"]
         }
-        frames = ["psl", "psd", "pam_light", "pam_dark", "npq"]
+        frames = ["psl", "psd", "pml", "pmd", "npq"]
         yii_globals, yii_charts = _yii_single(ps, labeled_mask,
                                               frame_functions, frame_properties,
                                               frames, n_labels, auto_fm,
@@ -330,8 +330,8 @@ def _validate_psii_yii_frames(ps):
     """Helper to validate psii_data object has yii frames with information"""
     if not bool([x for x in ["psd", "psl",
                              "ojip_light", "ojip_dark",
-                             "pam_light", "pam_dark",
-                             "pam_time", "npq"] if getattr(ps, x) is not None]):
+                             "pml", "pmd", "pmt",
+                             "npq"] if getattr(ps, x) is not None]):
         fatal_error("Unsupported DataArray type, pmt, pam_light/pam_dark, psl/psd, or npq frames are required")
 
 
