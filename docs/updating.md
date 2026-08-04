@@ -1035,7 +1035,7 @@ pages for more details on the input and output variable types.
 #### plantcv.qc.plot_deltaE
 
 * pre v5.0: NA
-* post v5.0: fig = **plantcv.qc.plot_deltaE**(*deltaE_matrix*)
+* post v5.0: fig = **plantcv.qc.plot_deltaE**(*source, n=20, ext="png", \*\*kwargs*)
 
 #### plantcv.readbayer
 
