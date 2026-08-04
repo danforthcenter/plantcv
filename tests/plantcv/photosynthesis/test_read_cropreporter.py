@@ -172,9 +172,14 @@ def test_read_cropreporter_gfp_only(photosynthesis_test_data, tmpdir):
     fluor_filename = os.path.join(cache_dir, "HDR_DYSeed_20251222191634684.INF")
     ps = read_cropreporter(filename=fluor_filename)
     assert isinstance(ps, PSII_data)
-    assert ps.gfp is not None
+    assert ps.gfp
+    assert "GFP" in repr(ps.gfp)
+    assert ps.gfp.green is not None
     # (rows, cols, frames)
-    assert ps.gfp.shape[2] in [2, 3]
+    assert len(ps.gfp.green.shape) == 2
+    # reach other attribute first
+    ps = read_cropreporter(filename=fluor_filename)
+    assert ps.gfp.auto is not None
 
 
 def test_read_cropreporter_rfp_only(photosynthesis_test_data, tmpdir):
@@ -189,8 +194,10 @@ def test_read_cropreporter_rfp_only(photosynthesis_test_data, tmpdir):
     fluor_filename = os.path.join(cache_dir, "HDR_DYSeed_20251222191634684.INF")
     ps = read_cropreporter(filename=fluor_filename)
     assert isinstance(ps, PSII_data)
-    assert ps.rfp is not None
-    assert ps.rfp.shape[2] in [1, 2]
+    assert ps.rfp
+    assert "RFP" in repr(ps.rfp)
+    assert ps.rfp.red is not None
+    assert len(ps.rfp.red.shape) == 2
 
 
 def test_read_cropreporter_aph_only(photosynthesis_test_data, tmpdir):
