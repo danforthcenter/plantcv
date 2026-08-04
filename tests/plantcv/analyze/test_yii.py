@@ -75,6 +75,9 @@ def test_yii_cropreporter_13_frame_pmt(test_data, tmpdir, monkeypatch):
                     n_labels=1, auto_fm=True,
                     measurement_labels=None)
     assert "yii_median_t0_fvfmpp" in [key for key, value in outputs.observations["default_1"].items()]
+    with pytest.raises(RuntimeError):
+        _ = analyze_yii(ps=ps, labeled_mask=np.ones(shape),
+                        measurement_labels=["x", "y", "z"], label="default")
 
     
 @pytest.mark.parametrize("mlabels, tmask",
@@ -107,7 +110,7 @@ def test_yii_bad_var(test_data):
     read_in_worked = bool(getattr(ps, "rfp"))
     assert read_in_worked
     with pytest.raises(RuntimeError):
-        _ = analyze_yii(ps=ps, labeled_mask=test_data.create_ps_mask(),
+        _ = analyze_yii(ps=ps, labeled_mask=np.ones(ps.rfp.red.shape[0:2]),
                         measurement_labels=None, label="default")
 
 
