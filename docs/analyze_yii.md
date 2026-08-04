@@ -9,8 +9,9 @@ The photosynthesis subpackage is dependent on a PSII_data instance file structur
 **returns** list of YII DataArray, list of YII histograms (one for each of the `psd` or `psl` arrays)
 
 - **Parameters:**
-    - ps - PSII_data instance (from [read_cropreporter](photosynthesis_read_cropreporter.md)) containing `psd` and/or `psl` data or `pmt` (PAM time) data.
-    Can either have a pair of frames F0, Fm or pair(s) of Fp, Fmp in the case of `psd`/`psl` data or F0, Fm, Fp, Fmp, Fpp, Fmpp, etc frames in `pmt` data.
+    - ps - PSII_data instance (from [read_cropreporter](photosynthesis_read_cropreporter.md)) containing
+	`psd`, `psl`, `pam_time`, `pam_light`, `pam_dark`, `ojip_light`, or `ojip_dark` data.
+    Can either have a pair of frames F0, Fm or pair(s) of Fp, Fmp or F0, Fm, Fp, Fmp, Fpp, Fmpp, etc frames in `pam_time` data.
     - labeled_mask - Labeled mask of objects (32-bit).
     - n_labels - Total number expected individual objects (default = 1).
     - auto_fm - Automatically calculate the frame with maximum fluorescence per label, otherwise use a fixed frame for all labels (default = False). This is not used for PAM time data.
