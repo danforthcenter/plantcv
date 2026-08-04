@@ -53,7 +53,7 @@ def reassign_frame_labels(ps_da, mask):
             "label": "PSD",
             "F": "F0"
         },
-         "psl": {
+        "psl": {
             "prime": "p",
             "label": "PSL",
             "F": "Fp"
