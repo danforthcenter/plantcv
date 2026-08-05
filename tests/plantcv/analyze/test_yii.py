@@ -34,8 +34,8 @@ def test_yii_cropreporter(frame, data, mlabels, maskval, exp, test_data):
         source_path = test_data.photosynthesis.cropreporter_npq
 
     ps = read_cropreporter(filename=source_path)
-    shape = getattr(getattr(ps, frame), data).shape[0:2]
-    read_in_worked = bool(getattr(ps, frame))
+    shape = getattr(getattr(ps, frame, None), data, None).shape[0:2]
+    read_in_worked = bool(getattr(ps, frame, None))
     assert read_in_worked
     # run analyze
     _ = analyze_yii(ps=ps,
@@ -68,7 +68,7 @@ def test_yii_cropreporter_13_frame_pmt(test_data, tmpdir, monkeypatch):
     # Using ones * 50 to ensure .any() assertions pass
     monkeypatch.setattr(np, "fromfile", lambda *args, **kwargs: np.ones(1300, dtype=np.uint16) * 50)
     ps = read_cropreporter(filename=inf_dest)
-    shape = getattr(getattr(ps, "pmt"), "pam_time").shape[0:2]
+    shape = getattr(getattr(ps, "pmt", None), "pam_time", None).shape[0:2]
     # run analyze
     _ = analyze_yii(ps=ps,
                     labeled_mask=np.ones(shape),
@@ -96,7 +96,7 @@ def test_yii_fatalerror(mlabels, tmask, test_data, tmpdir):
     shutil.copyfile(dat, os.path.join(cache_dir, "PSII_PSL_test.DAT"))
     filename = os.path.join(cache_dir, "PSII_HDR_test.INF")
     ps = read_cropreporter(filename=filename)
-    read_in_worked = bool(getattr(ps, "psl"))
+    read_in_worked = bool(getattr(ps, "psl", False))
     assert read_in_worked
     tmask[0, 0] = 255
     with pytest.raises(RuntimeError):
@@ -107,7 +107,7 @@ def test_yii_fatalerror(mlabels, tmask, test_data, tmpdir):
 def test_yii_bad_var(test_data):
     """Test for PlantCV."""
     ps = read_cropreporter(filename=test_data.photosynthesis.cropreporter_rfp)
-    read_in_worked = bool(getattr(ps, "rfp"))
+    read_in_worked = bool(getattr(ps, "rfp", False))
     assert read_in_worked
     with pytest.raises(RuntimeError):
         _ = analyze_yii(ps=ps, labeled_mask=np.ones(ps.rfp.red.shape[0:2]),
@@ -125,7 +125,7 @@ def test_yii_wrong_num_labels(test_data, tmpdir):
     shutil.copyfile(dat, os.path.join(cache_dir, "PSII_PSL_test.DAT"))
     filename = os.path.join(cache_dir, "PSII_HDR_test.INF")
     ps = read_cropreporter(filename=filename)
-    read_in_worked = bool(getattr(ps, "psl"))
+    read_in_worked = bool(getattr(ps, "psl", False))
     assert read_in_worked
     with pytest.raises(RuntimeError):
         _ = analyze_yii(ps=ps,
@@ -146,7 +146,7 @@ def test_yii_pam_time(test_data, tmpdir):
     shutil.copyfile(pmt_dat, os.path.join(cache_dir, "PMT_E0001P0007N0001_GCU24100090_20260226.DAT"))
     fluor_filename = os.path.join(cache_dir, "HDR_E0001P0007N0001_GCU24100090_20260226.INF")
     ps = read_cropreporter(filename=fluor_filename)
-    read_in_worked = bool(getattr(ps, "pmt"))
+    read_in_worked = bool(getattr(ps, "pmt", False))
     assert read_in_worked
     _ = analyze_yii(ps=ps,
                     labeled_mask=np.ones(ps.pmt.pam_time.shape[0:2]),
@@ -169,7 +169,7 @@ def test_yii_pam_time_bad_labels(test_data, tmpdir):
     shutil.copyfile(dat, os.path.join(cache_dir, "PSII_PSL_test.DAT"))
     filename = os.path.join(cache_dir, "PSII_HDR_test.INF")
     ps = read_cropreporter(filename=filename)
-    read_in_worked = bool(getattr(ps, "psl"))
+    read_in_worked = bool(getattr(ps, "psl", False))
     assert read_in_worked
     with pytest.raises(RuntimeError):
         _ = analyze_yii(ps=ps,
