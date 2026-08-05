@@ -110,7 +110,7 @@ def test_yii_bad_var(test_data):
     read_in_worked = bool(getattr(ps, "rfp"))
     assert read_in_worked
     with pytest.raises(RuntimeError):
-        _ = analyze_yii(ps=ps, labeled_mask=np.ones(ps.rfp.red.shape[0:2]),
+        _ = analyze_yii(ps=ps, labeled_mask=np.ones(ps.rfp.shape[0:2]),
                         measurement_labels=None, label="default")
 
 
