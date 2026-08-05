@@ -118,7 +118,7 @@ def _yii_multi(ps, labeled_mask,
     # Make a copy of the labeled mask
     mask_copy = np.copy(labeled_mask)
     # If the labeled mask is a binary mask with values 0 and 255, convert to 0 and 1
-    if len(np.unique(mask_copy)) == 2 and np.max(mask_copy) == 255:
+    if len(np.unique(mask_copy)) <= 2 and np.max(mask_copy) == 255:
         mask_copy = np.where(mask_copy == 255, 1, 0).astype(np.uint8)
     # Convert the labeled mask to a binary mask
     bin_mask = np.where(labeled_mask > 0, 255, 0)
@@ -277,7 +277,7 @@ def _yii_single(ps, labeled_mask,
                 # Make a copy of the labeled mask
                 mask_copy = np.copy(labeled_mask)
                 # If the labeled mask is a binary mask with values 0 and 255, convert to 0 and 1
-                if len(np.unique(mask_copy)) == 2 and np.max(mask_copy) == 255:
+                if len(np.unique(mask_copy)) <= 2 and np.max(mask_copy) == 255:
                     mask_copy = np.where(mask_copy == 255, 1, 0).astype(np.uint8)
                 # Iterate over the label values 1 to n_labels
                 for i in range(1, n_labels + 1):

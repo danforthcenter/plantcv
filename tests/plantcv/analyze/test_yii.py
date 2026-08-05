@@ -8,17 +8,17 @@ from plantcv.plantcv.analyze import yii as analyze_yii
 from plantcv.plantcv.photosynthesis.read_cropreporter import read_cropreporter
 
 
-@pytest.mark.parametrize("frame,data,mlabels,exp", [
+@pytest.mark.parametrize("frame,data,mlabels,maskval,exp", [
     # test ojip_dark control seq
-    ["psd", "ojip_dark", None, 0.80874],
+    ["psd", "ojip_dark", None, 1, 0.80874],
     # test lightadapted control seq and measurement_labels arg
-    ["psl", "ojip_light", ["Fq/Fm"], 0.80874],
-    ["pmd", "pam_dark", None, 0.95238],
-    ["pml", "pam_light", None, 0.95238],
-    ["pmt", "pam_time", None, 0.75],
-    ["pmt", "pam_time", ["example", "example2"], 0.75],
-    ["npq", "ojip_light", None, 0.80874]])
-def test_yii_cropreporter(frame, data, mlabels, exp, test_data):
+    ["psl", "ojip_light", ["Fq/Fm"], 255, 0.80874],
+    ["pmd", "pam_dark", None, 1, 0.95238],
+    ["pml", "pam_light", None, 1, 0.95238],
+    ["pmt", "pam_time", None, 1, 0.75],
+    ["pmt", "pam_time", ["example", "example2"], 255, 0.75],
+    ["npq", "ojip_light", None, 255, 0.80874]])
+def test_yii_cropreporter(frame, data, mlabels, maskval, exp, test_data):
     """Test for PlantCV."""
     # Clear results
     outputs.clear()
@@ -39,7 +39,7 @@ def test_yii_cropreporter(frame, data, mlabels, exp, test_data):
     assert read_in_worked
     # run analyze
     _ = analyze_yii(ps=ps,
-                    labeled_mask=np.ones(shape),
+                    labeled_mask=(maskval * np.ones(shape)).astype(np.uint8),
                     n_labels=1, auto_fm=True,
                     measurement_labels=mlabels)
     assert np.isclose(outputs.observations["default_1"][f"yii_median_{label}"]["value"], exp)
@@ -110,7 +110,7 @@ def test_yii_bad_var(test_data):
     read_in_worked = bool(getattr(ps, "rfp"))
     assert read_in_worked
     with pytest.raises(RuntimeError):
-        _ = analyze_yii(ps=ps, labeled_mask=np.ones(ps.rfp.shape[0:2]),
+        _ = analyze_yii(ps=ps, labeled_mask=np.ones(ps.rfp.red.shape[0:2]),
                         measurement_labels=None, label="default")
 
 
