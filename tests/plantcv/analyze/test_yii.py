@@ -67,6 +67,7 @@ def test_yii_wrong_num_labels(test_data):
                         labeled_mask=test_data.create_ps_mask(),
                         measurement_labels=None, label=["prefix", "prefix"])
 
+
 def test_yii_pam_time(test_data):
     """Test for PlantCV."""
     # Clear results
