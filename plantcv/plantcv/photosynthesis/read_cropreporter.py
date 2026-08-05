@@ -139,7 +139,8 @@ class GFP:
         self._height = height
         self._width = width
         self._metadata = metadata
-        self._gfp = None
+        self._green = None
+        self._auto = None
 
     def __bool__(self):
         """The existence of the GFP class is true."""
@@ -147,36 +148,31 @@ class GFP:
 
     def __repr__(self):
         """String representation of the GFP dataset, indicating whether the data has been loaded."""
-        loaded = self._gfp is not None
+        loaded = self._green is not None
         return f"GFP(filepath={self._filepath!r}, loaded={loaded})"
 
     @property
-    def flourescence(self):
+    def green(self):
         """Return the gfp frame as a NumPy array."""
-        if self._gfp is None:
+        if self._green is None:
             self._load()
-        return self._gfp
+        return self._green
+
+    @property
+    def auto(self):
+        """Return the auto frame as a Numpy array."""
+        if self._auto is None:
+            self._load()
+        return self._auto
 
     def _load(self):
         """Load the gfp frames from the .DAT file."""
-        img_cube, frame_labels, frame_nums = _read_dat_file(dataset="GFP",
-                                                            filename=self._filepath,
-                                                            height=self._height,
-                                                            width=self._width)
-        frame_labels = ["Fdark", "GFP", "Auto"]
-        gfp = xr.DataArray(
-            data=img_cube,
-            dims=('x', 'y', 'frame_label'),
-            coords={'frame_label': frame_labels,
-                    'frame_num': ('frame_label', frame_nums)},
-            name='gfp'
-        )
-        gfp.attrs["long_name"] = "Green fluorescence protein fluorescence intensity (525nm GFP, 585nm Auto)"
-        gfp.attrs["dark_comp_on"] = int(self._metadata.get("GfpDarkCompOn", "0"))
-        gfp.attrs["calib_factor"] = float(self._metadata.get("GfpCalibFactor", self._metadata.get("GfpCalFactor", "nan")))
-        gfp.attrs["meas_power"] = float(self._metadata.get("GfpMeasPower", "nan"))
-        gfp.attrs["shutter"] = float(self._metadata.get("GfpShutter", self._metadata.get("GfpShutterFrames", "nan")))
-        self._gfp = gfp
+        img_cube, _, _ = _read_dat_file(dataset="GFP",
+                                        filename=self._filepath,
+                                        height=self._height,
+                                        width=self._width)
+        self._green = img_cube[:, :, -2]
+        self._auto = img_cube[:, :, -1]
 
 
 class RFP:
@@ -200,7 +196,7 @@ class RFP:
         return f"RFP(filepath={self._filepath!r}, loaded={loaded})"
 
     @property
-    def flourescence(self):
+    def red(self):
         """Return the rfp frame as a NumPy array."""
         if self._rfp is None:
             self._load()
@@ -208,24 +204,11 @@ class RFP:
 
     def _load(self):
         """Load the rfp frames from the .DAT file."""
-        img_cube, frame_labels, frame_nums = _read_dat_file(dataset="RFP",
-                                                            filename=self._filepath,
-                                                            height=self._height,
-                                                            width=self._width)
-        frame_labels = ["Fdark", "RFP"]
-        rfp = xr.DataArray(
-            data=img_cube,
-            dims=('x', 'y', 'frame_label'),
-            coords={'frame_label': frame_labels,
-                    'frame_num': ('frame_label', frame_nums)},
-            name='rfp'
-        )
-        rfp.attrs["long_name"] = "Red fluorescence protein fluorescence intensity (585nm)"
-        rfp.attrs["dark_comp_on"] = int(self._metadata.get("RfpDarkCompOn", "0"))
-        rfp.attrs["calib_factor"] = float(self._metadata.get("RfpCalibFactor", "nan"))
-        rfp.attrs["meas_power"] = float(self._metadata.get("RfpMeasPower", "nan"))
-        rfp.attrs["shutter"] = float(self._metadata.get("RfpShutter", self._metadata.get("RfpShutterFrames", "nan")))
-        self._rfp = rfp
+        img_cube, _, _ = _read_dat_file(dataset="RFP",
+                                        filename=self._filepath,
+                                        height=self._height,
+                                        width=self._width)
+        self._rfp = img_cube[:, :, img_cube.shape[2] - 1]
 
 
 class PSD:
