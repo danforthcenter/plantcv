@@ -62,8 +62,8 @@ class PSII_data:
         self._ojip_light = None
         self.psd = None
         self.psl = None
-        self.pam_dark = None
-        self.pam_light = None
+        self.pmd = None
+        self.pml = None
         self.pam_time = None
         self.spectral = None
         self.gfp = None
