@@ -1,5 +1,6 @@
 """Fluorescence Analysis (NPQ parameter)."""
 import os
+import re
 import numpy as np
 import pandas as pd
 import xarray as xr
@@ -37,91 +38,92 @@ def npq(ps, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto",
 
     Returns:
     --------
-    npq_global         = xarray.core.dataarray.DataArray,
-        NPQ values
-    npq_chart          = altair.vegalite.v4.api.FacetChart,
-        Histograms of NPQ estimates
+    npq_global         = list of xarray.core.dataarray.DataArray,
+        NPQ values, one element per light input frame
+    npq_chart          = list of altair.vegalite.v4.api.FacetChart,
+        Histograms of NPQ estimates, one element per light input frame
     """
     # Set labels
     labels = _set_labels(label, n_labels)
 
-    if hasattr(ps, "npq") or (hasattr(ps, "psl") and hasattr(ps, "psd")):
-        ps_da_light = ps.ojip_light
-        ps_da_dark = ps.ojip_dark
-    else:
-        fatal_error("ps must have ojip_light and ojip_dark DataArrays from psl/psd or npq images")
+    ps_da_lights, ps_da_dark = _get_light_and_dark_frames(ps)
+    npq_globals = []
+    npq_charts = []
 
-    if labeled_mask.shape != ps_da_light.shape[:2] or labeled_mask.shape != ps_da_dark.shape[:2]:
-        fatal_error(f"Mask needs to have shape {ps_da_dark.shape[:2]}")
+    for ps_da_light in ps_da_lights:
 
-    if (measurement_labels is not None) and (len(measurement_labels) != ps_da_light.coords['measurement'].shape[0]):
-        fatal_error('measurement_labels must be the same length as the number of measurements in `ps_da_light`')
+        if labeled_mask.shape != ps_da_light.shape[:2] or labeled_mask.shape != ps_da_dark.shape[:2]:
+            fatal_error(f"Mask needs to have shape {ps_da_dark.shape[:2]}")
+        if (measurement_labels is not None) and (len(measurement_labels) != ps_da_light.coords['measurement'].shape[0]):
+            fatal_error('measurement_labels must be the same length as the number of measurements in `ps_da_light`')
 
-    # Make an zeroed array of the same shape as the input DataArray
-    npq_global = xr.zeros_like(ps_da_light, dtype=float)
-    # Drop the frame_label coordinate
-    npq_global = npq_global[:, :, 0, :].drop_vars('frame_label')
+        # Make an zeroed array of the same shape as the input DataArray
+        npq_global = xr.zeros_like(ps_da_light, dtype=float)
+        # Drop the frame_label coordinate
+        npq_global = npq_global.drop_vars('frame_label')
 
-    # Make a copy of the labeled mask
-    mask_copy = np.copy(labeled_mask)
+        # Make a copy of the labeled mask
+        mask_copy = np.copy(labeled_mask)
 
-    # If the labeled mask is a binary mask with values 0 and 255, convert to 0 and 1
-    if len(np.unique(mask_copy)) == 2 and np.max(mask_copy) == 255:
-        mask_copy = np.where(mask_copy == 255, 1, 0).astype(np.uint8)
+        # If the labeled mask is a binary mask with values 0 and 255, convert to 0 and 1
+        if len(np.unique(mask_copy)) == 2 and np.max(mask_copy) == 255:
+            mask_copy = np.where(mask_copy == 255, 1, 0).astype(np.uint8)
 
-    # Iterate over the label values 1 to n_labels
-    for i in range(1, n_labels + 1):
-        # Create a binary submask for each label
-        submask = np.where(mask_copy == i, 255, 0).astype(np.uint8)
+        # Iterate over the label values 1 to n_labels
+        for i in range(1, n_labels + 1):
+            # Create a binary submask for each label
+            submask = np.where(mask_copy == i, 255, 0).astype(np.uint8)
 
-        # If auto_fm is True, reassign frame labels to choose the best Fm or Fm' for each labeled region
-        if auto_fm:
-            ps_da_light = reassign_frame_labels(ps_da=ps_da_light, mask=submask)
-            ps_da_dark = reassign_frame_labels(ps_da=ps_da_dark, mask=submask)
+            # If auto_fm is True, reassign frame labels to choose the best Fm or Fm' for each labeled region
+            if auto_fm:
+                ps_da_light = reassign_frame_labels(ps_da=ps_da_light, mask=submask)
+                ps_da_dark = reassign_frame_labels(ps_da=ps_da_dark, mask=submask)
 
-        # Mask the Fm frame with the label submask
-        fm = ps_da_dark.sel(measurement='t0', frame_label='Fm').where(submask > 0, other=0)
-        # Calculate NPQ for the labeled region
-        npq_lbl = ps_da_light.sel(frame_label='Fmp').groupby('measurement', squeeze=False).map(_calc_npq, fm=fm)
+            # Mask the Fm frame with the label submask
+            fm = ps_da_dark.sel(measurement='t0', drop=True).where(submask > 0, other=0)
+            # Calculate NPQ for the labeled region, matching whatever the Fmp+ light measurement is
+            fmp_var = str(ps_da_light.frame_label.values)
+            # .sel(frame_label=ps_da_light.frame_label.str.match('Fmp+'))
+            npq_lbl = ps_da_light.groupby('measurement', squeeze=False).map(_calc_npq, fm=fm)
 
-        # Drop the frame_label coordinate - not needed with xarray v2022.11.0+
-        # npq_lbl = npq_lbl.drop_vars('frame_label')
-        # Fill NaN values with 0 so that we can add DataArrays together
-        npq_lbl = npq_lbl.fillna(0)
-        # Add the NPQ values for this label to the NPQ DataArray
-        npq_global = npq_global + npq_lbl
+            # Fill NaN values with 0 so that we can add DataArrays together
+            npq_lbl = npq_lbl.fillna(0)
+            # Add the NPQ values for this label to the NPQ DataArray
+            npq_global = npq_global + npq_lbl
 
-        # Record observations for each labeled region
-        _add_observations(npq_da=npq_lbl, measurements=ps_da_light.measurement.values,
-                          measurement_labels=measurement_labels, label=f"{labels[i - 1]}_{i}",
-                          max_bin=max_bin, min_bin=min_bin)
+            # Record observations for each labeled region
+            _add_observations(npq_da=npq_lbl, measurements=ps_da_light.measurement.values,
+                              measurement_labels=measurement_labels, label=f"{labels[i - 1]}_{i}",
+                              max_bin=max_bin, min_bin=min_bin, fmp_trait=fmp_var)
 
-    # Convert the labeled mask to a binary mask
-    bin_mask = np.where(labeled_mask > 0, 255, 0)
+        # Convert the labeled mask to a binary mask
+        bin_mask = np.where(labeled_mask > 0, 255, 0)
 
-    # Expand the binary mask to the same shape as the YII DataArray
-    bin_mask = bin_mask[..., None]
+        # Expand the binary mask to the same shape as the YII DataArray
+        bin_mask = bin_mask[..., None]
 
-    # Set the background values to NaN
-    npq_global = npq_global.where(bin_mask > 0, other=np.nan)
+        # Set the background values to NaN
+        npq_global = npq_global.where(bin_mask > 0, other=np.nan)
 
-    # drop coords identifying frames if they exist
-    res = [i for i in list(npq_global.coords) if 'frame' in i]
-    npq_global = npq_global.drop_vars(res)  # does not fail if res is []
+        # drop coords identifying frames if they exist
+        res = [i for i in list(npq_global.coords) if 'frame' in i]
+        npq_global = npq_global.drop_vars(res)  # does not fail if res is []
 
-    # Create a ridgeline plot of the NPQ values
-    npq_chart = _ridgeline_plots(measurements=ps_da_light.measurement.values, measurement_labels=measurement_labels)
+        # Create a ridgeline plot of the NPQ values
+        npq_chart = _ridgeline_plots(measurements=ps_da_light.measurement.values, measurement_labels=measurement_labels)
+        npq_globals.append(npq_global.squeeze())
+        npq_charts.append(npq_chart)
 
-    # Plot/print dataarray
-    _debug(visual=npq_global,
-           filename=os.path.join(params.debug_outdir, str(params.device) + "_NPQ_dataarray.png"),
-           col='measurement',
-           col_wrap=int(np.ceil(npq_global.measurement.size / 4)),
-           robust=True)
+        # Plot/print dataarray
+        _debug(visual=npq_global,
+               filename=os.path.join(params.debug_outdir, str(params.device) + "_NPQ_dataarray.png"),
+               col='measurement',
+               col_wrap=int(np.ceil(npq_global.measurement.size / 4)),
+               robust=True)
 
     # this only returns the last histogram..... xarray does not seem to support panels of histograms
     # but does support matplotlib subplots....
-    return npq_global.squeeze(), npq_chart
+    return npq_globals, npq_charts
 
 
 def _set_labels(label, n_labels):
@@ -148,6 +150,38 @@ def _calc_npq(fmp, fm):
     div = np.divide(fm, fmp, out=out_flt, where=where_arr.to_numpy())
     sub = np.subtract(div, 1, out=out_flt.copy(), where=div.to_numpy() >= 1)
     return sub
+
+
+def _get_light_and_dark_frames(ps):
+    """Get light and dark frames from classes in a PSII_data object
+
+    Parameters
+    ----------
+    ps = plantcv.plantcv.classes.PSII_data,
+        PSII_data object with npq, pmd, pml, psd, psl, or pmt frames
+
+    Returns
+    -------
+    ps_da_lights = list of xarray.core.dataarray.DataArray
+        light measurements, potentially >1 length if multiple were taken
+    ps_da_dark = xarray.core.dataarray.DataArray
+        dark measurements
+    """
+    if ps.ojip_light is not None and ps.ojip_dark is not None:
+        ps_da_lights = [ps.ojip_light.sel(frame_label="Fmp")]
+        ps_da_dark = ps.ojip_dark.sel(frame_label="Fm")
+    elif ps.pmt is not None:
+        p = ps.pmt.pam_time
+        # match all the "Fmp" frames, get a list of dataarrays
+        ps_da_lights = [p.sel(frame_label = f) for f in p.frame_label if re.search("Fmp+", str(f))]
+        # get the fm frame
+        ps_da_dark = p.sel(frame_label="Fm")
+    else:
+        fatal_error(
+            "ps must have ojip_light and ojip_dark DataArrays from psl/psd, pml/pmd, "+
+            "or npq images or have pmt (pam time) measurements"
+        )
+    return ps_da_lights, ps_da_dark
 
 
 def _create_histogram(npq_img, mlabel, min_bin, max_bin):
@@ -191,8 +225,10 @@ def _create_histogram(npq_img, mlabel, min_bin, max_bin):
     return hist_df, npq_mode
 
 
-def _add_observations(npq_da, measurements, measurement_labels, label, max_bin, min_bin):
+def _add_observations(npq_da, measurements, measurement_labels, label, max_bin, min_bin, fmp_trait="Fmp"):
     """Add observations for each labeled region."""
+    # default to standard labeling, only add label if >1 prime
+    fmp_trait = fmp_trait.strip("Fmp")
     # Auto calculate max_bin if set
     if isinstance(max_bin, str) and (max_bin.upper() == "AUTO"):
         max_bin = ceil(np.nanmax(npq_da))  # Auto bins will detect the max value to use for calculating labels/bins
@@ -210,26 +246,31 @@ def _add_observations(npq_da, measurements, measurement_labels, label, max_bin, 
             mlabel = measurement_labels[i]
 
         # mean value
-        outputs.add_observation(sample=label, variable=f"npq_mean_{mlabel}", trait="mean npq value",
+        var = "_".join(s.strip() for s in ["npq", "mean", mlabel, fmp_trait] if s.strip())
+        outputs.add_observation(sample=label, variable=var, trait="npq mean value",
                                 method='plantcv.plantcv.analyze.npq', scale='none', datatype=float,
                                 value=float(npq_mean[i]), label='none')
         # median value
-        outputs.add_observation(sample=label, variable=f"npq_median_{mlabel}", trait="median npq value",
+        var = "_".join(s.strip() for s in ["npq", "median", mlabel, fmp_trait] if s.strip())
+        outputs.add_observation(sample=label, variable=var, trait="npq median value",
                                 method='plantcv.plantcv.analyze.npq', scale='none', datatype=float,
                                 value=float(npq_median[i]), label='none')
         # max value
-        outputs.add_observation(sample=label, variable=f"npq_max_{mlabel}", trait="peak npq value",
+        var = "_".join(s.strip() for s in ["npq", "max", mlabel, fmp_trait] if s.strip())
+        outputs.add_observation(sample=label, variable=var, trait="peak npq value",
                                 method='plantcv.plantcv.analyze.npq', scale='none', datatype=float,
                                 value=float(npq_max[i]), label='none')
 
         hist_df, npq_mode = _create_histogram(npq_da.isel({'measurement': i}).values, mlabel, min_bin, max_bin)
 
         # mode value
-        outputs.add_observation(sample=label, variable=f"npq_mode_{mlabel}", trait="mode npq value",
+        var = "_".join(s.strip() for s in ["npq", "mode", mlabel, fmp_trait] if s.strip())
+        outputs.add_observation(sample=label, variable=var, trait="mode npq value",
                                 method='plantcv.plantcv.analyze.npq', scale='none', datatype=float,
                                 value=float(npq_mode), label='none')
         # hist frequencies
-        outputs.add_observation(sample=label, variable=f"npq_hist_{mlabel}", trait="frequencies",
+        var = "_".join(s.strip() for s in ["npq", "hist", mlabel, fmp_trait] if s.strip())
+        outputs.add_observation(sample=label, variable=var, trait="frequencies",
                                 method='plantcv.plantcv.analyze.npq', scale='none', datatype=list,
                                 value=hist_df['proportion of pixels (%)'].values.tolist(),
                                 label=np.around(hist_df[mlabel].values.tolist(), decimals=2).tolist())
