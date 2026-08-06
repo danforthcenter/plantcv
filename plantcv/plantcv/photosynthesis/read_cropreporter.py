@@ -403,7 +403,7 @@ class NPQ:
             dims=('x', 'y', 'frame_label', 'measurement'),
             coords={'frame_label': frame_labels[3:6],
                     'frame_num': ('frame_label', frame_nums[3:6]),
-                    'measurement': ['t0']},
+                    'measurement': ['t1']},
             name='ojip_light'
         )
 
@@ -491,7 +491,7 @@ class PML:
             width=self._width,
         )
 
-        frame_labels = ["Fdark", "F0", "Fm", "Fdarksat"]
+        frame_labels = ["Flight", "Fp", "Fmp", "Flightsat"]
         self._pam_light = xr.DataArray(
             data=img_cube[..., None],
             dims=('x', 'y', 'frame_label', 'measurement'),
@@ -514,7 +514,7 @@ class PMT:
         self._pam_time = None
 
     def __bool__(self):
-        """The existence of the PML class is true."""
+        """The existence of the PMT class is true."""
         return True
 
     def __repr__(self):

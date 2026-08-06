@@ -16,16 +16,17 @@ def test_npq_cropreporter(test_data):
     assert np.isclose(outputs.observations["prefix_1"]["npq_median_Fq/Fm"]["value"], 0.25)
 
 
-def test_npq_waltz(test_data):
+def test_npq_cropreporter_auto(test_data):
     """Test for PlantCV."""
     # Clear results
     outputs.clear()
-    psdata = test_data.psii_walz_new('ojip_both')
-    _ = analyze_npq(ps=psdata, labeled_mask=test_data.create_ps_mask(), auto_fm=True,
-                    measurement_labels=None, label="prefix", min_bin="auto", max_bin="auto")
-    assert np.isclose(outputs.observations["prefix_1"]["npq_median_t40"]["value"], float((200 / 185) - 1))
+    psdata = test_data.psii_cropreporter_new('ojip_both')
+    _ = analyze_npq(ps=psdata, labeled_mask=test_data.create_ps_mask(),
+                    auto_fm=True,
+                    measurement_labels=["Fq/Fm"], label="prefix", min_bin="auto", max_bin="auto")
+    assert np.isclose(outputs.observations["prefix_1"]["npq_median_Fq/Fm"]["value"], 0.25)
 
-
+    
 @pytest.mark.parametrize("mlabels, tmask",
                          # test wrong mask shape
                          [[None, np.ones((2, 2))],
