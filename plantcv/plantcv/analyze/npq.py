@@ -83,7 +83,10 @@ def npq(ps, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto",
             fm = ps_da_dark.sel(measurement='t0', frame_label="F0", drop=True).where(submask > 0, other=0)
             # Calculate NPQ for the labeled region, matching whatever the Fmp+ light measurement is
             fmp_var = str(ps_da_light.frame_label.values[ps_da_light.frame_label.str.match("Fmp+")][0])
-            npq_lbl = ps_da_light.sel(frame_label=ps_da_light.frame_label.str.match('Fmp+')).groupby('measurement', squeeze=False).map(_calc_npq, fm=fm)
+            npq_lbl = ps_da_light.sel(
+                frame_label=ps_da_light.frame_label.str.match(
+                    'Fmp+'
+                )).groupby('measurement', squeeze=False).map(_calc_npq, fm=fm)
             # drop frame label
             npq_lbl = npq_lbl.drop_vars('frame_label')
 
@@ -186,7 +189,7 @@ def _get_light_and_dark_frames(ps):
         ps_da_dark = p
     else:
         fatal_error(
-            "ps must have ojip_light and ojip_dark DataArrays from psl/psd, pml/pmd, "+
+            "ps must have ojip_light and ojip_dark DataArrays from psl/psd, pml/pmd, " +
             "or npq images or have pmt (pam time) measurements"
         )
     return ps_da_lights, ps_da_dark
@@ -233,6 +236,12 @@ def _create_histogram(npq_img, mlabel, min_bin, max_bin):
     return hist_df, npq_mode
 
 
+def _make_var(str_list):
+    """Make variable name from a list of strings"""
+    st = "_".join(s.strip() for s in str_list if s.strip())
+    return st
+
+
 def _add_observations(npq_da, measurements, measurement_labels, label, max_bin, min_bin, fmp_trait="Fmp"):
     """Add observations for each labeled region."""
     # default to standard labeling, only add label if >1 prime
@@ -254,17 +263,17 @@ def _add_observations(npq_da, measurements, measurement_labels, label, max_bin, 
             mlabel = measurement_labels[i]
 
         # mean value
-        var = "_".join(s.strip() for s in ["npq", "mean", mlabel, fmp_trait] if s.strip())
+        var = _make_var(["npq", "mean", mlabel, fmp_trait])
         outputs.add_observation(sample=label, variable=var, trait="npq mean value",
                                 method='plantcv.plantcv.analyze.npq', scale='none', datatype=float,
                                 value=float(npq_mean[i]), label='none')
         # median value
-        var = "_".join(s.strip() for s in ["npq", "median", mlabel, fmp_trait] if s.strip())
+        var = _make_var(["npq", "median", mlabel, fmp_trait])
         outputs.add_observation(sample=label, variable=var, trait="npq median value",
                                 method='plantcv.plantcv.analyze.npq', scale='none', datatype=float,
                                 value=float(npq_median[i]), label='none')
         # max value
-        var = "_".join(s.strip() for s in ["npq", "max", mlabel, fmp_trait] if s.strip())
+        var = _make_var(["npq", "max", mlabel, fmp_trait])
         outputs.add_observation(sample=label, variable=var, trait="peak npq value",
                                 method='plantcv.plantcv.analyze.npq', scale='none', datatype=float,
                                 value=float(npq_max[i]), label='none')
@@ -272,12 +281,12 @@ def _add_observations(npq_da, measurements, measurement_labels, label, max_bin, 
         hist_df, npq_mode = _create_histogram(npq_da.isel({'measurement': i}).values, mlabel, min_bin, max_bin)
 
         # mode value
-        var = "_".join(s.strip() for s in ["npq", "mode", mlabel, fmp_trait] if s.strip())
+        var = _make_var(["npq", "mode", mlabel, fmp_trait])
         outputs.add_observation(sample=label, variable=var, trait="mode npq value",
                                 method='plantcv.plantcv.analyze.npq', scale='none', datatype=float,
                                 value=float(npq_mode), label='none')
         # hist frequencies
-        var = "_".join(s.strip() for s in ["npq", "hist", mlabel, fmp_trait] if s.strip())
+        var = _make_var(["npq", "hist", mlabel, fmp_trait])
         outputs.add_observation(sample=label, variable=var, trait="frequencies",
                                 method='plantcv.plantcv.analyze.npq', scale='none', datatype=list,
                                 value=hist_df['proportion of pixels (%)'].values.tolist(),
