@@ -58,7 +58,7 @@ def npq(ps, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto",
             fatal_error('measurement_labels must be the same length as the number of measurements in `ps_da_light`')
 
         # Make an zeroed array of the same shape as the input DataArray
-        npq_global = xr.zeros_like(ps_da_light, dtype=float)
+        npq_global = xr.zeros_like(ps_da_dark.sel(frame_label="F0"), dtype=float)
         # Drop the frame_label coordinate
         npq_global = npq_global.drop_vars('frame_label')
 
@@ -66,7 +66,7 @@ def npq(ps, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto",
         mask_copy = np.copy(labeled_mask)
 
         # If the labeled mask is a binary mask with values 0 and 255, convert to 0 and 1
-        if len(np.unique(mask_copy)) == 2 and np.max(mask_copy) == 255:
+        if len(np.unique(mask_copy)) <= 2 and np.max(mask_copy) == 255:
             mask_copy = np.where(mask_copy == 255, 1, 0).astype(np.uint8)
 
         # Iterate over the label values 1 to n_labels
@@ -80,11 +80,12 @@ def npq(ps, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto",
                 ps_da_dark = reassign_frame_labels(ps_da=ps_da_dark, mask=submask)
 
             # Mask the Fm frame with the label submask
-            fm = ps_da_dark.sel(measurement='t0', drop=True).where(submask > 0, other=0)
+            fm = ps_da_dark.sel(measurement='t0', frame_label="F0", drop=True).where(submask > 0, other=0)
             # Calculate NPQ for the labeled region, matching whatever the Fmp+ light measurement is
-            fmp_var = str(ps_da_light.frame_label.values)
-            # .sel(frame_label=ps_da_light.frame_label.str.match('Fmp+'))
-            npq_lbl = ps_da_light.groupby('measurement', squeeze=False).map(_calc_npq, fm=fm)
+            fmp_var = str(ps_da_light.frame_label.values[ps_da_light.frame_label.str.match("Fmp+")][0])
+            npq_lbl = ps_da_light.sel(frame_label=ps_da_light.frame_label.str.match('Fmp+')).groupby('measurement', squeeze=False).map(_calc_npq, fm=fm)
+            # drop frame label
+            npq_lbl = npq_lbl.drop_vars('frame_label')
 
             # Fill NaN values with 0 so that we can add DataArrays together
             npq_lbl = npq_lbl.fillna(0)
@@ -168,14 +169,18 @@ def _get_light_and_dark_frames(ps):
         dark measurements
     """
     if ps.ojip_light is not None and ps.ojip_dark is not None:
-        ps_da_lights = [ps.ojip_light.sel(frame_label="Fmp")]
-        ps_da_dark = ps.ojip_dark.sel(frame_label="Fm")
+        ps_da_lights = [ps.ojip_light]
+        ps_da_dark = ps.ojip_dark
     elif ps.pmt is not None:
         p = ps.pmt.pam_time
-        # match all the "Fmp" frames, get a list of dataarrays
-        ps_da_lights = [p.sel(frame_label = f) for f in p.frame_label if re.search("Fmp+", str(f))]
+        all_non_fmp_frames = [str(f.values) for f in p.frame_label if not re.search("Fmp+", str(f))]
+        all_fmp_frames = [str(f.values) for f in p.frame_label if re.search("Fmp+", str(f))]
+        ps_da_lights = []
+        for f in all_fmp_frames:
+            labels_to_check = all_non_fmp_frames + [f]
+            ps_da_lights.append(p.sel(frame_label=p.frame_label.isin(labels_to_check)))
         # get the fm frame
-        ps_da_dark = p.sel(frame_label="Fm")
+        ps_da_dark = p
     else:
         fatal_error(
             "ps must have ojip_light and ojip_dark DataArrays from psl/psd, pml/pmd, "+
