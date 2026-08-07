@@ -34,6 +34,22 @@ def test_npq_cropreporter_auto(test_data):
     assert np.isclose(outputs.observations["prefix_1"]["npq_median_Fq/Fm"]["value"], 1.09790)
 
 
+def test_npq_pml_pmd_cropreporter(test_data):
+    """Test for PlantCV."""
+    # Clear results
+    outputs.clear()
+    source_path = test_data.photosynthesis.cropreporter_v653
+    ps = read_cropreporter(filename=source_path)
+    ps.ojip_dark = None
+    ps.ojip_light = None
+    _ = analyze_npq(ps=ps,
+                    labeled_mask=(255 * np.ones(ps.pml.pam_light.shape[0:2])).astype(np.uint8),
+                    auto_fm=True,
+                    measurement_labels=["Fq/Fm"],
+                    label="prefix", min_bin="auto", max_bin="auto")
+    assert np.isclose(outputs.observations["prefix_1"]["npq_median_Fq/Fm"]["value"], 0.1)
+
+
 def test_npq_pmt_cropreporter(test_data):
     """Test for PlantCV."""
     # Clear results

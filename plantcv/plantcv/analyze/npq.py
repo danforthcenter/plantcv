@@ -171,6 +171,9 @@ def _get_light_and_dark_frames(ps):
     if ps.ojip_light is not None and ps.ojip_dark is not None:
         ps_da_lights = [ps.ojip_light]
         ps_da_dark = ps.ojip_dark
+    elif ps.pmd is not None and ps.pml is not None:
+        ps_da_lights = [ps.pml.pam_light]
+        ps_da_dark = ps.pmd.pam_dark
     elif ps.pmt is not None:
         p = ps.pmt.pam_time
         all_non_fmp_frames = [str(f.values) for f in p.frame_label if not re.search("Fmp+", str(f))]
