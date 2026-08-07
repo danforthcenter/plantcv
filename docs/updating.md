@@ -65,7 +65,7 @@ Removed `ps_da_light` and `ps_da_dark` arguments in favor of `ps` argument that 
 
 #### plantcv.analyze.yii
 
-Renamed to `plantcv.analyze.yii_ojip` parameter `ps_da` to `ps` to reflect that it now takes a `PSII_data` object instead of a single frame from that object.
+Renamed parameter `ps_da` to `ps` to reflect that it now takes a `PSII_data` object instead of a single frame from that object.
 
 #### plantcv.utils
 
@@ -411,12 +411,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: NA
 * post v4.0: yii, yii_hist = **plantcv.analyze.yii**(*ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None*)
-* post v5.0: NA
-
-#### plantcv.analyze.yii_ojip
-
-* pre v5.0: See `plantcv.analyze.yii`
-* post v5.0: list_of_yii, list_of_yii_hist = **plantcv.analyze.yii_ojip**(*ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None*)
+* post v5.0: list_of_yii, list_of_yii_hist = **plantcv.analyze.yii**(*ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None*)
 
 #### plantcv.apply_mask
 
