@@ -30,7 +30,9 @@ def reassign_frame_labels(ps_da, mask):
     params.device += 1
 
     try:
-        if ps_da.name not in ["ojip_light", "ojip_dark", "pam_light", "pam_dark", "psl", "psd"]:
+        if ps_da.name not in ["ojip_light", "ojip_dark",
+                              "pam_light", "pam_dark",
+                              "psl", "psd"]:
             fatal_error("Error reassigning frame labels")
     except AttributeError:
         if isinstance(ps_da, PSII_data):
