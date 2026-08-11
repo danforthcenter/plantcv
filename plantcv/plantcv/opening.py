@@ -6,38 +6,45 @@ from skimage import morphology
 from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _rect_filter, _rect_replace
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv.fatal_error import fatal_error
+from plantcv.plantcv.get_kernel import _format_kernel
 
 
 def opening(gray_img, kernel=None, roi=None):
     """
     Wrapper for scikit-image opening functions. Opening can remove small bright spots (i.e. salt).
 
-    Inputs:
-    gray_img = input image (grayscale or binary)
-    kernel   = optional neighborhood, expressed as an array of 1s and 0s. If None, use cross-shaped structuring element.
-    roi      = optional rectangular ROI to open within
+    Parameters:
+    -----------
+    gray_img = numpy.ndarray,
+        input image (grayscale or binary)
+    kernel   = int, numpy.ndarray, or tuple
+        Kernel specified as a binary numpy.ndarray for arbitrary shapes,
+        shape tuple for a rectangular kernel, or integer for a square kernel.
+    roi      = plantcv.plantcv.Objects,
+        optional rectangular ROI to open within
 
-    :param gray_img: ndarray
-    :param kernel: ndarray
-    :param roi: plantcv.plantcv.Objects
-    :return filtered_img: ndarray
+    Returns:
+    --------
+    filtered_img = numpy.ndarray,
+        Opened image
     """
     # Make sure the image is binary/grayscale
     if len(np.shape(gray_img)) != 2:
         fatal_error("Input image must be grayscale or binary")
+    k = _format_kernel(kernel, np.ndarray)
 
     # If image is binary use the faster method
     if len(np.unique(gray_img)) == 2:
         bool_img = gray_img.astype(bool)
         sub_img = _rect_filter(bool_img, roi, function=morphology.binary_opening,
-                               **{"footprint": kernel})
+                               **{"footprint": k})
         filtered_img = sub_img.astype(np.uint8) * 255
         replaced_img = _rect_replace(bool_img.astype(np.uint8) * 255, filtered_img, roi)
     # Otherwise use method appropriate for grayscale images
     else:
         filtered_img = _rect_filter(gray_img, roi=roi, function=morphology.opening,
-                                    **{"footprint": kernel})
+                                    **{"footprint": k})
         replaced_img = _rect_replace(gray_img, filtered_img, roi)
 
     _debug(visual=replaced_img,

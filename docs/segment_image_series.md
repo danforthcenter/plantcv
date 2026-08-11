@@ -11,7 +11,7 @@ This function uses watershed segmentation to label individual objects in a serie
     - masks_paths = List of paths to the masks in the time series. Each mask should correspond to the image in imgs_paths for the same index
     - rois        = List of roi contours
     - save_labels = Optional, saves the labels of each image independently (default: True)
-    - ksize       = Size of the block in the time dimension to propagate the labels (default: 3)
+    - ksize       = int, tuple, or numpy.ndarray. Specifies the size of the block in the time dimension to propagate the labels. If a tuple the first element is used, if array then the first dimension is used (default: 3)
 
 - **Context:**
     - Used to obtain individual masks for objects, like full plants or leaves, that grow in a

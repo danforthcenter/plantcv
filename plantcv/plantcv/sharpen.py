@@ -6,6 +6,7 @@ import numpy as np
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _rect_filter, _rect_replace
 from plantcv.plantcv._globals import params
+from plantcv.plantcv.get_kernel import _format_kernel
 
 
 def sharpen(img, ksize, amount=1, threshold=0, sigma_x=0, sigma_y=None, roi=None):
@@ -14,7 +15,7 @@ def sharpen(img, ksize, amount=1, threshold=0, sigma_x=0, sigma_y=None, roi=None
     Parameters
     ----------
     img         = numpy.ndarray, RGB or grayscale image
-    ksize       = tuple, kernel dimensions such as (5, 5)
+    ksize       = int, tuple, or numpy.ndarray. Specifies kernel dimensions such as (5, 5)
     amount      = int, degree of sharpening, higher numbers will sharpen the image more
     threshold   = int, threshold on low contrast. Contrasts below this amount are removed.
     sigma_x     = int, standard deviation in X direction; if 0, calculated from kernel size
@@ -26,8 +27,9 @@ def sharpen(img, ksize, amount=1, threshold=0, sigma_x=0, sigma_y=None, roi=None
     sharp_img = numpy.ndarray,
                    sharpened image
     """
+    k = _format_kernel(ksize, tuple)
     sub_sharp_img = _rect_filter(img, roi, _unsharp_masking,
-                                 **{"ksize": ksize,
+                                 **{"ksize": k,
                                     "sigma_x": sigma_x,
                                     "sigma_y": sigma_y,
                                     "amount": amount,
