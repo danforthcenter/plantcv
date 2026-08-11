@@ -9,7 +9,7 @@ The function is a wrapper for the SciPy function [median filter](https://docs.sc
 
 - **Parameters:**
     - gray_img - Grayscale image data
-    - ksize - kernel size => integer or tuple, `ksize` x `ksize` box if integer, (n, m) size box if tuple
+    - ksize - kernel specification. Makes a ksize x ksize box if integer, an (n, m) size box if tuple, or an `np.shape(ksize)` size box if array.
 	- roi - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to apply this function. (default = None, which uses the entire image)
 - **Context:**
     - Used to reduce image noise
