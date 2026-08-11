@@ -4,12 +4,12 @@ import numpy as np
 import pandas as pd
 from plantcv.plantcv.warn import warn
 from plantcv.plantcv._helpers import _iterate_analysis
-from plantcv.plantcv._globals import params, outputs
+from plantcv.plantcv._globals import outputs
 from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.analyze.yii import _set_labels
 
 
-def alphaL(ps, labeled_mask, n_labels=1, measurement_labels=None, label=None, min_bin=-1, max_bin=1):
+def alphaL(ps, labeled_mask, n_labels=1, label=None, min_bin=-1, max_bin=1):
     """Analyze leaf light absorption
 
     Parameters
@@ -21,8 +21,6 @@ def alphaL(ps, labeled_mask, n_labels=1, measurement_labels=None, label=None, mi
         Labeled mask of objects (32-bit).
     n_labels            = int,
         Total number expected individual objects (default = 1).
-    measurement_labels  = list,
-        labels for each measurement, modifies the variable name of observations recorded
     label               = str,
         optional label parameter, modifies the variable name of observations recorded
     min_bin             = int,
@@ -55,6 +53,26 @@ def alphaL(ps, labeled_mask, n_labels=1, measurement_labels=None, label=None, mi
     return aph
 
 
+def _alphaL_calc(red, farred, mask):
+    """helper to calculate alphaL
+    Parameters
+    ----------
+    red     = numpy.ndarray,
+        red data
+    farred  = numpy.ndarray,
+        far red data
+    mask    = numpy.ndarray,
+        binary mask
+
+    Returns
+    -------
+    aph  = numpy.ndarray,
+        alphaL matrix
+    """
+    aph = 1 - np.divide(red, farred, out=np.full(np.shape(red), fill_value=np.nan), where=mask.astype(bool))
+    return aph
+
+
 def _analyze_alphaL(img, mask, label, min_bin, max_bin):
     """Analyze Alpha L in _iterate_analysis
     Parameters
@@ -63,7 +81,7 @@ def _analyze_alphaL(img, mask, label, min_bin, max_bin):
         Photosynthesis data as read by plantcv.plantcv.photosynthesis.read_cropreporter
         Must include the aph frame.
     mask    = numpy.ndarray,
-        Labeled mask of objects (32-bit).
+        Binary mask of objects.
     label   = str,
         optional label parameter, modifies the variable name of observations recorded
     min_bin = int,
@@ -80,32 +98,32 @@ def _analyze_alphaL(img, mask, label, min_bin, max_bin):
     red = ps.aph.red
     farred = ps.aph.farred
     # Calculate alphaL
-    alphaL = 1 - np.divide(red, farred, out=np.full(np.shape(red), fill_value=np.nan), where=mask.astype(bool))
+    alphaL_mat = _alphaL_calc(red, farred, mask)
     # Store mean, median, min, max, and histogram of alphaL
     outputs.add_observation(
         sample=label, variable="alphaL_mean", trait="mean alphaL",
         method="plantcv.plantcv.analyze.alphaL", scale="none", datatype=float,
-        value=np.nanmean(alphaL), label="none"
+        value=np.nanmean(alphaL_mat), label="none"
     )
     outputs.add_observation(
         sample=label, variable="alphaL_median", trait="median alphaL",
         method="plantcv.plantcv.analyze.alphaL", scale="none", datatype=float,
-        value=np.nanmedian(alphaL), label="none"
+        value=np.nanmedian(alphaL_mat), label="none"
     )
-    max_alphaL = np.nanmax(alphaL)
+    max_alphaL = np.nanmax(alphaL_mat)
     outputs.add_observation(
         sample=label, variable="alphaL_max", trait="max alphaL",
         method="plantcv.plantcv.analyze.alphaL", scale="none", datatype=float,
         value=max_alphaL, label="none"
     )
-    min_alphaL = np.nanmin(alphaL)
+    min_alphaL = np.nanmin(alphaL_mat)
     outputs.add_observation(
         sample=label, variable="alphaL_min", trait="min alphaL",
         method="plantcv.plantcv.analyze.alphaL", scale="none", datatype=float,
         value=min_alphaL, label="none"
     )
     # Check if bounds are appropriate for the data
-    finite_alphaL = alphaL[~np.isnan(alphaL)]
+    finite_alphaL = alphaL_mat[~np.isnan(alphaL_mat)]
     if (max_alphaL > max_bin) or (min_alphaL < min_bin):
         warn(
             f"alphaL values range from {round(min_alphaL, 3)}... to {round(max_alphaL, 3)}..." +
@@ -127,9 +145,9 @@ def _analyze_alphaL(img, mask, label, min_bin, max_bin):
     # Create a dataframe for the histogram
     hist_df = pd.DataFrame({'proportion of pixels (%)': alphaL_percent, 'counts': alphaL_bins[:-1]})
     outputs.add_observation(sample=label, variable="alphaL_hist",
-                                trait="alphaL frequencies",
-                                method='plantcv.plantcv.analyze.alphaL', scale='none', datatype=list,
-                                value=hist_df['proportion of pixels (%)'].values.tolist(),
-                                label=np.around(hist_df["counts"].values.tolist(), decimals=2).tolist())
+                            trait="alphaL frequencies",
+                            method='plantcv.plantcv.analyze.alphaL', scale='none', datatype=list,
+                            value=hist_df['proportion of pixels (%)'].values.tolist(),
+                            label=np.around(hist_df["counts"].values.tolist(), decimals=2).tolist())
 
-    return alphaL
+    return alphaL_mat

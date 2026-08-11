@@ -1,8 +1,6 @@
 """Tests for plantcv.plantcv.analyze.alphaL"""
 
-import os
 import pytest
-import shutil
 import numpy as np
 from plantcv.plantcv._globals import outputs
 from plantcv.plantcv.analyze import alphaL
