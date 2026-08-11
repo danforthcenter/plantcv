@@ -48,7 +48,7 @@ def quick_filter(mask, roi, roi_type="partial"):
     labels = labels.astype(float)
 
     # Set the ROI mask value to 0.5
-    roi_mask[np.where(roi_mask == 255)] = 0.5
+    roi_mask[np.where(roi_mask > 0)] = 0.5
 
     # Add the labeled mask and ROI mask together
     summed = roi_mask + labels
