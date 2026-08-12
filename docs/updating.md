@@ -376,6 +376,11 @@ pages for more details on the input and output variable types.
 * pre v4.2.1: NA
 * post v4.2.1: dist_chart = **plantcv.analyze.distribution**(*labeled_mask, n_labels=1, direction="down", bin_size=100, hist_range="absolute", label=None*)
 
+#### plantcv.analyze.etr
+
+* pre v5.0: NA
+* post v5.0: _ = **plantcv.analyze.etr**(*actinic_light, psi_psii_ratio=0.5*)
+
 #### plantcv.analyze.grayscale
 
 * pre v4.0: (see plantcv.analyze_nir_intensity)
