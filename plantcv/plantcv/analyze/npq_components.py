@@ -103,10 +103,10 @@ def _calc_qP_components(img, mask, label, ps_da, t):
     qp = ((fmp - fp) / (fmp - f0p)).to_numpy()
     # add mean to outputs
     outputs.add_observation(sample=label,
-                                variable=f'mean_qP_{t}', trait=f'mean qP {t}',
-                                method='plantcv.plantcv.analyze.npq_components',
-                                scale='none', datatype=float,
-                                value=np.nanmean(qp), label='none')
+                            variable=f'mean_qP_{t}', trait=f'mean qP {t}',
+                            method='plantcv.plantcv.analyze.npq_components',
+                            scale='none', datatype=float,
+                            value=np.nanmean(qp), label='none')
     # return the sum of qp and img so that iterate analysis returns complete results
     return img + qp
 
@@ -120,10 +120,10 @@ def _calc_qN_components(img, mask, label, ps_da, t):
     qn = ((fmp - f0p) / (fm - f0)).to_numpy()
     # add mean to outputs
     outputs.add_observation(sample=label,
-                                variable=f'mean_qN_{t}', trait=f'mean qN {t}',
-                                method='plantcv.plantcv.analyze.npq_components',
-                                scale='none', datatype=float,
-                                value=np.nanmean(qn), label='none')
+                            variable=f'mean_qN_{t}', trait=f'mean qN {t}',
+                            method='plantcv.plantcv.analyze.npq_components',
+                            scale='none', datatype=float,
+                            value=np.nanmean(qn), label='none')
     # return the sum of qn and img so that iterate analysis returns complete results
     return img + qn
 
@@ -136,47 +136,47 @@ def _calc_qL_components(img, mask, label, ps_da, qP, t):
     ql = ((qp_sub * f0p) / fp).to_numpy()
     # add mean to outputs
     outputs.add_observation(sample=label,
-                                variable=f'mean_qL_{t}', trait=f'mean qL {t}',
-                                method='plantcv.plantcv.analyze.npq_components',
-                                scale='none', datatype=float,
-                                value=np.nanmean(ql), label='none')
+                            variable=f'mean_qL_{t}', trait=f'mean qL {t}',
+                            method='plantcv.plantcv.analyze.npq_components',
+                            scale='none', datatype=float,
+                            value=np.nanmean(ql), label='none')
     # return the sum of ql and img so that iterate analysis returns complete results
     return img + ql
 
 
 def _calc_qI_components(img, mask, label, ps_da, t):
-    """Calculate qI as (Fm-Fm'')/Fm'' """
+    """Calculate qI as (Fm-Fm'')/Fm''"""
     fmpp = ps_da.sel(frame_label="Fmpp").astype('float').where(mask > 0, other=np.nan)
     fm = ps_da.sel(frame_label="Fm").astype('float').where(mask > 0, other=np.nan)
     qi = ((fm - fmpp) / fmpp).to_numpy()
     # add mean to outputs
     outputs.add_observation(sample=label,
-                                variable=f'mean_qI_{t}', trait=f'mean qI {t}',
-                                method='plantcv.plantcv.analyze.npq_components',
-                                scale='none', datatype=float,
-                                value=np.nanmean(qi), label='none')
+                            variable=f'mean_qI_{t}', trait=f'mean qI {t}',
+                            method='plantcv.plantcv.analyze.npq_components',
+                            scale='none', datatype=float,
+                            value=np.nanmean(qi), label='none')
     # return the sum of qi and img so that iterate analysis returns complete results
     return img + qi
 
 
 def _calc_qE_components(img, mask, label, ps_da, t):
-    """Calculate qE as Fm * (Fm''-Fm')/(Fm'' * Fm') """
+    """Calculate qE as Fm * (Fm''-Fm')/(Fm'' * Fm')"""
     fmp = ps_da.sel(frame_label="Fmp").astype('float').where(mask > 0, other=np.nan)
     fmpp = ps_da.sel(frame_label="Fmpp").astype('float').where(mask > 0, other=np.nan)
     fm = ps_da.sel(frame_label="Fm").astype('float').where(mask > 0, other=np.nan)
     qe = ((fm * (fmpp - fmp)) / (fmpp * fmp)).to_numpy()
     # add mean to outputs
     outputs.add_observation(sample=label,
-                                variable=f'mean_qE_{t}', trait=f'mean qE {t}',
-                                method='plantcv.plantcv.analyze.npq_components',
-                                scale='none', datatype=float,
-                                value=np.nanmean(qe), label='none')
+                            variable=f'mean_qE_{t}', trait=f'mean qE {t}',
+                            method='plantcv.plantcv.analyze.npq_components',
+                            scale='none', datatype=float,
+                            value=np.nanmean(qe), label='none')
     # return the sum of qe and img so that iterate analysis returns complete results
     return img + qe
 
 
 def _calc_phiNO_components(img, mask, label, ps_da, qL, t):
-    """Calculate phiNO as 1 / (NPQ + 1 + ql * Fm / F0) """
+    """Calculate phiNO as 1 / (NPQ + 1 + ql * Fm / F0)"""
     ql_masked = np.where(mask > 0, qL, np.nan)
     fmp = ps_da.sel(frame_label="Fmp").astype('float').where(mask > 0, other=np.nan)
     fm = ps_da.sel(frame_label="Fm").astype('float').where(mask > 0, other=np.nan)
@@ -185,25 +185,25 @@ def _calc_phiNO_components(img, mask, label, ps_da, qL, t):
     phiNO = (1 / (npq_masked + 1 + ql_masked * fm / f0)).to_numpy()
     # add mean to outputs
     outputs.add_observation(sample=label,
-                                variable=f'mean_phiNO_{t}', trait=f'mean phiNO {t}',
-                                method='plantcv.plantcv.analyze.npq_components',
-                                scale='none', datatype=float,
-                                value=np.nanmean(phiNO), label='none')
+                            variable=f'mean_phiNO_{t}', trait=f'mean phiNO {t}',
+                            method='plantcv.plantcv.analyze.npq_components',
+                            scale='none', datatype=float,
+                            value=np.nanmean(phiNO), label='none')
     # return the sum of phiNO and img so that iterate analysis returns complete results
     return img + phiNO
 
 
 def _calc_phiNPQ_components(img, mask, label, ps_da, phiNO, t):
-    """Calculate phiNPQ as 1 - (Fmp - Fp)/Fmp - phiNO """
+    """Calculate phiNPQ as 1 - (Fmp - Fp)/Fmp - phiNO"""
     phiNO_masked = np.where(mask > 0, phiNO, np.nan)
     fmp = ps_da.sel(frame_label="Fmp").astype('float').where(mask > 0, other=np.nan)
     fp = ps_da.sel(frame_label="Fp").astype('float').where(mask > 0, other=np.nan)
     phiNPQ = (1 - ((fmp - fp) / fmp) - phiNO_masked).to_numpy()
     # add mean to outputs
     outputs.add_observation(sample=label,
-                                variable=f'mean_phiNPQ_{t}', trait=f'mean phiNPQ {t}',
-                                method='plantcv.plantcv.analyze.npq_components',
-                                scale='none', datatype=float,
-                                value=np.nanmean(phiNPQ), label='none')
+                            variable=f'mean_phiNPQ_{t}', trait=f'mean phiNPQ {t}',
+                            method='plantcv.plantcv.analyze.npq_components',
+                            scale='none', datatype=float,
+                            value=np.nanmean(phiNPQ), label='none')
     # return the sum of phiNPQ and img so that iterate analysis returns complete results
     return img + phiNPQ
