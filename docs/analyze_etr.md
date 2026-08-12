@@ -28,3 +28,5 @@ pcv.analyze.etr(actinic_light=10)
 pcv.outputs.observations["plant_1"]["mean_etr"]["values"]
 
 ```
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/analyze/etr.py)
