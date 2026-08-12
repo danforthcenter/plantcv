@@ -1,6 +1,5 @@
 """Tests for plantcv.plantcv.analyze.npq_components"""
 
-import re
 import os
 import shutil
 import pytest
@@ -47,7 +46,7 @@ def test_npq_components_fmpp(test_data, tmpdir, monkeypatch):
     mask = np.zeros(ps.pmt.pam_time.shape[0:2])
     mask[1:5, 1:5] = 1
     mask[5:10, 5:10] = 2
-    l = npq_components(ps, mask.astype(np.uint8))
+    _ = npq_components(ps, mask.astype(np.uint8))
     assert outputs.observations["default_1"]["mean_qE_t0"]
 
 
