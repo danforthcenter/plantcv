@@ -47,9 +47,11 @@ def alphaL(ps, labeled_mask, n_labels=1, label=None, min_bin=-1, max_bin=1):
     if getattr(ps, "aph", None) is None:
         fatal_error("`ps` must be a PSII_Data object with APH data present.")
     # calculate alphaL for each masked object
-    aph = _iterate_analysis(img=ps,
+    aph = _iterate_analysis(img=np.zeros(ps.aph.red.shape[0:2]),
                             labeled_mask=labeled_mask, n_labels=n_labels, label=labels,
-                            function=_analyze_alphaL, **{"min_bin": min_bin, "max_bin": max_bin})
+                            function=_analyze_alphaL,
+                            **{"min_bin": min_bin, "max_bin": max_bin,
+                               "red": ps.aph.red, "farred": ps.aph.farred})
     return aph
 
 
@@ -73,13 +75,12 @@ def _alphaL_calc(red, farred, mask):
     return aph
 
 
-def _analyze_alphaL(img, mask, label, min_bin, max_bin):
+def _analyze_alphaL(img, mask, label, min_bin, max_bin, red, farred):
     """Analyze Alpha L in _iterate_analysis
     Parameters
     ----------
-    ps      = plantcv.plantcv.classes.PSII_data
-        Photosynthesis data as read by plantcv.plantcv.photosynthesis.read_cropreporter
-        Must include the aph frame.
+    img     = numpy.ndarray
+        Empty mask to write alphaL on in _iterate_analysis
     mask    = numpy.ndarray,
         Binary mask of objects.
     label   = str,
@@ -88,15 +89,16 @@ def _analyze_alphaL(img, mask, label, min_bin, max_bin):
         Minimum bin value (default = -1).
     max_bin = int,
         Maximum bin value (default = 1).
+    red = numpy.ndarray,
+        ps.aph.red frame
+    farred = numpy.ndarray
+        ps.aph.farred frame
 
     Returns
     -------
     alphaL  = numpy.ndarray,
         alphaL matrix
     """
-    ps = img
-    red = ps.aph.red
-    farred = ps.aph.farred
     # Calculate alphaL
     alphaL_mat = _alphaL_calc(red, farred, mask)
     # Store mean, median, min, max, and histogram of alphaL
@@ -150,4 +152,4 @@ def _analyze_alphaL(img, mask, label, min_bin, max_bin):
                             value=hist_df['proportion of pixels (%)'].values.tolist(),
                             label=np.around(hist_df["counts"].values.tolist(), decimals=2).tolist())
 
-    return alphaL_mat
+    return img + alphaL_mat
