@@ -39,12 +39,12 @@ def etr(actinic_light, psi_psii_ratio=0.5):
         etr_median_val = yii_median_val * alphaL_median_val * psi_psii_ratio * actinic_light
         # store outputs
         outputs.add_observation(sample=label,
-                                variable = 'mean_etr', trait='mean electron transport rate',
+                                variable='mean_etr', trait='mean electron transport rate',
                                 method='plantcv.plantcv.analyze.etr',
                                 scale='none', datatype=float,
                                 value=etr_mean_val, label='none')
         outputs.add_observation(sample=label,
-                                variable = 'median_etr', trait='median electron transport rate',
+                                variable='median_etr', trait='median electron transport rate',
                                 method='plantcv.plantcv.analyze.etr',
                                 scale='none', datatype=float,
                                 value=etr_median_val, label='none')
