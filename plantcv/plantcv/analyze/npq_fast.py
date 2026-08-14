@@ -2,17 +2,14 @@
 import os
 import re
 import numpy as np
-import pandas as pd
 import xarray as xr
 from math import ceil, floor
 from plantcv.plantcv import params, outputs, fatal_error
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv.photosynthesis import reassign_frame_labels
 from plantcv.plantcv.analyze.npq import _set_labels, _make_var, _create_histogram, _ridgeline_plots
 
 
-def npqfast(ps, labeled_mask, n_labels=1, min_bin=0, max_bin="auto",
-        measurement_labels=None, label=None):
+def npqfast(ps, labeled_mask, n_labels=1, min_bin=0, max_bin="auto", measurement_labels=None, label=None):
     """
     Calculate and analyze non-photochemical quenching estimates from fluorescence image data.
 
@@ -56,8 +53,8 @@ def npqfast(ps, labeled_mask, n_labels=1, min_bin=0, max_bin="auto",
             fatal_error(f"Mask needs to have shape {ps_da_light.shape[:2]}")
         if (measurement_labels is not None) and (len(measurement_labels) != ps_da_light.coords['measurement'].shape[0]):
             fatal_error(f'measurement_labels (len {len(measurement_labels)}) ' +
-            'must be the same length as the number of measurements in `ps_da_light`' +
-            f'({ps_da_light.measurement.shape[0]})')
+                        'must be the same length as the number of measurements in `ps_da_light`' +
+                        f'({ps_da_light.measurement.shape[0]})')
 
         # Make an zeroed array of the same shape as the input DataArray
         npq_global = xr.zeros_like(ps_da_light.sel(frame_label="F0p"), dtype=float)
@@ -95,8 +92,8 @@ def npqfast(ps, labeled_mask, n_labels=1, min_bin=0, max_bin="auto",
 
             # Record observations for each labeled region
             _add_fast_observations(npq_da=npq_lbl, measurements=ps_da_light.measurement.values,
-                              measurement_labels=measurement_labels, label=f"{labels[i - 1]}_{i}",
-                              max_bin=max_bin, min_bin=min_bin, fmp_trait=fmp_var)
+                                   measurement_labels=measurement_labels, label=f"{labels[i - 1]}_{i}",
+                                   max_bin=max_bin, min_bin=min_bin, fmp_trait=fmp_var)
 
         # Convert the labeled mask to a binary mask
         bin_mask = np.where(labeled_mask > 0, 255, 0)
@@ -176,21 +173,16 @@ def _add_fast_observations(npq_da, measurements, measurement_labels, label, max_
                                 label=np.around(hist_df[mlabel].values.tolist(), decimals=2).tolist())
 
 
-        
-
 def _calc_npq_fast(fmp, f0p):
     """NPQ_fast = 4.88 / (Fmp / F0p - 1) - 1"""
     out_flt = np.ones(shape=fmp.shape) * np.nan
     f0p = np.squeeze(f0p)
     where_arr = np.logical_and(fmp > 0, np.logical_and(f0p > 0, fmp > f0p))
-    # Calc (Fmp / F0p - 1)
     div = 4.88 / (np.divide(fmp, f0p, out=out_flt, where=where_arr) - 1)
-    # subtract 1
     sub = div - 1
-    # return array
     return sub
 
-        
+
 def _get_light_frames(ps):
     """Get light frames from classes in a PSII_data object
 
