@@ -43,6 +43,7 @@ nav:
         - 'Analyze YII': analyze_yii.md
         - 'Analyze NPQ': analyze_npq.md
         - 'Analyze NPQ Componenets': analyze_npq_components.md
+        - 'Analyze NPQ without dark frames': analyze_npqfast.md
         - 'Analyze ETR': analyze_etr.md
       - 'Annotation Tools':
           - 'Points': Points.md
