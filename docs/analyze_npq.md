@@ -1,8 +1,7 @@
 ## Analyze Nonphotochemical Quenching of Photosystem II
 
 Extract estimates of the nonphotochemical quenching (NPQ) of Photosystem II (PSII). 
-Calculates (Fm/Fm') - 1 data from a masked region. The photosynthesis subpackage is dependent on a PSII_Data instance file
-structure as created by photosynthesis.read_* files.
+Calculates (Fm/Fm') - 1 data from a masked region.
 
 **plantcv.analyze.npq**(*ps, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto",
 measurement_labels=None, label=None*)
