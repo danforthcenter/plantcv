@@ -854,6 +854,11 @@ pages for more details on the input and output variable types.
 * pre v3.3: NA
 * post v3.3: skeleton = **plantcv.morphology.skeletonize**(*mask*)
 
+#### plantcv.multispec.read_ms
+
+* pre v5.0: NA
+* post v5.0 ms = **plantcv.multispec.read_ms**(*source, wavelengths=None*)
+
 #### plantcv.naive_bayes_classifier
 
 * pre v3.0dev2: device, masks = **plantcv.naive_bayes_classifier(*img, pdf_file, device, debug=None*)**
