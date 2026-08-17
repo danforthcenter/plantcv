@@ -163,3 +163,41 @@ class Objects:
         file = np.load(filename)
         obj = Objects(file['contours'].tolist(), file['hierarchy'])
         return obj
+
+
+class MS_data:
+    """PlantCV Multispectral data class"""
+    def __init__(self,
+                 array_data,
+                 wavelengths,
+                 pseudo_rgb, filename,
+                 metadata=None):
+        # The actual array/datacube
+        self.array_data = array_data
+        # Contains all available wavelengths where keys are wavelength and value are indices
+        self.wavelengths = wavelengths
+        # Pseudo-RGB image if the array_type is a datacube
+        self.pseudo_rgb = pseudo_rgb
+        # The filename where the data originated from
+        self.filename = filename
+        # default wavelengths for making pseudo rgb
+        self.default_bands = None
+        # Metadata, flexible components in a dictionary
+        self.metadata = metadata
+
+    def select(self, wavelength, ms = True):
+        """Select a wavelength"""
+        if not isinstance(wavelength, list):
+            wavelength = [wavelength]
+        index = [i for i, wave in enumerate(self.wavelengths) if wave in wavelength]
+        sub_array = self.array_data[:, :, index]
+        if not ms:
+            return sub_array
+        sub_ms = MS_data(
+            array_data=sub_array,
+            wavelengths=wavelength,
+            pseudo_rgb=self.pseudo_rgb,
+            filename=self.filename,
+            metadata=self.metadata
+        )
+        return sub_ms
