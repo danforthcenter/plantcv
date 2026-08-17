@@ -23,7 +23,6 @@ def _ms_make_pseudo_rgb(ms_array):
     """
     # Make shorter variable names for data from the spectral class instance object
     array_data = ms_array.array_data
-    default_bands = ms_array.default_bands
     waves = ms_array.wavelengths
 
     max_wavelength = max(float(i) for i in waves)
@@ -137,7 +136,7 @@ def read_ms(source, wavelengths=None):
     MS_arrays = [cv2.imread(f, -1).astype(np.uint8) for f in MS_list]
     MS_wavelengths = [int(re.sub("^MS(\\d+).*", "\\1", os.path.basename(w))) for w in MS_list]
     # check shapes
-    if len(set([a.shape[0] for a in MS_arrays])) > 1 or len(set([a.shape[1] for a in MS_arrays])) > 1:
+    if len({a.shape[0] for a in MS_arrays}) > 1 or len({a.shape[1] for a in MS_arrays}) > 1:
         fatal_error("MS images have different shapes!")
     array_data = np.stack(MS_arrays, axis=-1)
     meta = {"directory": base, "files": [os.path.basename(f) for f in MS_list]}

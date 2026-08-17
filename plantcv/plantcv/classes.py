@@ -167,6 +167,7 @@ class Objects:
 
 class MS_data:
     """PlantCV Multispectral data class"""
+
     def __init__(self,
                  array_data,
                  wavelengths,
@@ -185,7 +186,7 @@ class MS_data:
         # Metadata, flexible components in a dictionary
         self.metadata = metadata
 
-    def select(self, wavelength, ms = True):
+    def select(self, wavelength, ms=True):
         """Select a wavelength"""
         if not isinstance(wavelength, list):
             wavelength = [wavelength]
