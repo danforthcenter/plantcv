@@ -2,7 +2,7 @@
 import cv2
 import pytest
 import numpy as np
-from plantcv.plantcv._globals import params, outputs
+from plantcv.plantcv._globals import params
 from plantcv.plantcv.transform.mcc_detect import mcc_detect
 
 

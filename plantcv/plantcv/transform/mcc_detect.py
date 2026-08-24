@@ -55,16 +55,15 @@ def mcc_detect(rgb_img, roi=None, delta_E=True, **kwargs):
 
 def _mcc_detection(rgb_img, **kwargs):
     """Internal worker to detect a macbeth color card using cv2.mcc tools"""
-    
     # Make a detector object
     detector = cv2.mcc.CCheckerDetector_create()
     # get parameters from kwargs
     chart_type = kwargs.get("chartType", cv2.mcc.MCC24)
     nc = kwargs.get("nc", 1)
     useNet = kwargs.get("useNet", False)
-    params = kwargs.get("params", cv2.mcc.DetectorParameters.create())
+    pars = kwargs.get("params", cv2.mcc.DetectorParameters.create())
     # give the detector the image to process
-    detector.process(rgb_img, chart_type, nc, useNet, params)
+    detector.process(rgb_img, chart_type, nc, useNet, pars)
     # Get a list of the checkers (cards)
     checkers = detector.getListColorChecker()
     # make an empty mask
@@ -105,4 +104,3 @@ def _mcc_detection(rgb_img, **kwargs):
     _, color_matrix = get_color_matrix(rgb_img=rgb_img, mask=labeled_mask)
 
     return color_matrix, debug_img, marea, mheight, mwidth
-    
