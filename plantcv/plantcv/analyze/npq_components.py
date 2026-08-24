@@ -10,10 +10,20 @@ def npq_components(ps, labeled_mask, n_labels=1, label=None):
 
     Parameters
     ----------
+    ps                 = plantcv.plantcv.classes.PSII_Data,
+        Object containing ojip_light data or PSL/PMT/PML data.
+    labeled_mask       = numpy.ndarray,
+        Labeled mask of objects (32-bit).
+    n_labels           = int,
+        Total number expected individual objects (default = 1).
+    label              = str,
+        Optional label parameter, modifies the variable name of
+        observations recorded (default = pcv.params.sample_label).
 
     Returns
     -------
-    dict
+    out_dict = dictionary,
+        Dictionary of npq component arrays.
     """
     # Check if Pam Time frame is present
     if getattr(ps, "pmt", None) is None:
