@@ -65,7 +65,7 @@ Removed `ps_da_light` and `ps_da_dark` arguments in favor of `ps` argument that 
 
 #### plantcv.analyze.yii
 
-Renamed to `plantcv.analyze.yii_ojip` parameter `ps_da` to `ps` to reflect that it now takes a `PSII_data` object instead of a single frame from that object.
+Renamed parameter `ps_da` to `ps` to reflect that it now takes a `PSII_data` object instead of a single frame from that object.
 
 #### plantcv.utils
 
@@ -348,6 +348,12 @@ pages for more details on the input and output variable types.
 * post v3.11: thermal_histogram = **plantcv.analyze_thermal_values**(*thermal_array, mask, histplot=False, label="default"*)
 * post v4.0: DEPRECATED, see plantcv.analyze.thermal
 
+#### plantcv.analyze.alphaL
+
+* pre v5.0: NA
+* post v5.0: array = **plantcv.analyze.alphaL**(*ps, labeled_mask, n_labels=1, measurement_labels=None, label=None, min_bin=-1, max_bin=1*)
+
+
 #### plantcv.analyze.bound_horizontal
 
 * pre v4.0: (see plantcv.analyze_bound_horizontal)
@@ -370,6 +376,11 @@ pages for more details on the input and output variable types.
 * pre v4.2.1: NA
 * post v4.2.1: dist_chart = **plantcv.analyze.distribution**(*labeled_mask, n_labels=1, direction="down", bin_size=100, hist_range="absolute", label=None*)
 
+#### plantcv.analyze.etr
+
+* pre v5.0: NA
+* post v5.0: _ = **plantcv.analyze.etr**(*actinic_light, psi_psii_ratio=0.5*)
+
 #### plantcv.analyze.grayscale
 
 * pre v4.0: (see plantcv.analyze_nir_intensity)
@@ -380,6 +391,11 @@ pages for more details on the input and output variable types.
 * pre v4.0: NA
 * post v4.0: npq, npq_hist = **plantcv.analyze.npq**(*ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto", measurement_labels=None, label=None*)
 * post v5.0: npq, npq_hist = **plantcv.analyze.npq**(*ps, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto", measurement_labels=None, label=None*)
+
+#### plantcv.analyze.npq_components
+
+* pre v5.0: NA
+* post v5.0: output_list = **plantcv.analyze.npq_components**(*ps, labeled_mask, n_labels=1, label=None*)
 
 #### plantcv.analyze.size
 
@@ -411,12 +427,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: NA
 * post v4.0: yii, yii_hist = **plantcv.analyze.yii**(*ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None*)
-* post v5.0: NA
-
-#### plantcv.analyze.yii_ojip
-
-* pre v5.0: See `plantcv.analyze.yii`
-* post v5.0: list_of_yii, list_of_yii_hist = **plantcv.analyze.yii_ojip**(*ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None*)
+* post v5.0: list_of_yii, list_of_yii_hist = **plantcv.analyze.yii**(*ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None*)
 
 #### plantcv.apply_mask
 

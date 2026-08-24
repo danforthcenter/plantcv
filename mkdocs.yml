@@ -29,6 +29,7 @@ nav:
         - 'Read Image': read_image.md
         - 'Read Bayer Raw Image': read_bayer.md
       - 'Analysis Methods':
+        - 'Analyze Alpha': analyze_alphaL.md
         - 'Analyze Color': analyze_color2.md
         - 'Analyze Pixel Distributions': analyze_distribution.md
         - 'Analyze Grayscale': analyze_grayscale.md
@@ -39,8 +40,10 @@ nav:
         - 'Analyze Thermal': analyze_thermal.md
         - 'Analyze Spectral Reflectance': analyze_spectral_reflectance.md
         - 'Analyze Spectral Index': analyze_spectral_index.md
-        - 'Analyze YII (OJIP)': analyze_yii_ojip.md
+        - 'Analyze YII': analyze_yii.md
         - 'Analyze NPQ': analyze_npq.md
+        - 'Analyze NPQ Componenets': analyze_npq_components.md
+        - 'Analyze ETR': analyze_etr.md
       - 'Annotation Tools':
           - 'Points': Points.md
       - 'Apply Mask': apply_mask.md
@@ -138,7 +141,7 @@ nav:
       - 'Photosynthesis Functions':
           - 'Read CropReporter Data': photosynthesis_read_cropreporter.md
           - 'Reassign Frame Labels': photosynthesis_reassign_frame_labels.md
-          - 'Analyze YII (OJIP)': analyze_yii_ojip.md
+          - 'Analyze YII': analyze_yii.md
           - 'Analyze NPQ': analyze_npq.md
           - 'Visualize chlorophyll Fluorescence': visualize_chlorophyll_fluorescence.md
       - 'Params (Debugging)': params.md
