@@ -5,10 +5,9 @@ import numpy as np
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _rect_filter
 from plantcv.plantcv.fatal_error import fatal_error
-from plantcv.plantcv._globals import params, outputs
+from plantcv.plantcv._globals import params
 from plantcv.plantcv.transform.delta_e import _delta_e
 from plantcv.plantcv.transform.get_color_matrix import get_color_matrix
-from plantcv.plantcv.transform.detect_color_card import _set_size_scale_from_chip
 
 
 def mcc_detect(rgb_img, roi=None, delta_E=True, **kwargs):
