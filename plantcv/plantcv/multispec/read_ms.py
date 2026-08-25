@@ -60,7 +60,24 @@ def _ms_make_pseudo_rgb(ms_array):
 
 
 def _ms_file_matcher(pattern, filelist, ref):
-    """"""
+    """Filter a list of file names to match capture groups in a reference name
+
+    Parameters:
+    -----------
+    pattern     = str,
+        Regular expression used to match images that are of the same subject from the same angle, etc.
+        This should include a capture group for the wavelength, which is expected to be the *first* capture group.
+        Subsequent capture groups are used to match against other candidate image files.
+    filelist    = list,
+        list of str filenames
+    ref         = str,
+        filename of the initial image given (values from 2nd+ capture group here are used as the filter condition)
+
+    Returns:
+    --------
+    list,
+        Filtered list of file names
+    """
     ref_match = re.search(pattern, ref)
     keep = []
     for s in filelist:
@@ -118,7 +135,6 @@ def _standardize_sources(source, pattern):
     # strip basename
     path = os.path.dirname(source)
     base = os.path.basename(source)
-    _, ext = os.path.splitext(source)
     # make a list of all the MS image paths
     MS_list = []
     for root, _, files in os.walk(path):
@@ -145,6 +161,10 @@ def read_ms(source, wavelengths=None, pattern="MS(\\d+)_((SV|TV))_BP0_(\\d+).*")
         Other wavelengths to include. Defaults to None.
         Will use each MS[wavelength].* file in
         the directory of the filename.
+    pattern     = str,
+        Regular expression used to match images that are of the same subject from the same angle, etc.
+        This should include a capture group for the wavelength, which is expected to be the *first* capture group.
+        Subsequent capture groups are used to match against other candidate image files.
 
     Returns:
     --------
