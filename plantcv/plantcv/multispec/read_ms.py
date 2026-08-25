@@ -59,13 +59,31 @@ def _ms_make_pseudo_rgb(ms_array):
     return pseudo_rgb
 
 
-def _standardize_sources(source):
+def _ms_file_matcher(pattern, filelist, ref):
+    """"""
+    ref_match = re.search(pattern, ref)
+    keep = []
+    for s in filelist:
+        s_match = re.search(pattern, s)
+        if s_match:
+            keep_s = True
+            for g in range(2, re.compile(pattern).groups):
+                if ref_match.group(g + 1) != s_match.group(g + 1):
+                    keep_s = False
+            if keep_s:
+                keep.append(s)
+    return keep
+
+
+def _standardize_sources(source, pattern):
     """Standardize directory, file, and list sources
 
     Parameters:
     -----------
     source     = list or str,
         list of files, directory, or image filepath.
+    pattern    = str,
+        regex pattern for file matching
 
     Returns:
     --------
@@ -81,6 +99,7 @@ def _standardize_sources(source):
     """
     # standardize directory to filename
     starts_from_file = True
+    # if given a list of filepaths then use it as is
     if isinstance(source, list):
         starts_from_file = False
         MS_list = source
@@ -88,13 +107,14 @@ def _standardize_sources(source):
         return MS_list, source_str, starts_from_file, source_str
     # set source string to source
     source_str = source
-    # if source is a directory then grab an image from it
+    # if source is a directory then grab an image from it to use as the reference
+    # this is a little more ambiguous and is not recommended
     if os.path.isdir(source):
         starts_from_file = False
         for root, _, files in os.walk(source):
-            for file in files:
-                if re.search("^MS\\d+.*BP0.*", file):
-                    source = os.path.join(root, file)
+            for f in files:
+                if re.search(pattern, f):
+                    source = os.path.join(root, f)
     # strip basename
     path = os.path.dirname(source)
     base = os.path.basename(source)
@@ -102,13 +122,18 @@ def _standardize_sources(source):
     # make a list of all the MS image paths
     MS_list = []
     for root, _, files in os.walk(path):
-        for file in files:
-            if re.search("^MS\\d+.*BP0.*"+ext, file):
-                MS_list.append(os.path.join(root, file))
+        for f in files:
+            if re.search(pattern, f):
+                MS_list.append(os.path.join(root, f))
+    # MS_list has everything that matches the pattern at this point
+    # but we don't just want to match the pattern, we need the matches
+    # to be the same, so another helper
+    MS_list = _ms_file_matcher(pattern, filelist=MS_list, ref=base)
+
     return MS_list, source_str, starts_from_file, base
 
 
-def read_ms(source, wavelengths=None):
+def read_ms(source, wavelengths=None, pattern="MS(\\d+)_((SV|TV))_BP0_(\\d+).*"):
     """read ms data to plantcv.plantcv.MS_data object
 
     Parameters:
@@ -126,11 +151,11 @@ def read_ms(source, wavelengths=None):
     ms = plantcv.plantcv.MS_data object
         Multi-spectral image object
     """
-    MS_list, source_str, starts_from_file, base = _standardize_sources(source)
+    MS_list, source_str, starts_from_file, base = _standardize_sources(source, pattern)
     # filter for wavelengths if specified
     if wavelengths:
         if starts_from_file:
-            wavelengths.append(int(re.sub("MS(\\d+).*", "\\1", base)))
+            wavelengths.append(int(re.search(pattern, base).group(1)))
         pat = "MS[" + "|".join(str(n) for n in set(wavelengths)) + "]"
         MS_list = [x for x in MS_list if re.search(pat, x)]
     MS_arrays = [cv2.imread(f, -1).astype(np.uint8) for f in MS_list]

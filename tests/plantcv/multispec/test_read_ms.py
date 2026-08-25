@@ -11,17 +11,15 @@ def test_read_ms_file(tmpdir):
     """Test for PlantCV"""
     cache_dir = tmpdir.mkdir("cache")
     img0 = np.zeros((10, 10), dtype=np.uint8)
-    filename0 = os.path.join(cache_dir, "MS450_BP0_img0.png")
+    filename0 = os.path.join(cache_dir, "MS450_SV_BP0_0_img0.png")
     img1 = np.ones((10, 10), dtype=np.uint8)
-    filename1 = os.path.join(cache_dir, "MS600_BP0_img1.png")
-    img2 = np.ones((10, 10), dtype=np.uint8)
-    filename2 = os.path.join(cache_dir, "MS750_BP0_img2.png")
-    img3 = np.ones((10, 10), dtype=np.uint8)
-    filename3 = os.path.join(cache_dir, "MS900_BP0_img3.png")
+    filename1 = os.path.join(cache_dir, "MS600_SV_BP0_0_img1.png")
+    filename2 = os.path.join(cache_dir, "MS750_SV_BP0_0_img2.png")
+    filename3 = os.path.join(cache_dir, "MS900_SV_BP0_0_img3.png")
     cv2.imwrite(filename0, img0)
     cv2.imwrite(filename1, img1)
-    cv2.imwrite(filename2, img2)
-    cv2.imwrite(filename3, img3)
+    cv2.imwrite(filename2, img1)
+    cv2.imwrite(filename3, img1)
     # Read one of the images with read_ms
     ms = read_ms(filename1, wavelengths=[450, 600, 750, 900])
     assert isinstance(ms, MS_data)
@@ -39,21 +37,19 @@ def test_read_ms_dir(tmpdir):
     """Test for PlantCV"""
     cache_dir = tmpdir.mkdir("cache")
     img0 = np.zeros((10, 10), dtype=np.uint8)
-    filename0 = os.path.join(cache_dir, "MS500_BP0_img0.png")
+    filename0 = os.path.join(cache_dir, "MS500_SV_BP0_0_img0.png")
     img1 = np.ones((10, 10), dtype=np.uint8)
-    filename1 = os.path.join(cache_dir, "MS560_BP0_img1.png")
-    img2 = np.ones((10, 10), dtype=np.uint8)
-    filename2 = os.path.join(cache_dir, "MS570_BP0_img2.png")
-    img3 = np.ones((10, 10), dtype=np.uint8)
-    filename3 = os.path.join(cache_dir, "MS580_BP50_img3.png")
+    filename1 = os.path.join(cache_dir, "MS560_SV_BP0_0_img1.png")
+    filename2 = os.path.join(cache_dir, "MS570_TV_BP0_0_img2.png")
+    filename3 = os.path.join(cache_dir, "MS580_SV_BP50_0_img3.png")
     cv2.imwrite(filename0, img0)
     cv2.imwrite(filename1, img1)
-    cv2.imwrite(filename2, img2)
-    cv2.imwrite(filename3, img3)
+    cv2.imwrite(filename2, img1)
+    cv2.imwrite(filename3, img1)
     # Read one of the images with read_ms
     ms = read_ms(cache_dir)
     assert isinstance(ms, MS_data)
-    assert len(ms.wavelengths) == 3
+    assert len(ms.wavelengths) == 2
 
 
 def test_read_ms_list(tmpdir):
@@ -63,18 +59,36 @@ def test_read_ms_list(tmpdir):
     filename0 = os.path.join(cache_dir, "MS450_BP0_img0.png")
     img1 = np.ones((10, 10), dtype=np.uint8)
     filename1 = os.path.join(cache_dir, "MS600_BP0_img1.png")
-    img2 = np.ones((10, 10), dtype=np.uint8)
     filename2 = os.path.join(cache_dir, "MS750_BP0_img2.png")
-    img3 = np.ones((10, 10), dtype=np.uint8)
     filename3 = os.path.join(cache_dir, "MS900_BP50_img3.png")
     cv2.imwrite(filename0, img0)
     cv2.imwrite(filename1, img1)
-    cv2.imwrite(filename2, img2)
-    cv2.imwrite(filename3, img3)
+    cv2.imwrite(filename2, img1)
+    cv2.imwrite(filename3, img1)
     # Here the BP0 filter will not be enforced.
-    ms = read_ms([filename0, filename1, filename2, filename3])
+    ms = read_ms([filename0, filename1, filename2, filename3], pattern="doesnotgetused")
     assert isinstance(ms, MS_data)
     assert len(ms.wavelengths) == 4
+
+
+def test_read_ms_different_pattern(tmpdir):
+    """Test for PlantCV"""
+    cache_dir = tmpdir.mkdir("cache")
+    img0 = np.zeros((10, 10), dtype=np.uint8)
+    img1 = np.ones((10, 10), dtype=np.uint8)
+    filename0 = os.path.join(cache_dir, "MS450_BP0_img0.png")
+    filename1 = os.path.join(cache_dir, "MS600_BP0_img1.png")
+    filename2 = os.path.join(cache_dir, "MS750_BP0_img2.png")
+    filename3 = os.path.join(cache_dir, "MS900_BP50_img3.png")
+    filename4 = os.path.join(cache_dir, "MS900_BP50_picture4.png")
+    cv2.imwrite(filename0, img0)
+    cv2.imwrite(filename1, img1)
+    cv2.imwrite(filename2, img1)
+    cv2.imwrite(filename3, img1)
+    cv2.imwrite(filename4, img1)
+    ms = read_ms(cache_dir, pattern="MS(\\d+)_BP0_((img|picture)).*")
+    assert isinstance(ms, MS_data)
+    assert len(ms.wavelengths) == 3
 
 
 def test_read_ms_bad_shape(tmpdir):
@@ -93,4 +107,4 @@ def test_read_ms_bad_shape(tmpdir):
     cv2.imwrite(filename2, img2)
     cv2.imwrite(filename3, img3)
     with pytest.raises(RuntimeError):
-        _ = read_ms(cache_dir)
+        _ = read_ms(cache_dir, pattern="MS(\\d+)_BP0.*")
