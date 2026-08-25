@@ -59,6 +59,14 @@ automatically. Alternatively, you can run `pip install -e .` to reinstall the pa
 
 ### Breaking changes between v4 and v5 <a name="breaking-changes"></a>
 
+#### plantcv.analyze.npq
+
+Removed `ps_da_light` and `ps_da_dark` arguments in favor of `ps` argument that takes the entire `PSII_data` object.
+
+#### plantcv.analyze.yii
+
+Renamed to `plantcv.analyze.yii_ojip` parameter `ps_da` to `ps` to reflect that it now takes a `PSII_data` object instead of a single frame from that object.
+
 #### plantcv.utils
 
 The `plantcv.utils` module has been deleted with `sample_images` moving to `plantcv.parallel`, `json2csv` moving to `plantcv.plantcv`, and `tabulate_bayes_classes` moving to `plantcv.learn`. Command-line interfaces are still available for `sample_images` [plantcv-sample](tools.md#plantcv-parallel) and `tabulate_bayes_classes` as [plantcv-learn tabulate_bayes_classes](tools.md#training-machine-learning-models).
@@ -95,6 +103,11 @@ Deprecated the function in favor of the new
 #### plantcv.transform.quick_color_check
 
 Function moved to `plantcv.qc.quick_color_check` and the `num_chips`/`target_matrix` arguments are now optional.
+
+#### plantcv.visualize.pixel_scatter_plot
+
+Changed `paths_to_imgs` argument to `source` to reflect that it can use a `numpy.ndarray`, `str` path,
+or a list of paths where it previously only could use a list of paths.
 
 #### plantcv.visualize.time_lapse_video
 
@@ -370,6 +383,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: NA
 * post v4.0: npq, npq_hist = **plantcv.analyze.npq**(*ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto", measurement_labels=None, label=None*)
+* post v5.0: npq, npq_hist = **plantcv.analyze.npq**(*ps, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto", measurement_labels=None, label=None*)
 
 #### plantcv.analyze.size
 
@@ -401,6 +415,12 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: NA
 * post v4.0: yii, yii_hist = **plantcv.analyze.yii**(*ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None*)
+* post v5.0: NA
+
+#### plantcv.analyze.yii_ojip
+
+* pre v5.0: See `plantcv.analyze.yii`
+* post v5.0: list_of_yii, list_of_yii_hist = **plantcv.analyze.yii_ojip**(*ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None*)
 
 #### plantcv.apply_mask
 
@@ -1019,7 +1039,7 @@ pages for more details on the input and output variable types.
 #### plantcv.qc.plot_deltaE
 
 * pre v5.0: NA
-* post v5.0: fig = **plantcv.qc.plot_deltaE**(*deltaE_matrix*)
+* post v5.0: fig = **plantcv.qc.plot_deltaE**(*source, n=20, ext="png", \*\*kwargs*)
 
 #### plantcv.readbayer
 
@@ -1618,7 +1638,8 @@ pages for more details on the input and output variable types.
 #### plantcv.visualize.pixel_scatter_plot
 
 * pre v4.0: NA
-* post v4.0: fig, ax = **pcv.visualize.pixel_scatter_plot**(*paths_to_imgs, x_channel, y_channel*)
+* pre v5.0: fig, ax = **pcv.visualize.pixel_scatter_plot**(*paths_to_imgs, x_channel, y_channel*)
+* post v5.0: fig, ax = **pcv.visualize.pixel_scatter_plot**(*source, x_channel, y_channel, n=20, ext="png"*)
 
 #### plantcv.visualize.tile
 
@@ -1629,7 +1650,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: NA
 * post v4.0: frame_size = **pcv.visualize.time_lapse_video**(*img_list, out_filename='./time_lapse_video.mp4', fps=29.97, display=True*)
-* post v5.0: deprecated.
+* post v5.0: **pcv.visualize.time_lapse_video**(*source, out_filename='./time_lapse_video.mp4', fps=29.97*)
 
 #### plantcv.watershed_segmentation
 

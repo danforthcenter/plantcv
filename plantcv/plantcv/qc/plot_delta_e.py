@@ -107,7 +107,7 @@ def _plot_dataset_deltaE(source, n=20, ext="png", **kwargs):
         paths_to_imgs = []
         for root, _, files in os.walk(source):
             for file in files:
-                if file.lower().endswith(ext) and len(paths_to_imgs) < n:
+                if file.lower().endswith(ext.lower()) and len(paths_to_imgs) < n:
                     paths_to_imgs.append(os.path.join(root, file))
                     # store debug mode
     debug = params.debug

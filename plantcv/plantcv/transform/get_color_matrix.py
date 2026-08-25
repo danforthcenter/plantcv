@@ -59,25 +59,27 @@ def get_color_matrix(rgb_img, mask):
 
 
 def get_matrix_m(target_matrix, source_matrix):
-    """Calculate Moore-Penrose inverse matrix for use in calculating transformation_matrix.
+    """Calculate Moore-Penrose inverse matrix for transformation matrix calculation.
 
-    Inputs:
-    target_matrix       = a 22x4 matrix containing the average red value, average green value, and average blue value
-                            for each color chip.
-    source_matrix       = a 22x4 matrix containing the average red value, average green value, and average blue value
-                            for each color chip.
+    Parameters
+    ----------
+    target_matrix : numpy.ndarray
+        A 22x4 matrix containing the average red, green, and blue values
+        for each color chip.
+    source_matrix : numpy.ndarray
+        A 22x4 matrix containing the average red, green, and blue values
+        for each color chip.
 
-    Outputs:
-    matrix_a    = a concatenated 22x9 matrix of source_matrix red, green, and blue values to the powers 1, 2, 3
-    matrix_m    = a 9x22 Moore-Penrose inverse matrix
-    matrix_b    = a 22x9 matrix of linear, square, and cubic rgb values from target_img
-
-
-    :param target_matrix: numpy.ndarray
-    :param source_matrix: numpy.ndarray
-    :return matrix_a: numpy.ndarray
-    :return matrix_m: numpy.ndarray
-    :return matrix_b: numpy.ndarray
+    Returns
+    -------
+    matrix_a : numpy.ndarray
+        A concatenated 22x9 matrix of source_matrix red, green, and blue
+        values to the powers 1, 2, and 3.
+    matrix_m : numpy.ndarray
+        A 9x22 Moore-Penrose inverse matrix.
+    matrix_b : numpy.ndarray
+        A 22x9 matrix of linear, square, and cubic RGB values from
+        target_matrix.
     """
     # if the number of chips in source_img match the number of chips in target_matrix
     if np.shape(target_matrix) == np.shape(source_matrix):

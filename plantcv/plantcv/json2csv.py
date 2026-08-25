@@ -35,6 +35,12 @@ def json2csv(json_file, csv_prefix):
     # Split up variables
     meta_vars, scalar_vars, multi_vars = _unpack_variables(data)
 
+    # Strip a trailing .json extension from the prefix so filenames do not end up
+    # as e.g. "results.json-single-value-traits.csv" (plantcv-run-workflow reuses
+    # the JSON results filename as the CSV prefix)
+    if csv_prefix.endswith(".json"):
+        csv_prefix = csv_prefix[:-len(".json")]
+
     # Output files
     scalar_file = csv_prefix + "-single-value-traits.csv"
     multi_file = csv_prefix + "-multi-value-traits.csv"

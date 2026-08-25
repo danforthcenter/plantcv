@@ -53,9 +53,7 @@ def test_plot_deltaE_filepath(qc_test_data, tmpdir):
     """Test for PlantCV"""
     img = cv2.imread(qc_test_data.cc_img)
     cache_dir = tmpdir.mkdir("cache")
-    # create a random image and write it to the temp directory
     path_to_img = os.path.join(cache_dir, 'tmp_img.png')
     cv2.imwrite(path_to_img, img)
     p = plot_deltaE(str(cache_dir))
     assert isinstance(p, alt.LayerChart)
-    
