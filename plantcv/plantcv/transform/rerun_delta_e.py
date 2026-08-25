@@ -1,6 +1,5 @@
 """Rerun delta E calculation automatically if deltaE is in outputs and image is corrected"""
-import re
-from plantcv.plantcv._globals import outputs, params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv.transform.delta_e import _delta_e
 from plantcv.plantcv.transform.detect_color_card import detect_color_card
 
