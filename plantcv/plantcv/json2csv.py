@@ -154,6 +154,10 @@ def _create_metadata_row(meta_vars, metadata):
         val = "NA"
         if var in metadata:
             vals = metadata[var]["value"]
+            print(vals)
+            # Ensure vals is always a list
+            if not isinstance(vals, list):
+                vals = [vals]
             # For non-deltaE metadata create a unique list if there are multiple values
             if "deltaE" not in var:
                 vals = ["none" if v is None else v for v in vals]
