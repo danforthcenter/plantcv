@@ -28,6 +28,11 @@ Reads image into numpy ndarray and splits the path and image filename (*see note
     is returned to the user rather than the usual `img, path, filename` that is returned under other modes of `pcv.readimage`. There is some flexibility 
     in formats of images supported but encourage people to reach out on [GitHub](https://github.com/danforthcenter/plantcv/issues) and collaborate with the
     PlantCV community to expand our support.
+    - The `default bands` field of an ENVI header file sets the bands that are used to make the pseudo-RGB image. The
+    ENVI standard allows one band number for a grayscale image, or three band numbers for an RGB image. PlantCV repeats
+    a single band in each channel, so a header with one default band gives a grayscale pseudo-RGB image. A header with
+    any other number of default bands, or with a band number that is not in the datacube, raises an error. Remove the
+    `default bands` field from the header file to make PlantCV select the bands from the available wavelengths instead.
 	- A wide variety of images can be read with `mode=normalize` which may be useful for special cases, such as 16-bit color images that otherwise may behave unexpectedly. This mode will normalize images to values to be between 0 and 255 using `cv2.normalize`.
 - **Example use:**
     - [Use In Color Correction Tutorial](https://plantcv.org/tutorials/color-correction) 

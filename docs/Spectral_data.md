@@ -38,6 +38,8 @@ Attributes are accessed as spectral_data_instance.*attribute*.
 
 **filename**: The filename where the data originated from
 
+**default_bands**: The bands that are used to make the pseudo-RGB image, read from the `default bands` field of the .hdr file. Contains one band number for a grayscale image or three band numbers for an RGB image. Set to `None` if the .hdr file does not name any default bands, in which case the bands are selected from the available wavelengths
+
 **metadata**: Metadata in a dictionary. Included keys might be specific to hyperspectral or geospatial image types 
 
 ### Example

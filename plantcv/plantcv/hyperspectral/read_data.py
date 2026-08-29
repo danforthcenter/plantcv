@@ -46,9 +46,20 @@ def _make_pseudo_rgb(spectral_array):
     wl_keys = spectral_array.wavelength_dict.keys()
 
     if default_bands is not None:
-        pseudo_rgb = cv2.merge((array_data[:, :, int(default_bands[0])],
-                                array_data[:, :, int(default_bands[1])],
-                                array_data[:, :, int(default_bands[2])]))
+        # The ENVI standard defines one default band for a grayscale image and three for an RGB image
+        if len(default_bands) == 1:
+            # Repeat the single band in each channel to make a grayscale pseudo-rgb image
+            default_bands = default_bands * 3
+        if len(default_bands) != 3:
+            fatal_error(f"Expected 1 or 3 default bands in the header file but found {len(default_bands)}.")
+        # Default bands are positions on the band axis of the datacube, so they have to be in range
+        bands = [int(band) for band in default_bands]
+        if not all(0 <= band < array_data.shape[2] for band in bands):
+            fatal_error(f"Default bands {bands} are not all valid band numbers for a datacube with "
+                        f"{array_data.shape[2]} bands.")
+        pseudo_rgb = cv2.merge((array_data[:, :, bands[0]],
+                                array_data[:, :, bands[1]],
+                                array_data[:, :, bands[2]]))
 
     else:
         max_wavelength = max(float(i) for i in wl_keys)
@@ -289,7 +300,10 @@ def read_data(filename, mode="ENVI"):
     if "defaultbands" in header_dict:
         header_dict["defaultbands"] = header_dict["defaultbands"].replace("{", "")
         header_dict["defaultbands"] = header_dict["defaultbands"].replace("}", "")
-        default_bands = header_dict["defaultbands"].split(",")
+        # Discard empty values so that an empty default bands field is equivalent to no default bands
+        default_bands = [band for band in header_dict["defaultbands"].split(",") if band != ""]
+        if len(default_bands) == 0:
+            default_bands = None
 
     # Find array min and max values
     max_pixel = float(np.amax(array_data))
