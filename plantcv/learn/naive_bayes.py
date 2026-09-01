@@ -8,19 +8,19 @@ from matplotlib import pyplot as plt
 
 
 def naive_bayes(imgdir, maskdir, outfile, mkplots=False):
-    """Naive Bayes training function
+    """Naive Bayes training function.
 
-    Inputs:
-    imgdir  = Path to a directory of original 8-bit RGB images.
-    maskdir = Path to a directory of binary mask images. Mask images must have the same name as their corresponding
-              color images.
-    outfile = Name of the output text file that will store the color channel probability density functions.
-    mkplots = Make PDF plots (True or False).
-
-    :param imgdir: str
-    :param maskdir: str
-    :param outfile: str
-    :param mkplots: bool
+    Parameters
+    ----------
+    imgdir : str
+        Path to a directory of original 8-bit RGB images.
+    maskdir : str
+        Path to a directory of binary mask images. Mask images must have the same name as their corresponding
+        color images.
+    outfile : str
+        Name of the output text file that will store the color channel probability density functions.
+    mkplots : bool, optional
+        Make PDF plots, by default False.
     """
     # Initialize color channel ndarrays for plant (foreground) and background
     plant = {"hue": np.array([], dtype=np.uint8), "saturation": np.array([], dtype=np.uint8),
@@ -77,22 +77,210 @@ def naive_bayes(imgdir, maskdir, outfile, mkplots=False):
                 _plot_pdf(channel, os.path.dirname(outfile), plant=plant_pdf, background=bg_pdf)
 
 
-def naive_bayes_multiclass(samples_file, outfile, mkplots=False):
-    """Naive Bayes training function for two or more classes from sampled pixel RGB values.
+def _check_header(class_list):
+    """Checks the header of a naive bayes input file for mistakes.
 
-    Inputs:
-    samples_file = Input text file containing sampled pixel RGB values for each training class. The file should be a
-                   tab-delimited table with one training class per column. The required first row must contain header
-                   labels for each class. The row values for each class must be comma-delimited RGB values.
-                   You must have at least 2 classes. See the file plantcv/tests/data/sampled_rgb_points.txt for
-                   an example.
-    outfile      = Name of the output text file that will store the color channel probability density functions.
-    mkplots      = Make PDF plots (True or False).
+    Parameters
+    ----------
+    class_list : list
+        list of column headers
 
-    :param samples_file: str
-    :param outfile: str
-    :param mkplots: bool
+    Returns
+    -------
+    messages : list
+        list of header error messages
     """
+    messages = []
+    # Assume a header with one column isn't tab-delimited
+    if len(class_list) == 1:
+        messages.append("Line 1: only 1 column found in the header. Is this file tab-delimited?")
+
+    # Check for empty or duplicate class labels
+    if '' in class_list:
+        messages.append(f"Line 1, column {class_list.index('') + 1}: class label is empty. "
+                        f"Every column needs a label")
+
+    seen_labels = {}
+    for i, cls in enumerate(class_list):
+        if cls in seen_labels:
+            messages.append(f"Line 1: class label '{cls}' is used in both column {seen_labels[cls] + 1} and "
+                            f"column {i + 1}. Class labels must be unique")
+        else:
+            seen_labels[cls] = i
+    return messages
+
+
+def _check_lines(points, line_num, class_list):
+    """Checks each line in an input file for pixel errors.
+
+    Parameters
+    ----------
+    points : list
+        List of pixel values in a file line
+    line_num : int
+        Line number in file for error message output
+    class_list : list
+        List of categories in input file
+
+    Returns
+    -------
+    messages : list
+        List of error messages
+    sample_counts : dict
+        Number of valid pixels per category in line
+    """
+    messages = []
+    # Count valid samples per class so we can flag if there are classes with no valid points
+    sample_counts = {cls: 0 for cls in class_list}
+    for i, point in enumerate(points):
+        valid_point = 1
+        # A row longer than the header has no class to attribute this column to
+        if i < len(class_list) and len(point) != 0:
+            values = point.split(",")
+            if len(values) != 3:
+                messages.append(f"Line {line_num}, class '{class_list[i]}' (column {i + 1}): "
+                                f"expected 3 comma-separated values, found {len(values)} ('{point}')")
+                valid_point = 0
+            else:
+                for channel, value in zip(("red", "green", "blue"), values):
+                    if not value.strip().lstrip("-").isdigit():
+                        messages.append(f"Line {line_num}, class '{class_list[i]}' (column {i + 1}): "
+                                        f"{channel} value '{value}' is not an integer")
+                        valid_point = 0
+                        continue
+                    ivalue = int(value)
+                    if ivalue < 0 or ivalue > 255:
+                        messages.append(f"Line {line_num}, class '{class_list[i]}' (column {i + 1}): "
+                                        f"{channel} value {ivalue} is outside the valid 8-bit range (0-255)")
+                        valid_point = 0
+            sample_counts[class_list[i]] += valid_point
+
+    return messages, sample_counts
+
+
+def _tabulate_errors(samples_file):
+    """Checks for types of errors present in a naive bayes multiclass input file.
+
+    Parameters
+    ----------
+    samples_file : str
+        Input text file containing sampled pixel RGB values for each training class.
+
+    Returns
+    -------
+    labels : dict
+        Error types and descriptions
+    messages : dict
+        Error messages belonging to each type in labels
+    sample_counts: dict
+        Number of valid samples per category in input file
+    class_list: list
+        List of categories in input file
+    """
+    # Example messages (capped at max_errors) and total occurrence counts, per error category
+    labels = {"header": "Header problems", "column_count": "Wrong column count",
+              "rgb_value": "Invalid RGB values", "empty_class": "Classes with no samples"}
+    messages = {category: [] for category in labels}
+
+    with open(samples_file, "r") as f:
+        # Read the first line and use the column headers as class labels
+        header = f.readline().rstrip("\n")
+        class_list = header.split("\t")
+
+        messages["header"] = _check_header(class_list)
+
+        # Count valid samples per class so we can flag if there are classes with no valid points
+        sample_counts = {cls: 0 for cls in class_list}
+
+        # Loop over the rest of the data in the input file
+        for line_num, row in enumerate(f, start=2):
+            # Remove newlines and quotes
+            row = row.rstrip("\n").replace('"', '')
+            points = row.split("\t")
+            if len(points) != len(class_list) and len(row) != 0:
+                messages["column_count"].append(f"Line {line_num}: row has {len(points)} column(s) "
+                                                f"but the header defines {len(class_list)} class(es)")
+            if len(row) != 0:
+                rgb_messages, valid_counts = _check_lines(points, line_num, class_list)
+                messages["rgb_value"].extend(rgb_messages)
+                for cls in class_list:
+                    sample_counts[cls] += valid_counts[cls]
+
+        # Flag any labeled class that never got a valid sample
+        for cls, n in sample_counts.items():
+            if cls != "" and n == 0:
+                messages["empty_class"].append(f"Class '{cls}' has zero valid sampled pixels. "
+                                               f"Add at least one row with a valid value in this column")
+    return messages, labels, sample_counts, class_list
+
+
+def check_samples_file(samples_file, max_errors=20):
+    """Quality control check of a naive Bayes multiclass samples file.
+    Reports formatting problems with line numbers.
+
+    Parameters
+    ----------
+    samples_file : str
+        Input text file containing sampled pixel RGB values for each training class.
+    max_errors : int, optional
+        Max number of error messages printed per category, by default 20
+
+    Returns
+    -------
+    bool
+        Pass or Fail on samples file to allow naive bayes training to proceed
+    """
+    messages, labels, sample_counts, class_list = _tabulate_errors(samples_file)
+    totals = {category: len(messages[category]) for category in labels}
+    total_problems = sum(totals.values())
+    if total_problems == 0:
+        print(f"{samples_file} looks good: {len(class_list)} classes, "
+              + ", ".join(f"{cls}={n}" for cls, n in sample_counts.items()) + " valid sampled pixels each."
+              )
+        return True
+
+    print(f"Found {total_problems} formatting problem(s) in {samples_file}:\n")
+    for category, label in labels.items():
+        count = totals[category]
+        if count == 0:
+            continue
+        print(f"{label} ({min(count, max_errors)} of {count} shown):")
+        for message in messages[category][0:max_errors]:
+            print(f"  {message}")
+        if count > max_errors:
+            print(f"  ...and {count - max_errors} more.")
+        print()
+    return False
+
+
+def naive_bayes_multiclass(samples_file, outfile, mkplots=False, max_errors=20):
+    """Naive Bayes training for two or more classes from sampled pixel RGB values.
+
+    Parameters
+    ----------
+    samples_file : str
+        Input text file containing sampled pixel RGB values for each training class.
+        The file should be a tab-delimited table with one training class per column.
+        The required first row must contain header labels for each class.
+        The row values for each class must be comma-delimited RGB values.
+        You must have at least 2 classes. See
+        ``plantcv/tests/data/sampled_rgb_points.txt`` for an example.
+    outfile : str
+        Name of the output text file that will store the color channel
+        probability density functions.
+    mkplots : bool
+        Make PDF plots (True or False).
+    max_errors : int
+        Maximum number of example messages printed per formatting problem
+        category if ``samples_file`` fails quality control.
+        See :func:`check_samples_file`.
+    """
+    # Quality control check of the input samples file. Abort before training on a file we can't parse correctly
+    if not check_samples_file(samples_file, max_errors=max_errors):
+        msg = (f"Naive Bayes multiclass training aborted: {samples_file} has formatting problems. See the "
+               "messages above for details on what to fix.")
+        raise RuntimeError(msg)
+
     # Initialize a dictionary to store sampled RGB pixel values for each input class
     sample_points = {}
     # Open the sampled points text file
@@ -161,12 +349,21 @@ def naive_bayes_multiclass(samples_file, outfile, mkplots=False):
 
 
 def _split_plant_background_signal(channel, mask):
-    """Split a single-channel image by foreground and background using a mask
+    """Split a single-channel image into foreground and background signals.
 
-    :param channel: ndarray
-    :param mask: ndarray
-    :return plant: ndarray
-    :return background: ndarray
+    Parameters
+    ----------
+    channel : ndarray
+        Single-channel image data.
+    mask : ndarray
+        Binary mask where foreground pixels are 255 and background pixels are 0.
+
+    Returns
+    -------
+    plant : ndarray
+        Foreground pixel values from ``channel``.
+    background : ndarray
+        Background pixel values from ``channel``.
     """
     plant = channel[np.where(mask == 255)]
     background = channel[np.where(mask == 0)]
@@ -175,11 +372,16 @@ def _split_plant_background_signal(channel, mask):
 
 
 def _plot_pdf(channel, outdir, **kwargs):
-    """Plot the probability density function of one or more classes for the given channel
+    """Plot the probability density function for one or more classes.
 
-    :param channel: str
-    :param outdir: str
-    :param kwargs: dict
+    Parameters
+    ----------
+    channel : str
+        Channel name used in the output filename.
+    outdir : str
+        Directory where the plot will be saved.
+    **kwargs : dict
+        Mapping of class names to probability density values.
     """
     for class_name, pdf in kwargs.items():
         plt.plot(pdf, label=class_name)
@@ -190,22 +392,23 @@ def _plot_pdf(channel, outdir, **kwargs):
 
 def tabulate_bayes_classes(input_file, output_file):
     """Tabulate pixel RGB values into a table for naive Bayes training.
-    Inputs:
-    input_file   = Input text file of class names and RGB values
-    output_file  = Output file for storing the tab-delimited naive Bayes training data
 
-    The input file should have class names preceded by the "#" character. RGB values can be pasted
-    directly from ImageJ without reformatting. E.g.:
+    The input file should have class names preceded by the ``#`` character.
+    RGB values can be pasted directly from ImageJ without reformatting. Example:
 
     #plant
-    96,154,72	95,153,72	91,155,71	91,160,70	90,155,67	92,152,66	92,157,70
-    54,104,39	56,104,38	59,106,41	57,105,43	54,104,40	54,103,35	56,101,39	58,99,41	59,99,41
+    96,154,72  95,153,72  91,155,71  91,160,70  90,155,67  92,152,66  92,157,70
+    54,104,39  56,104,38  59,106,41  57,105,43  54,104,40  54,103,35  56,101,39  58,99,41  59,99,41
     #background
-    114,127,121	117,135,125	120,137,131	132,145,138	142,154,148	151,166,158	160,182,172
-    115,125,121	118,131,123	122,132,135	133,142,144	141,151,152	150,166,158	159,179,172
+    114,127,121  117,135,125  120,137,131  132,145,138  142,154,148  151,166,158  160,182,172
+    115,125,121  118,131,123  122,132,135  133,142,144  141,151,152  150,166,158  159,179,172
 
-    :param input_file: str
-    :param output_file: str
+    Parameters
+    ----------
+    input_file : str
+        Input text file of class names and RGB values.
+    output_file : str
+        Output file for storing tab-delimited naive Bayes training data.
     """
     # If the input file does not exist raise an error
     if not os.path.exists(input_file):
