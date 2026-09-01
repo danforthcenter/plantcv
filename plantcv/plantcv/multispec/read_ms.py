@@ -23,10 +23,10 @@ def _ms_make_pseudo_rgb(ms_array):
     """
     # Make shorter variable names for data from the spectral class instance object
     array_data = ms_array.array_data
-    waves = ms_array.wavelengths
+    waves = [v for v in ms_array.wavelength_dict]
 
-    max_wavelength = max(float(i) for i in waves)
-    min_wavelength = min(float(i) for i in waves)
+    max_wavelength = float(ms_array.max_wavelength)
+    min_wavelength = float(ms_array.min_wavelength)
     # Check range of available wavelength
     if max_wavelength >= 600 and min_wavelength <= 490:
         id_red = _find_closest(spectral_array=np.array([float(i) for i in waves]), target=630)
@@ -180,6 +180,9 @@ def read_ms(source, wavelengths=None, pattern="MS(\\d+)_((SV|TV))_BP0_(\\d+).*")
         MS_list = [x for x in MS_list if re.search(pat, x)]
     MS_arrays = [cv2.imread(f, -1).astype(np.uint8) for f in MS_list]
     MS_wavelengths = [int(re.sub("^MS(\\d+).*", "\\1", os.path.basename(w))) for w in MS_list]
+    MS_wavelengths_dict = {}
+    for v, k in enumerate(MS_wavelengths):
+        MS_wavelengths_dict[k] = v
     # check shapes
     if len({a.shape[0] for a in MS_arrays}) > 1 or len({a.shape[1] for a in MS_arrays}) > 1:
         fatal_error("MS images have different shapes!")
@@ -188,7 +191,9 @@ def read_ms(source, wavelengths=None, pattern="MS(\\d+)_((SV|TV))_BP0_(\\d+).*")
 
     ms = MS_data(
         array_data=array_data,
-        wavelengths=MS_wavelengths,
+        wavelength_dict=MS_wavelengths_dict,
+        max_wavelength=max(MS_wavelengths),
+        min_wavelength=min(MS_wavelengths),
         pseudo_rgb=None,
         filename=source_str,
         metadata=meta

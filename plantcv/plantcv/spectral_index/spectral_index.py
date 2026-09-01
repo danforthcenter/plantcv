@@ -6,7 +6,7 @@ import cv2
 from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import warn
-from plantcv.plantcv import Spectral_data
+from plantcv.plantcv import Spectral_data, MS_data
 from plantcv.plantcv.transform import rescale
 from plantcv.plantcv.hyperspectral import _find_closest
 
@@ -1192,19 +1192,20 @@ def wi(hsi, distance=20):
 
 
 def _package_index(hsi, raw_index, method):
-    """Private function to package raw index array as a Spectral_data object.
-    Inputs:
-    hsi       = hyperspectral data (Spectral_data object)
-    raw_index = raw index array
-    method    = index method (e.g. NDVI)
+    """Private function to package raw index array
+    Parameters:
+    -----------
+    hsi       = plantcv.plantcv.Spectral_data or plantcv.plantcv.MS_data,
+        hyperspectral or multispectral data
+    raw_index = numpy.ndarray,
+        raw index array
+    method    = str,
+        index method (e.g. NDVI)
 
     Returns:
-    index        = index image as a Spectral_data object.
-
-    :params hsi: __main__.Spectral_data
-    :params raw_index: np.array
-    :params method: str
-    :params index: __main__.Spectral_data
+    --------
+    index        = plantcv.plantcv.Spectral_data or plantcv.plantcv.MS_data,
+        index image as a Spectral_data or MS_data object.
     """
     # Store debug mode
     debug = params.debug
@@ -1217,16 +1218,25 @@ def _package_index(hsi, raw_index, method):
     # Find array min and max values
     obs_max_pixel = float(np.nanmax(raw_index))
     obs_min_pixel = float(np.nanmin(raw_index))
-
-    index = Spectral_data(array_data=raw_index, max_wavelength=0,
-                          min_wavelength=0, max_value=obs_max_pixel,
-                          min_value=obs_min_pixel, d_type=np.uint8,
-                          wavelength_dict={}, samples=hsi.samples,
-                          lines=hsi.lines, interleave=hsi.interleave,
-                          wavelength_units=hsi.wavelength_units,
-                          array_type="index_" + method.lower(),
-                          pseudo_rgb=scaled, filename=hsi.filename, default_bands=None,
-                          metadata=hsi.metadata)
+    if isinstance(hsi, Spectral_data):
+        index = Spectral_data(array_data=raw_index, max_wavelength=0,
+                              min_wavelength=0, max_value=obs_max_pixel,
+                              min_value=obs_min_pixel, d_type=np.uint8,
+                              wavelength_dict={}, samples=hsi.samples,
+                              lines=hsi.lines, interleave=hsi.interleave,
+                              wavelength_units=hsi.wavelength_units,
+                              array_type="index_" + method.lower(),
+                              pseudo_rgb=scaled, filename=hsi.filename, default_bands=None,
+                              metadata=hsi.metadata)
+    elif isinstance(hsi, MS_data):
+        index = MS_data(
+            array_data=raw_index,
+            wavelength_dict={},
+            max_wavelength=0, min_wavelength=0,
+            pseudo_rgb=scaled,
+            filename=hsi.filename,
+            metadata=hsi.metadata
+        )
 
     # Restore debug mode
     params.debug = debug
