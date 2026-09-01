@@ -23,7 +23,7 @@ def _ms_make_pseudo_rgb(ms_array):
     """
     # Make shorter variable names for data from the spectral class instance object
     array_data = ms_array.array_data
-    waves = [v for v in ms_array.wavelength_dict]
+    waves = list(ms_array.wavelength_dict)
 
     max_wavelength = float(ms_array.max_wavelength)
     min_wavelength = float(ms_array.min_wavelength)
