@@ -14,7 +14,11 @@ Attributes are accessed as ms_data.*attribute*.
 
 **array_data**: The actual data, stored as a Numpy array. 
 
-**wavelengths**: A list of wavelengths included in the `MS_data` object.
+**wavelength_dict**: A dictionary of wavelengths included in the `MS_data` object.
+
+**max_wavelength**: The maximum wavelength in the `MS_data` object.
+
+**min_wavelength**: The minimum wavelength in the `MS_data` object.
 
 **pseudo_rgb**: Pseudo-RGB image
 
