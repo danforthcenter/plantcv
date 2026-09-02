@@ -1020,6 +1020,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.3.1: NA
 * post v4.3.1: chart = **plantcv.qc.exposure**(*rgb_img, warning_threshold=0.05*)
+* post v5.0: chart = **plantcv.qc.exposure**(*rgb_img, warning_threshold=0.05, label=None*)
 
 #### plantcv.qc.quick_color_check
 
