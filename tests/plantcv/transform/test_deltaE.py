@@ -12,6 +12,7 @@ def clear_function_args():
     """Always clear function arguments after calling deltaE"""
     params.function_args = {}
 
+
 def test_deltaE_macbeth(transform_test_data):
     """Test for PlantCV."""
     outputs.clear()
