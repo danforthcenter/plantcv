@@ -10,8 +10,7 @@ masked in the color card.
 **returns** Altair chart
 
 - **Parameters**
-    - source_matrix - an Nx4 matrix containing the average red value, average green value, and. See output of `plantcv.plantcv.transform.detect_color_card`.
-                             average blue value for each color chip of the source image
+    - source_matrix - an Nx4 matrix containing the average red value, average green value, and average blue value for each color chip of the source image. See output of `plantcv.plantcv.transform.detect_color_card`.
     - target_matrix - an Nx4 matrix containing the average red value, average green value, and average blue value for each color chip of the target image. If `None`, the default, this will use output of `plantcv.plantcv.transform.std_color_matrix(pos=3)` or `plantcv.plantcv.transform.astro_color_matrix()` depending on the number of chips in the source matrix.
     - num_chips     - the number of color card chips included in the matrices. Defaults to `None` which will use all rows of the target matrix.
     

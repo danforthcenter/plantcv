@@ -154,7 +154,6 @@ def _create_metadata_row(meta_vars, metadata):
         val = "NA"
         if var in metadata:
             vals = metadata[var]["value"]
-            print(vals)
             # Ensure vals is always a list
             if not isinstance(vals, list):
                 vals = [vals]

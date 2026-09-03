@@ -1025,7 +1025,7 @@ pages for more details on the input and output variable types.
 #### plantcv.qc.quick_color_check
 
 * pre v5.0: NA, see `plantcv.transform.quick_color_check`
-* post v5.0: chart = **plantcv.transform.quick_color_check**(*source_matrix, target_matrix=None, num_chips=None*)
+* post v5.0: chart = **plantcv.qc.quick_color_check**(*source_matrix, target_matrix=None, num_chips=None*)
 
 #### plantcv.qc.color_correction_plot
 
