@@ -39,7 +39,7 @@ nav:
         - 'Analyze Thermal': analyze_thermal.md
         - 'Analyze Spectral Reflectance': analyze_spectral_reflectance.md
         - 'Analyze Spectral Index': analyze_spectral_index.md
-        - 'Analyze YII': analyze_yii.md
+        - 'Analyze YII (OJIP)': analyze_yii_ojip.md
         - 'Analyze NPQ': analyze_npq.md
       - 'Annotation Tools':
           - 'Points': Points.md
@@ -138,14 +138,18 @@ nav:
       - 'Photosynthesis Functions':
           - 'Read CropReporter Data': photosynthesis_read_cropreporter.md
           - 'Reassign Frame Labels': photosynthesis_reassign_frame_labels.md
-          - 'Analyze YII': analyze_yii.md
+          - 'Analyze YII (OJIP)': analyze_yii_ojip.md
           - 'Analyze NPQ': analyze_npq.md
           - 'Visualize chlorophyll Fluorescence': visualize_chlorophyll_fluorescence.md
       - 'Params (Debugging)': params.md
       - 'Print Image': print_image.md
       - 'Plot Image': plot_image.md
       - "Quality Control Tools":
+        - 'Color Correction Scatter Plot': qc_color_correction_scatter.md
+        - 'Color Chip Comparison Plot': qc_color_chip_comparison.md
+        - 'Plot Delta E': qc_plot_delta_e.md
         - "Exposure": qc_exposure.md
+        - "Quick Color Check": quick_color_check.md
       - 'Read Image': read_image.md
       - 'Read Bayer Raw Image': read_bayer.md
       - 'Report Size Marker': report_size_marker.md
@@ -189,6 +193,7 @@ nav:
           - 'Convert Color Card to Matrix': get_color_matrix.md
           - 'Color Correct to Target Image': transform_correct_color.md
           - 'Quick Color Check': quick_color_check.md
+          - 'Delta E Metric': transform_deltaE.md
           - 'Affine Color Correction': transform_affine_color_correction.md
           - 'Standard Color Matrix': std_color_matrix.md
           - 'Gamma Correction': transform_gamma_correct.md
@@ -209,7 +214,6 @@ nav:
       - 'Visualization Methods':
           - 'Auto Threshold Methods': visualize_auto_threshold_methods.md
           - 'Chlorophyll Fluorescence': visualize_chlorophyll_fluorescence.md
-          - 'Color Correction Scatter Plot': visualize_color_correction_scatter.md
           - 'Colorize Label Image': visualize_colorize_label_img.md
           - 'Colorize Masks': visualize_colorize_masks.md
           - 'Colorspaces': visualize_colorspace.md
@@ -221,6 +225,7 @@ nav:
           - 'Pixel Scatter Plot': 'visualize_pixel_scatter_vis.md'
           - 'Pseudocolor': visualize_pseudocolor.md
           - 'Tile': visualize_tile.md
+          - 'Time Lapse Video': visualize_time_lapse_video.md
       - 'Watershed Segmentation': watershed.md
       - 'White balance': white_balance.md
       - 'Within Frame': within_frame.md
@@ -228,6 +233,7 @@ nav:
       - 'Kmeans Clustering': train_kmeans.md
       - 'Naive Bayes': naive_bayes.md
       - 'Naive Bayes Multiclass': naive_bayes_multiclass.md
+      - 'Naive Bayes Multiclass Samples File QC': naive_bayes_check_samples_file.md
     - 'Parallelization':
         - 'Getting started in parallel': parallel_preparation.md
         - 'Configure Parallelization': parallel_config.md

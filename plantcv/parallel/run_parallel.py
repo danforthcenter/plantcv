@@ -92,7 +92,7 @@ def run_parallel(config):
     # Convert results start time
     convert_results_start_time = time.time()
     print("Converting json to csv... ", file=sys.stderr)
-    json2csv(config.results, os.path.splitext(config.results)[0])
+    json2csv(config.results, config.results)
     convert_results_clock_time = time.time() - convert_results_start_time
     parallel_print(f"Processing results took {convert_results_clock_time} seconds.", file=sys.stderr, verbose=verbose)
     ###########################################

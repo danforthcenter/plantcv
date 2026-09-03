@@ -3,7 +3,7 @@
 Creates a chart of chlorophyll fluorescence induction curves from a PSII_Data instance. The photosynthesis subpackage is
 dependent on a PSII_Data instance file structure as created by `photosynthesis.read_cropreporter`. Plots the mean level
 of fluorescence per object/label per frame/timepoint. The PSII_Data Fm and Fm' frames are labeled and the chart can be used
-to decide whether to use `auto_fm` in [pcv.analyze.yii](analyze_yii.md) and [pcv.analyze.npq](analyze_npq.md).
+to decide whether to use `auto_fm` in [pcv.analyze.yii_ojip](analyze_yii_ojip.md) and [pcv.analyze.npq](analyze_npq.md).
 
 **plantcv.visualize.chlorophyll_fluorescence**(*ps_da, labeled_mask, n_labels=1, label="object"*)
 
