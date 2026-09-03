@@ -9,7 +9,7 @@ from plantcv.plantcv._debug import _debug
 
 
 # Function to check for over- or underexposure
-def _check_exposure(channel, warning_threshold, channel_name):
+def _check_exposure(channel, warning_threshold, channel_name, label):
     """Check if a color channel is over- or underexposed.
 
     This function analyzes the given color channel to determine if
@@ -25,6 +25,8 @@ def _check_exposure(channel, warning_threshold, channel_name):
         The threshold value for triggering a warning for over- or underexposure.
     channel_name : str
         Name of the channel being analyzed (e.g., "red", "green", "blue").
+    label : str
+        Label for the term added to output metadata
 
     Returns
     -------
@@ -35,11 +37,11 @@ def _check_exposure(channel, warning_threshold, channel_name):
     zero_count = np.sum(channel == 0)
     max_count = np.sum(channel == 255)
     proportion_bad_pix = zero_count / total_pixels
-    outputs.add_metadata(term=f"{channel_name}_percent_bad_exposure_qc", datatype=float, value=proportion_bad_pix)
+    outputs.add_metadata(term=f"{label}_{channel_name}_percent_bad_exposure_qc", datatype=float, value=proportion_bad_pix)
     return (zero_count / total_pixels > warning_threshold) or (max_count / total_pixels > warning_threshold)
 
 
-def exposure(rgb_img, warning_threshold=0.05):
+def exposure(rgb_img, warning_threshold=0.05, label=None):
     """Perform quality control by checking for problematic color data and plotting histograms.
 
     This function performs an analysis of an image to check for over- or underexposure
@@ -61,15 +63,18 @@ def exposure(rgb_img, warning_threshold=0.05):
     params.device += 1
     # Convert the img from BGR to RGB
     img_rgb = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2RGB)
+    # add label
+    if label is None:
+        label = params.sample_label
 
     # Split the img into its Red, Green, and Blue channels
     red_channel, green_channel, blue_channel = img_rgb[:, :, 0], img_rgb[:, :, 1], img_rgb[:, :, 2]
 
     # Check each channel for over- or underexposure
     if (
-        _check_exposure(red_channel, warning_threshold, channel_name="red") or
-        _check_exposure(green_channel, warning_threshold, channel_name="green") or
-        _check_exposure(blue_channel, warning_threshold, channel_name="blue")
+        _check_exposure(red_channel, warning_threshold, channel_name="red", label=label) or
+        _check_exposure(green_channel, warning_threshold, channel_name="green", label=label) or
+        _check_exposure(blue_channel, warning_threshold, channel_name="blue", label=label)
     ):
         warn(
             f"The image is over- or underexposed because more than {warning_threshold * 100}% of "

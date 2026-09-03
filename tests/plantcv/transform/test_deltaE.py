@@ -7,6 +7,12 @@ from plantcv.plantcv._globals import outputs, params
 from plantcv.plantcv.transform.detect_color_card import deltaE
 
 
+@pytest.fixture(scope="module", autouse=True)
+def clear_function_args():
+    """Always clear function arguments after calling deltaE"""
+    params.function_args = {}
+
+
 def test_deltaE_macbeth(transform_test_data):
     """Test for PlantCV."""
     outputs.clear()
