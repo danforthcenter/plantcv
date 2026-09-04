@@ -28,6 +28,7 @@ nav:
         - 'Plot Image': plot_image.md
         - 'Read Image': read_image.md
         - 'Read Bayer Raw Image': read_bayer.md
+        - 'Read Multispectral Data': multispec_read_ms.md
       - 'Analysis Methods':
         - 'Analyze Color': analyze_color2.md
         - 'Analyze Pixel Distributions': analyze_distribution.md
@@ -130,6 +131,7 @@ nav:
         - 'Segment Tangent Angle': segment_tangent_angle.md
         - 'Skeletonize': skeletonize.md
         - 'Segment Width': segment_width.md
+      - 'Multispectral Data Class': ms_data.md
       - 'Naive Bayes Classifier': naive_bayes_classifier.md
       - 'Objects Class': objects.md
       - 'Opening': opening.md

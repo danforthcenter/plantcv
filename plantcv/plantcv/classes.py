@@ -163,3 +163,52 @@ class Objects:
         file = np.load(filename)
         obj = Objects(file['contours'].tolist(), file['hierarchy'])
         return obj
+
+
+class MS_data:
+    """PlantCV Multispectral data class"""
+
+    def __init__(self,
+                 array_data,
+                 wavelength_dict,
+                 max_wavelength,
+                 min_wavelength,
+                 pseudo_rgb, filename,
+                 metadata=None):
+        # The actual array/datacube
+        self.array_data = array_data
+        # Contains all available wavelengths where keys are wavelength and value are indices
+        self.wavelength_dict = wavelength_dict
+        # store max/min wavelengths
+        self.max_wavelength = max_wavelength
+        self.min_wavelength = min_wavelength
+        # Pseudo-RGB image if the array_type is a datacube
+        self.pseudo_rgb = pseudo_rgb
+        # The filename where the data originated from
+        self.filename = filename
+        # default wavelengths for making pseudo rgb
+        self.default_bands = None
+        # Metadata, flexible components in a dictionary
+        self.metadata = metadata
+
+    def select(self, wavelength, ms=True):
+        """Select a wavelength"""
+        if not isinstance(wavelength, list):
+            wavelength = [wavelength]
+        wavelength_dict_new = {}
+        for v, k in enumerate(wavelength):
+            wavelength_dict_new[k] = v
+        index = [i for wave, i in self.wavelength_dict.items() if wave in wavelength]
+        sub_array = self.array_data[:, :, index]
+        if not ms:
+            return sub_array
+        sub_ms = MS_data(
+            array_data=sub_array,
+            wavelength_dict=wavelength_dict_new,
+            max_wavelength=max(wavelength),
+            min_wavelength=min(wavelength),
+            pseudo_rgb=self.pseudo_rgb,
+            filename=self.filename,
+            metadata=self.metadata
+        )
+        return sub_ms
