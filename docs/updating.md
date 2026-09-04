@@ -100,6 +100,10 @@ Removed `label` parameter since size marker data is now stored as metadata in th
 Deprecated the function in favor of the new
 [`plantcv.transform.detect_color_card`](transform_detect_color_card.md) function.
 
+#### plantcv.transform.quick_color_check
+
+Function moved to `plantcv.qc.quick_color_check` and the `num_chips`/`target_matrix` arguments are now optional.
+
 #### plantcv.visualize.pixel_scatter_plot
 
 Changed `paths_to_imgs` argument to `source` to reflect that it can use a `numpy.ndarray`, `str` path,
@@ -1021,11 +1025,12 @@ pages for more details on the input and output variable types.
 
 * pre v4.3.1: NA
 * post v4.3.1: chart = **plantcv.qc.exposure**(*rgb_img, warning_threshold=0.05*)
+* post v5.0: chart = **plantcv.qc.exposure**(*rgb_img, warning_threshold=0.05, label=None*)
 
 #### plantcv.qc.quick_color_check
 
 * pre v5.0: NA, see `plantcv.transform.quick_color_check`
-* post v5.0: chart = **plantcv.transform.quick_color_check**(*target_matrix, source_matrix, num_chips*)
+* post v5.0: chart = **plantcv.qc.quick_color_check**(*source_matrix, target_matrix=None, num_chips=None*)
 
 #### plantcv.qc.color_correction_plot
 
