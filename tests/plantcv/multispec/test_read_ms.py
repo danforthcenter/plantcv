@@ -42,7 +42,7 @@ def test_read_ms_dir(tmpdir):
     img1 = np.ones((10, 10), dtype=np.uint8)
     filename1 = os.path.join(cache_dir, "MS560_SV_BP0_0_img1.png")
     filename2 = os.path.join(cache_dir, "MS570_TV_BP0_0_img2.png")
-    filename3 = os.path.join(cache_dir, "MS580_SV_BP50_0_img3.png")
+    filename3 = os.path.join(cache_dir, "MS580_TV_BP0_0_img3.png")
     cv2.imwrite(filename0, img0)
     cv2.imwrite(filename1, img1)
     cv2.imwrite(filename2, img1)
