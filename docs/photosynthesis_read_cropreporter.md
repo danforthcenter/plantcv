@@ -13,16 +13,21 @@ PSII_data instance containing [xarray DataArrays](http://xarray.pydata.org/en/st
 - **Context:**
     - Reads in binary image files to be processed and does so using the metadata contained within a corresponding .INF
       file.
-    - Measurements from dark-adapted plant state are stored in the attribute `psd` (ojip) or `pam_dark`, depending on the measurement protocol. Frames F0 and Fm are
-      labeled according to the metadata in .INF. The default measurement label is 't0'.
-    - Measurements from light-adapted plant state are stored in the attribute `psl` (ojip) or `pam_light`, depending on the measurement protocol. Frames Fp and Fmp are
-      labeled according to the metadata in .INF. The default measurement label is 't1'.
-    - Time-resolved PAM fluorescence measurements are stored in the attribute `pam_time`. Frames F0, Fm, Fp, Fmp, F0pp, and Fmpp are
+    - Measurements from dark-adapted plant state are stored in the attribute `psd` (ojip) which has an `ojip_dark` attribute holding an xarray or `pam_dark`,
+	  depending on the measurement protocol. Frames F0 and Fm are
+      labeled according to the metadata in .INF. The default measurement label is 't0'. These measurements are also accessible in the `ojip_dark` attribute
+	  if `psd` or `npq` data is available.
+    - Measurements from light-adapted plant state are stored in the attribute `psl` (ojip) which has an `ojip_light` attribute holding an xarray or `pam_light`,
+	  depending on the measurement protocol. Frames Fp and Fmp are
+      labeled according to the metadata in .INF. The default measurement label is 't1'. These measurements are also accessible in the `ojip_light` attribute
+	  if `psl` or `npq` data is available.
+	- Measurements from PAM light and dark images are stored in the `pml` and `pmd` attributes, which have attributes `pam_light` and `pam_dark` containing xarrays.
+    - Time-resolved PAM fluorescence measurements are stored in the attribute `pmt` which has an attribute `pam_time` containing an xarray. Frames F0, Fm, Fp, Fmp, F0pp, and Fmpp are
       labeled according to the metadata in .INF, with measurement labels starting at 't0' (e.g. t0, t1, t2, ...).
     - Measurements from chlorophyll fluorescence are stored in the attribute `chl` and include a chlorophyll fluorescence frame (Chl) stored as NumPy array/ndarray access as `ps.chl.chlorophyll`. The Fdark frame, if collected, is not stored.
     - Measurements from color are stored in the attribute `clr` and include a color image frame (CLR) stored as NumPy array/ndarray access as `ps.clr.color`.
-    - Green fluorescence protein (GFP) measurements are stored in the attribute `gfp` and include frames for dark fluorescence (Fdark), GFP fluorescence (GFP, 525 nm), and autofluorescence (Auto, 585 nm).
-    - Red fluorescence protein (RFP) measurements are stored in the attribute `rfp` and include frames for dark fluorescence (Fdark) and RFP fluorescence (585 nm).
+    - Green fluorescence protein (GFP) measurements are stored in the attribute `gfp`, which has `green` fluorescence (GFP, 525 nm) and `auto` fluorescence (Auto, 585 nm) attributes containing numpy arrays.
+    - Red fluorescence protein (RFP) measurements are stored in the attribute `rfp`, which has a `red` attribute containing a numpy array of RFP fluorescence (585 nm).
     - Alpha light absorption coefficient (APH) measurements are stored in the attribute `aph` and include reflected light frames for red (640 nm) and far-red (732 nm) wavelengths. `ps.aph` contains the red and far-red frames, which are accessed as `ps.aph.red` and `ps.aph.farred`, respectively. The Fdark frame, if collected, is not stored. 
     - Spectral measurements are stored as a PlantCV [Spectral_data](Spectral_data.md) object in the attribute
       `spectral`. Frames are stored by reflectance wavelength and can include: blue (475nm), green (550nm), red (640nm),

@@ -20,7 +20,7 @@ def test_read_cropreporter_psd(photosynthesis_test_data, tmpdir):
     # Run the test
     ps = read_cropreporter(filename=filename)
     assert isinstance(ps, PSII_data)
-    assert ps.psd.load().shape == (966, 1296, 21, 1)
+    assert ps.psd.ojip_dark.shape == (966, 1296, 21, 1)
     assert ps.psd
     assert "PSD" in repr(ps.psd)
 
@@ -39,7 +39,7 @@ def test_read_cropreporter_psl(photosynthesis_test_data, tmpdir):
     # Run the test
     ps = read_cropreporter(filename=filename)
     assert isinstance(ps, PSII_data)
-    assert ps.psl.load().shape == (966, 1296, 21, 1)
+    assert ps.psl.ojip_light.shape == (966, 1296, 21, 1)
     assert ps.psl
     assert "PSL" in repr(ps.psl)
 
@@ -54,11 +54,12 @@ def test_read_cropreporter_pmd(photosynthesis_test_data, tmpdir):
     pmd_dat = pmd_dat.replace("INF", "DAT")
     shutil.copyfile(pmd_dat, os.path.join(cache_dir, "PMD_dark_light.DAT"))
     filename = os.path.join(cache_dir, "HDR_dark_light.INF")
-
     # Run the test
     ps = read_cropreporter(filename=filename)
     assert isinstance(ps, PSII_data)
-    assert ps.pam_dark.shape == (1500, 2048, 4, 1)
+    assert ps.pmd.pam_dark.shape == (1500, 2048, 4, 1)
+    assert ps.pmd
+    assert "PMD" in repr(ps.pmd)
 
 
 def test_read_cropreporter_pml(photosynthesis_test_data, tmpdir):
@@ -71,11 +72,12 @@ def test_read_cropreporter_pml(photosynthesis_test_data, tmpdir):
     pml_dat = pml_dat.replace("INF", "DAT")
     shutil.copyfile(pml_dat, os.path.join(cache_dir, "PML_dark_light.DAT"))
     filename = os.path.join(cache_dir, "HDR_dark_light.INF")
-
     # Run the test
     ps = read_cropreporter(filename=filename)
     assert isinstance(ps, PSII_data)
-    assert ps.pam_light.shape == (1500, 2048, 4, 1)
+    assert ps.pml.pam_light.shape == (1500, 2048, 4, 1)
+    assert ps.pml
+    assert "PML" in repr(ps.pml)
 
 
 def test_read_cropreporter_spc_only(photosynthesis_test_data, tmpdir):
@@ -89,20 +91,37 @@ def test_read_cropreporter_spc_only(photosynthesis_test_data, tmpdir):
     shutil.copyfile(spc_dat, os.path.join(cache_dir, "PSII_SPC_test.DAT"))
     fluor_filename = os.path.join(cache_dir, "PSII_HDR_test.INF")
     ps = read_cropreporter(filename=fluor_filename)
-    assert isinstance(ps, PSII_data) and ps.spectral.array_data.shape == (966, 1296, 3)
+    assert isinstance(ps, PSII_data)
+    assert ps.spc
+    assert "SPC" in repr(ps.spc)
+    assert ps.spc.spectral.array_data.shape == (966, 1296, 3)
 
 
 def test_read_cropreporter_spc_full(photosynthesis_test_data, tmpdir):
     """Test for PlantCV."""
     ps = read_cropreporter(filename=os.path.join(photosynthesis_test_data.cropreporter))
-    assert isinstance(ps, PSII_data) and ps.spectral.array_data.shape == (966, 1296, 6)
+    assert isinstance(ps, PSII_data)
+    assert ps.spc
+    assert "SPC" in repr(ps.spc)
+    assert ps.spc.spectral.array_data.shape == (966, 1296, 6)
 
 
 def test_read_cropreporter_npq(photosynthesis_test_data):
     """Test for PlantCV."""
     ps = read_cropreporter(filename=photosynthesis_test_data.cropreporter_npq)
-    assert isinstance(ps, PSII_data) and ps.ojip_dark.shape == (966, 1296, 3, 1)
+    assert isinstance(ps, PSII_data) and ps.npq.ojip_dark.shape == (966, 1296, 3, 1)
+    assert isinstance(ps, PSII_data) and ps.npq.ojip_light.shape == (966, 1296, 3, 1)
+    # check reverse ordered loading
+    ps = read_cropreporter(filename=photosynthesis_test_data.cropreporter_npq)
+    assert isinstance(ps, PSII_data) and ps.npq.ojip_light.shape == (966, 1296, 3, 1)
+    assert isinstance(ps, PSII_data) and ps.npq.ojip_dark.shape == (966, 1296, 3, 1)
+    # check shortcut
+    ps = read_cropreporter(filename=photosynthesis_test_data.cropreporter_npq)
     assert isinstance(ps, PSII_data) and ps.ojip_light.shape == (966, 1296, 3, 1)
+    assert isinstance(ps, PSII_data) and ps.ojip_dark.shape == (966, 1296, 3, 1)
+    # check class traits
+    assert ps.npq
+    assert "NPQ" in repr(ps.npq)
 
 
 def test_read_cropreporter_chl_only(photosynthesis_test_data, tmpdir):
@@ -159,9 +178,14 @@ def test_read_cropreporter_gfp_only(photosynthesis_test_data, tmpdir):
     fluor_filename = os.path.join(cache_dir, "HDR_DYSeed_20251222191634684.INF")
     ps = read_cropreporter(filename=fluor_filename)
     assert isinstance(ps, PSII_data)
-    assert ps.gfp is not None
+    assert ps.gfp
+    assert "GFP" in repr(ps.gfp)
+    assert ps.gfp.green is not None
     # (rows, cols, frames)
-    assert ps.gfp.shape[2] in [2, 3]
+    assert len(ps.gfp.green.shape) == 2
+    # reach other attribute first
+    ps = read_cropreporter(filename=fluor_filename)
+    assert ps.gfp.auto is not None
 
 
 def test_read_cropreporter_rfp_only(photosynthesis_test_data, tmpdir):
@@ -176,8 +200,10 @@ def test_read_cropreporter_rfp_only(photosynthesis_test_data, tmpdir):
     fluor_filename = os.path.join(cache_dir, "HDR_DYSeed_20251222191634684.INF")
     ps = read_cropreporter(filename=fluor_filename)
     assert isinstance(ps, PSII_data)
-    assert ps.rfp is not None
-    assert ps.rfp.shape[2] in [1, 2]
+    assert ps.rfp
+    assert "RFP" in repr(ps.rfp)
+    assert ps.rfp.red is not None
+    assert len(ps.rfp.red.shape) == 2
 
 
 def test_read_cropreporter_aph_only(photosynthesis_test_data, tmpdir):
@@ -227,25 +253,27 @@ def test_read_cropreporter_pmt_only_9_labels(photosynthesis_test_data, tmpdir):
     fluor_filename = os.path.join(cache_dir, "HDR_E0001P0007N0001_GCU24100090_20260226.INF")
     ps = read_cropreporter(filename=fluor_filename)
     assert isinstance(ps, PSII_data)
-    assert ps.pam_time is not None
+    assert ps.pmt.pam_time is not None
+    assert ps.pmt
+    assert "PMT" in repr(ps.pmt)
     # Check that dimensions include x, y, frame_label, and measurement
-    assert "frame_label" in ps.pam_time.coords
-    assert "measurement" in ps.pam_time.coords
+    assert "frame_label" in ps.pmt.pam_time.coords
+    assert "measurement" in ps.pmt.pam_time.coords
 
     # Verify the shape (x, y, 9 labels, N measurements)
     # The 9 or 13 comes from 'frame_labels' list in read_cropreporter.py, and depends on the presence of second dark adaptation
-    num_labels = len(ps.pam_time.frame_label)
+    num_labels = len(ps.pmt.pam_time.frame_label)
     assert num_labels == 9
 
     # Check that at least one measurement label was created (t0, t1...)
-    assert "t0" in ps.pam_time.measurement.values
+    assert "t0" in ps.pmt.pam_time.measurement.values
 
     # Access a value to ensure the loops actually ran
     # This forces the test to "touch" the data assigned inside the loops
-    assert ps.pam_time.sel(frame_label="Fdark", measurement="t0").values.any()
+    assert ps.pmt.pam_time.sel(frame_label="Fdark", measurement="t0").values.any()
 
     # Verify the F0p (the very last line of your function)
-    assert "F0p" in ps.pam_time.frame_label.values
+    assert "F0p" in ps.pmt.pam_time.frame_label.values
 
 
 def test_read_cropreporter_pmt_only_13_labels(photosynthesis_test_data, tmpdir, monkeypatch):
@@ -275,22 +303,24 @@ def test_read_cropreporter_pmt_only_13_labels(photosynthesis_test_data, tmpdir, 
 
     ps = read_cropreporter(filename=inf_dest)
     assert isinstance(ps, PSII_data)
-    assert ps.pam_time is not None
+    assert ps.pmt.pam_time is not None
+    assert ps.pmt
+    assert "PMT" in repr(ps.pmt)
     # Check that dimensions include x, y, frame_label, and measurement
-    assert "frame_label" in ps.pam_time.coords
-    assert "measurement" in ps.pam_time.coords
+    assert "frame_label" in ps.pmt.pam_time.coords
+    assert "measurement" in ps.pmt.pam_time.coords
 
     # Verify the shape (x, y, 13 labels, N measurements)
     # The 9 or 13 comes from 'frame_labels' list in read_cropreporter.py, and depends on the presence of second dark adaptation
-    num_labels = len(ps.pam_time.frame_label)
+    num_labels = len(ps.pmt.pam_time.frame_label)
     assert num_labels == 13
 
     # Check that at least one measurement label was created (t0, t1...)
-    assert "t0" in ps.pam_time.measurement.values
+    assert "t0" in ps.pmt.pam_time.measurement.values
 
     # Access a value to ensure the loops actually ran
     # This forces the test to "touch" the data assigned inside the loops
-    assert ps.pam_time.sel(frame_label="Fdark", measurement="t0").values.any()
+    assert ps.pmt.pam_time.sel(frame_label="Fdark", measurement="t0").values.any()
 
     # Verify the F0p (the very last line of your function)
-    assert "F0p" in ps.pam_time.frame_label.values
+    assert "F0p" in ps.pmt.pam_time.frame_label.values
