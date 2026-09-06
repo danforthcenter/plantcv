@@ -4,6 +4,7 @@ import numpy as np
 from skimage.measure import label, regionprops
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv.deprecation_warning import deprecation_warning
 
 
 def eccentricity(bin_img, ecc_thresh=0):
@@ -13,17 +14,20 @@ def eccentricity(bin_img, ecc_thresh=0):
     The closer the value to 0 the closer the shape is to a circle.
 
     Inputs:
-    bin_img       = Binary image containing the connected regions to consider
-    ecc_thresh    = Eccentricity threshold below which a region is kept
-
+    bin_img       = numpy.ndarray,
+        Binary image containing the connected regions to consider
+    ecc_thresh    = float,
+        Eccentricity threshold below which a region is kept
 
     Returns:
-    discs_mask  = Binary image that contains only the detected discs
-
-    :param bin_img: numpy.ndarray
-    :param ecc_thresh: float
-    :return discs_mask: numpy.ndarray
+    --------
+    discs_mask  = numpy.ndarray,
+        Binary image that contains only the detected discs
     """
+    deprecation_warning(
+        "plantcv.plantcv.filters.eccentricity is superceded by " +
+        "plantcv.plantcv.filteres.obj_props(..., regprop='eccentricity') and will be removed in v5"
+    )
     params.device += 1
     # label connected regions
     labeled_img = label(bin_img)
