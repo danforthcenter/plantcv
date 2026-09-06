@@ -68,7 +68,7 @@ def test_bad_thresh_lower(filters_test_data):
     """PlantCV Test"""
     mask = cv2.imread(filters_test_data.barley_example)
     with pytest.raises(RuntimeError):
-        _ = obj_props(bin_img=mask, cut_side="lower", thresh=(1,2))
+        _ = obj_props(bin_img=mask, cut_side="lower", thresh=(1, 2))
 
 
 def test_bad_thresh_in(filters_test_data):
