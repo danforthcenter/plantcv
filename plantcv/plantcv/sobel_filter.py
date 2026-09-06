@@ -40,7 +40,7 @@ def sobel_filter(gray_img, dx, dy, ksize, roi=None):
                               **{"ddepth": -1, "dx": dx, "dy": dy, "ksize": k})
     sb_img = _rect_replace(gray_img, sub_sb_img, roi)
 
-    fname = str(params.device) + '_sb_img_dx' + str(dx) + '_dy' + str(dy) + '_kernel' + str(k) + '.png'
+    fname = f"{params.device}_sb_img_dx{dx}_dy{dy}_kernel{k}.png"
     _debug(visual=sb_img,
            filename=os.path.join(params.debug_outdir, fname),
            cmap='gray')

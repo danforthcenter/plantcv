@@ -39,9 +39,6 @@ def erode(gray_img, ksize, i, roi=None):
     k = _format_kernel(ksize, int)
     er_img = _erode(gray_img, k, i, roi=roi)
 
-    _debug(er_img,
-           filename=os.path.join(params.debug_outdir,
-                                 str(params.device) + '_er_image' + str(k) + '_itr_' + str(i) + '.png'),
-           cmap='gray')
+    _debug(visual=er_img, filename=os.path.join(params.debug_outdir, f"{params.device}_er_image{k}_itr{i}.png"), cmap='gray')
 
     return er_img

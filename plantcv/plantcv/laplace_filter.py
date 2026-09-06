@@ -36,9 +36,7 @@ def laplace_filter(gray_img, ksize, scale, roi=None):
                                    **{"ddepth": -1, "ksize": k, "scale": scale})
     lp_filtered = _rect_replace(gray_img, sub_lp_filtered, roi)
 
-    _debug(visual=lp_filtered,
-           filename=os.path.join(params.debug_outdir,
-                                 str(params.device) + '_lp_out_k' + str(ksize) + '_scale' + str(scale) + '.png'),
+    _debug(visual=lp_filtered, filename=os.path.join(params.debug_outdir, f"{params.device}_lp_out_k{ksize}_scale{scale}.png"),
            cmap='gray')
 
     return lp_filtered

@@ -42,8 +42,6 @@ def gaussian_blur(img, ksize, sigma_x=0, sigma_y=None, roi=None):
     else:
         cmap = 'gray'
 
-    _debug(visual=img_gblur,
-           filename=os.path.join(params.debug_outdir, str(params.device) + '_gaussian_blur.png'),
-           cmap=cmap)
+    _debug(visual=img_gblur, filename=os.path.join(params.debug_outdir, f"{params.device}_gaussian_blur.png"), cmap=cmap)
 
     return img_gblur

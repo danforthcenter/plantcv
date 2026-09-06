@@ -41,9 +41,7 @@ def sharpen(img, ksize, amount=1, threshold=0, sigma_x=0, sigma_y=None, roi=None
     else:
         cmap = 'gray'
 
-    _debug(visual=sharp_img,
-           filename=os.path.join(params.debug_outdir, str(params.device) + '_sharpen.png'),
-           cmap=cmap)
+    _debug(visual=sharp_img, filename=os.path.join(params.debug_outdir, f"{params.device}_sharpen.png"), cmap=cmap)
 
     return sharp_img
 
