@@ -52,6 +52,8 @@ def _format_kernel(k, to=int):
         return k
     if isinstance(k, to):
         return k
+    if not isinstance(k, (int, tuple, np.ndarray)):
+        fatal_error("Kernel must be specified as an int, tuple, or numpy.ndarray")
     if not isinstance(to, tuple):
         to = [to]
 

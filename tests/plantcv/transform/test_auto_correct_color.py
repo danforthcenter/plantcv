@@ -2,7 +2,8 @@
 import numpy as np
 import cv2
 from plantcv.plantcv.transform import auto_correct_color, auto_correct_color_nonlinear
-from plantcv.plantcv import Objects
+from plantcv.plantcv.classes import Objects
+from plantcv.plantcv._globals import params
 
 
 def test_auto_correct_color(transform_test_data):
@@ -21,6 +22,7 @@ def test_auto_correct_color_subset(transform_test_data):
     roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     roi_obj = Objects(contours=[roi], hierarchy=[roi_str])
     corrected_img = auto_correct_color(rgb_img=rgb_img, roi=roi_obj)
+    params.function_args = {}
     assert np.shape(corrected_img) == np.shape(rgb_img) and np.sum(corrected_img) != np.sum(rgb_img)
 
 
@@ -29,6 +31,7 @@ def test_auto_correct_color_astrocard(transform_test_data):
     # Load rgb image
     rgb_img = cv2.imread(transform_test_data.astrocard_img)
     corrected_img = auto_correct_color(rgb_img=rgb_img, color_chip_size="ASTRO")
+    params.function_args = {}
     assert np.shape(corrected_img) == np.shape(rgb_img) and np.sum(corrected_img) != np.sum(rgb_img)
 
 
@@ -37,4 +40,5 @@ def test_auto_correct_color_nonaffine(transform_test_data):
     # Load rgb image
     rgb_img = cv2.imread(transform_test_data.colorcard_img)
     corrected_img = auto_correct_color_nonlinear(rgb_img=rgb_img)
+    params.function_args = {}
     assert np.shape(corrected_img) == np.shape(rgb_img) and np.sum(corrected_img) != np.sum(rgb_img)
