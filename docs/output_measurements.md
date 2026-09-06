@@ -154,7 +154,7 @@ Functions that automatically store data to the [`Outputs` class](outputs.md) are
 [analyze.spectral_index](analyze_spectral_index.md), 
 [analyze.spectral_reflectance](analyze_spectral_reflectance.md), 
 [analyze.thermal](analyze_thermal.md), 
-[analyze.yii](analyze_yii.md), 
+[analyze.yii_ojip](analyze_yii_ojip.md), 
 [analyze.npq](analyze_npq.md), 
 [homology.acute](homology_acute.md), 
 [homology.landmark_reference_pt_dist](homology_landmark_reference_pt_dist.md), 

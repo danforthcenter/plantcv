@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from plantcv.plantcv import get_kernel
+from plantcv.plantcv.get_kernel import get_kernel, _format_kernel
 
 
 def test_get_kernel_cross():
@@ -31,3 +31,19 @@ def test_get_kernel_bad_input_shape():
     """Test for PlantCV."""
     with pytest.raises(RuntimeError):
         _ = get_kernel(size=(3, 1), shape="square")
+
+
+@pytest.mark.parametrize("k, to", [[3, int],
+                                   [(3, 3), int],
+                                   [np.ones((3, 3)), int],
+                                   [3, tuple],
+                                   [(3, 3), tuple],
+                                   [np.ones((3, 3)), tuple],
+                                   [3, np.ndarray],
+                                   [(3, 3), np.ndarray],
+                                   [np.ones((3, 3)), np.ndarray]
+                                   ])
+def test_format_kernel(k, to):
+    """Test for PlantCV."""
+    kern = _format_kernel(k, to)
+    assert isinstance(kern, to)
