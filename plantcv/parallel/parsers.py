@@ -483,7 +483,7 @@ def _read_filenames(config):
         fns = []
         for root, _, files in os.walk(config.input_dir):
             for file in files:
-                if file.lower().endswith(tuple(extensions)):
+                if file.lower().endswith(tuple(ext.lower() for ext in extensions)):
                     # Keep the files that end with the image extension
                     fns.append(os.path.join(root, file))
     # Create a dataset
