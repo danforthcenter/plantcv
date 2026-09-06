@@ -16,6 +16,10 @@ class QCTestData:
         self.target_matrix_file = os.path.join(self.datadir, "target_matrix.npz")
         # Source 1 matrix file
         self.source1_matrix_file = os.path.join(self.datadir, "source1_matrix.npz")
+        # RGB image
+        self.cc_img = os.path.join(self.datadir, "colorcard_img.png")
+        # astrobotany card
+        self.astrocard_img = os.path.join(self.datadir, "astrocard_img.png")
 
     @staticmethod
     def load_npz(npz_file):
