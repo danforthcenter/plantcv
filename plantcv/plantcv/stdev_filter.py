@@ -17,8 +17,8 @@ def stdev_filter(img, ksize, borders='nearest', roi=None):
 
     Parameters:
     -----------
-    gray_img       = numpy.ndarray,
-        Grayscale image data
+    img          = numpy.ndarray,
+        Image data
     ksize        = int, numpy.ndarray, or tuple
         Kernel specified as a binary numpy.ndarray for arbitrary shapes,
         shape tuple for a rectangular kernel, or integer for a square kernel.
@@ -45,7 +45,6 @@ def stdev_filter(img, ksize, borders='nearest', roi=None):
     # re-insert the subset into the full size mask
     replaced = _rect_replace(img, sub_zeros, roi)
 
-    _debug(visual=replaced,
-           filename=os.path.join(params.debug_outdir, str(params.device) + "_variance.png"))
+    _debug(visual=replaced, filename=os.path.join(params.debug_outdir, f"{params.device}_variance.png"))
 
     return replaced

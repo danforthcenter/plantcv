@@ -47,8 +47,6 @@ def opening(gray_img, kernel=None, roi=None):
                                     **{"footprint": k})
         replaced_img = _rect_replace(gray_img, filtered_img, roi)
 
-    _debug(visual=replaced_img,
-           filename=os.path.join(params.debug_outdir, str(params.device) + '_opening.png'),
-           cmap='gray')
+    _debug(visual=replaced_img, filename=os.path.join(params.debug_outdir, f"{params.device}_opening.png"), cmap='gray')
 
     return replaced_img

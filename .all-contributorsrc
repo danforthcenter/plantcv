@@ -764,6 +764,16 @@
         "doc",
         "test"
       ]
+    },
+    {
+      "login": "Mohit-Ak",
+      "name": "Mohit Arvind Khakharia",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6740115?v=4",
+      "profile": "https://mohit.pro/",
+      "contributions": [
+        "code",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,

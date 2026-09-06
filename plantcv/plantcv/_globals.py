@@ -14,7 +14,8 @@ class Params:
     def __init__(self, device=0, debug=None, debug_outdir=".", line_thickness=5,
                  line_color=(255, 0, 255), dpi=100, text_size=0.55,
                  text_thickness=2, marker_size=60, color_scale="gist_rainbow", color_sequence="sequential",
-                 sample_label="default", saved_color_scale=None, verbose=1, unit="pixels", px_height=1, px_width=1):
+                 sample_label="default", saved_color_scale=None, verbose=1, unit="pixels", px_height=1, px_width=1,
+                 deltaE="deltaE_ciede2000"):
         """Initialize parameters.
 
         Parameters
@@ -53,7 +54,9 @@ class Params:
             Size scaling information about pixel height. Default is 1.
         px_width : float
             Size scaling information about pixel width. Default is 1.
-
+        deltaE : str
+            Name of skimage function to use calculating Delta E, defaults to 'deltaE_ciede2000'.
+            Currently 'deltaE_cie76', 'deltaE_ciede2000', 'deltaE_ciede94', and 'deltaE_cmc' are supported
         """
         self.device = device
         self.debug = debug
@@ -72,6 +75,8 @@ class Params:
         self.unit = unit
         self.px_height = px_height
         self.px_width = px_width
+        self.function_args = {}
+        self.deltaE = deltaE
 
 
 class Outputs:

@@ -27,6 +27,18 @@ def test_gdvi_bad_input(spectral_index_test_data):
     assert spectral_index.gdvi(hsi=index_array, distance=20) is None
 
 
+def test_gndvi(spectral_index_test_data):
+    """Test for PlantCV."""
+    index_array = spectral_index.gndvi(spectral_index_test_data.load_hsi(), distance=20)
+    assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
+
+
+def test_gndvi_bad_input(spectral_index_test_data):
+    """Test for PlantCV."""
+    index_array = spectral_index.gndvi(spectral_index_test_data.load_hsi(), distance=20)
+    assert spectral_index.gndvi(hsi=index_array, distance=20) is None
+
+
 def test_savi(spectral_index_test_data):
     """Test for PlantCV."""
     index_array = spectral_index.savi(spectral_index_test_data.load_hsi(), distance=20)

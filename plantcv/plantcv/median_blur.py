@@ -33,9 +33,6 @@ def median_blur(gray_img, ksize, roi=None):
                                  **{"size": k})
     img_mblur = _rect_replace(gray_img, sub_img_mblur, roi)
 
-    _debug(img_mblur,
-           filename=os.path.join(params.debug_outdir,
-                                 str(params.device) + '_median_blur' + str(k) + '.png'),
-           cmap='gray')
+    _debug(visual=img_mblur, filename=os.path.join(params.debug_outdir, f"{params.device}_median_blur{k}.png"), cmap='gray')
 
     return img_mblur

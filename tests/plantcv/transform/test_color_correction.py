@@ -3,16 +3,18 @@ import pytest
 import os
 import cv2
 import numpy as np
-from altair.vegalite.v5.api import Chart
-from plantcv.plantcv.transform.color_correction import (get_color_matrix, get_matrix_m, calc_transformation_matrix,
+from plantcv.plantcv._globals import outputs
+from plantcv.plantcv.transform.color_correction import (calc_transformation_matrix,
                                                         apply_transformation_matrix, save_matrix, load_matrix, correct_color,
-                                                        create_color_card_mask, quick_color_check, std_color_matrix,
-                                                        astro_color_matrix, affine_color_correction)
+                                                        create_color_card_mask, affine_color_correction)
+from plantcv.plantcv.transform.get_color_matrix import get_color_matrix, get_matrix_m
+from plantcv.plantcv.transform.standard_matrices import std_color_matrix, astro_color_matrix
 from plantcv.plantcv.transform.detect_color_card import detect_color_card
 
 
 def test_affine_color_correction(transform_test_data):
     """Test for Plantcv."""
+    outputs.clear()
     # apply affine color correction to an image and check that the chip colors
     # get closer to the standard values
     img = cv2.imread(transform_test_data.colorcard_img)
@@ -301,15 +303,6 @@ def test_create_color_card_mask(transform_test_data):
     assert all([i == j] for i, j in zip(np.unique(mask), np.array([0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110,
                                                                    120, 130, 140, 150, 160, 170, 180, 190, 200, 210,
                                                                    220], dtype=np.uint8)))
-
-
-def test_quick_color_check(transform_test_data):
-    """Test for PlantCV."""
-    # Load target image
-    target_matrix = transform_test_data.load_npz(transform_test_data.target_matrix_file)
-    source_matrix = transform_test_data.load_npz(transform_test_data.source1_matrix_file)
-    chart = quick_color_check(target_matrix, source_matrix, num_chips=22)
-    assert isinstance(chart, Chart)
 
 
 def test_cameratrax_and_astro_consistent_color_calibration(transform_test_data):

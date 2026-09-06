@@ -179,6 +179,90 @@ class TestData:
                                   'measurement': measurements}, name=var)
         return da
 
+    def _make_dummy_npq(self, f0, f1, f2, f3):
+        """Create PSII data with two frames"""
+        # Create DataArray
+        ojip_dark = xr.DataArray(data=np.dstack([f0, f1, f2, f3])[..., None],
+                                 dims=('x', 'y', 'frame_label', 'measurement'),
+                                 coords={'frame_label': ['Fdark', 'F0', 'Fm', '3'],
+                                         'frame_num': ('frame_label', [0, 1, 2, 3]),
+                                         'measurement': ['t0']}, name="ojip_dark")
+        ojip_light = xr.DataArray(data=np.dstack([f0, f1, f2, f3])[..., None],
+                                  dims=('x', 'y', 'frame_label', 'measurement'),
+                                  coords={'frame_label': ['Fdark', 'Fp', '2', 'Fmp'],
+                                          'frame_num': ('frame_label', [0, 1, 2, 3]),
+                                          'measurement': ['t1']}, name="ojip_light")
+
+        sub_psd = type("subpsdata", (object,), {
+            "ojip_dark": ojip_dark
+        })
+        sub_psl = type("subpsdata2", (object,), {
+            "ojip_light": ojip_light
+        })
+
+        ps = type("psdata", (object,), {
+            'metadata': {
+                "ImageRows": 10,
+                "ImageCols": 10
+            },
+            "psl": sub_psl,
+            "psd": sub_psd,
+            "ojip_dark": ojip_dark,
+            "ojip_light": ojip_light
+        })
+        return ps
+
+    def psii_cropreporter_new(self, var):
+        """Create simple data for PSII"""
+        # sample images
+        f0 = self.create_ps_mask()
+        f0[5, 5] = 1
+        f1 = self.create_ps_mask()
+        f1[5, 5] = 2
+        f2 = self.create_ps_mask()
+        f2[5, 5] = 10
+        f3 = self.create_ps_mask()
+        f3[5, 5] = 8
+
+        # set specific labels for xarray for dark and light adapted
+        if var == 'ojip_dark':
+            frame_labels = ['Fdark', 'F0', 'Fm', '3']
+            measurements = ['t0']
+            keyname = "psd"
+            other_keyname = "psl"
+        elif var == 'ojip_light':
+            frame_labels = ['Fdark', 'Fp', '2', 'Fmp']
+            measurements = ['t1']
+            keyname = "psl"
+            other_keyname = "psd"
+        elif var == "ojip_bad":
+            frame_labels = ['Fdark', 'Fp', '2', 'Fmp']
+            measurements = ['t1']
+            keyname = "bad"
+            other_keyname = "also_bad"
+        elif var == "ojip_both":
+            ps = self._make_dummy_npq(f0, f1, f2, f3)
+            return ps
+
+        # Create DataArray
+        da = xr.DataArray(data=np.dstack([f0, f1, f2, f3])[..., None],
+                          dims=('x', 'y', 'frame_label', 'measurement'),
+                          coords={'frame_label': frame_labels, 'frame_num': ('frame_label', [0, 1, 2, 3]),
+                                  'measurement': measurements}, name=var)
+        sub_ps = type("subpsdata", (object,), {
+            var: da
+        })
+
+        ps = type("psdata", (object,), {
+            'metadata': {
+                "ImageRows": 10,
+                "ImageCols": 10
+            },
+            keyname: sub_ps,
+            other_keyname: None
+        })
+        return ps
+
     @staticmethod
     def psii_walz(var):
         """Create and return synthetic psii dataarrays from walz"""
@@ -227,6 +311,107 @@ class TestData:
             ps_da.coords['measurement'] = prop_idx
 
         return ps_da
+
+    @staticmethod
+    def psii_walz_new(var):
+        """Create and return synthetic psii dataarrays from walz"""
+        # create darkadapted
+        if var in ['ojip_dark', 'ojip_both']:
+            keyname = "psd"
+            other_keyname = "psl"
+            i = 0
+            fmin = np.ones((10, 10), dtype='uint8') * ((i+15)*2)
+            fmax = np.ones((10, 10), dtype='uint8') * (200-i*15)
+            data = np.stack([fmin, fmax], axis=2)
+
+            frame_nums = range(0, 2)
+            indf = ['F0', 'Fm']
+            ps_dad = xr.DataArray(
+                data=data[..., None],
+                dims=('x', 'y', 'frame_label', 'measurement'),
+                coords={'frame_label': indf,
+                        'frame_num': ('frame_label', frame_nums),
+                        'measurement': ['t0']},
+                name='ojip_dark'
+            )
+
+            if var == "ojip_dark":
+                sub_ps = type("subpsdata", (object,), {
+                    var: ps_dad
+                })
+                ps = type("psdata", (object,), {
+                    'metadata': {
+                        "ImageRows": 10,
+                        "ImageCols": 10
+                    },
+                    keyname: sub_ps,
+                    other_keyname: None,
+                    var: ps_dad
+                })
+                return ps
+
+        # create lightadapted
+        if var in ['ojip_light', 'ojip_both']:
+            da_list = []
+            measurement = []
+            keyname = "psl"
+            other_keyname = "psd"
+
+            for i in np.arange(1, 3):
+                indf = ['Fp', 'Fmp']
+                fmin = np.ones((10, 10), dtype='uint8') * ((i+15)*2)
+                fmax = np.ones((10, 10), dtype='uint8') * (200-i*15)
+                data = np.stack([fmin, fmax], axis=2)
+
+                lightadapted = xr.DataArray(
+                    data=data[..., None],
+                    dims=('x', 'y', 'frame_label', 'measurement'),
+                    coords={'frame_label': indf,
+                            'frame_num': ('frame_label', range(0, 2))}
+                )
+
+                measurement.append((f't{i*40}'))
+                da_list.append(lightadapted)
+
+            prop_idx = pd.Index(measurement)
+            ps_dal = xr.concat(da_list, 'measurement')
+            ps_dal.name = 'ojip_light'
+            ps_dal.coords['measurement'] = prop_idx
+
+            if var == 'ojip_light':
+                sub_ps = type("subpsdata", (object,), {
+                    var: ps_dal
+                })
+                ps = type("psdata", (object,), {
+                    'metadata': {
+                        "ImageRows": 10,
+                        "ImageCols": 10
+                    },
+                    keyname: sub_ps,
+                    other_keyname: None,
+                    var: ps_dal
+                })
+                return ps
+
+        if var == "ojip_both":
+            sub_psd = type("subpsdata", (object,), {
+                "ojip_dark": ps_dad
+            })
+            sub_psl = type("subpsdata", (object,), {
+                "ojip_light": ps_dal
+            })
+
+            ps = type("psdata", (object,), {
+                'metadata': {
+                    "ImageRows": 10,
+                    "ImageCols": 10
+                },
+                "psd": sub_psd,
+                "psl": sub_psl,
+                "ojip_light": ps_dal,
+                "ojip_dark": ps_dad
+            })
+            return ps
 
 
 @pytest.fixture(scope="session")

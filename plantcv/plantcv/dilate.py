@@ -31,9 +31,6 @@ def dilate(gray_img, ksize, i, roi=None):
     k = _format_kernel(ksize, int)
     dil_img = _dilate(gray_img, k, i, roi=roi)
 
-    _debug(visual=dil_img,
-           filename=os.path.join(params.debug_outdir,
-                                 str(params.device) + '_dil_image' + str(k) + '_itr' + str(i) + '.png'),
-           cmap='gray')
+    _debug(visual=dil_img, filename=os.path.join(params.debug_outdir, f"{params.device}_dil_image{k}_itr{i}.png"), cmap='gray')
 
     return dil_img

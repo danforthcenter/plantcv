@@ -11,6 +11,19 @@ def test_json2csv(test_data, tmpdir):
     assert os.path.exists(os.path.join(str(tmp_dir), "exports-single-value-traits.csv"))
 
 
+def test_json2csv_json_prefix(test_data, tmpdir):
+    """Test for PlantCV."""
+    # Create tmp directory
+    tmp_dir = tmpdir.mkdir("cache")
+    # Pass a csv_prefix that still carries the .json extension, as happens when
+    # plantcv-run-workflow reuses the JSON results filename as the CSV prefix
+    csv_prefix = os.path.join(str(tmp_dir), "exports.json")
+    json2csv(json_file=test_data.plantcv_results_file, csv_prefix=csv_prefix)
+    # The .json extension should be stripped, not embedded in the CSV filename
+    assert os.path.exists(os.path.join(str(tmp_dir), "exports-single-value-traits.csv"))
+    assert not os.path.exists(os.path.join(str(tmp_dir), "exports.json-single-value-traits.csv"))
+
+
 def test_json2csv_no_json(test_data, tmpdir):
     """Test for PlantCV."""
     # Create tmp directory

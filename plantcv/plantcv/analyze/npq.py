@@ -9,54 +9,53 @@ from plantcv.plantcv._debug import _debug
 from plantcv.plantcv.photosynthesis import reassign_frame_labels
 
 
-def npq(ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto",
+def npq(ps, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto",
         measurement_labels=None, label=None):
     """
     Calculate and analyze non-photochemical quenching estimates from fluorescence image data.
 
-    Inputs:
-    ps_da_light        = Photosynthesis xarray DataArray that contains frame_label `Fmp` (ojip_light)
-    ps_da_dark         = Photosynthesis xarray DataArray that contains frame_label `Fm` (ojip_dark)
-    labeled_mask       = Labeled mask of objects (32-bit).
-    n_labels           = Total number expected individual objects (default = 1).
-    auto_fm            = Automatically calculate the frame with maximum fluorescence per label, otherwise
-                         use a fixed frame for all labels (default = False).
-    min_bin            = minimum bin value ("auto" or user input minimum value - must be an integer)
-    max_bin            = maximum bin value ("auto" or user input maximum value - must be an integer)
-    measurement_labels = labels for each measurement in ps_da_light, modifies the variable name of observations recorded
-    label              = Optional label parameter, modifies the variable name of
-                         observations recorded (default = pcv.params.sample_label).
+    Parameters:
+    -----------
+    ps                 = plantcv.plantcv.classes.PSII_Data,
+        Object containing ojip_light and ojip_dark data from NPQ or PSL and PSD data.
+    labeled_mask       = numpy.ndarray,
+        Labeled mask of objects (32-bit).
+    n_labels           = int,
+        Total number expected individual objects (default = 1).
+    auto_fm            = bool,
+        Automatically calculate the frame with maximum fluorescence per label, otherwise
+        use a fixed frame for all labels (default = False).
+    min_bin            = int, str
+        minimum bin value ("auto" or user input minimum value - must be an integer)
+    max_bin            = int, str
+        maximum bin value ("auto" or user input maximum value - must be an integer)
+    measurement_labels = list,
+        labels for each measurement in ps, modifies the variable name of observations recorded
+    label              = str,
+        Optional label parameter, modifies the variable name of
+        observations recorded (default = pcv.params.sample_label).
 
     Returns:
-    npq_global         = DataArray of NPQ values
-    npq_chart          = Histograms of NPQ estimates
-
-    :param ps_da_light: xarray.core.dataarray.DataArray
-    :param ps_da_dark: xarray.core.dataarray.DataArray
-    :param labeled_mask: numpy.ndarray
-    :param n_labels: int
-    :param auto_fm: bool
-    :param min_bin: int, str
-    :param max_bin: int, str
-    :param measurement_labels: list
-    :param label: str
-    :return npq_global: xarray.core.dataarray.DataArray
-    :return npq_chart: altair.vegalite.v4.api.FacetChart
+    --------
+    npq_global         = xarray.core.dataarray.DataArray,
+        NPQ values
+    npq_chart          = altair.vegalite.v4.api.FacetChart,
+        Histograms of NPQ estimates
     """
     # Set labels
     labels = _set_labels(label, n_labels)
+
+    if hasattr(ps, "npq") or (hasattr(ps, "psl") and hasattr(ps, "psd")):
+        ps_da_light = ps.ojip_light
+        ps_da_dark = ps.ojip_dark
+    else:
+        fatal_error("ps must have ojip_light and ojip_dark DataArrays from psl/psd or npq images")
 
     if labeled_mask.shape != ps_da_light.shape[:2] or labeled_mask.shape != ps_da_dark.shape[:2]:
         fatal_error(f"Mask needs to have shape {ps_da_dark.shape[:2]}")
 
     if (measurement_labels is not None) and (len(measurement_labels) != ps_da_light.coords['measurement'].shape[0]):
         fatal_error('measurement_labels must be the same length as the number of measurements in `ps_da_light`')
-
-    if ps_da_light.name.lower() != 'ojip_light' or ps_da_dark.name.lower() != 'ojip_dark':
-        fatal_error(f"ps_da_light and ps_da_dark must be DataArrays with names 'ojip_light' and 'ojip_dark', "
-                    f"respectively. Instead the inputs are: "
-                    f"ps_da_light: {ps_da_light.name}, ps_da_dark: {ps_da_dark.name}"
-                    )
 
     # Make an zeroed array of the same shape as the input DataArray
     npq_global = xr.zeros_like(ps_da_light, dtype=float)
