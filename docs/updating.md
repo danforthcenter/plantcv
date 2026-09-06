@@ -59,6 +59,10 @@ automatically. Alternatively, you can run `pip install -e .` to reinstall the pa
 
 ### Breaking changes between v4 and v5 <a name="breaking-changes"></a>
 
+#### plantcv.filters.eccentricity
+
+Deprecated the function in favor of `plantcv.filters.obj_props(..., regprop="eccentricity")`.
+
 #### plantcv.analyze.npq
 
 Removed `ps_da_light` and `ps_da_dark` arguments in favor of `ps` argument that takes the entire `PSII_data` object.
@@ -538,6 +542,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.3:  NA 
 * post v4.3: filtered_mask = **plantcv.filters.eccentricity**(*bin_img, ecc_thresh=0*)
+* post v5: NA
 
 #### plantcv.filters.obj_props
 
