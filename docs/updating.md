@@ -59,6 +59,18 @@ automatically. Alternatively, you can run `pip install -e .` to reinstall the pa
 
 ### Breaking changes between v4 and v5 <a name="breaking-changes"></a>
 
+#### plantcv.filters.eccentricity
+
+Deprecated the function in favor of `plantcv.filters.obj_props(..., regprop="eccentricity")`.
+
+#### plantcv.analyze.npq
+
+Removed `ps_da_light` and `ps_da_dark` arguments in favor of `ps` argument that takes the entire `PSII_data` object.
+
+#### plantcv.analyze.yii
+
+Renamed to `plantcv.analyze.yii_ojip` parameter `ps_da` to `ps` to reflect that it now takes a `PSII_data` object instead of a single frame from that object.
+
 #### plantcv.utils
 
 The `plantcv.utils` module has been deleted with `sample_images` moving to `plantcv.parallel`, `json2csv` moving to `plantcv.plantcv`, and `tabulate_bayes_classes` moving to `plantcv.learn`. Command-line interfaces are still available for `sample_images` [plantcv-sample](tools.md#plantcv-parallel) and `tabulate_bayes_classes` as [plantcv-learn tabulate_bayes_classes](tools.md#training-machine-learning-models).
@@ -91,6 +103,10 @@ Removed `label` parameter since size marker data is now stored as metadata in th
 
 Deprecated the function in favor of the new
 [`plantcv.transform.detect_color_card`](transform_detect_color_card.md) function.
+
+#### plantcv.transform.quick_color_check
+
+Function moved to `plantcv.qc.quick_color_check` and the `num_chips`/`target_matrix` arguments are now optional.
 
 #### plantcv.visualize.pixel_scatter_plot
 
@@ -371,6 +387,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: NA
 * post v4.0: npq, npq_hist = **plantcv.analyze.npq**(*ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto", measurement_labels=None, label=None*)
+* post v5.0: npq, npq_hist = **plantcv.analyze.npq**(*ps, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto", measurement_labels=None, label=None*)
 
 #### plantcv.analyze.size
 
@@ -402,6 +419,12 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: NA
 * post v4.0: yii, yii_hist = **plantcv.analyze.yii**(*ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None*)
+* post v5.0: NA
+
+#### plantcv.analyze.yii_ojip
+
+* pre v5.0: See `plantcv.analyze.yii`
+* post v5.0: list_of_yii, list_of_yii_hist = **plantcv.analyze.yii_ojip**(*ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None*)
 
 #### plantcv.apply_mask
 
@@ -519,6 +542,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.3:  NA 
 * post v4.3: filtered_mask = **plantcv.filters.eccentricity**(*bin_img, ecc_thresh=0*)
+* post v5: NA
 
 #### plantcv.filters.obj_props
 
@@ -1001,11 +1025,12 @@ pages for more details on the input and output variable types.
 
 * pre v4.3.1: NA
 * post v4.3.1: chart = **plantcv.qc.exposure**(*rgb_img, warning_threshold=0.05*)
+* post v5.0: chart = **plantcv.qc.exposure**(*rgb_img, warning_threshold=0.05, label=None*)
 
 #### plantcv.qc.quick_color_check
 
 * pre v5.0: NA, see `plantcv.transform.quick_color_check`
-* post v5.0: chart = **plantcv.transform.quick_color_check**(*target_matrix, source_matrix, num_chips*)
+* post v5.0: chart = **plantcv.qc.quick_color_check**(*source_matrix, target_matrix=None, num_chips=None*)
 
 #### plantcv.qc.color_correction_plot
 
@@ -1020,7 +1045,7 @@ pages for more details on the input and output variable types.
 #### plantcv.qc.plot_deltaE
 
 * pre v5.0: NA
-* post v5.0: fig = **plantcv.qc.plot_deltaE**(*deltaE_matrix*)
+* post v5.0: fig = **plantcv.qc.plot_deltaE**(*source, n=20, ext="png", \*\*kwargs*)
 
 #### plantcv.readbayer
 

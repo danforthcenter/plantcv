@@ -8,7 +8,7 @@ Corrects for nonuniform lighting in an image.
 
 - **Parameters:**
     - img - RGB or grayscale image 
-    - ksize - Kernel size
+    - ksize - Kernel size, specified as a binary numpy.ndarray for arbitrary shapes, shape tuple for a rectangular kernel, or integer for a square kernel.
    
 - **Context:**
     - Corrects for nonuniform illumination for situations where there is no available background image
