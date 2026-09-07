@@ -79,7 +79,7 @@ def test_yii_cropreporter_13_frame_pmt(test_data, tmpdir, monkeypatch):
         _ = analyze_yii(ps=ps, labeled_mask=np.ones(shape),
                         measurement_labels=["x", "y", "z"], label="default")
 
-    
+
 @pytest.mark.parametrize("mlabels, tmask",
                          # test wrong mask shape
                          [[None, np.ones((2, 2))],
@@ -140,7 +140,8 @@ def test_yii_pam_time(test_data, tmpdir):
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("sub")
     # Create dataset with only PMT
-    shutil.copyfile(test_data.photosynthesis.cropreporter_pmt, os.path.join(cache_dir, "HDR_E0001P0007N0001_GCU24100090_20260226.INF"))
+    shutil.copyfile(test_data.photosynthesis.cropreporter_pmt,
+                    os.path.join(cache_dir, "HDR_E0001P0007N0001_GCU24100090_20260226.INF"))
     pmt_dat = test_data.photosynthesis.cropreporter_pmt.replace("HDR", "PMT")
     pmt_dat = pmt_dat.replace("INF", "DAT")
     shutil.copyfile(pmt_dat, os.path.join(cache_dir, "PMT_E0001P0007N0001_GCU24100090_20260226.DAT"))
