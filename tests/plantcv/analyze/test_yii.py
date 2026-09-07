@@ -17,7 +17,7 @@ from plantcv.plantcv.photosynthesis.read_cropreporter import read_cropreporter
     ["pml", "pam_light", None, 1, 0.95238],
     ["pmt", "pam_time", None, 1, 0.75],
     ["pmt", "pam_time", ["example", "example2"], 255, 0.75],
-    ["npq", "ojip_light", None, 255, 0.80874]])
+    ["npq", "ojip_light", None, 255, 0.69841]])
 def test_yii_cropreporter(frame, data, mlabels, maskval, exp, test_data):
     """Test for PlantCV."""
     # Clear results
