@@ -26,7 +26,7 @@ def test_npq_cropreporter_auto(test_data):
                     measurement_labels=["Fq/Fm"], label="prefix", min_bin="auto", max_bin="auto")
     assert np.isclose(outputs.observations["prefix_1"]["npq_median_Fq/Fm"]["value"], 0.25)
 
-    
+
 @pytest.mark.parametrize("mlabels, tmask",
                          # test wrong mask shape
                          [[None, np.ones((2, 2))],
