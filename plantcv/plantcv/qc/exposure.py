@@ -70,12 +70,12 @@ def exposure(rgb_img, warning_threshold=0.05, label=None):
     # Split the img into its Red, Green, and Blue channels
     red_channel, green_channel, blue_channel = img_rgb[:, :, 0], img_rgb[:, :, 1], img_rgb[:, :, 2]
 
+    R = _check_exposure(red_channel, warning_threshold, channel_name="red")
+    G = _check_exposure(green_channel, warning_threshold, channel_name="green")
+    B = _check_exposure(blue_channel, warning_threshold, channel_name="blue")
+
     # Check each channel for over- or underexposure
-    if (
-        _check_exposure(red_channel, warning_threshold, channel_name="red", label=label) or
-        _check_exposure(green_channel, warning_threshold, channel_name="green", label=label) or
-        _check_exposure(blue_channel, warning_threshold, channel_name="blue", label=label)
-    ):
+    if (R or G or B):
         warn(
             f"The image is over- or underexposed because more than {warning_threshold * 100}% of "
             "pixels are equal to 0 or 255 intensity. Color cannot be analyzed "
