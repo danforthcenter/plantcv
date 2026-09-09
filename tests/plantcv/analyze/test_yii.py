@@ -17,26 +17,34 @@ from plantcv.plantcv.photosynthesis.read_cropreporter import read_cropreporter
     ["pml", "pam_light", None, 1, 0.95238],
     ["pmt", "pam_time", None, 1, 0.75],
     ["pmt", "pam_time", ["example", "example2"], 255, 0.75],
-    ["npq", "ojip_light", None, 255, 0.80874]])
+    ["npq", "ojip_light", None, 255, 0.69841]])
 def test_yii_cropreporter(frame, data, mlabels, maskval, exp, test_data):
     """Test for PlantCV."""
     # Clear results
     outputs.clear()
-    label = "t0" if mlabels is None else mlabels[0]
     if frame in ["psd", "psl"]:
         source_path = test_data.photosynthesis.cropreporter
     elif frame in ["pmd", "pml"]:
         source_path = test_data.photosynthesis.cropreporter_v653
     elif frame == "pmt":
         source_path = test_data.photosynthesis.cropreporter_pmt
-        label = "t0_fvfm" if mlabels is None else mlabels[0] + "_fvfm"
     else:
         source_path = test_data.photosynthesis.cropreporter_npq
 
     ps = read_cropreporter(filename=source_path)
-    shape = getattr(getattr(ps, frame, None), data, None).shape[0:2]
-    read_in_worked = bool(getattr(ps, frame, None))
-    assert read_in_worked
+    ps_frame = getattr(ps, frame, None)
+    assert bool(ps_frame)
+    ps_da = getattr(ps_frame, data, None)
+    shape = ps_da.shape[0:2]
+
+    if mlabels is None:
+        label = str(ps_da.measurement.values[0])
+        if frame == "pmt":
+            label = f"{label}_fvfm"
+    else:
+        label = mlabels[0]
+        if frame == "pmt":
+            label = f"{label}_fvfm"
     # run analyze
     _ = analyze_yii(ps=ps,
                     labeled_mask=(maskval * np.ones(shape)).astype(np.uint8),
@@ -79,7 +87,7 @@ def test_yii_cropreporter_13_frame_pmt(test_data, tmpdir, monkeypatch):
         _ = analyze_yii(ps=ps, labeled_mask=np.ones(shape),
                         measurement_labels=["x", "y", "z"], label="default")
 
-    
+
 @pytest.mark.parametrize("mlabels, tmask",
                          # test wrong mask shape
                          [[None, np.ones((2, 2))],
@@ -140,7 +148,8 @@ def test_yii_pam_time(test_data, tmpdir):
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("sub")
     # Create dataset with only PMT
-    shutil.copyfile(test_data.photosynthesis.cropreporter_pmt, os.path.join(cache_dir, "HDR_E0001P0007N0001_GCU24100090_20260226.INF"))
+    shutil.copyfile(test_data.photosynthesis.cropreporter_pmt,
+                    os.path.join(cache_dir, "HDR_E0001P0007N0001_GCU24100090_20260226.INF"))
     pmt_dat = test_data.photosynthesis.cropreporter_pmt.replace("HDR", "PMT")
     pmt_dat = pmt_dat.replace("INF", "DAT")
     shutil.copyfile(pmt_dat, os.path.join(cache_dir, "PMT_E0001P0007N0001_GCU24100090_20260226.DAT"))
