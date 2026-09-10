@@ -231,7 +231,7 @@ def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None
         y="proportion of pixels (%)",
         color=alt.Color('Wavelength (' + hsi.wavelength_units + ')').scale(scheme='turbo'),
         tooltip=['Wavelength (' + hsi.wavelength_units + ')']
-        ).interactive()
+        )
 
     if title is not None:
         fig_hist.properties(title=title)
@@ -239,4 +239,4 @@ def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None
     params.debug = debug
     _debug(fig_hist, filename=os.path.join(params.debug_outdir, str(params.device) + '_histogram.png'))
 
-    return fig_hist
+    return fig_hist.interactive()

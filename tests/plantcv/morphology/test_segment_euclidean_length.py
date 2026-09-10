@@ -2,7 +2,7 @@ import pytest
 import cv2
 import numpy as np
 from plantcv.plantcv import outputs
-from plantcv.plantcv.morphology import segment_euclidean_length
+from plantcv.plantcv.morphology.segment_euclidean_length import segment_euclidean_length
 
 
 def test_segment_euclidean_length(morphology_test_data):

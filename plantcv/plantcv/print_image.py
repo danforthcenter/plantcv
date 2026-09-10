@@ -4,7 +4,7 @@ import numpy
 import matplotlib
 from xarray.core.dataarray import DataArray
 from plantcv.plantcv.classes import PSII_data
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv._show_dataarray import _show_dataarray
 from altair.vegalite.v5.api import FacetChart, LayerChart, Chart
@@ -34,7 +34,7 @@ def print_image(img, filename, **kwargs):
 
     # Print altair type images
     elif isinstance(img, (FacetChart, LayerChart, Chart)):
-        img.save(filename)
+        img.save(filename, ppi=params.dpi)
 
     elif isinstance(img, DataArray):
         fig_handle = _show_dataarray(img, **kwargs)

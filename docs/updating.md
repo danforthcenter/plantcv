@@ -4,9 +4,10 @@
 1. [Updating with PyPi](#pypi)
 2. [Updating with Conda](#conda)
 3. [Updating from source](#source)
-4. [Updating to v4](#v4)
+4. [Breaking changes in v5](#breaking-changes)
+5. [Updating to v4](#v4)
     * [An example](#ex)
-5. [Changelog](#changelog)
+6. [Changelog](#changelog)
 
 ### PyPI <a name="pypi"></a>
 
@@ -31,7 +32,7 @@ If conda does not update your PlantCV installation, you can try installing a spe
 ```bash
 conda install -n plantcv -c conda-forge plantcv=4.0
 
-``` 
+```
 
 You can find the version you have installed with:
 
@@ -55,6 +56,66 @@ and are on the `main` branch, here is how you can tell:
 
 If you installed PlantCV using the "editable" mode `pip install -e .` then your installation should be updated
 automatically. Alternatively, you can run `pip install -e .` to reinstall the package from the cloned repository.
+
+### Breaking changes between v4 and v5 <a name="breaking-changes"></a>
+
+#### plantcv.filters.eccentricity
+
+Deprecated the function in favor of `plantcv.filters.obj_props(..., regprop="eccentricity")`.
+
+#### plantcv.analyze.npq
+
+Removed `ps_da_light` and `ps_da_dark` arguments in favor of `ps` argument that takes the entire `PSII_data` object.
+
+#### plantcv.analyze.yii
+
+Renamed parameter `ps_da` to `ps` to reflect that it now takes a `PSII_data` object instead of a single frame from that object.
+
+#### plantcv.utils
+
+The `plantcv.utils` module has been deleted with `sample_images` moving to `plantcv.parallel`, `json2csv` moving to `plantcv.plantcv`, and `tabulate_bayes_classes` moving to `plantcv.learn`. Command-line interfaces are still available for `sample_images` [plantcv-sample](tools.md#plantcv-parallel) and `tabulate_bayes_classes` as [plantcv-learn tabulate_bayes_classes](tools.md#training-machine-learning-models).
+
+#### plantcv.parallel.WorkflowConfig
+
+Renamed the "json" attribute to "results" for clarity about what it controls and for consistency with new [JupyterConfig](parallel_jupyterconfig.md)
+
+#### plantcv.spectral_index.egi
+
+Renamed the input parameter `rgb_img` to `img` to reflect the flexibility of using the [EGI index function](spectral_index.md)
+with RGB and hyperspectral data.
+
+#### plantcv.report_size_marker_area
+
+Removed `label` parameter since size marker data is now stored as metadata in the
+[`Outputs` class](outputs.md) and does not need to be labeled per sample.
+
+#### plantcv.transform.auto_correct_color
+
+Removed `label` parameter since size marker data is now stored as metadata in the
+[`Outputs` class](outputs.md) and does not need to be labeled per sample.
+
+#### plantcv.transform.detect_color_card
+
+Removed `label` parameter since size marker data is now stored as metadata in the
+[`Outputs` class](outputs.md) and does not need to be labeled per sample.
+
+#### plantcv.transform.find_color_card
+
+Deprecated the function in favor of the new
+[`plantcv.transform.detect_color_card`](transform_detect_color_card.md) function.
+
+#### plantcv.transform.quick_color_check
+
+Function moved to `plantcv.qc.quick_color_check` and the `num_chips`/`target_matrix` arguments are now optional.
+
+#### plantcv.visualize.pixel_scatter_plot
+
+Changed `paths_to_imgs` argument to `source` to reflect that it can use a `numpy.ndarray`, `str` path,
+or a list of paths where it previously only could use a list of paths.
+
+#### plantcv.visualize.time_lapse_video
+
+Deprecated the function to enable compatibility with the opencv-headless package. Will be readded in a future release.
 
 ### Updating to v4 <a name="v4"></a>
 
@@ -172,6 +233,46 @@ function call to the most updated function call.
 See the individual function help
 pages for more details on the input and output variable types.
 
+#### learn.train_kmeans
+
+* pre v4.3: NA 
+* post v4.3: **learn.train_kmeans**(*img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, sigma=5, sampling=None, seed=1, num_imgs=0, n_init=10*)
+
+#### parallel.create_dask_cluster
+
+* pre v4.10: Untracked
+* post v4.10: **parallel.create_dask_cluster**(*config, cluster_config*)
+
+#### parallel.inspect_dataset
+
+* pre v4.10: NA
+* post v4.10: **parallel.inspect_dataset**(*config*)
+
+#### parallel.job_builder
+
+* pre v4.10: Untracked
+* post v4.10: **parallel.job_builder**(*meta, config*)
+
+#### parallel.metadata_parser
+
+* pre v4.10: Untracked
+* post 4.10: **parallel.metadata_parser**(*config*)
+
+#### parallel.multiprocess
+
+* pre v4.10: Untracked
+* post v4.10: **parallel.multiprocess**(*jobs, client*)
+
+#### parallel.run_parallel
+
+* pre v4.10: NA
+* post v4.10: **parallel.run_parallel**(*config*)
+
+#### parallel.workflow_inputs
+
+* pre v4.10: Untracked
+* post v4.10: **parallel.workflow_inputs**(*\*other_args*)
+
 #### plantcv.acute
 
 * pre v3.0dev2: device, homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = **plantcv.acute**(*obj, win, thresh, mask, device, debug=None*)
@@ -286,6 +387,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: NA
 * post v4.0: npq, npq_hist = **plantcv.analyze.npq**(*ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto", measurement_labels=None, label=None*)
+* post v5.0: npq, npq_hist = **plantcv.analyze.npq**(*ps, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto", measurement_labels=None, label=None*)
 
 #### plantcv.analyze.size
 
@@ -304,6 +406,9 @@ pages for more details on the input and output variable types.
 * pre v4.0: (see plantcv.hyperspectral.analyze_spectral)
 * post v4.0: analysis_image = **plantcv.analyze.spectral_reflectance**(*hsi, labeled_mask, n_labels=1, label=None*)
 
+#### plantcv.analyze.texture
+
+* post v5.0 texture_chart = **plantcv.analyze.texture**(*img, labeled_mask, n_labels=1, methods=None, distances=None, angles=None, symmetric=False, normalize=False, label=None*)
 
 #### plantcv.analyze.thermal
 
@@ -314,6 +419,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: NA
 * post v4.0: yii, yii_hist = **plantcv.analyze.yii**(*ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None*)
+* post v5.0: list_of_yii, list_of_yii_hist = **plantcv.analyze.yii**(*ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None*)
 
 #### plantcv.apply_mask
 
@@ -431,6 +537,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.3:  NA 
 * post v4.3: filtered_mask = **plantcv.filters.eccentricity**(*bin_img, ecc_thresh=0*)
+* post v5: NA
 
 #### plantcv.filters.obj_props
 
@@ -592,6 +699,11 @@ pages for more details on the input and output variable types.
 * pre v3.14.0: NA
 * post v3.14.0:  image_dataset = **plantcv.io.read_dataset**(*source_path, pattern='', sort=True*)
 
+#### plantcv.json2csv
+
+* pre v5: NA
+* post v5: **plantcv.json2csv**(*json_file, csv_prefix*)
+
 #### plantcv.landmark_reference_pt_dist
 
 * pre v3.0dev2: device, vert_ave_c, hori_ave_c, euc_ave_c, ang_ave_c, vert_ave_b, hori_ave_b, euc_ave_b, ang_ave_b = **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r, device, debug=None*)
@@ -608,11 +720,6 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: lp_filtered = **plantcv.laplace_filter**(*gray_img, k, scale*)
 * post v3.2: lp_filtered = **plantcv.laplace_filter**(*gray_img, ksize, scale*)
 * post v4.9: lp_filtered = **plantcv.laplace_filter**(*gray_img, ksize, scale, roi=None*)
-
-#### plantcv.learn.train_kmeans
-
-* pre v4.3: NA 
-* post v4.3: **plantcv.learn.train_kmeans**(*img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, sigma=5, sampling=None, seed=1, num_imgs=0, n_init=10*)
 
 #### plantcv.logical_and
 
@@ -633,6 +740,12 @@ pages for more details on the input and output variable types.
 
 * pre v4.3: NA 
 * post v4.3: **plantcv.mask_kmeans**(*labeled_img, k, patch_size, cat_list=None*)
+
+#### plantcv.masks2labels
+
+* pre v5.0: NA
+* post v5.0: labeled_mask, colored_img, number_of_objects = 
+**plantcv.masks2labels**(*mask_list*)
 
 #### plantcv.median_blur
 
@@ -735,6 +848,11 @@ pages for more details on the input and output variable types.
 * post v3.11: labeled_img = **plantcv.morphology.segment_tangent_angle**(*segmented_img, objects, size, label="default"*)
 * post v4.0: labeled_img = **plantcv.morphology.segment_tangent_angle**(*segmented_img, objects, size, label=None*)
 
+#### plantcv.morphology.segment_width
+
+* pre v4.10: NA
+* post v4.10: labeled_img = **plantcv.morphology.segment_width**(*segmented_img, skel_img, labeled_mask, n_labels=1, label=None*)
+
 #### plantcv.morphology.skeletontize
 
 * pre v3.3: NA
@@ -789,6 +907,52 @@ pages for more details on the input and output variable types.
 * pre v3.12: NA
 * post v3.12: **plantcv.outputs.save_results**(*filename, outformat="json"*)
 
+#### plantcv.parallel.create_dask_cluster
+
+* pre v4.10: Untracked
+* post v4.10: **plantcv.parallel.create_dask_cluster**(*config, cluster_config*)
+
+#### plantcv.parallel.inspect_dataset
+
+* pre v4.10: NA
+* post v4.10: **plantcv.parallel.inspect_dataset**(*config*)
+
+#### plantcv.parallel.job_builder
+
+* pre v4.10: Untracked
+* post v4.10: **plantcv.parallel.job_builder**(*meta, config*)
+
+#### plantcv.parallel.JupyterConfig
+
+* pre v5: NA
+* post v5: **plantcv.parallel.JupyterConfig()**
+
+#### plantcv.parallel.metadata_parser
+
+* pre v4.10: Untracked
+* post 4.10: **plantcv.parallel.metadata_parser**(*config*)
+
+#### plantcv.parallel.multiprocess
+
+* pre v4.10: Untracked
+* post v4.10: **plantcv.parallel.multiprocess**(*jobs, client*)
+
+#### plantcv.parallel.process_results
+
+* pre v4.10: Untracked
+* post v4.10: **plantcv.parallel.process_results**(*config*)
+* post v5.0: DEPRECATED, see plantcv.process_results
+
+#### plantcv.parallel.workflow_inputs
+
+* pre v4.10: Untracked
+* post v4.10: **plantcv.parallel.workflow_inputs**(*\*other_args*)
+
+#### plantcv.parallel.WorkflowConfig
+
+* pre v5: Untracked
+* post v5: **plantcv.parallel.WorkflowConfig()
+
 #### plantcv.photosynthesis.analyze_fvfm
 
 * pre v3.10: see plantcv.fluor_fvfm
@@ -840,6 +1004,11 @@ pages for more details on the input and output variable types.
 * post v3.1: **plantcv.print_results**(*filename*)
 * post v4.0: DEPRECATED, see plantcv.outputs.save_results
 
+#### plantcv.process_results
+
+* pre v5.0: NA
+* post v5.0: **plantcv.process_results**(*input_dir=".", filename="results", outformat="csv"*)
+
 #### plantcv.pseudocolor
 
 * pre v3.1: NA
@@ -851,6 +1020,27 @@ pages for more details on the input and output variable types.
 
 * pre v4.3.1: NA
 * post v4.3.1: chart = **plantcv.qc.exposure**(*rgb_img, warning_threshold=0.05*)
+* post v5.0: chart = **plantcv.qc.exposure**(*rgb_img, warning_threshold=0.05, label=None*)
+
+#### plantcv.qc.quick_color_check
+
+* pre v5.0: NA, see `plantcv.transform.quick_color_check`
+* post v5.0: chart = **plantcv.qc.quick_color_check**(*source_matrix, target_matrix=None, num_chips=None*)
+
+#### plantcv.qc.color_correction_plot
+
+* pre v5.0: NA, see `plantcv.visualize.color_correction_scatterplot`
+* post v5.0: fig = **plantcv.qc.color_correction_plot**(*color_matrix, std_matrix, corrected_matrix=None*)
+
+#### plantcv.qc.color_chip_comparison
+
+* pre v5.0: NA
+* post v5.0: fig = **plantcv.qc.color_chip_comparison**(*std_matrix, \*args*)
+
+#### plantcv.qc.plot_deltaE
+
+* pre v5.0: NA
+* post v5.0: fig = **plantcv.qc.plot_deltaE**(*source, n=20, ext="png", \*\*kwargs*)
 
 #### plantcv.readbayer
 
@@ -876,6 +1066,7 @@ pages for more details on the input and output variable types.
 * post v3.3: analysis_image = **plantcv.report_size_marker_area**(*img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None, thresh=None*)
 * post v3.11: analysis_image = **plantcv.report_size_marker_area**(*img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None, thresh=None, label="default"*)
 * post v4.0: analysis_image = **plantcv.report_size_marker_area**(*img, roi, marker='define', objcolor='dark', thresh_channel=None, thresh=None, label=None*)
+* post v5.0: analysis_image = **plantcv.report_size_marker_area**(*img, roi, marker='define', objcolor='dark', thresh_channel=None, thresh=None*)
 
 #### plantcv.resize
 
@@ -969,6 +1160,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.2.1: NA
 * post v4.2.1: filtered_mask = **plantcv.roi.quick_filter**(*mask, roi*)
+* post v4.9: filtered_mask = **plantcv.roi.quick_filter**(*mask, roi, roi_type="partial"*)
 
 #### plantcv.roi_objects
 
@@ -992,6 +1184,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.8:  NA 
 * post v4.8: color_card_mask = **plantcv.transform.mask_color_card**(*rgb_img, \*\*kwargs*)
+* post v5.0: color_card_mask = **plantcv.transform.mask_color_card**(*rgb_img, card_type="macbeth", \*\*kwargs*)
 
 #### plantcv.transform.rotate
 
@@ -1032,6 +1225,10 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: sr_img = **plantcv.scharr_filter**(*gray_img, dx, dy, scale*)
 * post v4.9: sr_img = **plantcv.scharr_filter**(*gray_img, dx, dy, scale, roi=None*)
 
+#### plantcv.sharpen
+* pre v5.0: NA
+* post v5.0: img = **plantcv.sharpen**(*img, ksize, amount=1, threshold=0, sigma_x=0, sigma_y=None, roi=None*)
+
 #### plantcv.shift_img
 
 * pre v3.0dev2: device, adjusted_img = **plantcv.shift_img**(*img, device, number, side="right", debug=None*)
@@ -1053,6 +1250,14 @@ pages for more details on the input and output variable types.
 
 * post v3.8: array = **plantcv.spectral_index.ari**(*hsi, distance=20*)
 
+#### plantcv.spectral_index.bgi
+
+* post v5.0: array = **plantcv.spectral_index.bgi**(*img, distance=40*)
+
+#### plantcv.spectral_index.bgr
+
+* post v5.0: array = **plantcv.spectral_index.bgr**(*img, distance=40*)
+
 #### plantcv.spectral_index.ci_rededge
 
 * post v3.8: array = **plantcv.spectral_index.ci_rededge**(*hsi, distance=20*)
@@ -1069,6 +1274,7 @@ pages for more details on the input and output variable types.
 
 * post v3.8: array = **plantcv.spectral_index.egi**(*rgb_img*)
 * post v4.4: array = **plantcv.spectral_index.egi**(*rgb_img, distance=40*)
+* post v5.0: array = **plantcv.spectral_index.egi**(*img, distance=40*)
 
 #### plantcv.spectral_index.evi
 
@@ -1077,6 +1283,10 @@ pages for more details on the input and output variable types.
 #### plantcv.spectral_index.gdvi
 
 * post v3.8: array = **plantcv.spectral_index.gdvi**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.gndvi
+
+* post v5.0: array = **plantcv.spectral_index.gndvi**(*hsi, distance=20*)
 
 #### plantcv.spectral_index.gli
 
@@ -1149,6 +1359,10 @@ pages for more details on the input and output variable types.
 #### plantcv.spectral_index.savi
 
 * post v3.8: array = **plantcv.spectral_index.savi**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.sci
+
+* post v5.0: array = **plantcv.spectral_index.sci**(*img, distance=40*)
 
 #### plantcv.spectral_index.sipi
 
@@ -1237,6 +1451,11 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev1: NA
 * post v3.0dev2: corrected_img = **plantcv.transform.apply_transformation_matrix**(*source_img, target_img, transformation_matrix*)
+* post v5.0: corrected_img = **plantcv.transform.apply_transformation_matrix**(*source_img, transformation_matrix*)
+
+#### plantcv.transform.astro_color_matrix
+* pre v5.0: NA
+* post v5.0: matrix = **plantcv.transform.astro_color_matrix**()
 
 #### plantcv.transform.calc_transformation_matrix
 
@@ -1248,6 +1467,12 @@ pages for more details on the input and output variable types.
 * pre v4.6: NA
 * post v4.6: corrected_img = **plantcv.transform.auto_correct_color**(*rgb_img, label=None, \*\*kwargs*)
 * post v4.9: corrected_img = **plantcv.transform.auto_correct_color**(*rgb_img, label=None, color_chip_size=None, roi=None, \*\*kwargs*)
+* post v5.0: corrected_img = **plantcv.transform.auto_correct_color**(*rgb_img, color_chip_size=None, roi=None, \*\*kwargs*)
+
+#### plantcv.transform.auto_correct_color_nonlinear
+
+* pre v5.0: NA
+* post v5.0: corrected_img = **plantcv.transform.auto_correct_color_nonlinear**(*rgb_img, color_chip_size=None, roi=None,  \*\*kwargs*)
 
 #### plantcv.transform.correct_color
 
@@ -1260,11 +1485,17 @@ pages for more details on the input and output variable types.
 * post v3.0: mask = **pcv.transform.create_color_card_mask**(*rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=[]*)
 * post v4.9: mask = **pcv.transform.create_color_card_mask**(*rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=None*)
 
+#### plantcv.transform.deltaE
+
+* pre v5.0: NA
+* post v5.0: deltaE_matrix = **plantcv.transform.deltaE**(*rgb_img, color_chip_size=None, roi=None, obs="calibrated", \*\*kwargs*)
+
 #### plantcv.transform.detect_color_card
 
 * pre v4.0.1: NA
 * post v4.0.1: labeled_mask = **plantcv.transform.detect_color_card**(*rgb_img, label=None, \*\*kwargs*)
 * post v4.9: labeled_mask = **plantcv.transform.detect_color_card**(*rgb_img, label=None, color_chip_size=None, roi=None, \*\*kwargs*)
+* post v5.0: color_matrix = **plantcv.transform.detect_color_card**(*rgb_img, color_chip_size=None, roi=None, delta_E=True, \*\*kwargs*)
 
 #### plantcv.transform.find_color_card
 
@@ -1274,6 +1505,8 @@ pages for more details on the input and output variable types.
 * post v3.9: df, start_coord, spacing = **plantcv.transform.find_color_card**(*rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark', record_chip_size='median'*)
 * post v3.11: df, start_coord, spacing = **plantcv.transform.find_color_card**(*rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark', record_chip_size='median', label="default"*)
 * post v4.0: df, start_coord, spacing = **plantcv.transform.find_color_card**(*rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark', record_chip_size='median', label=None*)
+* post v5.0: Deprecated, see:
+    * labeled_mask = **plantcv.transform.detect_color_card**(*rgb_img, label=None, color_chip_size=None, roi=None, \*\*kwargs*)
 
 #### plantcv.transform.gamma_correct
 
@@ -1321,6 +1554,7 @@ pages for more details on the input and output variable types.
 * pre v3.0: NA
 * post v3.0: **plantcv.transform.quick_color_check**(*target_matrix, source_matrix, num_chips*)
 * post v4.0: chart = **plantcv.transform.quick_color_check**(*target_matrix, source_matrix, num_chips*)
+* post v5.0: NA, moved to `plantcv.qc.quick_color_check`
 
 #### plantcv.transform.save_matrix
 
@@ -1342,6 +1576,17 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: NA
 * post v4.0: chart = **plantcv.visualize.chlorophyll_fluorescence**(*ps_da, labeled_mask, n_labels=1, label="object"*)
+
+#### plantcv.visualize.color_chip_comparison
+
+* pre v4.10: NA
+* post v4.10: plot = **plantcv.visualize.color_chip_comparison**(*std_matrix, \*args*)
+* post v5.0: moved to **plantcv.qc.color_chip_comparison**
+
+#### plantcv.visualize.color_correction_scatter
+
+* pre v4.11: NA
+* post v4.11: fig, axs = plantcv.visualize.color_correction_scatter**(*color_matrix, std_matrix, corrected_matrix=None*)
 
 #### plantcv.visualize.colorize_label_img
 
@@ -1394,7 +1639,8 @@ pages for more details on the input and output variable types.
 #### plantcv.visualize.pixel_scatter_plot
 
 * pre v4.0: NA
-* post v4.0: fig, ax = **pcv.visualize.pixel_scatter_plot**(*paths_to_imgs, x_channel, y_channel*)
+* pre v5.0: fig, ax = **pcv.visualize.pixel_scatter_plot**(*paths_to_imgs, x_channel, y_channel*)
+* post v5.0: fig, ax = **pcv.visualize.pixel_scatter_plot**(*source, x_channel, y_channel, n=20, ext="png"*)
 
 #### plantcv.visualize.tile
 
@@ -1405,6 +1651,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: NA
 * post v4.0: frame_size = **pcv.visualize.time_lapse_video**(*img_list, out_filename='./time_lapse_video.mp4', fps=29.97, display=True*)
+* post v5.0: **pcv.visualize.time_lapse_video**(*source, out_filename='./time_lapse_video.mp4', fps=29.97*)
 
 #### plantcv.watershed_segmentation
 

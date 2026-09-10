@@ -1,5 +1,5 @@
 import cv2
-from plantcv.plantcv.morphology import segment_sort
+from plantcv.plantcv.morphology.segment_sort import segment_sort
 
 
 def test_segment_sort(morphology_test_data):

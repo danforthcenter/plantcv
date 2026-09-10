@@ -1,6 +1,6 @@
 import cv2
 from plantcv.plantcv import outputs
-from plantcv.plantcv.morphology import fill_segments
+from plantcv.plantcv.morphology.fill_segments import fill_segments
 
 
 def test_fill_segments(morphology_test_data):

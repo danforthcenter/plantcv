@@ -1,13 +1,12 @@
 """Color Corrections Functions."""
 import os
-import math
 import cv2
 import numpy as np
-import altair as alt
-import pandas as pd
 from plantcv.plantcv import params, fatal_error
 from plantcv.plantcv.roi import circle
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv.transform.rerun_delta_e import _rerun_delta_e
+from plantcv.plantcv.transform.get_color_matrix import get_color_matrix, get_matrix_m
 
 
 def affine_color_correction(rgb_img, source_matrix, target_matrix):
@@ -31,8 +30,8 @@ def affine_color_correction(rgb_img, source_matrix, target_matrix):
 
 
     :param rgb_img: numpy.ndarray
-    :return source_matrix: numpy.ndarray
-    :return target_matrix: numpy.ndarray
+    :param source_matrix: numpy.ndarray
+    :param target_matrix: numpy.ndarray
     :return corrected_img: numpy.ndarray
     """
     # matrices must have the same number of color references
@@ -75,206 +74,14 @@ def affine_color_correction(rgb_img, source_matrix, target_matrix):
     # reconstruct the RGB (actually BGR for openCV) image
     corrected_img = np.stack((img_b_cc, img_g_cc, img_r_cc), axis=1).reshape(h, w, c)
 
+    # rerun deltaE calculation if it was previously run
+    _rerun_delta_e(corrected_img, fun="affine_color_correction")
+
     # For debugging, create a horizontal view of the image before and after color correction
     debug_img = np.hstack([rgb_img, corrected_img])
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_affine_corrected.png'))
 
     return corrected_img
-
-
-def std_color_matrix(pos=0):
-    """Create a standard color matrix.
-
-    Standard color values compatible with the x-rite ColorChecker Classic,
-    ColorChecker Mini, and ColorChecker Passport targets.
-    Source: https://en.wikipedia.org/wiki/ColorChecker
-
-    Inputs:
-    pos     = reference value indicating orientation of the color card. The reference
-                is based on the position of the white chip:
-
-                pos = 0: bottom-left corner
-                pos = 1: bottom-right corner
-                pos = 2: top-right corner
-                pos = 3: top-left corner
-
-    Outputs:
-    color_matrix    = matrix containing the standard red, green, and blue
-                        values for each color chip
-
-    :param pos: int
-    :return color_matrix: numpy.ndarray
-    """
-    # list of rgb values as indicated in the color card specs. They need to be
-    # arranged depending on the orientation of the color card of reference in the
-    # image to be corrected.
-    values_list = np.array([[115, 82, 68],  # dark skin
-                            [194, 150, 130],  # light skin
-                            [98, 122, 157],  # blue sky
-                            [87, 108, 67],  # foliage
-                            [133, 128, 177],  # blue flower
-                            [103, 189, 170],  # bluish green
-                            [214, 126, 44],  # orange
-                            [80, 91, 166],  # purplish blue
-                            [193, 90, 99],  # moderate red
-                            [94, 60, 108],  # purple
-                            [157, 188, 64],  # yellow green
-                            [224, 163, 46],  # orange yellow
-                            [56, 61, 150],  # blue
-                            [70, 148, 73],  # green
-                            [175, 54, 60],  # red
-                            [231, 199, 31],  # yellow
-                            [187, 86, 149],  # magenta
-                            [8, 133, 161],  # cyan
-                            [243, 243, 242],  # white (.05*)
-                            [200, 200, 200],  # neutral 8 (.23*)
-                            [160, 160, 160],  # neutral 6.5 (.44*)
-                            [122, 122, 121],  # neutral 5 (.7*)
-                            [85, 85, 85],  # neutral 3.5 (1.05*)
-                            [52, 52, 52]], dtype=np.float64)  # black (1.50*)
-
-    pos = math.floor(pos)
-    if (pos < 0) or (pos > 3):
-        fatal_error("white chip position reference 'pos' must be a value among {0, 1, 2, 3}")
-
-    N_chips = values_list.shape[0]
-
-    # array of indices from 1 to N chips in order to match the chip numbering
-    # in the color card specs. Later when used for indexing, we subtract the 1.
-    idx = np.arange(N_chips)+1
-    # indices in the shape of the color card
-    cc_indices = idx.reshape((4, 6), order='C')
-    # rotate the indices depending on the specified orientation
-    cc_indices_rot = np.rot90(cc_indices, k=pos, axes=(0, 1))
-    # arange color values based on the indices
-    color_matrix_wo_chip_nb = values_list[(cc_indices_rot-1).reshape(-1), :]/255.
-
-    # add chip number compatible with other PlantCV functions
-    chip_nb = np.arange(10, 10*N_chips+1, 10)
-    color_matrix = np.concatenate((chip_nb.reshape(N_chips, 1), color_matrix_wo_chip_nb), axis=1)
-
-    return color_matrix
-
-
-def get_color_matrix(rgb_img, mask):
-    """Calculate the average value of pixels in each color chip for each color channel.
-
-    Inputs:
-    rgb_img         = RGB image with color chips visualized
-    mask        = a gray-scale img with unique values for each segmented space, representing unique, discrete
-                    color chips.
-
-    Outputs:
-    color_matrix        = a 22x4 matrix containing the average red value, average green value, and average blue value
-                            for each color chip.
-    headers             = a list of 4 headers corresponding to the 4 columns of color_matrix respectively
-
-    :param rgb_img: numpy.ndarray
-    :param mask: numpy.ndarray
-    :return headers: string array
-    :return color_matrix: numpy.ndarray
-    """
-    # Check for RGB input
-    if len(np.shape(rgb_img)) != 3:
-        fatal_error("Input rgb_img is not an RGB image.")
-    # Check mask for gray-scale
-    if len(np.shape(mask)) != 2:
-        fatal_error("Input mask is not an gray-scale image.")
-
-    img_dtype = rgb_img.dtype
-    # normalization value as max number if the type is unsigned int
-    max_val = 1.0
-    if img_dtype.kind == 'u':
-        max_val = np.iinfo(img_dtype).max
-
-    # convert to float and normalize to work with values between 0-1
-    rgb_img = rgb_img.astype(np.float64)/max_val
-
-    # create empty color_matrix
-    color_matrix = np.zeros((len(np.unique(mask))-1, 4))
-
-    # create headers
-    headers = ["chip_number", "r_avg", "g_avg", "b_avg"]
-
-    # declare row_counter variable and initialize to 0
-    row_counter = 0
-
-    # for each unique color chip calculate each average RGB value
-    for i in np.unique(mask):
-        if i != 0:
-            chip = rgb_img[np.where(mask == i)]
-            color_matrix[row_counter][0] = i
-            color_matrix[row_counter][1] = np.mean(chip[:, 2])
-            color_matrix[row_counter][2] = np.mean(chip[:, 1])
-            color_matrix[row_counter][3] = np.mean(chip[:, 0])
-            row_counter += 1
-
-    return headers, color_matrix
-
-
-def get_matrix_m(target_matrix, source_matrix):
-    """Calculate Moore-Penrose inverse matrix for use in calculating transformation_matrix.
-
-    Inputs:
-    target_matrix       = a 22x4 matrix containing the average red value, average green value, and average blue value
-                            for each color chip.
-    source_matrix       = a 22x4 matrix containing the average red value, average green value, and average blue value
-                            for each color chip.
-
-    Outputs:
-    matrix_a    = a concatenated 22x9 matrix of source_matrix red, green, and blue values to the powers 1, 2, 3
-    matrix_m    = a 9x22 Moore-Penrose inverse matrix
-    matrix_b    = a 22x9 matrix of linear, square, and cubic rgb values from target_img
-
-
-    :param target_matrix: numpy.ndarray
-    :param source_matrix: numpy.ndarray
-    :return matrix_a: numpy.ndarray
-    :return matrix_m: numpy.ndarray
-    :return matrix_b: numpy.ndarray
-    """
-    # if the number of chips in source_img match the number of chips in target_matrix
-    if np.shape(target_matrix) == np.shape(source_matrix):
-        t_mats = np.split(target_matrix, 4, 1)
-        t_r, t_g, t_b = t_mats[1], t_mats[2], t_mats[3]
-        s_mats = np.split(source_matrix, 4, 1)
-        s_r, s_g, s_b = s_mats[1], s_mats[2], s_mats[3]
-    else:
-        combined_matrix = np.zeros((np.ma.size(source_matrix, 0), 7))
-        row_count = 0
-        for r in range(0, np.ma.size(target_matrix, 0)):
-            for i in range(0, np.ma.size(source_matrix, 0)):
-                if target_matrix[r][0] == source_matrix[i][0]:
-                    combined_matrix[row_count][0] = target_matrix[r][0]
-                    combined_matrix[row_count][1] = target_matrix[r][1]
-                    combined_matrix[row_count][2] = target_matrix[r][2]
-                    combined_matrix[row_count][3] = target_matrix[r][3]
-                    combined_matrix[row_count][4] = source_matrix[i][1]
-                    combined_matrix[row_count][5] = source_matrix[i][2]
-                    combined_matrix[row_count][6] = source_matrix[i][3]
-                    row_count += 1
-        rgb_mats = np.split(combined_matrix, 7, 1)
-        t_r, t_g, t_b, s_r, s_g, s_b = rgb_mats[1], rgb_mats[2], rgb_mats[3], rgb_mats[4], rgb_mats[5], rgb_mats[6]
-    t_r2 = np.square(t_r)
-    t_r3 = np.power(t_r, 3)
-    t_g2 = np.square(t_g)
-    t_g3 = np.power(t_g, 3)
-    t_b2 = np.square(t_b)
-    t_b3 = np.power(t_b, 3)
-    s_r2 = np.square(s_r)
-    s_r3 = np.power(s_r, 3)
-    s_g2 = np.square(s_g)
-    s_g3 = np.power(s_g, 3)
-    s_b2 = np.square(s_b)
-    s_b3 = np.power(s_b, 3)
-
-    # create matrix_a
-    matrix_a = np.concatenate((s_r, s_g, s_b, s_r2, s_g2, s_b2, s_r3, s_g3, s_b3), 1)
-    # create matrix_m
-    matrix_m = np.linalg.solve(np.matmul(matrix_a.T, matrix_a), matrix_a.T)
-    # create matrix_b
-    matrix_b = np.concatenate((t_r, t_r2, t_r3, t_g, t_g2, t_g3, t_b, t_b2, t_b3), 1)
-    return matrix_a, matrix_m, matrix_b
 
 
 def calc_transformation_matrix(matrix_m, matrix_b):
@@ -334,19 +141,17 @@ def calc_transformation_matrix(matrix_m, matrix_b):
     return 1-t_det, transformation_matrix
 
 
-def apply_transformation_matrix(source_img, target_img, transformation_matrix):
+def apply_transformation_matrix(source_img, transformation_matrix):
     """Apply the transformation matrix to the source_image.
 
     Inputs:
     source_img      = an RGB image to be corrected to the target color space
-    target_img      = an RGB image with the target color space
     transformation_matrix        = a 9x9 matrix of transformation coefficients
 
     Outputs:
     corrected_img    = an RGB image in correct color space
 
     :param source_img: numpy.ndarray
-    :param target_img: numpy.ndarray
     :param transformation_matrix: numpy.ndarray
     :return corrected_img: numpy.ndarray
     """
@@ -396,10 +201,13 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
 
     # For debugging, create a horizontal view of source_img, corrected_img, and target_img to the plotting device
     # plot horizontal comparison of source_img, corrected_img (with rounded elements) and target_img
-    out_img = np.hstack([source_img, corrected_img, target_img])
+    out_img = np.hstack([source_img, corrected_img])
     # Change range of visualization image to 0-255 and convert to uin8
     out_img = ((255.0/max_val)*out_img).astype(np.uint8)
     _debug(visual=out_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_corrected.png'))
+
+    # rerun deltaE calculation if it was previously run
+    _rerun_delta_e(corrected_img, fun="apply_transformation_matrix")
 
     # return the corrected image
     return corrected_img
@@ -450,8 +258,9 @@ def correct_color(target_img, target_mask, source_img, source_mask, output_direc
     target_img          = an RGB image with color chips visualized
     source_img          = an RGB image with color chips visualized
     target_mask         = a gray-scale image with color chips and background each represented with unique values
-    target_mask         = a gray-scale image with color chips and background each represented as unique values
+    source_mask         = a gray-scale image with color chips and background each represented as unique values
     output_directory    = a file path to which outputs will be saved
+
     Outputs:
     target_matrix   = saved in .npz file, a 22x4 matrix containing the average red value, average green value, and
                             average blue value for each color chip.
@@ -491,7 +300,7 @@ def correct_color(target_img, target_mask, source_img, source_mask, output_direc
     save_matrix(transformation_matrix, os.path.join(output_directory, "transformation_matrix.npz"))
 
     # apply transformation
-    corrected_img = apply_transformation_matrix(source_img, target_img, transformation_matrix)
+    corrected_img = apply_transformation_matrix(source_img, transformation_matrix)
 
     return target_matrix, source_matrix, transformation_matrix, corrected_img
 
@@ -552,7 +361,7 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
     i = 1
     # Draw labeled chip boxes on the mask
     for chip in chips:
-        mask = cv2.drawContours(mask, chip.contours[0], -1, (i * 10), -1)
+        mask = cv2.drawContours(mask, chip.contours[0], -1, [i * 10], -1)
         i += 1
     # Create a copy of the input image for plotting
     canvas = np.copy(rgb_img)
@@ -562,72 +371,3 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
     _debug(visual=canvas, filename=os.path.join(params.debug_outdir, str(params.device) + '_color_card_mask_rois.png'))
     _debug(visual=mask, filename=os.path.join(params.debug_outdir, str(params.device) + '_color_card_mask.png'))
     return mask
-
-
-def quick_color_check(target_matrix, source_matrix, num_chips):
-    """Plot the color values of a target and source color card matrix.
-
-    Quickly plot target matrix values against source matrix values to determine
-    over saturated color chips or other issues.
-
-    Inputs:
-    source_matrix      = an nrowsXncols matrix containing the avg red, green, and blue values for each color chip
-                            of the source image
-    target_matrix      = an nrowsXncols matrix containing the avg red, green, and blue values for each color chip
-                            of the target image
-    num_chips          = number of color card chips included in the matrices (integer)
-
-    Returns:
-    p1                 = an altair plot of the target and source color values
-
-    :param source_matrix: numpy.ndarray
-    :param target_matrix: numpy.ndarray
-    :param num_chips: int
-    :return p1: altair.vegalite.v5.api.Chart
-    """
-    # Scale matrices to 0-255
-    target_matrix = 255*target_matrix
-    source_matrix = 255*source_matrix
-
-    # Extract and organize matrix info
-    tr = target_matrix[:num_chips, 1:2]
-    tg = target_matrix[:num_chips, 2:3]
-    tb = target_matrix[:num_chips, 3:4]
-    sr = source_matrix[:num_chips, 1:2]
-    sg = source_matrix[:num_chips, 2:3]
-    sb = source_matrix[:num_chips, 3:4]
-
-    # Create columns of color labels
-    red = ["red"] * num_chips
-    blue = ["blue"] * num_chips
-    green = ["green"] * num_chips
-
-    # Make a column of chip numbers
-    chip = np.arange(0, num_chips).reshape((num_chips, 1))
-    chips = np.vstack((chip, chip, chip))
-
-    # Combine info
-    color_data_r = np.column_stack((sr, tr, red))
-    color_data_g = np.column_stack((sg, tg, green))
-    color_data_b = np.column_stack((sb, tb, blue))
-    all_color_data = np.vstack((color_data_b, color_data_g, color_data_r))
-
-    # Create a dataframe with headers
-    dataset = pd.DataFrame({'source': all_color_data[:, 0], 'target': all_color_data[:, 1],
-                            'color': all_color_data[:, 2]})
-
-    # Add chip numbers to the dataframe
-    dataset['chip'] = chips
-    dataset = dataset.astype({'color': str, 'chip': str, 'target': float, 'source': float})
-
-    # Make the plot
-    p1 = alt.Chart(dataset).mark_point(point=True).encode(
-        x="target",
-        y="source",
-        color=alt.Color("color").scale(range=["blue", "green", "red"]),
-        column="color"
-        ).interactive()
-
-    _debug(visual=p1, filename=os.path.join(params.debug_outdir, 'color_quick_check.png'))
-
-    return p1

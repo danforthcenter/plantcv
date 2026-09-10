@@ -50,13 +50,16 @@ the morphology sub-package. Default = 2.
 
 **saved_color_scale**: Using the `color_palette` function will save the color scale here for reuse in downstream functions. Set to `None` to remove. Default = `None`.
 
-**verbose**: Set the status of verboseness. When in "verbose" mode, the deprecation warning will always be printed once triggered. Default: `True`. Users can turn off deprecation warnings by setting `verbose=False`.
+**verbose**: Set the status of verboseness as an integer between 0 and 2. When in the most verbose mode (2), the deprecation warning will always be printed once triggered. Default: `1`. Users can turn off messages by setting `verbose=0` or opt for more messages/debug images with `verbose=2`.
 
 **unit**: Set the units of the size outputs. Users can scale size measurements by updating the `unit`, `px_height` and `px_width` Default: `pixels`
 
 **px_height** Set the size scaling factor to enable automatic conversion between pixels and a real world unit, such as centimeters. Users can scale size measurements by updating the `unit`, `px_height` and `px_width` Default: `1`
 
 **px_width** Set the size scaling factor to enable automatic conversion between pixels and a real world unit, such as centimeters. Users can scale size measurements by updating the `unit`, `px_height` and `px_width` Default: `1`
+
+**deltaE** Set the deltaE calculation function for optional use throughout the `transform` submodule when detecting color cards or correcting color. Users can evaluate color correction and image quality using these delta E values per details in the [`transform.deltaE` docs](transform_deltaE.md). Default `deltaE_ciede2000`.
+
 ### Example
 
 Updated PlantCV functions use `params` implicitly, so overriding the `params` defaults will alter the behavior of

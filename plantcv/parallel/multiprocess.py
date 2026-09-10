@@ -1,5 +1,5 @@
 import dask_jobqueue
-from dask.distributed import Client, progress
+from dask.distributed import Client, progress, wait
 from subprocess import call
 
 
@@ -33,9 +33,12 @@ def create_dask_cluster(cluster, cluster_config):
     # If the requested cluster is a LocalCluster we get it from dask.distributed
     if cluster == "LocalCluster":
         # Create a local cluster client with n_workers
-        client = Client(n_workers=cluster_config.get("n_workers"))
+        client = Client(n_workers=cluster_config.get("n_workers"),
+                        threads_per_worker=cluster_config.get("threads_per_worker", 1))
     # Otherwise the cluster is a class from dask_jobqueue (a distributed resource scheduler)
     else:
+        # if "cores" is not a key in the cluster_config then set it to 1
+        cluster_config["cores"] = cluster_config.get('cores', 1)
         # Retrieve the scheduler class from dask-jobqueue
         sched = vars(dask_jobqueue).get(cluster)
         # The user must request the scheduler by the correct name, otherwise stop
@@ -63,4 +66,5 @@ def multiprocess(jobs, client):
     futures = client.map(_process_images_multiproc, jobs)
     # Watch job progress and print a progress bar
     progress(futures)
+    wait(futures)
 ###########################################

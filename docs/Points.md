@@ -3,7 +3,7 @@
 Using [Jupyter Notebooks](jupyter.md) it is possible to interactively click to collect coordinates from an image, which can be used in various downstream applications. Left click on the image to collect a point. Right click removes the
 closest collected point.
 
-**plantcv.Points**(*img, figsize=(12, 6)*)
+**plantcv.Point**(*img, figsize=(12, 6)*)
 
 **returns** interactive image class
 
@@ -25,8 +25,8 @@ closest collected point.
 ```python
 from plantcv import plantcv as pcv
 
-# Create an instance of the Points class
-marker = pcv.Points(img=img, figsize=(12,6))
+# Create an instance of the Point class
+marker = pcv.Point(img=img, figsize=(12,6))
 
 # Click on the plotted image to collect coordinates
 

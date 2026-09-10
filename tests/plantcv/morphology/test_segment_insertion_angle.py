@@ -2,7 +2,7 @@ import pytest
 import cv2
 import numpy as np
 from plantcv.plantcv import outputs
-from plantcv.plantcv.morphology import segment_insertion_angle
+from plantcv.plantcv.morphology.segment_insertion_angle import segment_insertion_angle
 
 
 @pytest.mark.parametrize("size", [3, 100])

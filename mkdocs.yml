@@ -24,8 +24,6 @@ nav:
     - 'Adding/Editing Documentation': documentation.md
     - 'Pull Request Review Process' : pr_review_process.md
   - "Tutorials": tutorials.md
-  - 'Workflow Parallelization': pipeline_parallel.md
-  - 'Exporting Data': db-exporter.md
   - 'PlantCV Namespace':
     - 'PlantCV':
       - 'Inputs and Outputs':
@@ -40,6 +38,7 @@ nav:
         - 'Analyze Size and Shape': analyze_size.md
         - 'Horizontal Boundary Tool': analyze_bound_horizontal2.md
         - 'Vertical Boundary Tool': analyze_bound_vertical2.md
+        - 'Analyze Texture': analyze_texture.md
         - 'Analyze Thermal': analyze_thermal.md
         - 'Analyze Spectral Reflectance': analyze_spectral_reflectance.md
         - 'Analyze Spectral Index': analyze_spectral_index.md
@@ -58,6 +57,8 @@ nav:
         - 'RGB to CMYK': rgb2cmyk.md
         - 'RGB to LAB': rgb2lab.md
         - 'RGB to HSV': rgb2hsv.md
+      - 'Combine multiple results files': process_results.md
+      - 'Convert JSON results to CSV': json2csv.md
       - 'Create Labels': create_labels.md
       - 'Crop': crop.md
       - 'Crop and Position Mask': crop_position_mask.md
@@ -69,7 +70,6 @@ nav:
       - 'Flood Fill': floodfill.md
       - 'Flip Image': flip.md
       - 'Filters':
-        - 'Eccentricity Filter': filters_eccentricity.md
         - 'Object Filter': filters_obj_props.md
         - 'Laplace Filter': laplace_filter.md
         - 'Sobel Filter': sobel_filter.md
@@ -110,6 +110,7 @@ nav:
         - 'Logical Operations-And': logical_and.md
         - 'Logical Operations-Or': logical_or.md
         - 'Logical Operations-XOr': logical_xor.md
+      - 'Masks to Labels': masks2labels.md
       - 'Median Blur': median_blur.md
       - 'Morphology Functions':
         - 'Analyze_stem': analyze_stem.md
@@ -117,7 +118,7 @@ nav:
         - 'Fill Segments': fill_segments.md
         - 'Find Branches': find_branch_pts.md
         - 'Find Tips': find_tips.md
-        - 'Prune': prune.md
+        - 'Prune (by size)': prune.md
         - 'Segment Angles': segment_angle.md
         - 'Combine Segments': segment_combine.md
         - 'Segment Curvature': segment_curvature.md
@@ -130,6 +131,7 @@ nav:
         - 'Segment Sort': segment_sort.md
         - 'Segment Tangent Angle': segment_tangent_angle.md
         - 'Skeletonize': skeletonize.md
+        - 'Segment Width': segment_width.md
       - 'Naive Bayes Classifier': naive_bayes_classifier.md
       - 'Objects Class': objects.md
       - 'Opening': opening.md
@@ -145,7 +147,11 @@ nav:
       - 'Print Image': print_image.md
       - 'Plot Image': plot_image.md
       - "Quality Control Tools":
+        - 'Color Correction Scatter Plot': qc_color_correction_scatter.md
+        - 'Color Chip Comparison Plot': qc_color_chip_comparison.md
+        - 'Plot Delta E': qc_plot_delta_e.md
         - "Exposure": qc_exposure.md
+        - "Quick Color Check": quick_color_check.md
       - 'Read Image': read_image.md
       - 'Read Bayer Raw Image': read_bayer.md
       - 'Report Size Marker': report_size_marker.md
@@ -163,6 +169,7 @@ nav:
         - 'Filter a mask by ROI (quickly)': roi_quick_filter.md
         - 'Convert ROI to Mask': roi2mask.md
       - 'Segment Image Series': segment_image_series.md
+      - 'Sharpen Image': sharpen.md
       - 'Shift Image': shift.md
       - 'Spatial Clustering': spatial_clustering.md
       - 'Spectral Index': spectral_index.md
@@ -180,14 +187,15 @@ nav:
         - 'Texture Threshold': texture_threshold.md
       - 'Transformation Methods':
           - 'Auto-Detect Color Card': transform_detect_color_card.md
-          - 'Auto-Detect Color Card (old)': find_color_card.md
           - 'Auto Correct Color': transform_auto_correct_color.md
+          - 'Auto Correct Color (non-linear)': transform_auto_correct_color_nonlinear.md
           - 'Calibrate Camera': transform_calibrate_camera.md
           - 'Checkerboard Calibration': transform_checkerboard_calibration.md
           - 'Create Color Card Mask': create_color_card_mask.md
           - 'Convert Color Card to Matrix': get_color_matrix.md
-          - 'Color Correction Workflow': transform_correct_color.md
+          - 'Color Correct to Target Image': transform_correct_color.md
           - 'Quick Color Check': quick_color_check.md
+          - 'Delta E Metric': transform_deltaE.md
           - 'Affine Color Correction': transform_affine_color_correction.md
           - 'Standard Color Matrix': std_color_matrix.md
           - 'Gamma Correction': transform_gamma_correct.md
@@ -199,6 +207,7 @@ nav:
           - 'Resize Images': transform_resize.md
           - 'Rotate': rotate2.md
       - 'Transformation Helpers':
+            - 'Astrobotany Calibration Matrix': astro_color_matrix.md
             - 'Calculate Moore-Penrose Inverse Matrix': mp_inverse.md
             - 'Create Color Correction Matrix': transformation_matrix.md
             - 'Apply Color Correction Matrix': apply_transformation_matrix.md
@@ -226,15 +235,23 @@ nav:
       - 'Kmeans Clustering': train_kmeans.md
       - 'Naive Bayes': naive_bayes.md
       - 'Naive Bayes Multiclass': naive_bayes_multiclass.md
+      - 'Naive Bayes Multiclass Samples File QC': naive_bayes_check_samples_file.md
     - 'Parallelization':
+        - 'Getting started in parallel': parallel_preparation.md
         - 'Configure Parallelization': parallel_config.md
+        - 'Configure Parallelization in Jupyter': parallel_jupyterconfig.md
+        - 'Inspect Configuration': parallel_inspect_config.md
+        - 'Sample Images': parallel_sample_images.md
         - 'Workflow Inputs Management': parallel_workflow_inputs.md
-        - 'Metadata Parser': parallel_metadata_parser.md
-        - 'Job Builder': parallel_job_builder.md
-        - 'Multiprocess': parallel_multiprocess.md
-        - 'Process Results': parallel_process_results.md
+        - 'Run Parallel': parallel_run_parallel.md
         - 'Workflow Parallelization': pipeline_parallel.md
   - 'Accessory tools': tools.md
+  - 'Extensions':
+    - 'PlantCV Geospatial': https://docs.plantcv.org/projects/geospatial
+  - 'Developer tools':
+    - 'Parallel Job Builder': parallel_job_builder.md
+    - 'Parallel Metadata Parser': parallel_metadata_parser.md
+    - 'Parallel Multiprocess': parallel_multiprocess.md
 markdown_extensions:
   - toc:
       permalink: True

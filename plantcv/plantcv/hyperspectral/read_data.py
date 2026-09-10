@@ -4,11 +4,11 @@ import os
 import re
 import cv2
 import numpy as np
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import Spectral_data
+from plantcv.plantcv.classes import Spectral_data
 from plantcv.plantcv.transform import rescale
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv.fatal_error import fatal_error
 
 
 def _find_closest(spectral_array, target):
@@ -25,13 +25,7 @@ def _find_closest(spectral_array, target):
     :param target: float
     :return spectral_array: __main__.Spectral_data
     """
-    # Array must be sorted
-    idx = spectral_array.searchsorted(target)
-    idx = np.clip(idx, 1, len(spectral_array) - 1)
-    left = spectral_array[idx - 1]
-    right = spectral_array[idx]
-    idx -= target - left < right - target
-    return idx
+    return np.argmin(np.abs(spectral_array - target))
 
 
 def _make_pseudo_rgb(spectral_array):

@@ -1,18 +1,21 @@
 """Tests for the open_url function."""
+import numpy as np
+import imageio.v3 as iio
 import pytest
 from plantcv.plantcv.io import open_url
 
 
-def test_open_url():
+def test_open_url(monkeypatch):
     """PlantCV Test"""
-    url = ("https://github.com/danforthcenter/plantcv-tutorial-simple-rgb-workflow/blob/" +
-           "af312af00e21c84efe942132a1910359faadd49a/img/1_B73_sand_C_2023-04-14_10_19_07.jpg?raw=true")
+    url = ("https://datasci.danforthcenter.org/test.jpg")
+    monkeypatch.setattr(iio, "imread", lambda *args, **kwargs: np.zeros((2464, 3280, 3)).astype(np.float32))
     rgb_img = open_url(url=url)
-    assert rgb_img.shape == (3456, 4608, 3)
+    assert rgb_img.shape == (2464, 3280, 3)
 
 
-def test_open_url_unsupported():
+def test_open_url_unsupported(monkeypatch):
     """PlantCV Test"""
     url = "https://datasci.danforthcenter.org/test.gif"
+    monkeypatch.setattr(iio, "imread", lambda *args, **kwargs: np.zeros((2464)).astype(np.float32))
     with pytest.raises(RuntimeError):
         _ = open_url(url=url)

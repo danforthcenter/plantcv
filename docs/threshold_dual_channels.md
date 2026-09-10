@@ -52,7 +52,7 @@ mask = pcv.threshold.dual_channels(rgb_img=img, x_channel='b', y_channel='a', po
 
 # Create binary image from a RGB image based on two color channels and a straight
 # line defined by two points
-mask = pcv.threshold.threshold_2_channels(rgb_img=img, x_channel='b', y_channel='a', points=pts, above=False)
+mask = pcv.threshold.dual_channels(rgb_img=img, x_channel='b', y_channel='a', points=pts, above=False)
 ```
 
 **Thresholded image (inverse)**

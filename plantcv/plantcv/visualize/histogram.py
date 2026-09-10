@@ -1,7 +1,7 @@
 """Visualize histograms from image data."""
 import os
 import numpy as np
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv._debug import _debug
 import pandas as pd
@@ -157,7 +157,7 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, titl
         y="proportion of pixels (%)",
         color="color channel",
         tooltip=['pixel intensity', 'proportion of pixels (%)']
-        ).interactive()
+        )
 
     if title is not None:
         chart = chart.properties(title=title)
@@ -170,5 +170,5 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, titl
     _debug(visual=chart, filename=os.path.join(params.debug_outdir, str(params.device) + '_hist.png'))
 
     if hist_data is True:
-        return chart, hist_df
-    return chart
+        return chart.interactive(), hist_df
+    return chart.interactive()

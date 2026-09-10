@@ -13,21 +13,25 @@ license = {file = "LICENSE"}
 dynamic = ["version"]
 dependencies = [
     "matplotlib >= 1.5",
-    "numpy >= 2",
-    "pandas",
+    "numpy >= 1.26",
+    "pandas != 3.0.4",
     "python-dateutil",
     "scipy <1.16",
     "scikit-image >= 0.19",
     "scikit-learn",
     "dask",
     "dask-jobqueue",
-    "opencv-python",
+    "opencv-python-headless <= 4.12",
     "xarray >= 2022.11.0",
     "statsmodels",
-    "altair",
+    "altair < 6",
     "vl-convert-python",
     "nd2",
-    "flyr"
+    "flyr",
+    "nbconvert",
+    "nbformat",
+    "imageio >= 2.28",
+    "imageio-ffmpeg"
 ]
 requires-python = ">=3.8"
 authors = [
@@ -50,12 +54,12 @@ test = [
 
 [project.scripts]
 plantcv-run-workflow = "plantcv.parallel.cli:main"
+plantcv-sample = "plantcv.parallel.cli_sample_images:main"
 plantcv-train = "plantcv.learn.cli:main"
-plantcv-utils = "plantcv.utils.cli:main"
 
 [project.urls]
 Homepage = "https://plantcv.org"
-Documentation = "https://plantcv.readthedocs.io"
+Documentation = "https://docs.plantcv.org"
 Repository = "https://github.com/danforthcenter/plantcv"
 
 [tool.setuptools_scm]

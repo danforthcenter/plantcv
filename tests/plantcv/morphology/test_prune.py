@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from plantcv.plantcv.morphology import prune
+from plantcv.plantcv.morphology.prune import prune
 
 
 def test_prune(morphology_test_data):

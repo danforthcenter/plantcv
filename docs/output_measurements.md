@@ -115,8 +115,8 @@ Example (abbreviated) JSON data:
 }
 ```
 
-Data in this structure can be converted to tables for downstream analysis using the provided script 
-`plantcv-utils json2csv`, see [Accessory Tools](tools.md) for more details.
+Data in this structure can be converted to tables for downstream analysis using the 
+[`plantcv.parallel.json2csv`](json2csv.md) function.
 
 ## Summary of Output Metadata
 
@@ -172,7 +172,6 @@ Functions that automatically store data to the [`Outputs` class](outputs.md) are
 [morphology.segment_path_length](segment_pathlength.md), 
 [morphology.segment_tangent_angle](segment_tangent_angle.md), 
 [report_size_marker_area](report_size_marker.md), 
-[transform.find_color_card](find_color_card.md), 
 [transform.detect_color_card](transform_detect_color_card.md)
 [watershed_segmentation](watershed.md), 
 [within_frame](within_frame.md), and

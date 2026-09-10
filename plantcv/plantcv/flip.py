@@ -5,7 +5,7 @@ import numpy as np
 import os
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import fatal_error
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 
 
 def flip(img, direction):

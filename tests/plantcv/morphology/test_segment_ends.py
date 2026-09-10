@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from plantcv.plantcv import outputs
-from plantcv.plantcv.morphology import segment_ends
+from plantcv.plantcv.morphology.segment_ends import segment_ends
 
 
 def test_segment_ends(morphology_test_data):

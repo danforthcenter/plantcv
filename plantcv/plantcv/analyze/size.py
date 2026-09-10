@@ -5,7 +5,7 @@ import numpy as np
 from scipy.spatial.distance import euclidean
 from plantcv.plantcv._helpers import _iterate_analysis, _cv2_findcontours, _object_composition, _grayscale_to_rgb, _scale_size
 from plantcv.plantcv import outputs, within_frame
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 
 
@@ -169,18 +169,24 @@ def _analyze_size(img, mask, label):
     outputs.add_observation(sample=label, variable='longest_path', trait='longest path',
                             method='plantcv.plantcv.analyze.size', scale=params.unit, datatype=int,
                             value=_scale_size(float(longest_path)), label=params.unit)
-    outputs.add_observation(sample=label, variable='center_of_mass', trait='center of mass',
-                            method='plantcv.plantcv.analyze.size', scale='none', datatype=tuple,
-                            value=(cmx, cmy), label=("x", "y"))
+    outputs.add_observation(sample=label, variable='center_of_mass_x', trait='center of mass x',
+                            method='plantcv.plantcv.analyze.size', scale='none', datatype=int,
+                            value=cmx, label='none')
+    outputs.add_observation(sample=label, variable='center_of_mass_y', trait='center of mass y',
+                            method='plantcv.plantcv.analyze.size', scale='none', datatype=int,
+                            value=cmy, label='none')
     outputs.add_observation(sample=label, variable='convex_hull_vertices', trait='convex hull vertices',
                             method='plantcv.plantcv.analyze.size', scale='none', datatype=int,
                             value=hull_vertices, label='none')
     outputs.add_observation(sample=label, variable='object_in_frame', trait='object in frame',
                             method='plantcv.plantcv.analyze.size', scale='none', datatype=bool,
                             value=in_bounds, label='none')
-    outputs.add_observation(sample=label, variable='ellipse_center', trait='ellipse center',
-                            method='plantcv.plantcv.analyze.size', scale='none', datatype=tuple,
-                            value=(ellipse_center[0], ellipse_center[1]), label=("x", "y"))
+    outputs.add_observation(sample=label, variable='ellipse_center_x', trait='ellipse center x',
+                            method='plantcv.plantcv.analyze.size', scale='none', datatype=int,
+                            value=ellipse_center[0], label='none')
+    outputs.add_observation(sample=label, variable='ellipse_center_y', trait='ellipse center y',
+                            method='plantcv.plantcv.analyze.size', scale='none', datatype=int,
+                            value=ellipse_center[1], label='none')
     outputs.add_observation(sample=label, variable='ellipse_major_axis', trait='ellipse major axis length',
                             method='plantcv.plantcv.analyze.size', scale=params.unit, datatype=int,
                             value=_scale_size(ellipse_major_axis), label=params.unit)

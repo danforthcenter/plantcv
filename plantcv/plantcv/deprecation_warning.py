@@ -1,18 +1,20 @@
 # Deprecation handling
 
 import sys
-from plantcv.plantcv import __version__ as version
-from plantcv.plantcv import params
+from importlib.metadata import version
+from plantcv.plantcv._globals import params
 
 
 def deprecation_warning(warning):
-    """Print out deprecation warning
+    """Print out deprecation warning.
 
-    Inputs:
-    warning = warning message text
-
-    :param warning: str
+    Parameters
+    ----------
+    warning : str
+        The warning message text.
     """
-    warning_msg = f"DeprecationWarning: {warning} Current PlantCV version: {version}"
-    if params.verbose is True:
+    if params.verbose == 2:
+        v = version("plantcv")
+        warning_msg = f"DeprecationWarning: {warning} Current PlantCV version: {v}"
+
         print(warning_msg, file=sys.stderr)

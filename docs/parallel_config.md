@@ -47,18 +47,18 @@ Validate parameters/structure of configuration data.
 * **input_dir**: (str, required): path/name of input images directory (validates that it exists).
 
 
-* **json**: (str, required): path/name of output JSON data file (appends new data if it already exists).
+* **results**: (str, required): path/name of output JSON data file (appends new data if it already exists).
 
 
 * **filename_metadata**: (list, required): list of metadata terms used to construct filenames. for example: 
-`["plantbarcode","timestamp"]`. Supported metadata terms are listed [here](pipeline_parallel.md).
+`["plantbarcode","timestamp"]`. Default metadata terms are listed [here](pipeline_parallel.md) but other terms can be specified here.
 
 
 * **workflow**: (str, required): path/name of user-defined PlantCV workflow Python script (validates that it exists).
 
 
 * **include_all_subdirs**: (bool, default = `True`): If `False`, only images directly in `input_dir` (no 
-  subdirectories) will be analyzed.
+  subdirectories) will be analyzed. Note that even if this is `True` hidden files and directories are excluded.
 
 
 * **img_outdir**: (str, default = "."): path/name of output directory where images will be saved.
@@ -79,8 +79,10 @@ current working directory.
 
 
 * **imgformat**: (str, default = "all"): image file format/extension in lowercase. The string "all" can be used
-as shorthand to match all file extensions readable by `cv2.imread`. This can accept a list if multiple
-extensions should be combined (if using phenofront data this must be length 1 and "png" is the default).
+as shorthand to match all file extensions readable by `cv2.imread`.
+This can accept a list if multiple extensions should be combined (if using phenofront data this must be length 1
+and "png" is the default).
+You can use other file types such as `INF` or `data` but they are not included in the default list.
 
 
 * **delimiter**: (str, default = "_"): image filename metadata term delimiter character. Alternatively, a regular 
@@ -88,13 +90,13 @@ extensions should be combined (if using phenofront data this must be length 1 an
 
 
 * **metadata_filters**: (dict, default = `None`): a dictionary of metadata terms (keys) and values, images will be 
-  analyzed that have the associated term and value. A list of accepted values can be included. (e.g. 
+  analyzed that have the associated term and value. These filters can use any keys from `filename_metadata` or the default list of metadata terms. A list of accepted values can be included. (e.g. 
   `{"imgtype": "VIS", "frame": ["0", "90"]"}`).
 
 
-* **metadata_regex**: (dict, default = `None`): a dictionary of filepath terms (keys) and values, any specified keys
+* **metadata_regex**: (dict, default = `None`): a dictionary of metadata terms (keys) and values, any specified keys
 will be used for regex based filtering (e.g. 
-  `{"filepath1": "first[p|P]athPattern.*", "basename": "^starts_with.*"}`).
+  `{"dir1": "first[p|P]athPattern.*", "basename": "^starts_with.*"}`).
 
 
 * **timestampformat**: (str, default = '%Y-%m-%dT%H:%M:%S.%fZ'): a date format code compatible with strptime C library. 
@@ -118,7 +120,10 @@ metadata terms are listed [here](pipeline_parallel.md).
 image group (created by `groupby`), or `"auto"` to generate a numbered image sequence `image1, image2, ...`. The resulting
 names are used to access individual image filepaths in a workflow.
 
-* **cleanup**: (bool, default =`True`): remove temporary job directory if `True`.
+* **checkpoint**: (bool, default = `True`): restart from where a previous run left off and/or keep checkpointing files in
+case jobs fail for any reason. For details see the checkpointing section of ['workflow_inputs'](parallel_workflow_inputs.md).
+
+* **cleanup**: (bool, default =`True`): remove `config.tmp_dir` directory (including all temporary job directories and checkpoint files) after a complete run if `True`.
 
 
 * **append**: (bool, default = `False`): if `False`, will delete previous results stored in the specified JSON file.
@@ -135,7 +140,8 @@ names are used to access individual image filepaths in a workflow.
 
 
 * **metadata_terms**: (dict, default: as-is): a dictionary of metadata terms used to assign values in image filenames
-  (or metadata files) to metadata terms (should not be modified).
+  (or metadata files) to metadata terms (should not be modified here). Terms from `filename_metadata`
+  that are not present in the default dictionary of terms are added automatically.
 
 
 ### Cluster configuration
@@ -166,8 +172,8 @@ parameters:
 generally use 1 CPU per image analysis workflow, this is effectively the maximum number of concurrently running 
 workflows.
 
-* **cores**: (int, required, default = 1): the number of compute cores per workflow. This should be left as 1 unless a 
-workflow is designed to use multiple CPUs/cores/threads.
+* **threads_per_worker**: (int, optional, default = 1): the number of threads to run on each worker. In general this should
+be left as 1 so that `n_workers` will let you accurately control the number of cores used.
 
 * **memory**: (str, required, default = "1GB"): the amount of memory/RAM used per workflow. Can be set as a number plus 
 units (KB, MB, GB, etc.).
@@ -185,9 +191,15 @@ environmental variable.
 of key-value pairs (e.g. `{"getenv": "true"}`).
 
 !!! note
-    `n_workers` is the only parameter used by `LocalCluster`, all others are currently ignored. `n_workers`, `cores`,
-    `memory`, and `disk` are required by the other clusters. All other parameters are optional. Additional parameters
+    `n_workers` and `threads_per_worker` are the only parameters used by `LocalCluster`, all others are currently ignored.
+	`n_workers`, `memory`, and `disk` are required by the other clusters. All other parameters are optional. Additional parameters
     defined in the [dask-jobqueue API](https://jobqueue.dask.org/en/latest/api.html) can be supplied.
+
+!!! note
+    The fields available in `job_extra_directives` vary by cluster type. For example, `{"getenv": "true"}` will work to start
+    the active conda environment on each worker in an HTCondor cluster but not on a PBS cluster.
+    `plantcv.parallel.run_parallel` and `JupyterConfig.run()` will check for an active conda environment on a unix-like OS
+    and attempt to start that environment on each worker if the `cluster_config` does not have a `job_script_prologue` already.
 
 ### Example
 
@@ -202,7 +214,7 @@ config.import_config(config_file="my_config.json")
 
 # Change configuration values directly in Python as needed. At a minimum you must specify input_dir, json, filename_metadata, workflow.
 config.input_dir = "./my_images"
-config.json = "output.json"
+config.results = "output.json"
 config.filename_metadata = ["plantbarcode", "timestamp"]
 config.workflow = "my_workflow.py"
 

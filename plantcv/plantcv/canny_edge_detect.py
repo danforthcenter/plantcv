@@ -2,7 +2,7 @@
 
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _dilate
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv import fatal_error
 from skimage import feature
 import numpy as np

@@ -44,7 +44,6 @@ Check out our tutorials in our [Tutorial Gallery](https://plantcv.org/tutorials)
 * [Hyperspectral Image Processing](https://plantcv.org/tutorials/hyperspectral)
 * [Machine Learning Tutorial](https://plantcv.org/tutorials/naive-bayes)
 * [Parallel Image Processing](pipeline_parallel.md)
-* [Exporting Data for Downstream Analysis](db-exporter.md)
 
 ## Contributing 
 

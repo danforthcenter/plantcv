@@ -65,7 +65,7 @@ def acute(img, mask, win, threshold, label=None):
         # find islands from acute angles
         isle = _find_islands(obj, index, chain, win)
         # get relevant points from acute islands
-        homolog_pts, start_pts, stop_pts = _process_islands(obj, isle, chain, mask)
+        homolog_pts, start_pts, stop_pts, ptvals = _process_islands(obj, isle, chain, mask)
         num_acute_pts = len(homolog_pts)
         ori_img = np.copy(img)
         # Convert grayscale images to color
@@ -222,6 +222,8 @@ def _process_islands(obj, isle, chain, mask):
         Pseudo-landmark island starting position.
     stop_pts : list
         Pseudo-landmark island end position.
+    pt_vals  : list
+        Point values
     """
     # Initialize empty lists for homologous point max distance method
     maxpts = []
@@ -229,20 +231,22 @@ def _process_islands(obj, isle, chain, mask):
     ts_pts = []
     ptvals = []
     max_dist = [['cont_pos', 'max_dist', 'angle']]
+    vals = []
     for island in isle:
         # Identify if contour is concavity/convexity using image mask
         pix_x, pix_y, w, h = cv2.boundingRect(obj[island])  # Obtain local window around island
         for c in range(w):
-            vals = []
             for r in range(h):
                 # Identify pixels in local window internal to the island hull
                 pos = cv2.pointPolygonTest(obj[island], (pix_x + c, pix_y + r), 0)
                 if pos > 0:
                     vals.append(mask[pix_y + r][pix_x + c])  # Store pixel value if internal
-            if len(vals) > 0:
-                ptvals.append(sum(vals) / len(vals))
-            else:
-                ptvals.append('NaN')
+        if len(vals) > 0:
+            ptvals.append(sum(vals) / len(vals))
+            vals = []
+        else:
+            ptvals.append('NaN')
+            vals = []
         if len(island) >= 3:               # If landmark is multiple points (distance scan for position)
             ss = obj[island[0]]            # Store isle "x" start site
             ts = obj[island[-1]]           # Store isle "x" termination site
@@ -273,4 +277,4 @@ def _process_islands(obj, isle, chain, mask):
     start_pts = obj[ss_pts]
     stop_pts = obj[ts_pts]
 
-    return homolog_pts, start_pts, stop_pts
+    return homolog_pts, start_pts, stop_pts, ptvals

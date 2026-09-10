@@ -2,7 +2,7 @@
 import os
 import cv2
 import pandas as pd
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours
 from statsmodels.distributions.empirical_distribution import ECDF
@@ -35,9 +35,9 @@ def obj_size_ecdf(mask):
         x=alt.X("object area:Q").scale(type='log'),
         y="cumulative probability:Q",
         tooltip=['object area', 'cumulative probability']
-    ).interactive()
+    )
 
     # Plot or print the ecdf
     _debug(visual=chart,
            filename=os.path.join(params.debug_outdir, str(params.device) + '_area_ecdf.png'))
-    return chart
+    return chart.interactive()

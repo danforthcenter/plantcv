@@ -1,7 +1,7 @@
 # Warnings handling
 
 import sys
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 
 
 def warn(warning):

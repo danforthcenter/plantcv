@@ -4,7 +4,7 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
 
 
