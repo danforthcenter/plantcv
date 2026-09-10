@@ -8,8 +8,9 @@ from plantcv.plantcv.analyze.spectral_reflectance import spectral_reflectance
 from plantcv.plantcv.analyze.spectral_index import spectral_index
 from plantcv.plantcv.analyze.yii import yii
 from plantcv.plantcv.analyze.npq import npq
+from plantcv.plantcv.analyze.alphaL import alphaL
 from plantcv.plantcv.analyze.distribution import distribution
 from plantcv.plantcv.analyze.texture import texture
 
 __all__ = ["color", "bound_horizontal", "bound_vertical", "grayscale", "size", "thermal", "spectral_reflectance",
-           "spectral_index", "yii", "npq", "distribution", "texture"]
+           "spectral_index", "yii", "npq", "alphaL", "distribution", "texture"]
