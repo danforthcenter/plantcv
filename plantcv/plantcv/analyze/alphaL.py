@@ -152,4 +152,4 @@ def _analyze_alphaL(img, mask, label, min_bin, max_bin, red, farred):
                             value=hist_df['proportion of pixels (%)'].values.tolist(),
                             label=np.around(hist_df["counts"].values.tolist(), decimals=2).tolist())
 
-    return img + alphaL_mat
+    return np.where(mask > 0, alphaL_mat, img)
