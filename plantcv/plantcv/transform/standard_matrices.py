@@ -4,17 +4,16 @@ import numpy as np
 from plantcv.plantcv.fatal_error import fatal_error
 
 
-def std_color_matrix(pos=0):
-    """Create a standard color matrix.
-
-    Standard color values compatible with the x-rite ColorChecker Classic,
-    ColorChecker Mini, and ColorChecker Passport targets.
-    Source: https://en.wikipedia.org/wiki/ColorChecker
+def _assemble_color_matrix(values_list, pos):
+    """Arrange a 4 x 6 color card values list into a color matrix given the card orientation.
 
     Parameters
     ----------
+    values_list : numpy.ndarray
+        List of 24 RGB values (0-255) in physical row-major order starting from the dark skin chip
     pos : int
-        reference value indicating orientation of the color card. The reference is based on the position of the white chip:
+        reference value indicating orientation of the color card. The reference is based on the
+        position of the white chip:
                 pos = 0: bottom-left corner (default)
                 pos = 1: bottom-right corner
                 pos = 2: top-right corner
@@ -25,34 +24,6 @@ def std_color_matrix(pos=0):
     color_matrix
         matrix containing the standard red, green, and blue values for each color chip
     """
-    # list of rgb values as indicated in the color card specs. They need to be
-    # arranged depending on the orientation of the color card of reference in the
-    # image to be corrected.
-    values_list = np.array([[115, 82, 68],  # dark skin
-                            [194, 150, 130],  # light skin
-                            [98, 122, 157],  # blue sky
-                            [87, 108, 67],  # foliage
-                            [133, 128, 177],  # blue flower
-                            [103, 189, 170],  # bluish green
-                            [214, 126, 44],  # orange
-                            [80, 91, 166],  # purplish blue
-                            [193, 90, 99],  # moderate red
-                            [94, 60, 108],  # purple
-                            [157, 188, 64],  # yellow green
-                            [224, 163, 46],  # orange yellow
-                            [56, 61, 150],  # blue
-                            [70, 148, 73],  # green
-                            [175, 54, 60],  # red
-                            [231, 199, 31],  # yellow
-                            [187, 86, 149],  # magenta
-                            [8, 133, 161],  # cyan
-                            [243, 243, 242],  # white (.05*)
-                            [200, 200, 200],  # neutral 8 (.23*)
-                            [160, 160, 160],  # neutral 6.5 (.44*)
-                            [122, 122, 121],  # neutral 5 (.7*)
-                            [85, 85, 85],  # neutral 3.5 (1.05*)
-                            [52, 52, 52]], dtype=np.float64)  # black (1.50*)
-
     pos = math.floor(pos)
     if (pos < 0) or (pos > 3):
         fatal_error("white chip position reference 'pos' must be a value among {0, 1, 2, 3}")
@@ -74,6 +45,150 @@ def std_color_matrix(pos=0):
     color_matrix = np.concatenate((chip_nb.reshape(N_chips, 1), color_matrix_wo_chip_nb), axis=1)
 
     return color_matrix
+
+
+def std_color_matrix(pos=0, xrite_legacy=False):
+    """Create a standard color matrix.
+
+    Standard color values compatible with the x-rite ColorChecker Classic,
+    ColorChecker Mini, and ColorChecker Passport targets. X-Rite changed the pigment
+    formulations of these targets in November 2014, so reference values are provided for
+    both post-2014 targets (default) and legacy (pre-November 2014) targets.
+
+    Sources:
+    Post-November 2014 targets: sRGB conversion of the X-Rite reference CIELAB data for
+    targets manufactured November 2014 and later, converted and distributed by BabelColor
+    https://babelcolor.com/colorchecker-2.htm (ColorChecker_sRGB_from_Lab_16bit_AfterNov2014)
+    Pre-November 2014 targets: average of measurements from 30 charts
+    https://en.wikipedia.org/wiki/ColorChecker
+
+    Parameters
+    ----------
+    pos : int
+        reference value indicating orientation of the color card. The reference is based on the position of the white chip:
+                pos = 0: bottom-left corner (default)
+                pos = 1: bottom-right corner
+                pos = 2: top-right corner
+                pos = 3: top-left corner
+    xrite_legacy : bool
+        Return the reference matrix for legacy (pre-November 2014) X-Rite ColorChecker targets
+        instead of the current (post-November 2014) targets (default = False)
+
+    Returns
+    -------
+    color_matrix
+        matrix containing the standard red, green, and blue values for each color chip
+    """
+    # list of rgb values as indicated in the color card specs. They need to be
+    # arranged depending on the orientation of the color card of reference in the
+    # image to be corrected.
+    if xrite_legacy:
+        # sRGB values for ColorChecker targets manufactured before November 2014
+        values_list = np.array([[115, 82, 68],  # dark skin
+                                [194, 150, 130],  # light skin
+                                [98, 122, 157],  # blue sky
+                                [87, 108, 67],  # foliage
+                                [133, 128, 177],  # blue flower
+                                [103, 189, 170],  # bluish green
+                                [214, 126, 44],  # orange
+                                [80, 91, 166],  # purplish blue
+                                [193, 90, 99],  # moderate red
+                                [94, 60, 108],  # purple
+                                [157, 188, 64],  # yellow green
+                                [224, 163, 46],  # orange yellow
+                                [56, 61, 150],  # blue
+                                [70, 148, 73],  # green
+                                [175, 54, 60],  # red
+                                [231, 199, 31],  # yellow
+                                [187, 86, 149],  # magenta
+                                [8, 133, 161],  # cyan
+                                [243, 243, 242],  # white (.05*)
+                                [200, 200, 200],  # neutral 8 (.23*)
+                                [160, 160, 160],  # neutral 6.5 (.44*)
+                                [122, 122, 121],  # neutral 5 (.7*)
+                                [85, 85, 85],  # neutral 3.5 (1.05*)
+                                [52, 52, 52]], dtype=np.float64)  # black (1.50*)
+    else:
+        # sRGB values for ColorChecker targets manufactured November 2014 and later
+        values_list = np.array([[116, 79, 65],  # dark skin
+                                [198, 144, 127],  # light skin
+                                [91, 120, 155],  # blue sky
+                                [91, 108, 63],  # foliage
+                                [131, 127, 175],  # blue flower
+                                [95, 189, 172],  # bluish green
+                                [224, 124, 48],  # orange
+                                [68, 89, 167],  # purplish blue
+                                [198, 80, 95],  # moderate red
+                                [93, 57, 104],  # purple
+                                [156, 187, 58],  # yellow green
+                                [228, 161, 39],  # orange yellow
+                                [39, 61, 145],  # blue
+                                [60, 147, 70],  # green
+                                [178, 53, 56],  # red
+                                [237, 200, 14],  # yellow
+                                [191, 79, 147],  # magenta
+                                [0, 133, 165],  # cyan
+                                [241, 242, 236],  # white (.05*)
+                                [201, 203, 201],  # neutral 8 (.23*)
+                                [161, 163, 163],  # neutral 6.5 (.44*)
+                                [121, 121, 121],  # neutral 5 (.7*)
+                                [83, 84, 84],  # neutral 3.5 (1.05*)
+                                [49, 49, 50]], dtype=np.float64)  # black (1.50*)
+
+    return _assemble_color_matrix(values_list=values_list, pos=pos)
+
+
+def cameratrax_color_matrix(pos=0):
+    """Create a standard color matrix for CameraTrax 24ColorCard color cards.
+
+    Standard color values compatible with the CameraTrax 24ColorCard targets. The 24ColorCard
+    has the same chip layout as X-Rite ColorChecker targets but uses its own color formulation,
+    so it requires its own reference matrix. The sRGB values are the print-measured values
+    printed on each card below the color chips.
+
+    Source: sRGB values printed on the CameraTrax 24ColorCard
+    https://www.cameratrax.com/color_balance_4x6.php
+
+    Parameters
+    ----------
+    pos : int
+        reference value indicating orientation of the color card. The reference is based on the position of the white chip:
+                pos = 0: bottom-left corner (default)
+                pos = 1: bottom-right corner
+                pos = 2: top-right corner
+                pos = 3: top-left corner
+
+    Returns
+    -------
+    color_matrix
+        matrix containing the standard red, green, and blue values for each color chip
+    """
+    values_list = np.array([[116, 88, 76],  # dark skin
+                            [195, 150, 136],  # light skin
+                            [88, 125, 160],  # blue sky
+                            [93, 111, 72],  # foliage
+                            [128, 131, 179],  # blue flower
+                            [91, 193, 175],  # bluish green
+                            [225, 128, 60],  # orange
+                            [68, 95, 178],  # purplish blue
+                            [196, 85, 103],  # moderate red
+                            [92, 63, 109],  # purple
+                            [161, 192, 77],  # yellow green
+                            [231, 163, 60],  # orange yellow
+                            [49, 70, 154],  # blue
+                            [72, 156, 81],  # green
+                            [175, 63, 65],  # red
+                            [242, 204, 64],  # yellow
+                            [191, 89, 155],  # magenta
+                            [0, 138, 171],  # cyan
+                            [245, 246, 248],  # white (.05*)
+                            [205, 207, 208],  # neutral 8 (.23*)
+                            [161, 166, 168],  # neutral 6.5 (.44*)
+                            [120, 123, 127],  # neutral 5 (.7*)
+                            [83, 88, 93],  # neutral 3.5 (1.05*)
+                            [53, 53, 54]], dtype=np.float64)  # black (1.50*)
+
+    return _assemble_color_matrix(values_list=values_list, pos=pos)
 
 
 def astro_color_matrix():

@@ -13,6 +13,8 @@ Corrects the color of the input image based on the target color matrix using a n
     size scalings parameters `pcv.params.unit`, `pcv.params.px_width`, and `pcv.params.px_height` are automatically set, and
     utilized throughout linear and area type measurements stored to `Outputs`.
     - roi              - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to look for the color card. (default = None)
+    - xrite_legacy     - If color_chip_size indicates an X-Rite ColorChecker target, correct to the reference matrix
+    for legacy (pre-November 2014) targets instead of the current (post-November 2014) targets (default = False).
 	- **kwargs         - Other keyword arguments passed to `cv2.adaptiveThreshold` and `cv2.circle`.
         - adaptive_method  - Adaptive threhold method. 0 (mean) or 1 (Gaussian) (default = 1).
         - block_size       - Size of a pixel neighborhood that is used to calculate a threshold value (default = 51). We suggest using 127 if using `adaptive_method=0`.

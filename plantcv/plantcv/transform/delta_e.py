@@ -5,7 +5,7 @@ from skimage import color
 from matplotlib import pyplot as plt
 from plantcv.plantcv._globals import params, outputs
 from plantcv.plantcv.fatal_error import fatal_error
-from plantcv.plantcv.transform.standard_matrices import std_color_matrix, astro_color_matrix
+from plantcv.plantcv.transform.standard_matrices import std_color_matrix, astro_color_matrix, cameratrax_color_matrix
 
 
 def _delta_e(obs_rgb, card_type=None, obs="uncalibrated"):
@@ -16,7 +16,8 @@ def _delta_e(obs_rgb, card_type=None, obs="uncalibrated"):
     obs_rgb : numpy.ndarray
         Observed RGB color chip values as returned from plantcv.transform.detect_color_card
     card_type : str
-        either "macbeth" or "astro" for color card type, defaults to None for compatibility with detection.
+        either "macbeth", "astro", or "cameratrax" for color card type, defaults to None for
+        compatibility with detection.
     obs : str
         string describing what the obs_rgb data is, typically "uncalibrated" for an image input into color correction
         or "calibrated" for an image that has been through color correction.
@@ -33,7 +34,10 @@ def _delta_e(obs_rgb, card_type=None, obs="uncalibrated"):
         obs_mat = (255 * np.delete(obs_rgb, 0, axis=1).reshape(3, 5, 3)).astype("uint8")
         exp_mat = (255 * np.delete(std, 0, axis=1).reshape(3, 5, 3)).astype("uint8")
     else:
-        std = std_color_matrix(pos=3)
+        if card_type.upper() == "CAMERATRAX":
+            std = cameratrax_color_matrix(pos=3)
+        else:
+            std = std_color_matrix(pos=3)
         # format both rgb colors into 6x4 uint8 image
         obs_mat = (255 * np.delete(obs_rgb, 0, axis=1).reshape(6, 4, 3)).astype("uint8")
         exp_mat = (255 * np.delete(std, 0, axis=1).reshape(6, 4, 3)).astype("uint8")

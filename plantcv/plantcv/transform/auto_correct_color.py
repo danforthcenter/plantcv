@@ -6,7 +6,7 @@ from plantcv.plantcv.transform.color_correction import (
     calc_transformation_matrix
 )
 from plantcv.plantcv.transform.get_color_matrix import get_matrix_m
-from plantcv.plantcv.transform.standard_matrices import std_color_matrix, astro_color_matrix
+from plantcv.plantcv.transform.standard_matrices import std_color_matrix, astro_color_matrix, cameratrax_color_matrix
 
 
 def auto_correct_color(rgb_img, color_chip_size=None, roi=None, **kwargs):
@@ -20,6 +20,10 @@ def auto_correct_color(rgb_img, color_chip_size=None, roi=None, **kwargs):
         in millimeters (default = None)
     roi: plantcv.plantcv.Objects, optional
         Objects class rectangular ROI passed to detect_color_card (default None)
+    xrite_legacy : bool, optional
+        If color_chip_size indicates an X-Rite ColorChecker target, correct to the reference matrix
+        for legacy (pre-November 2014) targets instead of the current (post-November 2014) targets
+        (default = False)
     **kwargs
         Other keyword arguments passed to cv2.adaptiveThreshold, cv2.circle and _rect_filter.
         Valid keyword arguments:
@@ -35,12 +39,15 @@ def auto_correct_color(rgb_img, color_chip_size=None, roi=None, **kwargs):
     numpy.ndarray
         Color corrected image
     """
+    xrite_legacy = kwargs.pop("xrite_legacy", False)
     card_matrix = detect_color_card(rgb_img=rgb_img, color_chip_size=color_chip_size, roi=roi, **kwargs)
 
     if isinstance(color_chip_size, str) and color_chip_size.upper() == 'ASTRO':
         std_matrix = astro_color_matrix()
+    elif isinstance(color_chip_size, str) and color_chip_size.upper() == 'CAMERATRAX':
+        std_matrix = cameratrax_color_matrix(pos=3)
     else:
-        std_matrix = std_color_matrix(pos=3)
+        std_matrix = std_color_matrix(pos=3, xrite_legacy=xrite_legacy)
 
     corr_img = affine_color_correction(rgb_img=rgb_img, source_matrix=card_matrix, target_matrix=std_matrix)
 
@@ -54,10 +61,14 @@ def auto_correct_color_nonlinear(rgb_img, color_chip_size=None, roi=None, **kwar
     rgb_img : numpy.ndarray
         Input RGB image data containing a color card.
     color_chip_size: str, tuple, optional
-        "passport", "classic", "nano", "mini", or "cameratrax"; or tuple formatted (width, height)
+        "passport", "classic", "nano", "mini", "cameratrax", or "astro"; or tuple formatted (width, height)
         in millimeters (default = None)
     roi: plantcv.plantcv.Objects, optional
         Objects class rectangular ROI passed to detect_color_card (default None)
+    xrite_legacy : bool, optional
+        If color_chip_size indicates an X-Rite ColorChecker target, correct to the reference matrix
+        for legacy (pre-November 2014) targets instead of the current (post-November 2014) targets
+        (default = False)
     **kwargs
         Other keyword arguments passed to cv2.adaptiveThreshold, cv2.circle and _rect_filter.
         Valid keyword arguments:
@@ -72,8 +83,15 @@ def auto_correct_color_nonlinear(rgb_img, color_chip_size=None, roi=None, **kwar
     numpy.ndarray
         Color corrected image
     """
+    xrite_legacy = kwargs.pop("xrite_legacy", False)
     card_matrix = detect_color_card(rgb_img=rgb_img, color_chip_size=color_chip_size, roi=roi, **kwargs)
-    std_matrix = std_color_matrix(pos=3)
+
+    if isinstance(color_chip_size, str) and color_chip_size.upper() == 'ASTRO':
+        std_matrix = astro_color_matrix()
+    elif isinstance(color_chip_size, str) and color_chip_size.upper() == 'CAMERATRAX':
+        std_matrix = cameratrax_color_matrix(pos=3)
+    else:
+        std_matrix = std_color_matrix(pos=3, xrite_legacy=xrite_legacy)
     _, matrix_m, matrix_b = get_matrix_m(target_matrix=std_matrix, source_matrix=card_matrix)
     # calculate transformation_matrix and save
     _, transformation_matrix = calc_transformation_matrix(matrix_m, matrix_b)
