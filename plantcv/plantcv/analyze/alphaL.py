@@ -30,7 +30,7 @@ def alphaL(ps, labeled_mask, n_labels=1, label=None, min_bin=-1, max_bin=1):
 
     Returns
     -------
-    aph                 = numpy.ndarray,
+    alphaL              = numpy.ndarray,
         alphaL matrix
     """
     # Set labels
