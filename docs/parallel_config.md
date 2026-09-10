@@ -58,7 +58,7 @@ Validate parameters/structure of configuration data.
 
 
 * **include_all_subdirs**: (bool, default = `True`): If `False`, only images directly in `input_dir` (no 
-  subdirectories) will be analyzed.
+  subdirectories) will be analyzed. Note that even if this is `True` hidden files and directories are excluded.
 
 
 * **img_outdir**: (str, default = "."): path/name of output directory where images will be saved.
@@ -79,8 +79,10 @@ current working directory.
 
 
 * **imgformat**: (str, default = "all"): image file format/extension in lowercase. The string "all" can be used
-as shorthand to match all file extensions readable by `cv2.imread`. This can accept a list if multiple
-extensions should be combined (if using phenofront data this must be length 1 and "png" is the default).
+as shorthand to match all file extensions readable by `cv2.imread`.
+This can accept a list if multiple extensions should be combined (if using phenofront data this must be length 1
+and "png" is the default).
+You can use other file types such as `INF` or `data` but they are not included in the default list.
 
 
 * **delimiter**: (str, default = "_"): image filename metadata term delimiter character. Alternatively, a regular 
@@ -170,6 +172,9 @@ parameters:
 generally use 1 CPU per image analysis workflow, this is effectively the maximum number of concurrently running 
 workflows.
 
+* **threads_per_worker**: (int, optional, default = 1): the number of threads to run on each worker. In general this should
+be left as 1 so that `n_workers` will let you accurately control the number of cores used.
+
 * **memory**: (str, required, default = "1GB"): the amount of memory/RAM used per workflow. Can be set as a number plus 
 units (KB, MB, GB, etc.).
 
@@ -186,14 +191,14 @@ environmental variable.
 of key-value pairs (e.g. `{"getenv": "true"}`).
 
 !!! note
-    `n_workers` is the only parameter used by `LocalCluster`, all others are currently ignored. `n_workers`,
-    `memory`, and `disk` are required by the other clusters. All other parameters are optional. Additional parameters
+    `n_workers` and `threads_per_worker` are the only parameters used by `LocalCluster`, all others are currently ignored.
+	`n_workers`, `memory`, and `disk` are required by the other clusters. All other parameters are optional. Additional parameters
     defined in the [dask-jobqueue API](https://jobqueue.dask.org/en/latest/api.html) can be supplied.
 
 !!! note
     The fields available in `job_extra_directives` vary by cluster type. For example, `{"getenv": "true"}` will work to start
     the active conda environment on each worker in an HTCondor cluster but not on a PBS cluster.
-    `plantcv.parallel.run_parallel` and `JupyterConfig.run()` will check for an active conda environment
+    `plantcv.parallel.run_parallel` and `JupyterConfig.run()` will check for an active conda environment on a unix-like OS
     and attempt to start that environment on each worker if the `cluster_config` does not have a `job_script_prologue` already.
 
 ### Example

@@ -7,7 +7,7 @@ If there are quality problems in the image, change the camera settings to reduce
 This function is meant to be run in a jupyter notebook during workflow development. 
 
 
-**plantcv.qc.exposure**(*rgb_img, warning_threshold=0.05*)
+**plantcv.qc.exposure**(*rgb_img, warning_threshold=0.05, label=None*)
 
 **returns** Altair chart
 
@@ -15,6 +15,7 @@ This function is meant to be run in a jupyter notebook during workflow developme
     - rgb_img (numpy.ndarray) - An image in BGR format as a 3D numpy array.
     - warning_threshold (float) - The percentage threshold for triggering a warning
                     for over- or underexposure (default is 0.05 for 5%).
+    - label (str) - Optional label to add to the stored values in `pcv.outputs.metadata`. Defaults to None in which case `pcv.params.sample_label` is used.
             
         
     

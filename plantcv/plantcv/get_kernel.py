@@ -1,6 +1,7 @@
 # Create a kernel structuring element
 
 import cv2
+import numpy as np
 from plantcv.plantcv import fatal_error
 
 
@@ -30,3 +31,42 @@ def get_kernel(size, shape):
         fatal_error("Shape " + str(shape) + " is not rectangle, ellipse or cross!")
 
     return kernel
+
+
+def _format_kernel(k, to=int):
+    """turn a kernel/ksize into an array/tuple kernel
+    Parameters
+    ----------
+    k : int, tuple, or numpy.ndarray
+        Kernel specified as a binary numpy.ndarray for arbitrary shapes,
+        shape tuple for a rectangular kernel, or integer for a square kernel.
+    to : tuple, accepted classes to convert k to including any of
+        int, tuple, or np.ndarray. This should be set internally
+        and depends on how the kernel argument is going to be used.
+
+    Returns
+    -------
+    kernel specified as 'most complex' class from `to`
+    """
+    if k is None:
+        return k
+    if isinstance(k, to):
+        return k
+    if not isinstance(k, (int, tuple, np.ndarray)):
+        fatal_error("Kernel must be specified as an int, tuple, or numpy.ndarray")
+    if not isinstance(to, tuple):
+        to = [to]
+
+    # if not, pick the next most informative specification from `to`
+    convert_to = [cls for cls in [np.ndarray, tuple, int] if cls in to][0]
+
+    conversions = {
+        (int, np.ndarray): lambda v: get_kernel((v, v), "rectangle"),
+        (tuple, np.ndarray): lambda v: get_kernel(v, "rectangle"),
+        (int, tuple): lambda v: (v, v),
+        (np.ndarray, tuple): np.shape,
+        (tuple, int): lambda v: v[0],
+        (np.ndarray, int): lambda v: np.shape(v)[0],
+    }
+
+    return conversions[(type(k), convert_to)](k)

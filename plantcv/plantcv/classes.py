@@ -47,31 +47,47 @@ class Spectral_data:
 class PSII_data:
     """PSII data class"""
 
-    def __init__(self):
-        self.ojip_dark = None
-        self.ojip_light = None
-        self.pam_dark = None
-        self.pam_light = None
+    def __init__(self, metadata: dict = None):
+        self.metadata = metadata
+        if self.metadata is None:
+            self.metadata = {}
+            self.datapath = None
+            self.filename = None
+            # Dataset attributes: None = file not present, lazy-loaded object = file present
+        self.aph = None
+        self.chl = None
+        self.clr = None
+        self.npq = None
+        self._ojip_dark = None
+        self._ojip_light = None
+        self.psd = None
+        self.psl = None
+        self.pmd = None
+        self.pml = None
+        self.pmt = None
         self.spectral = None
-        self.chlorophyll = None
         self.gfp = None
         self.rfp = None
-        self.aph = None
-        self.datapath = None
-        self.filename = None
 
-    def __repr__(self):
-        mvars = []
-        for k, v in self.__dict__.items():
-            if v is not None:
-                mvars.append(k)
-        return "PSII variables defined:\n" + '\n'.join(mvars)
+    @property
+    def ojip_dark(self):
+        if isinstance(self._ojip_dark, str):
+            self._ojip_dark = getattr(self.__dict__[self._ojip_dark], "ojip_dark", None)
+        return self._ojip_dark
 
-    def add_data(self, protocol):
-        """Input:
-        protocol: xr.DataArray with name equivalent to initialized attributes
-        """
-        self.__dict__[protocol.name] = protocol
+    @ojip_dark.setter
+    def ojip_dark(self, value):
+        self._ojip_dark = value
+
+    @property
+    def ojip_light(self):
+        if isinstance(self._ojip_light, str):
+            self._ojip_light = getattr(self.__dict__[self._ojip_light], "ojip_light", None)
+        return self._ojip_light
+
+    @ojip_light.setter
+    def ojip_light(self, value):
+        self._ojip_light = value
 
 
 class Point:

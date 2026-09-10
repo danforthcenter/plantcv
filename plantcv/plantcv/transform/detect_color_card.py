@@ -10,7 +10,8 @@ import numpy as np
 from plantcv.plantcv import params, outputs, fatal_error, warn
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _rgb2hsv, _rgb2gray, _cv2_findcontours, _object_composition, _rect_filter
-from plantcv.plantcv.transform.color_correction import get_color_matrix
+from plantcv.plantcv.transform.get_color_matrix import get_color_matrix
+from plantcv.plantcv.transform.delta_e import _delta_e
 
 
 def _is_square(contour, min_size, aspect_ratio=1.27, solidity=0.8):
@@ -708,7 +709,47 @@ def mask_color_card(rgb_img, card_type="macbeth", **kwargs):
     return bounding_mask
 
 
-def detect_color_card(rgb_img, color_chip_size=None, roi=None, **kwargs):
+def deltaE(rgb_img, color_chip_size=None, roi=None, obs="calibrated", **kwargs):
+    """Calculate Delta E from an rgb image with a color card
+
+    Parameters
+    ----------
+    rgb_img : numpy.ndarray
+        Input rgb image, possibly color corrected.
+    color_chip_size : str, tuple, optional
+        "passport", "classic", "nano", "mini, ""cameratrax", or "astro"; or tuple formatted (width, height)
+        in millimeters (default = None)
+    roi : plantcv.plantcv.Objects, optional
+        A rectangular ROI as returned from pcv.roi.rectangle to detect a color card only in that region.
+    obs : str
+        string describing what the obs_rgb data is, typically "uncalibrated" for an image input into color correction
+        or "calibrated" for an image that has been through color correction.
+    **kwargs
+        Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle via plantcv.transform.detect_color_card.
+
+        Valid keyword arguments:
+        adaptive_method: 0 (mean) or 1 (Gaussian) (default = 1)
+        block_size: int (default = 51)
+        radius: int (default = 20)
+        min_size: int (default = 1000)
+        aspect_ratio: float (default = 1.27)
+        solidity: float (default = 0.8)
+
+    Returns
+    -------
+    delta_E
+        numpy.ndarray, Delta E values between color chips.
+    """
+    obs_rgb = detect_color_card(rgb_img, color_chip_size, roi, delta_E=False, **kwargs)
+    delta_E = _delta_e(obs_rgb, color_chip_size, obs)
+    if "detect_color_card" not in params.function_args:
+        params.function_args["detect_color_card"] = {"color_chip_size": kwargs.get("color_chip_size"),
+                                                     "roi": kwargs.get("roi"),
+                                                     "kwargs": kwargs}
+    return delta_E
+
+
+def detect_color_card(rgb_img, color_chip_size=None, roi=None, delta_E=True, **kwargs):
     """Automatically detects a Macbeth ColorChecker or Astrobotany.com Calibration Sticker style color card.
 
     Parameters
@@ -720,6 +761,8 @@ def detect_color_card(rgb_img, color_chip_size=None, roi=None, **kwargs):
         in millimeters (default = None)
     roi : plantcv.plantcv.Objects, optional
         A rectangular ROI as returned from pcv.roi.rectangle to detect a color card only in that region.
+    delta_E : Boolean, optional
+        Should DeltaE be calculated between the observed vs expected color card? Defaults to True.
     **kwargs
         Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle.
 
@@ -782,5 +825,11 @@ def detect_color_card(rgb_img, color_chip_size=None, roi=None, **kwargs):
 
     # Debugging
     _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, f"{params.device}_color_card.png"))
+    # Calculate Delta E
+    if delta_E:
+        params.function_args["detect_color_card"] = {"color_chip_size": color_chip_size,
+                                                     "roi": roi,
+                                                     "kwargs": kwargs}
+        _ = _delta_e(color_matrix, card_type=color_chip_size)
 
     return color_matrix

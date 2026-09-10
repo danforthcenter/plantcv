@@ -42,6 +42,7 @@ class JupyterConfig:
         object.__setattr__(self, "cluster", "LocalCluster")
         object.__setattr__(self, "cluster_config", {
             "n_workers": 1,
+            "threads_per_worker": 1,
             "memory": "1GB",
             "disk": "1GB",
             "log_directory": None,
@@ -51,7 +52,8 @@ class JupyterConfig:
         # does not need to have reactive metadata_terms, those are made when run() is called
 
     def __setattr__(self, name, value):
-        _config_attr_lookup(self, name, value)
+        if self.in_notebook():
+            _config_attr_lookup(self, name, value)
         object.__setattr__(self, name, value)
 
     # make reactive notebook property and hidden helper

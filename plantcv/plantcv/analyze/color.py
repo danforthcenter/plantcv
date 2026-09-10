@@ -173,6 +173,24 @@ def _analyze_color(img, mask, colorspaces="hsv", label=None):
                                 value=histograms["y"]["hist"], label=diverging_values)
 
     if colorspaces.upper() in ('HSV', 'ALL'):
+        # Calculate the mean and median saturation and value (lightness) values
+        saturation_mean = np.mean(s[np.where(s > 0)].astype(np.float64) / 255) * 100
+        saturation_median = np.median(s[np.where(s > 0)].astype(np.float64) / 255) * 100
+        value_mean = np.mean(v[np.where(v > 0)].astype(np.float64) / 255) * 100
+        value_median = np.median(v[np.where(v > 0)].astype(np.float64) / 255) * 100
+
+        outputs.add_observation(sample=label, variable='saturation_mean', trait='saturation mean',
+                                method='plantcv.plantcv.analyze.color', scale='percent', datatype=float,
+                                value=saturation_mean, label='percent')
+        outputs.add_observation(sample=label, variable='saturation_median', trait='saturation median',
+                                method='plantcv.plantcv.analyze.color', scale='percent', datatype=float,
+                                value=saturation_median, label='percent')
+        outputs.add_observation(sample=label, variable='value_mean', trait='value mean',
+                                method='plantcv.plantcv.analyze.color', scale='percent', datatype=float,
+                                value=value_mean, label='percent')
+        outputs.add_observation(sample=label, variable='value_median', trait='value median',
+                                method='plantcv.plantcv.analyze.color', scale='percent', datatype=float,
+                                value=value_median, label='percent')
         outputs.add_observation(sample=label, variable='hue_frequencies', trait='hue frequencies',
                                 method='plantcv.plantcv.analyze.color', scale='frequency', datatype=list,
                                 value=histograms["h"]["hist"][0:180], label=hue_values)

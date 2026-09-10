@@ -39,7 +39,8 @@ def run_parallel(config):
     # if a logs directory is specified then add the tmpdir inside it.
     if config.cluster_config["log_directory"] is not None:
         config.cluster_config["log_directory"] = os.path.join(
-            config.cluster_config["log_directory"], os.path.basename(config.tmp_dir)
+            config.cluster_config["log_directory"],
+            "log_" + os.path.basename(config.tmp_dir)
         )
         os.makedirs(config.cluster_config["log_directory"], exist_ok=True)
     # Create img_outdir
@@ -91,7 +92,7 @@ def run_parallel(config):
     # Convert results start time
     convert_results_start_time = time.time()
     print("Converting json to csv... ", file=sys.stderr)
-    json2csv(config.results, os.path.splitext(config.results)[0])
+    json2csv(config.results, config.results)
     convert_results_clock_time = time.time() - convert_results_start_time
     parallel_print(f"Processing results took {convert_results_clock_time} seconds.", file=sys.stderr, verbose=verbose)
     ###########################################
@@ -113,8 +114,9 @@ def _check_for_conda(config):
     config = plantcv.parallel.WorkflowConfig object
     """
     running_in_conda = re.search("conda|mamba|miniforge", sys.executable) is not None
+    unix_like = os.name == "posix"
     # if workflow is executed from a conda environment then activate that conda environment on workers
-    if "job_script_prologue" not in config.cluster_config.keys() and running_in_conda:
+    if "job_script_prologue" not in config.cluster_config.keys() and running_in_conda and unix_like:
         # find where the conda installation is, replace python with activate
         activation_path = re.sub("(.*conda|mamba|miniforge)(\\d)?.*$",
                                  os.path.join("\\1\\2", "bin", "activate"), sys.executable)
@@ -126,7 +128,7 @@ def _check_for_conda(config):
             # get name of env that was active to run plantcv
             env_index = [i for i, element in enumerate(ex_list) if re.search("^env(s)?$", element)][0]
             env_name = ex_list[env_index+1]
-            commands.append("conda activate" + env_name)
+            commands.append("conda activate " + env_name)
         # if changing config always print a message
         print("Setting job_script_prologue to fetch active environment:\n",
               commands,
