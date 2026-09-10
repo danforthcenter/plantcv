@@ -8,7 +8,7 @@ from plantcv.plantcv.transform.color_correction import (calc_transformation_matr
                                                         apply_transformation_matrix, save_matrix, load_matrix, correct_color,
                                                         create_color_card_mask, affine_color_correction)
 from plantcv.plantcv.transform.get_color_matrix import get_color_matrix, get_matrix_m
-from plantcv.plantcv.transform.standard_matrices import std_color_matrix, astro_color_matrix
+from plantcv.plantcv.transform.standard_matrices import std_color_matrix, astro_color_matrix, cameratrax_color_matrix
 from plantcv.plantcv.transform.detect_color_card import detect_color_card
 
 
@@ -59,7 +59,64 @@ def test_std_color_matrix(pos):
     white_val = std_matrix[white_idx_pos, 1:]
 
     # RGB values of the white chip in the range [0-255]
+    white_rgb = np.array([241., 242., 236.], dtype=np.float64)
+    # compare RGB values in the range [0-255]
+    assert np.sum(np.abs(255*white_val - white_rgb)) < 1
+
+
+@pytest.mark.parametrize("pos", [0, 1, 2, 3])
+def test_std_color_matrix_legacy(pos):
+    """Test for PlantCV."""
+    std_matrix = std_color_matrix(pos=pos, xrite_legacy=True)
+
+    # indices for the color matrix where the white chip should be depending on
+    # the value of pos
+    white_indices = [18, 23, 5, 0]
+    white_idx_pos = white_indices[pos]
+
+    # RGB values in white chip of the returned matrix in the range [0-1]
+    white_val = std_matrix[white_idx_pos, 1:]
+
+    # RGB values of the white chip in the range [0-255]
     white_rgb = np.array([243., 243., 242.], dtype=np.float64)
+    # compare RGB values in the range [0-255]
+    assert np.sum(np.abs(255*white_val - white_rgb)) < 1
+
+
+def test_std_color_matrix_default_differs_from_legacy():
+    """Test for PlantCV."""
+    # the post-November 2014 reference matrix should differ from the legacy one
+    assert not np.array_equal(std_color_matrix(pos=3), std_color_matrix(pos=3, xrite_legacy=True))
+
+
+def test_cameratrax_color_matrix():
+    """Test for PlantCV."""
+    ctrax_matrix = cameratrax_color_matrix(pos=3)
+
+    # the white chip is the first chip when pos = 3
+    white_val = ctrax_matrix[0, 1:]
+
+    # RGB values of the white chip in the range [0-255]
+    white_rgb = np.array([245., 246., 248.], dtype=np.float64)
+    # compare RGB values in the range [0-255]
+    assert np.sum(np.abs(255*white_val - white_rgb)) < 1
+
+
+@pytest.mark.parametrize("pos", [0, 1, 2, 3])
+def test_cameratrax_color_matrix_orientation(pos):
+    """Test for PlantCV."""
+    ctrax_matrix = cameratrax_color_matrix(pos=pos)
+
+    # indices for the color matrix where the white chip should be depending on
+    # the value of pos
+    white_indices = [18, 23, 5, 0]
+    white_idx_pos = white_indices[pos]
+
+    # RGB values in white chip of the returned matrix in the range [0-1]
+    white_val = ctrax_matrix[white_idx_pos, 1:]
+
+    # RGB values of the white chip in the range [0-255]
+    white_rgb = np.array([245., 246., 248.], dtype=np.float64)
     # compare RGB values in the range [0-255]
     assert np.sum(np.abs(255*white_val - white_rgb)) < 1
 
@@ -68,6 +125,12 @@ def test_std_color_matrix_bad_pos():
     """Test for PlantCV."""
     with pytest.raises(RuntimeError):
         _ = std_color_matrix(pos=4.5)
+
+
+def test_cameratrax_color_matrix_bad_pos():
+    """Test for PlantCV."""
+    with pytest.raises(RuntimeError):
+        _ = cameratrax_color_matrix(pos=4.5)
 
 
 def test_astro_color_matrix():
@@ -320,7 +383,10 @@ def test_cameratrax_and_astro_consistent_color_calibration(transform_test_data):
     astro_std_mat = astro_color_matrix()
     astro_corr_img = affine_color_correction(rgb_img=rgb_img, source_matrix=astro_mat, target_matrix=astro_std_mat)
 
-    diff = np.abs(ctrax_corr_img - astro_corr_img)
+    diff = np.abs(ctrax_corr_img.astype(np.int64) - astro_corr_img.astype(np.int64))
     channel_diffs = np.sum(diff, axis=(0, 1)) / (diff.shape[0] * diff.shape[1])
-    # Check for similarity in corrected color: mean absolute color difference less than 2.5 (1% of range)
-    assert all(channel_diffs < 3) and np.mean(channel_diffs) < 2.5
+    # Check for similarity in corrected color: mean absolute color difference less than 2.5 (1% of range).
+    # The per-channel threshold is slightly relaxed (3.5) since updating the default X-Rite reference
+    # matrix to the post-November 2014 values shifts the blue channel marginally. The matrices are cast
+    # to int before subtracting to avoid uint8 overflow wrapping the absolute differences
+    assert all(channel_diffs < 3.5) and np.mean(channel_diffs) < 2.5

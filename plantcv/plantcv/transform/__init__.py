@@ -14,6 +14,7 @@ from plantcv.plantcv.transform.rescale import rescale
 from plantcv.plantcv.transform.rotate import rotate
 from plantcv.plantcv.transform.standard_matrices import std_color_matrix
 from plantcv.plantcv.transform.standard_matrices import astro_color_matrix
+from plantcv.plantcv.transform.standard_matrices import cameratrax_color_matrix
 from plantcv.plantcv.transform.nonuniform_illumination import nonuniform_illumination
 from plantcv.plantcv.transform.resize import resize, resize_factor
 from plantcv.plantcv.transform.warp import warp, warp_align
@@ -28,4 +29,4 @@ __all__ = ["get_color_matrix", "get_matrix_m", "calc_transformation_matrix", "ap
            "std_color_matrix", "affine_color_correction", "rescale", "nonuniform_illumination", "resize",
            "resize_factor", "warp", "rotate", "warp", "warp_align", "gamma_correct", "deltaE",
            "detect_color_card", "checkerboard_calib", "calibrate_camera", "merge_images", "auto_correct_color",
-           "mask_color_card", "auto_correct_color_nonlinear", "astro_color_matrix"]
+           "mask_color_card", "auto_correct_color_nonlinear", "astro_color_matrix", "cameratrax_color_matrix"]

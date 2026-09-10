@@ -2,7 +2,7 @@
 
 Corrects the color of the input image based on the target color matrix using an affine transformation
 in the RGB space after automatic detection of a color card within the image. A one-step wrapper of
-[plantcv.transform.detect_color_card](transform_detect_color_card.md), [plantcv.transform.std_color_matrix](std_color_matrix.md) or [plantcv.transform.astro_color_matrix](astro_color_matrix.md),
+[plantcv.transform.detect_color_card](transform_detect_color_card.md), [plantcv.transform.std_color_matrix](std_color_matrix.md), [plantcv.transform.cameratrax_color_matrix](cameratrax_color_matrix.md) or [plantcv.transform.astro_color_matrix](astro_color_matrix.md),
 [plantcv.transform.get_color_matrix](get_color_matrix.md), and [plantcv.transform.affine_color_correction](transform_affine_color_correction.md).
 
 **plantcv.transform.auto_correct_color**(*rgb_img, color_chip_size=None, roi=None, \*\*kwargs*)
@@ -15,8 +15,13 @@ in the RGB space after automatic detection of a color card within the image. A o
     "cameratrax", or "astro", by default `None`). Or provide `(width, height)` of your specific color card in millimeters. If
     set then the type of color card (macbeth chart or astrobotany calibration sticker) and size scalings parameters
     `pcv.params.unit`, `pcv.params.px_width`, and `pcv.params.px_height` are automatically set, and utilized throughout linear
-    and area type measurements stored to `Outputs`.
+    and area type measurements stored to `Outputs`. Macbeth chart style cards are corrected to the reference matrix matching
+    the card type: X-Rite ColorChecker targets (including "classic", "passport", "nano", and "mini") to
+    [std_color_matrix](std_color_matrix.md), CameraTrax 24ColorCard targets ("cameratrax") to
+    [cameratrax_color_matrix](cameratrax_color_matrix.md).
     - roi              - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to look for the color card. (default = None)
+    - xrite_legacy     - If color_chip_size indicates an X-Rite ColorChecker target, correct to the reference matrix
+    for legacy (pre-November 2014) targets instead of the current (post-November 2014) targets (default = False).
 	- **kwargs         - Other keyword arguments passed to `cv2.adaptiveThreshold` and `cv2.circle`.
         - adaptive_method  - Adaptive threhold method. 0 (mean) or 1 (Gaussian) (default = 1).
         - block_size       - Size of a pixel neighborhood that is used to calculate a threshold value (default = 51). We suggest using 127 if using `adaptive_method=0`.
