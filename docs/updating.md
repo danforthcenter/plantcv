@@ -359,7 +359,7 @@ pages for more details on the input and output variable types.
 #### plantcv.analyze.alphaL
 
 * pre v5.0: NA
-* post v5.0: array = **plantcv.analyze.alphaL**(*ps, labeled_mask, n_labels=1, measurement_labels=None, label=None, min_bin=-1, max_bin=1*)
+* post v5.0: array = **plantcv.analyze.alphaL**(*ps, labeled_mask, n_labels=1, label=None, min_bin=-1, max_bin=1*)
 
 
 #### plantcv.analyze.bound_horizontal
