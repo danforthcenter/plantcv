@@ -71,7 +71,7 @@ def _alphaL_calc(red, farred, mask):
     aph  = numpy.ndarray,
         alphaL matrix
     """
-    aph = 1 - np.divide(red, farred, out=np.full(np.shape(red), fill_value=np.nan), where=mask.astype(bool))
+    aph = 1 - np.divide(red, farred, out=np.full(np.shape(red), fill_value=np.nan), where=np.logical_and(mask.astype(bool), farred != 0))
     return aph
 
 
