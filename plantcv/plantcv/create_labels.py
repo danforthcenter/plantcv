@@ -56,8 +56,13 @@ def create_labels(mask, rois=None, roi_type="partial"):
 
     # Restore debug parameter
     params.debug = debug
-    colorful = label2rgb(labeled_mask)
-    colorful2 = (255*colorful).astype(np.uint8)
+    # label2rgb builds a full-size RGB float image, which is wasted work when no visual is
+    # going to be shown or written. _debug is still called either way because it owns the
+    # device counter.
+    colorful2 = None
+    if params.debug is not None:
+        colorful = label2rgb(labeled_mask)
+        colorful2 = (255*colorful).astype(np.uint8)
 
     _debug(colorful2, filename=os.path.join(params.debug_outdir,
                                             str(params.device) +

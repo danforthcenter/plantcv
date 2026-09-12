@@ -27,7 +27,7 @@ def within_frame(mask, border_width=1, label=None):
         label = params.sample_label
 
     # Check if object is touching image boundaries (QC)
-    if len(np.shape(mask)) > 2 or len(np.unique(mask)) > 2:
+    if len(np.shape(mask)) > 2 or _over_two_values(mask):
         fatal_error("Mask should be a binary image of 0 and nonzero values.")
 
     # First column
@@ -52,3 +52,31 @@ def within_frame(mask, border_width=1, label=None):
                             value=in_bounds, label='none')
 
     return in_bounds
+
+
+def _over_two_values(mask):
+    """Test whether a mask holds more than two distinct values.
+
+    A mask is binary exactly when every pixel equals either its minimum or its maximum, which
+    is a linear scan. np.unique answers the same question by sorting the whole image, and
+    _iterate_analysis calls within_frame once per object, so that sort is paid per object.
+
+    Parameters
+    ----------
+    mask : numpy.ndarray
+        Mask to test.
+
+    Returns
+    -------
+    bool
+        True if the mask contains three or more distinct values.
+    """
+    values = np.asarray(mask)
+    # An empty mask has no values to disagree, matching len(np.unique([])) == 0
+    if values.size == 0:
+        return False
+    low = values.min()
+    high = values.max()
+    if low == high:
+        return False
+    return bool(np.any((values != low) & (values != high)))
