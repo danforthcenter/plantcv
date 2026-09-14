@@ -189,6 +189,7 @@ nav:
           - 'Calibrate Camera': transform_calibrate_camera.md
           - 'Checkerboard Calibration': transform_checkerboard_calibration.md
           - 'Create Color Card Mask': create_color_card_mask.md
+          - 'CLAHE Contrast Correction': clahe.md
           - 'Convert Color Card to Matrix': get_color_matrix.md
           - 'Color Correct to Target Image': transform_correct_color.md
           - 'Quick Color Check': quick_color_check.md
