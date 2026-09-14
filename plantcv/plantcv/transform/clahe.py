@@ -5,8 +5,8 @@ import cv2
 import numpy as np
 from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _rgb2gray
 from plantcv.plantcv.get_kernel import _format_kernel
+
 
 def clahe(img, kernel=8, contrast_threshold=2.0):
     """Apply Contrast Limited Adaptive Histogram Equalization (CLAHE)
@@ -58,8 +58,8 @@ def _rgb_clahe(img, k, contrast_threshold):
         CLAHE adjusted image
     """
     lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
-    clahe = cv2.createCLAHE(clipLimit=contrast_threshold, tileGridSize=k)
-    lab[:,:,0] = clahe.apply(lab[:,:,0])
+    clahe_obj = cv2.createCLAHE(clipLimit=contrast_threshold, tileGridSize=k)
+    lab[:, :, 0] = clahe_obj.apply(lab[:, :, 0])
     clahe_img = cv2.cvtColor(lab, cv2.COLOR_LAB2BGR)
     return clahe_img
 
@@ -83,6 +83,6 @@ def _gray_clahe(img, k, contrast_threshold):
     corrected_img = numpy.ndarray
         CLAHE adjusted image
     """
-    clahe = cv2.createCLAHE(clipLimit=contrast_threshold, tileGridSize=k)
-    clahe_img = clahe.apply(img)
+    clahe_obj = cv2.createCLAHE(clipLimit=contrast_threshold, tileGridSize=k)
+    clahe_img = clahe_obj.apply(img)
     return clahe_img
