@@ -51,7 +51,8 @@ def _make_pseudo_rgb(spectral_array):
             # Repeat the single band in each channel to make a grayscale pseudo-rgb image
             default_bands = default_bands * 3
         if len(default_bands) != 3:
-            fatal_error(f"Expected 1 or 3 default bands in the header file but found {len(default_bands)}.")
+            fatal_error(f"Expected 1 or 3 default bands in the header file but found {len(default_bands)}. " +
+                        "Consider removing default_bands field of the header file.")
         # Default bands are positions on the band axis of the datacube, so they have to be in range
         bands = [int(band) for band in default_bands]
         if not all(0 <= band < array_data.shape[2] for band in bands):
