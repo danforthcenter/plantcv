@@ -310,7 +310,7 @@ def egi(img, distance=40):
     index_array    = plantcv.plantcv.Spectral_data
         Index data
     """
-    if type(img) is Spectral_data:
+    if type(img) is Spectral_data or type(img) is MS_data:
         # If the available wavelengths completely cover the required range of data
         if (float(img.max_wavelength) + distance) >= 700 and (float(img.min_wavelength) - distance) <= 460:
             r460_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 460)
@@ -396,7 +396,7 @@ def gli(img, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-    if type(img) is Spectral_data:
+    if type(img) is Spectral_data or type(img) is MS_data:
         if (float(img.max_wavelength) + distance) >= 670 and (float(img.min_wavelength) - distance) <= 480:
             r480_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 480)
             r670_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 670)
@@ -442,7 +442,7 @@ def sci(img, distance=40):
     index_array : plantcv.plantcv.Spectral_data
         Index data
     """
-    if type(img) is Spectral_data:
+    if type(img) is Spectral_data or type(img) is MS_data:
         # If the available wavelengths completely cover the required range of data
         if (float(img.max_wavelength) + distance) >= 700 and (float(img.min_wavelength) - distance) <= 530:
             r530_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 530)
@@ -488,7 +488,7 @@ def bgr(img, distance=40):
     index_array : plantcv.plantcv.Spectral_data
         Index data
     """
-    if type(img) is Spectral_data:
+    if type(img) is Spectral_data or type(img) is MS_data:
         # If the available wavelengths completely cover the required range of data
         if (float(img.max_wavelength) + distance) >= 530 and (float(img.min_wavelength) - distance) <= 460:
             r460_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 460)
@@ -534,7 +534,7 @@ def bgi(img, distance=40):
     index_array : plantcv.plantcv.Spectral_data
         Index data
     """
-    if type(img) is Spectral_data:
+    if type(img) is Spectral_data or type(img) is MS_data:
         # If the available wavelengths completely cover the required range of data
         if (float(img.max_wavelength) + distance) >= 530 and (float(img.min_wavelength) - distance) <= 460:
             r460_index = _find_closest(np.array([float(i) for i in img.wavelength_dict.keys()]), 460)
