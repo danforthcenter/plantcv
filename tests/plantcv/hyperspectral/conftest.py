@@ -36,18 +36,15 @@ class HyperspectralTestData:
     def create_envi_data(outdir, filename, default_bands=None):
         """Create a small ENVI datacube and the matching header file.
 
-        Inputs:
-            outdir        = Directory to write the data and header files to
-            filename      = Base name of the data and header files
-            default_bands = Value of the default bands header field, or None to leave the field out
+        Parameters:
+        -----------
+            outdir        = str, Directory to write the data and header files to
+            filename      = str, Base name of the data and header files
+            default_bands = str, Value of the default bands header field, or None to leave the field out
 
         Returns:
-            datafile      = Path of the ENVI data file
-
-        :param outdir: str
-        :param filename: str
-        :param default_bands: str
-        :return datafile: str
+        --------
+            datafile      = str, Path of the ENVI data file
         """
         lines, samples, bands = 2, 3, 5
         wavelengths = [500.0, 550.0, 600.0, 650.0, 700.0]
