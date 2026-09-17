@@ -32,7 +32,7 @@ dependencies = [
     "nbformat",
     "imageio >= 2.28",
     "imageio-ffmpeg",
-    "PIL",
+    "pillow",
     "pillow_heif"
 ]
 requires-python = ">=3.8"
