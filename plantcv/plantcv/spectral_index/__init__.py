@@ -33,6 +33,7 @@ from plantcv.plantcv.spectral_index.spectral_index import ndci
 
 
 # add new functions to end of lists
-__all__ = ["ndvi", "gdvi", "gndvi", "savi", "pri", "ari", "ci_rededge", "cri550", "cri700", "egi", "evi", "gli", "mari", "mcari",
-           "mtci", "ndre", "npci", "psnd_chla", "psnd_chlb", "psnd_car", "psri", "pssr_chla", "pssr_chlb", "pssr_car",
+__all__ = ["ndvi", "gdvi", "gndvi", "savi", "pri", "ari", "ci_rededge", "cri550", "cri700", "egi", "evi",
+           "gli", "mari", "mcari", "mtci", "ndre", "npci", "psnd_chla", "psnd_chlb", "psnd_car", "psri",
+           "pssr_chla", "pssr_chlb", "pssr_car",
            "rgri", "rvsi", "sipi", "sr", "vari", "vi_green", "wi", "ndci"]
