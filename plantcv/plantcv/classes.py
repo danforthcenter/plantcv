@@ -11,10 +11,10 @@ class Spectral_data:
 
     def __init__(self, array_data, max_wavelength, min_wavelength, max_value, min_value, d_type, wavelength_dict,
                  samples, lines, interleave, wavelength_units, array_type, pseudo_rgb, filename, default_bands,
-                 metadata=None):
+                 byte_order=0, file_type="ENVI", header_offset=0, metadata=None):
         # The actual array/datacube
         self.array_data = array_data
-        # Min/max available wavelengths (for spectral datacube)
+        # Min/max available wavelengths (for spectral datacube)pull/2003
         self.max_wavelength = max_wavelength
         self.min_wavelength = min_wavelength
         #  Min/max pixel value for single wavelength or index
@@ -30,6 +30,10 @@ class Spectral_data:
         # Interleave type
         self.interleave = interleave
         self.wavelength_units = wavelength_units
+        # store byte order, file type, and header offset
+        self.byte_order = byte_order
+        self.file_type = file_type
+        self.header_offset = header_offset
         # The type of array data (entire datacube, specific index, first derivative, etc)
         self.array_type = array_type
         # Pseudo-RGB image if the array_type is a datacube
