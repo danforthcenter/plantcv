@@ -206,6 +206,13 @@ class Outputs:
                 # Gather any additional metadata
                 metadata_key_list = list(self.metadata.keys())
                 metadata_val_list = [val["value"] for val in self.metadata.values()]
+                # handle multi-value and single-value metadata terms
+                metadata_single_val_list = [val[0] for val in metadata_val_list if not isinstance(val[0], list)]
+                metadata_single_key_list = [key for key, value in self.metadata.items() if not isinstance(value["value"][0], list)]
+                metadata_multi_val_list = ["_".join(map(str, val[0])) for val in metadata_val_list if isinstance(val[0], list)]
+                metadata_multi_key_list = [key for key, value in self.metadata.items() if isinstance(value["value"][0], list)]
+                metadata_key_list = metadata_single_key_list + metadata_multi_key_list
+                metadata_val_list = metadata_single_val_list + metadata_multi_val_list
                 # Write the header
                 header = metadata_key_list + ["sample", "trait", "value", "label"]
                 csv_table.write(",".join(map(str, header)) + "\n")
