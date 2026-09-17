@@ -27,6 +27,25 @@ def test_gdvi_bad_input(spectral_index_test_data):
     assert spectral_index.gdvi(hsi=index_array, distance=20) is None
 
 
+def test_gndvi(spectral_index_test_data):
+    """Test for PlantCV."""
+    hsi = spectral_index_test_data.load_hsi()
+    index_array = spectral_index.gndvi(hsi, distance=20)
+    wavelengths = np.array([float(i) for i in hsi.wavelength_dict.keys()])
+    r800 = hsi.array_data[:, :, np.argmin(abs(wavelengths - 800))]
+    r550 = hsi.array_data[:, :, np.argmin(abs(wavelengths - 550))]
+    with np.errstate(divide="ignore", invalid="ignore"):
+        expected = (r800 - r550) / (r800 + r550)
+    np.testing.assert_allclose(index_array.array_data, expected, equal_nan=True)
+    assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
+
+
+def test_gndvi_bad_input(spectral_index_test_data):
+    """Test for PlantCV."""
+    index_array = spectral_index.gndvi(spectral_index_test_data.load_hsi(), distance=20)
+    assert spectral_index.gndvi(hsi=index_array, distance=20) is None
+
+
 def test_savi(spectral_index_test_data):
     """Test for PlantCV."""
     index_array = spectral_index.savi(spectral_index_test_data.load_hsi(), distance=20)
