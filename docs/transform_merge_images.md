@@ -2,14 +2,14 @@
 
 This function takes a set of images with a known overlap and concatenates them in series to create a final single image.
 Image paths are provided in a list (e.g. [read_dataset](io_read_dataset.md)) and must be named in the order they should be
-merged (ie. prefix_1.png, prefix_2.png, etc.). There are 4 methods for handling the regions that overlap.   
+merged (ie. prefix_1.png, prefix_2.png, etc.). There are 4 methods for handling the regions that overlap.
 
-**plantcv.transform.merge_images**(*paths_to_imgs, overlap_percentage, direction = "vertical", method = "stacked"*)
+**plantcv.transform.merge_images**(*source, overlap_percentage, direction = "vertical", method = "stacked"*)
 
 **returns** combined_image
 
 - **Parameters:**
-    - paths_to_imgs - a list of image paths
+    - source - a list of image paths or a filepath to a directory of images
     - overlap_percentage - amount of overlap between successive images (see example below for how to calculate this value)
     - direction - vertical (default), or horizontal, determines in which direction successive images should be added
     - method - Available options are stacked, random, average, and gradual and dictate
@@ -45,7 +45,7 @@ pcv.params.debug = "plot"
 
 # Merge images vertially with a 30% overlap by averaging the overlap pixels
 images = pcv.io.read_dataset(source_path="./input_images/")
-merged_img = pcv.transform.merge_images(paths_to_imgs=images, overlap_percentage=30, direction="vertical", method="gradual")
+merged_img = pcv.transform.merge_images(source=images, overlap_percentage=30, direction="vertical", method="gradual")
 
 ```
 

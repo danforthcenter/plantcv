@@ -698,6 +698,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.14.0: NA
 * post v3.14.0:  image_dataset = **plantcv.io.read_dataset**(*source_path, pattern='', sort=True*)
+* post v5.0:  image_dataset = **plantcv.io.read_dataset**(*img_dir, pattern='', sort=True*)
 
 #### plantcv.json2csv
 
@@ -1179,6 +1180,8 @@ pages for more details on the input and output variable types.
 
 * pre v4.2.1: NA
 * post v4.2.1: mtx, dist = **plantcv.transform.checkerboard_calib**(*img_path, col_corners, row_corners, out_dir*)
+* post v5.0: mtx, dist = **plantcv.transform.checkerboard_calib**(*img_dir, col_corners, row_corners, out_dir*)
+
 
 #### plantcv.transform.mask_color_card 
 
@@ -1238,6 +1241,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: NA
 * post v4.0: out_labels = **plantcv.segment_image_series**(*imgs_paths, masks_paths, rois, save_labels=True, ksize=3*)
+* post v5.0: out_labels = **plantcv.segment_image_series**(*source, masks_paths, rois, save_labels=True, ksize=3*)
 
 #### plantcv.sobel_filter
 
@@ -1528,10 +1532,11 @@ pages for more details on the input and output variable types.
 * pre v3.0dev1: NA
 * post v3.0dev2: matrix = **plantcv.transform.load_matrix**(*filename*)
 
-#### plantcv.transfor.merge_images
+#### plantcv.transform.merge_images
 
 * pre v4.2.1: NA
 * post v4.2.1: merged_img = **plantcv.transform.merge_images**(*paths_to_imgs, overlap_percentage, direction = "vertical", method = "stacked"*)
+* post v5.0: merged_img = **plantcv.transform.merge_images**(*source, overlap_percentage, direction = "vertical", method = "stacked"*)
 
 #### plantcv.transform.resize
 

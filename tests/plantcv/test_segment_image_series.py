@@ -63,3 +63,10 @@ def test_plantcv_segment_image_series(tmpdir):
     nb_obj = np.unique(markers[:, :, FRAMES-1]).size - 1
 
     assert nb_obj == 2
+
+    markers2 = segment_image_series(cache_img_dir, masks_paths,
+                                    rois=valid_rois, save_labels=True, ksize=3)
+    nb_obj2 = np.unique(markers2[:, :, FRAMES-1]).size - 1
+
+    assert nb_obj2 == 2
+

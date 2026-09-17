@@ -11,23 +11,26 @@ from plantcv.plantcv.transform.color_correction import load_matrix
 from plantcv.plantcv._helpers import _rgb2gray
 
 
-def checkerboard_calib(img_path, col_corners, row_corners, out_dir):
-    """
-    Use several checkerboard images to calibrate a camera with image distortions.
-    Inputs:
-    img_path    = directory of checkerboard images to be used for calibration
-    col_corners = the number from inside corners in a column of the checkerboard
+def checkerboard_calib(img_dir, col_corners, row_corners, out_dir):
+    """Use several checkerboard images to calibrate a camera with image distortions.
+
+    Parameters:
+    -----------
+    img_dir    = str,
+        directory of checkerboard images to be used for calibration
+    col_corners = positive int,
+        the number from inside corners in a column of the checkerboard
     row_corners = the number from inside corners in a row of the checkerboard
     output_directory = filepath where the outputs will be saved
 
-    :param img_path: path to directory of checkerboard images
+    :param img_dir: path to directory of checkerboard images
     :param col_corners: non-negative real number
     :param row_corners: non-negative real number
     :param output_directory = string
     :return mtx: numpy.ndarray
     :return dist: numpy.ndarray
     """
-    images = os.listdir(img_path)
+    images = os.listdir(img_dir)
     objp = np.zeros((col_corners*row_corners, 3), np.float32)
     objp[:, :2] = np.mgrid[0:col_corners, 0:row_corners].T.reshape(-1, 2)
     # Arrays to store object points and image points from all the images.
@@ -35,7 +38,7 @@ def checkerboard_calib(img_path, col_corners, row_corners, out_dir):
     imgpoints = []  # 2d points in image plane
 
     for fname in images:
-        img, _, _ = readimage(filename=os.path.join(img_path, fname), mode="native")
+        img, _, _ = readimage(filename=os.path.join(img_dir, fname), mode="native")
         img1 = np.copy(img)
         gray_img = _rgb2gray(img1)
         ret, corners = cv.findChessboardCorners(gray_img, (col_corners, row_corners))

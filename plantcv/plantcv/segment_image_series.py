@@ -12,17 +12,19 @@ from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _rgb2gray
 from plantcv.plantcv.get_kernel import _format_kernel
+from plantcv.plantcv.io.read_dataset import read_dataset
 
 
-def segment_image_series(imgs_paths, masks_paths, rois, save_labels=True, ksize=3):
+def segment_image_series(source, masks_paths, rois, save_labels=True, ksize=3):
     """Segments the objects in a time series of images using watershed segmentation.
     The objects (labels) are given by a list of rois (region of interest) and the labels
     are propagated sequentially in the time dimension using blocks of ksize.
 
     Parameters:
     -----------
-    imgs_paths  = list,
-        List of paths to the images in the time series. Ordered by time
+    source  = list or str,
+        List of paths to the images in the time series. Ordered by time.
+        Alternatively a filepath to a directory of images.
     masks_paths = list,
         List of paths to the masks in the time series.
         Each mask should correspond to the image in imgs_paths for the same index
@@ -46,7 +48,9 @@ def segment_image_series(imgs_paths, masks_paths, rois, save_labels=True, ksize=
     k = _format_kernel(ksize, int)
     # for symmetry, using blocks (kernels) of size 2*floor(ksize/2) + 1
     half_k = math.floor(k/2)
-
+    imgs_paths = source
+    if isinstance(source, str):
+        imgs_paths = read_dataset(source, sort=True)
     image_names = [os.path.basename(img_path) for img_path in imgs_paths]
 
     # get the size of the images
