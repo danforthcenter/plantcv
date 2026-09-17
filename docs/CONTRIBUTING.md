@@ -36,6 +36,26 @@ There are many ways to contribute:
 
 If you need any help, please contact us. 
 
+## Contributing with AI agents
+
+If you're using an AI coding agent (Claude Code, Copilot, Cursor, etc.) to help prepare a
+contribution — or if you *are* an agent reading this file — see
+[`AGENTS.md`](../AGENTS.md) at the repository root for agent-specific instructions,
+including:
+
+- the required issue-first workflow (an issue must be filed and **assigned** before any
+  PR is opened),
+- which branch to target (`main` vs. the `v5.0` development branch),
+- environment setup and the exact test/coverage command we require
+  (`py.test --cov=plantcv --cov-report=term-missing`, maintaining our 100% coverage bar),
+- documentation and linting expectations, and
+- the required `Co-authored-by:` attribution for agent-assisted commits and PRs.
+
+Everything in this `CONTRIBUTING.md` guide still applies in full — `AGENTS.md` is a
+condensed supplement covering agent-specific mechanics, not a replacement for the process,
+review expectations, or Code of Conduct described here. Where the two differ, this guide
+and a maintainer's direct instruction take precedence.
+
 ## Installing PlantCV for contributors <a name="installing"></a>
 Before getting started, please read our [contributor guidelines](CONTRIBUTING.md) and [code of conduct](CODE_OF_CONDUCT.md).
 
