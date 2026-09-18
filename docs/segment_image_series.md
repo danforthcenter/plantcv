@@ -1,6 +1,6 @@
 ## Segment Image Series
 
-This function uses watershed segmentation to label individual objects in a series of images.
+This function uses watershed segmentation to label individual objects in a time series of images.
 
 **plantcv.segment_image_series**(*source, masks_paths, rois, save_labels=True, ksize=3*)
 
