@@ -335,11 +335,5 @@ def _validate_data_type(data):
     return True
 
 
-def _prepare_csv_metadata():
-    """
-    """
-    
-
-
 params = Params()
 outputs = Outputs()
