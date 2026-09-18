@@ -6,7 +6,7 @@ best if the pot size/position of the plant remains relatively constant.
  
 **plantcv.analyze.bound_horizontal**(*img, labeled_mask, line_position, n_labels=1, label=None*)
 
-**returns** image with boundary data
+**returns** labeled mask objects split by boundary line
 
 - **Parameters:**
     - img - RGB or grayscale image data for plotting
@@ -43,14 +43,14 @@ percent_area_below_reference = pcv.outputs.observations['plant_1']['percent_area
 
 ```
 
-**Boundary tool output image (y = 300)**
+**Boundary tool debug image (y = 300)**
 
 ![Screenshot](img/documentation_images/analyze_bound_horizontal/boundary_950.jpg)
 
 Boundary line set at 300, purple line is boundary line, blue line is height above boundary line, 
 green is area above boundary line.
 
-**Boundary tool output image (y = 520)**
+**Boundary tool debug image (y = 520)**
 
 ![Screenshot](img/documentation_images/analyze_bound_horizontal/boundary_330.jpg)
 
