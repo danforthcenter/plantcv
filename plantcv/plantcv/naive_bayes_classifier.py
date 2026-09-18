@@ -27,25 +27,25 @@ def naive_bayes_classifier(rgb_img, pdf_file):
     # Initialize PDF dictionary
     pdfs = {}
     # Read the PDF file
-    pf = open(pdf_file, "r")
-    # Read the first line (header)
-    pf.readline()
-    # Read each line of the file and parse the PDFs, store in the PDF dictionary
-    for row in pf:
-        # Remove newline character
-        row = row.rstrip("\n")
-        # Split the row into columns on tab characters
-        cols = row.split("\t")
-        # Make sure there are the correct number of columns (i.e. is this a valid PDF file?)
-        if len(cols) != 258:
-            fatal_error("Naive Bayes PDF file is not formatted correctly. Error on line:\n" + row)
-        # Store the PDFs. Column 0 is the class, Column 1 is the color channel, the rest are p at
-        # intensity values 0-255. Cast text p values as float
-        class_name = cols[0]
-        channel = cols[1]
-        if class_name not in pdfs:
-            pdfs[class_name] = {}
-        pdfs[class_name][channel] = np.array([float(i) for i in cols[2:]])
+    with open(pdf_file, "r") as pf:
+        # Read the first line (header)
+        pf.readline()
+        # Read each line of the file and parse the PDFs, store in the PDF dictionary
+        for row in pf:
+            # Remove newline character
+            row = row.rstrip("\n")
+            # Split the row into columns on tab characters
+            cols = row.split("\t")
+            # Make sure there are the correct number of columns (i.e. is this a valid PDF file?)
+            if len(cols) != 258:
+                fatal_error("Naive Bayes PDF file is not formatted correctly. Error on line:\n" + row)
+            # Store the PDFs. Column 0 is the class, Column 1 is the color channel, the rest are p at
+            # intensity values 0-255. Cast text p values as float
+            class_name = cols[0]
+            channel = cols[1]
+            if class_name not in pdfs:
+                pdfs[class_name] = {}
+            pdfs[class_name][channel] = np.array([float(i) for i in cols[2:]])
 
     # Split the input BGR image into component channels for BGR, HSV, and LAB colorspaces
     h, s, v = cv2.split(cv2.cvtColor(rgb_img, cv2.COLOR_BGR2HSV))

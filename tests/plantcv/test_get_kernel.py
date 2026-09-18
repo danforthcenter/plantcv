@@ -47,3 +47,9 @@ def test_format_kernel(k, to):
     """Test for PlantCV."""
     kern = _format_kernel(k, to)
     assert isinstance(kern, to)
+
+
+def test_get_kernel_bad_input_type():
+    """Test for PlantCV."""
+    with pytest.raises(ValueError):
+        _ = get_kernel(size=[1, 1, 1], shape="ellipse")

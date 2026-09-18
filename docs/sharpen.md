@@ -8,7 +8,7 @@ Sharpens an image through the unsharp masking method. Applies a gaussian blur wh
 
 - **Parameters:**
     - img - RGB or grayscale image data
-    - ksize - Tuple of kernel dimensions, e.g. (5, 5). Must be odd integers.
+    - ksize - Int, Tuple, or numpy.ndarray. Used to make a tuple of kernel dimensions, e.g. (5, 5), which must be odd integers.
     - amount - Integer describing amount of sharpening, higher numbers will sharpen more.
     - threshold - Integer cutoff on low contrast, contrasts lower than this will be removed.
     - sigma_x - standard deviation in X direction; if 0 (default), calculated from kernel size

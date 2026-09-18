@@ -40,7 +40,7 @@ nav:
         - 'Analyze Thermal': analyze_thermal.md
         - 'Analyze Spectral Reflectance': analyze_spectral_reflectance.md
         - 'Analyze Spectral Index': analyze_spectral_index.md
-        - 'Analyze YII (OJIP)': analyze_yii_ojip.md
+        - 'Analyze YII': analyze_yii.md
         - 'Analyze NPQ': analyze_npq.md
       - 'Annotation Tools':
           - 'Points': Points.md
@@ -68,7 +68,6 @@ nav:
       - 'Flood Fill': floodfill.md
       - 'Flip Image': flip.md
       - 'Filters':
-        - 'Eccentricity Filter': filters_eccentricity.md
         - 'Object Filter': filters_obj_props.md
         - 'Laplace Filter': laplace_filter.md
         - 'Sobel Filter': sobel_filter.md
@@ -140,7 +139,7 @@ nav:
       - 'Photosynthesis Functions':
           - 'Read CropReporter Data': photosynthesis_read_cropreporter.md
           - 'Reassign Frame Labels': photosynthesis_reassign_frame_labels.md
-          - 'Analyze YII (OJIP)': analyze_yii_ojip.md
+          - 'Analyze YII': analyze_yii.md
           - 'Analyze NPQ': analyze_npq.md
           - 'Visualize chlorophyll Fluorescence': visualize_chlorophyll_fluorescence.md
       - 'Params (Debugging)': params.md
@@ -241,6 +240,7 @@ nav:
         - 'Configure Parallelization': parallel_config.md
         - 'Configure Parallelization in Jupyter': parallel_jupyterconfig.md
         - 'Inspect Configuration': parallel_inspect_config.md
+        - 'Sample Images': parallel_sample_images.md
         - 'Workflow Inputs Management': parallel_workflow_inputs.md
         - 'Run Parallel': parallel_run_parallel.md
         - 'Workflow Parallelization': pipeline_parallel.md

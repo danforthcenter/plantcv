@@ -10,7 +10,7 @@ conditions set in kernel are true, otherwise removes pixel.
 - **Parameters:**
     - gray_img - Grayscale (usually binary) image data
     - ksize - Kernel specified as an int, tuple, or numpy.ndarray. An integer is used to build a ksize x ksize matrix using np.ones.
-	An int must be greater than 1 to have an effect
+	An int must be greater than 1 to have an effect.
     - i - An integer for number of iterations, i.e. the number of consecutive filtering passes
 	- roi - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to apply this function. (default = None, which uses the entire image)
    

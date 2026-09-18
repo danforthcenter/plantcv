@@ -6,13 +6,13 @@ from plantcv.plantcv import PSII_data
 from plantcv.plantcv.photosynthesis import read_cropreporter
 
 
-def test_read_cropreporter_psd(photosynthesis_test_data, tmpdir):
+def test_read_cropreporter_psd(test_data, tmpdir):
     """Test for PlantCV."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("sub")
     # Create dataset with only PSD
-    shutil.copyfile(photosynthesis_test_data.cropreporter, os.path.join(cache_dir, "PSII_HDR_test.INF"))
-    psd_dat = photosynthesis_test_data.cropreporter.replace("HDR", "PSD")
+    shutil.copyfile(test_data.photosynthesis.cropreporter, os.path.join(cache_dir, "PSII_HDR_test.INF"))
+    psd_dat = test_data.photosynthesis.cropreporter.replace("HDR", "PSD")
     psd_dat = psd_dat.replace("INF", "DAT")
     shutil.copyfile(psd_dat, os.path.join(cache_dir, "PSII_PSD_test.DAT"))
     filename = os.path.join(cache_dir, "PSII_HDR_test.INF")
@@ -25,13 +25,13 @@ def test_read_cropreporter_psd(photosynthesis_test_data, tmpdir):
     assert "PSD" in repr(ps.psd)
 
 
-def test_read_cropreporter_psl(photosynthesis_test_data, tmpdir):
+def test_read_cropreporter_psl(test_data, tmpdir):
     """Test for PlantCV."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("sub")
     # Create dataset with only PSL
-    shutil.copyfile(photosynthesis_test_data.cropreporter, os.path.join(cache_dir, "PSII_HDR_test.INF"))
-    psl_dat = photosynthesis_test_data.cropreporter.replace("HDR", "PSL")
+    shutil.copyfile(test_data.photosynthesis.cropreporter, os.path.join(cache_dir, "PSII_HDR_test.INF"))
+    psl_dat = test_data.photosynthesis.cropreporter.replace("HDR", "PSL")
     psl_dat = psl_dat.replace("INF", "DAT")
     shutil.copyfile(psl_dat, os.path.join(cache_dir, "PSII_PSL_test.DAT"))
     filename = os.path.join(cache_dir, "PSII_HDR_test.INF")
@@ -44,13 +44,13 @@ def test_read_cropreporter_psl(photosynthesis_test_data, tmpdir):
     assert "PSL" in repr(ps.psl)
 
 
-def test_read_cropreporter_pmd(photosynthesis_test_data, tmpdir):
+def test_read_cropreporter_pmd(test_data, tmpdir):
     """Test for PlantCV."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("sub")
     # Create dataset with only PMD
-    shutil.copyfile(photosynthesis_test_data.cropreporter_v653, os.path.join(cache_dir, "HDR_dark_light.INF"))
-    pmd_dat = photosynthesis_test_data.cropreporter_v653.replace("HDR", "PMD")
+    shutil.copyfile(test_data.photosynthesis.cropreporter_v653, os.path.join(cache_dir, "HDR_dark_light.INF"))
+    pmd_dat = test_data.photosynthesis.cropreporter_v653.replace("HDR", "PMD")
     pmd_dat = pmd_dat.replace("INF", "DAT")
     shutil.copyfile(pmd_dat, os.path.join(cache_dir, "PMD_dark_light.DAT"))
     filename = os.path.join(cache_dir, "HDR_dark_light.INF")
@@ -62,13 +62,13 @@ def test_read_cropreporter_pmd(photosynthesis_test_data, tmpdir):
     assert "PMD" in repr(ps.pmd)
 
 
-def test_read_cropreporter_pml(photosynthesis_test_data, tmpdir):
+def test_read_cropreporter_pml(test_data, tmpdir):
     """Test for PlantCV."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("sub")
     # Create dataset with only PML
-    shutil.copyfile(photosynthesis_test_data.cropreporter_v653, os.path.join(cache_dir, "HDR_dark_light.INF"))
-    pml_dat = photosynthesis_test_data.cropreporter_v653.replace("HDR", "PML")
+    shutil.copyfile(test_data.photosynthesis.cropreporter_v653, os.path.join(cache_dir, "HDR_dark_light.INF"))
+    pml_dat = test_data.photosynthesis.cropreporter_v653.replace("HDR", "PML")
     pml_dat = pml_dat.replace("INF", "DAT")
     shutil.copyfile(pml_dat, os.path.join(cache_dir, "PML_dark_light.DAT"))
     filename = os.path.join(cache_dir, "HDR_dark_light.INF")
@@ -80,13 +80,13 @@ def test_read_cropreporter_pml(photosynthesis_test_data, tmpdir):
     assert "PML" in repr(ps.pml)
 
 
-def test_read_cropreporter_spc_only(photosynthesis_test_data, tmpdir):
+def test_read_cropreporter_spc_only(test_data, tmpdir):
     """Test for PlantCV."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("sub")
     # Create dataset with only SPC
-    shutil.copyfile(photosynthesis_test_data.cropreporter, os.path.join(cache_dir, "PSII_HDR_test.INF"))
-    spc_dat = photosynthesis_test_data.cropreporter.replace("HDR", "SPC")
+    shutil.copyfile(test_data.photosynthesis.cropreporter, os.path.join(cache_dir, "PSII_HDR_test.INF"))
+    spc_dat = test_data.photosynthesis.cropreporter.replace("HDR", "SPC")
     spc_dat = spc_dat.replace("INF", "DAT")
     shutil.copyfile(spc_dat, os.path.join(cache_dir, "PSII_SPC_test.DAT"))
     fluor_filename = os.path.join(cache_dir, "PSII_HDR_test.INF")
@@ -97,26 +97,26 @@ def test_read_cropreporter_spc_only(photosynthesis_test_data, tmpdir):
     assert ps.spc.spectral.array_data.shape == (966, 1296, 3)
 
 
-def test_read_cropreporter_spc_full(photosynthesis_test_data, tmpdir):
+def test_read_cropreporter_spc_full(test_data, tmpdir):
     """Test for PlantCV."""
-    ps = read_cropreporter(filename=os.path.join(photosynthesis_test_data.cropreporter))
+    ps = read_cropreporter(filename=os.path.join(test_data.photosynthesis.cropreporter))
     assert isinstance(ps, PSII_data)
     assert ps.spc
     assert "SPC" in repr(ps.spc)
     assert ps.spc.spectral.array_data.shape == (966, 1296, 6)
 
 
-def test_read_cropreporter_npq(photosynthesis_test_data):
+def test_read_cropreporter_npq(test_data):
     """Test for PlantCV."""
-    ps = read_cropreporter(filename=photosynthesis_test_data.cropreporter_npq)
+    ps = read_cropreporter(filename=test_data.photosynthesis.cropreporter_npq)
     assert isinstance(ps, PSII_data) and ps.npq.ojip_dark.shape == (966, 1296, 3, 1)
     assert isinstance(ps, PSII_data) and ps.npq.ojip_light.shape == (966, 1296, 3, 1)
     # check reverse ordered loading
-    ps = read_cropreporter(filename=photosynthesis_test_data.cropreporter_npq)
+    ps = read_cropreporter(filename=test_data.photosynthesis.cropreporter_npq)
     assert isinstance(ps, PSII_data) and ps.npq.ojip_light.shape == (966, 1296, 3, 1)
     assert isinstance(ps, PSII_data) and ps.npq.ojip_dark.shape == (966, 1296, 3, 1)
     # check shortcut
-    ps = read_cropreporter(filename=photosynthesis_test_data.cropreporter_npq)
+    ps = read_cropreporter(filename=test_data.photosynthesis.cropreporter_npq)
     assert isinstance(ps, PSII_data) and ps.ojip_light.shape == (966, 1296, 3, 1)
     assert isinstance(ps, PSII_data) and ps.ojip_dark.shape == (966, 1296, 3, 1)
     # check class traits
@@ -124,18 +124,18 @@ def test_read_cropreporter_npq(photosynthesis_test_data):
     assert "NPQ" in repr(ps.npq)
 
 
-def test_read_cropreporter_chl_only(photosynthesis_test_data, tmpdir):
+def test_read_cropreporter_chl_only(test_data, tmpdir):
     """Test CHL import."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("sub")
     # Create dataset with only CHL
-    shutil.copyfile(photosynthesis_test_data.cropreporter,
+    shutil.copyfile(test_data.photosynthesis.cropreporter,
                     os.path.join(cache_dir,
-                                 os.path.basename(photosynthesis_test_data.cropreporter)))
-    chl_dat = photosynthesis_test_data.cropreporter.replace("HDR", "CHL")
+                                 os.path.basename(test_data.photosynthesis.cropreporter)))
+    chl_dat = test_data.photosynthesis.cropreporter.replace("HDR", "CHL")
     chl_dat = chl_dat.replace("INF", "DAT")
     shutil.copyfile(chl_dat, os.path.join(cache_dir, os.path.basename(chl_dat)))
-    fluor_filename = os.path.join(cache_dir, os.path.basename(photosynthesis_test_data.cropreporter))
+    fluor_filename = os.path.join(cache_dir, os.path.basename(test_data.photosynthesis.cropreporter))
     ps = read_cropreporter(filename=fluor_filename)
     assert isinstance(ps, PSII_data)
     assert ps.chl
@@ -145,18 +145,18 @@ def test_read_cropreporter_chl_only(photosynthesis_test_data, tmpdir):
     assert isinstance(ps.chl.chlorophyll, np.ndarray)
 
 
-def test_read_cropreporter_clr_only(photosynthesis_test_data, tmpdir):
+def test_read_cropreporter_clr_only(test_data, tmpdir):
     """Test CLR import."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("sub")
     # Create dataset with only CLR
-    shutil.copyfile(photosynthesis_test_data.cropreporter,
+    shutil.copyfile(test_data.photosynthesis.cropreporter,
                     os.path.join(cache_dir,
-                                 os.path.basename(photosynthesis_test_data.cropreporter)))
-    clr_dat = photosynthesis_test_data.cropreporter.replace("HDR", "CLR")
+                                 os.path.basename(test_data.photosynthesis.cropreporter)))
+    clr_dat = test_data.photosynthesis.cropreporter.replace("HDR", "CLR")
     clr_dat = clr_dat.replace("INF", "DAT")
     shutil.copyfile(clr_dat, os.path.join(cache_dir, os.path.basename(clr_dat)))
-    fluor_filename = os.path.join(cache_dir, os.path.basename(photosynthesis_test_data.cropreporter))
+    fluor_filename = os.path.join(cache_dir, os.path.basename(test_data.photosynthesis.cropreporter))
     ps = read_cropreporter(filename=fluor_filename)
     assert isinstance(ps, PSII_data)
     assert ps.clr
@@ -166,13 +166,13 @@ def test_read_cropreporter_clr_only(photosynthesis_test_data, tmpdir):
     assert isinstance(ps.clr.color, np.ndarray)
 
 
-def test_read_cropreporter_gfp_only(photosynthesis_test_data, tmpdir):
+def test_read_cropreporter_gfp_only(test_data, tmpdir):
     """Test GFP import."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("sub")
     # Create dataset with only GFP
-    shutil.copyfile(photosynthesis_test_data.cropreporter_gfp, os.path.join(cache_dir, "HDR_DYSeed_20251222191634684.INF"))
-    gfp_dat = photosynthesis_test_data.cropreporter_gfp.replace("HDR", "GFP")
+    shutil.copyfile(test_data.photosynthesis.cropreporter_gfp, os.path.join(cache_dir, "HDR_DYSeed_20251222191634684.INF"))
+    gfp_dat = test_data.photosynthesis.cropreporter_gfp.replace("HDR", "GFP")
     gfp_dat = gfp_dat.replace("INF", "DAT")
     shutil.copyfile(gfp_dat, os.path.join(cache_dir, "GFP_DYSeed_20251222191634684.DAT"))
     fluor_filename = os.path.join(cache_dir, "HDR_DYSeed_20251222191634684.INF")
@@ -188,13 +188,13 @@ def test_read_cropreporter_gfp_only(photosynthesis_test_data, tmpdir):
     assert ps.gfp.auto is not None
 
 
-def test_read_cropreporter_rfp_only(photosynthesis_test_data, tmpdir):
+def test_read_cropreporter_rfp_only(test_data, tmpdir):
     """Test RFP import."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("sub")
     # Create dataset with only RFP
-    shutil.copyfile(photosynthesis_test_data.cropreporter_rfp, os.path.join(cache_dir, "HDR_DYSeed_20251222191634684.INF"))
-    rfp_dat = photosynthesis_test_data.cropreporter_rfp.replace("HDR", "RFP")
+    shutil.copyfile(test_data.photosynthesis.cropreporter_rfp, os.path.join(cache_dir, "HDR_DYSeed_20251222191634684.INF"))
+    rfp_dat = test_data.photosynthesis.cropreporter_rfp.replace("HDR", "RFP")
     rfp_dat = rfp_dat.replace("INF", "DAT")
     shutil.copyfile(rfp_dat, os.path.join(cache_dir, "RFP_DYSeed_20251222191634684.DAT"))
     fluor_filename = os.path.join(cache_dir, "HDR_DYSeed_20251222191634684.INF")
@@ -206,14 +206,14 @@ def test_read_cropreporter_rfp_only(photosynthesis_test_data, tmpdir):
     assert len(ps.rfp.red.shape) == 2
 
 
-def test_read_cropreporter_aph_only(photosynthesis_test_data, tmpdir):
+def test_read_cropreporter_aph_only(test_data, tmpdir):
     """Test APH (Red / FarRed reflectance) import."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("sub")
     # Create dataset with only APH
-    shutil.copyfile(photosynthesis_test_data.cropreporter_aph, os.path.join(cache_dir,
+    shutil.copyfile(test_data.photosynthesis.cropreporter_aph, os.path.join(cache_dir,
                                                                             "HDR_2025-12-12_tob1_20251212205712029.INF"))
-    aph_dat = photosynthesis_test_data.cropreporter_aph.replace("HDR", "APH")
+    aph_dat = test_data.photosynthesis.cropreporter_aph.replace("HDR", "APH")
     aph_dat = aph_dat.replace("INF", "DAT")
     shutil.copyfile(aph_dat, os.path.join(cache_dir, "APH_2025-12-12_tob1_20251212205712029.DAT"))
     fluor_filename = os.path.join(cache_dir, "HDR_2025-12-12_tob1_20251212205712029.INF")
@@ -225,14 +225,14 @@ def test_read_cropreporter_aph_only(photosynthesis_test_data, tmpdir):
     assert hasattr(ps.aph, "farred")
 
 
-def test_read_cropreporter_aph_farred(photosynthesis_test_data, tmpdir):
+def test_read_cropreporter_aph_farred(test_data, tmpdir):
     """Test APH (Red / FarRed reflectance) import."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("sub")
     # Create dataset with only APH
-    shutil.copyfile(photosynthesis_test_data.cropreporter_aph, os.path.join(cache_dir,
+    shutil.copyfile(test_data.photosynthesis.cropreporter_aph, os.path.join(cache_dir,
                                                                             "HDR_2025-12-12_tob1_20251212205712029.INF"))
-    aph_dat = photosynthesis_test_data.cropreporter_aph.replace("HDR", "APH")
+    aph_dat = test_data.photosynthesis.cropreporter_aph.replace("HDR", "APH")
     aph_dat = aph_dat.replace("INF", "DAT")
     shutil.copyfile(aph_dat, os.path.join(cache_dir, "APH_2025-12-12_tob1_20251212205712029.DAT"))
     fluor_filename = os.path.join(cache_dir, "HDR_2025-12-12_tob1_20251212205712029.INF")
@@ -240,14 +240,14 @@ def test_read_cropreporter_aph_farred(photosynthesis_test_data, tmpdir):
     assert hasattr(ps.aph, "farred")
 
 
-def test_read_cropreporter_pmt_only_9_labels(photosynthesis_test_data, tmpdir):
+def test_read_cropreporter_pmt_only_9_labels(test_data, tmpdir):
     """Test PMT (PAM Time) import with 9 frames."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("sub")
     # Create dataset with only PMT
-    shutil.copyfile(photosynthesis_test_data.cropreporter_pmt, os.path.join(cache_dir,
+    shutil.copyfile(test_data.photosynthesis.cropreporter_pmt, os.path.join(cache_dir,
                                                                             "HDR_E0001P0007N0001_GCU24100090_20260226.INF"))
-    pmt_dat = photosynthesis_test_data.cropreporter_pmt.replace("HDR", "PMT")
+    pmt_dat = test_data.photosynthesis.cropreporter_pmt.replace("HDR", "PMT")
     pmt_dat = pmt_dat.replace("INF", "DAT")
     shutil.copyfile(pmt_dat, os.path.join(cache_dir, "PMT_E0001P0007N0001_GCU24100090_20260226.DAT"))
     fluor_filename = os.path.join(cache_dir, "HDR_E0001P0007N0001_GCU24100090_20260226.INF")
@@ -276,7 +276,7 @@ def test_read_cropreporter_pmt_only_9_labels(photosynthesis_test_data, tmpdir):
     assert "F0p" in ps.pmt.pam_time.frame_label.values
 
 
-def test_read_cropreporter_pmt_only_13_labels(photosynthesis_test_data, tmpdir, monkeypatch):
+def test_read_cropreporter_pmt_only_13_labels(test_data, tmpdir, monkeypatch):
     """Test PMT (PAM Time) import with 13 frames."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("sub")
@@ -285,9 +285,9 @@ def test_read_cropreporter_pmt_only_13_labels(photosynthesis_test_data, tmpdir, 
     dat_dest = os.path.join(cache_dir, "PMT_E0001P0008N0001_GCU24100090_20260226.DAT")
 
     # Create dataset with only PMT
-    shutil.copyfile(photosynthesis_test_data.cropreporter_pmt, inf_dest)
+    shutil.copyfile(test_data.photosynthesis.cropreporter_pmt, inf_dest)
 
-    pmt_dat_src = photosynthesis_test_data.cropreporter_pmt.replace("HDR", "PMT").replace("INF", "DAT")
+    pmt_dat_src = test_data.photosynthesis.cropreporter_pmt.replace("HDR", "PMT").replace("INF", "DAT")
     shutil.copyfile(pmt_dat_src, dat_dest)
 
     # Force the INF to trigger the 13-label logic (n_fvfm > 0)

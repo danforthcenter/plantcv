@@ -4,7 +4,7 @@ Write image to the file specified. This is a wrapper for the OpenCV function [im
 for numpy arrays (like the images that get returned by most PlantCV functions), and can handle matplotlib Figures (like the one returned by [pcv.visualize.pseudocolor](visualize_pseudocolor.md)) 
 and altair charts (like the histograms returned in [pcv.analyze.grayscale](analyze_grayscale.md), 
 [pcv.analyze.color](analyze_color2.md), [pcv.visualize.histogram](visualize_histogram.md),
- and [pcv.analyze.yii_ojip](analyze_yii_ojip.md)).
+ and [pcv.analyze.yii](analyze_yii.md)).
 
 **plantcv.print_image**(*img, filename*)
 
@@ -15,9 +15,9 @@ and altair charts (like the histograms returned in [pcv.analyze.grayscale](analy
     - filename- desired name of image file, supported extensions are PNG, JPG, and TIFF
 - **Context:**
     - Often used to debug new image processing workflows
-    - Used to write out final results images  
+    - Used to write out final results images
 - **Example use:**
-    - [Use In Color Correction Tutorial](https://plantcv.org/tutorials/color-correction)  
+    - [Use In Color Correction Tutorial](https://plantcv.org/tutorials/color-correction)
 
 ```python
 
