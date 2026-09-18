@@ -6,7 +6,7 @@ best if the pot size/position of the plant remains relatively constant.
  
 **plantcv.analyze_bound_vertical**(*img, labeled_mask, line_position, n_labels=1, label=None*)
 
-**returns** image with boundary data
+**returns** labeled mask objects split by boundary line
 
 - **Parameters:**
     - img - RGB or grayscale image data for plotting
@@ -36,14 +36,14 @@ pcv.params.debug = "plot"
 pcv.params.sample_label = "plant"
 
 # Set Boundary Line    
-boundary_image = pcv.analyze.bound_vertical(img=img, labeled_mask=bin_mask, line_position=1000, n_labels=1)
+boundary_mask = pcv.analyze.bound_vertical(img=img, labeled_mask=bin_mask, line_position=1000, n_labels=1)
 
 # Access data stored out from analyze_bound_vertical
 area_right_reference = pcv.outputs.observations['plant_1']['area_right_reference']['value']
 
 ```
 
-**Boundary tool output image (x = 1000)**
+**Boundary tool debug image (x = 1000)**
 
 ![Screenshot](img/documentation_images/analyze_bound_vertical/1_boundary_on_img1000.jpg)
 
@@ -51,7 +51,7 @@ Boundary line set at 1000, purple line is boundary line, blue line is extent x r
 green is area right of boundary line. Green line is extent x left of the boundary line and red is area left
 of the boundary line.
 
-**Boundary tool output image (x = 1100)**
+**Boundary tool debug image (x = 1100)**
 
 ![Screenshot](img/documentation_images/analyze_bound_vertical/1_boundary_on_img1100.jpg)
 
