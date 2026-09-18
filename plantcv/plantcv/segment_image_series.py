@@ -28,8 +28,8 @@ def segment_image_series(source, masks_paths, rois, save_labels=True, ksize=3):
     masks_paths = list,
         List of paths to the masks in the time series.
         Each mask should correspond to the image in imgs_paths for the same index
-    rois        = list,
-        List of roi contours
+    rois        = plantcv.plantcv.Objects class,
+        ROI contours and hierarchies
     save_labels = boolean,
         Optional, saves the labels of each image independently
     ksize       = int, tuple, or numpy.ndarray,
@@ -59,10 +59,10 @@ def segment_image_series(source, masks_paths, rois, save_labels=True, ksize=3):
 
     # create an image where all the pixels inside each roi have the roi label
     roi_labels = np.zeros((h, w), dtype=np.uint8)
-    n_labels = len(rois)
+    n_labels = len(rois.contours)
     for i in range(n_labels):
         img_roi = np.zeros((h, w), dtype=np.uint8)
-        img_roi = cv.drawContours(img_roi, rois[i], -1, 255, 3)
+        img_roi = cv.drawContours(img_roi, rois.contours[i], -1, 255, 3)
         img_roi = fill_holes(img_roi)
         roi_labels = roi_labels + (img_roi == 255)*(i+1)
 

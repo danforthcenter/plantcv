@@ -9,7 +9,7 @@ This function uses watershed segmentation to label individual objects in a serie
 - **Parameters:**
     - source  = List of paths to the images in the time series ordered by time or a string filepath to a directory of iamges.
     - masks_paths = List of paths to the masks in the time series. Each mask should correspond to the image in imgs_paths for the same index
-    - rois        = List of roi contours
+    - rois        = ROIs specified as a [`plantcv.plantcv.Objects` class](objects.md) object.
     - save_labels = Optional, saves the labels of each image independently (default: True)
     - ksize       = int, tuple, or numpy.ndarray. Specifies the size of the block in the time dimension to propagate the labels. If a tuple the first element is used, if array then the first dimension is used (default: 3)
 
@@ -35,7 +35,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Using segment image series
-analysis_image = pcv.segment_image_series(source=paths_to_imgs_list, masks_paths=paths_to_masks_list, rois=valid_rois, save_labels=True, ksize=3)
+analysis_image = pcv.segment_image_series(source=paths_to_imgs_list, masks_paths=paths_to_masks_list, rois=rois, save_labels=True, ksize=3)
 
 ```
 

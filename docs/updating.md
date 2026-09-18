@@ -79,6 +79,10 @@ The `plantcv.utils` module has been deleted with `sample_images` moving to `plan
 
 Renamed the "json" attribute to "results" for clarity about what it controls and for consistency with new [JupyterConfig](parallel_jupyterconfig.md)
 
+#### plantcv.segment_image_series
+
+Changed `img_paths` argument to `source` for flexibility with a single directory or a list of filepaths. Also changed the rois argument to take a [`plantcv.plantcv.Objects`](objects.md) class object.
+
 #### plantcv.spectral_index.egi
 
 Renamed the input parameter `rgb_img` to `img` to reflect the flexibility of using the [EGI index function](spectral_index.md)

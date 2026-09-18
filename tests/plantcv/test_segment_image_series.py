@@ -1,6 +1,7 @@
 import os
 import cv2
 import numpy as np
+from plantcv.plantcv.classes import Objects
 from plantcv.plantcv import segment_image_series
 from plantcv.plantcv.roi import multi
 from plantcv.plantcv import params
@@ -53,19 +54,20 @@ def test_plantcv_segment_image_series(tmpdir):
 
     roi_objects = multi(img=img, coord=(OBJ1_COORDS[0], OBJ1_COORDS[1]),
                         radius=OBJ_SIZE-2, spacing=SPACING, nrows=2, ncols=2)
-    rois, _ = roi_objects.contours, roi_objects.hierarchy
+    rois = roi_objects.contours
     valid_rois = [rois[0], rois[3]]
+    multi_roi_obj = Objects(contours = valid_rois, hierarchy=[roi_objects.hierarchy])
 
     # test that the function detects the two objects and propagates the labels
     # to the last frame
-    markers = segment_image_series(imgs_paths, masks_paths, rois=valid_rois, save_labels=True, ksize=3)
+    markers = segment_image_series(imgs_paths, masks_paths, rois=multi_roi_obj, save_labels=True, ksize=3)
 
     nb_obj = np.unique(markers[:, :, FRAMES-1]).size - 1
 
     assert nb_obj == 2
 
     markers2 = segment_image_series(cache_img_dir, masks_paths,
-                                    rois=valid_rois, save_labels=True, ksize=3)
+                                    rois=multi_roi_obj, save_labels=True, ksize=3)
     nb_obj2 = np.unique(markers2[:, :, FRAMES-1]).size - 1
 
     assert nb_obj2 == 2
