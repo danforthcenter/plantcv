@@ -33,7 +33,7 @@ def clahe(img, kernel=8, contrast_threshold=2.0):
     else:
         corrected_img = _gray_clahe(img, k, contrast_threshold)
     _debug(visual=corrected_img,
-           filename=os.path.join(params.debug_outdir, str(params.device) + '_clahe_correction.png'))
+           filename=os.path.join(params.debug_outdir, f"{params.device}_clahe_correction.png"))
 
     return corrected_img
 
