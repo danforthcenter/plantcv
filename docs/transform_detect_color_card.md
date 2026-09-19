@@ -8,7 +8,6 @@ Automatically detects a Macbeth ColorChecker or Astrobotany.com Calibration Stic
 
 - **Parameters**
     - rgb_img          - Input RGB image data containing a color card.
-    - label            - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
     - color_chip_size - Type of color card to be detected, ("classic", "passport", "nano", "mini", "cameratrax", or "astro", by default `None`) or a tuple of the `(width, height)` dimensions of the color card chips in millimeters. If set then size scalings parameters `pcv.params.unit`, `pcv.params.px_width`, and `pcv.params.px_height`
             are automatically set, and utilized throughout linear and area type measurements stored to `Outputs`. 
     - roi              - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to look for the color card. (default = None)
