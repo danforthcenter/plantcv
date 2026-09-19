@@ -15,7 +15,7 @@ Automatically detects a Macbeth ColorChecker or Astrobotany.com Calibration Stic
 	- delta_E           - Boolean, should Delta E be calculated between the observed and expected color card values? This will add mean, std deviation, max, and min delta E values to `outputs.metadata`. See [`pcv.transform.deltaE`](transform_deltaE.md)
     - **kwargs         - Other keyword arguments passed to `cv2.adaptiveThreshold` and `cv2.circle`.
         - adaptive_method - Adaptive threhold method. 0 (mean) or 1 (Gaussian) (default = 1).
-        - block_size      - Size of a pixel neighborhood that is used to calculate a threshold value (default = 51). We suggest using 127 if using `adaptive_method=0`.
+        - block_size      - Size of a pixel neighborhood that is used to calculate a threshold value (default = 51). This must be an odd integer. We suggest using 127 if using `adaptive_method=0`.
         - radius         - Radius of circle to make the color card labeled mask (default = 20).
         - min_size         - Minimum chip size for filtering objects after edge detection (default = 1000)
         - aspect_ratio   - Optional aspect ratio (width / height) below which objects will get removed. Orientation agnostic since automatically set to the reciprocal if <1 (default = 1.27)
