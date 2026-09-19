@@ -2,7 +2,7 @@
 
 Corrects for nonuniform lighting in an image.
 
-**plantcv.nonuniform_illumination**(*img, ksize*)
+**plantcv.transform.nonuniform_illumination**(*img, ksize*)
 
 **returns** Grayscale image after correction
 
@@ -14,7 +14,7 @@ Corrects for nonuniform lighting in an image.
     - Corrects for nonuniform illumination for situations where there is no available background image
     to do [background subtraction](background_subtraction.md). The function corrects for nonuniform lighting
     by creating a background image from the original by blurring with the specified kernel size.
-    
+
 **Input image**
 
 ![Screenshot](img/documentation_images/nonuniform_illumination/working_video.png)
