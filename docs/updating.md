@@ -1183,7 +1183,7 @@ pages for more details on the input and output variable types.
 #### plantcv.transform.clahe
 
 * pre v5.0: NA
-* post v5.0: img = **plantcv.transform.clahe**(*img, kernel=8, contrast_threshold=2*)
+* post v5.0: img = **plantcv.transform.clahe**(*img, kernel=8, contrast_threshold=2.0*)
 
 #### plantcv.transform.mask_color_card 
 
