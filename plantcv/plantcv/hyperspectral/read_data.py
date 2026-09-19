@@ -308,7 +308,11 @@ def read_data(filename, mode="ENVI"):
                                    wavelength_dict=wavelength_dict, samples=int(header_dict["samples"]),
                                    lines=int(header_dict["lines"]), interleave=header_dict["interleave"],
                                    wavelength_units=wavelength_units, array_type="datacube",
-                                   pseudo_rgb=None, filename=filename, default_bands=default_bands)
+                                   pseudo_rgb=None, filename=filename, default_bands=default_bands,
+                                   byte_order=header_dict.get("byte_order", 0),
+                                   file_type=header_dict.get("file_type", "ENVI"),
+                                   header_offset=header_dict.get("header_offset", 0)
+                                   )
 
     # Make pseudo-rgb image and replace it inside the class instance object
     pseudo_rgb = _make_pseudo_rgb(spectral_array)
