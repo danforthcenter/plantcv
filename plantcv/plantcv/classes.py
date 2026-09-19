@@ -14,7 +14,7 @@ class Spectral_data:
                  byte_order=0, file_type="ENVI", header_offset=0, metadata=None):
         # The actual array/datacube
         self.array_data = array_data
-        # Min/max available wavelengths (for spectral datacube)pull/2003
+        # Min/max available wavelengths (for spectral datacube)
         self.max_wavelength = max_wavelength
         self.min_wavelength = min_wavelength
         #  Min/max pixel value for single wavelength or index
