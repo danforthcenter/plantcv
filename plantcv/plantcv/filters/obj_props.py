@@ -56,21 +56,19 @@ def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area", roi=None):
         if type(getattr(obj_measures[0], regprop)) not in correct_types:
             fatal_error(f"Property {regprop} is not an integer or float type.")
 
-        # blank mask to draw discs onto
-        sub_filtered_mask = np.zeros(labeled_img.shape, dtype=np.uint8)
         # Pull all values and calculate the mean
-        valueslist = []
-        # Store the list of coordinates (row,col) for the objects that pass
-        for obj in obj_measures:
-            # Object color
-            gray_val = 255
-            # Store the value of the property for each object
-            val = getattr(obj, regprop)
-            valueslist.append(val)
-            # apply filter
-            gray_val = _apply_cut_side(cut_side, thresh, val)
-            # Add the object to the filtered mask (255 if it passes, 0 if it does not)
-            sub_filtered_mask += np.where(labeled_img == obj.label, gray_val, 0).astype(np.uint8)
+        valueslist = [getattr(obj, regprop) for obj in obj_measures]
+        # Decide which objects pass, all at once
+        passing = _apply_cut_side(cut_side, thresh, np.asarray(valueslist))
+        # Index the lookup table by label id rather than by position, so it lines up with
+        # labeled_img even if regionprops stops returning objects in label order. Label 0 is
+        # the background and is left False.
+        keep = np.zeros(int(labeled_img.max()) + 1, dtype=bool)
+        keep[np.array([obj.label for obj in obj_measures], dtype=np.int64)] = passing
+        # Paint every object in one pass. Drawing each object with its own full-array np.where
+        # instead costs O(objects x pixels), which is minutes on a megapixel mask with
+        # thousands of objects.
+        sub_filtered_mask = np.where(keep[labeled_img], 255, 0).astype(np.uint8)
 
         if params.debug == "plot":
             print(f"Min value = {min(valueslist)}")
@@ -96,24 +94,24 @@ def _apply_cut_side(cut_side, thresh, val):
         direction of filter, one of 'upper', 'lower', 'in', or 'out'
     thresh   = int, float, or tuple of int/float
         value above/below/between/within which to keep an object based on cut_side
-    val      = int or float
-        The numeric property of an object
+    val      = numpy.ndarray
+        The numeric property of every object
 
     Returns
     -------
-    gray_val = int,
-        255 or 0 depending on the logical evaluation of the cut side
+    keep = numpy.ndarray,
+        Boolean array, True for each object that passes the filter
     """
     # If it is an upper threshold, keep the objects that are above the threshold
     if cut_side == "upper":
-        gray_val = 255 if val > thresh else 0
+        keep = val > thresh
     # If it is a lower threshold, keep the objects that are below the threshold
     elif cut_side == "lower":
-        gray_val = 255 if val < thresh else 0
+        keep = val < thresh
     # If it is 'in' threshold, keep the objects that are within the thresholds
     elif cut_side == "in":
-        gray_val = 255 if min(thresh) < val < max(thresh) else 0
+        keep = (val > min(thresh)) & (val < max(thresh))
     # If it is 'out' threshold, keep the objects that are outside of the thresholds
     elif cut_side == "out":
-        gray_val = 255 if val < min(thresh) or val > max(thresh) else 0
-    return gray_val
+        keep = (val < min(thresh)) | (val > max(thresh))
+    return keep
