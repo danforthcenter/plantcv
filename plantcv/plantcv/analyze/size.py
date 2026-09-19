@@ -263,12 +263,17 @@ def _longest_axis(height, width, hull, cmx, cmy):
     cv2.drawContours(background2, [hull], -1, (255), -1)
     _, hullp_binary = cv2.threshold(background2, 0, 255, cv2.THRESH_BINARY)
 
-    caliper = cv2.multiply(line_binary, hullp_binary)
+    # The caliper is the line clipped to the filled hull, so every non-zero pixel of it lies
+    # inside the hull's bounding box. Intersecting and scanning only that box is exact, and
+    # keeps the cost proportional to the object rather than to the whole image.
+    hull_x, hull_y, hull_w, hull_h = cv2.boundingRect(hull)
+    box = (slice(hull_y, hull_y + hull_h), slice(hull_x, hull_x + hull_w))
+    caliper = (line_binary[box] > 0) & (hullp_binary[box] > 0)
 
-    caliper_y, caliper_x = np.array(caliper.nonzero())
-    caliper_matrix = np.vstack((caliper_x, caliper_y))
-    caliper_transpose = np.transpose(caliper_matrix)
-    caliper_length = len(caliper_transpose)
+    caliper_y, caliper_x = np.nonzero(caliper)
+    caliper_x = caliper_x + hull_x
+    caliper_y = caliper_y + hull_y
+    caliper_length = len(caliper_x)
 
     caliper_transpose1 = np.lexsort((caliper_y, caliper_x))
     caliper_transpose2 = [(caliper_x[i], caliper_y[i]) for i in caliper_transpose1]
