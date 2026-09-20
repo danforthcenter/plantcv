@@ -20,7 +20,7 @@ are missing, and average signal data (by timestamp) Requires a PlantCV SQLite da
     -a, --angles       Total number of angles (TV and SV), default=5
     -s, --signal       If true outputs signal data as well as feature data, default=True
     -n, --signalnorm   If true, normalizes signal data to area of object, default=True
-    -v, --signalavg    If true, also output data averaged by timestamp for seperated sv and tv files, default=True
+    -v, --signalavg    If true, also output data averaged by timestamp for separated sv and tv files, default=True
     -D, --debug        Turn on debugging mode, action="store_true"
     -h, --help         Show the help message and exit
 

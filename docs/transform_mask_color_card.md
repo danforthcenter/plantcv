@@ -9,7 +9,7 @@ Automatically detects a color card and creates a bounding box mask.
 - **Parameters**
     - rgb_img          - Input RGB image data containing a color card.
     - **kwargs         - Other keyword arguments passed to `cv2.adaptiveThreshold` and `cv2.circle`.
-        - adaptive_method - Adaptive threhold method. 0 (mean) or 1 (Gaussian) (default = 1).
+        - adaptive_method - Adaptive threshold method. 0 (mean) or 1 (Gaussian) (default = 1).
         - block_size      - Size of a pixel neighborhood that is used to calculate a threshold value (default = 51). We suggest using 127 if using `adaptive_method=0`.
         - radius         - Radius of circle to make the color card labeled mask (default = 20).
         - min_size         - Minimum chip size for filtering objects after edge detection (default = 1000)
