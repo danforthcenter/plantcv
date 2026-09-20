@@ -1,4 +1,4 @@
-## Autodetect Cicular Regions of Interest (ROI) 
+## Autodetect Circular Regions of Interest (ROI)
 
 **plantcv.roi.auto_wells**(*gray_img, mindist, candec, accthresh, minradius, maxradius, nrows, ncols, radiusadjust=None, roi=None*)
 
