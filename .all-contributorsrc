@@ -783,6 +783,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "AidanBoissonneault",
+      "name": "Aidan Boissonneault",
+      "avatar_url": "https://avatars.githubusercontent.com/u/58098123?v=4",
+      "profile": "https://github.com/AidanBoissonneault",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
