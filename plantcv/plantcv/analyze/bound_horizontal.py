@@ -59,22 +59,23 @@ def _boundary_img_annotation(img, mask, line_position, axis=0):
     """
     out_img = np.copy(img)
     # split mask by boundary
-    mask1 = np.copy(mask).astype(bool)
-    mask2 = np.copy(mask).astype(bool)
+    mask1 = np.copy(mask)
+    mask2 = np.copy(mask)
     # split mask by line_position on axis
     if not bool(axis):
         # fill in area on opposite side of threshold with 0s
-        mask1[line_position:np.shape(mask1)[0] + 1] = np.zeros(
-            np.shape(mask1[line_position:np.shape(mask1)[0] + 1]))
+        mask1[line_position-1:np.shape(mask1)[0] + 1] = np.zeros(
+            np.shape(mask1[line_position-1:np.shape(mask1)[0] + 1]))
         mask2[0:line_position - 1] = np.zeros(
             np.shape(mask2[0:line_position - 1]))
     else:
         # fill in area on opposite side of threshold
-        mask1[:, line_position:np.shape(mask1)[1] + 1] = np.zeros(
-            np.shape(mask1[:, line_position:np.shape(mask1)[1] + 1]))
+        mask1[:, line_position-1:np.shape(mask1)[1] + 1] = np.zeros(
+            np.shape(mask1[:, line_position-1:np.shape(mask1)[1] + 1]))
         mask2[:, 0:line_position - 1] = np.zeros(
             np.shape(mask2[:, 0:line_position - 1]))
-
+    mask2b = np.where(mask2 > 0, mask2 + np.max(mask1) - 1, 0)
+    out_mask = mask1 + mask2b
     # replace mask with colors
     out_img[np.where(mask1)] = (255, 0, 255)
     out_img[np.where(mask2)] = (0, 255, 0)
@@ -82,7 +83,7 @@ def _boundary_img_annotation(img, mask, line_position, axis=0):
     line_start = [(0, line_position), (line_position, 0)][axis]
     line_end = [(np.shape(out_img)[1], line_position), (line_position, np.shape(img)[0])][axis]
     cv2.line(out_img, line_start, line_end, (255, 0, 0), thickness=params.line_thickness)
-    return out_img
+    return out_img, out_mask
 
 
 def bound_horizontal(img, labeled_mask, line_position, n_labels=1, label=None):
@@ -104,20 +105,20 @@ def bound_horizontal(img, labeled_mask, line_position, n_labels=1, label=None):
 
     Returns
     -------
-    analysis_image : numpy.ndarray
-        Diagnostic image showing measurements.
+    labeled_mask : numpy.ndarray
+        mask labeled with objects above/below boundary
     """
-    # Set lable to params.sample_label if None
+    # Set label to params.sample_label if None
     if label is None:
         label = params.sample_label
 
     img = _iterate_analysis(img=img, labeled_mask=labeled_mask, n_labels=n_labels,
                             label=label, function=_analyze_bound_horizontal,
                             **{"line_position": line_position})
-    img = _boundary_img_annotation(img, labeled_mask, line_position, 0)
+    img, new_labeled_mask = _boundary_img_annotation(img, labeled_mask, line_position, 0)
     # Debugging
     _debug(visual=img, filename=os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_img.png'))
-    return img
+    return new_labeled_mask
 
 
 def _analyze_bound_horizontal(img, mask, line_position, label):

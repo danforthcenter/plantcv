@@ -22,4 +22,4 @@ def test_analyze_bound_horizontal_grayscale_image(test_data):
     img = cv2.imread(test_data.small_gray_img, -1)
     mask = cv2.imread(test_data.small_bin_img, -1)
     boundary_img = analyze_bound_horizontal(img=img, labeled_mask=mask, n_labels=1, line_position=200)
-    assert len(boundary_img.shape) == 3
+    assert len(boundary_img.shape) == 2

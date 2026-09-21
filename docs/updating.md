@@ -63,6 +63,14 @@ automatically. Alternatively, you can run `pip install -e .` to reinstall the pa
 
 Deprecated the function in favor of `plantcv.filters.obj_props(..., regprop="eccentricity")`.
 
+#### plantcv.analyze.bound_horizontal
+
+Return value change from debug analysis image to a labeled mask.
+
+#### plantcv.analyze.bound_vertical
+
+Return value change from debug analysis image to a labeled mask.
+
 #### plantcv.analyze.npq
 
 Removed `ps_da_light` and `ps_da_dark` arguments in favor of `ps` argument that takes the entire `PSII_data` object.
@@ -360,13 +368,13 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: (see plantcv.analyze_bound_horizontal)
 * post v4.0: analysis_image = **plantcv.analyze.bound_horizontal**(*img, labeled_mask, line_position, n_labels=1, label=None*)
-
+* post v5.0: boundary_labeled_mask = **plantcv.analyze.bound_horizontal**(*img, labeled_mask, line_position, n_labels=1, label=None*)
 
 #### plantcv.analyze.bound_vertical
 
 * pre v4.0: (see plantcv.analyze_bound_vertical)
 * post v4.0: analysis_image = **plantcv.analyze.bound_vertical**(*img, labeled_mask, line_position, n_labels=1, label=None*)
-
+* post v5.0: boundary_labeled_mask = **plantcv.analyze.bound_vertical**(*img, labeled_mask, line_position, n_labels=1, label=None*)
 
 #### plantcv.analyze.color
 

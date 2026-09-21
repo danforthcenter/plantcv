@@ -27,8 +27,8 @@ def bound_vertical(img, labeled_mask, line_position, n_labels=1, label=None):
 
     Returns
     -------
-    analysis_image : numpy.ndarray
-        Diagnostic image showing measurements.
+    labeled_mask : numpy.ndarray
+        mask labeled with objects above/below boundary
     """
     # Set lable to params.sample_label if None
     if label is None:
@@ -37,10 +37,10 @@ def bound_vertical(img, labeled_mask, line_position, n_labels=1, label=None):
     img = _iterate_analysis(img=img, labeled_mask=labeled_mask, n_labels=n_labels,
                             label=label, function=_analyze_bound_vertical,
                             **{"line_position": line_position})
-    img = _boundary_img_annotation(img, labeled_mask, line_position, 1)
+    img, new_labeled_mask = _boundary_img_annotation(img, labeled_mask, line_position, 1)
     # Debugging
     _debug(visual=img, filename=os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_img.png'))
-    return img
+    return new_labeled_mask
 
 
 def _analyze_bound_vertical(img, mask, line_position, label):
