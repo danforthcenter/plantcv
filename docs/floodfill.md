@@ -24,7 +24,7 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "plot"
 
-# Apply flood filll  to a binary image 
+# Apply flood fill to a binary image
 
 fill_image = pcv.floodfill(bin_img=binary_img, points =[(31,137)], value=0)
 
@@ -50,7 +50,7 @@ pcv.params.debug = "plot"
 # Define a rectangular Region Of Interest
 roi = pcv.roi.rectangle(img=binary_image, x=30, y=100, h=100, w=100)
 
-# Apply flood filll  to a binary image 
+# Apply flood fill to a binary image
 fill_image = pcv.floodfill(bin_img=binary_img, points=[(1,37)], value=0, roi=roi)
 
 ```
