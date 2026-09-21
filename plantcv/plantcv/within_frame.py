@@ -6,21 +6,24 @@ from plantcv.plantcv import outputs, params
 
 
 def within_frame(mask, border_width=1, label=None):
-    """
-    This function tests whether the plant touches the edge of the image, i.e. it is completely in the field of view.
-    Input:
-    mask         = a binary image of 0 and nonzero values
-    border_width = distance from border of image considered out of frame (default = 1)
-    label        = Optional label parameter, modifies the variable name of
-                   observations recorded (default = pcv.params.sample_label).
+    """Determine whether the plant is completely within the image frame.
 
-    Returns:
-    in_bounds = a boolean (True or False) confirming that the object does not touch the edge of the image
+    Parameters
+    ----------
+    mask : numpy.ndarray
+        Binary image containing zero and nonzero values.
+    border_width : int, optional
+        Distance from the image border considered out of frame. The default
+        is 1.
+    label : str, optional
+        Label used for recorded observations. Defaults to
+        ``pcv.params.sample_label``.
 
-    :param mask: numpy.ndarray
-    :param border_width: int
-    :param label: str
-    :return in_bounds: bool
+    Returns
+    -------
+    bool
+        ``True`` if the plant does not touch the image border, otherwise
+        ``False``.
     """
     # Set lable to params.sample_label if None
     if label is None:
