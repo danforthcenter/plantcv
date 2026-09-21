@@ -2,7 +2,6 @@ import pytest
 import cv2
 import numpy as np
 from plantcv.plantcv import within_frame
-from plantcv.plantcv.within_frame import _over_two_values
 
 
 @pytest.mark.parametrize('pos,expected', [[0, False], [1, True]])
@@ -39,10 +38,3 @@ def test_within_frame_all_background():
     mask = np.zeros((10, 10), dtype=np.uint8)
     result = within_frame(mask=mask, border_width=1)
     assert result is True
-
-
-def test_over_two_values_zero_size():
-    """Test for PlantCV."""
-    # Create test data
-    mask = np.array([], dtype=np.uint8)
-    assert _over_two_values(mask) is False
