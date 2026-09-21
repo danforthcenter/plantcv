@@ -203,11 +203,20 @@ def _combine_stem(segmented_img, stem_objects, maxiter=50):
 
 
 def _plot_stem_line(labeled_img, vx, vy, x, y, cols):
-    """Draw the fitted stem line, guarding against overflow for near-vertical stems.
+    """Draw a fitted stem line.
 
     A nearly vertical stem extrapolates to y-intercepts beyond the 32-bit range
-    that cv2.line accepts (abs(value) < 2 ** 31 is False for inf and nan too), so
-    draw the stem line vertically at the fitted x position in that case instead.
+    accepted by ``cv2.line``. In that case, draw the stem line vertically at
+    the fitted x position instead.
+
+    Parameters
+    ----------
+    labeled_img : numpy.ndarray
+        Image on which to draw the fitted stem line.
+    vx, vy, x, y : numpy.ndarray
+        Parameters of the line fitted to the stem.
+    cols : int
+        Number of image columns.
     """
     lefty = np.array((-x * vy / vx) + y).item()
     righty = np.array(((cols - x) * vy / vx) + y).item()
