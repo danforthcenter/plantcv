@@ -10,7 +10,7 @@ from plantcv.plantcv._helpers import _rect_filter, _rect_replace
 def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area", roi=None):
     """Detect/filter regions in a binary image based on calculated properties.
 
-    Parameters:
+    Parameters
     ----------
     bin_img : numpy.ndarray
         Binary image containing the objects to consider.
@@ -26,7 +26,7 @@ def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area", roi=None):
     roi : plantcv.plantcv.Objects, default None
         Optional region of interest to apply the object property filter within
 
-    Returns:
+    Returns
     -------
     filtered_mask : numpy.ndarray
         Binary image that contains only the filtered objects.
@@ -82,21 +82,22 @@ def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area", roi=None):
 
 
 def _apply_cut_side(cut_side, thresh, val):
-    """Helper function to apply a filter based on the cut_side
+    """Determine which objects pass the filter for a given cut side.
 
     Parameters
     ----------
-    cut_side = str,
-        direction of filter, one of 'upper', 'lower', 'in', or 'out'
-    thresh   = int, float, or tuple of int/float
-        value above/below/between/within which to keep an object based on cut_side
-    val      = numpy.ndarray
-        The numeric property of every object
+    cut_side : str
+        Direction of the filter, one of 'upper', 'lower', 'in', or 'out'.
+    thresh : int, float, or tuple of int/float
+        Value above/below/between/within which to keep an object, based on
+        cut_side.
+    val : numpy.ndarray
+        The measured region property of every object.
 
     Returns
     -------
-    keep = numpy.ndarray,
-        Boolean array, True for each object that passes the filter
+    numpy.ndarray
+        Boolean array, ``True`` for each object that passes the filter.
     """
     # If it is an upper threshold, keep the objects that are above the threshold
     if cut_side == "upper":
