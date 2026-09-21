@@ -6,13 +6,17 @@ import numpy as np
 import random
 from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv.io.read_dataset import read_dataset
 
 
-def merge_images(paths_to_imgs, overlap_percentage, direction="vertical", method="stacked"):
-    """
-    Merge together images in a series that overlap by a specified amount.
-    Inputs:
-    paths_to_imgs = List of paths to the images
+def merge_images(source, overlap_percentage, direction="vertical", method="stacked"):
+    """Merge together images in a series that overlap by a specified amount.
+
+    Parameters:
+    -----------
+    source         = string or list,
+        Path to a folder of images to use, list of paths to the images,
+        or list of numpy.ndarray objects to create the video
     overlap_percentage = percent of each image that overlaps with adjacent images
     direction = Available options are vertical or horizontal and indicate
         how the images should be merged
@@ -25,12 +29,14 @@ def merge_images(paths_to_imgs, overlap_percentage, direction="vertical", method
         - 'average' : pixels are averaged between image i values and image i+1 values
         - 'gradual' : pixels are averaged with a weight that corresponds to
                       proximity to image i or image i+1
-    :param paths_to_imgs: list
-    :param overlap_percentage: non-negative real number
-    :param direction: str
-    :param method: str
-    :return combined_image: numpy.ndarray
+
+    Returns:
+    combined_image, numpy.ndarray
+        Merged image
     """
+    paths_to_imgs = source
+    if isinstance(source, str):
+        paths_to_imgs = read_dataset(source, sort=True)
     paths_to_imgs.sort()
 
     # Read the images to get total height/width
