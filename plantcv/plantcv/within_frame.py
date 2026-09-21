@@ -57,10 +57,6 @@ def within_frame(mask, border_width=1, label=None):
 def _over_two_values(mask):
     """Test whether a mask holds more than two distinct values.
 
-    A mask is binary exactly when every pixel equals either its minimum or its maximum, which
-    is a linear scan. np.unique answers the same question by sorting the whole image, and
-    _iterate_analysis calls within_frame once per object, so that sort is paid per object.
-
     Parameters
     ----------
     mask : numpy.ndarray
