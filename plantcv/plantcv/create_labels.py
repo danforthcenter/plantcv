@@ -14,21 +14,23 @@ def create_labels(mask, rois=None, roi_type="partial"):
     pixels are assigned a label value based on the provided
     region of interest (ROI).
 
-    Inputs:
-    mask            = mask image
-    rois            = list of multiple ROIs (from roi.multi or roi.auto_grid)
-    roi_type        = 'cutto', 'partial' (for partially inside, default),
-                    'largest' (keep only the largest contour), or 'auto'
-                    (use the mask alone withtout roi filtering)
+    Parameters:
+    -----------
+    mask            = numpy.ndarray,
+        mask image
+    rois            = plantcv.plantcv.classes.Objects,
+        list of multiple ROIs (from roi.multi or roi.auto_grid)
+    roi_type        = str,
+        'cutto', 'partial' (for partially inside, default),
+        'largest' (keep only the largest contour), or 'auto'
+        (use the mask alone withtout roi filtering)
 
     Returns:
-    mask            = Labeled mask
-    num_labels      = Number of labeled objects
-
-    :param mask: numpy.ndarray
-    :param rois: plantcv.plantcv.classes.Objects
-    :return labeled_mask: numpy.ndarray
-    :return num_labels: int
+    --------
+    mask            = numpy.ndarray,
+        Labeled mask
+    num_labels      = int,
+        Number of labeled objects
     """
     # Store debug mode
     debug = params.debug
@@ -56,8 +58,13 @@ def create_labels(mask, rois=None, roi_type="partial"):
 
     # Restore debug parameter
     params.debug = debug
-    colorful = label2rgb(labeled_mask)
-    colorful2 = (255*colorful).astype(np.uint8)
+    # label2rgb builds a full-size RGB float image, which is wasted work when no visual is
+    # going to be shown or written. _debug is still called either way because it owns the
+    # device counter.
+    colorful2 = None
+    if params.debug is not None:
+        colorful = label2rgb(labeled_mask)
+        colorful2 = (255*colorful).astype(np.uint8)
 
     _debug(colorful2, filename=os.path.join(params.debug_outdir,
                                             str(params.device) +
