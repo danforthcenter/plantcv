@@ -60,14 +60,10 @@ def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area", roi=None):
         valueslist = [getattr(obj, regprop) for obj in obj_measures]
         # Decide which objects pass, all at once
         passing = _apply_cut_side(cut_side, thresh, np.asarray(valueslist))
-        # Index the lookup table by label id rather than by position, so it lines up with
-        # labeled_img even if regionprops stops returning objects in label order. Label 0 is
-        # the background and is left False.
+        # Index the lookup table by label id, Label 0 is the background and is left False.
         keep = np.zeros(int(labeled_img.max()) + 1, dtype=bool)
         keep[np.array([obj.label for obj in obj_measures], dtype=np.int64)] = passing
-        # Paint every object in one pass. Drawing each object with its own full-array np.where
-        # instead costs O(objects x pixels), which is minutes on a megapixel mask with
-        # thousands of objects.
+        # Draw every object in one pass.
         sub_filtered_mask = np.where(keep[labeled_img], 255, 0).astype(np.uint8)
 
         if params.debug == "plot":
