@@ -647,6 +647,20 @@ Index range: 0.0, ∞
     - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
     - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
 
+### Available Indices
+
+Lists which of the indices above can be calculated from a dataset. For a multi- or hyperspectral datacube,
+each index is checked with the same wavelength condition used by the index function itself; for a color image,
+the indices that accept color images directly are listed.
+
+**plantcv.spectral_index.available**(*data, distance=None*)
+
+**returns** sorted list of index names that can be calculated from `data` (list of str)
+
+- **Parameters:**
+    - data        - Multi- or hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`), or a color image (numpy array)
+    - distance    - Amount of flexibility (in nanometers) regarding the wavelengths used to calculate an index. When None, each index is tested with its own default (20 for most indices, 40 for EGI).
+
 ### Examples
 
 ```python
@@ -659,6 +673,12 @@ pcv.params.debug = "plot"
 
 # Extract NDVI index from the datacube 
 ndvi_array = pcv.spectral_index.ndvi(hsi=spectral_data, distance=20)
+
+# List the indices that can be calculated from the datacube
+available_indices = pcv.spectral_index.available(data=spectral_data, distance=20)
+
+# List the indices that can be calculated from a color image
+available_indices = pcv.spectral_index.available(data=rgb_img)
 
 # Extract GDVI index from the datacube
 gdvi_array = pcv.spectral_index.gdvi(hsi=spectral_data, distance=20)
