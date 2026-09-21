@@ -774,6 +774,33 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "AbhinavMir",
+      "name": "august",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36011576?v=4",
+      "profile": "http://abhinavmir.xyz",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "AidanBoissonneault",
+      "name": "Aidan Boissonneault",
+      "avatar_url": "https://avatars.githubusercontent.com/u/58098123?v=4",
+      "profile": "https://github.com/AidanBoissonneault",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "musharna",
+      "name": "Jaret Arnold",
+      "avatar_url": "https://avatars.githubusercontent.com/u/96366172?v=4",
+      "profile": "https://musharna.github.io/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

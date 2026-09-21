@@ -226,7 +226,7 @@ config.save_config(config_file="my_config.json")
 ```
 
 You may also edit your configuration file directly in a text editor, just remember that JSON syntax applies. 
-See [Workflow Parallization tutorial for examples](pipeline_parallel.md)
+See [Workflow Parallelization tutorial for examples](pipeline_parallel.md)
 
 To run `plantcv-run-workflow` with a config file you can use the following:
 
@@ -235,4 +235,3 @@ plantcv-run-workflow --config my_config.json
 ```
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/parallel/__init__.py)
-

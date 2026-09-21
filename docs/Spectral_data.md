@@ -38,7 +38,7 @@ Attributes are accessed as spectral_data_instance.*attribute*.
 
 **filename**: The filename where the data originated from
 
-**default_bands**: The default bands from the header file used to make a pseudo rgb image.
+**default_bands**: The bands that are used to make the pseudo-RGB image, read from the `default bands` field of the .hdr file. Contains one band number for a grayscale image or three band numbers for an RGB image. Set to `None` if the .hdr file does not name any default bands, in which case the bands are selected from the available wavelengths.
 
 **byte_order**: Order of bytes per ENVI standards, defaults to "Network". This is not used by PlantCV but is stored for cross platform compatibility.
 
