@@ -16,7 +16,7 @@ Attributes are accessed as spectral_data_instance.*attribute*.
 
 **array_data**: The actual data, stored as a Numpy array. 
 
-**max_wavelength**: Largest available wavelength in the spectral datacube. 
+**max_wavelength**: Largest available wavelength in the spectral datacube.
 
 **min_wavelength**: Smallest available wavelength in the spectral datacube. 
 
@@ -37,6 +37,14 @@ Attributes are accessed as spectral_data_instance.*attribute*.
 **pseudo_rgb**: Pseudo-RGB image if the array_type is a datacube
 
 **filename**: The filename where the data originated from
+
+**default_bands**: The bands that are used to make the pseudo-RGB image, read from the `default bands` field of the .hdr file. Contains one band number for a grayscale image or three band numbers for an RGB image. Set to `None` if the .hdr file does not name any default bands, in which case the bands are selected from the available wavelengths.
+
+**byte_order**: Order of bytes per ENVI standards, defaults to "Network". This is not used by PlantCV but is stored for cross platform compatibility.
+
+**file_type**: Type of raster per ENVI standards, defaults to "ENVI". This is not used by PlantCV but is stored for cross platform compatibility.
+
+**header_offset**: Number of bytes ENVI should skip when reading the file, defaults to 0. This is not used by PlantCV but is stored for cross platform compatibility.
 
 **metadata**: Metadata in a dictionary. Included keys might be specific to hyperspectral or geospatial image types 
 

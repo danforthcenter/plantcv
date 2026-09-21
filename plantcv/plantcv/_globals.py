@@ -219,7 +219,7 @@ class Outputs:
             else:
                 hierarchical_data = {"metadata": self.metadata, "observations": self.observations}
             with open(filename, mode='w') as f:
-                json.dump(hierarchical_data, f)
+                json.dump(hierarchical_data, f, indent=4)
 
         elif outformat.upper() == "CSV":
             # Open output CSV file
