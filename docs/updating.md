@@ -1,6 +1,6 @@
 ## Updating PlantCV
 
-### Table of Contents for Contibution
+### Table of Contents for Contribution
 1. [Updating with PyPi](#pypi)
 2. [Updating with Conda](#conda)
 3. [Updating from source](#source)
@@ -156,7 +156,7 @@ Below is a simple example of a typical PlantCV v3 workflow of a single plant.
 # Read in image data 
 img, path, filename = pcv.readimage(filename="rgb_img.png")
 
-# Covert to grayscale colorspace 
+# Convert to grayscale colorspace
 a = pcv.rgb2gray_lab(rgb_img=img, channel='a')
 
 # Threshold/segment plant from background 
@@ -195,7 +195,7 @@ in PlantCV v4.0 and future releases.
 # Read in image data (no change)
 img, path, filename = pcv.readimage(filename="rgb_img.png")
 
-# Covert to grayscale colorspace (no change)
+# Convert to grayscale colorspace (no change)
 a = pcv.rgb2gray_lab(rgb_img=img, channel='a')
 
 # Threshold/segment plant from background (removed max_value)

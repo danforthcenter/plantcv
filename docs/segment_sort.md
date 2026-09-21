@@ -15,7 +15,7 @@ Sort segments from a skeletonized image into two categories: leaf objects and ot
     - Sorts skeleton segments into two categories: primary and secondary segments. Segments get classified as primary 
     if both end points of the segment coincide with branch points. Segments get classified as secondary if at least one of their
     endpoints coincide with a tip. By this classification method in the example below primary segments are stem and secondary 
-    segments are leaves. Secondary segments get colored green and primary segments get colored fuschia. 
+    segments are leaves. Secondary segments get colored green and primary segments get colored fuchsia.
 
 **Reference Images**
 
