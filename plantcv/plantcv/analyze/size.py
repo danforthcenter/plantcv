@@ -206,12 +206,25 @@ def _longest_axis(height, width, hull, cmx, cmy):
     """
     Calculate the line through center of mass and point on the convex hull that is furthest away
 
-    :param height: int
-    :param width: int
-    :param hull: numpy.ndarray
-    :param cmx: int
-    :param cmy: int
-    :return caliper_length: int
+    Parameters:
+    -----------
+    height   = int,
+        height of object
+    width    = int,
+        width of object
+    hull     = np.ndarray,
+        convex hull of object
+    cmx      = int,
+        center of mass in x dimension (pixel)
+    cmy      = int,
+        center of mass in y dimension (pixel)
+
+    Returns
+    -------
+    caliper_length = int
+        length of the line through the caliper
+    caliper_transpose = numpy.ndarray,
+        array of the caliper
     """
     background = np.zeros((height, width, 3), np.uint8)
     background1 = np.zeros((height, width), np.uint8)
