@@ -1,4 +1,4 @@
-# Table of Contents for Contibution
+# Table of Contents for Contribution
 1. [Overview of Contribution](#overview)
 2. [Installing PlantCV for Contributors](#installing)
 2. [Creating Issues](#creatingissues)
@@ -330,15 +330,15 @@ def new_function_calling_plantcv(img):
 
 We are always looking for new examples of how people are applying 
 PlantCV to their research. You can send us a Jupyter Notebook and any required sample data or
-you can directly contrubute your tutorial. These instructions also apply to updating existing tutorials
-that might break wth new versions of PlantCV.
+you can directly contribute your tutorial. These instructions also apply to updating existing tutorials
+that might break with new versions of PlantCV.
 
 #### Create Your Tutorial Repository <a name="repo"></a>
 
 1. Create a new repository on GitHub. To prepopulate your repository with the file layout we recommend, you can import our 
 tutorial template from `https://github.com/danforthcenter/plantcv-tutorial-template`
 
-2. If you don't import the tutorial template when you make your repo intitally you can [clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) the
+2. If you don't import the tutorial template when you make your repo initially you can [clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) the
 [tutorial template repository](https://github.com/danforthcenter/plantcv-tutorial-template) and copy the files and folders
 from the template repository to your tutorial repository
 

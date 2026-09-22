@@ -13,7 +13,7 @@
 
 ### Running PlantCV workflows over a dataset
 
-We normally execute workflows in a shell script or in in a cluster scheduler job file. The parallelization tool
+We normally execute workflows in a shell script or in a cluster scheduler job file. The parallelization tool
 `plantcv-run-workflow` has many configuration parameters. To make it easier to manage the number of input parameters,
 a configuration file can be edited and input.
 

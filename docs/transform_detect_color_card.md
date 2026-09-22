@@ -13,7 +13,7 @@ Automatically detects a Macbeth ColorChecker style color card and creates a labe
             are automatically set, and utilized throughout linear and area type measurements stored to `Outputs`. 
     - roi              - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to look for the color card. (default = None)
     - **kwargs         - Other keyword arguments passed to `cv2.adaptiveThreshold` and `cv2.circle`.
-        - adaptive_method - Adaptive threhold method. 0 (mean) or 1 (Gaussian) (default = 1).
+        - adaptive_method - Adaptive threshold method. 0 (mean) or 1 (Gaussian) (default = 1).
         - block_size      - Size of a pixel neighborhood that is used to calculate a threshold value (default = 51). We suggest using 127 if using `adaptive_method=0`.
         - radius         - Radius of circle to make the color card labeled mask (default = 20).
         - min_size         - Minimum chip size for filtering objects after edge detection (default = 1000)
@@ -66,7 +66,7 @@ corrected_img = pcv.transform.affine_color_correction(rgb_img=rgb_img,
 
 ![Screenshot](img/documentation_images/correct_color_imgs/detect_color_card.png)
 
-### Suppored Color Cards
+### Supported Color Cards
 
 **[Calibrite ColorChecker Passport](https://calibrite.com/us/product/colorchecker-passport-photo-2/)** 
 

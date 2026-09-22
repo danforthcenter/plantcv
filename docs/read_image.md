@@ -15,7 +15,7 @@ Reads image into numpy ndarray and splits the path and image filename (*see note
     - Reads in file to be processed
 - **Notes:**
     - In most cases, the alpha channel in RGBA image data is unused (and causes issue when used as RGB image data),
-    so unless specificed, the `pcv.readimage()` function will read RGBA data in as an RGB image under
+    so unless specified, the `pcv.readimage()` function will read RGBA data in as an RGB image under
     default settings (`mode="native"`). However, if the alpha channel is needed users must specify `mode="rgba"`. 
     - Comma separated data can be read in with `mode="csv"` so that, for example, thermal data can 
     be used in downstream analysis, such as [`pcv.analyze.thermal`](analyze_thermal.md).
