@@ -115,6 +115,8 @@ missing. A PR that drops coverage should be treated as incomplete, not ready for
   add or update its corresponding page under `docs/` (the docs site is built with MkDocs;
   see `mkdocs.yml` for the nav structure) — a function without a docs page is not
   considered complete.
+- **Pull requests should be focused.** PRs should address a single issue and be minimal
+  in scope to keep review manageable. Larger changes should be broken into multiple focused PRs.
 - **Do not modify** release/version metadata, CI workflow files (`.github/`), or the
   license without an explicit maintainer instruction in the issue thread — these are
   maintainer-controlled regardless of what the code change otherwise touches.
