@@ -356,6 +356,12 @@ pages for more details on the input and output variable types.
 * post v3.11: thermal_histogram = **plantcv.analyze_thermal_values**(*thermal_array, mask, histplot=False, label="default"*)
 * post v4.0: DEPRECATED, see plantcv.analyze.thermal
 
+#### plantcv.analyze.alphaL
+
+* pre v5.0: NA
+* post v5.0: array = **plantcv.analyze.alphaL**(*ps, labeled_mask, n_labels=1, measurement_labels=None, label=None, min_bin=-1, max_bin=1*)
+
+
 #### plantcv.analyze.bound_horizontal
 
 * pre v4.0: (see plantcv.analyze_bound_horizontal)
@@ -377,6 +383,11 @@ pages for more details on the input and output variable types.
 
 * pre v4.2.1: NA
 * post v4.2.1: dist_chart = **plantcv.analyze.distribution**(*labeled_mask, n_labels=1, direction="down", bin_size=100, hist_range="absolute", label=None*)
+
+#### plantcv.analyze.etr
+
+* pre v5.0: NA
+* post v5.0: _ = **plantcv.analyze.etr**(*actinic_light, psi_psii_ratio=0.5*)
 
 #### plantcv.analyze.grayscale
 
