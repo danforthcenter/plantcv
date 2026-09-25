@@ -34,6 +34,8 @@ def readimage(filename, mode="native"):
     img_name : str
         Name of image file
     """
+    if os.path.splitext(filename)[1].upper() == ".HEIC" and mode == "native":
+        mode = "heic"
     if mode.upper() in ("GRAY", "GREY"):
         img = cv2.imread(filename, 0)
     elif mode.upper() == "RGB":

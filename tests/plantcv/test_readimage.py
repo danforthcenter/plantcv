@@ -67,6 +67,8 @@ def test_readimage_heic(test_data):
     """Test for PlantCV."""
     img, _, _ = readimage(filename=test_data.heic_img, mode="heic")
     assert len(img.shape) == 3
+    img, _, _ = readimage(filename=test_data.heic_img, mode="native")
+    assert len(img.shape) == 3
 
 
 def test_readimage_bad_file():
