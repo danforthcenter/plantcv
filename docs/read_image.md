@@ -8,8 +8,8 @@ Reads image into numpy ndarray and splits the path and image filename (*see note
 
 - **Parameters:**
     - filename - image file to be read (possibly including a path)
-    - mode     - return mode of image ("native," "rgb", "rgba", "normalize", "csv", "envi", "arcgis", "gray", "nd2",
-    or "thermal"), defaults to "native"
+    - mode     - return mode of image ("native," "rgb", "rgba", "normalize", "csv", "envi", "arcgis",
+	"gray", "nd2", "thermal", or "heic"), defaults to "native"
     
 - **Context:**
     - Reads in file to be processed
@@ -21,6 +21,7 @@ Reads image into numpy ndarray and splits the path and image filename (*see note
     be used in downstream analysis, such as [`pcv.analyze.thermal`](analyze_thermal.md).
     - Nikon microscope images can be read in using `mode="nd2"`.
     - FLIR thermal images can be read in using `mode="thermal"`. 
+	- HEIC images can be read in using `mode="heic"`.
     - Hyperspectral data can be read in with `mode="envi"` where the filename parameter is the raw data file. There is also support for 
     ArcGis style hyperspectral images (`mode="arcgis"`). These modes of 
     reading in data expects a `filename`.hdr file which gets used for shaping the hyperspectral datacube and labeling bands of data

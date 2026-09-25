@@ -31,6 +31,8 @@ dependencies:
   - nbformat
   - imageio >= 2.28
   - imageio-ffmpeg
+  - pillow
+  - pillow_heif
 
 channels:
   - conda-forge
