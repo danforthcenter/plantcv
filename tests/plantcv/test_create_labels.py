@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-from plantcv.plantcv import create_labels, Objects
+from plantcv.plantcv import create_labels, Objects, params
 
 
 def test_create_labels(test_data):
@@ -16,4 +16,13 @@ def test_create_labels_no_roi(test_data):
     """Test for PlantCV."""
     mask = cv2.imread(test_data.small_bin_img, -1)
     _, num = create_labels(mask=mask)
+    assert num == 1
+
+
+def test_create_labels_debug(test_data):
+    """Test for PlantCV."""
+    params.debug = "plot"
+    mask = cv2.imread(test_data.small_bin_img, -1)
+    _, num = create_labels(mask=mask)
+    params.debug = None
     assert num == 1
