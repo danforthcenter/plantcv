@@ -27,7 +27,7 @@ nav:
         - 'Print Image': print_image.md
         - 'Plot Image': plot_image.md
         - 'Read Image': read_image.md
-        - 'Read Bayer Raw Image': read_bayer.md
+        - 'Read Raw Image (bayer)': read_bayer.md
       - 'Analysis Methods':
         - 'Analyze Color': analyze_color2.md
         - 'Analyze Pixel Distributions': analyze_distribution.md
@@ -47,33 +47,33 @@ nav:
       - 'Auto Crop': auto_crop.md
       - 'Background Subtraction': background_subtraction.md
       - 'Canny Edge Detection': canny_edge_detect.md
-      - 'Closing': closing.md
+      - 'Close Gaps in Objects (closing)': closing.md
       - 'Color Palette': color_palette.md
       - 'Colorspace Conversion':
         - 'RGB to Gray': rgb2gray.md
         - 'RGB to CMYK': rgb2cmyk.md
         - 'RGB to LAB': rgb2lab.md
         - 'RGB to HSV': rgb2hsv.md
-      - 'Combine multiple results files': process_results.md
+      - 'Combine Multiple Results Files': process_results.md
       - 'Convert JSON results to CSV': json2csv.md
       - 'Create Labels': create_labels.md
       - 'Crop': crop.md
       - 'Crop and Position Mask': crop_position_mask.md
-      - 'Dilation': dilate.md
-      - 'Distance Transform': distance_transform.md
-      - 'Erosion': erode.md
-      - 'Fill Objects': fill.md
-      - 'Fill Holes': fill_holes.md
-      - 'Flood Fill': floodfill.md
+      - 'Expand Object (dilation)': dilate.md
+      - 'Measure Distance to Background (distance transform)': distance_transform.md
+      - 'Contract Object (erosion)': erode.md
+      - 'Remove Small Objects (fill objects)': fill.md
+      - 'Fill Enclosed Holes (fill holes)': fill_holes.md
+      - 'Fill Connected Region (flood fill)': floodfill.md
       - 'Flip Image': flip.md
       - 'Filters':
         - 'Object Filter': filters_obj_props.md
-        - 'Laplace Filter': laplace_filter.md
-        - 'Sobel Filter': sobel_filter.md
-        - 'Scharr Filter': scharr_filter.md
-      - 'Gaussian Blur': gaussian_blur.md
+        - 'Detect Edges (laplace)': laplace_filter.md
+        - 'Detect Edges (sobel)': sobel_filter.md
+        - 'Detect Edges (scharr)': scharr_filter.md
+      - 'Smooth Image (gaussian blur)': gaussian_blur.md
       - 'Get Kernel': get_kernel.md
-      - 'Histogram Normalization': HistEqualization.md
+      - 'Boost Global Contrast (hist equalization)': HistEqualization.md
       - 'Hyperspectral Data':
           - 'Analyze Spectral Reflectance': analyze_spectral_reflectance.md
           - 'Analyze Spectral Index': analyze_spectral_index.md
@@ -86,31 +86,31 @@ nav:
           - 'Write HSI data': write_data.md
       - 'Image Add': image_add.md
       - 'Image Subtract': image_subtract.md
-      - 'Image Fusion': image_fusion.md
+      - 'Merge Multispectral Images': image_fusion.md
       - 'Invert': invert.md
       - 'I/O Functions':
           - 'Open Image from URL': io_open_url.md
           - 'Random Subset': io_random_subset.md
           - 'Read Dataset': io_read_dataset.md
-      - 'Kmeans Clustering Classifier': kmeans_classifier.md
+      - 'Group Pixels by Color (kmeans)': kmeans_classifier.md
       - 'Landmark Analysis':
-        - 'Acute': homology_acute.md
-        - 'Space': homology_space.md
-        - 'StarScape': homology_starscape.md
-        - 'Constella': homology_constella.md
-        - 'ConstellaQC': homology_constellaqc.md
+        - 'Find Landmark Points': homology_acute.md
+        - 'Build Landmark Comparison Table': homology_space.md
+        - 'Reduce Landmark Dimensions (PCA)': homology_starscape.md
+        - 'Group Similar Landmarks': homology_constella.md
+        - 'Check Landmark Grouping Accuracy': homology_constellaqc.md
         - 'x-Axis Pseudolandmarks': homology_x_axis_pseudolandmarks.md
         - 'y-Axis Pseudolandmarks': homology_y_axis_pseudolandmarks.md
         - 'Scale Features': homology_scale_features.md
         - 'Landmark Reference Point Distribution': homology_landmark_reference_pt_dist.md
       - 'Logical Operations':
-        - 'Logical Operations-And': logical_and.md
-        - 'Logical Operations-Or': logical_or.md
-        - 'Logical Operations-XOr': logical_xor.md
-      - 'Masks to Labels': masks2labels.md
-      - 'Median Blur': median_blur.md
+        - 'Combine Masks (keep overlap)': logical_and.md
+        - 'Combine Masks (keep either)': logical_or.md
+        - 'Combine Masks (keep non-overlap)': logical_xor.md
+      - 'Label Objects from Masks': masks2labels.md
+      - 'Smooth Out Speckled Noise (median blur)': median_blur.md
       - 'Morphology Functions':
-        - 'Analyze_stem': analyze_stem.md
+        - 'Analyze Stem': analyze_stem.md
         - 'Check Cycles': check_cycles.md
         - 'Fill Segments': fill_segments.md
         - 'Find Branches': find_branch_pts.md
@@ -129,9 +129,9 @@ nav:
         - 'Segment Tangent Angle': segment_tangent_angle.md
         - 'Skeletonize': skeletonize.md
         - 'Segment Width': segment_width.md
-      - 'Naive Bayes Classifier': naive_bayes_classifier.md
+      - 'Classify pixels (naive bayes)': naive_bayes_classifier.md
       - 'Objects Class': objects.md
-      - 'Opening': opening.md
+      - 'Remove Small Specks (opening)': opening.md
       - 'Output Mask': output_mask.md
       - 'Outputs Class': outputs.md
       - 'Photosynthesis Functions':
@@ -139,7 +139,7 @@ nav:
           - 'Reassign Frame Labels': photosynthesis_reassign_frame_labels.md
           - 'Analyze YII': analyze_yii.md
           - 'Analyze NPQ': analyze_npq.md
-          - 'Visualize chlorophyll Fluorescence': visualize_chlorophyll_fluorescence.md
+          - 'Visualize Chlorophyll Fluorescence': visualize_chlorophyll_fluorescence.md
       - 'Params (Debugging)': params.md
       - 'Print Image': print_image.md
       - 'Plot Image': plot_image.md
@@ -150,7 +150,7 @@ nav:
         - "Exposure": qc_exposure.md
         - "Quick Color Check": quick_color_check.md
       - 'Read Image': read_image.md
-      - 'Read Bayer Raw Image': read_bayer.md
+      - 'Read Raw Image (bayer)': read_bayer.md
       - 'Report Size Marker': report_size_marker.md
       - 'Region of Interest Tools':
         - 'Create a Circular ROI': roi_circle.md
@@ -168,19 +168,19 @@ nav:
       - 'Segment Image Series': segment_image_series.md
       - 'Sharpen Image': sharpen.md
       - 'Shift Image': shift.md
-      - 'Spatial Clustering': spatial_clustering.md
+      - 'Group Nearby Objects (spatial clustering)': spatial_clustering.md
       - 'Spectral Index': spectral_index.md
-      - 'Standard Deviation Filter': stdev_filter.md
+      - 'Detect Texture Variation': stdev_filter.md
       - 'Thresholding Methods':
         - 'Binary Threshold': binary_threshold.md
         - 'Custom Range Threshold': custom_range_threshold.md
-        - 'Gaussian Adaptive Threshold': gaussian_threshold.md
-        - 'Mask Bad Threshold': mask_bad_threshold.md
+        - 'Adaptive Local Threshold': gaussian_threshold.md
+        - 'Mask Bad Pixels': mask_bad_threshold.md
         - 'Mean Adaptive Threshold': mean_threshold.md
-        - 'Otsu Auto Threshold': otsu_threshold.md
+        - 'Auto Threshold (otsu)': otsu_threshold.md
+        - 'Auto Threshold (triangle)': triangle_threshold.md
         - 'Saturation Threshold': saturation_threshold.md
         - 'Threshold Two Channels': threshold_dual_channels.md
-        - 'Triangle Auto Threshold': triangle_threshold.md
         - 'Texture Threshold': texture_threshold.md
       - 'Transformation Methods':
           - 'Auto-Detect Color Card': transform_detect_color_card.md
@@ -189,24 +189,24 @@ nav:
           - 'Calibrate Camera': transform_calibrate_camera.md
           - 'Checkerboard Calibration': transform_checkerboard_calibration.md
           - 'Create Color Card Mask': create_color_card_mask.md
-          - 'CLAHE Contrast Correction': transform_clahe.md
+          - 'Boost Local Contrast (CLAHE)': transform_clahe.md
           - 'Convert Color Card to Matrix': get_color_matrix.md
           - 'Color Correct to Target Image': transform_correct_color.md
           - 'Quick Color Check': quick_color_check.md
-          - 'Delta E Metric': transform_deltaE.md
+          - 'Measure Color Difference (deltaE)': transform_deltaE.md
           - 'Affine Color Correction': transform_affine_color_correction.md
           - 'Standard Color Matrix': std_color_matrix.md
           - 'Gamma Correction': transform_gamma_correct.md
           - 'Mask Color Card': transform_mask_color_card.md
           - 'Merge Images': transform_merge_images.md
           - 'Nonuniform Illumination Correction': nonuniform_illumination.md
-          - 'Perspective warp': transform_warp.md
+          - 'Perspective Warp': transform_warp.md
           - 'Rescale Image Values': transform_rescale.md
           - 'Resize Images': transform_resize.md
           - 'Rotate': rotate2.md
       - 'Transformation Helpers':
             - 'Astrobotany Calibration Matrix': astro_color_matrix.md
-            - 'Calculate Moore-Penrose Inverse Matrix': mp_inverse.md
+            - 'Calculate Color Correction Matrix': mp_inverse.md
             - 'Create Color Correction Matrix': transformation_matrix.md
             - 'Apply Color Correction Matrix': apply_transformation_matrix.md
             - 'Load Matrix': load_matrix.md
@@ -226,16 +226,16 @@ nav:
           - 'Pseudocolor': visualize_pseudocolor.md
           - 'Tile': visualize_tile.md
           - 'Time Lapse Video': visualize_time_lapse_video.md
-      - 'Watershed Segmentation': watershed.md
-      - 'White balance': white_balance.md
+      - 'Separate Touching Objects (watershed)': watershed.md
+      - 'White Balance': white_balance.md
       - 'Within Frame': within_frame.md
     - 'Machine Learning Training':
       - 'Kmeans Clustering': train_kmeans.md
       - 'Naive Bayes': naive_bayes.md
       - 'Naive Bayes Multiclass': naive_bayes_multiclass.md
       - 'Naive Bayes Multiclass Samples File QC': naive_bayes_check_samples_file.md
-    - 'Parallelization':
-        - 'Getting started in parallel': parallel_preparation.md
+    - 'Batch Processing (Parallelization)':
+        - 'Getting Started in Parallel': parallel_preparation.md
         - 'Configure Parallelization': parallel_config.md
         - 'Configure Parallelization in Jupyter': parallel_jupyterconfig.md
         - 'Inspect Configuration': parallel_inspect_config.md
