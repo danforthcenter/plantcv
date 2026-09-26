@@ -31,7 +31,6 @@ def test_read_ms_file(tmpdir):
     sub_ms2 = ms.select(450, ms=False)
     assert isinstance(sub_ms2, np.ndarray)
     assert sub_ms2.shape == (10, 10, 1)
-    
 
 
 def test_read_ms_dir(tmpdir):
