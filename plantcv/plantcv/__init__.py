@@ -8,6 +8,8 @@ from plantcv.plantcv.classes import Spectral_data
 from plantcv.plantcv.classes import PSII_data
 from plantcv.plantcv.classes import Point
 from plantcv.plantcv.classes import Objects
+from plantcv.plantcv.classes import MS_data
+
 
 # Initialize an instance of the Params and Outputs class with default values
 # params and outputs are available when plantcv is imported
@@ -85,6 +87,7 @@ from plantcv.plantcv import qc
 from plantcv.plantcv.process_results import process_results
 from plantcv.plantcv.json2csv import json2csv
 from plantcv.plantcv.masks2labels import masks2labels
+from plantcv.plantcv import multispec
 # add new functions to end of lists
 
 __all__ = [
@@ -93,6 +96,7 @@ __all__ = [
     'PSII_data',
     'Point',
     "Objects",
+    "MS_data",
     "Params",
     "Outputs",
     "params",
@@ -167,5 +171,6 @@ __all__ = [
     "qc",
     "process_results",
     "json2csv",
-    "masks2labels"
+    "masks2labels",
+    "multispec"
 ]
