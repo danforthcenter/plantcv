@@ -52,8 +52,6 @@ nav:
           - 'Background Subtraction': background_subtraction.md
           - 'Image Add': image_add.md
           - 'Image Subtract': image_subtract.md
-      - 'Annotation Tools':
-          - 'Points': Points.md
       - 'Colorspace Conversion':
         - 'RGB to Gray': rgb2gray.md
         - 'RGB to CMYK': rgb2cmyk.md
@@ -74,14 +72,15 @@ nav:
         - 'Sharpen Image': sharpen.md
         - 'Smooth Image (gaussian blur)': gaussian_blur.md
         - 'Smooth Out Speckled Noise (median blur)': median_blur.md
+      - 'Label Data':
+        - 'Points': Points.md
+        - 'Create Labels': create_labels.md
+        - 'Label Objects from Masks': masks2labels.md
       - 'Logical Operations (e.g. and, or, xor, not)':
         - 'Combine Masks (keep overlap)': logical_and.md
         - 'Combine Masks (keep either)': logical_or.md
         - 'Combine Masks (keep non-overlap)': logical_xor.md
         - 'Invert': invert.md
-      - 'Label Data':
-        - 'Create Labels': create_labels.md
-        - 'Label Objects from Masks': masks2labels.md
       - 'Object Size Operators (e.g. fill)':
         - 'Expand Object (dilation)': dilate.md
         - 'Contract Object (erosion)': erode.md
