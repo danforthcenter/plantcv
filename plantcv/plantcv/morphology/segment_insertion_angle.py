@@ -106,9 +106,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     [vx, vy, x, y] = cv2.fitLine(combined_stem[0], cv2.DIST_L2, 0, 0.01, 0.01)
     stem_slope = -vy / vx
     stem_slope = stem_slope[0]
-    lefty = int(np.array((-x * vy / vx) + y).item())
-    righty = int(np.array(((cols - x) * vy / vx) + y).item())
-    cv2.line(labeled_img, (cols - 1, righty), (0, lefty), (150, 150, 150), 3)
+    _plot_stem_line(labeled_img, vx, vy, x, y, cols)
 
     for t, segment in enumerate(insertion_segments):
         # Find line fit to each segment
@@ -202,3 +200,28 @@ def _combine_stem(segmented_img, stem_objects, maxiter=50):
     if len(combined_stem) > 1:
         fatal_error('Unable to combine stem objects.')
     return combined_stem
+
+
+def _plot_stem_line(labeled_img, vx, vy, x, y, cols):
+    """Draw a fitted stem line.
+
+    A nearly vertical stem extrapolates to y-intercepts beyond the 32-bit range
+    accepted by ``cv2.line``. In that case, draw the stem line vertically at
+    the fitted x position instead.
+
+    Parameters
+    ----------
+    labeled_img : numpy.ndarray
+        Image on which to draw the fitted stem line.
+    vx, vy, x, y : numpy.ndarray
+        Parameters of the line fitted to the stem.
+    cols : int
+        Number of image columns.
+    """
+    lefty = np.array((-x * vy / vx) + y).item()
+    righty = np.array(((cols - x) * vy / vx) + y).item()
+    if np.all(np.abs([lefty, righty]) < 2 ** 31):
+        cv2.line(labeled_img, (cols - 1, int(righty)), (0, int(lefty)), (150, 150, 150), 3)
+    else:
+        stem_x = int(np.array(x).item())
+        cv2.line(labeled_img, (stem_x, 0), (stem_x, labeled_img.shape[0] - 1), (150, 150, 150), 3)
