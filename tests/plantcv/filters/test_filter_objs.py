@@ -90,3 +90,21 @@ def test_empty_mask():
     mask = np.zeros((100, 100))
     fmask = obj_props(bin_img=mask, regprop="solidity")
     assert np.sum(fmask) == 0
+
+
+def test_filter_objs_upper_thresh(filters_test_data):
+    """Test for PlantCV."""
+    # Read in test data
+    mask = cv2.imread(filters_test_data.barley_example)
+    filtered_mask = obj_props(bin_img=mask, cut_side="upper", thresh=20000, regprop="area")
+    _, nobjs = create_labels(mask=filtered_mask)
+    assert nobjs == 8
+
+
+def test_filter_objs_none_pass(filters_test_data):
+    """Test for PlantCV."""
+    # Read in test data
+    mask = cv2.imread(filters_test_data.barley_example)
+    filtered_mask = obj_props(bin_img=mask, cut_side="upper", thresh=1000000, regprop="area")
+    _, nobjs = create_labels(mask=filtered_mask)
+    assert nobjs == 0
