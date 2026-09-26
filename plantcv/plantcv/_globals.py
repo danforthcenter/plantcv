@@ -183,7 +183,7 @@ class Outputs:
         # handle multi-value and single-value metadata terms
         metadata_single_val_list = [val[0] for val in metadata_val_list if not isinstance(val[0], list)]
         metadata_single_key_list = [key for key, value in self.metadata.items() if not isinstance(value["value"][0], list)]
-        metadata_multi_val_list = ["_".join(map(str, val[0])) for val in metadata_val_list if isinstance(val[0], list)]
+        metadata_multi_val_list = ['"' + ",".join(map(str, val[0])) + '"' for val in metadata_val_list if isinstance(val[0], list)]
         metadata_multi_key_list = [key for key, value in self.metadata.items() if isinstance(value["value"][0], list)]
         metadata_key_list = metadata_single_key_list + metadata_multi_key_list
         metadata_val_list = metadata_single_val_list + metadata_multi_val_list
