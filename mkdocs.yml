@@ -44,19 +44,16 @@ nav:
         - "Exposure": qc_exposure.md
         - "Quick Color Check": quick_color_check.md
         - 'Within Frame': within_frame.md 
-      - 'Orient Image':
-        - 'Flip Image': flip.md
-        - 'Shift Image': shift.md
-      - 'Combine Images':
-          - 'Apply Mask': apply_mask.md
-          - 'Background Subtraction': background_subtraction.md
-          - 'Image Add': image_add.md
-          - 'Image Subtract': image_subtract.md
       - 'Colorspace Conversion':
         - 'RGB to Gray': rgb2gray.md
         - 'RGB to CMYK': rgb2cmyk.md
         - 'RGB to LAB': rgb2lab.md
         - 'RGB to HSV': rgb2hsv.md
+      - 'Combine Images':
+          - 'Apply Mask': apply_mask.md
+          - 'Background Subtraction': background_subtraction.md
+          - 'Image Add': image_add.md
+          - 'Image Subtract': image_subtract.md
       - 'Crop':
         - 'Auto Crop': auto_crop.md
         - 'Crop': crop.md
@@ -91,8 +88,11 @@ nav:
         - 'Close Gaps in Objects (closing)': closing.md
         - 'Group Nearby Objects (spatial clustering)': spatial_clustering.md
       - 'Object Separation (e.g. watershed)':
-          - 'Separate Touching Objects (watershed)': watershed.md
-          - 'Segment Image Series': segment_image_series.md
+        - 'Separate Touching Objects (watershed)': watershed.md
+        - 'Segment Image Series': segment_image_series.md
+      - 'Orient Image':
+        - 'Flip Image': flip.md
+        - 'Shift Image': shift.md
       - 'Region of Interest Tools':
         - 'Create a Circular ROI': roi_circle.md
         - 'Create an Elliptical ROI': roi_ellipse.md
