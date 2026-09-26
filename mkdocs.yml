@@ -24,10 +24,132 @@ nav:
   - 'PlantCV Namespace':
     - 'PlantCV':
       - 'Inputs and Outputs':
-        - 'Print Image': print_image.md
-        - 'Plot Image': plot_image.md
+        - 'Params (Debugging)': params.md
         - 'Read Image': read_image.md
         - 'Read Raw Image (bayer)': read_bayer.md
+        - 'Open Image from URL': io_open_url.md
+        - 'Random Subset': io_random_subset.md
+        - 'Read Dataset': io_read_dataset.md
+        - 'Read Raw Image (bayer)': read_bayer.md
+        - 'Output Mask': output_mask.md
+        - 'Plot Image': plot_image.md
+        - 'Print Image': print_image.md
+      - 'Classes':
+        - 'Objects Class': objects.md
+        - 'Outputs Class': outputs.md
+      - "Quality Control Tools":
+        - 'Color Correction Scatter Plot': qc_color_correction_scatter.md
+        - 'Color Chip Comparison Plot': qc_color_chip_comparison.md
+        - 'Plot Delta E': qc_plot_delta_e.md
+        - "Exposure": qc_exposure.md
+        - "Quick Color Check": quick_color_check.md
+        - 'Within Frame': within_frame.md 
+      - 'Orient Image':
+        - 'Flip Image': flip.md
+        - 'Shift Image': shift.md
+      - 'Combine Images':
+          - 'Apply Mask': apply_mask.md
+          - 'Background Subtraction': background_subtraction.md
+          - 'Image Add': image_add.md
+          - 'Image Subtract': image_subtract.md
+      - 'Annotation Tools':
+          - 'Points': Points.md
+      - 'Colorspace Conversion':
+        - 'RGB to Gray': rgb2gray.md
+        - 'RGB to CMYK': rgb2cmyk.md
+        - 'RGB to LAB': rgb2lab.md
+        - 'RGB to HSV': rgb2hsv.md
+      - 'Crop':
+        - 'Auto Crop': auto_crop.md
+        - 'Crop': crop.md
+        - 'Crop and Position Mask': crop_position_mask.md
+      - 'Filters':
+        - 'Get Kernel': get_kernel.md
+        - 'Canny Edge Detection': canny_edge_detect.md
+        - 'Detect Edges (laplace)': laplace_filter.md
+        - 'Detect Edges (sobel)': sobel_filter.md
+        - 'Detect Edges (scharr)': scharr_filter.md
+        - 'Detect Texture Variation': stdev_filter.md
+        - 'Object Filter': filters_obj_props.md
+        - 'Sharpen Image': sharpen.md
+        - 'Smooth Image (gaussian blur)': gaussian_blur.md
+        - 'Smooth Out Speckled Noise (median blur)': median_blur.md
+      - 'Logical Operations (e.g. and, or, xor, not)':
+        - 'Combine Masks (keep overlap)': logical_and.md
+        - 'Combine Masks (keep either)': logical_or.md
+        - 'Combine Masks (keep non-overlap)': logical_xor.md
+        - 'Invert': invert.md
+      - 'Label Data':
+        - 'Create Labels': create_labels.md
+        - 'Label Objects from Masks': masks2labels.md
+      - 'Object Size Operators (e.g. fill)':
+        - 'Expand Object (dilation)': dilate.md
+        - 'Contract Object (erosion)': erode.md
+        - 'Remove Small Objects (fill objects)': fill.md
+        - 'Fill Enclosed Holes (fill holes)': fill_holes.md
+        - 'Fill Connected Region (flood fill)': floodfill.md
+        - 'Remove Small Specks (opening)': opening.md
+        - 'Close Gaps in Objects (closing)': closing.md
+        - 'Group Nearby Objects (spatial clustering)': spatial_clustering.md
+      - 'Object Separation (e.g. watershed)':
+          - 'Separate Touching Objects (watershed)': watershed.md
+          - 'Segment Image Series': segment_image_series.md
+      - 'Region of Interest Tools':
+        - 'Create a Circular ROI': roi_circle.md
+        - 'Create an Elliptical ROI': roi_ellipse.md
+        - 'Create a Rectangular ROI': roi_rectangle.md
+        - 'Create a Custom ROI': roi_custom.md
+        - 'Create ROI from Binary Image': roi_from_binary_image.md
+        - 'Create Multi ROIs': 'roi_multi.md'
+        - 'Create Multi Rectangular ROIs': 'roi_multi_rect.md'
+        - 'Create Grid of ROIs Automatically': roi_auto_grid.md
+        - 'Create Grid of Circular ROIs Automatically': roi_auto_wells.md
+        - 'Filter a mask by ROI': roi_filter.md
+        - 'Filter a mask by ROI (quickly)': roi_quick_filter.md
+        - 'Convert ROI to Mask': roi2mask.md
+      - 'Thresholding Methods':
+        - 'Binary Threshold': binary_threshold.md
+        - 'Custom Range Threshold': custom_range_threshold.md
+        - 'Adaptive Local Threshold': gaussian_threshold.md
+        - 'Mask Bad Pixels': mask_bad_threshold.md
+        - 'Mean Adaptive Threshold': mean_threshold.md
+        - 'Auto Threshold (otsu)': otsu_threshold.md
+        - 'Auto Threshold (triangle)': triangle_threshold.md
+        - 'Saturation Threshold': saturation_threshold.md
+        - 'Threshold Two Channels': threshold_dual_channels.md
+        - 'Texture Threshold': texture_threshold.md
+      - 'Transformation Methods (e.g. color correction, resizing)':
+          - 'Affine Color Correction': transform_affine_color_correction.md
+          - 'Auto-Detect Color Card': transform_detect_color_card.md
+          - 'Auto Correct Color': transform_auto_correct_color.md
+          - 'Auto Correct Color (non-linear)': transform_auto_correct_color_nonlinear.md
+          - 'Boost Local Contrast (CLAHE, illumination correction)': transform_clahe.md
+          - 'Boost Global Contrast (hist equalization)': HistEqualization.md
+          - 'Calibrate Camera': transform_calibrate_camera.md
+          - 'Checkerboard Calibration': transform_checkerboard_calibration.md
+          - 'Create Color Card Mask': create_color_card_mask.md
+          - 'Convert Color Card to Matrix': get_color_matrix.md
+          - 'Color Correct to Target Image': transform_correct_color.md
+          - 'Quick Color Check': quick_color_check.md
+          - 'Gamma Correction': transform_gamma_correct.md
+          - 'Measure Distance to Background (distance transform)': distance_transform.md
+          - 'Measure Color Difference (deltaE)': transform_deltaE.md
+          - 'Standard Color Matrix': std_color_matrix.md
+          - 'Mask Color Card': transform_mask_color_card.md
+          - 'Merge Images': transform_merge_images.md
+          - 'Nonuniform Illumination Correction': nonuniform_illumination.md
+          - 'Perspective Warp': transform_warp.md
+          - 'Rescale Image Values': transform_rescale.md
+          - 'Resize Images': transform_resize.md
+          - 'Rotate': rotate2.md
+          - 'White Balance': white_balance.md
+      - 'Transformation Helpers':
+            - 'Astrobotany Calibration Matrix': astro_color_matrix.md
+            - 'Calculate Color Correction Matrix': mp_inverse.md
+            - 'Create Color Correction Matrix': transformation_matrix.md
+            - 'Apply Color Correction Matrix': apply_transformation_matrix.md
+            - 'Load Matrix': load_matrix.md
+            - 'Save Matrix': save_matrix.md
       - 'Analysis Methods':
         - 'Analyze Color': analyze_color2.md
         - 'Analyze Pixel Distributions': analyze_distribution.md
@@ -37,62 +159,13 @@ nav:
         - 'Vertical Boundary Tool': analyze_bound_vertical2.md
         - 'Analyze Texture': analyze_texture.md
         - 'Analyze Thermal': analyze_thermal.md
+        - 'Analyze Size Marker': report_size_marker.md
         - 'Analyze Spectral Reflectance': analyze_spectral_reflectance.md
         - 'Analyze Spectral Index': analyze_spectral_index.md
         - 'Analyze YII': analyze_yii.md
         - 'Analyze NPQ': analyze_npq.md
-      - 'Annotation Tools':
-          - 'Points': Points.md
-      - 'Apply Mask': apply_mask.md
-      - 'Auto Crop': auto_crop.md
-      - 'Background Subtraction': background_subtraction.md
-      - 'Canny Edge Detection': canny_edge_detect.md
-      - 'Close Gaps in Objects (closing)': closing.md
-      - 'Color Palette': color_palette.md
-      - 'Colorspace Conversion':
-        - 'RGB to Gray': rgb2gray.md
-        - 'RGB to CMYK': rgb2cmyk.md
-        - 'RGB to LAB': rgb2lab.md
-        - 'RGB to HSV': rgb2hsv.md
-      - 'Combine Multiple Results Files': process_results.md
-      - 'Convert JSON results to CSV': json2csv.md
-      - 'Create Labels': create_labels.md
-      - 'Crop': crop.md
-      - 'Crop and Position Mask': crop_position_mask.md
-      - 'Expand Object (dilation)': dilate.md
-      - 'Measure Distance to Background (distance transform)': distance_transform.md
-      - 'Contract Object (erosion)': erode.md
-      - 'Remove Small Objects (fill objects)': fill.md
-      - 'Fill Enclosed Holes (fill holes)': fill_holes.md
-      - 'Fill Connected Region (flood fill)': floodfill.md
-      - 'Flip Image': flip.md
-      - 'Filters':
-        - 'Object Filter': filters_obj_props.md
-        - 'Detect Edges (laplace)': laplace_filter.md
-        - 'Detect Edges (sobel)': sobel_filter.md
-        - 'Detect Edges (scharr)': scharr_filter.md
-      - 'Smooth Image (gaussian blur)': gaussian_blur.md
-      - 'Get Kernel': get_kernel.md
-      - 'Boost Global Contrast (hist equalization)': HistEqualization.md
-      - 'Hyperspectral Data':
-          - 'Analyze Spectral Reflectance': analyze_spectral_reflectance.md
-          - 'Analyze Spectral Index': analyze_spectral_index.md
-          - 'Calibrate HSI': calibrate.md
-          - 'Crop HSI': crop.md
-          - 'Spectral Index': spectral_index.md
-          - 'Extract wavelength': extract_wavelength.md
-          - 'Rotate HSI': hyperspectral_rot90.md
-          - 'Spectral data objects': Spectral_data.md
-          - 'Write HSI data': write_data.md
-      - 'Image Add': image_add.md
-      - 'Image Subtract': image_subtract.md
-      - 'Merge Multispectral Images': image_fusion.md
-      - 'Invert': invert.md
-      - 'I/O Functions':
-          - 'Open Image from URL': io_open_url.md
-          - 'Random Subset': io_random_subset.md
-          - 'Read Dataset': io_read_dataset.md
-      - 'Group Pixels by Color (kmeans)': kmeans_classifier.md
+        - 'Combine Multiple Results Files': process_results.md
+        - 'Convert JSON results to CSV': json2csv.md     
       - 'Landmark Analysis':
         - 'Find Landmark Points': homology_acute.md
         - 'Build Landmark Comparison Table': homology_space.md
@@ -103,13 +176,7 @@ nav:
         - 'y-Axis Pseudolandmarks': homology_y_axis_pseudolandmarks.md
         - 'Scale Features': homology_scale_features.md
         - 'Landmark Reference Point Distribution': homology_landmark_reference_pt_dist.md
-      - 'Logical Operations':
-        - 'Combine Masks (keep overlap)': logical_and.md
-        - 'Combine Masks (keep either)': logical_or.md
-        - 'Combine Masks (keep non-overlap)': logical_xor.md
-      - 'Label Objects from Masks': masks2labels.md
-      - 'Smooth Out Speckled Noise (median blur)': median_blur.md
-      - 'Morphology Functions':
+      - 'Morphology Analysis':
         - 'Analyze Stem': analyze_stem.md
         - 'Check Cycles': check_cycles.md
         - 'Fill Segments': fill_segments.md
@@ -129,111 +196,46 @@ nav:
         - 'Segment Tangent Angle': segment_tangent_angle.md
         - 'Skeletonize': skeletonize.md
         - 'Segment Width': segment_width.md
-      - 'Classify pixels (naive bayes)': naive_bayes_classifier.md
-      - 'Objects Class': objects.md
-      - 'Remove Small Specks (opening)': opening.md
-      - 'Output Mask': output_mask.md
-      - 'Outputs Class': outputs.md
-      - 'Photosynthesis Functions':
-          - 'Read CropReporter Data': photosynthesis_read_cropreporter.md
-          - 'Reassign Frame Labels': photosynthesis_reassign_frame_labels.md
-          - 'Analyze YII': analyze_yii.md
-          - 'Analyze NPQ': analyze_npq.md
-          - 'Visualize Chlorophyll Fluorescence': visualize_chlorophyll_fluorescence.md
-      - 'Params (Debugging)': params.md
-      - 'Print Image': print_image.md
-      - 'Plot Image': plot_image.md
-      - "Quality Control Tools":
-        - 'Color Correction Scatter Plot': qc_color_correction_scatter.md
-        - 'Color Chip Comparison Plot': qc_color_chip_comparison.md
-        - 'Plot Delta E': qc_plot_delta_e.md
-        - "Exposure": qc_exposure.md
-        - "Quick Color Check": quick_color_check.md
-      - 'Read Image': read_image.md
-      - 'Read Raw Image (bayer)': read_bayer.md
-      - 'Report Size Marker': report_size_marker.md
-      - 'Region of Interest Tools':
-        - 'Create a Circular ROI': roi_circle.md
-        - 'Create an Elliptical ROI': roi_ellipse.md
-        - 'Create a Rectangular ROI': roi_rectangle.md
-        - 'Create a Custom ROI': roi_custom.md
-        - 'Create ROI from Binary Image': roi_from_binary_image.md
-        - 'Create Multi ROIs': 'roi_multi.md'
-        - 'Create Multi Rectangular ROIs': 'roi_multi_rect.md'
-        - 'Create Grid of ROIs Automatically': roi_auto_grid.md
-        - 'Create Grid of Circular ROIs Automatically': roi_auto_wells.md
-        - 'Filter a mask by ROI': roi_filter.md
-        - 'Filter a mask by ROI (quickly)': roi_quick_filter.md
-        - 'Convert ROI to Mask': roi2mask.md
-      - 'Segment Image Series': segment_image_series.md
-      - 'Sharpen Image': sharpen.md
-      - 'Shift Image': shift.md
-      - 'Group Nearby Objects (spatial clustering)': spatial_clustering.md
-      - 'Spectral Index': spectral_index.md
-      - 'Detect Texture Variation': stdev_filter.md
-      - 'Thresholding Methods':
-        - 'Binary Threshold': binary_threshold.md
-        - 'Custom Range Threshold': custom_range_threshold.md
-        - 'Adaptive Local Threshold': gaussian_threshold.md
-        - 'Mask Bad Pixels': mask_bad_threshold.md
-        - 'Mean Adaptive Threshold': mean_threshold.md
-        - 'Auto Threshold (otsu)': otsu_threshold.md
-        - 'Auto Threshold (triangle)': triangle_threshold.md
-        - 'Saturation Threshold': saturation_threshold.md
-        - 'Threshold Two Channels': threshold_dual_channels.md
-        - 'Texture Threshold': texture_threshold.md
-      - 'Transformation Methods':
-          - 'Auto-Detect Color Card': transform_detect_color_card.md
-          - 'Auto Correct Color': transform_auto_correct_color.md
-          - 'Auto Correct Color (non-linear)': transform_auto_correct_color_nonlinear.md
-          - 'Calibrate Camera': transform_calibrate_camera.md
-          - 'Checkerboard Calibration': transform_checkerboard_calibration.md
-          - 'Create Color Card Mask': create_color_card_mask.md
-          - 'Boost Local Contrast (CLAHE)': transform_clahe.md
-          - 'Convert Color Card to Matrix': get_color_matrix.md
-          - 'Color Correct to Target Image': transform_correct_color.md
-          - 'Quick Color Check': quick_color_check.md
-          - 'Measure Color Difference (deltaE)': transform_deltaE.md
-          - 'Affine Color Correction': transform_affine_color_correction.md
-          - 'Standard Color Matrix': std_color_matrix.md
-          - 'Gamma Correction': transform_gamma_correct.md
-          - 'Mask Color Card': transform_mask_color_card.md
-          - 'Merge Images': transform_merge_images.md
-          - 'Nonuniform Illumination Correction': nonuniform_illumination.md
-          - 'Perspective Warp': transform_warp.md
-          - 'Rescale Image Values': transform_rescale.md
-          - 'Resize Images': transform_resize.md
-          - 'Rotate': rotate2.md
-      - 'Transformation Helpers':
-            - 'Astrobotany Calibration Matrix': astro_color_matrix.md
-            - 'Calculate Color Correction Matrix': mp_inverse.md
-            - 'Create Color Correction Matrix': transformation_matrix.md
-            - 'Apply Color Correction Matrix': apply_transformation_matrix.md
-            - 'Load Matrix': load_matrix.md
-            - 'Save Matrix': save_matrix.md
       - 'Visualization Methods':
-          - 'Auto Threshold Methods': visualize_auto_threshold_methods.md
-          - 'Chlorophyll Fluorescence': visualize_chlorophyll_fluorescence.md
-          - 'Colorize Label Image': visualize_colorize_label_img.md
-          - 'Colorize Masks': visualize_colorize_masks.md
-          - 'Colorspaces': visualize_colorspace.md
-          - 'Histogram': visualize_histogram.md
-          - 'Hyperspectral Histogram': visualize_hyper_histogram.md
-          - 'Overlay Images': visualize_ovelay_two_imgs.md
-          - 'Object Size ECDF': visualize_obj_size_ecdf.md
-          - 'Object Sizes': visualize_obj_sizes.md
-          - 'Pixel Scatter Plot': 'visualize_pixel_scatter_vis.md'
-          - 'Pseudocolor': visualize_pseudocolor.md
-          - 'Tile': visualize_tile.md
-          - 'Time Lapse Video': visualize_time_lapse_video.md
-      - 'Separate Touching Objects (watershed)': watershed.md
-      - 'White Balance': white_balance.md
-      - 'Within Frame': within_frame.md
+        - 'Auto Threshold Methods': visualize_auto_threshold_methods.md
+        - 'Chlorophyll Fluorescence': visualize_chlorophyll_fluorescence.md
+        - 'Colorize Label Image': visualize_colorize_label_img.md
+        - 'Colorize Masks': visualize_colorize_masks.md
+        - 'Color Palette': color_palette.md
+        - 'Colorspaces': visualize_colorspace.md
+        - 'Histogram': visualize_histogram.md
+        - 'Hyperspectral Histogram': visualize_hyper_histogram.md
+        - 'Overlay Images': visualize_ovelay_two_imgs.md
+        - 'Object Size ECDF': visualize_obj_size_ecdf.md
+        - 'Object Sizes': visualize_obj_sizes.md
+        - 'Pixel Scatter Plot': 'visualize_pixel_scatter_vis.md'
+        - 'Pseudocolor': visualize_pseudocolor.md
+        - 'Tile': visualize_tile.md
+        - 'Time Lapse Video': visualize_time_lapse_video.md
+    - 'Hyperspectral and Multispectral Data':
+      - 'Analyze Spectral Reflectance': analyze_spectral_reflectance.md
+      - 'Analyze Spectral Index': analyze_spectral_index.md
+      - 'Calibrate HSI': calibrate.md
+      - 'Crop HSI': crop.md
+      - 'Spectral Index': spectral_index.md
+      - 'Extract wavelength': extract_wavelength.md
+      - 'Rotate HSI': hyperspectral_rot90.md
+      - 'Spectral data objects': Spectral_data.md
+      - 'Write HSI data': write_data.md
+      - 'Merge Multispectral Images': image_fusion.md
+    - 'Photosynthesis Functions':
+      - 'Read CropReporter Data': photosynthesis_read_cropreporter.md
+      - 'Reassign Frame Labels': photosynthesis_reassign_frame_labels.md
+      - 'Analyze YII': analyze_yii.md
+      - 'Analyze NPQ': analyze_npq.md
+      - 'Visualize Chlorophyll Fluorescence': visualize_chlorophyll_fluorescence.md     
     - 'Machine Learning Training':
       - 'Kmeans Clustering': train_kmeans.md
+      - 'Group Pixels by Color (kmeans)': kmeans_classifier.md
       - 'Naive Bayes': naive_bayes.md
       - 'Naive Bayes Multiclass': naive_bayes_multiclass.md
       - 'Naive Bayes Multiclass Samples File QC': naive_bayes_check_samples_file.md
+      - 'Classify pixels (naive bayes)': naive_bayes_classifier.md
     - 'Batch Processing (Parallelization)':
         - 'Getting Started in Parallel': parallel_preparation.md
         - 'Configure Parallelization': parallel_config.md
