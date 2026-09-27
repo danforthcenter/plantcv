@@ -7,8 +7,13 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import outputs
-from plantcv.plantcv.visualize import histogram
-from plantcv.plantcv._helpers import _iterate_analysis
+from plantcv.plantcv._helpers import _iterate_objects
+
+# Histogram plot types
+HIST_TYPES = {"all": ("b", "g", "r", "l", "m", "y", "h", "s", "v"),
+              "rgb": ("b", "g", "r"),
+              "lab": ("l", "m", "y"),
+              "hsv": ("h", "s", "v")}
 
 
 def color(rgb_img, labeled_mask, n_labels=1, colorspaces="hsv", label=None):
@@ -35,41 +40,66 @@ def color(rgb_img, labeled_mask, n_labels=1, colorspaces="hsv", label=None):
     if label is None:
         label = params.sample_label
 
-    _ = _iterate_analysis(img=rgb_img, labeled_mask=labeled_mask, n_labels=n_labels, label=label, function=_analyze_color,
-                          **{"colorspaces": colorspaces})
+    if colorspaces.lower() not in HIST_TYPES:
+        fatal_error(f"Colorspace '{colorspaces}' is not supported, must be be one of the following: "
+                    f"{', '.join(map(str, HIST_TYPES.keys()))}")
+    if len(np.shape(rgb_img)) < 3:
+        fatal_error("rgb_img must be an RGB image")
+
+    # Extract the color channels for the whole image
+    channels = _color_channels(rgb_img=rgb_img, colorspaces=colorspaces)
+
+    for sample, slices, obj_mask in _iterate_objects(labeled_mask=labeled_mask, n_labels=n_labels, label=label):
+        _analyze_color(channels=channels, slices=slices, obj_mask=obj_mask, colorspaces=colorspaces, label=sample)
     hue_chart = outputs.plot_dists(variable="hue_frequencies")
     _debug(visual=hue_chart, filename=os.path.join(params.debug_outdir, str(params.device) + '_hue_hist.png'))
     return hue_chart
 
 
-def _analyze_color(img, mask, colorspaces="hsv", label=None):
+def _color_channels(rgb_img, colorspaces="hsv"):
+    """Split an RGB image into the color channels needed for analysis.
+
+    Inputs:
+    rgb_img          = RGB image data
+    colorspaces      = 'all', 'rgb', 'lab', or 'hsv'
+
+    Returns:
+    channels         = dictionary of color channel images
+
+    :param rgb_img: numpy.ndarray
+    :param colorspaces: str
+    :return channels: dict
+    """
+    # Extract the blue, green, and red channels
+    b, g, r = cv2.split(rgb_img)
+    # Convert the BGR image to HSV (hue is always analyzed)
+    hsv = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2HSV)
+    # Extract the hue, saturation, and value channels
+    h, s, v = cv2.split(hsv)
+    channels = {"b": b, "g": g, "r": r, "h": h, "s": s, "v": v}
+    if colorspaces.upper() in ('LAB', 'ALL'):
+        # Convert the BGR image to LAB
+        lab = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2LAB)
+        # Extract the lightness, green-magenta, and blue-yellow channels
+        channels["l"], channels["m"], channels["y"] = cv2.split(lab)
+    return channels
+
+
+def _analyze_color(channels, slices, obj_mask, colorspaces="hsv", label=None):
     """Analyze the color properties of an image object
     Inputs:
-    img              = RGB image data
-    mask             = Binary mask made from selected contours
+    channels         = dictionary of color channel images
+    slices           = bounding box of the object
+    obj_mask         = boolean mask of the object within the bounding box
     colorspaces      = 'all', 'rgb', 'lab', or 'hsv'
     label            = optional label parameter, modifies the variable name of observations recorded
 
-    Returns:
-    analysis_image   = histogram output
-
-    :param rgb_img: numpy.ndarray
-    :param mask: numpy.ndarray
+    :param channels: dict
+    :param slices: tuple
+    :param obj_mask: numpy.ndarray
     :param colorspaces: str
     :param label: str
-    :return analysis_images: list
     """
-    # Initialize output data
-    # Histogram plot types
-    hist_types = {"all": ("b", "g", "r", "l", "m", "y", "h", "s", "v"),
-                  "rgb": ("b", "g", "r"),
-                  "lab": ("l", "m", "y"),
-                  "hsv": ("h", "s", "v")}
-
-    if colorspaces.lower() not in hist_types:
-        fatal_error(f"Colorspace '{colorspaces}' is not supported, must be be one of the following: "
-                    f"{', '.join(map(str, hist_types.keys()))}")
-
     # Empty histograms
     histograms = {
         "b": {"label": "blue", "graph_color": "blue",
@@ -98,46 +128,25 @@ def _analyze_color(img, mask, colorspaces="hsv", label=None):
     hue_circular_std = np.nan
 
     # Skip empty masks
-    if np.count_nonzero(mask) != 0:
-        # Save user debug setting
-        debug = params.debug
-        if len(np.shape(img)) < 3:
-            fatal_error("rgb_img must be an RGB image")
+    if np.count_nonzero(obj_mask) != 0:
+        # Object pixel values for each color channel
+        pixels = {channel: img[slices][obj_mask] for channel, img in channels.items()}
+        h, s, v = pixels["h"], pixels["s"], pixels["v"]
 
-        # Mask the input image
-        masked = cv2.bitwise_and(img, img, mask=mask)
-        # Extract the blue, green, and red channels
-        b, g, r = cv2.split(masked)
-        # Convert the BGR image to LAB
-        lab = cv2.cvtColor(masked, cv2.COLOR_BGR2LAB)
-        # Extract the lightness, green-magenta, and blue-yellow channels
-        l, m, y = cv2.split(lab)
-        # Convert the BGR image to HSV
-        hsv = cv2.cvtColor(masked, cv2.COLOR_BGR2HSV)
-        # Extract the hue, saturation, and value channels
-        h, s, v = cv2.split(hsv)
-
-        # Color channel dictionary
-        channels = {"b": b, "g": g, "r": r, "l": l, "m": m, "y": y, "h": h, "s": s, "v": v}
-
-        # Calculate histogram
-        params.debug = None
-        for channel in hist_types["all"]:
-            histograms[channel]["hist"] = histogram(channels[channel], mask, 256, 0, 255,
-                                                    hist_data=True)[1]['proportion of pixels (%)'].tolist()
-
-        # Restore user debug setting
-        params.debug = debug
+        # Calculate histograms as the percent of object pixels in each 8-bit bin
+        for channel, values in pixels.items():
+            histograms[channel]["hist"] = (np.bincount(values, minlength=256) / float(values.size) * 100).tolist()
 
         # Hue values of zero are red but are also the value for pixels where hue is undefined. The hue value of a pixel will
         # be undef. when the color values are saturated. Therefore, hue values of 0 are excluded from the calculations below
+        hue = h[h > 0]
         # Calculate the median hue value (median is rescaled from the encoded 0-179 range to the 0-359 degree range)
-        hue_median = np.median(h[np.where(h > 0)]) * 2
+        hue_median = np.median(hue) * 2
 
         # Calculate the circular mean and standard deviation of the encoded hue values
         # The mean and standard-deviation are rescaled from the encoded 0-179 range to the 0-359 degree range
-        hue_circular_mean = stats.circmean(h[np.where(h > 0)], high=179, low=0) * 2
-        hue_circular_std = stats.circstd(h[np.where(h > 0)], high=179, low=0) * 2
+        hue_circular_mean = stats.circmean(hue, high=179, low=0) * 2
+        hue_circular_std = stats.circstd(hue, high=179, low=0) * 2
 
     # Store into global measurements
     # RGB signal values are in an unsigned 8-bit scale of 0-255
@@ -174,10 +183,12 @@ def _analyze_color(img, mask, colorspaces="hsv", label=None):
 
     if colorspaces.upper() in ('HSV', 'ALL'):
         # Calculate the mean and median saturation and value (lightness) values
-        saturation_mean = np.mean(s[np.where(s > 0)].astype(np.float64) / 255) * 100
-        saturation_median = np.median(s[np.where(s > 0)].astype(np.float64) / 255) * 100
-        value_mean = np.mean(v[np.where(v > 0)].astype(np.float64) / 255) * 100
-        value_median = np.median(v[np.where(v > 0)].astype(np.float64) / 255) * 100
+        saturation = s[s > 0].astype(np.float64) / 255
+        value = v[v > 0].astype(np.float64) / 255
+        saturation_mean = np.mean(saturation) * 100
+        saturation_median = np.median(saturation) * 100
+        value_mean = np.mean(value) * 100
+        value_median = np.median(value) * 100
 
         outputs.add_observation(sample=label, variable='saturation_mean', trait='saturation mean',
                                 method='plantcv.plantcv.analyze.color', scale='percent', datatype=float,
@@ -211,5 +222,3 @@ def _analyze_color(img, mask, colorspaces="hsv", label=None):
     outputs.add_observation(sample=label, variable='hue_median', trait='hue median',
                             method='plantcv.plantcv.analyze.color', scale='degrees', datatype=float,
                             value=hue_median, label='degrees')
-
-    return img
