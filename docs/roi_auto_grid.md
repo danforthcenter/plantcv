@@ -43,7 +43,7 @@ rois = pcv.roi.auto_grid(mask=mask, nrows=3, ncols=6, radius=20, img=img)
 
 ### Next steps:
 
-This function returns an Objects dataclass, which can be used with [create_labels](create_labels.md) to createa a labeled
+This function returns an Objects dataclass, which can be used with [create_labels](create_labels.md) to create a labeled
 mask for use with analysis functions.
 
 ```python
