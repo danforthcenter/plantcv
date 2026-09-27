@@ -4,17 +4,18 @@ Extract estimates of the efficiency (YII) of Photosystem II (PSII).
 
 The photosynthesis subpackage is dependent on a PSII_data instance file structure as created by photosynthesis.read_* files.
 
-**plantcv.analyze.yii_ojip**(*ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None*)
+**plantcv.analyze.yii**(*ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None*)
 
 **returns** list of YII DataArray, list of YII histograms (one for each of the `psd` or `psl` arrays)
 
 - **Parameters:**
-    - ps - PSII_data instance (from [read_cropreporter](photosynthesis_read_cropreporter.md)) containing `psd` and/or `psl` data.
-    Can either have a pair of frames F0, Fm or pair(s) of Fp, Fmp.
+    - ps - PSII_data instance (from [read_cropreporter](photosynthesis_read_cropreporter.md)) containing
+	`psd`, `psl`, `pmt`, `pml`, `pmd`, `ojip_light`, or `ojip_dark` data.
+    Can either have a pair of frames F0, Fm or pair(s) of Fp, Fmp or F0, Fm, Fp, Fmp, Fpp, Fmpp, etc frames in `pam_time` data.
     - labeled_mask - Labeled mask of objects (32-bit).
     - n_labels - Total number expected individual objects (default = 1).
-    - auto_fm - Automatically calculate the frame with maximum fluorescence per label, otherwise use a fixed frame for all labels (default = False).
-    - measurement_labels - list of label(s) for each measurement, modifies the default variable names of observations. must have same length as number of measurements in ps_da
+    - auto_fm - Automatically calculate the frame with maximum fluorescence per label, otherwise use a fixed frame for all labels (default = False). This is not used for PAM time data.
+    - measurement_labels - list of label(s) for each measurement, modifies the default variable names of observations. must have same length as number of measurements in the frame of ps being used.
     - label - Optional label parameter, modifies the variable name of observations recorded. Can be a prefix or list (default = pcv.params.sample_label).
 - **Context:**
     - Used to extract Fv/Fm, Fv'/Fm' or Fq'/Fm' per identified plant pixel.
@@ -47,7 +48,7 @@ pcv.params.sample_label = "plant"
 ps = pcv.photosynthesis.read_cropreporter(filename="mydata.inf")
 
 # Analyze Fv/Fm    
-fvfm, fvfm_hist = pcv.analyze.yii_ojip(ps_da=ps.ojip_dark, labeled_mask=kept_mask)
+fvfm, fvfm_hist = pcv.analyze.yii(ps_da=ps.ojip_dark, labeled_mask=kept_mask)
 
 # Access Fv/Fm median value
 fvfm_median = pcv.outputs.observations['plant_1']['yii_median_t0']['value']
@@ -79,7 +80,7 @@ pcv.params.debug = "plot"
 pcv.params.sample_label = "plant"
 
 # Analyze Fq'/Fm'    
-fqfm, fqfm_hist = pcv.analyze.yii_ojip(ps=ps.ojip_light, labeled_mask=kept_mask)
+fqfm, fqfm_hist = pcv.analyze.yii(ps=ps.ojip_light, labeled_mask=kept_mask)
 
 # Access Fq'/Fm' median value
 fqfm_median = pcv.outputs.observations['plant_1']["yii_median_t1"]['value']
@@ -103,4 +104,4 @@ fqfm.plot(col_wrap='measurement')
 The grayscale YII images can be used with the [pcv.visualize.pseudocolor](visualize_pseudocolor.md) function 
 which allows the user to pick a colormap for plotting.
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/analyze/yii_ojip.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/analyze/yii.py)

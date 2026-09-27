@@ -31,7 +31,9 @@ dependencies = [
     "nbconvert",
     "nbformat",
     "imageio >= 2.28",
-    "imageio-ffmpeg"
+    "imageio-ffmpeg",
+    "pillow",
+    "pillow_heif"
 ]
 requires-python = ">=3.8"
 authors = [

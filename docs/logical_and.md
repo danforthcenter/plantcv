@@ -12,7 +12,7 @@ This is a wrapper for the Opencv Function [bitwise_and](http://docs.opencv.org/2
     - bin_img2 - Binary image data to be compared to bin_img1.
     
 - **Context:**
-    - Used to combine to images. Very useful when combining image channels that have been thresholded seperately.
+    - Used to combine two images. Very useful when combining image channels that have been thresholded separately.
 - **Example use:**
     - Below
 

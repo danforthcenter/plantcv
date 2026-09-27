@@ -6,6 +6,8 @@ import numpy as np
 import pandas as pd
 import nd2
 import flyr
+from PIL import Image
+from pillow_heif import register_heif_opener
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv._globals import params
 from plantcv.plantcv.hyperspectral.read_data import read_data
@@ -21,7 +23,7 @@ def readimage(filename, mode="native"):
         Name of image file
     mode : str
         Mode of readimage. Options: "native", "rgb", "rgba", "gray", "normalize",
-        "csv", "envi", "arcgis", "nd2", "thermal"
+        "csv", "envi", "arcgis", "nd2", "thermal", "heic"
 
     Returns
     -------
@@ -32,6 +34,8 @@ def readimage(filename, mode="native"):
     img_name : str
         Name of image file
     """
+    if os.path.splitext(filename)[1].upper() == ".HEIC" and mode == "native":
+        mode = "heic"
     if mode.upper() in ("GRAY", "GREY"):
         img = cv2.imread(filename, 0)
     elif mode.upper() == "RGB":
@@ -50,6 +54,11 @@ def readimage(filename, mode="native"):
         img = nd2.imread(filename)
     elif mode.upper() == "THERMAL":
         img = flyr.unpack(filename).celsius
+    elif mode.upper() == "HEIC":
+        register_heif_opener()
+        image = Image.open(filename)
+        image_array = np.asarray(image)
+        img = cv2.cvtColor(image_array, cv2.COLOR_RGB2BGR)
     else:
         img = cv2.imread(filename, -1)
 

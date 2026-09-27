@@ -1,6 +1,6 @@
 ## Updating PlantCV
 
-### Table of Contents for Contibution
+### Table of Contents for Contribution
 1. [Updating with PyPi](#pypi)
 2. [Updating with Conda](#conda)
 3. [Updating from source](#source)
@@ -59,13 +59,17 @@ automatically. Alternatively, you can run `pip install -e .` to reinstall the pa
 
 ### Breaking changes between v4 and v5 <a name="breaking-changes"></a>
 
+#### plantcv.filters.eccentricity
+
+Deprecated the function in favor of `plantcv.filters.obj_props(..., regprop="eccentricity")`.
+
 #### plantcv.analyze.npq
 
 Removed `ps_da_light` and `ps_da_dark` arguments in favor of `ps` argument that takes the entire `PSII_data` object.
 
 #### plantcv.analyze.yii
 
-Renamed to `plantcv.analyze.yii_ojip` parameter `ps_da` to `ps` to reflect that it now takes a `PSII_data` object instead of a single frame from that object.
+Renamed parameter `ps_da` to `ps` to reflect that it now takes a `PSII_data` object instead of a single frame from that object.
 
 #### plantcv.utils
 
@@ -99,6 +103,10 @@ Removed `label` parameter since size marker data is now stored as metadata in th
 
 Deprecated the function in favor of the new
 [`plantcv.transform.detect_color_card`](transform_detect_color_card.md) function.
+
+#### plantcv.transform.quick_color_check
+
+Function moved to `plantcv.qc.quick_color_check` and the `num_chips`/`target_matrix` arguments are now optional.
 
 #### plantcv.visualize.pixel_scatter_plot
 
@@ -148,7 +156,7 @@ Below is a simple example of a typical PlantCV v3 workflow of a single plant.
 # Read in image data 
 img, path, filename = pcv.readimage(filename="rgb_img.png")
 
-# Covert to grayscale colorspace 
+# Convert to grayscale colorspace
 a = pcv.rgb2gray_lab(rgb_img=img, channel='a')
 
 # Threshold/segment plant from background 
@@ -187,7 +195,7 @@ in PlantCV v4.0 and future releases.
 # Read in image data (no change)
 img, path, filename = pcv.readimage(filename="rgb_img.png")
 
-# Covert to grayscale colorspace (no change)
+# Convert to grayscale colorspace (no change)
 a = pcv.rgb2gray_lab(rgb_img=img, channel='a')
 
 # Threshold/segment plant from background (removed max_value)
@@ -348,6 +356,12 @@ pages for more details on the input and output variable types.
 * post v3.11: thermal_histogram = **plantcv.analyze_thermal_values**(*thermal_array, mask, histplot=False, label="default"*)
 * post v4.0: DEPRECATED, see plantcv.analyze.thermal
 
+#### plantcv.analyze.alphaL
+
+* pre v5.0: NA
+* post v5.0: array = **plantcv.analyze.alphaL**(*ps, labeled_mask, n_labels=1, label=None, min_bin=-1, max_bin=1*)
+
+
 #### plantcv.analyze.bound_horizontal
 
 * pre v4.0: (see plantcv.analyze_bound_horizontal)
@@ -411,12 +425,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: NA
 * post v4.0: yii, yii_hist = **plantcv.analyze.yii**(*ps_da, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None*)
-* post v5.0: NA
-
-#### plantcv.analyze.yii_ojip
-
-* pre v5.0: See `plantcv.analyze.yii`
-* post v5.0: list_of_yii, list_of_yii_hist = **plantcv.analyze.yii_ojip**(*ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None*)
+* post v5.0: list_of_yii, list_of_yii_hist = **plantcv.analyze.yii**(*ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None*)
 
 #### plantcv.apply_mask
 
@@ -534,6 +543,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.3:  NA 
 * post v4.3: filtered_mask = **plantcv.filters.eccentricity**(*bin_img, ecc_thresh=0*)
+* post v5: NA
 
 #### plantcv.filters.obj_props
 
@@ -1016,11 +1026,12 @@ pages for more details on the input and output variable types.
 
 * pre v4.3.1: NA
 * post v4.3.1: chart = **plantcv.qc.exposure**(*rgb_img, warning_threshold=0.05*)
+* post v5.0: chart = **plantcv.qc.exposure**(*rgb_img, warning_threshold=0.05, label=None*)
 
 #### plantcv.qc.quick_color_check
 
 * pre v5.0: NA, see `plantcv.transform.quick_color_check`
-* post v5.0: chart = **plantcv.transform.quick_color_check**(*target_matrix, source_matrix, num_chips*)
+* post v5.0: chart = **plantcv.qc.quick_color_check**(*source_matrix, target_matrix=None, num_chips=None*)
 
 #### plantcv.qc.color_correction_plot
 
@@ -1174,6 +1185,11 @@ pages for more details on the input and output variable types.
 
 * pre v4.2.1: NA
 * post v4.2.1: mtx, dist = **plantcv.transform.checkerboard_calib**(*img_path, col_corners, row_corners, out_dir*)
+
+#### plantcv.transform.clahe
+
+* pre v5.0: NA
+* post v5.0: img = **plantcv.transform.clahe**(*img, kernel=8, contrast_threshold=2.0*)
 
 #### plantcv.transform.mask_color_card 
 
