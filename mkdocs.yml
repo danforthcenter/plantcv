@@ -29,6 +29,7 @@ nav:
         - 'Read Image': read_image.md
         - 'Read Bayer Raw Image': read_bayer.md
       - 'Analysis Methods':
+        - 'Analyze Alpha': analyze_alphaL.md
         - 'Analyze Color': analyze_color2.md
         - 'Analyze Pixel Distributions': analyze_distribution.md
         - 'Analyze Grayscale': analyze_grayscale.md
