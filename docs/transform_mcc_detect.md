@@ -32,10 +32,18 @@ Automatically detects a Macbeth ColorChecker and creates a labeled mask.
 ```python
 
 from plantcv import plantcv as pcv
+
 rgb_img, path, filename = pcv.readimage("target_img.png")
 
 # Detecting a color card
 cc_matrix = pcv.transform.mcc_detect(rgb_img=rgb_img)
+
+```
+**MCC Color Card Detection**
+
+![Screenshot](img/documentation_images/mcc/mcc-output.png)
+
+```python
 
 # When using mcc_detect, as with detect_color_card, you will always set pos=3
 tgt_matrix = pcv.transform.std_color_matrix(pos=3)
@@ -44,5 +52,8 @@ corrected_img = pcv.transform.affine_color_correction(rgb_img=rgb_img,
                                                       target_matrix=tgt_matrix)
 
 ```
+**Image After MCC Correction**
+
+![Screenshot](img/documentation_images/mcc/transform.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/transform/mcc_detect.py)
