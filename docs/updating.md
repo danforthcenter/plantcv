@@ -1,6 +1,6 @@
 ## Updating PlantCV
 
-### Table of Contents for Contibution
+### Table of Contents for Contribution
 1. [Updating with PyPi](#pypi)
 2. [Updating with Conda](#conda)
 3. [Updating from source](#source)
@@ -160,7 +160,7 @@ Below is a simple example of a typical PlantCV v3 workflow of a single plant.
 # Read in image data 
 img, path, filename = pcv.readimage(filename="rgb_img.png")
 
-# Covert to grayscale colorspace 
+# Convert to grayscale colorspace
 a = pcv.rgb2gray_lab(rgb_img=img, channel='a')
 
 # Threshold/segment plant from background 
@@ -199,7 +199,7 @@ in PlantCV v4.0 and future releases.
 # Read in image data (no change)
 img, path, filename = pcv.readimage(filename="rgb_img.png")
 
-# Covert to grayscale colorspace (no change)
+# Convert to grayscale colorspace (no change)
 a = pcv.rgb2gray_lab(rgb_img=img, channel='a')
 
 # Threshold/segment plant from background (removed max_value)
@@ -359,6 +359,12 @@ pages for more details on the input and output variable types.
 * post v3.5: thermal_histogram = **plantcv.analyze_thermal_values**(*thermal_array, mask, histplot=False*)
 * post v3.11: thermal_histogram = **plantcv.analyze_thermal_values**(*thermal_array, mask, histplot=False, label="default"*)
 * post v4.0: DEPRECATED, see plantcv.analyze.thermal
+
+#### plantcv.analyze.alphaL
+
+* pre v5.0: NA
+* post v5.0: array = **plantcv.analyze.alphaL**(*ps, labeled_mask, n_labels=1, label=None, min_bin=-1, max_bin=1*)
+
 
 #### plantcv.analyze.bound_horizontal
 
@@ -1186,6 +1192,11 @@ pages for more details on the input and output variable types.
 * post v4.2.1: mtx, dist = **plantcv.transform.checkerboard_calib**(*img_path, col_corners, row_corners, out_dir*)
 * post v5.0: mtx, dist = **plantcv.transform.checkerboard_calib**(*img_dir, col_corners, row_corners, out_dir*)
 
+
+#### plantcv.transform.clahe
+
+* pre v5.0: NA
+* post v5.0: img = **plantcv.transform.clahe**(*img, kernel=8, contrast_threshold=2.0*)
 
 #### plantcv.transform.mask_color_card 
 

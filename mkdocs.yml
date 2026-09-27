@@ -29,6 +29,7 @@ nav:
         - 'Read Image': read_image.md
         - 'Read Bayer Raw Image': read_bayer.md
       - 'Analysis Methods':
+        - 'Analyze Alpha': analyze_alphaL.md
         - 'Analyze Color': analyze_color2.md
         - 'Analyze Pixel Distributions': analyze_distribution.md
         - 'Analyze Grayscale': analyze_grayscale.md
@@ -189,6 +190,7 @@ nav:
           - 'Calibrate Camera': transform_calibrate_camera.md
           - 'Checkerboard Calibration': transform_checkerboard_calibration.md
           - 'Create Color Card Mask': create_color_card_mask.md
+          - 'CLAHE Contrast Correction': transform_clahe.md
           - 'Convert Color Card to Matrix': get_color_matrix.md
           - 'Color Correct to Target Image': transform_correct_color.md
           - 'Quick Color Check': quick_color_check.md
