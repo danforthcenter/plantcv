@@ -45,7 +45,7 @@ def test_sharpen_roi(test_data):
     roi_con = [np.array([[[10, 20]], [[10, 200]], [[200, 200]], [[200, 20]]], dtype=np.int32)]
     roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     roi = Objects(contours=[roi_con], hierarchy=[roi_str])
-    sharp_img = sharpen(img, (5, 5), amount=1, threshold=0, roi=roi)
+    sharp_img = sharpen(img, 5, amount=1, threshold=0, roi=roi)
     assert np.average(img) != np.average(sharp_img)
 
 

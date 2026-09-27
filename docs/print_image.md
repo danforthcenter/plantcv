@@ -15,9 +15,9 @@ and altair charts (like the histograms returned in [pcv.analyze.grayscale](analy
     - filename- desired name of image file, supported extensions are PNG, JPG, and TIFF
 - **Context:**
     - Often used to debug new image processing workflows
-    - Used to write out final results images  
+    - Used to write out final results images
 - **Example use:**
-    - [Use In Color Correction Tutorial](https://plantcv.org/tutorials/color-correction)  
+    - [Use In Color Correction Tutorial](https://plantcv.org/tutorials/color-correction)
 
 ```python
 

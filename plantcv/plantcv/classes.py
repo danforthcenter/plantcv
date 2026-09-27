@@ -11,7 +11,7 @@ class Spectral_data:
 
     def __init__(self, array_data, max_wavelength, min_wavelength, max_value, min_value, d_type, wavelength_dict,
                  samples, lines, interleave, wavelength_units, array_type, pseudo_rgb, filename, default_bands,
-                 metadata=None):
+                 byte_order=0, file_type="ENVI", header_offset=0, metadata=None):
         # The actual array/datacube
         self.array_data = array_data
         # Min/max available wavelengths (for spectral datacube)
@@ -30,6 +30,10 @@ class Spectral_data:
         # Interleave type
         self.interleave = interleave
         self.wavelength_units = wavelength_units
+        # store byte order, file type, and header offset
+        self.byte_order = byte_order
+        self.file_type = file_type
+        self.header_offset = header_offset
         # The type of array data (entire datacube, specific index, first derivative, etc)
         self.array_type = array_type
         # Pseudo-RGB image if the array_type is a datacube
@@ -51,21 +55,43 @@ class PSII_data:
         self.metadata = metadata
         if self.metadata is None:
             self.metadata = {}
-        self.datapath = None
-        self.filename = None
-        # Dataset attributes: None = file not present, lazy-loaded object = file present
+            self.datapath = None
+            self.filename = None
+            # Dataset attributes: None = file not present, lazy-loaded object = file present
         self.aph = None
         self.chl = None
         self.clr = None
-        self.ojip = None
+        self.npq = None
+        self._ojip_dark = None
+        self._ojip_light = None
         self.psd = None
         self.psl = None
-        self.pam_dark = None
-        self.pam_light = None
-        self.pam_time = None
+        self.pmd = None
+        self.pml = None
+        self.pmt = None
         self.spectral = None
         self.gfp = None
         self.rfp = None
+
+    @property
+    def ojip_dark(self):
+        if isinstance(self._ojip_dark, str):
+            self._ojip_dark = getattr(self.__dict__[self._ojip_dark], "ojip_dark", None)
+        return self._ojip_dark
+
+    @ojip_dark.setter
+    def ojip_dark(self, value):
+        self._ojip_dark = value
+
+    @property
+    def ojip_light(self):
+        if isinstance(self._ojip_light, str):
+            self._ojip_light = getattr(self.__dict__[self._ojip_light], "ojip_light", None)
+        return self._ojip_light
+
+    @ojip_light.setter
+    def ojip_light(self, value):
+        self._ojip_light = value
 
 
 class Point:

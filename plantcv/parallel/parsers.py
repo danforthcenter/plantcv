@@ -37,10 +37,10 @@ def metadata_parser(config):
     meta, removed_df = _apply_metadata_filters(df=meta, config=config)
 
     # Apply user-supplied date range filters
-    meta, removed_df = _apply_date_range_filter(df=meta, config=config, removed_df=removed_df)
+    meta, removed_df = _apply_date_range_filter(df=meta.reset_index(drop=True), config=config, removed_df=removed_df)
 
     # if resuming a checkpointed process read in that metadata
-    meta, removed_df = _read_checkpoint_data(df=meta, config=config, removed_df=removed_df)
+    meta, removed_df = _read_checkpoint_data(df=meta.reset_index(drop=True), config=config, removed_df=removed_df)
 
     return meta, removed_df
 ###########################################

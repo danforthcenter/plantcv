@@ -932,3 +932,29 @@ def _rect_replace(img, sub_img, roi):
     full_img = np.copy(img)
     full_img[ystart:yend, xstart:xend] = sub_img
     return full_img
+
+
+def _is_binary(img):
+    """Determine whether an image holds no more than two distinct values.
+
+    Only pixel values are considered, not the number of image dimensions.
+
+    Parameters
+    ----------
+    img : numpy.ndarray
+        Image to test.
+
+    Returns
+    -------
+    bool
+        True if the image holds two or fewer distinct values.
+    """
+    values = np.asarray(img)
+    if values.size == 0:
+        return True
+    low = values.min()
+    high = values.max()
+    if low == high:
+        return True
+    # Two distinct values means every pixel equals either the minimum or the maximum
+    return not np.any((values != low) & (values != high))

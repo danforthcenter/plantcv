@@ -67,7 +67,6 @@ nav:
       - 'Flood Fill': floodfill.md
       - 'Flip Image': flip.md
       - 'Filters':
-        - 'Eccentricity Filter': filters_eccentricity.md
         - 'Object Filter': filters_obj_props.md
         - 'Laplace Filter': laplace_filter.md
         - 'Sobel Filter': sobel_filter.md
@@ -190,8 +189,9 @@ nav:
           - 'Calibrate Camera': transform_calibrate_camera.md
           - 'Checkerboard Calibration': transform_checkerboard_calibration.md
           - 'Create Color Card Mask': create_color_card_mask.md
+          - 'CLAHE Contrast Correction': transform_clahe.md
           - 'Convert Color Card to Matrix': get_color_matrix.md
-          - 'Color Correction Workflow': transform_correct_color.md
+          - 'Color Correct to Target Image': transform_correct_color.md
           - 'Quick Color Check': quick_color_check.md
           - 'Delta E Metric': transform_deltaE.md
           - 'Affine Color Correction': transform_affine_color_correction.md
@@ -233,11 +233,13 @@ nav:
       - 'Kmeans Clustering': train_kmeans.md
       - 'Naive Bayes': naive_bayes.md
       - 'Naive Bayes Multiclass': naive_bayes_multiclass.md
+      - 'Naive Bayes Multiclass Samples File QC': naive_bayes_check_samples_file.md
     - 'Parallelization':
         - 'Getting started in parallel': parallel_preparation.md
         - 'Configure Parallelization': parallel_config.md
         - 'Configure Parallelization in Jupyter': parallel_jupyterconfig.md
         - 'Inspect Configuration': parallel_inspect_config.md
+        - 'Sample Images': parallel_sample_images.md
         - 'Workflow Inputs Management': parallel_workflow_inputs.md
         - 'Run Parallel': parallel_run_parallel.md
         - 'Workflow Parallelization': pipeline_parallel.md

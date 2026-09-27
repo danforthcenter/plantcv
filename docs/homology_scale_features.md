@@ -1,6 +1,6 @@
 ## Scale features
 
-This is a function to to transform the coordiantes of landmark points onto a common scale (0-1.0)
+This is a function to transform the coordinates of landmark points onto a common scale (0-1.0)
 Scaling is used to remove the influence of size on shape parameters. Returns a list of tuples.
 
 **plantcv.homology.scale_features**(*mask, points, line_position*)
