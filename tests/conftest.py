@@ -104,6 +104,8 @@ class TestData:
         self.small_bin_img = os.path.join(self.datadir, "setaria_small_plant_mask.png")
         # Gray image
         self.small_gray_img = os.path.join(self.datadir, "setaria_small_plant_gray.png")
+        # heic image
+        self.heic_img = os.path.join(self.datadir, "example.HEIC")
         # Contours file
         self.small_contours_file = os.path.join(self.datadir, "setaria_small_plant_contours.npz")
         # Composed contours file
