@@ -1,12 +1,14 @@
 """Analyze leaf light absorption as alphaL: 1 - (R640nm / R732nm)"""
 
+import os
 import numpy as np
 import pandas as pd
 from plantcv.plantcv.warn import warn
 from plantcv.plantcv._helpers import _iterate_analysis
-from plantcv.plantcv._globals import outputs
+from plantcv.plantcv._globals import outputs, params
 from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.analyze.yii import _set_labels
+from plantcv.plantcv._debug import _debug
 
 
 def alphaL(ps, labeled_mask, n_labels=1, label=None, min_bin=-1, max_bin=1):
@@ -52,6 +54,11 @@ def alphaL(ps, labeled_mask, n_labels=1, label=None, min_bin=-1, max_bin=1):
                             function=_analyze_alphaL,
                             **{"min_bin": min_bin, "max_bin": max_bin,
                                "red": ps.aph.red, "farred": ps.aph.farred})
+
+    # Plot/print dataarray
+    _debug(visual=aph,
+           filename=os.path.join(params.debug_outdir, f"{params.device}_alphaL.png"))
+
     return aph
 
 
