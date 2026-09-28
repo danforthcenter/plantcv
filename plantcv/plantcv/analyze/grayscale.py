@@ -9,23 +9,24 @@ from plantcv.plantcv._helpers import _iterate_objects
 def grayscale(gray_img, labeled_mask, n_labels=1, bins=100, label=None):
     """Analyzes the grayscale values of a masked region of an image.
 
-    Inputs:
-    gray_img     = 8- or 16-bit grayscale image data.
-    labeled_mask = Labeled mask of objects (32-bit).
-    n_labels     = Total number expected individual objects (default = 1).
-    bins         = Number of histogram bins.
-    label        = Optional label parameter, modifies the variable name of
-                   observations recorded (default = pcv.params.sample_label).
+    Parameters
+    ----------
+    gray_img : numpy.ndarray
+        8- or 16-bit grayscale image data.
+    labeled_mask : numpy.ndarray
+        Labeled mask of objects (32-bit).
+    n_labels : int, default=1
+        Total number of expected individual objects.
+    bins : int, default=100
+        Number of histogram bins.
+    label : str, optional
+        Label that modifies the variable name of recorded observations. Defaults
+        to ``pcv.params.sample_label``.
 
-    Returns:
-    analysis_image = Grayscale histogram image
-
-    :param gray_img: numpy.ndarray
-    :param labeled_mask: numpy.ndarray
-    :param n_labels: int
-    :param bins: int
-    :param label: str
-    :return analysis_image: altair.vegalite.v5.api.FacetChart
+    Returns
+    -------
+    analysis_image : altair.vegalite.v5.api.FacetChart
+        Grayscale histogram image.
     """
     # Set lable to params.sample_label if None
     if label is None:
@@ -41,18 +42,19 @@ def grayscale(gray_img, labeled_mask, n_labels=1, bins=100, label=None):
 def _analyze_grayscale(img, slices, obj_mask, bins=100, label=None):
     """Analyzes the grayscale values of a masked region of an image.
 
-    Inputs:
-    img          = 8- or 16-bit grayscale image data.
-    slices       = bounding box of the object
-    obj_mask     = boolean mask of the object within the bounding box
-    bins         = Number of histogram bins.
-    label        = optional label parameter, modifies the variable name of observations recorded (default = "default")
-
-    :param img: numpy.ndarray
-    :param slices: tuple
-    :param obj_mask: numpy.ndarray
-    :param bins: int
-    :param label: str
+    Parameters
+    ----------
+    img : numpy.ndarray
+        8- or 16-bit grayscale image data.
+    slices : tuple
+        Bounding box of the object.
+    obj_mask : numpy.ndarray
+        Boolean mask of the object within the bounding box.
+    bins : int, default=100
+        Number of histogram bins.
+    label : str, optional
+        Label that modifies the variable name of recorded observations. Defaults
+        to ``"default"``.
     """
     # Skip empty masks
     if np.count_nonzero(obj_mask) != 0:
