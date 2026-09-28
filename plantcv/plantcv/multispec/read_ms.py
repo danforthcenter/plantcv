@@ -86,6 +86,7 @@ def _ms_file_matcher(pattern, filelist, ref):
             keep_s = True
             for g in range(2, re.compile(pattern).groups + 1):
                 if ref_match.group(g) != s_match.group(g):
+                    keep_s = False
             if keep_s:
                 keep.append(s)
     return keep
@@ -177,6 +178,8 @@ def read_ms(source, wavelengths=None, pattern="MS(\\d+)_((SV|TV))_BP0_(\\d+).*")
             wavelengths.append(int(re.search(pattern, base).group(1)))
         pat = r"MS(" + "|".join(re.escape(str(n)) for n in set(wavelengths)) + r")"
         MS_list = [x for x in MS_list if re.search(pat, os.path.basename(x))]
+    # NOTE we only collect 0-255 png images with the tool this is built for.
+    # potentially other tools could be non-uint8 compatible by default.
     MS_arrays = [cv2.imread(f, -1).astype(np.uint8) for f in MS_list]
     MS_wavelengths = [int(re.sub("^MS(\\d+).*", "\\1", os.path.basename(w))) for w in MS_list]
     MS_wavelengths_dict = {}
