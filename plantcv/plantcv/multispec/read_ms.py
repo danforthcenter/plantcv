@@ -11,7 +11,7 @@ from plantcv.plantcv.hyperspectral.read_data import _find_closest
 
 
 def _ms_make_pseudo_rgb(ms_array):
-    """Create pseudo-rgb image rom a multispectral class image
+    """Create pseudo-rgb image from a multispectral class image
 
     Parameters:
     -----------
