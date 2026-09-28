@@ -1,6 +1,5 @@
 import numpy as np
 import cv2
-import pytest
 from plantcv.plantcv.spectral_index import spectral_index
 
 
@@ -127,7 +126,7 @@ def test_egi_hsi(spectral_index_test_data):
 
 def test_egi_ms(spectral_index_test_data):
     """Test for PlantCV"""
-    test_array = spectral_index_test_data.ms_data.make_array([460, 530, 700])
+    test_array = spectral_index_test_data.make_ms_array([460, 530, 700])
     index_array = spectral_index.egi(test_array)
     assert np.shape(index_array.array_data) == (10, 10)
 
@@ -158,7 +157,7 @@ def test_gli_hsi(spectral_index_test_data):
 
 def test_gli_ms(spectral_index_test_data):
     """Test for PlantCV"""
-    test_array = spectral_index_test_data.ms_data.make_array([480, 530, 670])
+    test_array = spectral_index_test_data.make_ms_array([480, 530, 670])
     index_array = spectral_index.gli(test_array)
     assert np.shape(index_array.array_data) == (10, 10)
 
@@ -191,7 +190,7 @@ def test_sci_hsi(spectral_index_test_data):
 
 def test_sci_ms(spectral_index_test_data):
     """Test for PlantCV"""
-    test_array = spectral_index_test_data.ms_data.make_array([530, 700])
+    test_array = spectral_index_test_data.make_ms_array([530, 700])
     index_array = spectral_index.sci(test_array)
     assert np.shape(index_array.array_data) == (10, 10)
 
@@ -217,7 +216,7 @@ def test_bgr_hsi(spectral_index_test_data):
 
 def test_bgr_ms(spectral_index_test_data):
     """Test for PlantCV"""
-    test_array = spectral_index_test_data.ms_data.make_array([460, 530])
+    test_array = spectral_index_test_data.make_ms_array([460, 530])
     index_array = spectral_index.bgr(test_array)
     assert np.shape(index_array.array_data) == (10, 10)
 
@@ -243,7 +242,7 @@ def test_bgi_hsi(spectral_index_test_data):
 
 def test_bgi_ms(spectral_index_test_data):
     """Test for PlantCV"""
-    test_array = spectral_index_test_data.ms_data.make_array([460, 530])
+    test_array = spectral_index_test_data.make_ms_array([460, 530])
     index_array = spectral_index.bgi(test_array)
     assert np.shape(index_array.array_data) == (10, 10)
 
