@@ -129,9 +129,10 @@ def _standardize_sources(source, pattern):
     if os.path.isdir(source):
         starts_from_file = False
         for root, _, files in os.walk(source):
-            for f in files:
-                if re.search(pattern, f):
-                    source = os.path.join(root, f)
+            matching = [f for f in files if re.search(pattern, f)]
+            if matching:
+                source = os.path.join(root, matching[0])
+                break
     # strip basename
     path = os.path.dirname(source)
     base = os.path.basename(source)
