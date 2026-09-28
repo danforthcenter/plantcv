@@ -202,7 +202,7 @@ class MS_data:
         wavelength_dict_new = {}
         for v, k in enumerate(wavelength):
             wavelength_dict_new[k] = v
-        index = [i for wave, i in self.wavelength_dict.items() if wave in wavelength]
+        index = [self.wavelength_dict[wave] for wave in wavelength]
         sub_array = self.array_data[:, :, index]
         if not ms:
             return sub_array
