@@ -175,8 +175,8 @@ def read_ms(source, wavelengths=None, pattern="MS(\\d+)_((SV|TV))_BP0_(\\d+).*")
     if wavelengths:
         if starts_from_file:
             wavelengths.append(int(re.search(pattern, base).group(1)))
-        pat = "MS[" + "|".join(str(n) for n in set(wavelengths)) + "]"
-        MS_list = [x for x in MS_list if re.search(pat, x)]
+        pat = r"MS(" + "|".join(re.escape(str(n)) for n in set(wavelengths)) + r")"
+        MS_list = [x for x in MS_list if re.search(pat, os.path.basename(x))]
     MS_arrays = [cv2.imread(f, -1).astype(np.uint8) for f in MS_list]
     MS_wavelengths = [int(re.sub("^MS(\\d+).*", "\\1", os.path.basename(w))) for w in MS_list]
     MS_wavelengths_dict = {}
