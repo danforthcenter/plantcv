@@ -2,7 +2,7 @@
 
 Reads one or more grayscale images into an `MS_data` instance using syntax from the Danforth Center for Plant Science's Phenotyping Core Facility.
 
-**plantcv.multispec.read_ms**(*source, wavelengths=None, pattern="MS(\\\\d+)_((SV|TV))_BP0_(\\\\d+).\*"*)
+**plantcv.multispec.read_ms**(*source, wavelengths=None, pattern="MS(\\\\d+)\_((SV|TV))\_BP0_(\\\\d+).\*"*)
 
 **returns** MS_data object
 
