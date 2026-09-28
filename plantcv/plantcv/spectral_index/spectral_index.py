@@ -337,7 +337,7 @@ def egi(img, distance=40):
         index_array_raw = (2 * g) - r - b
     if type(img) is MS_data:
         hsi = MS_data(array_data=None, max_wavelength=0, min_wavelength=0, wavelength_dict={},
-                        pseudo_rgb=None, filename=None, default_bands=None)
+                        pseudo_rgb=None, filename=None)
     else:
         hsi = Spectral_data(array_data=None, max_wavelength=0, min_wavelength=0, max_value=255, min_value=0,
                         d_type=np.uint8, wavelength_dict={}, samples=None, lines=None, interleave=None,
@@ -423,7 +423,7 @@ def gli(img, distance=20):
 
     if type(img) is MS_data:
         hsi = MS_data(array_data=None, max_wavelength=0, min_wavelength=0, wavelength_dict={},
-                        pseudo_rgb=None, filename=None, default_bands=None)
+                        pseudo_rgb=None, filename=None)
     else:
         hsi = Spectral_data(array_data=None, max_wavelength=0, min_wavelength=0, max_value=255, min_value=0,
                         d_type=np.uint8, wavelength_dict={}, samples=None, lines=None, interleave=None,
@@ -471,7 +471,7 @@ def sci(img, distance=40):
 
     if type(img) is MS_data:
         hsi = MS_data(array_data=None, max_wavelength=0, min_wavelength=0, wavelength_dict={},
-                        pseudo_rgb=None, filename=None, default_bands=None)
+                        pseudo_rgb=None, filename=None)
     else:
         hsi = Spectral_data(array_data=None, max_wavelength=0, min_wavelength=0, max_value=255, min_value=0,
                         d_type=np.uint8, wavelength_dict={}, samples=None, lines=None, interleave=None,
@@ -521,7 +521,7 @@ def bgr(img, distance=40):
 
     if type(img) is MS_data:
         hsi = MS_data(array_data=None, max_wavelength=0, min_wavelength=0, wavelength_dict={},
-                        pseudo_rgb=None, filename=None, default_bands=None)
+                        pseudo_rgb=None, filename=None)
     else:
         hsi = Spectral_data(array_data=None, max_wavelength=0, min_wavelength=0, max_value=255, min_value=0,
                         d_type=np.uint8, wavelength_dict={}, samples=None, lines=None, interleave=None,
@@ -571,7 +571,7 @@ def bgi(img, distance=40):
 
     if type(img) is MS_data:
         hsi = MS_data(array_data=None, max_wavelength=0, min_wavelength=0, wavelength_dict={},
-                        pseudo_rgb=None, filename=None, default_bands=None)
+                        pseudo_rgb=None, filename=None)
     else:
         hsi = Spectral_data(array_data=None, max_wavelength=0, min_wavelength=0, max_value=255, min_value=0,
                         d_type=np.uint8, wavelength_dict={}, samples=None, lines=None, interleave=None,
