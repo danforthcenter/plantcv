@@ -176,7 +176,7 @@ def read_ms(source, wavelengths=None, pattern="MS(\\d+)_((SV|TV))_BP0_(\\d+).*")
     # filter for wavelengths if specified
     if wavelengths:
         if starts_from_file:
-            wavelengths.append(int(re.search(pattern, base).group(1)))
+            wavelengths = list(wavelengths) + [int(re.search(pattern, base).group(1))]
         pat = r"MS(" + "|".join(re.escape(str(n)) for n in set(wavelengths)) + r")"
         MS_list = [x for x in MS_list if re.search(pat, os.path.basename(x))]
     # NOTE we only collect 0-255 png images with the tool this is built for.
@@ -190,7 +190,7 @@ def read_ms(source, wavelengths=None, pattern="MS(\\d+)_((SV|TV))_BP0_(\\d+).*")
     if len({a.shape[0] for a in MS_arrays}) > 1 or len({a.shape[1] for a in MS_arrays}) > 1:
         fatal_error("MS images have different shapes!")
     array_data = np.stack(MS_arrays, axis=-1)
-    meta = {"directory": base, "files": [os.path.basename(f) for f in MS_list]}
+    meta = {"directory": source_str, "files": [os.path.basename(f) for f in MS_list]}
 
     ms = MS_data(
         array_data=array_data,
