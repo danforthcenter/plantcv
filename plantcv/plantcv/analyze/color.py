@@ -19,22 +19,25 @@ HIST_TYPES = {"all": ("b", "g", "r", "l", "m", "y", "h", "s", "v"),
 def color(rgb_img, labeled_mask, n_labels=1, colorspaces="hsv", label=None):
     """A function that analyzes the color of objects and outputs data.
 
-    Inputs:
-    rgb_img          = RGB image data.
-    labeled_mask     = Labeled mask of objects (32-bit).
-    n_labels         = Total number expected individual objects (default = 1).
-    colorspaces      = 'all', 'rgb', 'lab', or 'hsv' (default = 'hsv').
-    label            = Optional label parameter, modifies the variable name of
-                       observations recorded (default = pcv.params.sample_label).
+    Parameters
+    ----------
+    rgb_img : numpy.ndarray
+        RGB image data.
+    labeled_mask : numpy.ndarray
+        Labeled mask of objects (32-bit).
+    n_labels : int, optional
+        Total number of expected individual objects. The default is 1.
+    colorspaces : str, optional
+        Color space to analyze. Options are ``'all'``, ``'rgb'``, ``'lab'``,
+        or ``'hsv'``. The default is ``'hsv'``.
+    label : str, optional
+        Label parameter that modifies the variable name of observations
+        recorded. The default is ``pcv.params.sample_label``.
 
-    Returns:
-    analysis_image   = histogram output
-
-    :param rgb_img: numpy.ndarray
-    :param mask: numpy.ndarray
-    :param colorspaces: str
-    :param label: str
-    :return analysis_images: list
+    Returns
+    -------
+    list
+        Histogram output.
     """
     # Set lable to params.sample_label if None
     if label is None:
@@ -59,16 +62,18 @@ def color(rgb_img, labeled_mask, n_labels=1, colorspaces="hsv", label=None):
 def _color_channels(rgb_img, colorspaces="hsv"):
     """Split an RGB image into the color channels needed for analysis.
 
-    Inputs:
-    rgb_img          = RGB image data
-    colorspaces      = 'all', 'rgb', 'lab', or 'hsv'
+    Parameters
+    ----------
+    rgb_img : numpy.ndarray
+        RGB image data.
+    colorspaces : str, optional
+        Color spaces to extract. Options are ``'all'``, ``'rgb'``, ``'lab'``,
+        or ``'hsv'``. The default is ``'hsv'``.
 
-    Returns:
-    channels         = dictionary of color channel images
-
-    :param rgb_img: numpy.ndarray
-    :param colorspaces: str
-    :return channels: dict
+    Returns
+    -------
+    dict
+        Dictionary of color channel images.
     """
     # Extract the blue, green, and red channels
     b, g, r = cv2.split(rgb_img)
@@ -86,19 +91,20 @@ def _color_channels(rgb_img, colorspaces="hsv"):
 
 
 def _analyze_color(channels, slices, obj_mask, colorspaces="hsv", label=None):
-    """Analyze the color properties of an image object
-    Inputs:
-    channels         = dictionary of color channel images
-    slices           = bounding box of the object
-    obj_mask         = boolean mask of the object within the bounding box
-    colorspaces      = 'all', 'rgb', 'lab', or 'hsv'
-    label            = optional label parameter, modifies the variable name of observations recorded
+    """Analyze the color properties of an image object.
 
-    :param channels: dict
-    :param slices: tuple
-    :param obj_mask: numpy.ndarray
-    :param colorspaces: str
-    :param label: str
+    Parameters
+    ----------
+    channels : dict
+        Dictionary of color channel images.
+    slices : tuple
+        Bounding box of the object.
+    obj_mask : numpy.ndarray
+        Boolean mask of the object within the bounding box.
+    colorspaces : str, optional
+        Color spaces to analyze: ``'all'``, ``'rgb'``, ``'lab'``, or ``'hsv'``.
+    label : str, optional
+        Label parameter that modifies the variable name of observations recorded.
     """
     # Empty histograms
     histograms = {
