@@ -84,9 +84,8 @@ def _ms_file_matcher(pattern, filelist, ref):
         s_match = re.search(pattern, s)
         if s_match:
             keep_s = True
-            for g in range(2, re.compile(pattern).groups):
-                if ref_match.group(g + 1) != s_match.group(g + 1):
-                    keep_s = False
+            for g in range(2, re.compile(pattern).groups + 1):
+                if ref_match.group(g) != s_match.group(g):
             if keep_s:
                 keep.append(s)
     return keep
