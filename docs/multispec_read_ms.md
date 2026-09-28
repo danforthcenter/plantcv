@@ -25,7 +25,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 #read in image
-ms = pcv.multispec.read_ms(filename="home/user/multispectral_images")
+ms = pcv.multispec.read_ms(source="home/user/multispectral_images")
 
 ```
 
