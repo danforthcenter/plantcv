@@ -30,6 +30,7 @@ nav:
         - 'Read Bayer Raw Image': read_bayer.md
         - 'Read Multispectral Data': multispec_read_ms.md
       - 'Analysis Methods':
+        - 'Analyze Alpha': analyze_alphaL.md
         - 'Analyze Color': analyze_color2.md
         - 'Analyze Pixel Distributions': analyze_distribution.md
         - 'Analyze Grayscale': analyze_grayscale.md
