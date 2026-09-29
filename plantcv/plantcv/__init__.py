@@ -173,6 +173,6 @@ __all__ = [
     "process_results",
     "json2csv",
     "masks2labels",
-    "sub_mask"
+    "sub_mask",
     "multispec"
 ]
