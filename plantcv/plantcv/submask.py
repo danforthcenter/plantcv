@@ -21,8 +21,8 @@ def sub_mask(img, mask, num_masks=1, radius=5):
     -------
     labeled_mask = numpy.ndarray, labelled mask of circular masks each within complete mask.
     """
-    # Create an empty mask
-    labeled_mask = np.zeros_like(mask)
+    # Create an empty labeled mask with sufficient integer range for labels
+    labeled_mask = np.zeros(mask.shape[:2], dtype=np.int32)
     tries = 0
     sample_num = 0
     while len(np.unique(labeled_mask)) - 1 < num_masks:
