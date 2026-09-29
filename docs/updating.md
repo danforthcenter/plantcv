@@ -81,7 +81,7 @@ Renamed the "json" attribute to "results" for clarity about what it controls and
 
 #### plantcv.segment_image_series
 
-Changed `img_paths` argument to `source` for flexibility with a single directory or a list of filepaths. Also changed the rois argument to take a [`plantcv.plantcv.Objects`](objects.md) class object.
+Changed `imgs_paths` argument to `source` for flexibility with a single directory or a list of filepaths. Also changed the rois argument to take a [`plantcv.plantcv.Objects`](objects.md) class object.
 
 #### plantcv.spectral_index.egi
 
