@@ -7,11 +7,11 @@ import cv2 as cv
 from scipy import ndimage as ndi
 from skimage.segmentation import watershed
 from skimage.color import label2rgb
-from plantcv.plantcv import readimage
-from plantcv.plantcv import fill_holes
+from plantcv.plantcv import readimage, fill_holes
 from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _rgb2gray
+from plantcv.plantcv.get_kernel import _format_kernel
 
 
 def segment_image_series(imgs_paths, masks_paths, rois, save_labels=True, ksize=3):
@@ -19,30 +19,33 @@ def segment_image_series(imgs_paths, masks_paths, rois, save_labels=True, ksize=
     The objects (labels) are given by a list of rois (region of interest) and the labels
     are propagated sequentially in the time dimension using blocks of ksize.
 
-    Inputs:
-    imgs_paths  = List of paths to the images in the time series. Ordered by time
-    masks_paths = List of paths to the masks in the time series.
-                  Each mask should correspond to the image in imgs_paths for the same index
-    rois        = List of roi contours
-    save_labels = Optional, saves the labels of each image independently
-    ksize       = Size of the block in the time dimension to propagate the labels
+    Parameters:
+    -----------
+    imgs_paths  = list,
+        List of paths to the images in the time series. Ordered by time
+    masks_paths = list,
+        List of paths to the masks in the time series.
+        Each mask should correspond to the image in imgs_paths for the same index
+    rois        = list,
+        List of roi contours
+    save_labels = boolean,
+        Optional, saves the labels of each image independently
+    ksize       = int, tuple, or numpy.ndarray,
+        Will be coerced to int representing the size
+        of the block in the time dimension to propagate the labels
 
     Returns:
-    out_labels = 3D array containing the labels of the whole time series
-
-    :param imgs_paths:  list
-    :param masks_paths: list
-    :param rois:        list
-    :param save_labels: bool
-    :param ksize:       int
-    :return out_labels: numpy.ndarray
+    --------
+    out_labels = numpy.ndarray,
+        3D array containing the labels of the whole time series
     """
     debug = params.debug
     params.debug = None
     params.color_sequence = 'random'
 
+    k = _format_kernel(ksize, int)
     # for symmetry, using blocks (kernels) of size 2*floor(ksize/2) + 1
-    half_k = math.floor(ksize/2)
+    half_k = math.floor(k/2)
 
     image_names = [os.path.basename(img_path) for img_path in imgs_paths]
 

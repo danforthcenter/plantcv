@@ -29,6 +29,44 @@ Index range: -∞, ∞
     - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
     - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
 
+### BGI
+
+Calculates the Blue Green Index ([Zarco-Tejada et al., 2005](#references)):
+
+```
+BGI = (G - B) / (G + B)
+```
+
+Index range: -1, 1
+
+**plantcv.spectral_index.bgi**(*img, distance=40*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - img         - Color image or hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
+	- distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
+
+
+### BGR
+
+Calculates the Blue Green Ratio ([Zarco-Tejada et al., 2005](#references)):
+
+```
+BGR = B / G
+```
+
+Index range: 0, ∞
+
+**plantcv.spectral_index.bgr**(*img, distance=40*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - img         - Color image or hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
+	- distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
+
+
 ### CI_REDEDGE
 
 Calculates the Chlorophyll Index Rededge using reflectance values ([Gitelson et al., 2003](#references)):
@@ -163,18 +201,42 @@ Index range: -1, 1
 Calculates the Green Difference Vegetation Index using reflectance values ([Sripada et al., 2006](#references)):
 
 ```
-GDVI = (NIR - GREEN) / (NIR + GREEN)
+GDVI = (NIR - GREEN)
 ```
 
 Here, we use ~R800 for NIR and ~R550 for GREEN:
 
 ```
-GDVI = (R800 - R550) / (R800 + R550)
+GDVI = (R800 - R550)
 ```
 
-Index range: -2.0, 2.0
+Index range: -1.0, 1.0
 
 **plantcv.spectral_index.gdvi**(*hsi, distance=20*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
+    - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
+
+### GNDVI
+
+Calculates the Green Normalized Difference Vegetation Index using reflectance values ([Gitelson et al., 1996](#references)):
+
+```
+GNDVI = (NIR - GREEN) / (NIR + GREEN)
+```
+
+Here, we use ~R800 for NIR and ~R550 for GREEN:
+
+```
+GNDVI = (R800 - R550) / (R800 + R550)
+```
+
+Index range: -1.0, 1.0
+
+**plantcv.spectral_index.gndvi**(*hsi, distance=20*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -533,6 +595,26 @@ Index range: -1.2, 1.2
     - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
     - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
 
+
+### SCI
+
+Calculates the Soil Color Index ([Mathieu et al., 1998](#references)):
+
+```
+SCI = (R - G) / (R + G)
+```
+
+Index range: -1, 1
+
+**plantcv.spectral_index.sci**(*img, distance=40*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - img         - Color image or hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`) 
+	- distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
+
+
 ### SIPI
 
 Calculates the Structure-Independent Pigment Index using reflectance values ([Penuelas et al., 1995b](#references)):
@@ -662,6 +744,9 @@ ndvi_array = pcv.spectral_index.ndvi(hsi=spectral_data, distance=20)
 
 # Extract GDVI index from the datacube
 gdvi_array = pcv.spectral_index.gdvi(hsi=spectral_data, distance=20)
+
+# Extract GNDVI index from the datacube
+gndvi_array = pcv.spectral_index.gndvi(hsi=spectral_data, distance=20)
 
 # Extract SAVI index from the datacube
 savi_array = pcv.spectral_index.savi(hsi=spectral_data, distance=20)
@@ -801,6 +886,8 @@ DOI: [10.1080/0143116042000274015](https://doi.org/10.1080/0143116042000274015).
 Gamon JA, Surfus JS. 1999. Assessing leaf pigment content and activity with a reflectometer. The New Phytologist 
 143:105–117. DOI: [10.1046/j.1469-8137.1999.00424.x](https://doi.org/10.1046/j.1469-8137.1999.00424.x).
 
+Gitelson AA, Kaufman YJ, & Merzlyak MN. (1996). Use of a green channel in remote sensing of global vegetation from EOS-MODIS. Remote sensing of Environment, 58(3), 289-298. DOI: [10.1016/S0034-4257(96)00072-7](https://doi.org/10.1016/S0034-4257(96)00072-7)
+
 Gitelson AA, Zur Y, Chivkunova OB, Merzlyak MN. 2002. Assessing carotenoid content in plant leaves with reflectance 
 spectroscopy. Photochemistry and Photobiology 75:272–281. DOI: 
 [10.1562/0031-8655(2002)0750272ACCIPL2.0.CO2](https://doi.org/10.1562/0031-8655(2002)0750272ACCIPL2.0.CO2).
@@ -834,6 +921,9 @@ Jordan CF. 1969. Derivation of leaf-area index from quality of light on the fore
 Louhaichi, M., Borman, M.M., Johnson, D.E., 2001. Spatially Located Platform and Aerial
 Photography for Documentation of Grazing Impacts on Wheat. Geocarto International, Volume 16(1), pp. 65–70. DOI: 
 [10.1080/10106040108542184](https://doi.org/10.1080/10106040108542184)
+
+Mathieu R, Pouget M, Cervelle B, Escadafal R. 1998. Relationships between satellite-based radiometric indices simulated using laboratory reflectance data and typic soil color of an arid environment. Remote Sensing of Environment 66(1):17–28. DOI: https://doi.org/10.1016/S0034-4257(98)00030-3
+Zarco-Tejada PJ, Berjón A, López-Lozano R, Miller JR, Martín P, Cachorro V, González MR, de Frutos A. 2005. Assessing vineyard condition with hyperspectral indices: Leaf and canopy reflectance simulation in a row-structured discontinuous canopy. Remote Sensing of Environment 99(3):271–287. ISSN 0034-4257. DOI: [10.1016/j.rse.2005.09.002](https://doi.org/10.1016/j.rse.2005.09.002)
 
 Merton R, Huntington J. 1999. Early simulation results of the ARIES-1 satellite sensor for multi-temporal vegetation 
 research derived from AVIRIS. [LINK](https://aviris.jpl.nasa.gov/proceedings/workshops/99_docs/41.pdf).
@@ -872,3 +962,5 @@ Nitrogen Requirements in Corn. Agronomy Journal 98:968–977. DOI:
 Woebbecke DM, Meyer GE, Von Bargen K, Mortensen DA. 1995. Color indices for weed identification under various 
 soil, residue, and lighting conditions. Transactions of the ASAE. American Society of Agricultural Engineers 38:259–269.
 DOI: [10.13031/2013.27838](https://doi.org/10.13031/2013.27838).
+
+Zarco-Tejada PJ, Berjón A, López-Lozano R, Miller JR, Martín P, Cachorro V, González MR, de Frutos A. 2005. Assessing vineyard condition with hyperspectral indices: Leaf and canopy reflectance simulation in a row-structured discontinuous canopy. Remote Sensing of Environment 99(3):271–287. ISSN 0034-4257. DOI: [10.1016/j.rse.2005.09.002](https://doi.org/10.1016/j.rse.2005.09.002).

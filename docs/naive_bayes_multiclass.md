@@ -16,7 +16,10 @@ user-defined classes. For more information about building the input sample file,
 [Machine Learning Tutorial](https://plantcv.org/tutorials/naive-bayes). Once a mask has been created for each class, a figure can 
 be created with [pcv.visualize.colorize_masks](visualize_colorize_masks.md). 
 
-**naive_bayes_multiclass**(*samples_file, outfile, mkplots=False*)
+Before training, `samples_file` is automatically checked for formatting problems with
+[check_samples_file](naive_bayes_check_samples_file.md). If any problems are found, they are printed with line numbers and training will not run. 
+
+**naive_bayes_multiclass**(*samples_file, outfile, mkplots=False, max_errors=20*)
 
 **returns** none
 
@@ -24,6 +27,8 @@ be created with [pcv.visualize.colorize_masks](visualize_colorize_masks.md).
     - samples_file  - (str): Path to a text file containing a table of RGB values sampled for each feature class.
     - outfile       - (str): Name of the output text file that will store the color channel probability density functions.
     - mkplots       - (bool): Make PDF plots, True or False (default).
+    - max_errors    - (int): Maximum number of example messages to print per formatting problem category if
+      `samples_file` fails quality control (default 20). See [check_samples_file](naive_bayes_check_samples_file.md).
 - **Context:**
     - Used to help differentiate two or more feature classes
 

@@ -41,6 +41,8 @@ def options():
                          required=True)
     nbm_cmd.add_argument("-o", "--outfile", help="Trained classifier output filename.", required=True)
     nbm_cmd.add_argument("-p", "--plots", help="Make output plots.", default=False, action="store_true")
+    nbm_cmd.add_argument("--max_errors", help="Max number of example messages to print.",
+                         required=False, type=int, default=20)
     nbm_cmd.set_defaults(func=run_naive_bayes_multiclass)
 
     # Create the tabulate_bayes_classes subcommand
@@ -103,7 +105,8 @@ def run_naive_bayes_multiclass(args):
     if not os.path.exists(args.file):
         raise IOError(f"File does not exist: {args.file}")
     print("Running the naive Bayes multiclass training method...")
-    plantcv.learn.naive_bayes_multiclass(samples_file=args.file, outfile=args.outfile, mkplots=args.plots)
+    plantcv.learn.naive_bayes_multiclass(samples_file=args.file, outfile=args.outfile, mkplots=args.plots,
+                                         max_errors=args.max_errors)
 ###########################################
 
 

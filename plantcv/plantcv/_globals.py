@@ -14,7 +14,8 @@ class Params:
     def __init__(self, device=0, debug=None, debug_outdir=".", line_thickness=5,
                  line_color=(255, 0, 255), dpi=100, text_size=0.55,
                  text_thickness=2, marker_size=60, color_scale="gist_rainbow", color_sequence="sequential",
-                 sample_label="default", saved_color_scale=None, verbose=1, unit="pixels", px_height=1, px_width=1):
+                 sample_label="default", saved_color_scale=None, verbose=1, unit="pixels", px_height=1, px_width=1,
+                 deltaE="deltaE_ciede2000"):
         """Initialize parameters.
 
         Parameters
@@ -53,7 +54,9 @@ class Params:
             Size scaling information about pixel height. Default is 1.
         px_width : float
             Size scaling information about pixel width. Default is 1.
-
+        deltaE : str
+            Name of skimage function to use calculating Delta E, defaults to 'deltaE_ciede2000'.
+            Currently 'deltaE_cie76', 'deltaE_ciede2000', 'deltaE_ciede94', and 'deltaE_cmc' are supported
         """
         self.device = device
         self.debug = debug
@@ -72,6 +75,8 @@ class Params:
         self.unit = unit
         self.px_height = px_height
         self.px_width = px_width
+        self.function_args = {}
+        self.deltaE = deltaE
 
 
 class Outputs:
@@ -163,6 +168,28 @@ class Outputs:
             "value": [value]
         }
 
+    def _prepare_csv_metadata(self):
+        """Parse metadata into a csv-writeable format
+        Returns:
+        --------
+        metadata_key_list: list,
+            list of column names to write to header for metadata
+        metadata_val_list: list,
+            list of metadata values, multi-value terms having been concatenated to underscore delimited strings
+        """
+        # Gather any additional metadata
+        metadata_key_list = list(self.metadata.keys())
+        metadata_val_list = [val["value"] for val in self.metadata.values()]
+        # handle multi-value and single-value metadata terms
+        metadata_single_val_list = [val[0] for val in metadata_val_list if not isinstance(val[0], list)]
+        metadata_single_key_list = [key for key, value in self.metadata.items() if not isinstance(value["value"][0], list)]
+        metadata_multi_val_list = ['"' + ",".join(map(str, val[0])) + '"' for val in metadata_val_list if isinstance(val[0],
+                                                                                                                     list)]
+        metadata_multi_key_list = [key for key, value in self.metadata.items() if isinstance(value["value"][0], list)]
+        metadata_key_list = metadata_single_key_list + metadata_multi_key_list
+        metadata_val_list = metadata_single_val_list + metadata_multi_val_list
+        return metadata_key_list, metadata_val_list
+
     # Method to save observations to a file
     def save_results(self, filename, outformat="json"):
         """Save results to a file.
@@ -193,14 +220,12 @@ class Outputs:
             else:
                 hierarchical_data = {"metadata": self.metadata, "observations": self.observations}
             with open(filename, mode='w') as f:
-                json.dump(hierarchical_data, f)
+                json.dump(hierarchical_data, f, indent=4)
 
         elif outformat.upper() == "CSV":
             # Open output CSV file
             with open(filename, "w") as csv_table:
-                # Gather any additional metadata
-                metadata_key_list = list(self.metadata.keys())
-                metadata_val_list = [val["value"] for val in self.metadata.values()]
+                metadata_key_list, metadata_val_list = self._prepare_csv_metadata()
                 # Write the header
                 header = metadata_key_list + ["sample", "trait", "value", "label"]
                 csv_table.write(",".join(map(str, header)) + "\n")

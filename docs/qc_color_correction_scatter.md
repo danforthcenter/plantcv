@@ -2,7 +2,7 @@
 
 This function plots 4 panels of 2D scatter plot visualizations showing RGB and grayscale values of an input image, the expected color card, and optionally a color corrected image. The horizontal and vertical coordinates are defined by the intensity of the pixels in the specified channels. The color of each dot is given by the original RGB color of the image, ideal color card, or corrected image.
 
-**plantcv.visualize.color_correction_plot**(*color_matrix, std_matrix, corrected_matrix=None*)
+**plantcv.qc.color_correction_plot**(*color_matrix, std_matrix, corrected_matrix=None*)
 
 **returns** fig, axs
 
@@ -20,19 +20,19 @@ This function plots 4 panels of 2D scatter plot visualizations showing RGB and g
 
 **Dataset images:**
 
-![Screenshot](img/documentation_images/visualize_color_correction_scatter/am003_sv_input.png)
+![Screenshot](img/documentation_images/qc_color_correction_scatter/am003_sv_input.png)
 
 ```python
 
 from plantcv import plantcv as pcv
 
-fig, axs = pcv.visualize.color_correction_plot(colmat, stdmat, ccmat)
+fig, axs = pcv.qc.color_correction_plot(colmat, stdmat, ccmat)
 
 ```
 
 **Color correction scatter visualizations:**
 
-![Screenshot](img/documentation_images/visualize_color_correction_scatter/am003_sv_ex.png)
+![Screenshot](img/documentation_images/qc_color_correction_scatter/am003_sv_ex.png)
 
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/visualize/color_correction_scatter.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/qc/color_correction_scatter.py)
