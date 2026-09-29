@@ -44,7 +44,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 # Merge images vertially with a 30% overlap by averaging the overlap pixels
-images = pcv.io.read_dataset(source_path="./input_images/")
+images = pcv.io.read_dataset(img_dir="./input_images/")
 merged_img = pcv.transform.merge_images(source=images, overlap_percentage=30, direction="vertical", method="gradual")
 
 ```
