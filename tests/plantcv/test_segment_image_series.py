@@ -56,7 +56,7 @@ def test_plantcv_segment_image_series(tmpdir):
                         radius=OBJ_SIZE-2, spacing=SPACING, nrows=2, ncols=2)
     rois = roi_objects.contours
     valid_rois = [rois[0], rois[3]]
-    multi_roi_obj = Objects(contours = valid_rois, hierarchy=[roi_objects.hierarchy])
+    multi_roi_obj = Objects(contours=valid_rois, hierarchy=[roi_objects.hierarchy[0], roi_objects.hierarchy[3]])
 
     # test that the function detects the two objects and propagates the labels
     # to the last frame
