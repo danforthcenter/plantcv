@@ -7,7 +7,7 @@ This function uses watershed segmentation to label individual objects in a time 
 **returns** out_labels
 
 - **Parameters:**
-    - source  = List of paths to the images in the time series ordered by time or a string filepath to a directory of iamges.
+    - source  = List of paths to the images in the time series ordered by time or a string filepath to a directory of images.
     - masks_paths = List of paths to the masks in the time series. Each mask should correspond to the image in imgs_paths for the same index
     - rois        = ROIs specified as a [`plantcv.plantcv.Objects` class](objects.md) object.
     - save_labels = Optional, saves the labels of each image independently (default: True)
