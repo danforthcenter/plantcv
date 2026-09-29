@@ -1,6 +1,10 @@
 import cv2
+import random
+import pytest
 import numpy as np
 from plantcv.plantcv.submask import sub_mask
+
+random.seed(a=123)
 
 def test_sub_mask_success(test_data):
     """Test for PlantCV."""
@@ -24,3 +28,12 @@ def test_sub_mask_too_many(test_data):
     mask = cv2.imread(test_data.small_bin_img, -1)
     spots = sub_mask(img, mask, 5, 3)
     assert len(np.unique(spots)) == 2
+
+
+def test_sub_mask_empty(test_data):
+    """Test for PlantCV."""
+    img = cv2.imread(test_data.small_rgb_img, -1)
+    mask = np.zeros(img.shape[0:2])
+    with pytest.raises(RuntimeError):
+        _ = sub_mask(img, mask, 5, 3)
+
