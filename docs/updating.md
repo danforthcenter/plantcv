@@ -1,6 +1,6 @@
 ## Updating PlantCV
 
-### Table of Contents for Contibution
+### Table of Contents for Contribution
 1. [Updating with PyPi](#pypi)
 2. [Updating with Conda](#conda)
 3. [Updating from source](#source)
@@ -79,6 +79,10 @@ The `plantcv.utils` module has been deleted with `sample_images` moving to `plan
 
 Renamed the "json" attribute to "results" for clarity about what it controls and for consistency with new [JupyterConfig](parallel_jupyterconfig.md)
 
+#### plantcv.segment_image_series
+
+Changed `imgs_paths` argument to `source` for flexibility with a single directory or a list of filepaths. Also changed the rois argument to take a [`plantcv.plantcv.Objects`](objects.md) class object.
+
 #### plantcv.spectral_index.egi
 
 Renamed the input parameter `rgb_img` to `img` to reflect the flexibility of using the [EGI index function](spectral_index.md)
@@ -156,7 +160,7 @@ Below is a simple example of a typical PlantCV v3 workflow of a single plant.
 # Read in image data 
 img, path, filename = pcv.readimage(filename="rgb_img.png")
 
-# Covert to grayscale colorspace 
+# Convert to grayscale colorspace
 a = pcv.rgb2gray_lab(rgb_img=img, channel='a')
 
 # Threshold/segment plant from background 
@@ -195,7 +199,7 @@ in PlantCV v4.0 and future releases.
 # Read in image data (no change)
 img, path, filename = pcv.readimage(filename="rgb_img.png")
 
-# Covert to grayscale colorspace (no change)
+# Convert to grayscale colorspace (no change)
 a = pcv.rgb2gray_lab(rgb_img=img, channel='a')
 
 # Threshold/segment plant from background (removed max_value)
@@ -355,6 +359,12 @@ pages for more details on the input and output variable types.
 * post v3.5: thermal_histogram = **plantcv.analyze_thermal_values**(*thermal_array, mask, histplot=False*)
 * post v3.11: thermal_histogram = **plantcv.analyze_thermal_values**(*thermal_array, mask, histplot=False, label="default"*)
 * post v4.0: DEPRECATED, see plantcv.analyze.thermal
+
+#### plantcv.analyze.alphaL
+
+* pre v5.0: NA
+* post v5.0: array = **plantcv.analyze.alphaL**(*ps, labeled_mask, n_labels=1, label=None, min_bin=-1, max_bin=1*)
+
 
 #### plantcv.analyze.bound_horizontal
 
@@ -702,6 +712,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.14.0: NA
 * post v3.14.0:  image_dataset = **plantcv.io.read_dataset**(*source_path, pattern='', sort=True*)
+* post v5.0:  image_dataset = **plantcv.io.read_dataset**(*img_dir, pattern='', sort=True*)
 
 #### plantcv.json2csv
 
@@ -861,6 +872,11 @@ pages for more details on the input and output variable types.
 
 * pre v3.3: NA
 * post v3.3: skeleton = **plantcv.morphology.skeletonize**(*mask*)
+
+#### plantcv.multispec.read_ms
+
+* pre v5.0: NA
+* post v5.0 ms = **plantcv.multispec.read_ms**(*source, wavelengths=None*)
 
 #### plantcv.naive_bayes_classifier
 
@@ -1183,6 +1199,13 @@ pages for more details on the input and output variable types.
 
 * pre v4.2.1: NA
 * post v4.2.1: mtx, dist = **plantcv.transform.checkerboard_calib**(*img_path, col_corners, row_corners, out_dir*)
+* post v5.0: mtx, dist = **plantcv.transform.checkerboard_calib**(*img_dir, col_corners, row_corners, out_dir*)
+
+
+#### plantcv.transform.clahe
+
+* pre v5.0: NA
+* post v5.0: img = **plantcv.transform.clahe**(*img, kernel=8, contrast_threshold=2.0*)
 
 #### plantcv.transform.mask_color_card 
 
@@ -1242,6 +1265,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: NA
 * post v4.0: out_labels = **plantcv.segment_image_series**(*imgs_paths, masks_paths, rois, save_labels=True, ksize=3*)
+* post v5.0: out_labels = **plantcv.segment_image_series**(*source, masks_paths, rois, save_labels=True, ksize=3*)
 
 #### plantcv.sobel_filter
 
@@ -1532,10 +1556,11 @@ pages for more details on the input and output variable types.
 * pre v3.0dev1: NA
 * post v3.0dev2: matrix = **plantcv.transform.load_matrix**(*filename*)
 
-#### plantcv.transfor.merge_images
+#### plantcv.transform.merge_images
 
 * pre v4.2.1: NA
 * post v4.2.1: merged_img = **plantcv.transform.merge_images**(*paths_to_imgs, overlap_percentage, direction = "vertical", method = "stacked"*)
+* post v5.0: merged_img = **plantcv.transform.merge_images**(*source, overlap_percentage, direction = "vertical", method = "stacked"*)
 
 #### plantcv.transform.resize
 

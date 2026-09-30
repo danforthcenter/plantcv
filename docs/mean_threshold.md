@@ -15,7 +15,7 @@ In the mean adaptive threshold, the local average is the average of the pixel va
 - **Parameters:**
     - gray_img - Grayscale image data
     - ksize - Size of the block of pixels used to compute the local average
-    - offset - Value substracted from the local average to compute the local threshold.
+    - offset - Value subtracted from the local average to compute the local threshold.
     A negative offset sets the local threshold above the local average.
     - object_type - "light" or "dark" (default: "light").
       - "light" for objects brighter than the background, sets the pixels above
