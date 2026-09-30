@@ -32,7 +32,13 @@ def _calc_dists(img, mask, percentile, store_debug, ind=None):
     """
     # if mask is empty then return NaNs, nothing is in the mask.
     if np.sum(mask) == 0:
-        return ["nan", "nan", "nan"]
+        # Maintain consistency with image dimensionality:
+        # - grayscale (2D): return a scalar float NaN
+        # - RGB (3D): return a list of three float NaNs (one per channel)
+        if len(img.shape) == 2:
+            return np.nan
+        else:
+            return [np.nan, np.nan, np.nan]
     # Analyze shape properties
     m = cv2.moments(mask, binaryImage=True)
     cmx = m['m10'] / m['m00']
