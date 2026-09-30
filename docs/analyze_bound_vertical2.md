@@ -10,7 +10,7 @@ best if the pot size/position of the plant remains relatively constant.
 
 - **Parameters:**
     - img - RGB or grayscale image data for plotting
-    - labeled_mask - Labeled mask of objects (32-bit).
+    - labeled_mask - Labeled mask of objects (32-bit) or binary mask (8-bit).
     - line_position - position of boundary line (a value of 0 would draw the line through the left of the image)
     - n_labels - Total number expected individual objects (default = 1).
     - label - Optional label parameter, modifies the variable name of observations recorded. Can be a prefix or list (default = pcv.params.sample_label).
