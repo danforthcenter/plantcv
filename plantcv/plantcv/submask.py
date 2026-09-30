@@ -1,10 +1,14 @@
+from plantcv.plantcv.visualize.colorize_label_img import colorize_label_img
 from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.roi.roi_methods import circle
 from plantcv.plantcv.roi.roi2mask import roi2mask
 from plantcv.plantcv.warn import warn
+from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._globals import params
 import numpy as np
 import random
 import cv2
+import os
 
 
 def sub_mask(img, mask, num_masks=1, radius=5):
@@ -31,12 +35,16 @@ def sub_mask(img, mask, num_masks=1, radius=5):
     labeled_mask = np.zeros(mask.shape[:2], dtype=np.int32)
     tries = 0
     sample_num = 0
+    debug_state = params.debug
     while sample_num < num_masks:
         tries += 1
+        params.debug = None
         spot = _make_random_circle(img=img, mask=mask, radius=radius)
         spot_mask = roi2mask(img=img, roi=spot)
+        params.debug = debug_state
         within = _is_mask_within(full_mask=mask, submask=spot_mask)
-        if within and _check_overlapping_masks(labeled_mask, spot_mask):
+        overlapping = _check_overlapping_masks(labeled_mask, spot_mask)
+        if within and overlapping:
             sample_num += 1
             # Label spots with unique integers
             labeled_mask[np.where(spot_mask > 0)] = sample_num
@@ -45,6 +53,18 @@ def sub_mask(img, mask, num_masks=1, radius=5):
             warn("Too many iterations. Placed " + str(sample_num) +
                  " circular masks instead of " + str(num_masks))
             break
+
+    if sample_num == 1:
+        labeled_mask = (labeled_mask*255).astype(np.uint8)
+
+    if debug_state:
+        params.debug = None
+        col_mask = colorize_label_img(labeled_mask)
+        params.debug = debug_state
+        _debug(visual=col_mask,
+               filename=os.path.join(params.debug_outdir,
+                                     f"{params.device}_sub_mask.png"))
+
     return labeled_mask
 
 
@@ -96,14 +116,14 @@ def _make_random_circle(img, mask, radius=5):
     y_filt = (coords[:, 0] >= 0 + radius) & (coords[:, 0] <= mask.shape[0] - radius)
     x_filt = (coords[:, 1] >= 0 + radius) & (coords[:, 1] <= mask.shape[1] - radius)
     coords_filt = coords[y_filt & x_filt]
-    if coords_filt.any():
-        # Randomly select a center point from these coordinates
-        center = coords_filt[random.randint(0, len(coords_filt) - 1)]
-        x, y = center[1], center[0]
-        # Create an ROI from the random center point
-        spot = circle(img=img, x=x, y=y, r=radius)
-        return spot
-    fatal_error("Mask is empty, no subset circles can be placed.")
+    if not coords_filt.any():
+        fatal_error("Mask is empty, no subset circles can be placed.")
+    # Randomly select a center point from these coordinates
+    center = coords_filt[random.randint(0, len(coords_filt) - 1)]
+    x, y = center[1], center[0]
+    # Create an ROI from the random center point
+    spot = circle(img=img, x=x, y=y, r=radius)
+    return spot
 
 
 def _is_mask_within(full_mask, submask):
@@ -123,5 +143,5 @@ def _is_mask_within(full_mask, submask):
         comparison of full_mask against full_mask and sub_mask.
     """
     combined = cv2.bitwise_and(submask, full_mask)
-    within = np.array_equal(combined, submask)
+    within = np.array_equal(combined.astype(bool), submask.astype(bool))
     return within
