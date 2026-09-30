@@ -16,7 +16,6 @@ def test_sub_mask_success(test_data, tmpdir):
     debug_state = params.debug
     params.debug = "print"
     params.debug_outdir = str(cache_dir)
-    outname = os.path.join(cache_dir, str(params.device) + "_sub_mask.png")
     spots = sub_mask(img, mask, 2, 2)
     params.debug = debug_state
     assert len(np.unique(spots)) == 3
