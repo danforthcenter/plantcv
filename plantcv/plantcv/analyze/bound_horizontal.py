@@ -3,6 +3,7 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv.create_labels import create_labels
 from plantcv.plantcv._helpers import _iterate_analysis, _grayscale_to_rgb, _scale_size
 from plantcv.plantcv._globals import params, outputs
 
@@ -74,7 +75,12 @@ def _boundary_img_annotation(img, mask, line_position, axis=0):
             np.shape(mask1[:, line_position-1:np.shape(mask1)[1] + 1]))
         mask2[:, 0:line_position - 1] = np.zeros(
             np.shape(mask2[:, 0:line_position - 1]))
-    mask2b = np.where(mask2 > 0, mask2 + np.max(mask1) - 1, 0)
+    debug_state = params.debug
+    params.debug = None
+    mask1, n_mask1 = create_labels(mask1)
+    mask2, _ = create_labels(mask2)
+    params.debug = debug_state
+    mask2b = np.where(mask2 > 0, mask2 + n_mask1, 0)
     out_mask = mask1 + mask2b
     # replace mask with colors
     out_img[np.where(mask1)] = (255, 0, 255)
