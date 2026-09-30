@@ -47,10 +47,11 @@ def _calc_dists(img, mask, percentile, store_debug, ind=None):
     # Calculate point distances from center
     y, x = np.ogrid[:img.shape[0], :img.shape[1]]
     distances = np.sqrt((x - center[0])**2 + (y - center[1])**2)
+    # Compute maximum distance based on object pixels (mask) and scale by percentile
+    max_distance = np.max(distances[mask > 0])
+    cutoff = max_distance * (percentile / 100.0)
     if len(img.shape) == 3:
         distances = np.stack([distances for _ in range(3)], axis=2)
-    # Distance cutoff based on percentile
-    cutoff = (np.sqrt((img.shape[0]/2)**2 + (img.shape[1]/2)**2))*(percentile/100)
     img_cutoff = np.where(distances < cutoff, img, np.nan)
     # One example debug
     if ind == 0:
