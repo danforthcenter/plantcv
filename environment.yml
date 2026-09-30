@@ -32,7 +32,7 @@ dependencies:
   - imageio >= 2.28
   - imageio-ffmpeg
   - pillow
-  - pillow_heif
+  - pillow-heif
 
 channels:
   - conda-forge
