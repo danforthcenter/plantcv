@@ -41,7 +41,7 @@ color_mat = pcv.threshold.dual_channels(img, "b", "a")
 
 ```
 
-Because we did not specify a `cut` argument we get back the matrix of la*B* and l*A*b channels,
+Because we did not specify a `cut` argument we get back the matrix of la**B** and l**A**b channels,
 colored by the original RGB values.
 
 ![Screenshot](img/documentation_images/threshold_2channels/a_b_scatter.png)
