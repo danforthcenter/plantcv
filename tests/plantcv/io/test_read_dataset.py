@@ -8,7 +8,7 @@ from plantcv.plantcv.io import read_dataset
 def test_read_dataset_non_existent_path():
     """Test for PlantCV."""
     with pytest.raises(IOError):
-        _ = read_dataset(source_path='./non_existent_dir', pattern='')
+        _ = read_dataset(img_dir='./non_existent_dir', pattern='')
 
 
 @pytest.mark.parametrize("test_pattern,expected", [['', 5], ['0', 1]])
@@ -24,5 +24,5 @@ def test_read_dataset(test_pattern, expected, tmpdir):
         img = rng.integers(low=0, high=255, size=img_size, dtype=np.uint8, endpoint=True)
         cv2.imwrite(os.path.join(cache_dir, f"tmp_img_{i}.png"), img)
     # run the function to read the temporary directory
-    img_paths = read_dataset(source_path=cache_dir, pattern=test_pattern)
+    img_paths = read_dataset(img_dir=cache_dir, pattern=test_pattern)
     assert len(img_paths) == expected
