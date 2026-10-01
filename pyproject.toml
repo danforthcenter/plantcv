@@ -50,7 +50,11 @@ classifiers = [
 test = [
     "pytest",
     "pytest-cov",
+    "pytest-benchmark"
 ]
+
+[tool.pytests.ini_options]
+addopts = "--benchmark-skip"
 
 [project.scripts]
 plantcv-run-workflow = "plantcv.parallel.cli:main"

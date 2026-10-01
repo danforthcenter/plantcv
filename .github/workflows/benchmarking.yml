@@ -1,0 +1,68 @@
+# This workflow will install python dependencies and run the benchmarking suite for PlantCV
+
+name: benchmarking
+
+on:
+  # Run on pushes/PRs against main or v5 when conditions are met
+  push:
+    branches: [main, v5.0]
+
+  pull_request:
+    branches: [main, v5.0]
+
+jobs:
+  check_commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      -name: check if message contain bench/benchmark flag
+        id: check_commit
+        run: |
+          message=$(git log -1 --pretty=format:'%s')
+          re="\[(benchmark|bench)\]"
+          if [[ $message =~ $re ]]; then
+            echo "::set-output name=match::true"
+            echo "$message -> Match is true"
+          else
+            echo "$message -> Match is false"
+          fi
+    outputs:
+      match: ${{ steps.check_commit.outputs.match }}
+
+  test:
+    needs: check_commit
+    if: ${{ needs.check_commit.outputs.match += 'true' }}
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: benchmark test
+        run: echo "Running Benchmarking"
+
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python-version: ['3.13']
+        os: [ubuntu-latest]
+    env:
+      OS: ${{ matrix.os }}
+      PYTHON: ${{ matrix.python-version }}
+
+    steps:
+    - uses: actions/checkout@main
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@main
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install test dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest pytest-cov ipython
+    - name: Test and generate coverage report
+      # Run coverage analysis on pytest tests
+      run: |
+        pip install .
+	pytest tests/benchmarks --benchmark-only --benchmark-columns=min,mean,max --benchmark-compare=0001 --benchmark-compare-fail=mean:5% --benchmark-json=.benchmarks/actions/new.json

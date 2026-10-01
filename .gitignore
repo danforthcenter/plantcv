@@ -310,6 +310,11 @@ dist/*
 _site/*
 .cache/*
 
+## ignore benchmarks
+.benchmarks/*
+## uncomment to not ignore benchmarks from the actions
+# !.benchmarks/actions
+
 ## User ignores
 change_plantcv.sh
 
