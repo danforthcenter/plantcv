@@ -5,7 +5,6 @@ import math
 import numpy as np
 from matplotlib import pyplot as plt
 from plantcv.plantcv import fatal_error, warn, params
-from plantcv.plantcv.classes import Objects
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv.get_kernel import _format_kernel
 from plantcv.plantcv.roi.quick_filter import quick_filter
@@ -927,7 +926,7 @@ def dual_channels(rgb_img, x_channel, y_channel, cut=None, above=True):
 
     Returns:
     bin_img : numpy.ndarray,
-        Thresholded, binary image
+        Thresholded binary image unless cut is None in which case an RGB pixel scatter array.
     """
     # dictionary returns the function that gets the required image channel
     channel_dict = {
@@ -964,7 +963,22 @@ def dual_channels(rgb_img, x_channel, y_channel, cut=None, above=True):
 
 
 def _dual_channel_roi(img_x_ch, img_y_ch, img, roi):
-    """"""
+    """helper to select pixels by color using an ROI.
+
+    Inputs:
+    img_x_ch : numpy.ndarray,
+        X grayscale array
+    img_y_ch : numpy.ndarray,
+        Y grayscale array
+    img      : numpy.ndarray,
+        RGB input image
+    roi    : plantcv.plantcv.Objects class
+        Region of colors to keep.
+
+    Returns:
+    bin_img : numpy.ndarray,
+        a binary mask if ROI is not None, an RGB image otherwise
+    """
     # white background, sized to hold entire 8 bit range
     color_mat = np.full((256, 256, 3), 255, dtype=np.uint8)
     # fill in the color matrix with the vector version of the image
@@ -973,7 +987,7 @@ def _dual_channel_roi(img_x_ch, img_y_ch, img, roi):
     positions = np.stack([img_x_ch, img_y_ch], axis=-1)
     # first debug image is essentially from visualize.pixel_scatter_plot
     _debug(visual=color_mat, filename=os.path.join(params.debug_outdir,
-                                            str(params.device) + "_dual_channel_pixel_scatter.png"))
+                                                   str(params.device) + "_dual_channel_pixel_scatter.png"))
     if roi is None:
         warn("`cut` is None, the color matrix is returned for you to make an ROI on.")
         return color_mat
@@ -996,13 +1010,35 @@ def _dual_channel_roi(img_x_ch, img_y_ch, img, roi):
     selected_mask = np.where(lookup_table[positions[..., 1],
                                           positions[..., 0]], 255, 0).astype(np.uint8)
     _debug(visual=selected_mask, filename=os.path.join(params.debug_outdir,
-                                            str(params.device) + "_dual_channel_mask.png"))
+                                                       str(params.device) + "_dual_channel_mask.png"))
 
     return selected_mask
 
 
 def _dual_channel_slice_line(img_x_ch, img_y_ch, x_channel, y_channel, points, above):
-    """"""
+    """Select color pixels with a straight line
+
+    Inputs:
+    img_x_ch : numpy.ndarray,
+        X grayscale array
+    img_y_ch : numpy.ndarray,
+        Y grayscale array
+    x_channel : str,
+        Channel to use for the horizontal coordinate.
+        Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'c', 'm', 'y', 'k', 'gray', and 'index'
+    y_channel : str,
+        Channel to use for the vertical coordinate.
+        Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'c', 'm', 'y', 'k', 'gray', and 'index'
+    points    : list of two numeric tuples,
+        List containing two points as tuples defining the segmenting straight line
+    above     : bool,
+        Whether the pixels above the line are given the value of 0 or max_value.
+        This is only used if cut is a list of numeric tuples.
+
+    Returns:
+    bin_img : numpy.ndarray,
+        Thresholded binary image
+    """
     # Convert x/y channels to float64 for plotting
     img_x_ch = img_x_ch.astype(np.float64)
     img_y_ch = img_y_ch.astype(np.float64)
@@ -1031,6 +1067,7 @@ def _dual_channel_slice_line(img_x_ch, img_y_ch, x_channel, y_channel, points, a
     bin_img = bin_img.astype(np.uint8)
 
     _debug(visual=bin_img, filename=os.path.join(params.debug_outdir,
-                                                 str(params.device) + '_' + x_channel + y_channel + '_2D_threshold_mask.png'))
+                                                 str(params.device) + '_' + x_channel + y_channel +
+                                                 '_2D_threshold_mask.png'))
 
     return bin_img
