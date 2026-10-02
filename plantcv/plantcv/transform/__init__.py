@@ -22,6 +22,7 @@ from plantcv.plantcv.transform.checkerboard_calib import checkerboard_calib, cal
 from plantcv.plantcv.transform.merge_images import merge_images
 from plantcv.plantcv.transform.auto_correct_color import auto_correct_color
 from plantcv.plantcv.transform.auto_correct_color import auto_correct_color_nonlinear
+from plantcv.plantcv.transform.mcc_detect import mcc_detect
 from plantcv.plantcv.transform.clahe import clahe
 
 __all__ = ["get_color_matrix", "get_matrix_m", "calc_transformation_matrix", "apply_transformation_matrix",
@@ -29,4 +30,4 @@ __all__ = ["get_color_matrix", "get_matrix_m", "calc_transformation_matrix", "ap
            "std_color_matrix", "affine_color_correction", "rescale", "nonuniform_illumination", "resize",
            "resize_factor", "warp", "rotate", "warp", "warp_align", "gamma_correct", "deltaE",
            "detect_color_card", "checkerboard_calib", "calibrate_camera", "merge_images", "auto_correct_color",
-           "mask_color_card", "auto_correct_color_nonlinear", "astro_color_matrix", "clahe"]
+           "mask_color_card", "auto_correct_color_nonlinear", "astro_color_matrix", "mcc_detect", "clahe"]
