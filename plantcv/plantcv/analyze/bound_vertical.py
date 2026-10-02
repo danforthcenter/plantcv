@@ -8,7 +8,7 @@ from plantcv.plantcv._globals import params
 from plantcv.plantcv import outputs
 
 
-def bound_vertical(img, labeled_mask, line_position, n_labels=1, label=None):
+def bound_vertical(img, labeled_mask, line_position, simplify=True, n_labels=1, label=None):
     """
     Analyze the horizontal distribution of the plant relative to a vertical reference line for individual objects.
 
@@ -20,6 +20,9 @@ def bound_vertical(img, labeled_mask, line_position, n_labels=1, label=None):
         Labeled mask of objects (32-bit).
     line_position : int
         Position of boundary line in pixels from left to right (a value of 0 draws the line through the left of the image).
+    simplify : bool,
+        Should objects be labeled only as distinguished by the boundary or should each object
+        on a side of the boundary have a distinct label? Defaults to True.
     n_labels : int, optional
         Total number of expected individual objects (default = 1).
     label : str, optional
@@ -37,7 +40,7 @@ def bound_vertical(img, labeled_mask, line_position, n_labels=1, label=None):
     img = _iterate_analysis(img=img, labeled_mask=labeled_mask, n_labels=n_labels,
                             label=label, function=_analyze_bound_vertical,
                             **{"line_position": line_position})
-    img, new_labeled_mask = _boundary_img_annotation(img, labeled_mask, line_position, 1)
+    img, new_labeled_mask = _boundary_img_annotation(img, labeled_mask, line_position, 1, simplify)
     # Debugging
     _debug(visual=img, filename=os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_img.png'))
     return new_labeled_mask

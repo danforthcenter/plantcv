@@ -4,7 +4,7 @@ Set boundary line with boundary tool, this allows the user to find the extent-y 
 above and below as well as the area above and below the boundary line. This tool functions 
 best if the pot size/position of the plant remains relatively constant.
  
-**plantcv.analyze.bound_horizontal**(*img, labeled_mask, line_position, n_labels=1, label=None*)
+**plantcv.analyze.bound_horizontal**(*img, labeled_mask, line_position, simplify=True, n_labels=1, label=None*)
 
 **returns** labeled mask objects split by boundary line
 
@@ -12,6 +12,7 @@ best if the pot size/position of the plant remains relatively constant.
     - img - RGB or grayscale image data for plotting
     - labeled_mask - Labeled mask of objects (32-bit) or binary mask (8-bit).
     - line_position - position of boundary line (a value of 0 would draw the line through the top of the image)
+	- simplify - Should objects be labeled only by being left/right of the boundary or should separate objects have unique labels on each side of the boundary (default = True, which will typically return 2 labeled objects).
     - n_labels - Total number expected individual objects (default = 1).
     - label - Optional label parameter, modifies the variable name of observations recorded. Can be a prefix or list (default = pcv.params.sample_label).
 - **Context:**

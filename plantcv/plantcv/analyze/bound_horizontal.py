@@ -3,6 +3,7 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv.color_palette import color_palette
 from plantcv.plantcv.create_labels import create_labels
 from plantcv.plantcv._helpers import _iterate_analysis, _grayscale_to_rgb, _scale_size
 from plantcv.plantcv._globals import params, outputs
@@ -40,7 +41,7 @@ def _get_boundary_values(bound_mask, total_area, axis=0):
     return bound_area, distance_bound, percent_area_bound
 
 
-def _boundary_img_annotation(img, mask, line_position, axis=0):
+def _boundary_img_annotation(img, mask, line_position, axis=0, simplify=True):
     """Annotate a debug image used in horizontal/vertical boundary analysis
     Parameters
     ----------
@@ -52,6 +53,9 @@ def _boundary_img_annotation(img, mask, line_position, axis=0):
         Position of boundary line in pixels from top to bottom (a value of 0 draws the line through the top of the image).
     axis : int
         Which axis to use in drawing division
+    simplify : bool,
+        Should objects be labeled only as distinguished by the boundary or should each object
+        on a side of the boundary have a distinct label? Defaults to True.
 
     Returns
     -------
@@ -75,16 +79,26 @@ def _boundary_img_annotation(img, mask, line_position, axis=0):
             np.shape(mask1[:, line_position-1:np.shape(mask1)[1] + 1]))
         mask2[:, 0:line_position - 1] = np.zeros(
             np.shape(mask2[:, 0:line_position - 1]))
-    debug_state = params.debug
-    params.debug = None
-    mask1, n_mask1 = create_labels(mask1)
-    mask2, _ = create_labels(mask2)
-    params.debug = debug_state
-    mask2b = np.where(mask2 > 0, mask2 + n_mask1, 0)
-    out_mask = mask1 + mask2b
-    # replace mask with colors
-    out_img[np.where(mask1)] = (255, 0, 255)
-    out_img[np.where(mask2)] = (0, 255, 0)
+    
+    if simplify:
+        mask2b = np.where(mask2 > 0, mask2 + 1, 0)
+        out_mask = mask1 + mask2b
+        # replace mask with colors
+        out_img[np.where(mask1)] = (255, 0, 255)
+        out_img[np.where(mask2b)] = (0, 255, 0)
+    else:
+        debug_state = params.debug
+        params.debug = None
+        mask1, n_mask1 = create_labels(mask1)
+        mask2, _ = create_labels(mask2)
+        params.debug = debug_state
+        mask2b = np.where(mask2 > 0, mask2 + n_mask1, 0)
+        out_mask = mask1 + mask2b
+        # replace mask with colors
+        colors = color_palette(num=len(np.unique(out_mask)) - 1)
+        for i in np.unique(out_mask)[1:]:
+            out_img[np.where(out_mask == i)] = colors[i - 1]
+
     # draw boundary line
     line_start = [(0, line_position), (line_position, 0)][axis]
     line_end = [(np.shape(out_img)[1], line_position), (line_position, np.shape(img)[0])][axis]
@@ -92,7 +106,7 @@ def _boundary_img_annotation(img, mask, line_position, axis=0):
     return out_img, out_mask
 
 
-def bound_horizontal(img, labeled_mask, line_position, n_labels=1, label=None):
+def bound_horizontal(img, labeled_mask, line_position, simplify=True, n_labels=1, label=None):
     """
     Analyze the vertical distribution of the plant relative to a horizontal reference line.
 
@@ -102,10 +116,13 @@ def bound_horizontal(img, labeled_mask, line_position, n_labels=1, label=None):
         RGB or grayscale image data for plotting.
     labeled_mask : numpy.ndarray
         Labeled mask of objects (32-bit).
-    n_labels : int, optional
-        Total number of expected individual objects (default = 1).
     line_position : int
         Position of boundary line in pixels from top to bottom (a value of 0 draws the line through the top of the image).
+    simplify : bool,
+        Should objects be labeled only as distinguished by the boundary or should each object
+        on a side of the boundary have a distinct label? Defaults to True.
+    n_labels : int, optional
+        Total number of expected individual objects (default = 1).
     label : str, optional
         Optional label parameter, modifies the variable name of observations recorded (default = pcv.params.sample_label).
 
@@ -121,7 +138,7 @@ def bound_horizontal(img, labeled_mask, line_position, n_labels=1, label=None):
     img = _iterate_analysis(img=img, labeled_mask=labeled_mask, n_labels=n_labels,
                             label=label, function=_analyze_bound_horizontal,
                             **{"line_position": line_position})
-    img, new_labeled_mask = _boundary_img_annotation(img, labeled_mask, line_position, 0)
+    img, new_labeled_mask = _boundary_img_annotation(img, labeled_mask, line_position, 0, simplify)
     # Debugging
     _debug(visual=img, filename=os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_img.png'))
     return new_labeled_mask

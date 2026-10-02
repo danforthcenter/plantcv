@@ -65,11 +65,11 @@ Deprecated the function in favor of `plantcv.filters.obj_props(..., regprop="ecc
 
 #### plantcv.analyze.bound_horizontal
 
-Return value change from debug analysis image to a labeled mask.
+Return value change from debug analysis image to a labeled mask and added `simplify` argument.
 
 #### plantcv.analyze.bound_vertical
 
-Return value change from debug analysis image to a labeled mask.
+Return value change from debug analysis image to a labeled mask and added `simplify` argument.
 
 #### plantcv.analyze.npq
 
@@ -378,13 +378,13 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: (see plantcv.analyze_bound_horizontal)
 * post v4.0: analysis_image = **plantcv.analyze.bound_horizontal**(*img, labeled_mask, line_position, n_labels=1, label=None*)
-* post v5.0: boundary_labeled_mask = **plantcv.analyze.bound_horizontal**(*img, labeled_mask, line_position, n_labels=1, label=None*)
+* post v5.0: boundary_labeled_mask = **plantcv.analyze.bound_horizontal**(*img, labeled_mask, line_position, simplify=True, n_labels=1, label=None*)
 
 #### plantcv.analyze.bound_vertical
 
 * pre v4.0: (see plantcv.analyze_bound_vertical)
 * post v4.0: analysis_image = **plantcv.analyze.bound_vertical**(*img, labeled_mask, line_position, n_labels=1, label=None*)
-* post v5.0: boundary_labeled_mask = **plantcv.analyze.bound_vertical**(*img, labeled_mask, line_position, n_labels=1, label=None*)
+* post v5.0: boundary_labeled_mask = **plantcv.analyze.bound_vertical**(*img, labeled_mask, line_position, simplify=True, n_labels=1, label=None*)
 
 #### plantcv.analyze.color
 
