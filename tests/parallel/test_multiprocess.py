@@ -29,7 +29,7 @@ def test_create_dask_cluster():
     mock_client.status = "running"
     with patch("dask_jobqueue.HTCondorCluster", return_value=mock_cluster), \
          patch("plantcv.parallel.multiprocess.Client", return_value=mock_client):
-        client, cluster = create_dask_cluster(cluster="HTCondorCluster", cluster_config={"cores": 1, "memory": "1GB", "disk": "1GB"})
+        client, _ = create_dask_cluster(cluster="HTCondorCluster", cluster_config={"cores": 1, "memory": "1GB", "disk": "1GB"})
         status = client.status
     assert status == "running"
 
