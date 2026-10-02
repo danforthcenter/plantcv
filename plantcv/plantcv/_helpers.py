@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import math
+from scipy import ndimage
 from skimage import morphology
 from plantcv.plantcv import fatal_error, warn
 from plantcv.plantcv._globals import params
@@ -621,6 +622,48 @@ def _iterate_analysis(img, labeled_mask, n_labels, label, function, **kwargs):
         submask = np.where(mask_copy == i, 255, 0).astype(np.uint8)
         img = function(img=img, mask=submask, label=f"{labels[i - 1]}_{i}", **kwargs)
     return img
+
+
+def _iterate_objects(labeled_mask, n_labels, label):
+    """Iterate over labeled objects, yielding each object cropped to its bounding box.
+
+    Parameters
+    ----------
+    labeled_mask : numpy.ndarray
+        Labeled mask of objects (or a binary 0/255 mask for a single object)
+    n_labels : int
+        Number of expected labels
+    label : str or list
+        Label parameter, modifies the variable name of observations recorded
+
+    Yields
+    ------
+    sample : str
+        Sample label for the object, formatted as "<label>_<i>"
+    slices : tuple
+        Tuple of slices defining the bounding box of the object
+    obj_mask : numpy.ndarray
+        Boolean mask of the object within the bounding box
+    """
+    # Set labels to label
+    labels = label
+    # If label is a string, make a list of labels
+    if isinstance(label, str):
+        labels = [label] * n_labels
+    # If the length of the labels list is not equal to the number of labels, raise an error
+    if len(labels) != n_labels:
+        fatal_error(f"Number of labels ({len(labels)}) does not match number of objects ({n_labels})")
+    mask = labeled_mask
+    # Convert a binary 0/255 mask to a single object with label 1
+    if len(np.unique(mask)) == 2 and np.max(mask) == 255:
+        mask = np.where(mask == 255, 1, 0).astype(np.uint8)
+    # Bounding boxes for labels 1 to n_labels (None if a label is not present)
+    bboxes = ndimage.find_objects(mask, max_label=n_labels)
+    for i, slices in enumerate(bboxes, start=1):
+        # Use an empty bounding box for labels not present in the mask
+        if slices is None:
+            slices = (slice(0, 0), slice(0, 0))
+        yield f"{labels[i - 1]}_{i}", slices, mask[slices] == i
 
 
 def _object_composition(contours, hierarchy):

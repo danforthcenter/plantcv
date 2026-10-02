@@ -25,8 +25,10 @@ def rescale(gray_img, min_value=0, max_value=255):
     """
     if len(np.shape(gray_img)) != 2:
         fatal_error("Image is not grayscale")
+    # replace Inf with Nan for compatibility with interpolation
+    gray_finite = np.where(np.isinf(gray_img), np.nan, gray_img)
 
-    rescaled_img = np.interp(gray_img, (np.nanmin(gray_img), np.nanmax(gray_img)), (min_value, max_value))
+    rescaled_img = np.interp(gray_finite, (np.nanmin(gray_finite), np.nanmax(gray_finite)), (min_value, max_value))
     rescaled_img = (rescaled_img).astype('uint8')
 
     _debug(visual=rescaled_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_rescaled.png'))
