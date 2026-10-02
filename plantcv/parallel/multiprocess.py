@@ -1,5 +1,5 @@
 import dask_jobqueue
-from dask.distributed import Client, progress, wait
+from dask.distributed import Client, LocalCluster, progress, wait
 from subprocess import call
 
 
@@ -12,19 +12,6 @@ def _process_images_multiproc(job):
     job = workflow command-line components
     """
     call(job)
-
-
-def _cleanup_client_and_cluster(client, cluster):
-    """Close client and cluster after multiprocess runs
-
-    Parameters:
-    -----------
-    client  : dask.distributed.Client object
-    cluster : dask_jobqueue client or None
-    """
-    client.close()
-    if cluster is not None:
-        cluster.close()
 
 
 # Create a dask local or distributed cluster
@@ -45,10 +32,11 @@ def create_dask_cluster(cluster, cluster_config):
     # There is one decision point
     # If the requested cluster is a LocalCluster we get it from dask.distributed
     if cluster == "LocalCluster":
+        cluster = LocalCluster(n_workers=cluster_config.get("n_workers"),
+                               threads_per_worker=cluster_config.get("threads_per_worker", 1))
+        cluster.adapt(minimum=1, maximum=cluster_config.get("n_workers"), interval='3s')
         # Create a local cluster client with n_workers
-        client = Client(n_workers=cluster_config.get("n_workers"),
-                        threads_per_worker=cluster_config.get("threads_per_worker", 1))
-        cluster = None
+        client = Client(cluster)
     # Otherwise the cluster is a class from dask_jobqueue (a distributed resource scheduler)
     else:
         # if "cores" is not a key in the cluster_config then set it to 1
@@ -60,8 +48,10 @@ def create_dask_cluster(cluster, cluster_config):
             raise ValueError(f"The cluster {cluster} is not LocalCluster or a valid dask-jobqueue cluster.")
         # Configure the job scheduler by passing the cluster_config dictionary as keyword/value arguments
         cluster = sched(**cluster_config)
+        cluster.adapt(minimum=1, maximum=cluster_config.get("n_workers"), interval='3s')
         # Create a client for the cluster
         client = Client(cluster)
+
     return client, cluster
 
 
