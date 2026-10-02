@@ -14,6 +14,19 @@ def _process_images_multiproc(job):
     call(job)
 
 
+def _cleanup_client_and_cluster(client, cluster):
+    """Close client and cluster after multiprocess runs
+
+    Parameters:
+    -----------
+    client  : dask.distributed.Client object
+    cluster : dask_jobqueue client or None
+    """
+    client.close()
+    if cluster is not None:
+        cluster.close()
+
+
 # Create a dask local or distributed cluster
 ###########################################
 def create_dask_cluster(cluster, cluster_config):
@@ -35,6 +48,7 @@ def create_dask_cluster(cluster, cluster_config):
         # Create a local cluster client with n_workers
         client = Client(n_workers=cluster_config.get("n_workers"),
                         threads_per_worker=cluster_config.get("threads_per_worker", 1))
+        cluster = None
     # Otherwise the cluster is a class from dask_jobqueue (a distributed resource scheduler)
     else:
         # if "cores" is not a key in the cluster_config then set it to 1
@@ -45,10 +59,10 @@ def create_dask_cluster(cluster, cluster_config):
         if sched is None:
             raise ValueError(f"The cluster {cluster} is not LocalCluster or a valid dask-jobqueue cluster.")
         # Configure the job scheduler by passing the cluster_config dictionary as keyword/value arguments
-        drm = sched(**cluster_config)
+        cluster = sched(**cluster_config)
         # Create a client for the cluster
-        client = Client(drm)
-    return client
+        client = Client(cluster)
+    return client, cluster
 
 
 # Process jobs using a dask cluster

@@ -9,7 +9,7 @@ from plantcv.plantcv.process_results import process_results
 from plantcv.plantcv.json2csv import json2csv
 from plantcv.parallel.parsers import metadata_parser
 from plantcv.parallel.job_builder import job_builder
-from plantcv.parallel.multiprocess import create_dask_cluster
+from plantcv.parallel.multiprocess import create_dask_cluster, _cleanup_client_and_cluster
 from plantcv.parallel.multiprocess import multiprocess
 from plantcv.parallel.message import parallel_print
 
@@ -71,10 +71,10 @@ def run_parallel(config):
     # Parallel image processing time
     multi_start_time = time.time()
     print("Processing images... ", file=sys.stderr)
-    cluster_client = create_dask_cluster(cluster=config.cluster, cluster_config=config.cluster_config)
+    cluster_client, cluster = create_dask_cluster(cluster=config.cluster, cluster_config=config.cluster_config)
     multiprocess(jobs=jobs, client=cluster_client)
-    # Close the client to release the cluster
-    cluster_client.close()
+    # Close the client and cluster
+    _cleanup_client_and_cluster(cluster_client, cluster)
     multi_clock_time = time.time() - multi_start_time
     parallel_print(f"Processing images took {multi_clock_time} seconds.", file=sys.stderr, verbose=verbose)
     ###########################################
