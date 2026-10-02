@@ -71,10 +71,11 @@ def run_parallel(config):
     # Parallel image processing time
     multi_start_time = time.time()
     print("Processing images... ", file=sys.stderr)
-    cluster_client = create_dask_cluster(cluster=config.cluster, cluster_config=config.cluster_config)
+    cluster_client, cluster = create_dask_cluster(cluster=config.cluster, cluster_config=config.cluster_config)
     multiprocess(jobs=jobs, client=cluster_client)
-    # Close the client to release the cluster
+    # Close the client and cluster
     cluster_client.close()
+    cluster.close()
     multi_clock_time = time.time() - multi_start_time
     parallel_print(f"Processing images took {multi_clock_time} seconds.", file=sys.stderr, verbose=verbose)
     ###########################################

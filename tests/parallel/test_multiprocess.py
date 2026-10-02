@@ -13,12 +13,13 @@ def test_create_dask_cluster_local(tmpdir):
     tmp_dir = tmpdir.mkdir("cache")
     # Set the temp directory for dask
     dask.config.set(temporary_directory=tmp_dir)
-    client = create_dask_cluster(cluster="LocalCluster", cluster_config={})
+    client, cluster = create_dask_cluster(cluster="LocalCluster", cluster_config={})
     try:
         status = client.status
         assert status == "running"
     finally:
         client.close()
+        cluster.close()
 
 
 def test_create_dask_cluster():
@@ -28,7 +29,7 @@ def test_create_dask_cluster():
     mock_client.status = "running"
     with patch("dask_jobqueue.HTCondorCluster", return_value=mock_cluster), \
          patch("plantcv.parallel.multiprocess.Client", return_value=mock_client):
-        client = create_dask_cluster(cluster="HTCondorCluster", cluster_config={"cores": 1, "memory": "1GB", "disk": "1GB"})
+        client, _ = create_dask_cluster(cluster="HTCondorCluster", cluster_config={"cores": 1, "memory": "1GB", "disk": "1GB"})
         status = client.status
     assert status == "running"
 
