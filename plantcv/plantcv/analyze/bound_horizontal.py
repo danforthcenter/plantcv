@@ -79,7 +79,7 @@ def _boundary_img_annotation(img, mask, line_position, axis=0, simplify=True):
             np.shape(mask1[:, line_position-1:np.shape(mask1)[1] + 1]))
         mask2[:, 0:line_position - 1] = np.zeros(
             np.shape(mask2[:, 0:line_position - 1]))
-    
+
     if simplify:
         mask2b = np.where(mask2 > 0, mask2 + 1, 0)
         out_mask = mask1 + mask2b
