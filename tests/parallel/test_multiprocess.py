@@ -4,7 +4,7 @@ import dask
 from unittest.mock import MagicMock, patch
 from dask.distributed import Client
 from plantcv.parallel import create_dask_cluster, multiprocess
-from plantcv.parallel.multiprocess import _process_images_multiproc, _cleanup_client_and_cluster
+from plantcv.parallel.multiprocess import _process_images_multiproc
 
 
 def test_create_dask_cluster_local(tmpdir):
@@ -18,7 +18,8 @@ def test_create_dask_cluster_local(tmpdir):
         status = client.status
         assert status == "running"
     finally:
-        _cleanup_client_and_cluster(client, cluster)
+        client.close()
+        cluster.close()
 
 
 def test_create_dask_cluster():
@@ -31,7 +32,6 @@ def test_create_dask_cluster():
         client, cluster = create_dask_cluster(cluster="HTCondorCluster", cluster_config={"cores": 1, "memory": "1GB", "disk": "1GB"})
         status = client.status
     assert status == "running"
-    _cleanup_client_and_cluster(client, cluster)
 
 
 def test_create_dask_cluster_invalid_cluster():
