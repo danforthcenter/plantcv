@@ -1,153 +1,109 @@
-"""Outputs the average pixel values from a percentile radially outward from an object's center."""
-from plantcv.plantcv import params, Objects, apply_mask, auto_crop, outputs
-from plantcv.plantcv import roi as roi_
-from plantcv.plantcv._debug import _debug
-import cv2
+"""Analyzes the average pixel values within a percentile of the distance from each object's center."""
 import os
 import numpy as np
+from plantcv.plantcv._debug import _debug
+from plantcv.plantcv import params, outputs
+from plantcv.plantcv._helpers import _iterate_objects
 
 
-def _calc_dists(img, mask, percentile, store_debug, ind=None):
-    """Calculates the distances of each pixel,
-    the cutoff based on given percentile,
-    and the average pixel values within that cutoff.
-
-    Parameters
-    ----------
-    img : numpy.ndarray
-        RGB or grayscale image cropped to a focal object
-    mask : numpy.ndarray
-        Segmented mask of the object from img
-    percentile : number
-        Cutoff for inclusion of pixels (percent from center)
-    store_debug : str or None
-        Value for params.debug when function is called
-    ind : int, optional
-        Tracker for which in multi ROI gets a debug, by default None
-
-    Returns
-    -------
-    avgs : float or list
-        average pixel values (gray or RGB) within the distance percentile
-    """
-    # if mask is empty then return NaNs, nothing is in the mask.
-    if np.sum(mask) == 0:
-        # Maintain consistency with image dimensionality:
-        # - grayscale (2D): return a scalar float NaN
-        # - RGB (3D): return a list of three float NaNs (one per channel)
-        if len(img.shape) == 2:
-            return np.nan
-        else:
-            return [np.nan, np.nan, np.nan]
-    # Analyze shape properties
-    m = cv2.moments(mask, binaryImage=True)
-    cmx = m['m10'] / m['m00']
-    cmy = m['m01'] / m['m00']
-    center = (cmx, cmy)
-    # Calculate point distances from center
-    y, x = np.ogrid[:img.shape[0], :img.shape[1]]
-    distances = np.sqrt((x - center[0])**2 + (y - center[1])**2)
-    # Compute maximum distance based on object pixels (mask) and scale by percentile
-    max_distance = np.max(distances[mask > 0])
-    cutoff = max_distance * (percentile / 100.0)
-    if len(img.shape) == 3:
-        distances = np.stack([distances for _ in range(3)], axis=2)
-    img_cutoff = np.where(distances < cutoff, img, np.nan)
-    # One example debug
-    if ind == 0:
-        example = np.where(distances < cutoff, img, 0)
-        params.debug = store_debug
-        _debug(visual=example, filename=os.path.join(params.debug_outdir, str(params.device) + "_radial_average.png"))
-        params.debug = None
-
-    avgs = float(np.nanmean(img_cutoff))
-
-    if len(img.shape) == 3:
-        avgs = [float(np.nanmean(img_cutoff[:, :, [2]])),
-                float(np.nanmean(img_cutoff[:, :, [1]])),
-                float(np.nanmean(img_cutoff[:, :, [0]]))]
-    return avgs
-
-
-def radial_percentile(img, mask, roi=None, percentile=50, label=None):
-    """_summary_
+def radial_percentile(img, labeled_mask, n_labels=1, percentile=50, label=None):
+    """Analyzes the average pixel values within a percentile of the maximum distance from each object's center.
 
     Parameters
     ----------
     img : numpy.ndarray
-        RGB or grayscale image
-    mask : numpy.ndarray
-        Binary mask with objects of interest segmented
-    roi : plantcv.plantcv.Objects, optional
-        Region of Interest, single or multi, to identify objects, by default None
-    percentile : int, optional
-        Percentile of max distance from center in which to average pixel values, by default 50
-    label : str, optional
-        Optional label for outputs (default = pcv.params.sample_label)
+        RGB or grayscale image data.
+    labeled_mask : numpy.ndarray
+        Labeled mask of objects (32-bit), or a binary mask of a single object.
+    n_labels : int, default=1
+        Total number of expected individual objects.
+    percentile : int or float, default=50
+        Cutoff for inclusion of pixels, as a percent of the maximum distance from an object's center.
+    label : str or list, optional
+        Label that modifies the variable name of recorded observations. Defaults
+        to ``pcv.params.sample_label``.
 
     Returns
     -------
     avgs : list
-        average pixel values (gray or RGB) within the distance percentile
+        Average pixel values within the distance percentile for each object. Each entry is a float
+        (grayscale) or a list of [red, green, blue] floats (RGB). Empty objects are NaN.
     """
+    # Set label to params.sample_label if None
     if label is None:
         label = params.sample_label
 
-    store_debug = params.debug
-    params.debug = None
-    if roi:
-        avgs = []
-        for i, _ in enumerate(roi.contours):
-            # Loop through rois (even if there is only 1)
-            roi_ind = Objects(contours=[roi.contours[i]], hierarchy=[roi.hierarchy[i]])
-            # Filter mask by roi and apply it to the image
-            filt = roi_.filter(mask=mask, roi=roi_ind)
-            # Check for empty
-            if len(np.unique(filt)) == 1:
-                noavg = ["nan"]
-                if len(img.shape) == 3:
-                    noavg = ["nan", "nan", "nan"]
-                avgs.append(noavg)
-            else:
-                masked = apply_mask(img=img, mask=filt, mask_color='black')
-                # Crop the image and the mask to the roi
-                crop_img = auto_crop(img=masked, mask=filt, padding_x=1, padding_y=1, color='black')
-                crop_mask = auto_crop(img=filt, mask=filt, padding_x=1, padding_y=1, color='black')
+    avgs = []
+    # Debug image showing the pixels that were averaged for every object
+    debug_img = np.zeros_like(img)
+    for sample, slices, obj_mask in _iterate_objects(labeled_mask=labeled_mask, n_labels=n_labels, label=label):
+        avg, keep = _analyze_radial(img=img, slices=slices, obj_mask=obj_mask, percentile=percentile, label=sample)
+        avgs.append(avg)
+        if keep is not None:
+            debug_img[slices][keep] = img[slices][keep]
 
-                # Calculate average of each channel
-                avgs.append(_calc_dists(img=crop_img, mask=crop_mask, percentile=percentile, store_debug=store_debug, ind=i))
-
-    else:
-        masked = apply_mask(img=img, mask=mask, mask_color='black')
-        # Crop the image to the mask if the mask is not empty
-        crop_img = masked
-        crop_mask = mask
-        if np.sum(mask) > 0:
-            crop_img = auto_crop(img=masked, mask=mask, padding_x=1, padding_y=1, color='black')
-            crop_mask = auto_crop(img=mask, mask=mask, padding_x=1, padding_y=1, color='black')
-        # Calculate averages of each channel
-        avgs = [_calc_dists(img=crop_img, mask=crop_mask, percentile=percentile, store_debug=store_debug, ind=0)]
-
-    # Outputs
-    for idx, i in enumerate(avgs):
-        if isinstance(i, float):
-            outputs.add_observation(sample=label+"_"+str(idx+1), variable='gray_'+str(percentile)+'%_avg',
-                                    trait='gray_'+str(percentile)+'%_radial_average',
-                                    method='plantcv.plantcv.analyze.radial',
-                                    scale='none', datatype=float, value=i, label='none')
-        elif isinstance(i, list):
-            outputs.add_observation(sample=label+"_"+str(idx+1), variable='red_'+str(percentile)+'%_avg',
-                                    trait='red_'+str(percentile)+'%_radial_average',
-                                    method='plantcv.plantcv.analyze.radial',
-                                    scale='none', datatype=float, value=i[0], label='none')
-            outputs.add_observation(sample=label+"_"+str(idx+1), variable='green_'+str(percentile)+'%_avg',
-                                    trait='green_'+str(percentile)+'%_radial_average',
-                                    method='plantcv.plantcv.analyze.radial',
-                                    scale='none', datatype=float, value=i[1], label='none')
-            outputs.add_observation(sample=label+"_"+str(idx+1), variable='blue_'+str(percentile)+'%_avg',
-                                    trait='blue_'+str(percentile)+'%_radial_average',
-                                    method='plantcv.plantcv.analyze.radial',
-                                    scale='none', datatype=float, value=i[2], label='none')
-
-    params.debug = store_debug
+    _debug(visual=debug_img, filename=os.path.join(params.debug_outdir, str(params.device) + "_radial_average.png"))
     return avgs
+
+
+def _analyze_radial(img, slices, obj_mask, percentile=50, label=None):
+    """Analyzes the average pixel values within a percentile of the maximum distance from an object's center.
+
+    Parameters
+    ----------
+    img : numpy.ndarray
+        RGB or grayscale image data.
+    slices : tuple
+        Bounding box of the object.
+    obj_mask : numpy.ndarray
+        Boolean mask of the object within the bounding box.
+    percentile : int or float, default=50
+        Cutoff for inclusion of pixels, as a percent of the maximum distance from the object's center.
+    label : str, optional
+        Label that modifies the variable name of recorded observations.
+
+    Returns
+    -------
+    avg : float or list
+        Average pixel value (grayscale) or [red, green, blue] averages (RGB). NaN if the object is empty
+        or no object pixels fall within the cutoff.
+    keep : numpy.ndarray or None
+        Boolean mask (within the bounding box) of the pixels that were averaged, or None if none were.
+    """
+    is_rgb = img.ndim == 3
+    empty = [np.nan, np.nan, np.nan] if is_rgb else np.nan
+
+    # Skip empty masks
+    if np.count_nonzero(obj_mask) == 0:
+        return empty, None
+
+    # Object pixel coordinates within the bounding box and the object's center of mass
+    ys, xs = np.nonzero(obj_mask)
+    distances = np.sqrt((xs - np.mean(xs)) ** 2 + (ys - np.mean(ys)) ** 2)
+    # Cutoff distance as a percentile of the maximum distance of an object pixel from the center
+    cutoff = np.max(distances) * (percentile / 100.0)
+    inside = distances < cutoff
+
+    # No object pixels within the cutoff (e.g., very small percentile or single-pixel object)
+    if not np.any(inside):
+        return empty, None
+
+    # Only object pixels within the cutoff are averaged (background pixels are never included)
+    keep = np.zeros_like(obj_mask, dtype=bool)
+    keep[ys[inside], xs[inside]] = True
+    values = img[slices][keep]
+
+    method = 'plantcv.plantcv.analyze.radial'
+    if is_rgb:
+        # OpenCV is BGR; outputs are ordered R, G, B
+        avg = [float(np.mean(values[:, 2])), float(np.mean(values[:, 1])), float(np.mean(values[:, 0]))]
+        for channel, value in zip(["red", "green", "blue"], avg):
+            outputs.add_observation(sample=label, variable=f'{channel}_{percentile}%_avg',
+                                    trait=f'{channel}_{percentile}%_radial_average', method=method,
+                                    scale='none', datatype=float, value=value, label='none')
+    else:
+        avg = float(np.mean(values))
+        outputs.add_observation(sample=label, variable=f'gray_{percentile}%_avg',
+                                trait=f'gray_{percentile}%_radial_average', method=method,
+                                scale='none', datatype=float, value=avg, label='none')
+    return avg, keep

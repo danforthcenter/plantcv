@@ -401,7 +401,7 @@ pages for more details on the input and output variable types.
 
 #### plantcv.analyze.radial_percentile
 * pre v4.9: NA
-* post v9.9: avgs = **plantcv.analyze.radial_percentile**(*img, mask, roi=None, percentile=50, label="default"*)
+* post v5.0: avgs = **plantcv.analyze.radial_percentile**(*img, labeled_mask, n_labels=1, percentile=50, label=None*)
 
 #### plantcv.analyze.size
 
