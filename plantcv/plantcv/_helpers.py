@@ -764,8 +764,8 @@ def _rgb2cmyk(rgb_img, channel):
     y = (1 - bgr[..., 0] - k) / (1 - k)
 
     # Create a channel dictionaries for lookups by a channel name index
-    channels = {"c": 255 * c.astype(np.uint8), "m": 255 * m.astype(np.uint8),
-                "y": 255 * y.astype(np.uint8), "k": 255 * k.astype(np.uint8)}
+    channels = {"c": np.multiply(255, c).astype(np.uint8), "m": np.multiply(255, m).astype(np.uint8),
+                "y": np.multiply(255, y).astype(np.uint8), "k": np.multiply(255, k).astype(np.uint8)}
 
     return channels[channel]
 
