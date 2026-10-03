@@ -763,12 +763,9 @@ def _rgb2cmyk(rgb_img, channel):
     # Y Channel
     y = (1 - bgr[..., 0] - k) / (1 - k)
 
-    # Convert the input BGR image to LAB colorspace
-    cmyk = (np.dstack((c, m, y, k)) * 255).astype(np.uint8)
-    # Split CMYK channels
-    y, m, c, k = cv2.split(cmyk)
     # Create a channel dictionaries for lookups by a channel name index
-    channels = {"c": c, "m": m, "y": y, "k": k}
+    channels = {"c": np.multiply(255, c).astype(np.uint8), "m": np.multiply(255, m).astype(np.uint8),
+                "y": np.multiply(255, y).astype(np.uint8), "k": np.multiply(255, k).astype(np.uint8)}
 
     return channels[channel]
 
