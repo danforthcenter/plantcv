@@ -1,6 +1,8 @@
 ## Automatically Detect a Color Card with cv2.mcc tools
 
 Automatically detects a Macbeth ColorChecker and creates a labeled mask.
+This uses a different process from [`pcv.transform.detect_color_card`](transform_detect_color_card.md) and may be
+useful for images that have multiple color cards or color card like objects in inconsistent locations.
 
 **plantcv.transform.mcc_detect**(*rgb_img, color_chip_size=None, roi=None, delta_E=True, \*\*kwargs*)
 
@@ -29,6 +31,13 @@ Automatically detects a Macbeth ColorChecker and creates a labeled mask.
     Unlike [`pcv.transform.detect_color_card`](transform_detect_color_card.md) this function does not support astrobotany color cards or size scaling based on color chips. `cv2.mcc` does not return the dimensions of color chips so this function does not serve the dual-purpose that other detection methods will allow for.
 
 
+**Original Image**
+
+Here the [`pcv.transform.detect_color_card`](transform_detect_color_card.md) may struggle without an ROI that excludes the extra color card side, so we use `mcc_detect`.
+
+![Screenshot](img/documentation_images/mcc/original.jpg){ width="350"}
+
+
 ```python
 
 from plantcv import plantcv as pcv
@@ -41,7 +50,7 @@ cc_matrix = pcv.transform.mcc_detect(rgb_img=rgb_img)
 ```
 **MCC Color Card Detection**
 
-![Screenshot](img/documentation_images/mcc/mcc-output.png)
+![Screenshot](img/documentation_images/mcc/detected.png)
 
 ```python
 
@@ -54,6 +63,6 @@ corrected_img = pcv.transform.affine_color_correction(rgb_img=rgb_img,
 ```
 **Image After MCC Correction**
 
-![Screenshot](img/documentation_images/mcc/transform.png)
+![Screenshot](img/documentation_images/mcc/corrected.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/transform/mcc_detect.py)

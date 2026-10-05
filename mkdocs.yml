@@ -258,3 +258,4 @@ markdown_extensions:
   - toc:
       permalink: True
   - admonition
+  - attr_list
