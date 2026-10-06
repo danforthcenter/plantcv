@@ -29,7 +29,8 @@ below). For more detail about data output see [Summary of Output Observations](o
 
 ```python
 
-from plantcv import plantcv as pcv
+import numpy as np
+labeled_mask = pcv.roi.roi2mask(img=crop_img, roi=rois1)
 
 # Caclulates the average values of pixels that fall within the distance percentile from the center of an object.
 
