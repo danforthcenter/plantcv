@@ -52,7 +52,7 @@ number_mask = len(np.unique(labeled_mask))-1
 
 ```python
 
-list_of_averages  = pcv.analyze.radial_percentile(img=img, labeled_mask=labeled_mask, n_labels=n_seeds, percentile=20)
+list_of_averages = pcv.analyze.radial_percentile(img=img, labeled_mask=labeled_mask, n_labels=number_mask, percentile=20)
 
 # Access data stored out from analyze.radial_percentile
 gray_avg_seed1 = pcv.outputs.observations['default_1']['gray_20%_avg']['value']
