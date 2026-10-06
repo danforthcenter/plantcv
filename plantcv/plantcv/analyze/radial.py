@@ -82,7 +82,7 @@ def _analyze_radial(img, slices, obj_mask, percentile=50, label=None):
     distances = np.sqrt((xs - np.mean(xs)) ** 2 + (ys - np.mean(ys)) ** 2)
     # Cutoff distance as a percentile of the maximum distance of an object pixel from the center
     cutoff = np.max(distances) * (percentile / 100.0)
-    inside = distances < cutoff
+    inside = (distances <= cutoff) & (percentile > 0)
 
     # No object pixels within the cutoff (e.g., very small percentile or single-pixel object)
     if not np.any(inside):
