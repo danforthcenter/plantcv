@@ -32,7 +32,7 @@ below). For more detail about data output see [Summary of Output Observations](o
 import numpy as np
 labeled_mask = pcv.roi.roi2mask(img=crop_img, roi=rois1)
 
-# Caclulates the average values of pixels that fall within the distance percentile from the center of an object.
+# Calculates the average values of pixels that fall within the distance percentile from the center of an object.
 
 rois1 = pcv.roi.auto_wells(gray_img=crop_img, mindist = 100, candec = 50, 
 accthresh = 60, minradius = 100, maxradius = 180, nrows=4, ncols=6, radiusadjust=-10)
