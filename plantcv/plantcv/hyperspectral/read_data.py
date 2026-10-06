@@ -6,95 +6,10 @@ import cv2
 import numpy as np
 from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _find_closest
 from plantcv.plantcv.classes import Spectral_data
 from plantcv.plantcv.transform import rescale
 from plantcv.plantcv.fatal_error import fatal_error
-
-
-def _find_closest(spectral_array, target):
-    """Find index of a target wavelength band in a hyperspectral data instance.
-
-    Inputs:
-        spectral_array = Hyperspectral data instance
-        target         = Target wavelength value
-
-    Returns:
-        idx            = Index
-
-    :param spectral_array: __main__.Spectral_data
-    :param target: float
-    :return spectral_array: __main__.Spectral_data
-    """
-    return np.argmin(np.abs(spectral_array - target))
-
-
-def _make_pseudo_rgb(spectral_array):
-    """Create the best pseudo-rgb image possible from a hyperspectral datacube
-
-    Inputs:
-        spectral_array = Hyperspectral data instance
-
-    Returns:
-        pseudo_rgb     = Pseudo-rgb image
-
-    :param spectral_array: __main__.Spectral_data
-    :return pseudo_rgb: numpy.ndarray
-    """
-    # Make shorter variable names for data from the spectral class instance object
-    array_data = spectral_array.array_data
-    default_bands = spectral_array.default_bands
-    wl_keys = spectral_array.wavelength_dict.keys()
-
-    if default_bands is not None:
-        # The ENVI standard defines one default band for a grayscale image and three for an RGB image
-        if len(default_bands) == 1:
-            # Repeat the single band in each channel to make a grayscale pseudo-rgb image
-            default_bands = default_bands * 3
-        if len(default_bands) != 3:
-            fatal_error(f"Expected 1 or 3 default bands in the header file but found {len(default_bands)}. " +
-                        "Consider removing default_bands field of the header file.")
-        # Default bands are positions on the band axis of the datacube, so they have to be in range
-        bands = [int(band) for band in default_bands]
-        if not all(0 <= band < array_data.shape[2] for band in bands):
-            fatal_error(f"Default bands {bands} are not all valid band numbers for a datacube with "
-                        f"{array_data.shape[2]} bands.")
-        pseudo_rgb = cv2.merge((array_data[:, :, bands[0]],
-                                array_data[:, :, bands[1]],
-                                array_data[:, :, bands[2]]))
-
-    else:
-        max_wavelength = max(float(i) for i in wl_keys)
-        min_wavelength = min(float(i) for i in wl_keys)
-        # Check range of available wavelength
-        if max_wavelength >= 600 and min_wavelength <= 490:
-            id_red = _find_closest(spectral_array=np.array([float(i) for i in wl_keys]), target=630)
-            id_green = _find_closest(spectral_array=np.array([float(i) for i in wl_keys]), target=540)
-            id_blue = _find_closest(spectral_array=np.array([float(i) for i in wl_keys]), target=480)
-
-            pseudo_rgb = cv2.merge((array_data[:, :, [id_blue]],
-                                    array_data[:, :, [id_green]],
-                                    array_data[:, :, [id_red]]))
-        else:
-            # Otherwise take 3 wavelengths, first, middle and last available wavelength
-            id_red = int(len(spectral_array.wavelength_dict)) - 1
-            id_green = int(id_red / 2)
-            pseudo_rgb = cv2.merge((array_data[:, :, [0]],
-                                    array_data[:, :, [id_green]],
-                                    array_data[:, :, [id_red]]))
-
-    # Gamma correct pseudo_rgb image
-    pseudo_rgb = pseudo_rgb ** (1 / 2.2)
-    # Scale each of the channels up to 255
-    debug = params.debug
-    params.debug = None
-    pseudo_rgb = cv2.merge((rescale(pseudo_rgb[:, :, 0]),
-                            rescale(pseudo_rgb[:, :, 1]),
-                            rescale(pseudo_rgb[:, :, 2])))
-
-    # Reset debugging mode
-    params.debug = debug
-
-    return pseudo_rgb
 
 
 def _find_hdr(filename):
@@ -329,10 +244,7 @@ def read_data(filename, mode="ENVI"):
                                    header_offset=header_dict.get("header_offset", 0)
                                    )
 
-    # Make pseudo-rgb image and replace it inside the class instance object
-    pseudo_rgb = _make_pseudo_rgb(spectral_array)
-    spectral_array.pseudo_rgb = pseudo_rgb
-
-    _debug(visual=pseudo_rgb, filename=os.path.join(params.debug_outdir, str(params.device) + "_pseudo_rgb.png"))
+    _debug(visual=spectral_array.pseudo_rgb(),
+           filename=os.path.join(params.debug_outdir, str(params.device) + "_pseudo_rgb.png"))
 
     return spectral_array

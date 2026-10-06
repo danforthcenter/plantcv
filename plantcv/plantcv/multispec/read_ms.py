@@ -4,10 +4,10 @@ import cv2
 import numpy as np
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._globals import params
+from plantcv.plantcv._helpers import _find_closest
 from plantcv.plantcv.classes import MS_data
 from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.transform.rescale import rescale
-from plantcv.plantcv.hyperspectral.read_data import _find_closest
 
 
 def _ms_make_pseudo_rgb(ms_array):
@@ -197,11 +197,10 @@ def read_ms(source, wavelengths=None, pattern="MS(\\d+)_((SV|TV))_BP0_(\\d+).*")
         wavelength_dict=MS_wavelengths_dict,
         max_wavelength=max(MS_wavelengths),
         min_wavelength=min(MS_wavelengths),
-        pseudo_rgb=None,
         filename=source_str,
         metadata=meta
     )
-    ms.pseudo_rgb = _ms_make_pseudo_rgb(ms)
-    _debug(visual=ms.pseudo_rgb, filename=os.path.join(params.debug_outdir, "input_ms_pseudocolor.png"))
+
+    _debug(visual=ms.pseudo_rgb(), filename=os.path.join(params.debug_outdir, "input_ms_pseudocolor.png"))
 
     return ms
