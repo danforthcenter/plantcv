@@ -1,12 +1,14 @@
 """Analyze leaf light absorption as alphaL: 1 - (R640nm / R732nm)"""
 
+import os
 import numpy as np
 import pandas as pd
 from plantcv.plantcv.warn import warn
 from plantcv.plantcv._helpers import _iterate_analysis
-from plantcv.plantcv._globals import outputs
+from plantcv.plantcv._globals import outputs, params
 from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.analyze.yii import _set_labels
+from plantcv.plantcv._debug import _debug
 
 
 def alphaL(ps, labeled_mask, n_labels=1, label=None, min_bin=-1, max_bin=1):
@@ -30,7 +32,7 @@ def alphaL(ps, labeled_mask, n_labels=1, label=None, min_bin=-1, max_bin=1):
 
     Returns
     -------
-    aph                 = numpy.ndarray,
+    alphaL              = numpy.ndarray,
         alphaL matrix
     """
     # Set labels
@@ -52,6 +54,11 @@ def alphaL(ps, labeled_mask, n_labels=1, label=None, min_bin=-1, max_bin=1):
                             function=_analyze_alphaL,
                             **{"min_bin": min_bin, "max_bin": max_bin,
                                "red": ps.aph.red, "farred": ps.aph.farred})
+
+    # Plot/print dataarray
+    _debug(visual=aph,
+           filename=os.path.join(params.debug_outdir, f"{params.device}_alphaL.png"))
+
     return aph
 
 
@@ -71,7 +78,8 @@ def _alphaL_calc(red, farred, mask):
     aph  = numpy.ndarray,
         alphaL matrix
     """
-    aph = 1 - np.divide(red, farred, out=np.full(np.shape(red), fill_value=np.nan), where=mask.astype(bool))
+    aph = 1 - np.divide(red, farred, out=np.full(np.shape(red), fill_value=np.nan),
+                        where=np.logical_and(mask.astype(bool), farred != 0))
     return aph
 
 
@@ -152,4 +160,4 @@ def _analyze_alphaL(img, mask, label, min_bin, max_bin, red, farred):
                             value=hist_df['proportion of pixels (%)'].values.tolist(),
                             label=np.around(hist_df["counts"].values.tolist(), decimals=2).tolist())
 
-    return img + alphaL_mat
+    return np.where(mask > 0, alphaL_mat, img)

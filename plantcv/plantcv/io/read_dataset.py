@@ -4,27 +4,30 @@ import os
 import re
 
 
-def read_dataset(source_path, pattern='', sort=True):
-    """
-    Read a dataset of images as a list of paths.
-    Inputs:
-    source_path  = Path to the directory containing the images
-    pattern      = Optional, return only filenames containing the pattern
-    sort         = True by default, sorts the paths alphabetically
+def read_dataset(img_dir, pattern='', sort=True):
+    """Read a dataset of images as a list of paths.
+
+    Parameters:
+    -----------
+    img_dir  = str,
+        Path to the directory containing the images
+    pattern      = str,
+        Optional, return only filenames containing the pattern
+    sort         = boolean,
+        True by default, sorts the paths alphabetically
+
     Returns:
-    dataset = List of paths to the images in the source path
-    :param source_path: str
-    :param pattern: str
-    :param sort: bool
-    :return dataset: list
+    --------
+    dataset = list,
+        List of paths to the images in the source path
     """
-    if not os.path.exists(source_path):
-        raise IOError(f"Directory does not exist: {source_path}")
+    if not os.path.exists(img_dir):
+        raise IOError(f"Directory does not exist: {img_dir}")
 
     img_path_list = []
     img_extensions = ['.png', '.jpg', '.jpeg', '.tif', '.tiff', '.gif']
 
-    for root, _, files in os.walk(source_path):
+    for root, _, files in os.walk(img_dir):
         for file in files:
             # Look for images that contain [pattern] in the name
             if re.search(pattern, file):

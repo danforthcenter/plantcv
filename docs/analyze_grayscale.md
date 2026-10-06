@@ -37,7 +37,7 @@ pcv.params.debug = "plot"
 # Optionally, set a sample label name
 pcv.params.sample_label = "plant"
 
-# Caclulates the proportion of pixels that fall into a signal bin and writes the values to a file.
+# Calculates the proportion of pixels that fall into a signal bin and writes the values to a file.
 # Also provides a histogram of this data
 analysis_image  = pcv.analyze.grayscale(gray_img=gray_img, labeled_mask=mask, n_labels=1, bins=100)
 

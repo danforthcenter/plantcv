@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import math
+from scipy import ndimage
 from skimage import morphology
 from plantcv.plantcv import fatal_error, warn
 from plantcv.plantcv._globals import params
@@ -623,6 +624,48 @@ def _iterate_analysis(img, labeled_mask, n_labels, label, function, **kwargs):
     return img
 
 
+def _iterate_objects(labeled_mask, n_labels, label):
+    """Iterate over labeled objects, yielding each object cropped to its bounding box.
+
+    Parameters
+    ----------
+    labeled_mask : numpy.ndarray
+        Labeled mask of objects (or a binary 0/255 mask for a single object)
+    n_labels : int
+        Number of expected labels
+    label : str or list
+        Label parameter, modifies the variable name of observations recorded
+
+    Yields
+    ------
+    sample : str
+        Sample label for the object, formatted as "<label>_<i>"
+    slices : tuple
+        Tuple of slices defining the bounding box of the object
+    obj_mask : numpy.ndarray
+        Boolean mask of the object within the bounding box
+    """
+    # Set labels to label
+    labels = label
+    # If label is a string, make a list of labels
+    if isinstance(label, str):
+        labels = [label] * n_labels
+    # If the length of the labels list is not equal to the number of labels, raise an error
+    if len(labels) != n_labels:
+        fatal_error(f"Number of labels ({len(labels)}) does not match number of objects ({n_labels})")
+    mask = labeled_mask
+    # Convert a binary 0/255 mask to a single object with label 1
+    if len(np.unique(mask)) == 2 and np.max(mask) == 255:
+        mask = np.where(mask == 255, 1, 0).astype(np.uint8)
+    # Bounding boxes for labels 1 to n_labels (None if a label is not present)
+    bboxes = ndimage.find_objects(mask, max_label=n_labels)
+    for i, slices in enumerate(bboxes, start=1):
+        # Use an empty bounding box for labels not present in the mask
+        if slices is None:
+            slices = (slice(0, 0), slice(0, 0))
+        yield f"{labels[i - 1]}_{i}", slices, mask[slices] == i
+
+
 def _object_composition(contours, hierarchy):
     """
     Groups objects into a single object, usually done after object filtering.
@@ -770,12 +813,9 @@ def _rgb2cmyk(rgb_img, channel):
     # Y Channel
     y = (1 - bgr[..., 0] - k) / (1 - k)
 
-    # Convert the input BGR image to LAB colorspace
-    cmyk = (np.dstack((c, m, y, k)) * 255).astype(np.uint8)
-    # Split CMYK channels
-    y, m, c, k = cv2.split(cmyk)
     # Create a channel dictionaries for lookups by a channel name index
-    channels = {"c": c, "m": m, "y": y, "k": k}
+    channels = {"c": np.multiply(255, c).astype(np.uint8), "m": np.multiply(255, m).astype(np.uint8),
+                "y": np.multiply(255, y).astype(np.uint8), "k": np.multiply(255, k).astype(np.uint8)}
 
     return channels[channel]
 
@@ -932,3 +972,29 @@ def _rect_replace(img, sub_img, roi):
     full_img = np.copy(img)
     full_img[ystart:yend, xstart:xend] = sub_img
     return full_img
+
+
+def _is_binary(img):
+    """Determine whether an image holds no more than two distinct values.
+
+    Only pixel values are considered, not the number of image dimensions.
+
+    Parameters
+    ----------
+    img : numpy.ndarray
+        Image to test.
+
+    Returns
+    -------
+    bool
+        True if the image holds two or fewer distinct values.
+    """
+    values = np.asarray(img)
+    if values.size == 0:
+        return True
+    low = values.min()
+    high = values.max()
+    if low == high:
+        return True
+    # Two distinct values means every pixel equals either the minimum or the maximum
+    return not np.any((values != low) & (values != high))
