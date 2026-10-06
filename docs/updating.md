@@ -388,6 +388,11 @@ pages for more details on the input and output variable types.
 * pre v4.2.1: NA
 * post v4.2.1: dist_chart = **plantcv.analyze.distribution**(*labeled_mask, n_labels=1, direction="down", bin_size=100, hist_range="absolute", label=None*)
 
+#### plantcv.analyze.etr
+
+* pre v5.0: NA
+* post v5.0: _ = **plantcv.analyze.etr**(*actinic_light, psi_psii_ratio=0.5*)
+
 #### plantcv.analyze.grayscale
 
 * pre v4.0: (see plantcv.analyze_nir_intensity)
@@ -398,6 +403,11 @@ pages for more details on the input and output variable types.
 * pre v4.0: NA
 * post v4.0: npq, npq_hist = **plantcv.analyze.npq**(*ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto", measurement_labels=None, label=None*)
 * post v5.0: npq, npq_hist = **plantcv.analyze.npq**(*ps, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto", measurement_labels=None, label=None*)
+
+#### plantcv.analyze.npq_components
+
+* pre v5.0: NA
+* post v5.0: output_list = **plantcv.analyze.npq_components**(*ps, labeled_mask, n_labels=1, label=None*)
 
 #### plantcv.analyze.size
 
