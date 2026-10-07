@@ -1,5 +1,4 @@
 # Create labels base on clean mask and optionally, multiple ROIs
-import cv2
 import os
 import numpy as np
 from skimage.measure import label
