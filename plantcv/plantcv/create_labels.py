@@ -6,7 +6,7 @@ from skimage.measure import label
 from skimage.color import label2rgb
 from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _roi_filter, _cv2_findcontours
+from plantcv.plantcv._helpers import _roi_filter
 
 
 def create_labels(mask, rois=None, roi_type="partial"):
@@ -44,17 +44,12 @@ def create_labels(mask, rois=None, roi_type="partial"):
 
     # Use the rois for labeling
     else:
-        contours, hierarchy = _cv2_findcontours(mask)
         labeled_mask = np.zeros(mask.shape[:2], dtype=np.int32)
         num_labels = len(rois.contours)
         for i, roi in enumerate(rois):
-            kept_cnt, _, mask = _roi_filter(img=mask, roi=roi,
-                                            obj=contours,
-                                            hierarchy=hierarchy,
-                                            roi_type=roi_type)
-
+            mask = _roi_filter(mask=mask, roi=roi, roi_type=roi_type)
             # Pixel intensity of (i+1) such that the first object has value
-            cv2.drawContours(labeled_mask, kept_cnt, -1, (i+1), -1)
+            labeled_mask = labeled_mask + (i+1) * (mask.astype(np.int32) / 255)
 
     # Restore debug parameter
     params.debug = debug
