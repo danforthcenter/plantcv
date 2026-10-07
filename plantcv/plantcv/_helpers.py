@@ -531,7 +531,7 @@ def _filter_by_roi_masks(mask, roi_masks, roi_type):
     roi_type = roi_type.lower()
     binary = (mask > 0).astype(np.uint8) * 255
     if roi_type not in ("cutto", "largest", "within", "partial"):
-         fatal_error(f'ROI Type {roi_type} is not "cutto", "largest", "within" or "partial"!')
+        fatal_error(f'ROI Type {roi_type} is not "cutto", "largest", "within" or "partial"!')
     # elementwise max across all roi_masks, i.e. OR them together into one combined mask
     roi_mask = np.maximum.reduce(roi_masks) if roi_masks else np.zeros(binary.shape[:2], dtype=np.uint8)
 
