@@ -530,6 +530,8 @@ def _filter_by_roi_masks(mask, roi_masks, roi_type):
     """
     roi_type = roi_type.lower()
     binary = (mask > 0).astype(np.uint8) * 255
+    if roi_type not in ("cutto", "largest", "within", "partial"):
+         fatal_error(f'ROI Type {roi_type} is not "cutto", "largest", "within" or "partial"!')
     # elementwise max across all roi_masks, i.e. OR them together into one combined mask
     roi_mask = np.maximum.reduce(roi_masks) if roi_masks else np.zeros(binary.shape[:2], dtype=np.uint8)
 
@@ -562,7 +564,8 @@ def _filter_by_roi_masks(mask, roi_masks, roi_type):
     if roi_type == "partial":
         selected = overlap_counts > 0
         selected[0] = False  # never select background label 0
-    elif roi_type == "within":
+    else:
+        # "within" method
         # count each component's pixels out of ROI
         outside_counts = np.bincount(
             label_ids,
@@ -572,8 +575,6 @@ def _filter_by_roi_masks(mask, roi_masks, roi_type):
         # make an index of things that do overlap the ROI and do not have any pixels outside of the ROI
         selected = (overlap_counts > 0) & (outside_counts == 0)
         selected[0] = False  # never select background label 0
-    else:
-        fatal_error(f'ROI Type {roi_type} is not "cutto", "largest", "within" or "partial"!')
 
     # make and return a binary mask of all the kept labels
     return np.where(selected[labels], 255, 0).astype(np.uint8)
