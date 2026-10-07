@@ -819,10 +819,7 @@ def filter(mask, roi, roi_type="partial"):
     filtered_mask : numpy.ndarray
         Mask image after ROI filtering.
     """
-    found_obj, found_hier = _cv2_findcontours(bin_img=mask)
-
-    _, _, filtered_mask = _roi_filter(img=mask, roi=roi, obj=found_obj,
-                                      hierarchy=found_hier, roi_type=roi_type)
+    filtered_mask = _roi_filter(mask=mask, roi=roi, roi_type=roi_type)
 
     _debug(filtered_mask, filename=os.path.join(params.debug_outdir, str(params.device) + '_roi_filter.png'), cmap='gray')
 
