@@ -24,7 +24,6 @@ def quick_filter(mask, roi, roi_type="partial"):
     numpy.ndarray
         Filtered binary mask.
     """
-    params.device += 1
     roi_masks = _roi2masks(mask=mask, roi=roi)
     filtered_mask = _filter_by_roi_masks(mask=mask, roi_masks=roi_masks, roi_type=roi_type)
     _debug(visual=filtered_mask,
