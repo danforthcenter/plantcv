@@ -79,6 +79,15 @@ The `plantcv.utils` module has been deleted with `sample_images` moving to `plan
 
 Renamed the "json" attribute to "results" for clarity about what it controls and for consistency with new [JupyterConfig](parallel_jupyterconfig.md)
 
+#### plantcv.report_size_marker_area
+
+Removed `label` parameter since size marker data is now stored as metadata in the
+[`Outputs` class](outputs.md) and does not need to be labeled per sample.
+
+#### plantcv.roi.quick_filter
+
+Speed improvement was applied to `plantcv.roi.filter` and the `quick_filter` function has been deprecated.
+
 #### plantcv.segment_image_series
 
 Changed `imgs_paths` argument to `source` for flexibility with a single directory or a list of filepaths. Also changed the rois argument to take a [`plantcv.plantcv.Objects`](objects.md) class object.
@@ -87,11 +96,6 @@ Changed `imgs_paths` argument to `source` for flexibility with a single director
 
 Renamed the input parameter `rgb_img` to `img` to reflect the flexibility of using the [EGI index function](spectral_index.md)
 with RGB and hyperspectral data.
-
-#### plantcv.report_size_marker_area
-
-Removed `label` parameter since size marker data is now stored as metadata in the
-[`Outputs` class](outputs.md) and does not need to be labeled per sample.
 
 #### plantcv.transform.auto_correct_color
 
@@ -1177,6 +1181,8 @@ pages for more details on the input and output variable types.
 * pre v4.2.1: NA
 * post v4.2.1: filtered_mask = **plantcv.roi.quick_filter**(*mask, roi*)
 * post v4.9: filtered_mask = **plantcv.roi.quick_filter**(*mask, roi, roi_type="partial"*)
+* post v5.0: Deprecated, see:
+    * filtered_mask = **pcv.roi.filter**(*mask, roi, roi_type='partial'*)
 
 #### plantcv.roi_objects
 
