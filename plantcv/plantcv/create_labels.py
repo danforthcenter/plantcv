@@ -47,9 +47,9 @@ def create_labels(mask, rois=None, roi_type="partial"):
         labeled_mask = np.zeros(mask.shape[:2], dtype=np.int32)
         num_labels = len(rois.contours)
         for i, roi in enumerate(rois):
-            mask = _roi_filter(mask=mask, roi=roi, roi_type=roi_type)
+            iter_mask = _roi_filter(mask=mask, roi=roi, roi_type=roi_type)
             # Pixel intensity of (i+1) such that the first object has value
-            labeled_mask = labeled_mask + (i+1) * (mask.astype(np.int32) / 255)
+            labeled_mask = labeled_mask + (i+1) * (iter_mask.astype(np.int32) / 255)
 
     # Restore debug parameter
     params.debug = debug
