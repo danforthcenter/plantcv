@@ -12,6 +12,15 @@ def test_create_labels(test_data):
     assert np.unique(masks).size == (num + 1)
 
 
+def test_create_labels_multi(test_data):
+    """Test for PlantCV."""
+    cnt, cnt_str = test_data.load_contours(test_data.multi_contours_file)
+    mask = cv2.imread(test_data.multi_bin_img, -1)
+    cnt_Obj = Objects(contours=[cnt], hierarchy=[cnt_str])
+    mask, num = create_labels(mask=mask, rois=cnt_Obj, roi_type="partial")
+    assert np.unique(mask).size == (num + 1)
+
+    
 def test_create_labels_no_roi(test_data):
     """Test for PlantCV."""
     mask = cv2.imread(test_data.small_bin_img, -1)

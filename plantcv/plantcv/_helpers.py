@@ -465,129 +465,158 @@ def _cv2_findcontours(bin_img):
     return contours, hierarchy
 
 
-def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
-    """
-    Helper function to filter contours using a single ROI.
-
-    Finds objects partially inside a region of interest or cuts objects to the ROI.
+def _roi_filter(mask, roi, roi_type="partial"):
+    """Helper function to filter a binary mask using a region of interest and connected components.
 
     Parameters
     ----------
-    img : numpy.ndarray
-        RGB, binary, or grayscale image data for shape.
+    mask : numpy.ndarray
+        Binary mask to filter.
     roi : plantcv.plantcv.classes.Objects
-        Region of interest, an instance of the Object class output from a ROI function.
-    obj : list
-        Contours of objects, output from "_cv2_findcontours" function.
-    hierarchy : numpy.ndarray
-        Hierarchy of objects, output from "_cv2_findcontours" function.
+        PlantCV ROI object.
     roi_type : str, optional
-        Type of ROI filtering. Options are:
-        - 'partial': Find objects partially inside the ROI (default).
-        - 'cutto': Cut objects to the ROI.
-        - 'largest': Keep only the largest contour.
-        - 'within': Keep only objects fully within the ROI.
+        Type of ROI filtering: "partial", "cutto", "within", or "largest".
 
     Returns
     -------
-    kept_cnt : list
-        List of kept contours after filtering.
-    kept_hier : numpy.ndarray
-        Hierarchy of kept contours.
-    mask : numpy.ndarray
-        Mask image showing the filtered contours.
-
-    Raises
-    ------
-    RuntimeError
-        If an invalid `roi_type` is provided.
-
-    Notes
-    -----
-    If a multi-ROI is provided, only the first ROI will be used. For multi-ROI processing, consider using a for loop.
+    numpy.ndarray
+        Filtered binary mask.
     """
-    # Store debug
-    debug = params.debug
-    params.debug = None
+    roi_masks = _roi2masks(mask=mask, roi=roi)
+    filtered_mask = _filter_by_roi_masks(mask=mask, roi_masks=roi_masks, roi_type=roi_type)
+    return filtered_mask
 
-    if len(roi.contours) > 1:
-        warn("received a multi-ROI but only the first ROI will be used. Consider using a for loop for multi-ROI")
 
-    roi_contour = roi.contours[0]
-    object_contour = obj
-    obj_hierarchy = hierarchy
+def _roi2masks(mask, roi):
+    """Turn a list of ROIs into binary masks
 
-    # Create an empty grayscale (black) image the same dimensions as the input image
-    mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
-    cv2.drawContours(mask, object_contour, -1, (255), -1, lineType=8, hierarchy=obj_hierarchy)
+    Parameters
+    ----------
+    mask : numpy.ndarray
+        Binary mask to filter.
+    roi : plantcv.plantcv.classes.Objects
+        PlantCV ROI object.
 
-    # Create a mask of the filled in ROI
-    roi_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
-    roi_points = np.vstack(roi_contour[0])
-    cv2.fillPoly(roi_mask, [roi_points], (255))
+    Returns
+    -------
+    list
+        ROI Masks, numpy.ndarray objects
 
-    # Allows user to find all objects that are completely inside or overlapping with ROI
-    if roi_type.upper() in ('PARTIAL', 'LARGEST'):
-        # Filter contours outside of the region of interest
-        for c, _ in enumerate(object_contour):
-            filtering_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
-            cv2.fillPoly(filtering_mask, [np.vstack(object_contour[c])], (255))
-            overlap_img = _logical_operation(filtering_mask, roi_mask, 'and')
-            # Delete contours that do not overlap at all with the ROI
-            if np.sum(overlap_img) == 0:
-                cv2.drawContours(mask, object_contour, c, (0), -1, lineType=8, hierarchy=obj_hierarchy)
+    """
+    roi_masks = []
+    for single_roi in roi:
+        roi_mask = np.zeros(mask.shape[:2], dtype=np.uint8)
+        cv2.drawContours(roi_mask, single_roi.contours[0], -1, 255, -1)
+        roi_masks.append(roi_mask)
+    return roi_masks
 
-        # Find the kept contours and area
-        kept_cnt, kept_hierarchy = _cv2_findcontours(bin_img=mask)
 
-        # Find the largest contour if roi_type is set to 'largest'
-        if roi_type.upper() == 'LARGEST' and kept_cnt:
-            index = np.argmax([cv2.contourArea(c) for c in kept_cnt])
-            mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
-            cv2.drawContours(mask, kept_cnt, contourIdx=index, color=(255), thickness=-1, hierarchy=kept_hierarchy, maxLevel=2)
-            kept_cnt, kept_hierarchy = _cv2_findcontours(bin_img=mask)
+def _filter_by_roi_masks(mask, roi_masks, roi_type):
+    """Filter by ROI masks
 
-    # Allows user to cut objects to the ROI (all objects completely outside ROI will not be kept)
-    elif roi_type.upper() in ('CUTTO', 'WITHIN'):
-        background1 = np.zeros(np.shape(img)[:2], dtype=np.uint8)
-        background2 = np.zeros(np.shape(img)[:2], dtype=np.uint8)
-        cv2.drawContours(background1, object_contour, -1, (255), -1, lineType=8, hierarchy=obj_hierarchy)
-        roi_points = np.vstack(roi_contour[0])
-        cv2.fillPoly(background2, [roi_points], (255))
-        mask = cv2.multiply(background1, background2)
-        kept_cnt, kept_hierarchy = _cv2_findcontours(bin_img=mask)
+    Parameters
+    ----------
+    mask : numpy.ndarray
+        Binary mask to filter.
+    roi_masks : list
+        numpy.ndarrays of binary masks
+    roi_type : str, optional
+        Type of ROI filtering: "partial", "cutto", "within", or "largest".
 
-        # Filter out contours that touch the edge if roi_type is 'within'
-        if roi_type.upper() == 'WITHIN' and kept_cnt:
-            # make a mask with the outline of the ROI
-            roi_outline_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
-            cv2.drawContours(image=roi_outline_mask, contours=roi_contour, contourIdx=-1,
-                             color=255, thickness=1)
-            # make empty mask to append to
-            within_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
-            for c, _ in enumerate(kept_cnt):
-                # for each contour make a mask with that contour filled
-                filtering_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
-                cv2.fillPoly(filtering_mask, [np.vstack(kept_cnt[c])], (255))
-                # check overlap with traced ROI
-                overlap_img = _logical_operation(filtering_mask, roi_outline_mask, 'and')
-                # check color in original mask, ie don't keep gaps that are 0s.
-                # append contours fully within ROI to the within_mask
-                if not overlap_img.any() and kept_hierarchy[0][c][3] == -1:
-                    cv2.drawContours(within_mask, kept_cnt, c,
-                                     int(img[kept_cnt[c][0][0][1], kept_cnt[c][0][0][0]]),
-                                     -1, lineType=8, hierarchy=kept_hierarchy)
-            mask = within_mask
-            kept_cnt, kept_hierarchy = _cv2_findcontours(bin_img=mask)
+    Returns
+    -------
+    numpy.ndarray
+        Binary Mask
+    """
+    roi_type = roi_type.lower()
+    binary = (mask > 0).astype(np.uint8) * 255
+    if roi_type not in ("cutto", "largest", "within", "partial"):
+        fatal_error(f'ROI Type {roi_type} is not "cutto", "largest", "within" or "partial"!')
+    # elementwise max across all roi_masks, i.e. OR them together into one combined mask
+    roi_mask = np.maximum.reduce(roi_masks) if roi_masks else np.zeros(binary.shape[:2], dtype=np.uint8)
+
+    if roi_type == "cutto":
+        # keep only the binary-mask pixels that fall inside the ROI mask
+        return cv2.bitwise_and(binary, roi_mask)
+
+    if roi_type == "largest":
+        return _largest_in_each_roi(binary=binary, roi_masks=roi_masks)
+
+    # cv2.connectedComponentsWithStats: label each separate blob (8-connected neighbors) of the binary mask
+    # with a unique integer ID (0 = background); returns the count of labels, a label-ID image, per-label
+    # stats (bounding box/area), and centroids (_)
+    num_labels, labels, _stats, _ = cv2.connectedComponentsWithStats(binary, connectivity=8)
+    if num_labels <= 1:
+        return np.zeros(binary.shape, dtype=np.uint8)
+
+    inside = roi_mask > 0
+    # flatten the 2D labels image into a 1D array so np.bincount can
+    # tally values across every pixel
+    label_ids = labels.ravel()
+    # np.bincount: count, for each label ID, how many of its pixels are weighted by "inside";
+    # weights must be flattened (ravel) to line up with label ids.
+    overlap_counts = np.bincount(
+        label_ids,
+        weights=inside.ravel().astype(np.uint8),
+        minlength=num_labels,
+    )
+
+    if roi_type == "partial":
+        selected = overlap_counts > 0
+        selected[0] = False  # never select background label 0
     else:
-        # Reset debug mode
-        params.debug = debug
-        fatal_error('ROI Type ' + str(roi_type) + ' is not "cutto", "largest", "within" or "partial"!')
+        # "within" method
+        # count each component's pixels out of ROI
+        outside_counts = np.bincount(
+            label_ids,
+            weights=(~inside).ravel().astype(np.uint8),
+            minlength=num_labels,
+        )
+        # make an index of things that do overlap the ROI and do not have any pixels outside of the ROI
+        selected = (overlap_counts > 0) & (outside_counts == 0)
+        selected[0] = False  # never select background label 0
 
-    # Reset debug mode
-    params.debug = debug
+    # make and return a binary mask of all the kept labels
+    return np.where(selected[labels], 255, 0).astype(np.uint8)
 
-    return kept_cnt, kept_hierarchy, mask
+
+def _largest_in_each_roi(binary, roi_masks):
+    """Find largest object partially in each mask
+
+    Parameters
+    ----------
+    binary : numpy.ndarray
+        Binary Mask
+    roi_masks : list
+        List of ROI masks
+
+    Returns
+    numpy.ndarray
+        Binary Mask of the largest object touching each ROI
+    -------
+    """
+    output = np.zeros(binary.shape[:2], dtype=np.uint8)
+    # label the whole, uncut mask once — same as "partial" — so area and
+    # extent always refer to the full object, never a ROI-clipped sliver
+    num_labels, labels, stats, _ = cv2.connectedComponentsWithStats(binary, connectivity=8)
+    if num_labels <= 1:
+        return output
+    label_ids = labels.ravel()
+    for roi_mask in roi_masks:
+        inside = roi_mask > 0
+        # same overlap test "partial" uses: does this label touch the ROI at all?
+        overlap_counts = np.bincount(
+            label_ids,
+            weights=inside.ravel().astype(np.uint8),
+            minlength=num_labels,
+        )
+        candidates = np.flatnonzero(overlap_counts > 0)
+        candidates = candidates[candidates != 0]  # exclude background label 0
+        if candidates.size > 0:
+            # rank candidates by their full area, not the portion inside the ROI
+            best = candidates[np.argmax(stats[candidates, cv2.CC_STAT_AREA])]
+            output[labels == best] = 255
+    return output
 
 
 def _iterate_analysis(img, labeled_mask, n_labels, label, function, **kwargs):
