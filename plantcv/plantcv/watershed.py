@@ -11,30 +11,32 @@ from skimage.segmentation import watershed
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv.color_palette import color_palette
 from plantcv.plantcv._globals import params, outputs
-from plantcv.plantcv._helpers import _cv2_findcontours
+from plantcv.plantcv._helpers import _cv2_findcontours, _is_binary
 
 
 def watershed_segmentation(rgb_img, mask, distance=10, label=None):
-    """
-    Uses the watershed algorithm to detect boundary of objects. Needs a marker file which specifies area which is
+    """Uses the watershed algorithm to detect boundary of objects. Needs a marker file which specifies area which is
     object (white), background (grey), unknown area (black).
 
-    Inputs:
-    rgb_img             = image to perform watershed on needs to be 3D (i.e. np.shape = x,y,z not np.shape = x,y)
-    mask                = binary image, single channel, object in white and background black
-    distance            = min_distance of local maximum
-    label               = Optional label parameter, modifies the variable name of
-                          observations recorded (default = pcv.params.sample_label).
+    Parameters:
+    -----------
+    rgb_img             : numpy.ndarray,
+        image to perform watershed on needs to be 3D (i.e. np.shape = x,y,z not np.shape = x,y)
+    mask                : numpy.ndarray,
+        binary image, single channel, object in white and background black
+    distance            : int,
+        min_distance of local maximum
+    label               : str,
+        Optional label parameter, modifies the variable name of
+        observations recorded (default = pcv.params.sample_label).
 
     Returns:
-    labels              = labeled mask with segmentation results
-
-    :param rgb_img: numpy.ndarray
-    :param mask: numpy.ndarray
-    :param distance: int
-    :param label: str
-    :return labels: numpy.ndarray
+    --------
+    labels              : numpy.ndarray,
+        labeled mask with segmentation results
     """
+    # check mask
+    _ = _is_binary(mask, True, True)
     # Store color sequence mode and set to random for watershed_img debug
     color_sequence = params.color_sequence
     params.color_sequence = "random"

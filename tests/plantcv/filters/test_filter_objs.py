@@ -11,7 +11,7 @@ def test_filter_objs_upper_na(filters_test_data):
     """Test for PlantCV."""
     params.debug = "plot"
     # Read in test data
-    mask = cv2.imread(filters_test_data.barley_example)
+    mask = cv2.imread(filters_test_data.barley_example, -1)
     filtered_mask = obj_props(bin_img=mask)
     _, nobjs = create_labels(mask=filtered_mask)
     params.debug = None
@@ -21,7 +21,7 @@ def test_filter_objs_upper_na(filters_test_data):
 def test_filter_objs_lower_thresh(filters_test_data):
     """Test for PlantCV."""
     # Read in test data
-    mask = cv2.imread(filters_test_data.barley_example)
+    mask = cv2.imread(filters_test_data.barley_example, -1)
     filtered_mask = obj_props(bin_img=mask, cut_side="lower", thresh=0.6, regprop="solidity")
     _, nobjs = create_labels(mask=filtered_mask)
     assert nobjs == 11
@@ -30,7 +30,7 @@ def test_filter_objs_lower_thresh(filters_test_data):
 def test_filter_objs_in_thresh(filters_test_data):
     """Test for PlantCV."""
     # Read in test data
-    mask = cv2.imread(filters_test_data.barley_example)
+    mask = cv2.imread(filters_test_data.barley_example, -1)
     filtered_mask = obj_props(bin_img=mask, cut_side="in", thresh=(0.1, 0.6), regprop="solidity")
     _, nobjs = create_labels(mask=filtered_mask)
     assert nobjs == 11
@@ -39,7 +39,7 @@ def test_filter_objs_in_thresh(filters_test_data):
 def test_filter_objs_out_thresh(filters_test_data):
     """Test for PlantCV."""
     # Read in test data
-    mask = cv2.imread(filters_test_data.barley_example)
+    mask = cv2.imread(filters_test_data.barley_example, -1)
     filtered_mask = obj_props(bin_img=mask, cut_side="out", thresh=(0.6, 0.8), regprop="solidity")
     _, nobjs = create_labels(mask=filtered_mask)
     assert nobjs == 16
@@ -48,7 +48,7 @@ def test_filter_objs_out_thresh(filters_test_data):
 def test_filter_objs_lower_thresh_roi(filters_test_data):
     """Test for PlantCV."""
     # Read in test data
-    mask = cv2.imread(filters_test_data.barley_example)
+    mask = cv2.imread(filters_test_data.barley_example, -1)
     roi_con = [np.array([[[10, 25]], [[10, 2500]], [[2500, 2500]], [[2500, 25]]], dtype=np.int32)]
     roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     roi = Objects(contours=[roi_con], hierarchy=[roi_str])
@@ -59,28 +59,28 @@ def test_filter_objs_lower_thresh_roi(filters_test_data):
 
 def test_bad_params(filters_test_data):
     """PlantCV Test"""
-    mask = cv2.imread(filters_test_data.barley_example)
+    mask = cv2.imread(filters_test_data.barley_example, -1)
     with pytest.raises(RuntimeError):
         _ = obj_props(bin_img=mask, cut_side="middle")
 
 
 def test_bad_thresh_lower(filters_test_data):
     """PlantCV Test"""
-    mask = cv2.imread(filters_test_data.barley_example)
+    mask = cv2.imread(filters_test_data.barley_example, -1)
     with pytest.raises(RuntimeError):
         _ = obj_props(bin_img=mask, cut_side="lower", thresh=(1, 2))
 
 
 def test_bad_thresh_in(filters_test_data):
     """PlantCV Test"""
-    mask = cv2.imread(filters_test_data.barley_example)
+    mask = cv2.imread(filters_test_data.barley_example, -1)
     with pytest.raises(RuntimeError):
         _ = obj_props(bin_img=mask, cut_side="in", thresh=1)
 
 
 def test_bad_property(filters_test_data):
     """PlantCV Test"""
-    mask = cv2.imread(filters_test_data.barley_example)
+    mask = cv2.imread(filters_test_data.barley_example, -1)
     with pytest.raises(RuntimeError):
         _ = obj_props(bin_img=mask, regprop="bbox")
 
@@ -95,16 +95,16 @@ def test_empty_mask():
 def test_filter_objs_upper_thresh(filters_test_data):
     """Test for PlantCV."""
     # Read in test data
-    mask = cv2.imread(filters_test_data.barley_example)
+    mask = cv2.imread(filters_test_data.barley_example, -1)
     filtered_mask = obj_props(bin_img=mask, cut_side="upper", thresh=20000, regprop="area")
     _, nobjs = create_labels(mask=filtered_mask)
-    assert nobjs == 8
+    assert nobjs == 2
 
 
 def test_filter_objs_none_pass(filters_test_data):
     """Test for PlantCV."""
     # Read in test data
-    mask = cv2.imread(filters_test_data.barley_example)
+    mask = cv2.imread(filters_test_data.barley_example, -1)
     filtered_mask = obj_props(bin_img=mask, cut_side="upper", thresh=1000000, regprop="area")
     _, nobjs = create_labels(mask=filtered_mask)
     assert nobjs == 0

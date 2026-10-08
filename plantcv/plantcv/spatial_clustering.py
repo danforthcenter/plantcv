@@ -7,7 +7,8 @@ from sklearn.cluster import OPTICS
 from sklearn.preprocessing import StandardScaler
 from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import color_palette
+from plantcv.plantcv._helpers import _is_binary
+from plantcv.plantcv.color_palette import color_palette
 
 
 def spatial_clustering(mask, algorithm="DBSCAN", min_cluster_size=5, max_distance=None):
@@ -15,27 +16,28 @@ def spatial_clustering(mask, algorithm="DBSCAN", min_cluster_size=5, max_distanc
     Counts and segments portions of an image based on distance between two pixels.
     Masks showing all clusters, plus masks of individual clusters, are returned.
 
-    Inputs:
-    mask             = Mask/binary image to segment into clusters.
-    algorithm        = Algorithm to use for segregating different clusters.
-                       Currently supporting OPTICS and DBSCAN. (Default="DBSCAN")
-    min_cluster_size = The minimum size a section of a mask must be (in pixels)
-                       before it can be considered its own cluster. (Default=5)
-    max_distance     = The total distance between two pixels for them to be considered a part
-                       of the same cluster.  For the DBSCAN algorithm, value must be between
-                       0 and 1.  For OPTICS, the value is in pixels and depends on the size
-                       of your picture.  (Default=0)
+    Parameters:
+    -----------
+    mask             : numpy.ndarray,
+        Mask/binary image to segment into clusters.
+    algorithm        = str,
+        Algorithm to use for segregating different clusters.
+        Currently supporting OPTICS and DBSCAN. (Default="DBSCAN")
+    min_cluster_size = int,
+        The minimum size a section of a mask must be (in pixels)
+        before it can be considered its own cluster. (Default=5)
+    max_distance     = float,
+        The total distance between two pixels for them to be considered a part
+        of the same cluster.  For the DBSCAN algorithm, value must be between
+        0 and 1.  For OPTICS, the value is in pixels and depends on the size
+        of your picture.  (Default=0)
 
     Returns:
-    clust_img        = Output image with each cluster draw with a unique color.
-    clust_masks      = List of binary masks, one per cluster.
-
-    :param mask: numpy.ndarray
-    :param algorithm: str
-    :param min_cluster_size: int
-    :param max_distance: float
-    :return clust_img: numpy.ndarray
-    :return clust_masks: list
+    --------
+    clust_img        = numpy.ndarray,
+        Output image with each cluster draw with a unique color.
+    clust_masks      = list,
+        List of binary masks, one per cluster.
     """
     # Uppercase algorithm name
     al_upper = algorithm.upper()
@@ -51,8 +53,10 @@ def spatial_clustering(mask, algorithm="DBSCAN", min_cluster_size=5, max_distanc
     if max_distance is None:
         max_distance = default_max_dist.get(al_upper)
 
+    # check mask
+    _ = _is_binary(mask, True, True)
     # Get all x, y coordinates of white pixels in the mask
-    x, y = np.where(mask == 255)
+    x, y = np.where(mask == np.max(mask))
     zipped = np.column_stack((x, y))
 
     if "OPTICS" in al_upper:

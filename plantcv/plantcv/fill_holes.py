@@ -3,9 +3,8 @@
 import numpy as np
 import os
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import fatal_error
 from plantcv.plantcv._globals import params
-from plantcv.plantcv._helpers import _rect_filter, _rect_replace
+from plantcv.plantcv._helpers import _rect_filter, _rect_replace, _is_binary
 from scipy.ndimage import binary_fill_holes
 
 
@@ -13,21 +12,20 @@ def fill_holes(bin_img, roi=None):
     """
     Flood fills holes in a binary mask
 
-    Inputs:
-    bin_img      = Binary image data
-    roi          = plantcv Objects class rectangular ROI
+    Parameters:
+    -----------
+    bin_img      : numpy.ndarray,
+        Binary image data
+    roi          : plantcv.plantcv.Objects,
+        class rectangular ROI
 
     Returns:
-    filtered_img = image with objects filled
-
-    :param bin_img: numpy.ndarray
-    :param roi: plantcv.plantcv.Objects
-    :return filtered_img: numpy.ndarray
+    --------
+    filtered_img : numpy.ndarray,
+        image with objects filled
     """
     # Make sure the image is binary
-    if len(np.shape(bin_img)) != 2 or len(np.unique(bin_img)) > 2:
-        fatal_error("Image is not binary")
-
+    _ = _is_binary(bin_img, dimCheck=True, raiseError=True)
     # Cast binary image to boolean
     bool_img = bin_img.astype(bool)
     # Flood fill holes
