@@ -38,7 +38,7 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "plot"
 
-# Image not positioned (no adustment)
+# Image not positioned (no adjustment)
 cropped1 = pcv.crop_position_mask(img=img, mask=mask, x=0, y=0, v_pos="top", h_pos="right")
 
 ```

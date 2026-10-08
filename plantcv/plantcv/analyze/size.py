@@ -169,18 +169,24 @@ def _analyze_size(img, mask, label):
     outputs.add_observation(sample=label, variable='longest_path', trait='longest path',
                             method='plantcv.plantcv.analyze.size', scale=params.unit, datatype=int,
                             value=_scale_size(float(longest_path)), label=params.unit)
-    outputs.add_observation(sample=label, variable='center_of_mass', trait='center of mass',
-                            method='plantcv.plantcv.analyze.size', scale='none', datatype=tuple,
-                            value=(cmx, cmy), label=("x", "y"))
+    outputs.add_observation(sample=label, variable='center_of_mass_x', trait='center of mass x',
+                            method='plantcv.plantcv.analyze.size', scale='none', datatype=int,
+                            value=cmx, label='none')
+    outputs.add_observation(sample=label, variable='center_of_mass_y', trait='center of mass y',
+                            method='plantcv.plantcv.analyze.size', scale='none', datatype=int,
+                            value=cmy, label='none')
     outputs.add_observation(sample=label, variable='convex_hull_vertices', trait='convex hull vertices',
                             method='plantcv.plantcv.analyze.size', scale='none', datatype=int,
                             value=hull_vertices, label='none')
     outputs.add_observation(sample=label, variable='object_in_frame', trait='object in frame',
                             method='plantcv.plantcv.analyze.size', scale='none', datatype=bool,
                             value=in_bounds, label='none')
-    outputs.add_observation(sample=label, variable='ellipse_center', trait='ellipse center',
-                            method='plantcv.plantcv.analyze.size', scale='none', datatype=tuple,
-                            value=(ellipse_center[0], ellipse_center[1]), label=("x", "y"))
+    outputs.add_observation(sample=label, variable='ellipse_center_x', trait='ellipse center x',
+                            method='plantcv.plantcv.analyze.size', scale='none', datatype=int,
+                            value=ellipse_center[0], label='none')
+    outputs.add_observation(sample=label, variable='ellipse_center_y', trait='ellipse center y',
+                            method='plantcv.plantcv.analyze.size', scale='none', datatype=int,
+                            value=ellipse_center[1], label='none')
     outputs.add_observation(sample=label, variable='ellipse_major_axis', trait='ellipse major axis length',
                             method='plantcv.plantcv.analyze.size', scale=params.unit, datatype=int,
                             value=_scale_size(ellipse_major_axis), label=params.unit)
@@ -200,12 +206,25 @@ def _longest_axis(height, width, hull, cmx, cmy):
     """
     Calculate the line through center of mass and point on the convex hull that is furthest away
 
-    :param height: int
-    :param width: int
-    :param hull: numpy.ndarray
-    :param cmx: int
-    :param cmy: int
-    :return caliper_length: int
+    Parameters:
+    -----------
+    height   = int,
+        height of object
+    width    = int,
+        width of object
+    hull     = np.ndarray,
+        convex hull of object
+    cmx      = int,
+        center of mass in x dimension (pixel)
+    cmy      = int,
+        center of mass in y dimension (pixel)
+
+    Returns
+    -------
+    caliper_length = int
+        length of the line through the caliper
+    caliper_transpose = numpy.ndarray,
+        array of the caliper
     """
     background = np.zeros((height, width, 3), np.uint8)
     background1 = np.zeros((height, width), np.uint8)
@@ -257,12 +276,17 @@ def _longest_axis(height, width, hull, cmx, cmy):
     cv2.drawContours(background2, [hull], -1, (255), -1)
     _, hullp_binary = cv2.threshold(background2, 0, 255, cv2.THRESH_BINARY)
 
-    caliper = cv2.multiply(line_binary, hullp_binary)
+    # The caliper is the line clipped to the filled hull, so every non-zero pixel of it lies
+    # inside the hull's bounding box. Intersecting and scanning only that box is exact, and
+    # keeps the cost proportional to the object rather than to the whole image.
+    hull_x, hull_y, hull_w, hull_h = cv2.boundingRect(hull)
+    box = (slice(hull_y, hull_y + hull_h), slice(hull_x, hull_x + hull_w))
+    caliper = (line_binary[box] > 0) & (hullp_binary[box] > 0)
 
-    caliper_y, caliper_x = np.array(caliper.nonzero())
-    caliper_matrix = np.vstack((caliper_x, caliper_y))
-    caliper_transpose = np.transpose(caliper_matrix)
-    caliper_length = len(caliper_transpose)
+    caliper_y, caliper_x = np.nonzero(caliper)
+    caliper_x = caliper_x + hull_x
+    caliper_y = caliper_y + hull_y
+    caliper_length = len(caliper_x)
 
     caliper_transpose1 = np.lexsort((caliper_y, caliper_x))
     caliper_transpose2 = [(caliper_x[i], caliper_y[i]) for i in caliper_transpose1]

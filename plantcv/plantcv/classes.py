@@ -11,7 +11,7 @@ class Spectral_data:
 
     def __init__(self, array_data, max_wavelength, min_wavelength, max_value, min_value, d_type, wavelength_dict,
                  samples, lines, interleave, wavelength_units, array_type, pseudo_rgb, filename, default_bands,
-                 metadata=None):
+                 byte_order=0, file_type="ENVI", header_offset=0, metadata=None):
         # The actual array/datacube
         self.array_data = array_data
         # Min/max available wavelengths (for spectral datacube)
@@ -30,6 +30,10 @@ class Spectral_data:
         # Interleave type
         self.interleave = interleave
         self.wavelength_units = wavelength_units
+        # store byte order, file type, and header offset
+        self.byte_order = byte_order
+        self.file_type = file_type
+        self.header_offset = header_offset
         # The type of array data (entire datacube, specific index, first derivative, etc)
         self.array_type = array_type
         # Pseudo-RGB image if the array_type is a datacube
@@ -47,31 +51,47 @@ class Spectral_data:
 class PSII_data:
     """PSII data class"""
 
-    def __init__(self):
-        self.ojip_dark = None
-        self.ojip_light = None
-        self.pam_dark = None
-        self.pam_light = None
+    def __init__(self, metadata: dict = None):
+        self.metadata = metadata
+        if self.metadata is None:
+            self.metadata = {}
+            self.datapath = None
+            self.filename = None
+            # Dataset attributes: None = file not present, lazy-loaded object = file present
+        self.aph = None
+        self.chl = None
+        self.clr = None
+        self.npq = None
+        self._ojip_dark = None
+        self._ojip_light = None
+        self.psd = None
+        self.psl = None
+        self.pmd = None
+        self.pml = None
+        self.pmt = None
         self.spectral = None
-        self.chlorophyll = None
         self.gfp = None
         self.rfp = None
-        self.aph = None
-        self.datapath = None
-        self.filename = None
 
-    def __repr__(self):
-        mvars = []
-        for k, v in self.__dict__.items():
-            if v is not None:
-                mvars.append(k)
-        return "PSII variables defined:\n" + '\n'.join(mvars)
+    @property
+    def ojip_dark(self):
+        if isinstance(self._ojip_dark, str):
+            self._ojip_dark = getattr(self.__dict__[self._ojip_dark], "ojip_dark", None)
+        return self._ojip_dark
 
-    def add_data(self, protocol):
-        """Input:
-        protocol: xr.DataArray with name equivalent to initialized attributes
-        """
-        self.__dict__[protocol.name] = protocol
+    @ojip_dark.setter
+    def ojip_dark(self, value):
+        self._ojip_dark = value
+
+    @property
+    def ojip_light(self):
+        if isinstance(self._ojip_light, str):
+            self._ojip_light = getattr(self.__dict__[self._ojip_light], "ojip_light", None)
+        return self._ojip_light
+
+    @ojip_light.setter
+    def ojip_light(self, value):
+        self._ojip_light = value
 
 
 class Point:
@@ -147,3 +167,52 @@ class Objects:
         file = np.load(filename)
         obj = Objects(file['contours'].tolist(), file['hierarchy'])
         return obj
+
+
+class MS_data:
+    """PlantCV Multispectral data class"""
+
+    def __init__(self,
+                 array_data,
+                 wavelength_dict,
+                 max_wavelength,
+                 min_wavelength,
+                 pseudo_rgb, filename,
+                 metadata=None):
+        # The actual array/datacube
+        self.array_data = array_data
+        # Contains all available wavelengths where keys are wavelength and value are indices
+        self.wavelength_dict = wavelength_dict
+        # store max/min wavelengths
+        self.max_wavelength = max_wavelength
+        self.min_wavelength = min_wavelength
+        # Pseudo-RGB image if the array_type is a datacube
+        self.pseudo_rgb = pseudo_rgb
+        # The filename where the data originated from
+        self.filename = filename
+        # default wavelengths for making pseudo rgb
+        self.default_bands = None
+        # Metadata, flexible components in a dictionary
+        self.metadata = metadata
+
+    def select(self, wavelength, ms=True):
+        """Select a wavelength"""
+        if not isinstance(wavelength, list):
+            wavelength = [wavelength]
+        wavelength_dict_new = {}
+        for v, k in enumerate(wavelength):
+            wavelength_dict_new[k] = v
+        index = [self.wavelength_dict[wave] for wave in wavelength]
+        sub_array = self.array_data[:, :, index]
+        if not ms:
+            return sub_array
+        sub_ms = MS_data(
+            array_data=sub_array,
+            wavelength_dict=wavelength_dict_new,
+            max_wavelength=max(wavelength),
+            min_wavelength=min(wavelength),
+            pseudo_rgb=self.pseudo_rgb,
+            filename=self.filename,
+            metadata=self.metadata
+        )
+        return sub_ms

@@ -25,7 +25,7 @@ def metadata_parser(config):
         Dataframe of image metadata for images excluded from the workflow.
     """
     # Read the input dataset to a dictionary
-    dataset = _read_dataset(config=config)
+    dataset, config = _read_dataset(config=config)
 
     # Convert the dataset metadata to a dataframe
     meta = _dataset2dataframe(dataset=dataset, config=config)
@@ -37,10 +37,10 @@ def metadata_parser(config):
     meta, removed_df = _apply_metadata_filters(df=meta, config=config)
 
     # Apply user-supplied date range filters
-    meta, removed_df = _apply_date_range_filter(df=meta, config=config, removed_df=removed_df)
+    meta, removed_df = _apply_date_range_filter(df=meta.reset_index(drop=True), config=config, removed_df=removed_df)
 
     # if resuming a checkpointed process read in that metadata
-    meta, removed_df = _read_checkpoint_data(df=meta, config=config, removed_df=removed_df)
+    meta, removed_df = _read_checkpoint_data(df=meta.reset_index(drop=True), config=config, removed_df=removed_df)
 
     return meta, removed_df
 ###########################################
@@ -65,26 +65,24 @@ def _read_checkpoint_data(df, config, removed_df):
     if "chkpt_start_dir" not in config.__dict__:
         config.chkpt_start_dir = config.tmp_dir
     # look for any json files in a checkpoint directory (made by run_parallel)
+    # any that have a "completed" companion file should be appended to list
+    # to read in as existing results
     existing_json = []
-    for _, _, files in os.walk(os.path.join(config.chkpt_start_dir, "_PCV_PARALLEL_CHECKPOINT_")):
+    for root, _, files in os.walk(os.path.join(config.chkpt_start_dir, "_PCV_PARALLEL_CHECKPOINT_")):
         for file in files:
-            if file.lower().endswith(".json"):
-                existing_json.append(file)
-    # if there are json files in checkpoint then this is a re-run
+            if file.lower().endswith(".json") and os.path.exists(
+                        os.path.join(root, os.path.splitext(file)[0]+"_complete")):
+                existing_json.append(os.path.join(root, file))
+    # if there are completed checkpoint files in checkpoint then this is a re-run with existing data
     if any(existing_json) and config.checkpoint:
         ran_list = [pd.DataFrame()]
-        # look through checkpoint directory for json without "completed" companion file
-        for root, _, files in os.walk(os.path.join(config.chkpt_start_dir, "_PCV_PARALLEL_CHECKPOINT_")):
-            for file in files:
-                if file.lower().endswith(".json") and os.path.exists(
-                        os.path.join(root, os.path.splitext(file)[0]+"_complete")
-                ):
-                    with open(os.path.join(root, file), "r") as fp:
-                        j = json.load(fp)["metadata"]
-                        row = {}
-                        for var in j:
-                            row[var] = j[var]["value"]
-                        ran_list.append(pd.DataFrame.from_dict(row))
+        for file in existing_json:
+            with open(file, "r") as fp:
+                j = json.load(fp)["metadata"]
+                row = {}
+                for var in j:
+                    row[var] = j[var]["value"]
+                ran_list.append(pd.DataFrame.from_dict(row))
         # bind to metadata dataframe
         already_run = pd.concat(ran_list)
         already_run = already_run[already_run["filepath"].notna()]
@@ -111,14 +109,14 @@ def _read_checkpoint_data(df, config, removed_df):
 def _read_dataset(config):
     """Read image datasets.
 
-    Keyword arguments:
+    Parameters
+    ----------
     config = plantcv.parallel.WorkflowConfig object
 
-    Outputs:
-    dataset = dataset metadata
-
-    :param config: plantcv.parallel.WorkflowConfig
-    :return dataset: dict
+    Returns
+    -------
+    dataset = dict of dataset metadata
+    config  = plantcv.parallel.WorkflowConfig object, possibly with more filename_metadata terms
     """
     # Each dataset reader function outputs the dataset metadata in the same format
     # This makes the dataset compatible with the downstream steps
@@ -127,12 +125,18 @@ def _read_dataset(config):
     # If the directory contains a metadata.json file it is a "phenodata" dataset
     if os.path.exists(os.path.join(config.input_dir, "metadata.json")):
         dataset = _read_phenodata(metadata_file=os.path.join(config.input_dir, "metadata.json"))
+        elements = list(dataset["images"].items())[0][1]
+        add_elements = [el for el in elements if el not in config.filename_metadata]
+        config.filename_metadata.extend(add_elements)
     # If the directory contains a SnapshotInfo.csv file it is a legacy "phenofront" dataset
     elif os.path.exists(os.path.join(config.input_dir, "SnapshotInfo.csv")):
         dataset = _read_phenofront(config=config, metadata_file=os.path.join(config.input_dir, "SnapshotInfo.csv"))
+        elements = ["snapshot", "barcode", "cartag", "timestamp", "camera_label"]
+        add_elements = [el for el in elements if el not in config.filename_metadata]
+        config.filename_metadata.extend(list(add_elements))
     else:
         dataset = _read_filenames(config=config)
-    return dataset
+    return dataset, config
 ###########################################
 
 
@@ -348,7 +352,7 @@ def _parse_filename(filename, config, metadata_index):
             if term in metadata_index:
                 mi_term = metadata_index[term]
                 img_meta[term] = None
-                if i <= len(meta_list) - 1:
+                if i <= len(meta_list):
                     img_meta[term] = meta_list[mi_term]
     img_meta["n_metadata_terms"] = len(meta_list)
     return img_meta
@@ -378,11 +382,11 @@ def _parse_filepath(df, config):
     for i, fp in enumerate(paths_after_input):
         # for every file path, split it and add the elements to a list
         splits = fp.split(os.sep)
-        path_metadata.append(splits[1:])
+        path_metadata.append(splits)
     # bind list into a dataframe
     path_metadata_df = pd.DataFrame(path_metadata)
-    # rename columns to filepath1:N, basename
-    path_metadata_df.columns = ["filepath"+str(i + 1) for i in range(len(path_metadata_df.columns))]
+    # rename columns to dir1:N, basename
+    path_metadata_df.columns = ["dir"+str(i + 1) for i in range(len(path_metadata_df.columns))]
     if not path_metadata_df.empty:
         path_metadata_df.rename(columns={path_metadata_df.columns[-1]: "basename"}, inplace=True)
     # bind new columns onto existing metadata
@@ -488,7 +492,7 @@ def _read_phenofront(config, metadata_file):
                 rel_path = os.path.join(snapshot_id, filename)
                 # Store the parsed image metadata
                 dataset["images"][rel_path] = img_meta
-                # Update the metadata with metaata from SnapshotInfo.csv
+                # Update the metadata with metadata from SnapshotInfo.csv
                 dataset["images"][rel_path].update({
                     "snapshot": snapshot_id,
                     "barcode": snapshot_meta[colnames["plantbarcode"]],
@@ -527,7 +531,10 @@ def _read_filenames(config):
         fns = []
         for root, _, files in os.walk(config.input_dir):
             for file in files:
-                if file.lower().endswith(tuple(extensions)):
+                if (
+                    file.lower().endswith(tuple(ext.lower() for ext in extensions)) and
+                    re.search(os.sep+r"[.]{1}(\w)", os.path.join(root, file)) is None
+                ):
                     # Keep the files that end with the image extension
                     fns.append(os.path.join(root, file))
     # Create a dataset

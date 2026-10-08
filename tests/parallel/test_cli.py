@@ -18,6 +18,23 @@ def test_parallel_cli_template(tmpdir):
         main()
 
 
+def test_parallel_cli_dryrun(parallel_test_data, tmpdir):
+    """Test for PlantCV."""
+    # Create a test tmp directory and results file
+    conf_file = tmpdir.mkdir("sub").join("config.json")
+    config = WorkflowConfig()
+    config.input_dir = parallel_test_data.flat_imgdir
+    config.results = "valid_config.json"
+    config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
+    config.workflow = parallel_test_data.workflow_script
+    config.img_outdir = str(conf_file.dirpath())
+    config.save_config(config_file=conf_file.strpath)
+    # Mock ARGV
+    import sys
+    sys.argv = ["plantcv-run-workflow", "--dryrun", conf_file.strpath]
+    assert main() is None
+
+
 def test_parallel_cli_invalid_config(parallel_test_data, tmpdir):
     """Test for PlantCV."""
     # Create a test tmp directory
@@ -60,6 +77,7 @@ def test_parallel_cli_valid_config(parallel_test_data, tmpdir):
     """Test for PlantCV."""
     # Create a test tmp directory
     conf_file = tmpdir.mkdir("cache").join("config.json")
+    os.chdir(conf_file.dirpath().strpath)
     # Set the temp directory for dask
     dask.config.set(temporary_directory=str(conf_file.dirpath()))
     config = WorkflowConfig()
@@ -71,6 +89,7 @@ def test_parallel_cli_valid_config(parallel_test_data, tmpdir):
     config.workflow = parallel_test_data.workflow_script
     config.img_outdir = str(conf_file.dirpath())
     config.tmp_dir = str(conf_file.dirpath() / "tmp")
+    config.cluster_config["log_directory"] = "."
     config.append = False
     config.save_config(config_file=conf_file.strpath)
     shutil.copy(parallel_test_data.new_results_file, conf_file.dirpath())
