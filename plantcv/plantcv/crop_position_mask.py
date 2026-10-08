@@ -5,8 +5,8 @@ import numpy as np
 import math
 import os
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _cv2_findcontours, _grayscale_to_rgb
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv._helpers import _cv2_findcontours, _grayscale_to_rgb, _is_binary
+from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv._globals import params
 
 
@@ -70,9 +70,8 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
     # Image shape
     ix, iy = np.shape(ori_img)[0:2]
 
-    # Convert mask to grayscale if needed and get its shape
-    if any([len(np.shape(mask)) > 2, len(np.unique(mask)) > 2]):
-        fatal_error("Mask should be a binary image")
+    # Check mask qualities and get its shape
+    _ =_is_binary(mask, dimCheck=True, raiseError=True)
     mx, my = np.shape(mask)
 
     # resize the images so they are equal in size and centered

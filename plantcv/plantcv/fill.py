@@ -3,10 +3,10 @@
 import inspect
 import numpy as np
 import os
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _rect_filter, _rect_replace
+from plantcv.plantcv._helpers import _rect_filter, _rect_replace, _is_binary
 from skimage.morphology import remove_small_objects
 
 _SKIMAGE_USE_MAX_SIZE = "max_size" in inspect.signature(remove_small_objects).parameters
@@ -16,23 +16,22 @@ def fill(bin_img, size, roi=None):
     """
     Identifies objects and fills objects that are less than size.
 
-    Inputs:
-    bin_img      = Binary image data
-    size         = minimum object area size in pixels (integer)
-    roi          = optional Objects class rectangular ROI
+    Parameters:
+    -----------
+    bin_img      : numpy.ndarray,
+        Binary image data
+    size         : int,
+        minimum object area size in pixels (integer)
+    roi          : plantcv.plantcv.Objects,
+        optional Objects class rectangular ROI
 
     Returns:
-    filtered_img = image with objects filled
-
-    :param bin_img: numpy.ndarray
-    :param size: int
-    :param roi: plantcv.plantcv.Objects
-    :return filtered_img: numpy.ndarray
+    --------
+    filtered_img = numpy.ndarray,
+        image with objects filled
     """
     # Make sure the image is binary
-    if len(np.shape(bin_img)) != 2 or len(np.unique(bin_img)) > 2:
-        fatal_error("Image is not binary")
-
+    _ = _is_binary(bin_img, True, True)
     # Cast binary image to boolean
     bool_img = bin_img.astype(bool)
 

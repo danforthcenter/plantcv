@@ -864,6 +864,9 @@ def _logical_operation(bin_img1, bin_img2, operation):
     # Check if the operation is valid
     if operation.lower() not in operations:
         fatal_error(f"Operation '{operation}' is not supported. Use 'and', 'or', or 'xor'.")
+    # Check that images are binary
+    _ = _is_binary(bin_img1, True, True)
+    _ = _is_binary(bin_img2, True, True)
     # Perform the logical operation
     mask = operations[operation.lower()](bin_img1, bin_img2)
     return mask
@@ -974,27 +977,39 @@ def _rect_replace(img, sub_img, roi):
     return full_img
 
 
-def _is_binary(img):
+def _is_binary(img, dimCheck=False, raiseError=False):
     """Determine whether an image holds no more than two distinct values.
-
-    Only pixel values are considered, not the number of image dimensions.
 
     Parameters
     ----------
     img : numpy.ndarray
         Image to test.
+    dimCheck : Boolean,
+        Should dimensions of the image be checked?
+        Ie, should an NxPx3 binary image fail for having 3 channels?
+    raiseError : Boolean,
+        Should an error be raised if the image is not binary?
 
     Returns
     -------
     bool
         True if the image holds two or fewer distinct values.
     """
+    result = None
+    dimension_okay = True
+    if dimCheck:
+        dimension_okay = len(np.shape(img)) <= 2
     values = np.asarray(img)
     if values.size == 0:
-        return True
-    low = values.min()
-    high = values.max()
-    if low == high:
-        return True
-    # Two distinct values means every pixel equals either the minimum or the maximum
-    return not np.any((values != low) & (values != high))
+        result = True and dimension_okay
+    else:
+        low = values.min()
+        high = values.max()
+        if low == high:
+            result = True and dimension_okay
+        if result is None:
+            # Two distinct values means every pixel equals either the minimum or the maximum
+            result = dimension_okay and not np.any((values != low) & (values != high))
+    if raiseError and not result:
+        fatal_error("Image is not binary")
+    return result and dimension_okay

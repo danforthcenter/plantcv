@@ -34,3 +34,17 @@ def test_is_binary_bin_img(test_data):
     """Test for PlantCV."""
     img = cv2.imread(test_data.small_bin_img, -1)
     assert _is_binary(img=img) is True
+
+
+def test_is_binary_raise_error_on_dimensions():
+    """Test for PlantCV."""
+    img = np.zeros((10, 10, 3), dtype=np.uint8)
+    with pytest.raises(RuntimeError):
+        _ = _is_binary(img=img, dimCheck=True, raiseError=True)
+
+
+def test_is_binary_raise_error(test_data):
+    """Test for PlantCV."""
+    img = cv2.imread(test_data.small_gray_img, -1)
+    with pytest.raises(RuntimeError):
+        _ = _is_binary(img=img, raiseError=True)

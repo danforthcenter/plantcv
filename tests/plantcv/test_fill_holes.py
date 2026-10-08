@@ -13,14 +13,6 @@ def test_fill_holes(test_data):
     assert img.shape == fill_img.shape and np.array_equal(np.unique(fill_img), np.array([0, 255]))
 
 
-def test_fill_holes_bad_input(test_data):
-    """Test for PlantCV."""
-    # Read in test data
-    img = cv2.imread(test_data.small_gray_img, -1)
-    with pytest.raises(RuntimeError):
-        _ = fill_holes(bin_img=img)
-
-
 def test_fill_holes_roi(test_data):
     """Test for PlantCV."""
     # Read in test data

@@ -5,27 +5,30 @@ import cv2
 import random
 import numpy as np
 from plantcv.plantcv._globals import params
-from plantcv.plantcv import color_palette
+from plantcv.plantcv.color_palette import color_palette
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _is_binary
 
 
 def obj_sizes(img, mask, num_objects=100):
     """
     Label the size of objects in an image.
 
-    Inputs:
-    img          = RGB or grayscale image data
-    mask         = Binary mask made from selected contours
-    num_objects  = Optional parameter to limit the number of objects that will get annotated.
+    Parameters:
+    -----------
+    img          : numpy.ndarray,
+        RGB or grayscale image data
+    mask         : numpy.ndarray,
+        Binary mask made from selected contours
+    num_objects  : int,
+        Optional parameter to limit the number of objects that will get annotated.
 
     Returns:
-    plotting_img = Plotting image with objects labeled by area
-
-    :param img: numpy.ndarray
-    :param mask: numpy.ndarray
-    :param num_objects: int
-    :return plotting_img: numpy.ndarray
+    --------
+    plotting_img : numpy.ndarray,
+        Plotting image with objects labeled by area
     """
+    _ = _is_binary(mask, True, True)
     plotting_img = np.copy(img)
     # Convert grayscale images to color
     if len(np.shape(plotting_img)) == 2:
