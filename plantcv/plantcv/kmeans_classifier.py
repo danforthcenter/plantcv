@@ -31,7 +31,7 @@ def predict_kmeans(img, model_path="./kmeansout.fit", patch_size=10, mode=None):
     kmeans = load(model_path)
     if not mode:
         train_img = img.copy()
-    elif mode.upper() == "spectral":
+    elif mode.lower() == "spectral":
         train_img = img.array_data
 
     before = after = int((patch_size - 1)/2)   # odd
