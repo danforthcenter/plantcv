@@ -52,7 +52,7 @@ the morphology sub-package. Default = 2.
 
 **verbose**: Set the status of verboseness as an integer between 0 and 2. When in the most verbose mode (2), the deprecation warning will always be printed once triggered. Default: `1`. Users can turn off messages by setting `verbose=0` or opt for more messages/debug images with `verbose=2`.
 
-**unit**: Set the units of the size outputs. Users can scale size measurements by updating the `unit`, `px_height` and `px_width` Default: `pixels`
+**unit**: Set the units of the size outputs. Users can scale size measurements by updating the `unit`, `px_height` and `px_width`. Area outputs are labeled with the squared unit (e.g. `mm` becomes `mm2`). Default: `pixels`
 
 **px_height** Set the size scaling factor to enable automatic conversion between pixels and a real world unit, such as centimeters. Users can scale size measurements by updating the `unit`, `px_height` and `px_width` Default: `1`
 

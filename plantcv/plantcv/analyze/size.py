@@ -146,11 +146,11 @@ def _analyze_size(img, mask, label):
     outputs.add_metadata(term="image_height", datatype=int, value=np.shape(img)[0])
     outputs.add_metadata(term="image_width", datatype=int, value=np.shape(img)[1])
     outputs.add_observation(sample=label, variable='area', trait='area',
-                            method='plantcv.plantcv.analyze.size', scale=params.unit, datatype=int,
-                            value=_scale_size(area, "area"), label=params.unit)
+                            method='plantcv.plantcv.analyze.size', scale=f"{params.unit}2", datatype=int,
+                            value=_scale_size(area, "area"), label=f"{params.unit}2")
     outputs.add_observation(sample=label, variable='convex_hull_area', trait='convex hull area',
-                            method='plantcv.plantcv.analyze.size', scale=params.unit, datatype=int,
-                            value=_scale_size(hull_area, "area"), label=params.unit)
+                            method='plantcv.plantcv.analyze.size', scale=f"{params.unit}2", datatype=int,
+                            value=_scale_size(hull_area, "area"), label=f"{params.unit}2")
     outputs.add_observation(sample=label, variable='solidity', trait='solidity',
                             method='plantcv.plantcv.analyze.size', scale='none', datatype=float,
                             value=solidity, label='none')

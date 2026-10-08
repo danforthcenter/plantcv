@@ -175,14 +175,14 @@ def _analyze_bound_horizontal(img, mask, line_position, label):
                             method='plantcv.plantcv.analyze.bound_horizontal', scale=params.unit, datatype=int,
                             value=_scale_size(height_below_bound), label=params.unit)
     outputs.add_observation(sample=label, variable='area_above_reference', trait='area above reference',
-                            method='plantcv.plantcv.analyze.bound_horizontal', scale=params.unit, datatype=int,
-                            value=_scale_size(above_bound_area, "area"), label=params.unit)
+                            method='plantcv.plantcv.analyze.bound_horizontal', scale=f"{params.unit}2", datatype=int,
+                            value=_scale_size(above_bound_area, "area"), label=f"{params.unit}2")
     outputs.add_observation(sample=label, variable='percent_area_above_reference', trait='percent area above reference',
                             method='plantcv.plantcv.analyze.bound_horizontal', scale='none', datatype=float,
                             value=percent_bound_area_above, label='none')
     outputs.add_observation(sample=label, variable='area_below_reference', trait='area below reference',
-                            method='plantcv.plantcv.analyze.bound_horizontal', scale=params.unit, datatype=int,
-                            value=_scale_size(below_bound_area, "area"), label=params.unit)
+                            method='plantcv.plantcv.analyze.bound_horizontal', scale=f"{params.unit}2", datatype=int,
+                            value=_scale_size(below_bound_area, "area"), label=f"{params.unit}2")
     outputs.add_observation(sample=label, variable='percent_area_below_reference', trait='percent area below reference',
                             method='plantcv.plantcv.analyze.bound_horizontal', scale='none', datatype=float,
                             value=percent_bound_area_below, label='none')

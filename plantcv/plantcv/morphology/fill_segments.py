@@ -53,18 +53,18 @@ def fill_segments(mask, objects, stem_objects=None, label=None):
     if stem_objects is None:
         outputs.add_observation(sample=label, variable='segment_area', trait='segment area',
                                 method='plantcv.plantcv.morphology.fill_segments',
-                                scale=params.unit, datatype=list,
+                                scale=f"{params.unit}2", datatype=list,
                                 value=_scale_size(value=counts[1:].tolist(), trait_type="area"),
                                 label=(ids[1:]-1).tolist())
     else:
         outputs.add_observation(sample=label, variable='leaf_area', trait='segment area',
                                 method='plantcv.plantcv.morphology.fill_segments',
-                                scale=params.unit, datatype=list,
+                                scale=f"{params.unit}2", datatype=list,
                                 value=_scale_size(value=counts[1:-1].tolist(), trait_type="area"),
                                 label=(ids[1:-1]-1).tolist())
         outputs.add_observation(sample=label, variable='stem_area', trait='segment area',
                                 method='plantcv.plantcv.morphology.fill_segments',
-                                scale=params.unit, datatype=list,
+                                scale=f"{params.unit}2", datatype=list,
                                 value=_scale_size(value=counts[-1].tolist(), trait_type="area"),
                                 label=(ids[-1]-1).tolist())
 

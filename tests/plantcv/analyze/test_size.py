@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from plantcv.plantcv import outputs
+from plantcv.plantcv import outputs, params
 from plantcv.plantcv.analyze import size as analyze_size
 
 
@@ -13,6 +13,22 @@ def test_size(test_data):
     mask = cv2.imread(test_data.small_bin_img, -1)
     _ = analyze_size(img=img, labeled_mask=mask, n_labels=1)
     assert int(outputs.observations["default_1"]["area"]["value"]) == 221
+    assert outputs.observations["default_1"]["area"]["label"] == "pixels2"
+
+
+def test_size_area_units(test_data, monkeypatch):
+    """Test for PlantCV."""
+    # Clear previous outputs
+    outputs.clear()
+    monkeypatch.setattr(params, "unit", "mm")
+    # Read in test data
+    img = cv2.imread(test_data.small_rgb_img)
+    mask = cv2.imread(test_data.small_bin_img, -1)
+    _ = analyze_size(img=img, labeled_mask=mask, n_labels=1)
+    obs = outputs.observations["default_1"]
+    assert obs["area"]["scale"] == obs["area"]["label"] == "mm2"
+    assert obs["convex_hull_area"]["scale"] == obs["convex_hull_area"]["label"] == "mm2"
+    assert obs["perimeter"]["label"] == "mm"
 
 
 def test_size_zero_slope():
