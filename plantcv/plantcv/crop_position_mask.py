@@ -71,7 +71,7 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
     ix, iy = np.shape(ori_img)[0:2]
 
     # Check mask qualities and get its shape
-    _ =_is_binary(mask, dimCheck=True, raiseError=True)
+    _ = _is_binary(mask, dimCheck=True, raiseError=True)
     mx, my = np.shape(mask)
 
     # resize the images so they are equal in size and centered

@@ -3,7 +3,6 @@
 import numpy as np
 import os
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import fatal_error
 from plantcv.plantcv._globals import params
 from plantcv.plantcv._helpers import _rect_filter, _rect_replace, _is_binary
 from scipy.ndimage import binary_fill_holes

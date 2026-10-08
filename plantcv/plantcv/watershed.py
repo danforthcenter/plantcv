@@ -15,8 +15,7 @@ from plantcv.plantcv._helpers import _cv2_findcontours, _is_binary
 
 
 def watershed_segmentation(rgb_img, mask, distance=10, label=None):
-    """
-    Uses the watershed algorithm to detect boundary of objects. Needs a marker file which specifies area which is
+    """Uses the watershed algorithm to detect boundary of objects. Needs a marker file which specifies area which is
     object (white), background (grey), unknown area (black).
 
     Parameters:
