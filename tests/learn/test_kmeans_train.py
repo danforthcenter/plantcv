@@ -55,6 +55,7 @@ def test_train_kmeans_spectral(test_data, tmp_path, monkeypatch):
     calls = []
     # define a dummy function to return that object
     def fake_read(path, mode):
+        """patch function for reading HSI data"""
         calls.append((os.path.basename(path), mode))
         return array_data
     # proxy the reading helper function with mockreturn
@@ -63,8 +64,8 @@ def test_train_kmeans_spectral(test_data, tmp_path, monkeypatch):
         (tmp_path / f"kmeans_train_{i}.raw").touch()
     (tmp_path / "kmeans_train_decoy.jpg").touch()
     outfile_spec = tmp_path / "kmeansout_spec.fit"
-    fitted = train_kmeans(img_dir=str(tmp_path), mode="spectral", prefix="kmeans_train",
-                          out_path=str(outfile_spec), k=3, patch_size=4)
+    _ = train_kmeans(img_dir=str(tmp_path), mode="spectral", prefix="kmeans_train",
+                     out_path=str(outfile_spec), k=3, patch_size=4)
     assert outfile_spec.exists()
     assert calls == [("kmeans_train_0.raw", "spectral"), ("kmeans_train_1.raw", "spectral")]
 
