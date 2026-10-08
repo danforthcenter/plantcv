@@ -403,6 +403,10 @@ pages for more details on the input and output variable types.
 * post v4.0: npq, npq_hist = **plantcv.analyze.npq**(*ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto", measurement_labels=None, label=None*)
 * post v5.0: npq, npq_hist = **plantcv.analyze.npq**(*ps, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto", measurement_labels=None, label=None*)
 
+#### plantcv.analyze.radial_percentile
+* pre v4.9: NA
+* post v5.0: avgs = **plantcv.analyze.radial_percentile**(*img, labeled_mask, n_labels=1, percentile=50, label=None*)
+
 #### plantcv.analyze.size
 
 * pre v4.0: (see plantcv.analyze_object)
