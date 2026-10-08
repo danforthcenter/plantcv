@@ -34,7 +34,7 @@ def watershed_segmentation(rgb_img, mask, distance=10, label=None):
     --------
     labels              : numpy.ndarray,
         labeled mask with segmentation results
-   """
+    """
     # check mask
     _ = _is_binary(mask, True, True)
     # Store color sequence mode and set to random for watershed_img debug
