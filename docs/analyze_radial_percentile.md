@@ -29,13 +29,14 @@ below). For more detail about data output see [Summary of Output Observations](o
 
 ```python
 
+from plantcv import plantcv as pcv
 import numpy as np
-labeled_mask = pcv.roi.roi2mask(img=crop_img, roi=rois1)
 
 # Calculates the average values of pixels that fall within the distance percentile from the center of an object.
 
-rois1 = pcv.roi.auto_wells(gray_img=crop_img, mindist = 100, candec = 50, 
-accthresh = 60, minradius = 100, maxradius = 180, nrows=4, ncols=6, radiusadjust=-10)
+rois1 = pcv.roi.auto_wells(gray_img=crop_img, mindist = 100, candec = 50,
+                           accthresh = 60, minradius = 100, maxradius = 180,
+                           nrows=4, ncols=6, radiusadjust=-10)
 
 ```
 ![Screenshot](img/documentation_images/analyze_radial/radial1.png)
@@ -52,7 +53,9 @@ number_mask = len(np.unique(labeled_mask))-1
 
 ```python
 
-list_of_averages = pcv.analyze.radial_percentile(img=img, labeled_mask=labeled_mask, n_labels=number_mask, percentile=20)
+list_of_averages = pcv.analyze.radial_percentile(
+    img=img, labeled_mask=labeled_mask, n_labels=number_mask, percentile=20
+)
 
 # Access data stored out from analyze.radial_percentile
 gray_avg_seed1 = pcv.outputs.observations['default_1']['gray_20%_avg']['value']
@@ -62,5 +65,30 @@ gray_avg_seed1 = pcv.outputs.observations['default_1']['gray_20%_avg']['value']
 **Debug depicting the pixels of each seed within 20% of the maximum distance from its center**
 
 ![Screenshot](img/documentation_images/analyze_radial/radial3.png)
+
+**Labeled mask of discontinuous objects**
+
+With non-uniform objects the selected regions will be different numbers of pixels for each object.
+
+![Screenshot](img/documentation_images/analyze_radial/discont_img.jpg)
+
+```python
+from plantcv import plantcv as pcv
+
+labeled_mask, n = pcv.create_labels(mask, rois1)
+
+```
+
+![Screenshot](img/documentation_images/analyze_radial/discont_labeled_mask.png)
+
+```python
+list_of_averages = pcv.analyze.radial_percentile(
+    img=img, labeled_mask=labeled_mask, n_labels=n, percentile=50
+)
+
+```
+
+![Screenshot](img/documentation_images/analyze_radial/discont_radial_result.png)
+
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/analyze/radial.py)
