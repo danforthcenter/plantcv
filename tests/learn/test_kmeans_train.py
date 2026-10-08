@@ -1,5 +1,6 @@
 import os
 import cv2
+import importlib
 import numpy as np
 from plantcv.learn.train_kmeans import train_kmeans, _read_by_mode
 
@@ -47,25 +48,25 @@ def test_train_kmeans_full_gray(learn_test_data, tmpdir):
     assert os.path.exists(outfile_full_gray)
 
 
-def test_train_kmeans_spectral(test_data, learn_test_data, tmpdir, monkeypatch):
+def test_train_kmeans_spectral(test_data, tmp_path, monkeypatch):
     """Test for PlantCV."""
+    train_kmeans_module = importlib.import_module("plantcv.learn.train_kmeans")
     array_data = cv2.imread(test_data.small_rgb_img)
-    mock = type("dummy", (), {"array_data" : array_data})
+    calls = []
     # define a dummy function to return that object
-    def mockreturn():
-        return mock
+    def fake_read(path, mode):
+        calls.append((os.path.basename(path), mode))
+        return array_data
     # proxy the reading helper function with mockreturn
-    from plantcv import plantcv as pcv
-    monkeypatch.setattr(pcv, "readimage", mockreturn)
-    from plantcv.learn.train_kmeans import train_kmeans
-    cache_dir = tmpdir.mkdir("cache")
-    training_dir_spec = learn_test_data.kmeans_train_dir
-    outfile_spec = os.path.join(str(cache_dir), "kmeansout_spec.fit")
-    train_kmeans(img_dir=training_dir_spec,
-                 mode = "spectral",
-                 prefix="kmeans_train",
-                 out_path=outfile_spec, k=5, patch_size=4)
-    assert os.path.exists(outfile_spec)
+    monkeypatch.setattr(train_kmeans_module, "_read_by_mode", fake_read)
+    for i in range(2):
+        (tmp_path / f"kmeans_train_{i}.raw").touch()
+    (tmp_path / "kmeans_train_decoy.jpg").touch()
+    outfile_spec = tmp_path / "kmeansout_spec.fit"
+    fitted = train_kmeans(img_dir=str(tmp_path), mode="spectral", prefix="kmeans_train",
+                          out_path=str(outfile_spec), k=3, patch_size=4)
+    assert outfile_spec.exists()
+    assert calls == [("kmeans_train_0.raw", "spectral"), ("kmeans_train_1.raw", "spectral")]
 
 
 def test_read_by_mode(test_data):
