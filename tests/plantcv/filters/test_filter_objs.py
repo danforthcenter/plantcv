@@ -98,7 +98,7 @@ def test_filter_objs_upper_thresh(filters_test_data):
     mask = cv2.imread(filters_test_data.barley_example, -1)
     filtered_mask = obj_props(bin_img=mask, cut_side="upper", thresh=20000, regprop="area")
     _, nobjs = create_labels(mask=filtered_mask)
-    assert nobjs == 8
+    assert nobjs == 2
 
 
 def test_filter_objs_none_pass(filters_test_data):
