@@ -13,6 +13,17 @@ def test_predict_kmeans_classifier(test_data):
     assert (labeled_img == test_labeled).all()
 
 
+def test_predict_kmeans_classifier_spectral(test_data):
+    """Test for PlantCV."""
+    input_dir = test_data.kmeans_classifier_dir
+    rgb_img = cv2.imread(os.path.join(input_dir, "test_image.jpg"), -1)
+    dummy_spectral = type("dummy_spectral", (object,), {"array_data": rgb_img})
+    labeled_img = predict_kmeans(img=dummy_spectral, model_path=os.path.join(input_dir, "kmeans_out.fit"),
+                                 patch_size=4, mode="spectral")
+    test_labeled = cv2.imread(os.path.join(input_dir, "labeled_image.png"), -1)
+    assert (labeled_img == test_labeled).all()
+
+
 def test_predict_kmeans_classifier_gray(test_data):
     """Test for PlantCV."""
     input_dir_gray = test_data.kmeans_classifier_gray_dir
