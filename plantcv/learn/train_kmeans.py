@@ -14,23 +14,35 @@ from joblib import dump
 def train_kmeans(img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, mode=None,
                  sigma=5, sampling=None, seed=1, num_imgs=0, n_init=10):
     """Trains a patch-based kmeans clustering model for identifying image features.
+
     Parameters
     ----------
-    img_idr = str, Path to directory where training images are stored
-    K = int, Number of clusters to fit (>0)
-    out_path = str, Path to directory where the model output should be stored
-    prefix = str, Keyword for target images. Anything in img_dir without the prefix will be skipped
-    patch_size = int, Size of the NxN neighborhood around each pixel (>0)
-    mode = str, Either None (default) denoting an RGB or grayscale image, or "spectral" for multispectral images
-    sigma = numeric, Gaussian blur sigma. Denotes severity of gaussian blur performed before patch identification
-    sampling = float (0,1], Fraction of image from which patches are identified
-    seed = int, Seed for determinism of random elements like sampling of patches
-    num_imgs = int, Number of images to use for training. Default is all of them in img_dir with prefix
-    n_init = int, Number of random initiations tried by MiniBatchKMeans. The algorithm is run on the best one
+    img_idr    : str,
+        Path to directory where training images are stored
+    K          : int,
+        Number of clusters to fit (>0)
+    out_path   : str,
+        Path to directory where the model output should be stored
+    prefix     : str,
+        Keyword for target images. Anything in img_dir without the prefix will be skipped
+    patch_size : int,
+        Size of the NxN neighborhood around each pixel (>0)
+    mode       : str,
+        Either None (default) denoting an RGB or grayscale image, or "spectral" for multispectral images
+    sigma      : numeric,
+        Gaussian blur sigma. Denotes severity of gaussian blur performed before patch identification
+    sampling   : float (0,1],
+        Fraction of image from which patches are identified
+    seed       : int,
+        Seed for determinism of random elements like sampling of patches
+    num_imgs   : int,
+        Number of images to use for training. Default is all of them in img_dir with prefix
+    n_init     : int,
+        Number of random initiations tried by MiniBatchKMeans. The algorithm is run on the best one
 
     Returns
     -------
-    fitted = sklearn.cluster._kmeans.MiniBatchKMeans object
+    fitted : sklearn.cluster._kmeans.MiniBatchKMeans object
     """
     # Establish training set
     exts = ["jpg", "png", "jpeg", "JPG", "PNG"]
