@@ -3,6 +3,7 @@ import cv2
 import importlib
 import numpy as np
 from plantcv.learn.train_kmeans import train_kmeans, _read_by_mode
+from plantcv.learn.patch_extract import _patch_extract
 
 
 def test_train_kmeans_subset(learn_test_data, tmpdir):
@@ -74,3 +75,11 @@ def test_read_by_mode(test_data):
     """Test for PlantCV."""
     img = _read_by_mode(test_data.envi_sample_data, mode="spectral")
     assert isinstance(img, np.ndarray)
+
+
+def test_patch_extract_rgba():
+    """Test for PlantCV."""
+    rgba = np.random.randint(0, 255, (20, 20, 4))
+    patches_rgba = _patch_extract(rgba)
+    patches_rgb = _patch_extract(rgba[:, :, :3])
+    assert np.shape(patches_rgba) == np.shape(patches_rgb)
