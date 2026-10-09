@@ -1,7 +1,7 @@
 # Generate a plm multivariate space for downstream use in homology group assignments
 
 import numpy as np
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 
 
 def space(cur_plms, include_bound_dist=False, include_centroid_dist=False, include_orient_angles=False):

@@ -6,6 +6,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from plantcv.plantcv import fatal_error, warn, params
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv.get_kernel import _format_kernel
 from plantcv.plantcv._helpers import _rgb2lab, _rgb2hsv, _rgb2gray, _rgb2cmyk
 from skimage.feature import graycomatrix, graycoprops
 from scipy.ndimage import generic_filter
@@ -58,25 +59,27 @@ def gaussian(gray_img, ksize, offset, object_type="light"):
     In the Gaussian adaptive threshold, the local average is a weighed average of the pixel values
     in the block, where the weights are a 2D Gaussian centered in the middle.
 
-    Inputs:
-    gray_img     = Grayscale image data
-    ksize        = Size of the block of pixels used to compute the local average
-    offset       = Value substracted from the local average to compute the local threshold.
-                    A negative offset sets the local threshold above the local average.
-    object_type  = "light" or "dark" (default: "light")
-                   - "light" (for objects brighter than the background) sets the pixels above
-                        the local threshold to 255 and the pixels below to 0.
-                   - "dark" (for objects darker than the background) sets the pixels below the
-                        local threshold to 255 and the pixels above to 0.
+    Parameters:
+    -------
+    gray_img     = numpy.ndarray,
+        Grayscale image data
+    ksize        = int, numpy.ndarray, or tuple
+        Kernel specified as a binary numpy.ndarray for arbitrary shapes,
+        shape tuple for a rectangular kernel, or integer for a square kernel.
+    offset       = float,
+        Value substracted from the local average to compute the local threshold.
+        A negative offset sets the local threshold above the local average.
+    object_type  = str,
+        "light" or "dark" (default: "light")
+               - "light" (for objects brighter than the background) sets the pixels above
+                    the local threshold to 255 and the pixels below to 0.
+               - "dark" (for objects darker than the background) sets the pixels below the
+                    local threshold to 255 and the pixels above to 0.
 
     Returns:
-    bin_img      = Thresholded, binary image
-
-    :param gray_img: numpy.ndarray
-    :param ksize: int
-    :param offset: float
-    :param object_type: str
-    :return bin_img: numpy.ndarray
+    --------
+    bin_img      = numpy.ndarray,
+        Thresholded binary image
     """
     # Set the threshold method
     threshold_method = ""
@@ -88,8 +91,8 @@ def gaussian(gray_img, ksize, offset, object_type="light"):
         fatal_error('Object type ' + str(object_type) + ' is not "light" or "dark"!')
 
     params.device += 1
-
-    bin_img = _call_adaptive_threshold(gray_img, ksize, offset, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+    k = _format_kernel(ksize, to=int)
+    bin_img = _call_adaptive_threshold(gray_img, k, offset, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
                                        threshold_method, "_gaussian_threshold_")
 
     return bin_img
@@ -105,25 +108,27 @@ def mean(gray_img, ksize, offset, object_type="light"):
 
     In the mean adaptive threshold, the local average is the average of the pixel values in the block.
 
-    Inputs:
-    gray_img     = Grayscale image data
-    ksize        = Size of the block of pixels used to compute the local average
-    offset       = Value substracted from the local average to compute the local threshold.
-                    A negative offset sets the local threshold above the local average.
-    object_type  = "light" or "dark" (default: "light")
-                   - "light" (for objects brighter than the background) sets the pixels above
-                        the local threshold to 255 and the pixels below to 0.
-                   - "dark" (for objects darker than the background) sets the pixels below the
-                        local threshold to 255 and the pixels above to 0.
+    Parameters:
+    -------
+    gray_img     = numpy.ndarray,
+        Grayscale image data
+    ksize        = int, numpy.ndarray, or tuple
+        Kernel specified as a binary numpy.ndarray for arbitrary shapes,
+        shape tuple for a rectangular kernel, or integer for a square kernel.
+    offset       = float,
+        Value substracted from the local average to compute the local threshold.
+        A negative offset sets the local threshold above the local average.
+    object_type  = str,
+        "light" or "dark" (default: "light")
+               - "light" (for objects brighter than the background) sets the pixels above
+                    the local threshold to 255 and the pixels below to 0.
+               - "dark" (for objects darker than the background) sets the pixels below the
+                    local threshold to 255 and the pixels above to 0.
 
     Returns:
-    bin_img      = Thresholded, binary image
-
-    :param gray_img: numpy.ndarray
-    :param ksize: int
-    :param offset: float
-    :param object_type: str
-    :return bin_img: numpy.ndarray
+    --------
+    bin_img      = numpy.ndarray,
+        Thresholded binary image
     """
     # Set the threshold method
     threshold_method = ""
@@ -135,8 +140,8 @@ def mean(gray_img, ksize, offset, object_type="light"):
         fatal_error('Object type ' + str(object_type) + ' is not "light" or "dark"!')
 
     params.device += 1
-
-    bin_img = _call_adaptive_threshold(gray_img, ksize, offset, cv2.ADAPTIVE_THRESH_MEAN_C,
+    k = _format_kernel(ksize, to=int)
+    bin_img = _call_adaptive_threshold(gray_img, k, offset, cv2.ADAPTIVE_THRESH_MEAN_C,
                                        threshold_method, "_mean_threshold_")
 
     return bin_img
@@ -287,29 +292,34 @@ def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity'
     This function is quite slow.
 
     Inputs:
-    gray_img       = Grayscale image data
-    ksize          = Kernel size for texture measure calculation
-    threshold      = Threshold value (0-255)
-    offset         = Distance offsets
-    texture_method = Feature of a grey level co-occurrence matrix, either
-                     'contrast', 'dissimilarity', 'homogeneity', 'ASM', 'energy',
-                     or 'correlation'.For equations of different features see
-                     scikit-image.
-    borders        = How the array borders are handled, either 'reflect',
-                     'constant', 'nearest', 'mirror', or 'wrap'
+    gray_img       = numpy.ndarray,
+        Grayscale image data
+    ksize        = int, numpy.ndarray, or tuple
+        Kernel specified as a binary numpy.ndarray for arbitrary shapes,
+        shape tuple for a rectangular kernel, or integer for a square kernel.
+    threshold      = int,
+        Threshold value (0-255)
+    offset         = float,
+        Distance offsets
+    texture_method = str,
+        Feature of a grey level co-occurrence matrix, either
+        'contrast', 'dissimilarity', 'homogeneity', 'ASM', 'energy',
+        or 'correlation'.For equations of different features see
+        scikit-image.
+    borders        = str,
+        How the array borders are handled, either 'reflect',
+        'constant', 'nearest', 'mirror', or 'wrap'
 
     Returns:
-    bin_img        = Thresholded, binary image
-
-    :param gray_img: numpy.ndarray
-    :param ksize: int
-    :param threshold: int
-    :param offset: int
-    :param texture_method: str
-    :param borders: str
-    :return bin_img: numpy.ndarray
+    --------
+    bin_img        = numpy.ndarray,
+        Thresholded binary image
     """
+    # format kernel
+    k = _format_kernel(ksize, to=int)
+
     # Function that calculates the texture of a kernel
+
     def calc_texture(inputs):
         """Kernel calculate texture function.
 
@@ -323,7 +333,7 @@ def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity'
         float
             Texture value
         """
-        inputs = np.reshape(inputs, newshape=[ksize, ksize])
+        inputs = np.reshape(inputs, (k, k))
         inputs = inputs.astype(np.uint8)
         # Greycomatrix takes image, distance offset, angles (in radians), symmetric, and normed
         # http://scikit-image.org/docs/dev/api/skimage.feature.html#skimage.feature.graycomatrix
@@ -335,7 +345,7 @@ def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity'
     output = np.zeros(gray_img.shape, dtype=gray_img.dtype)
 
     # Apply the texture function over the whole image
-    generic_filter(gray_img, calc_texture, size=ksize, output=output, mode=borders)
+    generic_filter(gray_img, calc_texture, size=k, output=output, mode=borders)
 
     # Threshold so higher texture measurements stand out
     bin_img = binary(gray_img=output, threshold=threshold, object_type='light')
@@ -368,10 +378,7 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
     if channel.upper() == 'HSV':
 
         # Check threshold inputs
-        if not (len(lower_thresh) == 3 and len(upper_thresh) == 3):
-            fatal_error("If using the HSV colorspace, 3 thresholds are needed for both lower_thresh and " +
-                        "upper_thresh. If thresholding isn't needed for a channel, set lower_thresh=0 and " +
-                        "upper_thresh=255")
+        _check_threshold_inputs(3, lower_thresh, upper_thresh)
 
         # Convert the RGB image to HSV colorspace
         hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
@@ -381,54 +388,46 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         sat = hsv_img[:, :, 1]
         value = hsv_img[:, :, 2]
 
-        # Make a mask for each channel
-        h_mask = cv2.inRange(hue, lower_thresh[0], upper_thresh[0])
-        s_mask = cv2.inRange(sat, lower_thresh[1], upper_thresh[1])
-        v_mask = cv2.inRange(value, lower_thresh[2], upper_thresh[2])
+        # Make a mask for each channel (Use '*' to avoid linter error about unbalanced value unpacking)
+        *out_masks, = _call_inrange(gray_imgs_list=[hue, sat, value],
+                                    lower_thresh=lower_thresh, upper_thresh=upper_thresh)
 
         # Apply the masks to the image
-        result = cv2.bitwise_and(img, img, mask=h_mask)
-        result = cv2.bitwise_and(result, result, mask=s_mask)
-        masked_img = cv2.bitwise_and(result, result, mask=v_mask)
+        result = cv2.bitwise_and(img, img, mask=out_masks[0])
+        result = cv2.bitwise_and(result, result, mask=out_masks[1])
+        masked_img = cv2.bitwise_and(result, result, mask=out_masks[2])
 
         # Combine masks
-        mask = cv2.bitwise_and(s_mask, h_mask)
-        mask = cv2.bitwise_and(mask, v_mask)
+        mask = cv2.bitwise_and(out_masks[0], out_masks[1])
+        mask = cv2.bitwise_and(mask, out_masks[2])
 
     elif channel.upper() == 'RGB':
 
         # Check threshold inputs
-        if not (len(lower_thresh) == 3 and len(upper_thresh) == 3):
-            fatal_error("If using the RGB colorspace, 3 thresholds are needed for both lower_thresh and " +
-                        "upper_thresh. If thresholding isn't needed for a channel, set lower_thresh=0 and " +
-                        "upper_thresh=255")
+        _check_threshold_inputs(3, lower_thresh, upper_thresh)
 
         # Separate channels (pcv.readimage reads RGB images in as BGR)
         blue = img[:, :, 0]
         green = img[:, :, 1]
         red = img[:, :, 2]
 
-        # Make a mask for each channel
-        b_mask = cv2.inRange(blue, lower_thresh[2], upper_thresh[2])
-        g_mask = cv2.inRange(green, lower_thresh[1], upper_thresh[1])
-        r_mask = cv2.inRange(red, lower_thresh[0], upper_thresh[0])
+        # Make a mask for each channel (Use '*' to avoid linter error about unbalanced value unpacking)
+        *out_masks, = _call_inrange(gray_imgs_list=[blue, green, red],
+                                    lower_thresh=lower_thresh, upper_thresh=upper_thresh)
 
         # Apply the masks to the image
-        result = cv2.bitwise_and(img, img, mask=b_mask)
-        result = cv2.bitwise_and(result, result, mask=g_mask)
-        masked_img = cv2.bitwise_and(result, result, mask=r_mask)
+        result = cv2.bitwise_and(img, img, mask=out_masks[0])
+        result = cv2.bitwise_and(result, result, mask=out_masks[1])
+        masked_img = cv2.bitwise_and(result, result, mask=out_masks[2])
 
         # Combine masks
-        mask = cv2.bitwise_and(b_mask, g_mask)
-        mask = cv2.bitwise_and(mask, r_mask)
+        mask = cv2.bitwise_and(out_masks[0], out_masks[1])
+        mask = cv2.bitwise_and(mask, out_masks[2])
 
     elif channel.upper() == 'LAB':
 
         # Check threshold inputs
-        if not (len(lower_thresh) == 3 and len(upper_thresh) == 3):
-            fatal_error("If using the LAB colorspace, 3 thresholds are needed for both lower_thresh and " +
-                        "upper_thresh. If thresholding isn't needed for a channel, set lower_thresh=0 and " +
-                        "upper_thresh=255")
+        _check_threshold_inputs(3, lower_thresh, upper_thresh)
 
         # Convert the RGB image to LAB colorspace
         lab_img = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
@@ -438,26 +437,53 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         green_magenta = lab_img[:, :, 1]
         blue_yellow = lab_img[:, :, 2]
 
-        # Make a mask for each channel
-        l_mask = cv2.inRange(lightness, lower_thresh[0], upper_thresh[0])
-        gm_mask = cv2.inRange(green_magenta, lower_thresh[1], upper_thresh[1])
-        by_mask = cv2.inRange(blue_yellow, lower_thresh[2], upper_thresh[2])
+        # Make a mask for each channel (Use '*' to avoid linter error about unbalanced value unpacking)
+        *out_masks, = _call_inrange(gray_imgs_list=[lightness, green_magenta, blue_yellow],
+                                    lower_thresh=lower_thresh, upper_thresh=upper_thresh)
 
         # Apply the masks to the image
-        result = cv2.bitwise_and(img, img, mask=l_mask)
-        result = cv2.bitwise_and(result, result, mask=gm_mask)
-        masked_img = cv2.bitwise_and(result, result, mask=by_mask)
+        result = cv2.bitwise_and(img, img, mask=out_masks[0])
+        result = cv2.bitwise_and(result, result, mask=out_masks[1])
+        masked_img = cv2.bitwise_and(result, result, mask=out_masks[2])
 
         # Combine masks
-        mask = cv2.bitwise_and(l_mask, gm_mask)
-        mask = cv2.bitwise_and(mask, by_mask)
+        mask = cv2.bitwise_and(out_masks[0], out_masks[1])
+        mask = cv2.bitwise_and(mask, out_masks[2])
+
+    elif channel.upper() == 'CMYK':
+
+        # Check threshold inputs
+        if not (len(lower_thresh) == 4 and len(upper_thresh) == 4):
+            fatal_error("If using the CYMK colorspace, 4 thresholds are needed for both lower_thresh and " +
+                        "upper_thresh. If thresholding isn't needed for a channel, set lower_thresh=0 and " +
+                        "upper_thresh=255")
+
+        # Convert the RGB image to LAB colorspace
+        c = _rgb2cmyk(rgb_img=img, channel="c")
+        m = _rgb2cmyk(rgb_img=img, channel="m")
+        y = _rgb2cmyk(rgb_img=img, channel="y")
+        k = _rgb2cmyk(rgb_img=img, channel="k")
+
+        # Make a mask for each channel
+        *out_masks, = _call_inrange(gray_imgs_list=[c, m, y, k], lower_thresh=lower_thresh, upper_thresh=upper_thresh)
+        # Use '*' to avoid linter error about unbalanced value unpacking
+
+        # Apply the masks to the image
+        result = cv2.bitwise_and(img, img, mask=out_masks[0])
+        result = cv2.bitwise_and(result, result, mask=out_masks[1])
+        result = cv2.bitwise_and(result, result, mask=out_masks[2])
+        masked_img = cv2.bitwise_and(result, result, mask=out_masks[3])
+
+        # Combine masks
+        mask = cv2.bitwise_and(out_masks[0], out_masks[1])
+        mask2 = cv2.bitwise_and(out_masks[2], out_masks[3])
+        mask = cv2.bitwise_and(mask, mask2)
 
     elif channel.upper() in ('GRAY', 'GREY'):
 
         # Check threshold input
-        if not (len(lower_thresh) == 1 and len(upper_thresh) == 1):
-            fatal_error("If useing a grayscale colorspace, 1 threshold is needed for both the " +
-                        "lower_thresh and upper_thresh.")
+        _check_threshold_inputs(1, lower_thresh, upper_thresh)
+
         if len(np.shape(img)) == 3:
             # Convert RGB image to grayscale colorspace
             gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -471,7 +497,7 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         masked_img = cv2.bitwise_and(img, img, mask=mask)
 
     else:
-        fatal_error(str(channel) + " is not a valid colorspace. Channel must be either 'RGB', 'HSV', or 'gray'.")
+        fatal_error(str(channel) + " is not a valid colorspace. Channel must be either 'RGB', 'HSV', 'CMYK', or 'gray'.")
 
     # Auto-increment the device counter
 
@@ -481,6 +507,56 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
     _debug(visual=mask, filename=os.path.join(params.debug_outdir,
                                               str(params.device) + channel + 'custom_thresh_mask.png'))
     return mask, masked_img
+
+
+# Internal method for calling the OpenCV inRange function to reduce code duplication
+def _call_inrange(gray_imgs_list, lower_thresh, upper_thresh):
+    """Calls the OpenCV threshold function to reduce code duplication
+
+    Parameters
+    ----------
+    gray_imgs_list : list
+        List containing grayscale arrays
+    lower_thresh : list
+        List of lower threshold values (0-255)
+    upper_thresh : list
+        List of upper threshold values (0-255)
+
+    Returns
+    -------
+    list
+        Thresholded, binary images
+    """
+    out_masks = []
+    # Apply inRange to each array in the list
+    for i, array in enumerate(gray_imgs_list):
+        mask = cv2.inRange(array, lower_thresh[i], upper_thresh[i])
+        out_masks.append(mask)
+    return out_masks
+
+
+# Internal method for checking threshold inputs to reduce code duplication
+def _check_threshold_inputs(required_length, lower_thresh, upper_thresh):
+    """Checks threshold inputs for correct number of inputs
+
+    Parameters
+    ----------
+    required_length : int
+        Number of required inputs
+    lower_thresh : list
+        List of lower threshold values (0-255)
+    upper_thresh : list
+        List of upper threshold values (0-255)
+
+    Raises
+    -------
+    RuntimeError
+        If the number of threshold inputs is incorrect
+    """
+    if not (len(lower_thresh) == required_length and len(upper_thresh) == required_length):
+        fatal_error(f"{required_length} threshold inputs are needed for both lower_thresh and " +
+                    "upper_thresh for the given channel. If thresholding isn't needed for a channel, set lower_thresh=0 and " +
+                    "upper_thresh=255")
 
 
 # Internal method for calling the OpenCV threshold function to reduce code duplication

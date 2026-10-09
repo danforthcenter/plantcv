@@ -5,36 +5,45 @@ import cv2
 import numpy as np
 import pandas as pd
 import nd2
+import flyr
+from PIL import Image
+from pillow_heif import register_heif_opener
 from plantcv.plantcv import fatal_error
-from plantcv.plantcv import params
-from plantcv.plantcv.hyperspectral import read_data
+from plantcv.plantcv._globals import params
+from plantcv.plantcv.hyperspectral.read_data import read_data
 from plantcv.plantcv._debug import _debug
 
 
 def readimage(filename, mode="native"):
     """Read image from file.
 
-    Inputs:
-    filename = name of image file
-    mode     = mode of imread ("native", "rgb", "rgba", "gray", "csv", "envi", "arcgis", "nd2")
+    Parameters
+    ----------
+    filename : str
+        Name of image file
+    mode : str
+        Mode of readimage. Options: "native", "rgb", "rgba", "gray", "normalize",
+        "csv", "envi", "arcgis", "nd2", "thermal", "heic"
 
-    Returns:
-    img      = image object as numpy array
-    path     = path to image file
-    img_name = name of image file
-
-    :param filename: str
-    :param mode: str
-    :return img: numpy.ndarray
-    :return path: str
-    :return img_name: str
+    Returns
+    -------
+    img : numpy.ndarray
+        Image object as numpy array
+    path : str
+        Path to image file
+    img_name : str
+        Name of image file
     """
+    if os.path.splitext(filename)[1].upper() == ".HEIC" and mode == "native":
+        mode = "heic"
     if mode.upper() in ("GRAY", "GREY"):
         img = cv2.imread(filename, 0)
     elif mode.upper() == "RGB":
         img = cv2.imread(filename)
     elif mode.upper() == "RGBA":
         img = cv2.imread(filename, -1)
+    elif mode.upper() == "NORMALIZE":
+        img = cv2.normalize(cv2.imread(filename, cv2.IMREAD_UNCHANGED), None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
     elif mode.upper() == "CSV":
         inputarray = pd.read_csv(filename, sep=',', header=None)
         img = inputarray.values
@@ -43,6 +52,13 @@ def readimage(filename, mode="native"):
         return array_data
     elif mode.upper() == "ND2":
         img = nd2.imread(filename)
+    elif mode.upper() == "THERMAL":
+        img = flyr.unpack(filename).celsius
+    elif mode.upper() == "HEIC":
+        register_heif_opener()
+        image = Image.open(filename)
+        image_array = np.asarray(image)
+        img = cv2.cvtColor(image_array, cv2.COLOR_RGB2BGR)
     else:
         img = cv2.imread(filename, -1)
 

@@ -31,7 +31,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 # Create calibration matrices with checkerboard images
-mtx, dist = pcv.transform.checkerboard_calib(img_path = "./img_files/", col_corners = 13, row_corners = 19, out_dir = "./output/")
+mtx, dist = pcv.transform.checkerboard_calib(img_dir = "./img_files/", col_corners = 13, row_corners = 19, out_dir = "./output/")
 
 # Correct distortions using the outputs from checkerboard calibration
 corrected_img = pcv.transform.calibrate_camera(rgb_img = img, mtx_filename = "./output/mtx.npz", dist_filename = "./output/dist.npz")

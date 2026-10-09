@@ -4,11 +4,11 @@ import os
 import re
 import cv2
 import numpy as np
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import Spectral_data
+from plantcv.plantcv.classes import Spectral_data
 from plantcv.plantcv.transform import rescale
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv.fatal_error import fatal_error
 
 
 def _find_closest(spectral_array, target):
@@ -25,13 +25,7 @@ def _find_closest(spectral_array, target):
     :param target: float
     :return spectral_array: __main__.Spectral_data
     """
-    # Array must be sorted
-    idx = spectral_array.searchsorted(target)
-    idx = np.clip(idx, 1, len(spectral_array) - 1)
-    left = spectral_array[idx - 1]
-    right = spectral_array[idx]
-    idx -= target - left < right - target
-    return idx
+    return np.argmin(np.abs(spectral_array - target))
 
 
 def _make_pseudo_rgb(spectral_array):
@@ -52,9 +46,21 @@ def _make_pseudo_rgb(spectral_array):
     wl_keys = spectral_array.wavelength_dict.keys()
 
     if default_bands is not None:
-        pseudo_rgb = cv2.merge((array_data[:, :, int(default_bands[0])],
-                                array_data[:, :, int(default_bands[1])],
-                                array_data[:, :, int(default_bands[2])]))
+        # The ENVI standard defines one default band for a grayscale image and three for an RGB image
+        if len(default_bands) == 1:
+            # Repeat the single band in each channel to make a grayscale pseudo-rgb image
+            default_bands = default_bands * 3
+        if len(default_bands) != 3:
+            fatal_error(f"Expected 1 or 3 default bands in the header file but found {len(default_bands)}. " +
+                        "Consider removing default_bands field of the header file.")
+        # Default bands are positions on the band axis of the datacube, so they have to be in range
+        bands = [int(band) for band in default_bands]
+        if not all(0 <= band < array_data.shape[2] for band in bands):
+            fatal_error(f"Default bands {bands} are not all valid band numbers for a datacube with "
+                        f"{array_data.shape[2]} bands.")
+        pseudo_rgb = cv2.merge((array_data[:, :, bands[0]],
+                                array_data[:, :, bands[1]],
+                                array_data[:, :, bands[2]]))
 
     else:
         max_wavelength = max(float(i) for i in wl_keys)
@@ -295,7 +301,10 @@ def read_data(filename, mode="ENVI"):
     if "defaultbands" in header_dict:
         header_dict["defaultbands"] = header_dict["defaultbands"].replace("{", "")
         header_dict["defaultbands"] = header_dict["defaultbands"].replace("}", "")
-        default_bands = header_dict["defaultbands"].split(",")
+        # Discard empty values so that an empty default bands field is equivalent to no default bands
+        default_bands = [band for band in header_dict["defaultbands"].split(",") if band != ""]
+        if len(default_bands) == 0:
+            default_bands = None
 
     # Find array min and max values
     max_pixel = float(np.amax(array_data))
@@ -314,7 +323,11 @@ def read_data(filename, mode="ENVI"):
                                    wavelength_dict=wavelength_dict, samples=int(header_dict["samples"]),
                                    lines=int(header_dict["lines"]), interleave=header_dict["interleave"],
                                    wavelength_units=wavelength_units, array_type="datacube",
-                                   pseudo_rgb=None, filename=filename, default_bands=default_bands)
+                                   pseudo_rgb=None, filename=filename, default_bands=default_bands,
+                                   byte_order=header_dict.get("byte_order", 0),
+                                   file_type=header_dict.get("file_type", "ENVI"),
+                                   header_offset=header_dict.get("header_offset", 0)
+                                   )
 
     # Make pseudo-rgb image and replace it inside the class instance object
     pseudo_rgb = _make_pseudo_rgb(spectral_array)

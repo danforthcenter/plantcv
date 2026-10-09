@@ -1,4 +1,4 @@
-# Table of Contents for Contibution
+# Table of Contents for Contribution
 1. [Overview of Contribution](#overview)
 2. [Installing PlantCV for Contributors](#installing)
 2. [Creating Issues](#creatingissues)
@@ -35,6 +35,26 @@ There are many ways to contribute:
 * Add, update, or revise a use-case tutorial
 
 If you need any help, please contact us. 
+
+## Contributing with AI agents
+
+If you're using an AI coding agent (Claude Code, Copilot, Cursor, etc.) to help prepare a
+contribution — or if you *are* an agent reading this file — see
+[`AGENTS.md`](../AGENTS.md) at the repository root for agent-specific instructions,
+including:
+
+- the required issue-first workflow (an issue must be filed and **assigned** before any
+  PR is opened),
+- which branch to target (`main` vs. the `v5.0` development branch),
+- environment setup and the exact test/coverage command we require
+  (`py.test --cov=plantcv --cov-report=term-missing`, maintaining our 100% coverage bar),
+- documentation and linting expectations, and
+- the required `Co-authored-by:` attribution for agent-assisted commits and PRs.
+
+Everything in this `CONTRIBUTING.md` guide still applies in full — `AGENTS.md` is a
+condensed supplement covering agent-specific mechanics, not a replacement for the process,
+review expectations, or Code of Conduct described here. Where the two differ, this guide
+and a maintainer's direct instruction take precedence.
 
 ## Installing PlantCV for contributors <a name="installing"></a>
 Before getting started, please read our [contributor guidelines](CONTRIBUTING.md) and [code of conduct](CODE_OF_CONDUCT.md).
@@ -310,24 +330,31 @@ def new_function_calling_plantcv(img):
 
 We are always looking for new examples of how people are applying 
 PlantCV to their research. You can send us a Jupyter Notebook and any required sample data or
-you can directly contrubute your tutorial. These instructions also apply to updating existing tutorials
-that might break wth new versions of PlantCV.
+you can directly contribute your tutorial. These instructions also apply to updating existing tutorials
+that might break with new versions of PlantCV.
 
 #### Create Your Tutorial Repository <a name="repo"></a>
 
-1. Create a new repository on GitHub (Please consider creating your repo within an instituional account rather than a personal account e.g. Danforth Center). The name should start with plantcv-tutorial. When you make this repo you can use the option to import the tutorial template from `https://github.com/danforthcenter/plantcv-tutorial-template`
+1. Create a new repository on GitHub. To prepopulate your repository with the file layout we recommend, you can import our 
+tutorial template from `https://github.com/danforthcenter/plantcv-tutorial-template`
 
-2. If you don't import the tutorial template when you make your repo intitally you can clone the [tutorial template repository](https://github.com/danforthcenter/plantcv-tutorial-template) and copy the files and folders from the template repository to your tutorial repository
+2. If you don't import the tutorial template when you make your repo initially you can [clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) the
+[tutorial template repository](https://github.com/danforthcenter/plantcv-tutorial-template) and copy the files and folders
+from the template repository to your tutorial repository
 
-3. Update the `README` and `index.ipynb` files with your tutorial content, including data (make sure you are updating or using the correct documentation branch, e.g. release-4.0)
+3. Update the `README`, `index.ipynb`, and `index-Colab.ipynb` files with your tutorial content, including data
 
-4. Add an image called `tutorial_card.png` to the repo, this will be used on the gallery webpage. The image should be approximately square and have a width of 200px.
+4. Add an image called `tutorial_card.png` to the repo, this will be used on the gallery webpage. The image should be
+approximately square and have a width of 200px.
 
-5. Follow the instructions to create a Binder button in the readme
+5. Follow the instructions to create Binder and Colab buttons in the README
 
-6. Commit the changes to your tutorial github repository
+6. Commit the changes to your tutorial GitHub repository
 
-7. Go to your repo online and test the 'Launch Binder' button for your repo
+7. Go to your repo online and test the 'Launch Binder' and 'Open in Colab' buttons for your repo
+
+8. To cite your tutorial in a publication or presentation you can connect your repository to
+[Zenodo to get a DOI](https://help.zenodo.org/docs/github/archive-software/github-upload/).
 
 #### Add Your Tutorial To the PlantCV Tutorial Gallery <a name="gallery"></a>
 

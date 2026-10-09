@@ -2,7 +2,7 @@
 
 from matplotlib import pyplot as plt
 import numpy as np
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 
 
 def color_palette(num, saved=False):

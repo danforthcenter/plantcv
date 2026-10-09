@@ -63,7 +63,7 @@ def test_print_altair_chart(tmpdir):
     """Test for PlantCV."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("cache")
-    filename = os.path.join(cache_dir, 'chart.html')
+    filename = os.path.join(cache_dir, 'chart.png')
     source = pd.DataFrame({
         "x": ["A", "B", "C", "D", "E", "F", "G", "H", "I"],
         "y": [1, 2, 3, 4, 5, 6, 7, 8, 9],

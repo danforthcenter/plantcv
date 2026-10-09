@@ -6,17 +6,17 @@ name: builds
 on:
   push:
     # Run when main is updated
-    branches: [ main ]
+    branches: [ main, v5.0 ]
   pull_request:
     # Run on pull requests against main
-    branches: [ main ]
+    branches: [ main, v5.0 ]
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11']
+        python-version: ['3.11', '3.12', '3.13']
         os: [ubuntu-latest]
     env:
       OS: ${{ matrix.os }}
@@ -38,7 +38,7 @@ jobs:
         pip install .
         py.test --cov-report=xml --cov=./
     - name: Upload coverage to Deepsource
-      if: ${{ matrix.python-version == '3.11' }}
+      if: ${{ matrix.python-version == '3.13' }}
       uses: deepsourcelabs/test-coverage-action@master
       with:
         key: python

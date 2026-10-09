@@ -1,6 +1,6 @@
 import cv2
 from plantcv.plantcv import outputs
-from plantcv.plantcv.morphology import find_branch_pts
+from plantcv.plantcv.morphology.find_branch_pts import find_branch_pts
 
 
 def test_find_branch_pts(morphology_test_data):

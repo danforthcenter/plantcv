@@ -37,3 +37,14 @@ def test_hyper_histogram_extreme_wvs(visualize_test_data):
     hsi.min_wavelength, hsi.max_wavelength = min(hsi.wavelength_dict), max(hsi.wavelength_dict)
     fig_hist = hyper_histogram(hsi=hsi, mask=mask, wvlengths=wavelengths)
     assert isinstance(fig_hist, Chart)
+
+
+def test_hyper_histogram_no_wvs(visualize_test_data):
+    """Test for PlantCV."""
+    # Read in test data
+    hsi = visualize_test_data.load_hsi(visualize_test_data.hsi_file)
+    mask = np.zeros(hsi.array_data.shape[:2], dtype=np.uint8)
+    mask += 255
+    wavelengths = None
+    fig_hist = hyper_histogram(hsi=hsi, mask=mask, wvlengths=wavelengths)
+    assert isinstance(fig_hist, Chart)

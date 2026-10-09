@@ -5,7 +5,7 @@ import numpy as np
 from scipy.spatial.distance import euclidean
 from plantcv.plantcv._helpers import _iterate_analysis, _cv2_findcontours, _object_composition, _grayscale_to_rgb, _scale_size
 from plantcv.plantcv import outputs, within_frame
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 
 
@@ -59,6 +59,7 @@ def _analyze_size(img, mask, label):
     hull_area = 0
     solidity = 0
     perimeter = 0
+    total_edge_length = 0
     width = 0
     height = 0
     caliper_length = 0
@@ -101,6 +102,9 @@ def _analyze_size(img, mask, label):
         solidity = area / hull_area if hull_area != 0 else 1
         # Perimeter
         perimeter = cv2.arcLength(obj, closed=True)
+        # Total edge legnth
+        for contour in cnt:
+            total_edge_length += cv2.arcLength(contour, True)
         # Bounding rectangle
         x, y, width, height = cv2.boundingRect(obj)
         # Centroid/Center of Mass
@@ -117,14 +121,26 @@ def _analyze_size(img, mask, label):
         caliper_length, caliper_transpose = _longest_axis(height=img.shape[0], width=img.shape[1],
                                                           hull=hull, cmx=cmx, cmy=cmy)
         longest_path = euclidean(tuple(caliper_transpose[caliper_length - 1]), tuple(caliper_transpose[0]))
-        # Debugging output
-        cv2.drawContours(plt_img, obj, -1, (255, 0, 0), params.line_thickness)
+
+        # Add measurements onto the diagnostic image
+        # color blind friendly palette in BGR: (255, 0, 255) = magenta; (255, 0, 0) = blue
+        # Draw convex hull
         cv2.drawContours(plt_img, [hull], -1, (255, 0, 255), params.line_thickness)
+        # Draw perimeter outline
+        cv2.drawContours(plt_img, cnt, -1, (255, 0, 0), params.line_thickness)
+        # Draw width
         cv2.line(plt_img, (x, y), (x + width, y), (255, 0, 255), params.line_thickness)
+        # Draw height
         cv2.line(plt_img, (int(cmx), y), (int(cmx), y + height), (255, 0, 255), params.line_thickness)
+        # Draw centroid
         cv2.circle(plt_img, (int(cmx), int(cmy)), 10, (255, 0, 255), params.line_thickness)
+        # Draw longest path
         cv2.line(plt_img, (tuple(caliper_transpose[caliper_length - 1])), (tuple(caliper_transpose[0])),
                  (255, 0, 255), params.line_thickness)
+        if params.verbose:
+            # Label the object with object label
+            cv2.putText(img=plt_img, text=label, org=(int(cmx), int(cmy)), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                        fontScale=params.text_size, color=(187, 187, 187), thickness=params.text_thickness)
 
     # Store outputs
     outputs.add_metadata(term="image_height", datatype=int, value=np.shape(img)[0])
@@ -141,6 +157,9 @@ def _analyze_size(img, mask, label):
     outputs.add_observation(sample=label, variable='perimeter', trait='perimeter',
                             method='plantcv.plantcv.analyze.size', scale=params.unit, datatype=int,
                             value=_scale_size(perimeter), label=params.unit)
+    outputs.add_observation(sample=label, variable='total_edge_length', trait='total length of object edges',
+                            method='plantcv.plantcv.analyze.size', scale=params.unit, datatype=int,
+                            value=_scale_size(total_edge_length), label=params.unit)
     outputs.add_observation(sample=label, variable='width', trait='width',
                             method='plantcv.plantcv.analyze.size', scale=params.unit, datatype=int,
                             value=_scale_size(width), label=params.unit)
@@ -150,18 +169,24 @@ def _analyze_size(img, mask, label):
     outputs.add_observation(sample=label, variable='longest_path', trait='longest path',
                             method='plantcv.plantcv.analyze.size', scale=params.unit, datatype=int,
                             value=_scale_size(float(longest_path)), label=params.unit)
-    outputs.add_observation(sample=label, variable='center_of_mass', trait='center of mass',
-                            method='plantcv.plantcv.analyze.size', scale='none', datatype=tuple,
-                            value=(cmx, cmy), label=("x", "y"))
+    outputs.add_observation(sample=label, variable='center_of_mass_x', trait='center of mass x',
+                            method='plantcv.plantcv.analyze.size', scale='none', datatype=int,
+                            value=cmx, label='none')
+    outputs.add_observation(sample=label, variable='center_of_mass_y', trait='center of mass y',
+                            method='plantcv.plantcv.analyze.size', scale='none', datatype=int,
+                            value=cmy, label='none')
     outputs.add_observation(sample=label, variable='convex_hull_vertices', trait='convex hull vertices',
                             method='plantcv.plantcv.analyze.size', scale='none', datatype=int,
                             value=hull_vertices, label='none')
     outputs.add_observation(sample=label, variable='object_in_frame', trait='object in frame',
                             method='plantcv.plantcv.analyze.size', scale='none', datatype=bool,
                             value=in_bounds, label='none')
-    outputs.add_observation(sample=label, variable='ellipse_center', trait='ellipse center',
-                            method='plantcv.plantcv.analyze.size', scale='none', datatype=tuple,
-                            value=(ellipse_center[0], ellipse_center[1]), label=("x", "y"))
+    outputs.add_observation(sample=label, variable='ellipse_center_x', trait='ellipse center x',
+                            method='plantcv.plantcv.analyze.size', scale='none', datatype=int,
+                            value=ellipse_center[0], label='none')
+    outputs.add_observation(sample=label, variable='ellipse_center_y', trait='ellipse center y',
+                            method='plantcv.plantcv.analyze.size', scale='none', datatype=int,
+                            value=ellipse_center[1], label='none')
     outputs.add_observation(sample=label, variable='ellipse_major_axis', trait='ellipse major axis length',
                             method='plantcv.plantcv.analyze.size', scale=params.unit, datatype=int,
                             value=_scale_size(ellipse_major_axis), label=params.unit)
@@ -181,12 +206,25 @@ def _longest_axis(height, width, hull, cmx, cmy):
     """
     Calculate the line through center of mass and point on the convex hull that is furthest away
 
-    :param height: int
-    :param width: int
-    :param hull: numpy.ndarray
-    :param cmx: int
-    :param cmy: int
-    :return caliper_length: int
+    Parameters:
+    -----------
+    height   = int,
+        height of object
+    width    = int,
+        width of object
+    hull     = np.ndarray,
+        convex hull of object
+    cmx      = int,
+        center of mass in x dimension (pixel)
+    cmy      = int,
+        center of mass in y dimension (pixel)
+
+    Returns
+    -------
+    caliper_length = int
+        length of the line through the caliper
+    caliper_transpose = numpy.ndarray,
+        array of the caliper
     """
     background = np.zeros((height, width, 3), np.uint8)
     background1 = np.zeros((height, width), np.uint8)
@@ -238,12 +276,17 @@ def _longest_axis(height, width, hull, cmx, cmy):
     cv2.drawContours(background2, [hull], -1, (255), -1)
     _, hullp_binary = cv2.threshold(background2, 0, 255, cv2.THRESH_BINARY)
 
-    caliper = cv2.multiply(line_binary, hullp_binary)
+    # The caliper is the line clipped to the filled hull, so every non-zero pixel of it lies
+    # inside the hull's bounding box. Intersecting and scanning only that box is exact, and
+    # keeps the cost proportional to the object rather than to the whole image.
+    hull_x, hull_y, hull_w, hull_h = cv2.boundingRect(hull)
+    box = (slice(hull_y, hull_y + hull_h), slice(hull_x, hull_x + hull_w))
+    caliper = (line_binary[box] > 0) & (hullp_binary[box] > 0)
 
-    caliper_y, caliper_x = np.array(caliper.nonzero())
-    caliper_matrix = np.vstack((caliper_x, caliper_y))
-    caliper_transpose = np.transpose(caliper_matrix)
-    caliper_length = len(caliper_transpose)
+    caliper_y, caliper_x = np.nonzero(caliper)
+    caliper_x = caliper_x + hull_x
+    caliper_y = caliper_y + hull_y
+    caliper_length = len(caliper_x)
 
     caliper_transpose1 = np.lexsort((caliper_y, caliper_x))
     caliper_transpose2 = [(caliper_x[i], caliper_y[i]) for i in caliper_transpose1]

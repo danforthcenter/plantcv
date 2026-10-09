@@ -41,13 +41,16 @@ and [updating documentation](documentation.md).
 - Q: How should I grow plants and acquire images for quantitative processing?
     - A: This depends on your main question of interest,
     and is beyond the scope of the current PlantCV documentation. We do provide some 
-    [general considerations](analysis_approach.md), but you may be be interested
+    [general considerations](analysis_approach.md), but you may be interested
     in a [review article](http://doi.org/10.1016/j.pbi.2015.02.006)
     written by the lead PlantCV developers,
     a [practical guide](https://doi.org/10.1071/FP12028)
     on growth conditions by Poorter et al. (2012),
     or a [glossary and general advice](https://doi.org/10.1242/dev.076414)
-    by Roeder et al. (2012).
+    by Roeder et al. (2012). Normalizing color across a dataset using a reference
+    color card with [color correction](https://plantcv.org/tutorials/color-correction) is highly recommended,
+    especially when color analysis is one of the analysis objectives. See the
+    [detect color card documentation](transform_detect_color_card.md) for more detail.
 - Q: Can I use PlantCV to process photos taken with a Raspberry Pi camera?
     - A: Yes.
     <!-- This is related to the previous question. -->

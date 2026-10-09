@@ -89,6 +89,7 @@ def test_otsu_incorrect_object_type(threshold_test_data):
 @pytest.mark.parametrize("channel,lower_thresh,upper_thresh", [["HSV", [0, 0, 0], [100, 100, 100]],
                                                                ["LAB", [100, 100, 100], [255, 255, 255]],
                                                                ["RGB", [0, 0, 0], [100, 100, 100]],
+                                                               ["CMYK", [0, 0, 0, 0], [2, 100, 100, 100]],
                                                                ["GRAY", [0], [100]]])
 def test_custom_range_rgb(channel, lower_thresh, upper_thresh, threshold_test_data):
     """Test for PlantCV."""
@@ -113,6 +114,7 @@ def test_custom_range_grayscale(threshold_test_data):
                                                                ["LAB", [0, 0], [2, 2, 2, 2]],
                                                                ["RGB", [0, 0], [2, 2, 2, 2]],
                                                                ["GRAY", [0, 0], [2]],
+                                                               ["YIQ", [0], [2]],
                                                                ["CMYK", [0], [2]]])
 def test_custom_range_bad_input(channel, lower_thresh, upper_thresh, threshold_test_data):
     """Test for PlantCV."""
@@ -222,6 +224,7 @@ def test_mask_bad_input_color_img(threshold_test_data):
     ['R', True, 255], ['G', True, 0], ['l', True, 255], ['a', True, 255], ['b', True, 255], ['h', False, 0],
     ['s', False, 0], ['v', False, 0], ['gray', True, 255], ['index', True, 0]])
 def test_dual_channels(y_ch, abv, expected):
+    """Test for PlantCV."""
     # Create a synthetic RGB image containing a single pixel
     img = np.array([100, 50, 200], dtype=np.uint8).reshape((1, 1, 3))
     # first two points for a straight line of slope 1 and y-intercept of 0
@@ -233,6 +236,7 @@ def test_dual_channels(y_ch, abv, expected):
 
 
 def test_dual_channels_bad_points():
+    """Test for PlantCV."""
     # Create a synthetic RGB image containing a single pixel
     img = np.array([100, 50, 200], dtype=np.uint8).reshape((1, 1, 3))
     # only one point given
@@ -244,6 +248,7 @@ def test_dual_channels_bad_points():
 
 
 def test_dual_channels_bad_channel():
+    """Test for PlantCV."""
     # Create a synthetic RGB image containing a single pixel
     img = np.array([100, 50, 200], dtype=np.uint8).reshape((1, 1, 3))
     # only one point given

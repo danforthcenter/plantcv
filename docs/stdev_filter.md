@@ -9,7 +9,7 @@ Creates a grayscale image of pixelwise standard deviation from a grayscale image
 
 - **Parameters:**
     - img - Grayscale or RGB image data
-    - ksize - Kernel size for texture measure calculation
+    - ksize - Kernel specified as a binary numpy.ndarray for arbitrary shapes, shape tuple for a rectangular kernel, or integer for a square kernel. Here any input will be simplified to an integer specifying a square kernel.
     - borders - How the array borders are handled, either ‘reflect’, ‘constant’, ‘nearest’ (default), ‘mirror’, or ‘wrap’
 	- roi - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to apply this function. (default = None, which uses the entire image)
 - **Note:**

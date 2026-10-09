@@ -5,7 +5,7 @@ from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
 
 
 def starscape(cur_plms, group_a, group_b, outfile_prefix):

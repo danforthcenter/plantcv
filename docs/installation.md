@@ -29,8 +29,8 @@ Click through our step-by-step guide below to install PlantCV through conda.
 
 
 !!!note
-    Once you have installed PlantCV, to get started see our [guide to using PlantCV with Jupyter Notebooks](https://plantcv.readthedocs.io/en/stable/jupyter/) 
-    and our [guide to developing workflows in PlantCV](https://plantcv.readthedocs.io/en/stable/analysis_approach/#developing-image-processing-workflows-workflow-development).
+    Once you have installed PlantCV, to get started see our [guide to using PlantCV with Jupyter Notebooks](jupyter.md) 
+    and our [guide to developing workflows in PlantCV](analysis_approach.md#developing-image-processing-workflows-workflow-development).
 
 ---
 
@@ -46,13 +46,13 @@ Click through our step-by-step guide below to install PlantCV through the Jupyte
 
 ### Detailed installation instructions <a name="detailed"></a>
 
-PlantCV requires Python (tested with versions 3.9, 3.10, and 3.11) and these [Python packages](https://github.com/danforthcenter/plantcv/blob/main/pyproject.toml).
+PlantCV requires Python (tested with versions 3.11, 3.12, and 3.13) and these [Python packages](https://github.com/danforthcenter/plantcv/blob/main/pyproject.toml).
 Additionally, we recommend installing [JupyterLab](https://jupyter.org/).
 
 !!!note
     We recommend installing PlantCV in a virtual environment, which is a self-contained Python environment that includes
     PlantCV and its dependencies. Virtual environments are used to avoid conflicts between packages and can increase the
-    reproducability of your work by isolating package versions for specific projects.
+    reproducibility of your work by isolating package versions for specific projects.
 
 Stable releases of PlantCV are available through both the [Python Package Index (PyPI)](https://pypi.org/) and 
 `conda` through the [conda-forge channel](https://conda-forge.org/).

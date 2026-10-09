@@ -1,8 +1,11 @@
 import cv2
 import numpy as np
+import math
+from scipy import ndimage
 from skimage import morphology
 from plantcv.plantcv import fatal_error, warn
-from plantcv.plantcv import params
+from plantcv.plantcv._globals import params
+from plantcv.plantcv.get_kernel import _format_kernel
 import pandas as pd
 
 
@@ -15,8 +18,10 @@ def _closing(gray_img, kernel=None, roi=None):
     ----------
     gray_img = numpy.ndarray
              input image (grayscale or binary)
-    kernel   = numpy.ndarray
-             optional neighborhood, expressed as an array of 1s and 0s. If None, use cross-shaped structuring element.
+    kernel = int, numpy.ndarray, or tuple
+        Kernel specified as a binary numpy.ndarray for arbitrary shapes,
+        shape tuple for a rectangular kernel, or integer for a square kernel.
+        If None, uses cross-shaped structuring element.
     roi : Objects class
              Optional rectangular ROI to erode within
 
@@ -33,11 +38,12 @@ def _closing(gray_img, kernel=None, roi=None):
     # Make sure the image is binary/grayscale
     if len(np.shape(gray_img)) != 2:
         fatal_error("Input image must be grayscale or binary")
+    k = _format_kernel(kernel, to=np.ndarray)
 
     if len(np.unique(gray_img)) <= 2:
         bool_img = gray_img.astype(bool)
         sub_img = _rect_filter(bool_img, roi=roi, function=morphology.binary_closing,
-                               **{"footprint": kernel})
+                               **{"footprint": k})
         filtered_img = sub_img.astype(np.uint8) * 255
         replaced_img = _rect_replace(bool_img.astype(np.uint8) * 255, filtered_img, roi)
     # Otherwise use method appropriate for grayscale images
@@ -45,7 +51,7 @@ def _closing(gray_img, kernel=None, roi=None):
         filtered_img = _rect_filter(gray_img,
                                     roi=roi,
                                     function=morphology.closing,
-                                    **{"footprint": kernel})
+                                    **{"footprint": k})
         replaced_img = _rect_replace(gray_img, filtered_img, roi)
 
     return replaced_img
@@ -95,8 +101,11 @@ def _erode(gray_img, ksize, i, roi=None):
     ----------
     gray_img : numpy.ndarray
              Grayscale (usually binary) image data
-    ksize : int
-             Kernel size (int). A ksize x ksize kernel will be built. Must be greater than 1 to have an effect.
+    ksize    : int, numpy.ndarray, or tuple
+        Kernel specified as a binary numpy.ndarray for arbitrary shapes,
+        shape tuple for a rectangular kernel, or integer for a square kernel.
+        If ksize is an int then a k x k kernel will be built and ksize must
+        be greater than 1 to have an effect.
     i : int
              interations, i.e. number of consecutive filtering passes
     roi : Objects class
@@ -112,13 +121,11 @@ def _erode(gray_img, ksize, i, roi=None):
     ValueError
         If ksize is less than or equal to 1.
     """
-    if ksize <= 1:
+    if isinstance(ksize, int) and ksize <= 1:
         raise ValueError('ksize needs to be greater than 1 for the function to have an effect')
-
-    kernel1 = int(ksize)
-    kernel2 = np.ones((kernel1, kernel1), np.uint8)
+    k = _format_kernel(ksize, to=np.ndarray)
     sub_er_img = _rect_filter(img=gray_img, roi=roi, function=cv2.erode,
-                              **{"kernel": kernel2, "iterations": i})
+                              **{"kernel": k, "iterations": i})
     er_img = _rect_replace(gray_img, sub_er_img, roi)
 
     return er_img
@@ -131,8 +138,11 @@ def _dilate(gray_img, ksize, i, roi=None):
     ----------
     gray_img : numpy.ndarray
         Grayscale image data to be dilated
-    ksize : int
-        Kernel size (int). A k x k kernel will be built. Must be greater than 1 to have an effect.
+    ksize : : int, numpy.ndarray, or tuple
+        Kernel specified as a binary numpy.ndarray for arbitrary shapes,
+        shape tuple for a rectangular kernel, or integer for a square kernel.
+        If ksize is an int then a k x k kernel will be built and ksize must
+        be greater than 1 to have an effect.
     i : int
         Number of iterations (i.e. how many times to apply the dilation).
     roi : Objects class
@@ -148,13 +158,12 @@ def _dilate(gray_img, ksize, i, roi=None):
     ValueError
         If ksize is less than or equal to 1.
     """
-    if ksize <= 1:
+    if isinstance(ksize, int) and ksize <= 1:
         raise ValueError('ksize needs to be greater than 1 for the function to have an effect')
 
-    kernel1 = int(ksize)
-    kernel2 = np.ones((kernel1, kernel1), np.uint8)
+    k = _format_kernel(ksize, to=np.ndarray)
     sub_dil_img = _rect_filter(img=gray_img, roi=roi, function=cv2.dilate,
-                               **{"kernel": kernel2, "iterations": i})
+                               **{"kernel": k, "iterations": i})
     dil_img = _rect_replace(gray_img, sub_dil_img, roi)
 
     return dil_img
@@ -213,6 +222,24 @@ def _find_segment_ends(skel_img, leaf_objects, plotting_img, size):
                 cv2.circle(labeled_img, coord, params.line_thickness, (0, 255, 0), -1)  # green tips
         if not branch_pt_found:  # there is no branch point associated with a given segment and therefore it cannot be sorted
             remove.append(i)
+            # Plot the ends if found
+            if len(coords) > 1:
+                # Plot the tip that is closest to the stem
+                x_min, y_min, w, h = cv2.boundingRect(skel_img)
+                cx = int((x_min + (w / 2)))
+                cy = int(y_min + h)
+                dist0 = math.dist(coords[0], (cx, cy))
+                dist1 = math.dist(coords[1], (cx, cy))
+                m = 1
+                if dist0 < dist1:
+                    m = 0
+
+                cv2.circle(labeled_img, (cx, cy), params.line_thickness + 10, (255, 0, 0), 5)  # estimated centroid point
+                cv2.circle(labeled_img, coords[m], params.line_thickness, (255, 20, 20), -1)  # estimated sorting point
+                cv2.putText(img=labeled_img, text=str(int(dist0)), org=coords[0], fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                            fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
+                cv2.putText(img=labeled_img, text=str(int(dist1)), org=coords[1], fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                            fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
 
     # Remove the segments that cannot be resorted, since they do not have a branch point
     for k in remove:
@@ -440,30 +467,44 @@ def _cv2_findcontours(bin_img):
 
 def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
     """
-    Helper function to filter contours using a single ROI
+    Helper function to filter contours using a single ROI.
 
-    Find objects partially inside a region of interest or cut objects to the ROI.
+    Finds objects partially inside a region of interest or cuts objects to the ROI.
 
-    Inputs:
-    img            = RGB, binary, or grayscale image data for shape
-    roi            = region of interest, an instance of the Object class output from a roi function
-    obj            = contours of objects, output from "_cv2_findcontours" function
-    hierarchy      = hierarchy of objects, output from "_cv2_findcontours" function
-    roi_type       = 'cutto', 'partial' (for partially inside, default), or 'largest' (keep only the largest contour)
+    Parameters
+    ----------
+    img : numpy.ndarray
+        RGB, binary, or grayscale image data for shape.
+    roi : plantcv.plantcv.classes.Objects
+        Region of interest, an instance of the Object class output from a ROI function.
+    obj : list
+        Contours of objects, output from "_cv2_findcontours" function.
+    hierarchy : numpy.ndarray
+        Hierarchy of objects, output from "_cv2_findcontours" function.
+    roi_type : str, optional
+        Type of ROI filtering. Options are:
+        - 'partial': Find objects partially inside the ROI (default).
+        - 'cutto': Cut objects to the ROI.
+        - 'largest': Keep only the largest contour.
+        - 'within': Keep only objects fully within the ROI.
 
-    Returns:
-    kept_cnt       = kept contours
-    kept_hier      = kept hierarchy
-    mask           = mask image
+    Returns
+    -------
+    kept_cnt : list
+        List of kept contours after filtering.
+    kept_hier : numpy.ndarray
+        Hierarchy of kept contours.
+    mask : numpy.ndarray
+        Mask image showing the filtered contours.
 
-    :param img: numpy.ndarray
-    :param roi: plantcv.plantcv.classes.Objects
-    :param obj: list
-    :param hierarchy: np.array
-    :param roi_type: str
-    :return kept_cnt: list
-    :return kept_hier: np.array
-    :return mask: numpy.ndarray
+    Raises
+    ------
+    RuntimeError
+        If an invalid `roi_type` is provided.
+
+    Notes
+    -----
+    If a multi-ROI is provided, only the first ROI will be used. For multi-ROI processing, consider using a for loop.
     """
     # Store debug
     debug = params.debug
@@ -507,7 +548,7 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
             kept_cnt, kept_hierarchy = _cv2_findcontours(bin_img=mask)
 
     # Allows user to cut objects to the ROI (all objects completely outside ROI will not be kept)
-    elif roi_type.upper() == 'CUTTO':
+    elif roi_type.upper() in ('CUTTO', 'WITHIN'):
         background1 = np.zeros(np.shape(img)[:2], dtype=np.uint8)
         background2 = np.zeros(np.shape(img)[:2], dtype=np.uint8)
         cv2.drawContours(background1, object_contour, -1, (255), -1, lineType=8, hierarchy=obj_hierarchy)
@@ -515,10 +556,33 @@ def _roi_filter(img, roi, obj, hierarchy, roi_type="partial"):
         cv2.fillPoly(background2, [roi_points], (255))
         mask = cv2.multiply(background1, background2)
         kept_cnt, kept_hierarchy = _cv2_findcontours(bin_img=mask)
+
+        # Filter out contours that touch the edge if roi_type is 'within'
+        if roi_type.upper() == 'WITHIN' and kept_cnt:
+            # make a mask with the outline of the ROI
+            roi_outline_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
+            cv2.drawContours(image=roi_outline_mask, contours=roi_contour, contourIdx=-1,
+                             color=255, thickness=1)
+            # make empty mask to append to
+            within_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
+            for c, _ in enumerate(kept_cnt):
+                # for each contour make a mask with that contour filled
+                filtering_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
+                cv2.fillPoly(filtering_mask, [np.vstack(kept_cnt[c])], (255))
+                # check overlap with traced ROI
+                overlap_img = _logical_operation(filtering_mask, roi_outline_mask, 'and')
+                # check color in original mask, ie don't keep gaps that are 0s.
+                # append contours fully within ROI to the within_mask
+                if not overlap_img.any() and kept_hierarchy[0][c][3] == -1:
+                    cv2.drawContours(within_mask, kept_cnt, c,
+                                     int(img[kept_cnt[c][0][0][1], kept_cnt[c][0][0][0]]),
+                                     -1, lineType=8, hierarchy=kept_hierarchy)
+            mask = within_mask
+            kept_cnt, kept_hierarchy = _cv2_findcontours(bin_img=mask)
     else:
         # Reset debug mode
         params.debug = debug
-        fatal_error('ROI Type ' + str(roi_type) + ' is not "cutto", "largest", or "partial"!')
+        fatal_error('ROI Type ' + str(roi_type) + ' is not "cutto", "largest", "within" or "partial"!')
 
     # Reset debug mode
     params.debug = debug
@@ -558,6 +622,48 @@ def _iterate_analysis(img, labeled_mask, n_labels, label, function, **kwargs):
         submask = np.where(mask_copy == i, 255, 0).astype(np.uint8)
         img = function(img=img, mask=submask, label=f"{labels[i - 1]}_{i}", **kwargs)
     return img
+
+
+def _iterate_objects(labeled_mask, n_labels, label):
+    """Iterate over labeled objects, yielding each object cropped to its bounding box.
+
+    Parameters
+    ----------
+    labeled_mask : numpy.ndarray
+        Labeled mask of objects (or a binary 0/255 mask for a single object)
+    n_labels : int
+        Number of expected labels
+    label : str or list
+        Label parameter, modifies the variable name of observations recorded
+
+    Yields
+    ------
+    sample : str
+        Sample label for the object, formatted as "<label>_<i>"
+    slices : tuple
+        Tuple of slices defining the bounding box of the object
+    obj_mask : numpy.ndarray
+        Boolean mask of the object within the bounding box
+    """
+    # Set labels to label
+    labels = label
+    # If label is a string, make a list of labels
+    if isinstance(label, str):
+        labels = [label] * n_labels
+    # If the length of the labels list is not equal to the number of labels, raise an error
+    if len(labels) != n_labels:
+        fatal_error(f"Number of labels ({len(labels)}) does not match number of objects ({n_labels})")
+    mask = labeled_mask
+    # Convert a binary 0/255 mask to a single object with label 1
+    if len(np.unique(mask)) == 2 and np.max(mask) == 255:
+        mask = np.where(mask == 255, 1, 0).astype(np.uint8)
+    # Bounding boxes for labels 1 to n_labels (None if a label is not present)
+    bboxes = ndimage.find_objects(mask, max_label=n_labels)
+    for i, slices in enumerate(bboxes, start=1):
+        # Use an empty bounding box for labels not present in the mask
+        if slices is None:
+            slices = (slice(0, 0), slice(0, 0))
+        yield f"{labels[i - 1]}_{i}", slices, mask[slices] == i
 
 
 def _object_composition(contours, hierarchy):
@@ -707,12 +813,9 @@ def _rgb2cmyk(rgb_img, channel):
     # Y Channel
     y = (1 - bgr[..., 0] - k) / (1 - k)
 
-    # Convert the input BGR image to LAB colorspace
-    cmyk = (np.dstack((c, m, y, k)) * 255).astype(np.uint8)
-    # Split CMYK channels
-    y, m, c, k = cv2.split(cmyk)
     # Create a channel dictionaries for lookups by a channel name index
-    channels = {"c": c, "m": m, "y": y, "k": k}
+    channels = {"c": np.multiply(255, c).astype(np.uint8), "m": np.multiply(255, m).astype(np.uint8),
+                "y": np.multiply(255, y).astype(np.uint8), "k": np.multiply(255, k).astype(np.uint8)}
 
     return channels[channel]
 
@@ -869,3 +972,29 @@ def _rect_replace(img, sub_img, roi):
     full_img = np.copy(img)
     full_img[ystart:yend, xstart:xend] = sub_img
     return full_img
+
+
+def _is_binary(img):
+    """Determine whether an image holds no more than two distinct values.
+
+    Only pixel values are considered, not the number of image dimensions.
+
+    Parameters
+    ----------
+    img : numpy.ndarray
+        Image to test.
+
+    Returns
+    -------
+    bool
+        True if the image holds two or fewer distinct values.
+    """
+    values = np.asarray(img)
+    if values.size == 0:
+        return True
+    low = values.min()
+    high = values.max()
+    if low == high:
+        return True
+    # Two distinct values means every pixel equals either the minimum or the maximum
+    return not np.any((values != low) & (values != high))

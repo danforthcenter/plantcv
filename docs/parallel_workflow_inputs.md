@@ -56,11 +56,11 @@ nir_img, nirpath, nirname = pcv.readimage(filename=args.nir)
 
 The `WorkflowInputs` class is used to manage inputs in Jupyter where inputs are hardcoded for testing and workflow
 development. After converting a notebook to a Python script for use with `plantcv-run-workflow`, `WorkflowInputs` is replaced
-with the function `workflow_inputs`.
+with the function `workflow_inputs`, which returns a very similar class based on the `argparse.Namespace` class.
 
 **plantcv.parallel.workflow_inputs**(*\*other_args*)
 
-**returns** an argparse.Namespace object containing the inputs.
+**returns** an plantcv.parallel.workflow_inputs class object
 
 * **Parameters**:
   * \*other_args - (list, optional): list of additional user-defined workflow inputs.
@@ -68,6 +68,27 @@ with the function `workflow_inputs`.
     * Used to parse command-line inputs to the workflow. Inputs are constructed by `plantcv-run-workflow`.
 * **Example use**:
     * [Converting from Jupyter to Python](jupyter.md)
+
+#### Checkpointing
+
+If a parallel workflow is run with checkpointing (`config.checkpoint = True`) then a checkpointing file is made by
+`workflow_inputs` when the `workflow_inputs` class object is initialized in each job. That file has the same name
+as the temp file of image metadata but with the `"_attempt"` suffix. When `workflow_inputs.result` attribute is
+accessed the checkpointing file is renamed to have the `"_complete"` suffix. In a typical workflow the `result`
+attribute is only accessed when results are being saved (`pcv.outputs.save_results(filename= args.result, ...)`).
+If you are accessing the `results` attribute for any other reason we recommend instead using the `_results` attribute
+so that the `_complete` suffix is only used for checkpointing once results have been saved. By default `workflow_config`
+sets `cleanup = True`, which will remove the `checkpoint` directory if the job runs to completion. For standard
+checkpointing focused on running part of a dataset that did not run before a job was killed, etc, the default value works
+well. 
+
+Checkpointing also allows for continuous monitoring or interim analysis of a growing image dataset with a single configuration
+file and a single workflow. A checkpointed parallel configuration will automatically skip images that have already been run and
+only run new images or those that were not completed in a previous attempt. For checkpointing to work in this way you
+need to have `config.cleanup` set to `False`, otherwise the checkpointing files will be deleted at the end of a successful workflow
+which would prevent a future re-run from knowing which images were already analyzed. Note that there are many ways that you might
+set up continuous monitoring or interim analyses and it may make more sense in your use case to have several configuration files
+with different filters in place.
 
 #### Example
 
