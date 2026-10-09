@@ -7,6 +7,7 @@ import datetime
 from plantcv.learn.naive_bayes import naive_bayes, naive_bayes_multiclass, tabulate_bayes_classes
 from plantcv.learn.train_kmeans import train_kmeans
 
+
 # Parse command-line arguments
 ###########################################
 def options():
@@ -106,7 +107,7 @@ def run_naive_bayes_multiclass(args):
         raise IOError(f"File does not exist: {args.file}")
     print("Running the naive Bayes multiclass training method...")
     naive_bayes_multiclass(samples_file=args.file, outfile=args.outfile, mkplots=args.plots,
-                                         max_errors=args.max_errors)
+                           max_errors=args.max_errors)
 ###########################################
 
 
@@ -128,9 +129,9 @@ def run_kmeans(args):
         raise IOError(f"Directory does not exist: {args.imgdir}")
     print("Running the Kmeans training method...")
     train_kmeans(img_dir=args.imgdir, k=args.categories, out_path=args.out,
-                               prefix=args.prefix, patch_size=args.patch_size, sigma=args.sigma,
-                               sampling=args.sampling, seed=args.seed, num_imgs=args.num_imgs,
-                               n_init=args.n_init)
+                 prefix=args.prefix, patch_size=args.patch_size, sigma=args.sigma,
+                 sampling=args.sampling, seed=args.seed, num_imgs=args.num_imgs,
+                 n_init=args.n_init)
 ###########################################
 
 
