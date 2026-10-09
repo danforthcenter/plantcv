@@ -2,7 +2,9 @@
 import os
 import sys
 import argparse
-import plantcv.parallel
+from plantcv.parallel.inspect_dataset import inspect_dataset
+from plantcv.parallel.run_parallel import run_parallel
+from plantcv.parallel.workflowconfig import WorkflowConfig
 
 
 # Parse command-line arguments
@@ -33,7 +35,7 @@ def options():
     args = parser.parse_args()
 
     # Create a config
-    config = plantcv.parallel.WorkflowConfig()
+    config = WorkflowConfig()
 
     # Create a template configuration file if requested
     if args.template:
@@ -77,12 +79,12 @@ def main():
     config, dryrun = options()
     if dryrun:
         prefix = os.path.splitext(dryrun)[0]
-        summary_df, meta = plantcv.parallel.inspect_dataset(config)
+        summary_df, meta = inspect_dataset(config)
         print(f"Saving {prefix}_summary_df.csv")
         summary_df.to_csv(f"{prefix}_summary_df.csv")
         print(f"Saving {prefix}_metadata_df.csv")
         meta.to_csv(f"{prefix}_metadata_df.csv")
     else:
         # run parallel using config
-        plantcv.parallel.run_parallel(config)
+        run_parallel(config)
 ###########################################

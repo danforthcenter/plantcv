@@ -3,8 +3,8 @@ import os
 import cv2
 import numpy as np
 from skimage.segmentation import watershed
-from plantcv.plantcv import outputs, params
-from plantcv.plantcv.visualize import colorize_label_img
+from plantcv.plantcv._globals import params, outputs
+from plantcv.plantcv.visualize.colorize_label_img import colorize_label_img
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _scale_size
 

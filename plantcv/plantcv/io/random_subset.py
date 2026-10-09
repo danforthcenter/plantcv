@@ -1,7 +1,7 @@
 # Random Subset a list
 
 import random
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv.fatal_error import fatal_error
 
 
 def random_subset(dataset, num=100, seed=None):

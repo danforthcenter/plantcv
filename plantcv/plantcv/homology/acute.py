@@ -3,7 +3,7 @@
 import numpy as np
 import math
 import cv2
-from plantcv.plantcv import params, outputs
+from plantcv.plantcv._globals import params, outputs
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
 

@@ -1,7 +1,7 @@
 """Open an image from a URL."""
 import imageio.v3 as iio
 import cv2
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv._debug import _debug
 
 

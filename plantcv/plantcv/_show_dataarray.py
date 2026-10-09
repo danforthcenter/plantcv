@@ -1,4 +1,4 @@
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv.fatal_error import fatal_error
 
 
 def _show_dataarray(img, **kwargs):

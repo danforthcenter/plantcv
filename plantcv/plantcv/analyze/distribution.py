@@ -1,7 +1,8 @@
 """Analyzes the X and Y spatial distribution of objects in an image."""
 import os
 import numpy as np
-from plantcv.plantcv import auto_crop, outputs, params
+from plantcv.plantcv._globals import params, outputs
+from plantcv.plantcv.auto_crop import auto_crop
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _iterate_analysis
 

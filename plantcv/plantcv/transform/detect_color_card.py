@@ -7,7 +7,9 @@ import os
 import cv2
 import math
 import numpy as np
-from plantcv.plantcv import params, outputs, fatal_error, warn
+from plantcv.plantcv._globals import params, outputs
+from plantcv.plantcv.fatal_error import fatal_error
+from plantcv.plantcv.warn import warn
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _rgb2hsv, _rgb2gray, _cv2_findcontours, _object_composition, _rect_filter
 from plantcv.plantcv.transform.get_color_matrix import get_color_matrix

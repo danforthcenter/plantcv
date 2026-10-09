@@ -1,7 +1,7 @@
 """Find tips from skeleton image."""
 import os
 from plantcv.plantcv._globals import params
-from plantcv.plantcv import outputs
+from plantcv.plantcv._globals import outputs
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _find_tips
 

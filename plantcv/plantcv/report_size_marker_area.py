@@ -2,8 +2,11 @@
 import cv2
 import numpy as np
 import os
-from plantcv.plantcv import params, outputs, fatal_error, apply_mask, warn
-from plantcv.plantcv.threshold import binary as binary_threshold
+from plantcv.plantcv._globals import params, outputs
+from plantcv.plantcv.apply_mask import apply_mask
+from plantcv.plantcv.fatal_error import fatal_error
+from plantcv.plantcv.warn import warn
+from plantcv.plantcv.threshold.threshold_methods import binary as binary_threshold
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition, _roi_filter, _rgb2hsv
 

@@ -1,7 +1,7 @@
 # Debugging module
 from plantcv.plantcv._globals import params
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
+from plantcv.plantcv.print_image import print_image
+from plantcv.plantcv.plot_image import plot_image
 
 
 def _debug(visual, filename=None, verbosity_level=0, **kwargs):
