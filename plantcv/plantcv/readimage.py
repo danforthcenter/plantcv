@@ -46,7 +46,7 @@ def readimage(filename, mode="native"):
         "HEIC" : _read_heic,
         "NATIVE" : _read_native
     }
-    
+
     if os.path.splitext(filename)[1].upper() == ".HEIC" and mode == "native":
         mode = "heic"
     # read image
