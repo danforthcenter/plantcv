@@ -1,8 +1,9 @@
 ## Classification using a kmeans cluster model
 
-The first function (`pcv.predict_kmeans`) takes a target image and uses a trained kmeans model produced by [`pcv.learn.train_kmeans`](train_kmeans.md) to classify regions of the target image by the trained clusters. The second function (`pcv.mask_kmeans`) takes a list of clusters and produces the combined mask from clusters of interest. The target and training images may be in grayscale or RGB image format.
+The first function (`pcv.predict_kmeans`) takes a target image and uses a trained kmeans model produced by [`pcv.learn.train_kmeans`](train_kmeans.md) to classify regions of the target image by the trained clusters. The second function (`pcv.mask_kmeans`) takes a list of clusters and produces the combined mask from clusters of interest. The target and training images may be in grayscale, RGB, or multispectral image format.
 
-**plantcv.predict_kmeans**(*img, model_path="./kmeansout.fit", patch_size=10*)
+
+**plantcv.predict_kmeans**(img, model_path="./kmeansout.fit", patch_size=10, mode=None)
 
 **outputs** An image with regions colored and labeled according to cluster assignment
 
@@ -10,6 +11,7 @@ The first function (`pcv.predict_kmeans`) takes a target image and uses a traine
     - img = Path to target image
     - model_path = Path to where the model fit (output from plantcv.learn.train_kmeans.py) is stored
     - patch_size = Size of the NxN neighborhood around each pixel, used for classification
+    - mode = Either None (default) for RGB image input or "spectral" for multispectral images
 
 - **Context:**
     - Used to classify cluster assignment of pixels in a target image using a trained kmeans clustering model.
