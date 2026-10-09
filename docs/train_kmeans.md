@@ -1,6 +1,6 @@
 ## Kmeans clustering training 
 
-This function takes in a collection of training images and fits a patch-based kmeans cluster model for later use in classifying cluster assignment in a target image. The target and training images may be in grayscale, RGB, or multispectral image format.
+This function takes in a collection of training images and fits a patch-based kmeans cluster model for later use in classifying cluster assignment in a target image. The target and training images may be in grayscale, RGB, RGBA, or multispectral image format.
 
 
 **plantcv.learn.train_kmeans**(img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, mode=None, sigma=5, sampling=None, seed=1, num_imgs=0, n_init=10)
@@ -23,6 +23,7 @@ This function takes in a collection of training images and fits a patch-based km
 - **Context:**
     - Used to fit a kmeans cluster model on a set of training images. Intended to be used with `pcv.predict_kmeans`
     and `pcv.mask_kmeans` downstream, which are documented [here](kmeans_classifier.md). 
+	- Note that 4 channel images are assumed to be RGBA and the alpha channel will be ignored. 3 or >4 channel images will have all channels used.
 
 - **Example use:**
     - [Use in kmeans tutorial](https://plantcv.org/tutorials/kmeans-clustering) 
