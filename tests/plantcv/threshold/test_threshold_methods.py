@@ -95,7 +95,7 @@ def test_custom_range_rgb(channel, lower_thresh, upper_thresh, threshold_test_da
     """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(threshold_test_data.small_rgb_img)
-    binary_img, _ = custom_range(img, lower_thresh=lower_thresh, upper_thresh=upper_thresh, channel=channel)
+    binary_img = custom_range(img, lower_thresh=lower_thresh, upper_thresh=upper_thresh, channel=channel)
     # Assert that the output image has the dimensions of the input image and is binary
     assert img.shape[:2] == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
@@ -105,7 +105,7 @@ def test_custom_range_grayscale(threshold_test_data):
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
     # # Test channel='gray'
-    binary_img, _ = custom_range(gray_img, lower_thresh=[0], upper_thresh=[100], channel='gray')
+    binary_img = custom_range(gray_img, lower_thresh=[0], upper_thresh=[100], channel='gray')
     # Assert that the output image has the dimensions of the input image and is binary
     assert gray_img.shape == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
@@ -121,7 +121,7 @@ def test_custom_range_bad_input(channel, lower_thresh, upper_thresh, threshold_t
     # Read in test data
     img = cv2.imread(threshold_test_data.small_rgb_img)
     with pytest.raises(RuntimeError):
-        _, _ = custom_range(img, lower_thresh=lower_thresh, upper_thresh=upper_thresh, channel=channel)
+        _ = custom_range(img, lower_thresh=lower_thresh, upper_thresh=upper_thresh, channel=channel)
 
 
 @pytest.mark.parametrize("channel", ["all", "any"])

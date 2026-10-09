@@ -93,6 +93,10 @@ with RGB and hyperspectral data.
 Removed `label` parameter since size marker data is now stored as metadata in the
 [`Outputs` class](outputs.md) and does not need to be labeled per sample.
 
+#### plantcv.threshold.custom_range
+
+Removed the `masked_img` output. If the `masked_img` visualization is desired then the `pcv.apply_mask` function should be used.
+
 #### plantcv.transform.auto_correct_color
 
 Removed `label` parameter since size marker data is now stored as metadata in the
@@ -1434,6 +1438,7 @@ pages for more details on the input and output variable types.
 * pre v3.3: NA
 * post v3.3: mask, masked_img = **plantcv.threshold.custom_range**(*rgb_img, lower_thresh, upper_thresh, channel='RGB'*)**
 * post v3.8: mask, masked_img = **plantcv.threshold.custom_range**(*img, lower_thresh, upper_thresh, channel='RGB'*)**
+* post v5.0: mask = **plantcv.threshold.custom_range**(*img, lower_thresh, upper_thresh, channel='RGB'*)**
 
 #### plantcv.threshold.gaussian
 
