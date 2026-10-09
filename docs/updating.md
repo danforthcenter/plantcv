@@ -409,6 +409,10 @@ pages for more details on the input and output variable types.
 * pre v5.0: NA
 * post v5.0: output_list = **plantcv.analyze.npq_components**(*ps, labeled_mask, n_labels=1, label=None*)
 
+#### plantcv.analyze.radial_percentile
+* pre v4.9: NA
+* post v5.0: avgs = **plantcv.analyze.radial_percentile**(*img, labeled_mask, n_labels=1, percentile=50, label=None*)
+
 #### plantcv.analyze.size
 
 * pre v4.0: (see plantcv.analyze_object)

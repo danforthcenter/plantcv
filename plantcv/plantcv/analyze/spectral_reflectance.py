@@ -1,7 +1,7 @@
 """Analyzes the spectral reflectance values of objects in an image."""
 import os
 import numpy as np
-from plantcv.plantcv import outputs, params
+from plantcv.plantcv._globals import params, outputs
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _iterate_analysis
 

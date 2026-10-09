@@ -6,7 +6,7 @@ import cv2
 from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _find_closest
-from plantcv.plantcv import warn
+from plantcv.plantcv.warn import warn
 from plantcv.plantcv.classes import Spectral_data, MS_data
 from plantcv.plantcv.transform.rescale import rescale
 

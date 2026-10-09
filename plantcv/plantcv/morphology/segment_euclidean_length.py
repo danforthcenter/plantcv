@@ -3,9 +3,9 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv._globals import params
-from plantcv.plantcv import outputs
-from plantcv.plantcv import fatal_error
-from plantcv.plantcv import color_palette
+from plantcv.plantcv._globals import outputs
+from plantcv.plantcv.fatal_error import fatal_error
+from plantcv.plantcv.color_palette import color_palette
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _find_tips, _scale_size
 from scipy.spatial.distance import euclidean

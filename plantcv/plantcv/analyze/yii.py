@@ -4,8 +4,10 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import params, outputs, fatal_error
-from plantcv.plantcv.photosynthesis import reassign_frame_labels
+from plantcv.plantcv._globals import outputs
+from plantcv.plantcv._globals import params
+from plantcv.plantcv.fatal_error import fatal_error
+from plantcv.plantcv.photosynthesis.reassign_frame_labels import reassign_frame_labels
 
 
 def yii(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, label=None):

@@ -46,6 +46,7 @@ nav:
         - 'Analyze NPQ Componenets': analyze_npq_components.md
         - 'Analyze NPQ without dark frames': analyze_npqfast.md
         - 'Analyze ETR': analyze_etr.md
+        - 'Analyze Radial Average': analyze_radial_percentile.md
       - 'Annotation Tools':
           - 'Points': Points.md
       - 'Apply Mask': apply_mask.md
