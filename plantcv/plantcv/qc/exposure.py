@@ -4,7 +4,8 @@ import cv2
 import numpy as np
 import pandas as pd
 import altair as alt
-from plantcv.plantcv import outputs, params, warn
+from plantcv.plantcv._globals import params, outputs
+from plantcv.plantcv.warn import warn
 from plantcv.plantcv._debug import _debug
 
 

@@ -5,8 +5,8 @@ import cv2
 import numpy as np
 from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import fatal_error
-from plantcv.plantcv.transform import rescale
+from plantcv.plantcv.fatal_error import fatal_error
+from plantcv.plantcv.transform.rescale import rescale
 
 
 def apply_mask(img, mask, mask_color):

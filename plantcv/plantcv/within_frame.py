@@ -1,8 +1,8 @@
 """Check if mask in within the frame."""
 
 import numpy as np
-from plantcv.plantcv import fatal_error
-from plantcv.plantcv import outputs, params
+from plantcv.plantcv.fatal_error import fatal_error
+from plantcv.plantcv._globals import params, outputs
 from plantcv.plantcv._helpers import _is_binary
 
 

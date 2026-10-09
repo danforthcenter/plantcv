@@ -3,10 +3,10 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv._globals import params
-from plantcv.plantcv import outputs
-from plantcv.plantcv import color_palette
-from plantcv.plantcv.morphology import segment_path_length
-from plantcv.plantcv.morphology import segment_euclidean_length
+from plantcv.plantcv._globals import outputs
+from plantcv.plantcv.color_palette import color_palette
+from plantcv.plantcv.morphology.segment_path_length import segment_path_length
+from plantcv.plantcv.morphology.segment_euclidean_length import segment_euclidean_length
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _find_tips
 

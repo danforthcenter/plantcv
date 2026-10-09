@@ -8,7 +8,7 @@ import nd2
 import flyr
 from PIL import Image
 from pillow_heif import register_heif_opener
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv._globals import params
 from plantcv.plantcv.hyperspectral.read_data import read_data
 from plantcv.plantcv._debug import _debug

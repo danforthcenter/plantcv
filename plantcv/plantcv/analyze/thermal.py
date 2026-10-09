@@ -1,9 +1,9 @@
 """Analyzes the temperature values of objects in an image."""
 import os
 import numpy as np
-from plantcv.plantcv import params, outputs
+from plantcv.plantcv._globals import params, outputs
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv.visualize import histogram
+from plantcv.plantcv.visualize.histogram import histogram
 from plantcv.plantcv._helpers import _iterate_analysis
 
 

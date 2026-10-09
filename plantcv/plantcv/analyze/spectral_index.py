@@ -1,10 +1,12 @@
 """Analyzes spectral index values of objects in an image."""
 import os
 import numpy as np
-from plantcv.plantcv import outputs, params
+from plantcv.plantcv._globals import outputs
+from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import fatal_error, warn
-from plantcv.plantcv.visualize import histogram
+from plantcv.plantcv.fatal_error import fatal_error
+from plantcv.plantcv.warn import warn
+from plantcv.plantcv.visualize.histogram import histogram
 from plantcv.plantcv._helpers import _iterate_analysis
 
 

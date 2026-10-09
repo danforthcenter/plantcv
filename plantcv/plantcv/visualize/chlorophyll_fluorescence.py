@@ -2,7 +2,9 @@ import os
 import altair as alt
 import pandas as pd
 import numpy as np
-from plantcv.plantcv import params, fatal_error, PSII_data
+from plantcv.plantcv._globals import params
+from plantcv.plantcv.classes import PSII_data
+from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv._debug import _debug
 
 

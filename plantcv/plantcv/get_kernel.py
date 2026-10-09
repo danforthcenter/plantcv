@@ -2,7 +2,7 @@
 
 import cv2
 import numpy as np
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv.fatal_error import fatal_error
 
 
 def get_kernel(size, shape):

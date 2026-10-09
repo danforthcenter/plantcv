@@ -7,7 +7,8 @@ import cv2 as cv
 from scipy import ndimage as ndi
 from skimage.segmentation import watershed
 from skimage.color import label2rgb
-from plantcv.plantcv import readimage, fill_holes
+from plantcv.plantcv.fill_holes import fill_holes
+from plantcv.plantcv.readimage import readimage
 from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _rgb2gray
