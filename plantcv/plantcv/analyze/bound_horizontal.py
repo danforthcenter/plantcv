@@ -3,7 +3,7 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _iterate_analysis, _grayscale_to_rgb, _scale_size
+from plantcv.plantcv._helpers import _iterate_analysis, _grayscale_to_rgb, _scale_size, _area_unit
 from plantcv.plantcv._globals import params, outputs
 
 
@@ -175,14 +175,14 @@ def _analyze_bound_horizontal(img, mask, line_position, label):
                             method='plantcv.plantcv.analyze.bound_horizontal', scale=params.unit, datatype=int,
                             value=_scale_size(height_below_bound), label=params.unit)
     outputs.add_observation(sample=label, variable='area_above_reference', trait='area above reference',
-                            method='plantcv.plantcv.analyze.bound_horizontal', scale=params.unit, datatype=int,
-                            value=_scale_size(above_bound_area, "area"), label=params.unit)
+                            method='plantcv.plantcv.analyze.bound_horizontal', scale=_area_unit(), datatype=int,
+                            value=_scale_size(above_bound_area, "area"), label=_area_unit())
     outputs.add_observation(sample=label, variable='percent_area_above_reference', trait='percent area above reference',
                             method='plantcv.plantcv.analyze.bound_horizontal', scale='none', datatype=float,
                             value=percent_bound_area_above, label='none')
     outputs.add_observation(sample=label, variable='area_below_reference', trait='area below reference',
-                            method='plantcv.plantcv.analyze.bound_horizontal', scale=params.unit, datatype=int,
-                            value=_scale_size(below_bound_area, "area"), label=params.unit)
+                            method='plantcv.plantcv.analyze.bound_horizontal', scale=_area_unit(), datatype=int,
+                            value=_scale_size(below_bound_area, "area"), label=_area_unit())
     outputs.add_observation(sample=label, variable='percent_area_below_reference', trait='percent area below reference',
                             method='plantcv.plantcv.analyze.bound_horizontal', scale='none', datatype=float,
                             value=percent_bound_area_below, label='none')

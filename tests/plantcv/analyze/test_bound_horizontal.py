@@ -14,6 +14,8 @@ def test_analyze_bound_horizontal(pos, exp, test_data):
     mask = cv2.imread(test_data.small_bin_img, -1)
     _ = analyze_bound_horizontal(img=img, labeled_mask=mask, n_labels=1, line_position=pos)
     assert outputs.observations["default_1"]["height_above_reference"]["value"] == exp
+    assert outputs.observations["default_1"]["area_above_reference"]["label"] == "pixels"
+    assert outputs.observations["default_1"]["area_below_reference"]["label"] == "pixels"
 
 
 def test_analyze_bound_horizontal_grayscale_image(test_data):

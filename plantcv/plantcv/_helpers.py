@@ -896,6 +896,22 @@ def _scale_size(value, trait_type="linear"):
     return [x*conversion_rate for x in value]
 
 
+def _area_unit():
+    """Get the unit label for area measurements
+
+    Returns
+    -------
+    str
+        params.area_unit if set, params.unit if measurements are in pixels,
+        otherwise params.unit suffixed with "2" (e.g. "mm2")
+    """
+    if params.area_unit is not None:
+        return params.area_unit
+    if params.unit.lower() in ("pixel", "pixels", "px"):
+        return params.unit
+    return f"{params.unit}2"
+
+
 def _identity(x, **kwargs):
     """Identity function for use in _rect_filter
     This may be useful if there are several outputs from a function passed to _rect_filter
