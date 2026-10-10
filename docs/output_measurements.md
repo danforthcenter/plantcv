@@ -95,18 +95,18 @@ Example (abbreviated) JSON data:
                     "pixel_area": {
                         "trait": "area",
                         "method": "plantcv.plantcv.analyze.size",
-                        "scale": "pixels2",
+                        "scale": "pixels",
                         "datatype": "<class 'int'>",
                         "value": 10000,
-                        "label": "pixels2"
+                        "label": "pixels"
                     },
                     "hull_area": {
                         "trait": "convex hull area",
                         "method": "plantcv.plantcv.analyze.size",
-                        "scale": "pixels2",
+                        "scale": "pixels",
                         "datatype": "<class 'int'>",
                         "value": 100000,
-                        "label": "pixels2"
+                        "label": "pixels"
                     }
                 }
             }

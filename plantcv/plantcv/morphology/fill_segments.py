@@ -6,7 +6,7 @@ from skimage.segmentation import watershed
 from plantcv.plantcv import outputs, params
 from plantcv.plantcv.visualize import colorize_label_img
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _scale_size
+from plantcv.plantcv._helpers import _scale_size, _area_unit
 
 
 def fill_segments(mask, objects, stem_objects=None, label=None):
@@ -53,18 +53,18 @@ def fill_segments(mask, objects, stem_objects=None, label=None):
     if stem_objects is None:
         outputs.add_observation(sample=label, variable='segment_area', trait='segment area',
                                 method='plantcv.plantcv.morphology.fill_segments',
-                                scale=f"{params.unit}2", datatype=list,
+                                scale=_area_unit(), datatype=list,
                                 value=_scale_size(value=counts[1:].tolist(), trait_type="area"),
                                 label=(ids[1:]-1).tolist())
     else:
         outputs.add_observation(sample=label, variable='leaf_area', trait='segment area',
                                 method='plantcv.plantcv.morphology.fill_segments',
-                                scale=f"{params.unit}2", datatype=list,
+                                scale=_area_unit(), datatype=list,
                                 value=_scale_size(value=counts[1:-1].tolist(), trait_type="area"),
                                 label=(ids[1:-1]-1).tolist())
         outputs.add_observation(sample=label, variable='stem_area', trait='segment area',
                                 method='plantcv.plantcv.morphology.fill_segments',
-                                scale=f"{params.unit}2", datatype=list,
+                                scale=_area_unit(), datatype=list,
                                 value=_scale_size(value=counts[-1].tolist(), trait_type="area"),
                                 label=(ids[-1]-1).tolist())
 

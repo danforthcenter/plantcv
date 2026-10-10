@@ -14,8 +14,8 @@ def test_bound_vertical(pos, exp, test_data):
     mask = cv2.imread(test_data.small_bin_img, -1)
     _ = analyze_bound_vertical(img=img, labeled_mask=mask, n_labels=1, line_position=pos)
     assert outputs.observations['default_1']['width_left_reference']['value'] == exp
-    assert outputs.observations['default_1']['area_left_reference']['label'] == "pixels2"
-    assert outputs.observations['default_1']['area_right_reference']['label'] == "pixels2"
+    assert outputs.observations['default_1']['area_left_reference']['label'] == "pixels"
+    assert outputs.observations['default_1']['area_right_reference']['label'] == "pixels"
 
 
 def test_bound_vertical_grayscale_image(test_data):

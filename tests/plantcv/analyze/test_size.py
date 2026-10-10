@@ -13,7 +13,7 @@ def test_size(test_data):
     mask = cv2.imread(test_data.small_bin_img, -1)
     _ = analyze_size(img=img, labeled_mask=mask, n_labels=1)
     assert int(outputs.observations["default_1"]["area"]["value"]) == 221
-    assert outputs.observations["default_1"]["area"]["label"] == "pixels2"
+    assert outputs.observations["default_1"]["area"]["label"] == "pixels"
 
 
 def test_size_area_units(test_data, monkeypatch):
