@@ -29,7 +29,7 @@ class SpectralIndexTestData:
         self.array_data = MS_data(array_data=array_data, wavelength_dict=wavelength_dict,
                                   max_wavelength=max(wavelengths),
                                   min_wavelength=min(wavelengths),
-                                  pseudo_rgb=None, filename="test")
+                                  filename="test")
         return self.array_data
 
 
