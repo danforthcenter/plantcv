@@ -1,10 +1,10 @@
 # PlantCV classes
 import cv2
 import numpy as np
-from plantcv.plantcv._helpers import _find_closest
-from plantcv.plantcv.transform.rescale import rescale
+from plantcv.plantcv.fatal_error import fatal_error
+from plantcv.plantcv._helpers import _find_closest, _rescale
 from plantcv.plantcv.annotate.points import _find_closest_pt
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt 
 from math import floor
 
 
@@ -54,6 +54,13 @@ class Spectral_data:
         default_bands = self.default_bands
         wl_keys = self.wavelength_dict.keys()
 
+        if len(wl_keys) <= 1:
+            pseudo_rgb = array_data
+            if len(np.shape(pseudo_rgb)) > 2:
+                # the shape for these is [wavelengths, X, Y]
+                pseudo_rgb = array_data[0, :, :]
+            return np.repeat(_rescale(pseudo_rgb ** (1 / 2.2))[..., np.newaxis], 3, axis=-1)
+
         if default_bands is not None:
             # The ENVI standard defines one default band for a grayscale image and three for an RGB image
             if len(default_bands) == 1:
@@ -70,7 +77,6 @@ class Spectral_data:
             pseudo_rgb = cv2.merge((array_data[:, :, bands[0]],
                                     array_data[:, :, bands[1]],
                                     array_data[:, :, bands[2]]))
-
         else:
             max_wavelength = max(float(i) for i in wl_keys)
             min_wavelength = min(float(i) for i in wl_keys)
@@ -94,14 +100,9 @@ class Spectral_data:
         # Gamma correct pseudo_rgb image
         pseudo_rgb = pseudo_rgb ** (1 / 2.2)
         # Scale each of the channels up to 255
-        debug = params.debug
-        params.debug = None
-        pseudo_rgb = cv2.merge((rescale(pseudo_rgb[:, :, 0]),
-                                rescale(pseudo_rgb[:, :, 1]),
-                                rescale(pseudo_rgb[:, :, 2])))
-
-        # Reset debugging mode
-        params.debug = debug
+        pseudo_rgb = cv2.merge((_rescale(pseudo_rgb[:, :, 0]),
+                                _rescale(pseudo_rgb[:, :, 1]),
+                                _rescale(pseudo_rgb[:, :, 2])))
 
         return pseudo_rgb
 
@@ -278,14 +279,9 @@ class MS_data:
         # Gamma correct pseudo_rgb image
         pseudo_rgb = pseudo_rgb ** (1 / 2.2)
         # Scale each of the channels up to 255
-        debug = params.debug
-        params.debug = None
-        pseudo_rgb = cv2.merge((rescale(pseudo_rgb[:, :, 0]),
-                                rescale(pseudo_rgb[:, :, 1]),
-                                rescale(pseudo_rgb[:, :, 2])))
-
-        # Reset debugging mode
-        params.debug = debug
+        pseudo_rgb = cv2.merge((_rescale(pseudo_rgb[:, :, 0]),
+                                _rescale(pseudo_rgb[:, :, 1]),
+                                _rescale(pseudo_rgb[:, :, 2])))
         return pseudo_rgb
 
     def select(self, wavelength, ms=True):
@@ -304,7 +300,6 @@ class MS_data:
             wavelength_dict=wavelength_dict_new,
             max_wavelength=max(wavelength),
             min_wavelength=min(wavelength),
-            pseudo_rgb=self.pseudo_rgb,
             filename=self.filename,
             metadata=self.metadata
         )
