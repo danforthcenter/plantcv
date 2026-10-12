@@ -56,6 +56,6 @@ def extract_wavelength(spectral_data, wavelength):
                                 lines=spectral_data.lines, interleave=spectral_data.interleave,
                                 wavelength_units=spectral_data.wavelength_units,
                                 array_type="index_" + str(wavelength),
-                                pseudo_rgb=None, filename=spectral_data.filename, default_bands=None)
+                                filename=spectral_data.filename, default_bands=None)
 
     return index_array

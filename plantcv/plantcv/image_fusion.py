@@ -6,7 +6,6 @@ from skimage import img_as_ubyte
 from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.classes import Spectral_data
 from plantcv.plantcv._globals import params
-from plantcv.plantcv.hyperspectral.read_data import _make_pseudo_rgb
 from plantcv.plantcv._debug import _debug
 
 
@@ -70,13 +69,9 @@ def image_fusion(img1, img2, wvs1, wvs2, array_type="multispectral"):
                                 wavelength_dict=wavelength_dict,
                                 samples=c, lines=r, interleave="NA",
                                 wavelength_units="nm", array_type=array_type,
-                                pseudo_rgb=None, filename="NA", default_bands=None)
+                                filename="NA", default_bands=None)
 
-    # Make pseudo-rgb image and replace it inside the class instance object
-    pseudo_rgb = _make_pseudo_rgb(fused_array)
-    fused_array.pseudo_rgb = pseudo_rgb
-
-    _debug(visual=pseudo_rgb, filename=os.path.join(params.debug_outdir, str(params.device) + "_fused_pseudo_rgb.png"))
+    _debug(visual=fused_array.pseudo_rgb(), filename=os.path.join(params.debug_outdir, str(params.device) + "_fused_pseudo_rgb.png"))
 
     return fused_array
 

@@ -5,7 +5,6 @@ import numpy as np
 from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv.classes import Spectral_data
-from plantcv.plantcv.hyperspectral.read_data import _make_pseudo_rgb
 
 
 def calibrate(raw_data, white_reference, dark_reference):
@@ -47,14 +46,14 @@ def calibrate(raw_data, white_reference, dark_reference):
                                max_value=np.amax(cal), min_value=np.amin(cal), d_type=cal.dtype,
                                wavelength_dict=raw_data.wavelength_dict, samples=raw_data.samples, lines=raw_data.lines,
                                interleave=raw_data.interleave, wavelength_units=raw_data.wavelength_units,
-                               array_type=raw_data.array_type, pseudo_rgb=None, filename=raw_data.filename,
+                               array_type=raw_data.array_type, filename=raw_data.filename,
                                default_bands=raw_data.default_bands)
 
-    # Make pseudo-rgb image for the calibrated image
-    calibrated.pseudo_rgb = _make_pseudo_rgb(spectral_array=calibrated)
+    
+    
 
     # Debug visualization
-    _debug(visual=calibrated.pseudo_rgb,
+    _debug(visual=calibrated.pseudo_rgb(),
            filename=os.path.join(params.debug_outdir, str(params.device) + '_calibrated_rgb.png'))
 
     return calibrated

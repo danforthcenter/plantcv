@@ -229,7 +229,7 @@ def read_data(filename, mode="ENVI"):
     if wavelength_units is None:
         wavelength_units = "nm"
 
-        # Create an instance of the spectral_data class
+    # Create an instance of the spectral_data class
     spectral_array = Spectral_data(array_data=array_data,
                                    max_wavelength=float(str(header_dict["wavelength"][-1]).rstrip()),
                                    min_wavelength=float(str(header_dict["wavelength"][0]).rstrip()),
@@ -238,13 +238,13 @@ def read_data(filename, mode="ENVI"):
                                    wavelength_dict=wavelength_dict, samples=int(header_dict["samples"]),
                                    lines=int(header_dict["lines"]), interleave=header_dict["interleave"],
                                    wavelength_units=wavelength_units, array_type="datacube",
-                                   pseudo_rgb=None, filename=filename, default_bands=default_bands,
+                                   filename=filename, default_bands=default_bands,
                                    byte_order=header_dict.get("byte_order", 0),
                                    file_type=header_dict.get("file_type", "ENVI"),
                                    header_offset=header_dict.get("header_offset", 0)
                                    )
-
-    _debug(visual=spectral_array.pseudo_rgb(),
-           filename=os.path.join(params.debug_outdir, str(params.device) + "_pseudo_rgb.png"))
+    if params.debug:
+        _debug(visual=spectral_array.pseudo_rgb(),
+               filename=os.path.join(params.debug_outdir, str(params.device) + "_pseudo_rgb.png"))
 
     return spectral_array
