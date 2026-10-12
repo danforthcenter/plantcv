@@ -10,55 +10,6 @@ from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.transform.rescale import rescale
 
 
-def _ms_make_pseudo_rgb(ms_array):
-    """Create pseudo-rgb image from a multispectral class image
-
-    Parameters:
-    -----------
-        ms_array = MS_data instance
-
-    Returns:
-    --------
-        numpy.ndarray     = Pseudo-rgb image
-    """
-    # Make shorter variable names for data from the spectral class instance object
-    array_data = ms_array.array_data
-    waves = list(ms_array.wavelength_dict)
-
-    max_wavelength = float(ms_array.max_wavelength)
-    min_wavelength = float(ms_array.min_wavelength)
-    # Check range of available wavelength
-    if max_wavelength >= 600 and min_wavelength <= 490:
-        id_red = _find_closest(spectral_array=np.array([float(i) for i in waves]), target=630)
-        id_green = _find_closest(spectral_array=np.array([float(i) for i in waves]), target=540)
-        id_blue = _find_closest(spectral_array=np.array([float(i) for i in waves]), target=480)
-
-        pseudo_rgb = cv2.merge((array_data[:, :, [id_blue]],
-                                array_data[:, :, [id_green]],
-                                array_data[:, :, [id_red]]))
-    else:
-        # Otherwise take 3 wavelengths, first, middle and last available wavelength
-        id_red = int(len(waves)) - 1
-        id_green = int(id_red / 2)
-        pseudo_rgb = cv2.merge((array_data[:, :, [0]],
-                                array_data[:, :, [id_green]],
-                                array_data[:, :, [id_red]]))
-
-    # Gamma correct pseudo_rgb image
-    pseudo_rgb = pseudo_rgb ** (1 / 2.2)
-    # Scale each of the channels up to 255
-    debug = params.debug
-    params.debug = None
-    pseudo_rgb = cv2.merge((rescale(pseudo_rgb[:, :, 0]),
-                            rescale(pseudo_rgb[:, :, 1]),
-                            rescale(pseudo_rgb[:, :, 2])))
-
-    # Reset debugging mode
-    params.debug = debug
-
-    return pseudo_rgb
-
-
 def _ms_file_matcher(pattern, filelist, ref):
     """Filter a list of file names to match capture groups in a reference name
 
