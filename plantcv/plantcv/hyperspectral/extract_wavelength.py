@@ -3,9 +3,9 @@
 import os
 import numpy as np
 from plantcv.plantcv._globals import params
+from plantcv.plantcv._helpers import _find_closest
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import Spectral_data
-from plantcv.plantcv.hyperspectral.read_data import _find_closest
+from plantcv.plantcv.classes import Spectral_data
 
 
 def extract_wavelength(spectral_data, wavelength):
@@ -56,6 +56,6 @@ def extract_wavelength(spectral_data, wavelength):
                                 lines=spectral_data.lines, interleave=spectral_data.interleave,
                                 wavelength_units=spectral_data.wavelength_units,
                                 array_type="index_" + str(wavelength),
-                                pseudo_rgb=None, filename=spectral_data.filename, default_bands=None)
+                                filename=spectral_data.filename, default_bands=None)
 
     return index_array

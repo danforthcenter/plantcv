@@ -7,7 +7,7 @@ from sklearn.cluster import OPTICS
 from sklearn.preprocessing import StandardScaler
 from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import color_palette
+from plantcv.plantcv.color_palette import color_palette
 
 
 def spatial_clustering(mask, algorithm="DBSCAN", min_cluster_size=5, max_distance=None):

@@ -5,7 +5,7 @@ from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _iterate_analysis, _grayscale_to_rgb, _scale_size
 from plantcv.plantcv.analyze.bound_horizontal import _get_boundary_values, _boundary_img_annotation
 from plantcv.plantcv._globals import params
-from plantcv.plantcv import outputs
+from plantcv.plantcv._globals import outputs
 
 
 def bound_vertical(img, labeled_mask, line_position, n_labels=1, label=None):

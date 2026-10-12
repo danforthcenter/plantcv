@@ -6,7 +6,7 @@ import math
 import os
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _grayscale_to_rgb
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv._globals import params
 
 

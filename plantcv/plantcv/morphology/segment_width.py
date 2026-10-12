@@ -3,7 +3,7 @@
 import os
 import cv2
 import numpy as np
-from plantcv.plantcv import outputs, params
+from plantcv.plantcv._globals import params, outputs
 from plantcv.plantcv._helpers import _scale_size, _dilate
 from plantcv.plantcv._debug import _debug
 

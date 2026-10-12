@@ -3,7 +3,8 @@ import numpy as np
 import math
 from scipy import ndimage
 from skimage import morphology
-from plantcv.plantcv import fatal_error, warn
+from plantcv.plantcv.fatal_error import fatal_error
+from plantcv.plantcv.warn import warn
 from plantcv.plantcv._globals import params
 from plantcv.plantcv.get_kernel import _format_kernel
 import pandas as pd
@@ -998,3 +999,48 @@ def _is_binary(img):
         return True
     # Two distinct values means every pixel equals either the minimum or the maximum
     return not np.any((values != low) & (values != high))
+
+
+def _find_closest(spectral_array, target):
+    """Find index of a target wavelength band in a hyperspectral data instance.
+
+    Parameters:
+    -----------
+    spectral_array : plantcv.Spectral_data,
+        Hyperspectral data instance
+    target         : int,
+        Target wavelength value
+
+    Returns:
+    --------
+    Index : int,
+        index of target wavelength
+    """
+    return np.argmin(np.abs(spectral_array - target))
+
+
+def _rescale(gray_img, min_value=0, max_value=255):
+    """Rescale image.
+
+    Parameters:
+    -----------
+    gray_img  : numpy.ndarray,
+        Grayscale image data
+    min_value : int (optional),
+        new minimum value for range of interest. default = 0
+    max_value : int (optional),
+        new maximum value for range of interest. default = 255
+
+    Returns:
+    rescaled_img : numpy.ndarray,
+        rescaled image
+    """
+    if len(np.shape(gray_img)) != 2:
+        fatal_error("Image is not grayscale")
+    # replace Inf with Nan for compatibility with interpolation
+    gray_finite = np.where(np.isinf(gray_img), np.nan, gray_img)
+
+    rescaled_img = np.interp(gray_finite, (np.nanmin(gray_finite), np.nanmax(gray_finite)), (min_value, max_value))
+    rescaled_img = (rescaled_img).astype('uint8')
+
+    return rescaled_img

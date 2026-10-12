@@ -5,7 +5,8 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import fatal_error, warn
+from plantcv.plantcv.fatal_error import fatal_error
+from plantcv.plantcv.warn import warn
 from plantcv.plantcv._globals import params
 
 

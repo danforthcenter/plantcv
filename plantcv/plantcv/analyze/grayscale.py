@@ -2,7 +2,7 @@
 import os
 import numpy as np
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import params, outputs
+from plantcv.plantcv._globals import params, outputs
 from plantcv.plantcv._helpers import _iterate_objects
 
 

@@ -2,8 +2,8 @@
 import os
 import numpy as np
 import xarray as xr
-from plantcv.plantcv import PSII_data
-from plantcv.plantcv import Spectral_data
+from plantcv.plantcv.classes import PSII_data
+from plantcv.plantcv.classes import Spectral_data
 from skimage.util import img_as_ubyte
 
 
@@ -679,7 +679,7 @@ class SPC:
                                       wavelength_dict=wavelength_dict,
                                       samples=columns, lines=rows, interleave="NA",
                                       wavelength_units="nm", array_type="multispectral",
-                                      pseudo_rgb=rgb, filename="NA", default_bands=None)
+                                      filename="NA", default_bands=None)
             self._spectral = multispec
 
 

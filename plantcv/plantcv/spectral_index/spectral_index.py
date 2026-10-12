@@ -5,10 +5,9 @@ import numpy as np
 import cv2
 from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import warn
-from plantcv.plantcv import Spectral_data, MS_data
-from plantcv.plantcv.transform import rescale
-from plantcv.plantcv.hyperspectral import _find_closest
+from plantcv.plantcv._helpers import _find_closest
+from plantcv.plantcv.warn import warn
+from plantcv.plantcv.classes import Spectral_data, MS_data
 
 
 def ndvi(hsi, distance=20):
@@ -336,12 +335,11 @@ def egi(img, distance=40):
         b = blue.astype(np.float32) / total
         index_array_raw = (2 * g) - r - b
     if type(img) is MS_data:
-        hsi = MS_data(array_data=None, max_wavelength=0, min_wavelength=0, wavelength_dict={},
-                      pseudo_rgb=None, filename=None)
+        hsi = MS_data(array_data=None, max_wavelength=0, min_wavelength=0, wavelength_dict={}, filename=None)
     else:
         hsi = Spectral_data(array_data=None, max_wavelength=0, min_wavelength=0, max_value=255, min_value=0,
                             d_type=np.uint8, wavelength_dict={}, samples=None, lines=None, interleave=None,
-                            wavelength_units=None, array_type=None, pseudo_rgb=None, filename=None, default_bands=None)
+                            wavelength_units=None, array_type=None, filename=None, default_bands=None)
 
     return _package_index(hsi=hsi, raw_index=index_array_raw, method="EGI")
 
@@ -422,12 +420,11 @@ def gli(img, distance=20):
         index_array_raw = (2 * g - r - b) / (2 * g + r + b)
 
     if type(img) is MS_data:
-        hsi = MS_data(array_data=None, max_wavelength=0, min_wavelength=0, wavelength_dict={},
-                      pseudo_rgb=None, filename=None)
+        hsi = MS_data(array_data=None, max_wavelength=0, min_wavelength=0, wavelength_dict={}, filename=None)
     else:
         hsi = Spectral_data(array_data=None, max_wavelength=0, min_wavelength=0, max_value=255, min_value=0,
                             d_type=np.uint8, wavelength_dict={}, samples=None, lines=None, interleave=None,
-                            wavelength_units=None, array_type=None, pseudo_rgb=None, filename=None, default_bands=None)
+                            wavelength_units=None, array_type=None, filename=None, default_bands=None)
 
     return _package_index(hsi=hsi, raw_index=index_array_raw, method="GLI")
 
@@ -470,12 +467,11 @@ def sci(img, distance=40):
         index_array_raw = (r - g) / (r + g)
 
     if type(img) is MS_data:
-        hsi = MS_data(array_data=None, max_wavelength=0, min_wavelength=0, wavelength_dict={},
-                      pseudo_rgb=None, filename=None)
+        hsi = MS_data(array_data=None, max_wavelength=0, min_wavelength=0, wavelength_dict={}, filename=None)
     else:
         hsi = Spectral_data(array_data=None, max_wavelength=0, min_wavelength=0, max_value=255, min_value=0,
                             d_type=np.uint8, wavelength_dict={}, samples=None, lines=None, interleave=None,
-                            wavelength_units=None, array_type=None, pseudo_rgb=None, filename=None, default_bands=None)
+                            wavelength_units=None, array_type=None, filename=None, default_bands=None)
 
     return _package_index(hsi=hsi, raw_index=index_array_raw, method="SCI")
 
@@ -520,12 +516,11 @@ def bgr(img, distance=40):
         index_array_raw = b / g
 
     if type(img) is MS_data:
-        hsi = MS_data(array_data=None, max_wavelength=0, min_wavelength=0, wavelength_dict={},
-                      pseudo_rgb=None, filename=None)
+        hsi = MS_data(array_data=None, max_wavelength=0, min_wavelength=0, wavelength_dict={}, filename=None)
     else:
         hsi = Spectral_data(array_data=None, max_wavelength=0, min_wavelength=0, max_value=255, min_value=0,
                             d_type=np.uint8, wavelength_dict={}, samples=None, lines=None, interleave=None,
-                            wavelength_units=None, array_type=None, pseudo_rgb=None, filename=None, default_bands=None)
+                            wavelength_units=None, array_type=None, filename=None, default_bands=None)
 
     return _package_index(hsi=hsi, raw_index=index_array_raw, method="BGR")
 
@@ -570,12 +565,11 @@ def bgi(img, distance=40):
         index_array_raw = (g - b) / (g + b)
 
     if type(img) is MS_data:
-        hsi = MS_data(array_data=None, max_wavelength=0, min_wavelength=0, wavelength_dict={},
-                      pseudo_rgb=None, filename=None)
+        hsi = MS_data(array_data=None, max_wavelength=0, min_wavelength=0, wavelength_dict={}, filename=None)
     else:
         hsi = Spectral_data(array_data=None, max_wavelength=0, min_wavelength=0, max_value=255, min_value=0,
                             d_type=np.uint8, wavelength_dict={}, samples=None, lines=None, interleave=None,
-                            wavelength_units=None, array_type=None, pseudo_rgb=None, filename=None, default_bands=None)
+                            wavelength_units=None, array_type=None, filename=None, default_bands=None)
 
     return _package_index(hsi=hsi, raw_index=index_array_raw, method="BGI")
 
@@ -1226,14 +1220,6 @@ def _package_index(hsi, raw_index, method):
     index        = plantcv.plantcv.Spectral_data or plantcv.plantcv.MS_data,
         index image as a Spectral_data or MS_data object.
     """
-    # Store debug mode
-    debug = params.debug
-    params.debug = None
-
-    # Resulting array is float 32 from varying natural ranges, transform into uint8 for plotting
-    all_positive = np.add(raw_index, 2 * np.ones(np.shape(raw_index)))
-    scaled = rescale(all_positive)
-
     # Find array min and max values
     obs_max_pixel = float(np.nanmax(raw_index))
     obs_min_pixel = float(np.nanmin(raw_index))
@@ -1245,22 +1231,19 @@ def _package_index(hsi, raw_index, method):
                               lines=hsi.lines, interleave=hsi.interleave,
                               wavelength_units=hsi.wavelength_units,
                               array_type="index_" + method.lower(),
-                              pseudo_rgb=scaled, filename=hsi.filename, default_bands=None,
+                              filename=hsi.filename, default_bands=None,
                               metadata=hsi.metadata)
     elif isinstance(hsi, MS_data):
         index = MS_data(
             array_data=raw_index,
             wavelength_dict={},
             max_wavelength=0, min_wavelength=0,
-            pseudo_rgb=scaled,
             filename=hsi.filename,
             metadata=hsi.metadata
         )
 
-    # Restore debug mode
-    params.debug = debug
-
-    _debug(visual=index.pseudo_rgb,
-           filename=os.path.join(params.debug_outdir, str(params.device) + method + "_index.png"))
+    if params.debug:
+        _debug(visual=index.pseudo_rgb(),
+               filename=os.path.join(params.debug_outdir, str(params.device) + method + "_index.png"))
 
     return index

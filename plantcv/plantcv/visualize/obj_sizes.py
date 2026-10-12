@@ -5,7 +5,7 @@ import cv2
 import random
 import numpy as np
 from plantcv.plantcv._globals import params
-from plantcv.plantcv import color_palette
+from plantcv.plantcv.color_palette import color_palette
 from plantcv.plantcv._debug import _debug
 
 
