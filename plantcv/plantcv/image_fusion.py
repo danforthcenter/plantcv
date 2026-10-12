@@ -71,7 +71,9 @@ def image_fusion(img1, img2, wvs1, wvs2, array_type="multispectral"):
                                 wavelength_units="nm", array_type=array_type,
                                 filename="NA", default_bands=None)
 
-    _debug(visual=fused_array.pseudo_rgb(), filename=os.path.join(params.debug_outdir, str(params.device) + "_fused_pseudo_rgb.png"))
+    _debug(visual=fused_array.pseudo_rgb(),
+           filename=os.path.join(params.debug_outdir,
+                                 str(params.device) + "_fused_pseudo_rgb.png"))
 
     return fused_array
 

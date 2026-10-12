@@ -49,9 +49,6 @@ def calibrate(raw_data, white_reference, dark_reference):
                                array_type=raw_data.array_type, filename=raw_data.filename,
                                default_bands=raw_data.default_bands)
 
-    
-    
-
     # Debug visualization
     _debug(visual=calibrated.pseudo_rgb(),
            filename=os.path.join(params.debug_outdir, str(params.device) + '_calibrated_rgb.png'))
