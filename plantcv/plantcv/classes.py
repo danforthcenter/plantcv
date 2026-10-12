@@ -143,7 +143,7 @@ def _make_no_default_bands_pseudo_rgb(spectral_data):
                                 array_data[:, :, [id_red]]))
     return pseudo_rgb
 
-    
+
 class PSII_data:
     """PSII data class"""
 
