@@ -1,5 +1,6 @@
 # Filter objects based on calculated properties
 import os
+import re
 import numpy as np
 from skimage.measure import label, regionprops
 from plantcv.plantcv import params, fatal_error
@@ -7,7 +8,7 @@ from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _rect_filter, _rect_replace
 
 
-def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area", roi=None):
+def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area", roi=None, scale_size=False):
     """Detect/filter regions in a binary image based on calculated properties.
 
     Parameters
@@ -25,6 +26,11 @@ def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area", roi=None):
         skimage.measure.regionprops.
     roi : plantcv.plantcv.Objects, default None
         Optional region of interest to apply the object property filter within
+    scale_size : bool,
+        Is thresh given in unit other than pixels?
+        If True then params.px_height and params.px_width
+        are used to rescale the given size to pixels from
+        other units.
 
     Returns
     -------
@@ -42,6 +48,11 @@ def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area", roi=None):
         fatal_error("If cut_side is 'in' or 'out' then thresh must be a tuple")
     if cut_side.lower() in ("upper", "lower") and isinstance(thresh, tuple):
         fatal_error("If cut_side is 'upper' or 'lower' then thresh must be an int or float")
+    # if regprop is an area measurement and scale_size then apply rescale
+    thresh_px = thresh
+    if re.search("area", regprop) and scale_size:
+        thresh_px = thresh / (params.px_height * params.px_width)
+
     # subset binary image for ROI
     sub_bin_img = _rect_filter(bin_img, roi=roi)
     # Skip empty masks
@@ -59,7 +70,7 @@ def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area", roi=None):
         # Pull all values and calculate the mean
         valueslist = [getattr(obj, regprop) for obj in obj_measures]
         # Decide which objects pass, all at once
-        passing = _apply_cut_side(cut_side, thresh, np.asarray(valueslist))
+        passing = _apply_cut_side(cut_side, thresh_px, np.asarray(valueslist))
         # Index the lookup table by label id, Label 0 is the background and is left False.
         keep = np.zeros(int(labeled_img.max()) + 1, dtype=bool)
         keep[np.array([obj.label for obj in obj_measures], dtype=np.int64)] = passing
@@ -77,7 +88,7 @@ def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area", roi=None):
     filtered_mask = _rect_replace(bin_img, sub_filtered_mask, roi)
 
     _debug(visual=filtered_mask, filename=os.path.join(params.debug_outdir,
-                                                       f"{params.device}_filter_mask_{regprop}_{thresh}.png"))
+                                                       f"{params.device}_filter_mask_{regprop}_{thresh_px}.png"))
     return filtered_mask
 
 

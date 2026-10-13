@@ -4,7 +4,7 @@ Calculates properties of objects in a binary image.
 Keeps objects that are either above, below, within, or outside a specified range of values for a specified property.
 When debug set to "plot," also prints the min, max, and mean of the specified property.
 
-**plantcv.filters.obj_props**(*bin_img, cut_side = "upper", thresh=0, regprop="area", roi=None*)
+**plantcv.filters.obj_props**(*bin_img, cut_side = "upper", thresh=0, regprop="area", roi=None, scale_size=False*)
 
 **returns** filtered_mask
 
@@ -12,8 +12,9 @@ When debug set to "plot," also prints the min, max, and mean of the specified pr
     - bin_img - Binary image containing the connected regions to consider
     - cut_side - "upper", "lower", "in", or "out". "upper" and "lower" specify the side to keep when objects are divided by the "thresh" value, "in" and "out" specify to keep things in or out of a range of values, in which case thresh must be a tuple.
     - thresh - Threshold for keeping objects as an int, float, or tuple. Floats or Ints are used for "upper" and "lower" cut_side, tuples are used for "in" and "out". 
-    - regprop - Which object property to filter on
+    - regprop - Which [object property](https://scikit-image.org/docs/stable/api/skimage.measure.html#skimage.measure.regionprops) to filter on
 	- roi - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to apply this function. (default = None, which uses the entire image)
+	- scale_size - Boolean, is the threshold given in units other than pixels? Defaults to False, if True then `pcv.params.px_height` and `pcv.params.px_width` are used to rescale the given threshold to pixels internally. This is only used with area-type properities.
 - **Context:**
     - Used to isolate objects of interest in a binary image based on their features. The output mask can be used for further analysis.
 - **Example use:**

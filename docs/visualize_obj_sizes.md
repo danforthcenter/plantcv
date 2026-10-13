@@ -2,7 +2,7 @@
 
 This function plots separate objects as different colors and annotates the largest objects with their respective sizes. 
 
-**plantcv.visualize.obj_sizes**(*img, mask, num_objects=100*)
+**plantcv.visualize.obj_sizes**(*img, mask, num_objects=100, scale_size=False*)
 
 **returns** plotting_img 
 
@@ -10,12 +10,13 @@ This function plots separate objects as different colors and annotates the large
     - img         - RGB or grayscale image data for plotting annotations.
     - mask        - Binary mask made from selected contours.
     - num_objects - Optional parameter to limit the number of objects that will get annotated, default `num_objects=100`).
+	- scale_size - Boolean, should the size be measured in units other than pixels? Defaults to False, if True then `pcv.params.px_height` and `pcv.params.px_width` are used to calculate size in non-pixel units (mm^2, etc).
 
 - **Context:**
     - Used to annotate object sizes in a binary mask. This visualization aims to streamline the workflow building process, 
     especially while deciding the `size` threshold for a [fill](fill.md) step.  
 - **Example use:**
-    - Below 
+    - Below
 
 **Original image:**
 
