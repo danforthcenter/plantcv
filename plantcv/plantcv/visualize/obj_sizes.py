@@ -9,22 +9,25 @@ from plantcv.plantcv import color_palette
 from plantcv.plantcv._debug import _debug
 
 
-def obj_sizes(img, mask, num_objects=100):
+def obj_sizes(img, mask, num_objects=100, scale_size=False):
     """
     Label the size of objects in an image.
 
-    Inputs:
-    img          = RGB or grayscale image data
-    mask         = Binary mask made from selected contours
-    num_objects  = Optional parameter to limit the number of objects that will get annotated.
+    Parameters:
+    -----------
+    img          : numpy.ndarray,
+        RGB or grayscale image data
+    mask         : numpy.ndarray,
+        Binary mask made from selected contours
+    num_objects  : int,
+        Optional parameter to limit the number of objects that will get annotated.
+    scale_size   : bool,
+        Should size be labeled in a unit other than pixels?
 
     Returns:
-    plotting_img = Plotting image with objects labeled by area
-
-    :param img: numpy.ndarray
-    :param mask: numpy.ndarray
-    :param num_objects: int
-    :return plotting_img: numpy.ndarray
+    --------
+    plotting_img : numpy.ndarray,
+        Plotting image with objects labeled by area
     """
     plotting_img = np.copy(img)
     # Convert grayscale images to color
@@ -39,6 +42,7 @@ def obj_sizes(img, mask, num_objects=100):
     id_objects = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2]
     # Function sorts smallest to largest so keep the last X objects listed
     # sorted_objects = sorted_objects[len(sorted_objects) - num_objects: len(sorted_objects)]
+
     sorted_objects = sorted(id_objects, key=cv2.contourArea)
     # Reverse the sorted list to order contours from largest to smallest
     sorted_objects.reverse()
@@ -50,6 +54,10 @@ def obj_sizes(img, mask, num_objects=100):
     label_coord_y = []
     area_vals = []
 
+    area_rescale = 1
+    if scale_size:
+        area_rescale = 1 / (params.px_height * params.px_width)
+
     for i, contour in enumerate(sorted_objects):
         # Break out of the for loop once the number of objects have been plotted
         if i >= num_objects:
@@ -59,7 +67,8 @@ def obj_sizes(img, mask, num_objects=100):
         # Skip iteration if contour area is zero
         # This is needed because cv2.contourArea can be > 0 while moments area is 0.
         if m['m00'] != 0:
-            area_vals.append(m['m00'])
+            area = m["m00"] * area_rescale
+            area_vals.append(area)
             label_coord_x.append(int(m["m10"] / m["m00"]))
             label_coord_y.append(int(m["m01"] / m["m00"]))
             # Fill in objects with color
