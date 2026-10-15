@@ -21,8 +21,8 @@ def etr(actinic_light, psi_psii_ratio=0.5):
     """
     obs = outputs.observations
     for label, _ in obs.items():
-        labs = [label2 for label2, _ in obs[label].items() if re.search("yii_mean.*[fqfm|t1]$", label2)]
-        labs2 = [label2 for label2, _ in obs[label].items() if re.search("yii_median.*[fqfm|t1]$", label2)]
+        labs = [label2 for label2, _ in obs[label].items() if re.search(r"yii_mean.*_fqfm$", label2)]
+        labs2 = [label2 for label2, _ in obs[label].items() if re.search(r"yii_median.*_fqfm$", label2)]
         aph_labs = [label3 for label3, _ in obs[label].items() if re.search("alphaL", label3)]
         if len(labs) < 1:
             fatal_error("YII mean data must be present in outputs," +
