@@ -1,7 +1,12 @@
 # PlantCV classes
+import os
 import cv2
+import json
+import datetime
 import numpy as np
+from importlib.metadata import version
 from plantcv.plantcv.annotate.points import _find_closest_pt
+from plantcv.plantcv.coco.coco_from_mask import _coco_annotation_from_mask
 import matplotlib.pyplot as plt
 from math import floor
 
@@ -216,3 +221,151 @@ class MS_data:
             metadata=self.metadata
         )
         return sub_ms
+
+
+class COCO:
+    """PlantCV COCO data class"""
+
+    def __init__(self, mask=None, **kwargs):
+        # Define which keys are for each coco field
+        info_fields = ["description", "datetime", "date", "time"]
+        license_fields = ["id", "name", "url"]
+        image_anno_fields = ["image_id", "file_name", "date_captured", "iscrowd", "category_id"]
+
+        info_kwargs = {k.lower(): v for k, v in kwargs.items() if k.lower() in info_fields}
+        info_kwargs["plantcv_version"] = version("plantcv")
+        run_datetime = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        info_kwargs["plantcv_run_date"] = run_datetime
+        license_kwargs = {k.lower(): v for k, v in kwargs.items() if k.lower() in license_fields}
+
+        licenses = []
+        if license_kwargs:
+            licenses = [license_kwargs]
+
+        self._info = [info_kwargs]
+        self._license = licenses
+        self._images = []
+        self._annotations = []
+
+        if mask is not None:
+            image_kwargs = {k.lower(): v for k, v in kwargs.items() if k.lower() in image_anno_fields}
+            self.add_record(mask=mask, info=None, rights=None, **image_kwargs)
+
+
+    def clear(self):
+        """Clear all coco data"""
+        self._info = []
+        self._license = []
+        self._images = []
+        self._annotations = []
+
+    @property
+    def info(self):
+        """Get info value"""
+        if self._info is None:
+            self._info = []
+        return self._info
+
+    @info.setter
+    def info(self, new):
+        """Set new info value"""
+        self._info = new
+
+    @property
+    def license(self):
+        """Get license value"""
+        if self._license is None:
+            self._license = []
+        return self._license
+
+    @license.setter
+    def license(self, new):
+        """Set new license value"""
+        self._license = new
+
+    @property
+    def images(self):
+        """Get images value"""
+        if self._images is None:
+            self._images = []
+        return self._images
+
+    @images.setter
+    def images(self, new):
+        """Set new images value"""
+        self._images = new
+
+    @property
+    def annotations(self):
+        """Get annotations value"""
+        #if self._annotations is None:
+        #    self._annotations = []
+        return self._annotations
+
+    @annotations.setter
+    def annotations(self, new):
+        """Set new annotations value"""
+        self._annotations = new
+
+    def _update_list_field(self, attr, new):
+        """Update a list field to update existingvalues or append new values"""
+        existing = getattr(self, attr)
+        which_match = [i for i, v in enumerate(existing) if bool(set(v.items()) & set(new.items()))]
+        if which_match:
+            for i in which_match:
+                existing[i] = existing[i] | new
+        else:
+            existing.append(new)
+        setattr(self, attr, existing)
+
+    def add_record(self, mask=None, info=None, rights=None, **kwargs):
+        """Add an image and any appropriate annotations
+
+        Parameters
+        ----------
+        mask : numpy.ndarray,
+            binary or labelled mask.
+        info : dict,
+            new key: value pairs to add to the info dictionary
+        rights : dict,
+            new key: value pairs to add to the license list of dictionaries.
+            If any key: value pairs are duplicated then 
+        """
+        if info is not None:
+            self.info = self.info[0] | info
+
+        if rights is not None:
+            self._update_list_field(attr="license", new=rights)
+
+        if mask is not None:
+            new_annotation, new_image = _coco_annotation_from_mask(self, mask, **kwargs)
+            self.annotations.append(new_annotation)
+            self.images.append(new_image)
+
+    def save(self, filename, mode="a"):
+        """Save COCO data
+
+        Parameters
+        ----------
+        filename : str,
+            Name of file to save. If file exists then data will be appended.
+        mode : str,
+            "a" or "w", for "append" or "write".
+            If "a" then an existing file will be appended to if possible.
+        """
+        # if file already exists then append/merge records
+        if os.path.isfile(filename) and mode.lower() == "a":
+            with open(filename, 'r') as f:
+                existing_data = json.load(f)
+                # for info this is a single dict, so overwriting may happen
+                self.info= existing_data["info"] | self.info
+                # update license, images, and annotations with update method
+                self._update_list_field(attr="license", new=existing_data["license"])
+                self._update_list_field(attr="images", new=existing_data["images"])
+                self._update_list_field(attr="annotations", new=existing_data["annotations"])
+
+        with open(filename, mode='w') as fp:
+            content = vars(self)
+            content = {k.strip("_"): v for k, v in content.items()}
+            # Save the data in JSON format with indentation
+            json.dump(obj=content, fp=fp, indent=4)

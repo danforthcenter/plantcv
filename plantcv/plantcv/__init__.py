@@ -9,6 +9,7 @@ from plantcv.plantcv.classes import PSII_data
 from plantcv.plantcv.classes import Point
 from plantcv.plantcv.classes import Objects
 from plantcv.plantcv.classes import MS_data
+from plantcv.plantcv.classes import COCO
 
 
 # Initialize an instance of the Params and Outputs class with default values
