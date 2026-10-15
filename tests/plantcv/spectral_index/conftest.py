@@ -1,7 +1,9 @@
-import pytest
 import os
+import pytest
 import matplotlib
+import numpy as np
 import pickle as pkl
+from plantcv.plantcv.classes import MS_data
 
 # Disable plotting
 matplotlib.use("Template")
@@ -19,6 +21,16 @@ class SpectralIndexTestData:
         """Load PlantCV Spectral_data pickled object."""
         with open(self.hsi_file, "rb") as fp:
             return pkl.load(fp)
+
+    def make_ms_array(self, wavelengths):
+        """Make an MS data object on the fly"""
+        array_data = np.stack([np.ones((10, 10)) for i in wavelengths], axis=-1)
+        wavelength_dict = {k: i for i, k in enumerate(wavelengths)}
+        self.array_data = MS_data(array_data=array_data, wavelength_dict=wavelength_dict,
+                                  max_wavelength=max(wavelengths),
+                                  min_wavelength=min(wavelengths),
+                                  pseudo_rgb=None, filename="test")
+        return self.array_data
 
 
 @pytest.fixture(scope="session")

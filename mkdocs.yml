@@ -28,6 +28,7 @@ nav:
         - 'Plot Image': plot_image.md
         - 'Read Image': read_image.md
         - 'Read Bayer Raw Image': read_bayer.md
+        - 'Read Multispectral Data': multispec_read_ms.md
       - 'Analysis Methods':
         - 'Analyze Alpha': analyze_alphaL.md
         - 'Analyze Color': analyze_color2.md
@@ -43,6 +44,7 @@ nav:
         - 'Analyze YII': analyze_yii.md
         - 'Analyze NPQ': analyze_npq.md
         - 'Analyze ETR': analyze_etr.md
+        - 'Analyze Radial Average': analyze_radial_percentile.md
       - 'Annotation Tools':
           - 'Points': Points.md
       - 'Apply Mask': apply_mask.md
@@ -131,6 +133,7 @@ nav:
         - 'Segment Tangent Angle': segment_tangent_angle.md
         - 'Skeletonize': skeletonize.md
         - 'Segment Width': segment_width.md
+      - 'Multispectral Data Class': ms_data.md
       - 'Naive Bayes Classifier': naive_bayes_classifier.md
       - 'Objects Class': objects.md
       - 'Opening': opening.md

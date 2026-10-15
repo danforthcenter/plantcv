@@ -2,12 +2,12 @@
 
 This function reads a dataset of images as a list of paths.
 
-**plantcv.io.read_dataset**(*source_path, pattern='', sort=True*)
+**plantcv.io.read_dataset**(*img_dir, pattern='', sort=True*)
 
 **returns** image_dataset
 
 - **Parameters:**
-    - source_path - Path to the directory of images
+    - img_dir - Path to the directory of images
     - pattern     - Optional, the function returns only the paths where the filename contains the pattern.
     - sort        - True by default, sorts the paths alphabetically
 
@@ -21,6 +21,8 @@ This function reads a dataset of images as a list of paths.
 ```python
 from plantcv import plantcv as pcv
 
-image_dataset = pcv.io.read_dataset(source_path='./data/', pattern='color')
+image_dataset = pcv.io.read_dataset(img_dir='./data/', pattern='color')
 
 ```
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/io/read_dataset.py)
