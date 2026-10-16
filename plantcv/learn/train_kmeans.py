@@ -75,7 +75,7 @@ def train_kmeans(img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=1
     return fitted
 
 
-def _read_by_mode(path, mode):
+def _read_by_mode(path, mode=None):
     """Helper function to reduce complexity in training K-means
 
     Parameters
@@ -92,6 +92,8 @@ def _read_by_mode(path, mode):
     """
     if not mode:
         img = cv2.imread(path, -1)
+        if len(img.shape) == 3 and img.shape[2] == 4:  # rgba
+            img = img[:, :, :3]
     elif mode.upper() == "SPECTRAL":
         debug = params.debug
         params.debug = None

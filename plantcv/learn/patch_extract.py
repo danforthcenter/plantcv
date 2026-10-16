@@ -26,9 +26,6 @@ def _patch_extract(img, patch_size=10, sigma=5, sampling=None, seed=1):
     # Gaussian blur
     if len(img.shape) == 2:
         img_blur = np.round(gaussian(img, sigma=sigma)*255).astype(np.uint16)
-    elif len(img.shape) == 3 and img.shape[2] == 4:  # rgba
-        img = img[:, :, :3]  # removes alpha channel
-        img_blur = np.round(gaussian(img, sigma=sigma, channel_axis=2)*255).astype(np.uint16)
     elif len(img.shape) == 3 and img.shape[2] >= 3:  # rgb or multi/hyperspec
         img_blur = np.round(gaussian(img, sigma=sigma, channel_axis=2)*255).astype(np.uint16)
 
