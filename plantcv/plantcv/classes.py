@@ -330,7 +330,7 @@ class COCO:
         self._categories = new
 
     def _update_list_field(self, attr, new):
-        """Update a list field to update existingvalues or append new values"""
+        """Update a list field to update existing values or append new values"""
         existing = getattr(self, attr)
         which_match = [i for i, v in enumerate(existing) if bool(set(v.items()) & set(new.items()))]
         if which_match:
@@ -351,7 +351,8 @@ class COCO:
             new key: value pairs to add to the info dictionary
         rights : dict,
             new key: value pairs to add to the license list of dictionaries.
-            If any key: value pairs are duplicated then 
+            If any key: value pairs are duplicated then the dictionary is updated
+            with any of the new values.
         """
         if info is not None:
             self.info = self.info | info
@@ -383,7 +384,7 @@ class COCO:
             with open(filename, 'r') as f:
                 existing_data = json.load(f)
                 # for info this is a single dict, so overwriting may happen
-                self.info= existing_data["info"] | self.info
+                self.info = existing_data["info"] | self.info
                 # update license, images, and annotations with update method
                 self._update_list_field(attr="license", new=existing_data["license"])
                 self._update_list_field(attr="images", new=existing_data["images"])
