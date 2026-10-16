@@ -98,6 +98,7 @@ __all__ = [
     'Point',
     "Objects",
     "MS_data",
+    "COCO",
     "Params",
     "Outputs",
     "params",

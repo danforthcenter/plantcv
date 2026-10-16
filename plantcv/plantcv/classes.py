@@ -408,4 +408,3 @@ class COCO:
             data = json.load(fp)
             for key, value in data.items():
                 object.__setattr__(self, key, value)
-        
