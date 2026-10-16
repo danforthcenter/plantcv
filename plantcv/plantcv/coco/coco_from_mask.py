@@ -37,7 +37,7 @@ def _coco_annotation_from_mask(coco, mask, **kwargs):
     images["width"] = w
     # make new annotation dict
     # by default assume that masks are of "plant" objects
-    annotation_starter = {"category_id": kwargs.get("category_id", "plant"),
+    annotation_starter = {"category_id": kwargs.get("category_id", 1),
                           "iscrowd": kwargs.get("iscrowd", 0),
                           "image_id": image_id}
     # building this for object detection to start, I might end up
