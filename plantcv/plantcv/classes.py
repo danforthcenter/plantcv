@@ -230,7 +230,8 @@ class COCO:
         # Define which keys are for each coco field
         info_fields = ["description", "datetime", "date", "time"]
         license_fields = ["id", "name", "url"]
-        image_anno_fields = ["image_id", "file_name", "date_captured", "iscrowd", "category_id"]
+        image_anno_fields = ["image_id", "file_name", "date_captured",
+                             "license", "iscrowd", "category_id"]
 
         info_kwargs = {k.lower(): v for k, v in kwargs.items() if k.lower() in info_fields}
         info_kwargs["plantcv_version"] = version("plantcv")
@@ -242,15 +243,33 @@ class COCO:
         if license_kwargs:
             licenses = [license_kwargs]
 
-        self._info = [info_kwargs]
+        self._info = info_kwargs
         self._license = licenses
         self._images = []
         self._annotations = []
+        self._categories = []
 
         if mask is not None:
             image_kwargs = {k.lower(): v for k, v in kwargs.items() if k.lower() in image_anno_fields}
-            self.add_record(mask=mask, info=None, rights=None, **image_kwargs)
+            self.add_record(mask=mask, info=None, rights=None,
+                            category={"id": 1, "name": "plant"},
+                            **image_kwargs)
 
+    def __str__(self):
+        """string representation of COCO object"""
+        content = vars(self)
+        content = {k.strip("_"): v for k, v in content.items()}
+        return "plantcv.plantcv.COCO object: " + str(content)
+
+    def __repr__(self):
+        """string representation of COCO object"""
+        content = vars(self)
+        content = {k.strip("_"): v for k, v in content.items()}
+        content["images"] = "{" + str(len(content["images"])) + " images...}"
+        content["annotations"] = "{" + str(
+            int(np.sum([len(d) for d in content["annotations"]]))
+        ) + " object annotations...}"
+        return "plantcv.plantcv.COCO object:\n" + json.dumps(content, sort_keys=True, indent=4)
 
     def clear(self):
         """Clear all coco data"""
@@ -258,12 +277,11 @@ class COCO:
         self._license = []
         self._images = []
         self._annotations = []
+        self._categories = []
 
     @property
     def info(self):
         """Get info value"""
-        if self._info is None:
-            self._info = []
         return self._info
 
     @info.setter
@@ -274,8 +292,6 @@ class COCO:
     @property
     def license(self):
         """Get license value"""
-        if self._license is None:
-            self._license = []
         return self._license
 
     @license.setter
@@ -286,8 +302,6 @@ class COCO:
     @property
     def images(self):
         """Get images value"""
-        if self._images is None:
-            self._images = []
         return self._images
 
     @images.setter
@@ -298,14 +312,22 @@ class COCO:
     @property
     def annotations(self):
         """Get annotations value"""
-        #if self._annotations is None:
-        #    self._annotations = []
         return self._annotations
 
     @annotations.setter
     def annotations(self, new):
         """Set new annotations value"""
         self._annotations = new
+
+    @property
+    def categories(self):
+        """Get categories value"""
+        return self._categories
+
+    @categories.setter
+    def categories(self, new):
+        """Set new categories value"""
+        self._categories = new
 
     def _update_list_field(self, attr, new):
         """Update a list field to update existingvalues or append new values"""
@@ -318,7 +340,7 @@ class COCO:
             existing.append(new)
         setattr(self, attr, existing)
 
-    def add_record(self, mask=None, info=None, rights=None, **kwargs):
+    def add_record(self, mask=None, info=None, rights=None, category=None, **kwargs):
         """Add an image and any appropriate annotations
 
         Parameters
@@ -332,10 +354,13 @@ class COCO:
             If any key: value pairs are duplicated then 
         """
         if info is not None:
-            self.info = self.info[0] | info
+            self.info = self.info | info
 
         if rights is not None:
             self._update_list_field(attr="license", new=rights)
+
+        if category is not None:
+            self._update_list_field(attr="categories", new=category)
 
         if mask is not None:
             new_annotation, new_image = _coco_annotation_from_mask(self, mask, **kwargs)
@@ -369,3 +394,17 @@ class COCO:
             content = {k.strip("_"): v for k, v in content.items()}
             # Save the data in JSON format with indentation
             json.dump(obj=content, fp=fp, indent=4)
+
+    def load(self, filename):
+        """Load COCO data
+
+        Parameters
+        ----------
+        filename : str,
+            Name of file to read from. Should be in COCO format.
+        """
+        with open(filename, "r") as fp:
+            data = json.load(fp)
+            for key, value in data.items():
+                object.__setattr__(self, key, value)
+        
