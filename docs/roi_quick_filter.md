@@ -18,6 +18,9 @@ Filter objects (connected regions of non-zero pixels) within a region of interes
 - **Example use:**
     - Below
 
+!!! warning
+    `plantcv.plantcv.roi.quick_filter` has been merged into `plantcv.plantcv.roi.filter` in the development branch and will be removed in the version 5 release.
+
 **RGB image**
 
 ![Screenshot](img/documentation_images/roi_filter/rgb_img.png)
