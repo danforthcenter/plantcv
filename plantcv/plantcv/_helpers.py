@@ -998,7 +998,7 @@ def _is_binary(img, dimCheck=False, raiseError=False):
     result = None
     dimension_okay = True
     if dimCheck:
-        dimension_okay = len(np.shape(img)) <= 2
+        dimension_okay = len(np.shape(img)) == 2
     values = np.asarray(img)
     if values.size == 0:
         result = True and dimension_okay
