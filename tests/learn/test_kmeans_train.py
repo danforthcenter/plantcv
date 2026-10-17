@@ -53,6 +53,7 @@ def test_train_kmeans_spectral(test_data, tmp_path, monkeypatch):
     train_kmeans_module = importlib.import_module("plantcv.learn.train_kmeans")
     array_data = cv2.imread(test_data.small_rgb_img)
     calls = []
+    
     # define a dummy function to return that object
     def fake_read(path, mode):
         """patch function for reading HSI data"""
