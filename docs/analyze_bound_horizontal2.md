@@ -12,7 +12,7 @@ best if the pot size/position of the plant remains relatively constant.
     - img - RGB or grayscale image data for plotting
     - labeled_mask - Labeled mask of objects (32-bit) or binary mask (8-bit).
     - line_position - position of boundary line (a value of 0 would draw the line through the top of the image)
-	- simplify - Should objects be labeled only by being left/right of the boundary or should separate objects have unique labels on each side of the boundary (default = True, which will typically return 2 labeled objects).
+	- simplify - Should objects be labeled only by being left/right of the boundary or should separate objects that have unique labels on each side of the boundary (default = True, which will typically return 2 labeled objects).
     - n_labels - Total number expected individual objects (default = 1).
     - label - Optional label parameter, modifies the variable name of observations recorded. Can be a prefix or list (default = pcv.params.sample_label).
 - **Context:**
@@ -37,7 +37,7 @@ pcv.params.debug = "plot"
 pcv.params.sample_label = "plant"
 
 # Set Boundary Line    
-boundary_image = pcv.analyze.bound_horizontal(img=img, labeled_mask=bin_mask, line_position=300, n_labels=1)
+boundary_image = pcv.analyze.bound_horizontal(img=img, labeled_mask=bin_mask, line_position=300, simplify = True, n_labels=1)
 
 # Access data stored out from analyze_bound_horizontal
 percent_area_below_reference = pcv.outputs.observations['plant_1']['percent_area_below_reference']['value']

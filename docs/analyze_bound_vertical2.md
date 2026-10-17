@@ -12,7 +12,7 @@ best if the pot size/position of the plant remains relatively constant.
     - img - RGB or grayscale image data for plotting
     - labeled_mask - Labeled mask of objects (32-bit) or binary mask (8-bit).
     - line_position - position of boundary line (a value of 0 would draw the line through the left of the image)
-	- simplify - Should objects be labeled only by being above/below the boundary or should separate objects have unique labels on each side of the boundary (default = True, which will typically return 2 labeled objects).
+	- simplify - Should objects be labeled only by being above/below the boundary or should separate objects that have unique labels on each side of the boundary (default = True, which will typically return 2 labeled objects).
     - n_labels - Total number expected individual objects (default = 1).
     - label - Optional label parameter, modifies the variable name of observations recorded. Can be a prefix or list (default = pcv.params.sample_label).
 - **Context:**
@@ -37,7 +37,7 @@ pcv.params.debug = "plot"
 pcv.params.sample_label = "plant"
 
 # Set Boundary Line    
-boundary_mask = pcv.analyze.bound_vertical(img=img, labeled_mask=bin_mask, line_position=1000, n_labels=1)
+boundary_mask = pcv.analyze.bound_vertical(img=img, labeled_mask=bin_mask, line_position=1000, simplify= True, n_labels=1)
 
 # Access data stored out from analyze_bound_vertical
 area_right_reference = pcv.outputs.observations['plant_1']['area_right_reference']['value']
