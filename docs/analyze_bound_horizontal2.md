@@ -37,7 +37,7 @@ pcv.params.debug = "plot"
 pcv.params.sample_label = "plant"
 
 # Set Boundary Line    
-boundary_image = pcv.analyze.bound_horizontal(img=img, labeled_mask=bin_mask, line_position=300, simplify = True, n_labels=1)
+boundary_image = pcv.analyze.bound_horizontal(img=img, labeled_mask=bin_mask, line_position=300, simplify=True, n_labels=1)
 
 # Access data stored out from analyze_bound_horizontal
 percent_area_below_reference = pcv.outputs.observations['plant_1']['percent_area_below_reference']['value']

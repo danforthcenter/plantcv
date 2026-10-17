@@ -37,7 +37,7 @@ pcv.params.debug = "plot"
 pcv.params.sample_label = "plant"
 
 # Set Boundary Line    
-boundary_mask = pcv.analyze.bound_vertical(img=img, labeled_mask=bin_mask, line_position=1000, simplify= True, n_labels=1)
+boundary_mask = pcv.analyze.bound_vertical(img=img, labeled_mask=bin_mask, line_position=1000, simplify=True, n_labels=1)
 
 # Access data stored out from analyze_bound_vertical
 area_right_reference = pcv.outputs.observations['plant_1']['area_right_reference']['value']
