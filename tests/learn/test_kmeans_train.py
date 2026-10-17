@@ -53,6 +53,7 @@ def test_train_kmeans_spectral(test_data, tmp_path, monkeypatch):
     train_kmeans_module = importlib.import_module("plantcv.learn.train_kmeans")
     array_data = cv2.imread(test_data.small_rgb_img)
     calls = []
+    
     # define a dummy function to return that object
     def fake_read(path, mode):
         """patch function for reading HSI data"""
@@ -74,3 +75,13 @@ def test_read_by_mode(test_data):
     """Test for PlantCV."""
     img = _read_by_mode(test_data.envi_sample_data, mode="spectral")
     assert isinstance(img, np.ndarray)
+
+
+def test_read_by_mode_drop_rgba_alpha(tmpdir):
+    """Test for PlantCV."""
+    cache = tmpdir.mkdir("cache")
+    rgba = np.random.randint(0, 255, (20, 20, 4))
+    imgname = os.path.join(cache, "img.png")
+    cv2.imwrite(imgname, rgba)
+    img = _read_by_mode(imgname, None)
+    assert np.shape(img) == (20, 20, 3)
