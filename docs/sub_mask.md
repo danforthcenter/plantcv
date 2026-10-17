@@ -20,14 +20,26 @@ Sample circular regions from a mask.
 - **Example use:**
     - Below
 
-
-
 ```python
 
 from plantcv import plantcv as pcv
 
-spot_masks = pcv.sub_mask(img, mask, num_masks=2, radius=5)
+img, path, file = pcv.readimage("./maize.png")
+
+mask, path1, file1 = pcv.readimage("./binary_mask.png")
 
 ```
+![Screenshot](img/documentation_images/sub_mask/maizepic.png)
+
+
+![Screenshot](img/documentation_images/sub_mask/maizemask.png)
+
+
+```python
+
+spot_masks = pcv.sub_mask(img, mask, num_masks=10, radius=20)
+
+```
+![Screenshot](img/documentation_images/sub_mask/submask.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/submask.py)
