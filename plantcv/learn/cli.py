@@ -62,6 +62,8 @@ def options():
     nbm_cmd.add_argument("-o", "--out", help="Trained model output path and filename.", required=True)
     nbm_cmd.add_argument("-r", "--prefix", help="File prefix for training images.", required=False, default="")
     nbm_cmd.add_argument("-p", "--patch_size", help="Patch size.", required=False, type=int, default=10)
+    nbm_cmd.add_argument("-m", "--mode", help="Mode, None for RGB or grayscale, 'spectral' for multispectral",
+                         required=False, default=None)
     nbm_cmd.add_argument("-s", "--sigma", help="Severity of Gaussian blur, sigma.", required=False, type=int,
                          default=5)
     nbm_cmd.add_argument("--sampling", help="Fraction of pixels sampled per image for patch extraction",
