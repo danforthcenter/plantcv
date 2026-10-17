@@ -3,7 +3,8 @@ import numpy as np
 import math
 from scipy import ndimage
 from skimage import morphology
-from plantcv.plantcv import fatal_error, warn
+from plantcv.plantcv.fatal_error import fatal_error
+from plantcv.plantcv.warn import warn
 from plantcv.plantcv._globals import params
 from plantcv.plantcv.get_kernel import _format_kernel
 import pandas as pd

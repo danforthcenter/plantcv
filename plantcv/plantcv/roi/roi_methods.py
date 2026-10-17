@@ -7,12 +7,15 @@ import pandas as pd
 from sklearn.mixture import GaussianMixture
 from skimage.measure import label
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import color_palette
+from plantcv.plantcv.color_palette import color_palette
 from plantcv.plantcv._helpers import _cv2_findcontours
 from plantcv.plantcv._helpers import _roi_filter
 from plantcv.plantcv._helpers import _hough_circle
 from plantcv.plantcv._helpers import _rect_filter, _rect_replace
-from plantcv.plantcv import fatal_error, warn, params, Objects
+from plantcv.plantcv._globals import params
+from plantcv.plantcv.classes import Objects
+from plantcv.plantcv.fatal_error import fatal_error
+from plantcv.plantcv.warn import warn
 
 
 # Create an ROI from a binary mask
