@@ -5,9 +5,10 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 from math import ceil, floor
-from plantcv.plantcv import params, outputs, fatal_error
+from plantcv.plantcv._globals import params, outputs
+from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv.photosynthesis import reassign_frame_labels
+from plantcv.plantcv.photosynthesis.reassign_frame_labels import reassign_frame_labels
 
 
 def npq(ps, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto",
