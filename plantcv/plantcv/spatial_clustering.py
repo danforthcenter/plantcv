@@ -56,6 +56,10 @@ def spatial_clustering(mask, algorithm="DBSCAN", min_cluster_size=5, max_distanc
     # check mask
     _ = _is_binary(mask, True, True)
     # Get all x, y coordinates of white pixels in the mask
+    if not np.any(mask):
+        clust_img = np.zeros((*mask.shape, 3), dtype=np.uint8)
+        _debug(visual=clust_img, filename=os.path.join(params.debug_outdir, f"{params.device}_{al_upper}_clusters.png"))
+        return clust_img, []
     x, y = np.where(mask == np.max(mask))
     zipped = np.column_stack((x, y))
 
