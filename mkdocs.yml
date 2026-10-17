@@ -53,6 +53,7 @@ nav:
       - 'Canny Edge Detection': canny_edge_detect.md
       - 'Circular Sub Masks': sub_mask.md
       - 'Closing': closing.md
+      - 'COCO annotations': coco_class.md
       - 'Color Palette': color_palette.md
       - 'Colorspace Conversion':
         - 'RGB to Gray': rgb2gray.md
