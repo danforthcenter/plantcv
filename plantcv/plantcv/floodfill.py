@@ -3,8 +3,7 @@
 import numpy as np
 import os
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _rect_filter, _rect_replace
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv._helpers import _rect_filter, _rect_replace, _is_binary
 from plantcv.plantcv._globals import params
 from skimage.segmentation import flood_fill
 
@@ -29,9 +28,7 @@ def floodfill(bin_img, points, value=0, roi=None):
     :return filled_img: numpy.ndarray
     """
     # Make sure the image is binary
-    if len(np.shape(bin_img)) != 2 or len(np.unique(bin_img)) != 2:
-        fatal_error("Image is not binary")
-
+    _ = _is_binary(bin_img, True, True)
     # Cast binary image to boolean
     bool_img = bin_img.astype(bool)
 

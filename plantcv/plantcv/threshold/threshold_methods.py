@@ -4,7 +4,9 @@ import cv2
 import math
 import numpy as np
 from matplotlib import pyplot as plt
-from plantcv.plantcv import fatal_error, warn, params
+from plantcv.plantcv._globals import params
+from plantcv.plantcv.fatal_error import fatal_error
+from plantcv.plantcv.warn import warn
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv.get_kernel import _format_kernel
 from plantcv.plantcv._helpers import _rgb2lab, _rgb2hsv, _rgb2gray, _rgb2cmyk
