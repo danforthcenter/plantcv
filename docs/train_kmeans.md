@@ -30,11 +30,11 @@ This function takes in a collection of training images and fits a patch-based km
 ```python
 
 from plantcv import plantcv as pcv
-
+from plantcv import learn
 
 # Use 10 images to train 6 clusters with a patch size of 4
-pcv.learn.train_kmeans(img_dir="./silphium_integrifolium_root_images", 
-             out_path="./kmeansout_.fit", prefix="Silphium", k=6, patch_size=4, num_imgs=10)
+learn.train_kmeans(img_dir="./silphium_integrifolium_root_images", 
+             out_path="./kmeansout_.fit", prefix="Silphium", k=6, patch_size=4, mode=None, num_imgs=10)
 
 ```
 

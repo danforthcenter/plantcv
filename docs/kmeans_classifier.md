@@ -44,7 +44,7 @@ from plantcv import plantcv as pcv
 
 #Labeling a target image
 labeled_img = pcv.predict_kmeans(img='./leaf_example.png',
-                                 model_path="./kmeansout_leaf.fit", patch_size=5)
+                                 model_path="./kmeansout_leaf.fit", patch_size=5, mode=None)
 
 #Choosing clusters for each category within the seed image
 background = pcv.mask_kmeans(labeled_img=labeled_img, k=10 cat_list=[0, 2, 4, 6, 7])
