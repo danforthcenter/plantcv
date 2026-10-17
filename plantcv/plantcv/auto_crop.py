@@ -4,34 +4,37 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
-from plantcv.plantcv import params, fatal_error
+from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition, _is_binary
+from plantcv.plantcv._globals import params
+from plantcv.plantcv.fatal_error import fatal_error
 
 
 def auto_crop(img, mask, padding_x=0, padding_y=0, color='black'):
     """
     Resize image.
 
-    Inputs:
-    img          = RGB or grayscale image data
-    mask         = Binary mask image data
-    padding_x    = integer or tuple to add padding the x direction
-    padding_y    = integer or tuple to add padding the y direction
-    color        = either 'black', 'white', or 'image'
+    Parameters:
+    -----------
+    img          : numpy.ndarray,
+        RGB or grayscale image data
+    mask         : numpy.ndarray,
+        Binary mask image data
+    padding_x    : integer or tuple,
+        pad to add padding the x direction
+    padding_y    : integer or tuple,
+       pad to add padding the y direction
+    color        : str,
+        either 'black', 'white', or 'image'
 
     Returns:
-    cropped   = cropped image
-
-    :param img: numpy.ndarray
-    :param mask: numpy.ndarray
-    :param padding_x: int
-    :param padding_y: int
-    :param color: str
-    :return cropped: numpy.ndarray, list
+    --------
+    cropped   : numpy.ndarray, list,
+        cropped image
     """
     params.device += 1
     img_copy2 = np.copy(img)
-
+    # check mask
+    _ = _is_binary(mask, True, True)
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
 

@@ -52,7 +52,9 @@ the morphology sub-package. Default = 2.
 
 **verbose**: Set the status of verboseness as an integer between 0 and 2. When in the most verbose mode (2), the deprecation warning will always be printed once triggered. Default: `1`. Users can turn off messages by setting `verbose=0` or opt for more messages/debug images with `verbose=2`.
 
-**unit**: Set the units of the size outputs. Users can scale size measurements by updating the `unit`, `px_height` and `px_width` Default: `pixels`
+**unit**: Set the units of the size outputs. Users can scale size measurements by updating the `unit`, `px_height` and `px_width`. Area outputs in real world units are labeled with the squared unit (e.g. `mm` becomes `mm2`); pixel outputs are labeled `pixels` for both length and area. Default: `pixels`
+
+**area_unit**: Optionally override the label used for area outputs (e.g. `"mm^2"`). This only changes the label, not the values: area values are always scaled by `px_width` * `px_height`, so the label should be the square of `unit`. Set to `None` to derive the label from `unit` automatically. Default: `None`
 
 **px_height** Set the size scaling factor to enable automatic conversion between pixels and a real world unit, such as centimeters. Users can scale size measurements by updating the `unit`, `px_height` and `px_width` Default: `1`
 
@@ -85,6 +87,15 @@ roi = pcv.roi.rectangle(x=100, y=100, h=200, w=200, img=img)
 # (note: this won't change the returns for most functions but instead is a purely optional preference regarding the plot in debug='print' and debug='plot') 
 pcv.params.line_thickness = 3 
 roi = pcv.roi.rectangle(x=100, y=100, h=200, w=200, img=img)
+
+# Scale size outputs to millimeters (e.g. 10 pixels per mm)
+# Length traits are labeled "mm" and area traits are labeled "mm2"
+pcv.params.unit = "mm"
+pcv.params.px_width = 0.1
+pcv.params.px_height = 0.1
+
+# Optionally change only the area label, e.g. to "mm^2"
+pcv.params.area_unit = "mm^2"
 
 ```
 *Default Thickness (5)*
