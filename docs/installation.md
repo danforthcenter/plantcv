@@ -52,7 +52,7 @@ Additionally, we recommend installing [JupyterLab](https://jupyter.org/).
 !!!note
     We recommend installing PlantCV in a virtual environment, which is a self-contained Python environment that includes
     PlantCV and its dependencies. Virtual environments are used to avoid conflicts between packages and can increase the
-    reproducability of your work by isolating package versions for specific projects.
+    reproducibility of your work by isolating package versions for specific projects.
 
 Stable releases of PlantCV are available through both the [Python Package Index (PyPI)](https://pypi.org/) and 
 `conda` through the [conda-forge channel](https://conda-forge.org/).

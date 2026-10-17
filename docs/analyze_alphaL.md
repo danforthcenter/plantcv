@@ -2,7 +2,7 @@
 
 Calculate AlphaL leaf absorption: 1 - (red / farred)
 
-**plantcv.analyze.alphaL**(*ps, labeled_mask, n_labels=1, measurement_labels=None, label=None, min_bin=-1, max_bin=1*)
+**plantcv.analyze.alphaL**(*ps, labeled_mask, n_labels=1, label=None, min_bin=-1, max_bin=1*)
 
 **returns** AlphaL matrix, a `numpy.ndarray`
 

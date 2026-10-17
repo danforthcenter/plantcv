@@ -12,7 +12,7 @@ unaltered, the  matplotlib default DPI is 100 pixels per inch.
 - **Parameters:**
     - gray_img       - Grayscale image data
     - mask           - Binary mask made from selected contours (optional)
-    - cmap           - Custom colormap, see [here](https://matplotlib.org/tutorials/colors/colormaps.html) for tips on how to choose a colormap in Matplotlib.
+    - cmap           - Custom colormap, see [here](https://matplotlib.org/tutorials/colors/colormaps.html) for tips on how to choose a colormap in Matplotlib. We suggest a colorblind friendly, perceptually uniform palette such as "viridis", "cividis", or "plasma". 
     - background     - Background color/type. Options are "image" (default), "white", "black" or an array object (grayscale/RGB image). A mask must be supplied in order to utilize this parameter.
     - min_value      - Minimum value (optional) for range of the colorbar. Default: 0
     - max_value      - Maximum value (optional) for range of the colorbar. Default: 255

@@ -10,21 +10,23 @@ from plantcv.plantcv._helpers import _rect_filter, _rect_replace
 def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area", roi=None):
     """Detect/filter regions in a binary image based on calculated properties.
 
-    Parameters:
+    Parameters
     ----------
     bin_img : numpy.ndarray
         Binary image containing the objects to consider.
     cut_side : str, default: "upper"
-        Side to keep when objects are divided by the "thresh" value.
-    thresh : int | float, default: 0
-        Region property threshold value.
+        Side to keep when objects are divided by the "thresh" value,
+        options are 'upper', 'lower', 'in' (within tuple of thresh range),
+        and 'out' (outside of tuple of thresh range)
+    thresh : int | float | tuple of int/float, default: 0
+        Region property threshold value. 'in' and 'out' cut_side require a tuple.
     regprop : str, default: "area"
         Region property to filter on. Can choose from "area" or other int and float properties calculated by
         skimage.measure.regionprops.
     roi : plantcv.plantcv.Objects, default None
         Optional region of interest to apply the object property filter within
 
-    Returns:
+    Returns
     -------
     filtered_mask : numpy.ndarray
         Binary image that contains only the filtered objects.
@@ -34,8 +36,12 @@ def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area", roi=None):
     # Make cut_side all lowercase
     cut_side = cut_side.lower()
     # Check if cut_side is valid
-    if cut_side not in ("upper", "lower"):
-        fatal_error("Must specify either 'upper' or 'lower' for cut_side")
+    if cut_side.lower() not in ("upper", "lower", "in", "out"):
+        fatal_error("Must specify either 'upper', 'lower', 'in', or 'out' for cut_side")
+    if cut_side.lower() in ("in", "out") and not isinstance(thresh, tuple):
+        fatal_error("If cut_side is 'in' or 'out' then thresh must be a tuple")
+    if cut_side.lower() in ("upper", "lower") and isinstance(thresh, tuple):
+        fatal_error("If cut_side is 'upper' or 'lower' then thresh must be an int or float")
     # subset binary image for ROI
     sub_bin_img = _rect_filter(bin_img, roi=roi)
     # Skip empty masks
@@ -50,24 +56,15 @@ def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area", roi=None):
         if type(getattr(obj_measures[0], regprop)) not in correct_types:
             fatal_error(f"Property {regprop} is not an integer or float type.")
 
-        # blank mask to draw discs onto
-        sub_filtered_mask = np.zeros(labeled_img.shape, dtype=np.uint8)
         # Pull all values and calculate the mean
-        valueslist = []
-        # Store the list of coordinates (row,col) for the objects that pass
-        for obj in obj_measures:
-            # Object color
-            gray_val = 255
-            # Store the value of the property for each object
-            valueslist.append(getattr(obj, regprop))
-            # If it is an upper threshold, keep the objects that are above the threshold
-            if cut_side == "upper":
-                gray_val = 255 if getattr(obj, regprop) > thresh else 0
-            # If it is a lower threshold, keep the objects that are below the threshold
-            elif cut_side == "lower":
-                gray_val = 255 if getattr(obj, regprop) < thresh else 0
-            # Add the object to the filtered mask (255 if it passes, 0 if it does not)
-            sub_filtered_mask += np.where(labeled_img == obj.label, gray_val, 0).astype(np.uint8)
+        valueslist = [getattr(obj, regprop) for obj in obj_measures]
+        # Decide which objects pass, all at once
+        passing = _apply_cut_side(cut_side, thresh, np.asarray(valueslist))
+        # Index the lookup table by label id, Label 0 is the background and is left False.
+        keep = np.zeros(int(labeled_img.max()) + 1, dtype=bool)
+        keep[np.array([obj.label for obj in obj_measures], dtype=np.int64)] = passing
+        # Draw every object in one pass.
+        sub_filtered_mask = np.where(keep[labeled_img], 255, 0).astype(np.uint8)
 
         if params.debug == "plot":
             print(f"Min value = {min(valueslist)}")
@@ -82,3 +79,36 @@ def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area", roi=None):
     _debug(visual=filtered_mask, filename=os.path.join(params.debug_outdir,
                                                        f"{params.device}_filter_mask_{regprop}_{thresh}.png"))
     return filtered_mask
+
+
+def _apply_cut_side(cut_side, thresh, val):
+    """Determine which objects pass the filter for a given cut side.
+
+    Parameters
+    ----------
+    cut_side : str
+        Direction of the filter, one of 'upper', 'lower', 'in', or 'out'.
+    thresh : int, float, or tuple of int/float
+        Value above/below/between/within which to keep an object, based on
+        cut_side.
+    val : numpy.ndarray
+        The measured region property of every object.
+
+    Returns
+    -------
+    numpy.ndarray
+        Boolean array, ``True`` for each object that passes the filter.
+    """
+    # If it is an upper threshold, keep the objects that are above the threshold
+    if cut_side == "upper":
+        keep = val > thresh
+    # If it is a lower threshold, keep the objects that are below the threshold
+    elif cut_side == "lower":
+        keep = val < thresh
+    # If it is 'in' threshold, keep the objects that are within the thresholds
+    elif cut_side == "in":
+        keep = (val > min(thresh)) & (val < max(thresh))
+    # If it is 'out' threshold, keep the objects that are outside of the thresholds
+    elif cut_side == "out":
+        keep = (val < min(thresh)) | (val > max(thresh))
+    return keep

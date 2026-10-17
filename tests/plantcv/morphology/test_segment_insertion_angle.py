@@ -39,3 +39,45 @@ def test_segment_insertion_angle_overflow():
                                                                 [[8, 4]], [[8, 3]], [[8, 2]], [[8, 1]]], dtype=np.int32)]
     with pytest.raises(IndexError):
         _ = segment_insertion_angle(skel_img=skel, segmented_img=skel, leaf_objects=leaf_obj, stem_objects=stem_obj, size=3)
+
+
+def test_segment_insertion_angle_vertical_stem():
+    """Regression test for PlantCV."""
+    # Clear previous outputs
+    outputs.clear()
+    # A perfectly vertical stem fits with vx ~ 0; extrapolating the stem line to the
+    # image edges then overflows the 32-bit coordinates cv2.line accepts
+    stem_img = np.zeros((500, 500), dtype=np.uint8)
+    cv2.line(stem_img, (250, 50), (250, 450), 255, 1)
+    leaf_img = np.zeros((500, 500), dtype=np.uint8)
+    cv2.line(leaf_img, (251, 149), (330, 70), 255, 1)
+    skel = stem_img | leaf_img
+    stem_obj, _ = cv2.findContours(np.copy(stem_img), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
+    leaf_obj, _ = cv2.findContours(np.copy(leaf_img), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
+    labeled_img = segment_insertion_angle(skel_img=skel, segmented_img=skel, leaf_objects=leaf_obj,
+                                          stem_objects=stem_obj, size=20)
+    angles = outputs.observations['default']['segment_insertion_angle']['value']
+    assert len(angles) == 1
+    assert abs(angles[0] - 45) < 5
+    # The stem line is still drawn, as a vertical line
+    assert (labeled_img[:, 250] == 150).any()
+
+
+def test_segment_insertion_angle_slanted_stem(morphology_test_data):
+    """Regression test for PlantCV."""
+    # Clear previous outputs
+    outputs.clear()
+    # A slanted stem keeps the extrapolated stem line, drawn to the image edges
+    stem_img = np.zeros((500, 500), dtype=np.uint8)
+    cv2.line(stem_img, (100, 100), (400, 400), 255, 1)
+    leaf_img = np.zeros((500, 500), dtype=np.uint8)
+    cv2.line(leaf_img, (151, 149), (220, 80), 255, 1)
+    skel = stem_img | leaf_img
+    stem_obj, _ = cv2.findContours(np.copy(stem_img), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
+    leaf_obj, _ = cv2.findContours(np.copy(leaf_img), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
+    labeled_img = segment_insertion_angle(skel_img=skel, segmented_img=skel, leaf_objects=leaf_obj,
+                                          stem_objects=stem_obj, size=20)
+    assert len(outputs.observations['default']['segment_insertion_angle']['value']) == 1
+    # The stem line is extrapolated beyond the stem segment itself
+    assert (labeled_img[440:500, 440:500] == 150).any()
+    assert not (labeled_img[:, 250] == 150).all()

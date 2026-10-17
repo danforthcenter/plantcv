@@ -35,7 +35,7 @@ pcv.params.debug = "plot"
 # Optionally, set a sample label name
 pcv.params.sample_label = "plant"
 
-# Caclulates the proportion of pixels that fall into a signal bin and writes the values to a file. Also provides a histogram of this data
+# Calculates the proportion of pixels that fall into a signal bin and writes the values to a file. Also provides a histogram of this data
 thermal_hist  = pcv.analyze.thermal(thermal_img=thermal_img, labeled_mask=mask)
 
 # Access data stored out from analyze.thermal

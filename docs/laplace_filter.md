@@ -8,7 +8,7 @@ This is a filtering method used to identify and highlight fine edges based on th
 
 - **Parameters:**
     - gray_img - Grayscale image data
-    - ksize - apertures size used to calculate 2nd derivative filter, specifies the size of the kernel (must be an odd integer: 1,3,5...)
+    - ksize - Kernel specified as a binary numpy.ndarray for arbitrary shapes, shape tuple for a rectangular kernel, or integer for a square kernel. Kernel inputs will be coerced to int and specify the size of the kernel (must be an odd integer: 1,3,5...) using the first element of a tuple or size of first dimension.
     - scale - scaling factor applied (multiplied) to computed Laplacian values (scale = 1 is unscaled)
 	- roi - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to apply this function. (default = None, which uses the entire image)
 

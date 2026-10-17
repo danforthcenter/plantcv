@@ -11,7 +11,7 @@ Similar results to the [Scharr filter](scharr_filter.md) function.
     - gray_img - Grayscale image data
     - dx - derivative of x to analyze
     - dy - derivative of y to analyze
-    - ksize - apertures size used to calculate 2nd derivative filter, specifies the size of the kernel (must be an odd integer)
+    - ksize - Kernel specified as a binary numpy.ndarray for arbitrary shapes, shape tuple for a rectangular kernel, or integer for a square kernel. Here any input will be simplified to an integer specifying a square kernel. Here an integer is used, which will be taken from the first element of a tuple or the first dimension of an array's shape for compatibility with cv2.
 	- roi - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to apply this function. (default = None, which uses the entire image)
 - **Context:**
     - Used to define edges within and around objects

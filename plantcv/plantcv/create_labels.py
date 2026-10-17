@@ -1,12 +1,11 @@
 # Create labels base on clean mask and optionally, multiple ROIs
-import cv2
 import os
 import numpy as np
 from skimage.measure import label
 from skimage.color import label2rgb
 from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _roi_filter, _cv2_findcontours
+from plantcv.plantcv._helpers import _roi_filter
 
 
 def create_labels(mask, rois=None, roi_type="partial"):
@@ -14,21 +13,23 @@ def create_labels(mask, rois=None, roi_type="partial"):
     pixels are assigned a label value based on the provided
     region of interest (ROI).
 
-    Inputs:
-    mask            = mask image
-    rois            = list of multiple ROIs (from roi.multi or roi.auto_grid)
-    roi_type        = 'cutto', 'partial' (for partially inside, default),
-                    'largest' (keep only the largest contour), or 'auto'
-                    (use the mask alone withtout roi filtering)
+    Parameters:
+    -----------
+    mask            = numpy.ndarray,
+        mask image
+    rois            = plantcv.plantcv.classes.Objects,
+        list of multiple ROIs (from roi.multi or roi.auto_grid)
+    roi_type        = str,
+        'cutto', 'partial' (for partially inside, default),
+        'largest' (keep only the largest contour), or 'auto'
+        (use the mask alone withtout roi filtering)
 
     Returns:
-    mask            = Labeled mask
-    num_labels      = Number of labeled objects
-
-    :param mask: numpy.ndarray
-    :param rois: plantcv.plantcv.classes.Objects
-    :return labeled_mask: numpy.ndarray
-    :return num_labels: int
+    --------
+    mask            = numpy.ndarray,
+        Labeled mask
+    num_labels      = int,
+        Number of labeled objects
     """
     # Store debug mode
     debug = params.debug
@@ -42,22 +43,22 @@ def create_labels(mask, rois=None, roi_type="partial"):
 
     # Use the rois for labeling
     else:
-        contours, hierarchy = _cv2_findcontours(mask)
         labeled_mask = np.zeros(mask.shape[:2], dtype=np.int32)
         num_labels = len(rois.contours)
         for i, roi in enumerate(rois):
-            kept_cnt, _, mask = _roi_filter(img=mask, roi=roi,
-                                            obj=contours,
-                                            hierarchy=hierarchy,
-                                            roi_type=roi_type)
-
+            iter_mask = _roi_filter(mask=mask, roi=roi, roi_type=roi_type)
             # Pixel intensity of (i+1) such that the first object has value
-            cv2.drawContours(labeled_mask, kept_cnt, -1, (i+1), -1)
+            labeled_mask = labeled_mask + (i+1) * (iter_mask.astype(np.int32) / 255)
 
     # Restore debug parameter
     params.debug = debug
-    colorful = label2rgb(labeled_mask)
-    colorful2 = (255*colorful).astype(np.uint8)
+    # label2rgb builds a full-size RGB float image, which is wasted work when no visual is
+    # going to be shown or written. _debug is still called either way because it owns the
+    # device counter.
+    colorful2 = None
+    if params.debug is not None:
+        colorful = label2rgb(labeled_mask)
+        colorful2 = (255*colorful).astype(np.uint8)
 
     _debug(colorful2, filename=os.path.join(params.debug_outdir,
                                             str(params.device) +

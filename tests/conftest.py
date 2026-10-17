@@ -104,6 +104,8 @@ class TestData:
         self.small_bin_img = os.path.join(self.datadir, "setaria_small_plant_mask.png")
         # Gray image
         self.small_gray_img = os.path.join(self.datadir, "setaria_small_plant_gray.png")
+        # heic image
+        self.heic_img = os.path.join(self.datadir, "example.HEIC")
         # Contours file
         self.small_contours_file = os.path.join(self.datadir, "setaria_small_plant_contours.npz")
         # Composed contours file
@@ -167,6 +169,11 @@ class TestData:
         self.kmeans_classifier_gray_dir = os.path.join(self.datadir, "kmeans_classifier_gray_dir")
         # nd2 file
         self.nd2_img = os.path.join(self.datadir, "test_nd2_img.nd2")
+        # Image, mask, and roi for radial percentile
+        self.rgb_seed = os.path.join(self.datadir, "rgb_seed.jpg")
+        self.rgb_seed_mask = os.path.join(self.datadir, "rgb_seed_mask.jpg")
+        self.small_circle = os.path.join(self.datadir, "small_circle.png")
+        self.empty_mask = os.path.join(self.datadir, "seed_empty_mask.png")
         # flir thermal img
         self.flir_img = os.path.join(self.datadir, "FLIR_test.jpg")
         # parallel results to process
@@ -231,7 +238,7 @@ class TestData:
     def appended_results(self):
         """Load appended results from file."""
         return self.load_json(json_file=self.appended_results_file)
- 
+
     def psii_cropreporter(self, var):
         """Create simple data for PSII"""
         # sample images
@@ -306,7 +313,8 @@ class TestData:
         f3 = self.create_ps_mask()
         f3[5, 5] = 8
 
-        atts = ["APH", "CHL", "CLR", "PSD", "PSL", "SPECTRAL", "NPQ", "GFP", "RFP", "OJIP_LIGHT", "OJIP_DARK", "PAM_TIME",  "PAM_LIGHT", "PAM_DARK"]
+        atts = ["APH", "CHL", "CLR", "PSD", "PSL", "SPECTRAL", "NPQ", "GFP", "RFP", "OJIP_LIGHT", "OJIP_DARK", "PAM_TIME",
+                "PAM_LIGHT", "PAM_DARK"]
 
         # set specific labels for xarray for dark and light adapted
         if var == 'ojip_dark':

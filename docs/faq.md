@@ -41,7 +41,7 @@ and [updating documentation](documentation.md).
 - Q: How should I grow plants and acquire images for quantitative processing?
     - A: This depends on your main question of interest,
     and is beyond the scope of the current PlantCV documentation. We do provide some 
-    [general considerations](analysis_approach.md), but you may be be interested
+    [general considerations](analysis_approach.md), but you may be interested
     in a [review article](http://doi.org/10.1016/j.pbi.2015.02.006)
     written by the lead PlantCV developers,
     a [practical guide](https://doi.org/10.1071/FP12028)

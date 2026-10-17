@@ -162,7 +162,7 @@ def _yii_multi(ps, labeled_mask,
         yii_fqfm = _psl_calc_fqfm(yii_masked)
         yii_fqfm = yii_fqfm.drop_vars('frame_label')
         yii_fqfm = yii_fqfm.fillna(0)
-        yii_global_fqfm = yii_global_fqfm + yii_fvfm
+        yii_global_fqfm = yii_global_fqfm + yii_fqfm
         _add_observations(
                 yii_da=yii_fqfm,
                 measurements=ps_da.measurement.values,

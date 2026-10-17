@@ -84,3 +84,15 @@ def test_merge_images_VG(transform_test_data, tmpdir):
     merged_img = cv2.imread(os.path.join(cache_dir, "merged_img.jpg"))
     query_img = cv2.imread(transform_test_data.merged_VG)
     assert (merged_img == query_img).all()
+
+
+def test_merge_images_VG_str(transform_test_data, tmpdir):
+    """Test for PlantCV."""
+    cache_dir = tmpdir.mkdir("cache")
+    corrected_img = merge_images(os.path.join(transform_test_data.datadir, "mergevert"),
+                                 overlap_percentage=30,
+                                 direction="vertical", method="gradual")
+    pcv.print_image(corrected_img, os.path.join(cache_dir, "merged_img.jpg"))
+    merged_img = cv2.imread(os.path.join(cache_dir, "merged_img.jpg"))
+    query_img = cv2.imread(transform_test_data.merged_VG)
+    assert (merged_img == query_img).all()

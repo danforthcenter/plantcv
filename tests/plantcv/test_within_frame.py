@@ -20,3 +20,21 @@ def test_within_frame_bad_input(test_data):
     gray_img = cv2.imread(test_data.small_gray_img, -1)
     with pytest.raises(RuntimeError):
         _ = within_frame(gray_img)
+
+
+@pytest.mark.parametrize('value', [1, 255])
+def test_within_frame_binary_values(value):
+    """Test for PlantCV."""
+    # Create test data
+    mask = np.zeros((10, 10), dtype=np.uint8)
+    mask[1:5, 1:5] = value
+    result = within_frame(mask=mask, border_width=1)
+    assert result is True
+
+
+def test_within_frame_all_background():
+    """Test for PlantCV."""
+    # Create test data
+    mask = np.zeros((10, 10), dtype=np.uint8)
+    result = within_frame(mask=mask, border_width=1)
+    assert result is True

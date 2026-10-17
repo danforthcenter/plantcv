@@ -63,3 +63,5 @@ Calling `plantcv.transform.detect_color_card` on the uncorrected image:
 Using `plantcv.transform.deltaE` on the corrected image to check the new Delta E values:
 
 ![Calibrated Color Card](img/documentation_images/deltaE/calibrated.png)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/transform/detect_color_card.py)
