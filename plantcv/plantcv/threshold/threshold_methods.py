@@ -397,7 +397,6 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         # Apply the masks to the image
         result = cv2.bitwise_and(img, img, mask=out_masks[0])
         result = cv2.bitwise_and(result, result, mask=out_masks[1])
-        masked_img = cv2.bitwise_and(result, result, mask=out_masks[2])
 
         # Combine masks
         mask = cv2.bitwise_and(out_masks[0], out_masks[1])
@@ -420,7 +419,6 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         # Apply the masks to the image
         result = cv2.bitwise_and(img, img, mask=out_masks[0])
         result = cv2.bitwise_and(result, result, mask=out_masks[1])
-        masked_img = cv2.bitwise_and(result, result, mask=out_masks[2])
 
         # Combine masks
         mask = cv2.bitwise_and(out_masks[0], out_masks[1])
@@ -446,7 +444,6 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         # Apply the masks to the image
         result = cv2.bitwise_and(img, img, mask=out_masks[0])
         result = cv2.bitwise_and(result, result, mask=out_masks[1])
-        masked_img = cv2.bitwise_and(result, result, mask=out_masks[2])
 
         # Combine masks
         mask = cv2.bitwise_and(out_masks[0], out_masks[1])
@@ -474,7 +471,6 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         result = cv2.bitwise_and(img, img, mask=out_masks[0])
         result = cv2.bitwise_and(result, result, mask=out_masks[1])
         result = cv2.bitwise_and(result, result, mask=out_masks[2])
-        masked_img = cv2.bitwise_and(result, result, mask=out_masks[3])
 
         # Combine masks
         mask = cv2.bitwise_and(out_masks[0], out_masks[1])
@@ -495,20 +491,13 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         # Make a mask
         mask = cv2.inRange(gray_img, lower_thresh[0], upper_thresh[0])
 
-        # Apply the masks to the image
-        masked_img = cv2.bitwise_and(img, img, mask=mask)
-
     else:
         fatal_error(str(channel) + " is not a valid colorspace. Channel must be either 'RGB', 'HSV', 'CMYK', or 'gray'.")
 
-    # Auto-increment the device counter
-
     # Print or plot the binary image if debug is on
-    _debug(visual=masked_img, filename=os.path.join(params.debug_outdir,
-                                                    str(params.device) + channel + 'custom_thresh.png'))
     _debug(visual=mask, filename=os.path.join(params.debug_outdir,
                                               str(params.device) + channel + 'custom_thresh_mask.png'))
-    return mask, masked_img
+    return mask
 
 
 # Internal method for calling the OpenCV inRange function to reduce code duplication
