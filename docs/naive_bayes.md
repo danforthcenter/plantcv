@@ -26,5 +26,22 @@ to the output file and can be used with the [naive Bayes classifier](naive_bayes
     - Used to help differentiate plant and background
 - **Example use:**
     - [Use In Machine Learning Tutorial](https://plantcv.org/tutorials/naive-bayes)
+	- below
+
+The `naive_bayes` function can be called in Python through the `plantcv.learn` module.
+
+```python
+from plantcv import learn
+
+learn.naive_bayes(samples_file="naive_bayes_data.txt",
+                  outfile="probability_densities.txt")
+```
+
+Alternatively, a command line utility is available.
+
+```bash
+plantcv-train naive_bayes --file ./naive_bayes_data.txt --outfile ./probability_densities.txt
+```
+
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/learn/naive_bayes.py)

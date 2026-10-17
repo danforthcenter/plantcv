@@ -4,7 +4,7 @@ import os
 import numpy as np
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition
-from plantcv.plantcv import params, outputs
+from plantcv.plantcv._globals import params, outputs
 
 
 def x_axis_pseudolandmarks(img, mask, label=None):
