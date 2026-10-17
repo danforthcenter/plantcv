@@ -81,9 +81,11 @@ def _boundary_img_annotation(img, mask, line_position, axis=0, simplify=True):
             np.shape(mask2[:, 0:line_position - 1]))
 
     if simplify:
-        mask2b = np.where(mask2 > 0, mask2 + 1, 0)
+        mask1 = (mask1 > 0).astype(np.int32)
+        mask2b = (mask2 > 0).astype(np.int32) * 2
         out_mask = mask1 + mask2b
         # replace mask with colors
+        out_img = _grayscale_to_rgb(out_img)
         out_img[np.where(mask1)] = (255, 0, 255)
         out_img[np.where(mask2b)] = (0, 255, 0)
     else:
@@ -103,7 +105,7 @@ def _boundary_img_annotation(img, mask, line_position, axis=0, simplify=True):
     line_start = [(0, line_position), (line_position, 0)][axis]
     line_end = [(np.shape(out_img)[1], line_position), (line_position, np.shape(img)[0])][axis]
     cv2.line(out_img, line_start, line_end, (255, 0, 0), thickness=params.line_thickness)
-    return out_img, out_mask
+    return out_img, out_mask.astype(np.int32)
 
 
 def bound_horizontal(img, labeled_mask, line_position, simplify=True, n_labels=1, label=None):
