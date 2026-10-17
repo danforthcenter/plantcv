@@ -5,10 +5,10 @@ import os
 import numpy as np
 from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import fatal_error
-from plantcv.plantcv import color_palette
-from plantcv.plantcv.visualize import overlay_two_imgs
-from plantcv.plantcv.transform import rescale
+from plantcv.plantcv.fatal_error import fatal_error
+from plantcv.plantcv.color_palette import color_palette
+from plantcv.plantcv.visualize.overlay_two_imgs import overlay_two_imgs
+from plantcv.plantcv.transform.rescale import rescale
 from skimage import img_as_ubyte
 
 

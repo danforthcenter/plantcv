@@ -5,7 +5,7 @@ import numpy as np
 import os
 from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import Spectral_data
+from plantcv.plantcv.classes import Spectral_data
 
 
 def rot90(spectral_data, k):

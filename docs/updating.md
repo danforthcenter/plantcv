@@ -79,6 +79,15 @@ The `plantcv.utils` module has been deleted with `sample_images` moving to `plan
 
 Renamed the "json" attribute to "results" for clarity about what it controls and for consistency with new [JupyterConfig](parallel_jupyterconfig.md)
 
+#### plantcv.report_size_marker_area
+
+Removed `label` parameter since size marker data is now stored as metadata in the
+[`Outputs` class](outputs.md) and does not need to be labeled per sample.
+
+#### plantcv.roi.quick_filter
+
+Speed improvement was applied to `plantcv.roi.filter` and the `quick_filter` function has been deprecated.
+
 #### plantcv.segment_image_series
 
 Changed `imgs_paths` argument to `source` for flexibility with a single directory or a list of filepaths. Also changed the rois argument to take a [`plantcv.plantcv.Objects`](objects.md) class object.
@@ -92,6 +101,10 @@ with RGB and hyperspectral data.
 
 Removed `label` parameter since size marker data is now stored as metadata in the
 [`Outputs` class](outputs.md) and does not need to be labeled per sample.
+
+#### plantcv.threshold.custom_range
+
+Removed the `masked_img` output. If the `masked_img` visualization is desired then the `pcv.apply_mask` function should be used.
 
 #### plantcv.transform.auto_correct_color
 
@@ -387,6 +400,11 @@ pages for more details on the input and output variable types.
 
 * pre v4.2.1: NA
 * post v4.2.1: dist_chart = **plantcv.analyze.distribution**(*labeled_mask, n_labels=1, direction="down", bin_size=100, hist_range="absolute", label=None*)
+
+#### plantcv.analyze.etr
+
+* pre v5.0: NA
+* post v5.0: _ = **plantcv.analyze.etr**(*actinic_light, psi_psii_ratio=0.5*)
 
 #### plantcv.analyze.grayscale
 
@@ -1187,6 +1205,8 @@ pages for more details on the input and output variable types.
 * pre v4.2.1: NA
 * post v4.2.1: filtered_mask = **plantcv.roi.quick_filter**(*mask, roi*)
 * post v4.9: filtered_mask = **plantcv.roi.quick_filter**(*mask, roi, roi_type="partial"*)
+* post v5.0: Deprecated, see:
+    * filtered_mask = **pcv.roi.filter**(*mask, roi, roi_type='partial'*)
 
 #### plantcv.roi_objects
 
@@ -1440,6 +1460,7 @@ pages for more details on the input and output variable types.
 * pre v3.3: NA
 * post v3.3: mask, masked_img = **plantcv.threshold.custom_range**(*rgb_img, lower_thresh, upper_thresh, channel='RGB'*)**
 * post v3.8: mask, masked_img = **plantcv.threshold.custom_range**(*img, lower_thresh, upper_thresh, channel='RGB'*)**
+* post v5.0: mask = **plantcv.threshold.custom_range**(*img, lower_thresh, upper_thresh, channel='RGB'*)**
 
 #### plantcv.threshold.gaussian
 

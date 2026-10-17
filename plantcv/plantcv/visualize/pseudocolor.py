@@ -5,7 +5,7 @@ import numpy as np
 from cv2 import cvtColor, COLOR_BGR2RGB
 from matplotlib import pyplot as plt
 from plantcv.plantcv._globals import params
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.apply_mask import apply_mask
 
 
