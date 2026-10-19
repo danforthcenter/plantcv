@@ -18,8 +18,8 @@ def test_npq_components(test_data):
     mask[51:100, 51:100] = 2
     l = npq_components(ps, mask.astype(np.uint8))
     # this will be nan here, but the data does seem to work
-    assert outputs.observations["default_1"]["mean_qP_t0"]
-    assert np.isclose(np.max(l[1]["qP"][np.isfinite(l[1]["qP"])]), 69)
+    assert outputs.observations["default_1"]["mean_qP_t1"]
+    assert np.isclose(np.max(l[0]["qP"][np.isfinite(l[0]["qP"])]), 69)
 
 
 def test_npq_components_fmpp(test_data, tmpdir, monkeypatch):
@@ -47,7 +47,7 @@ def test_npq_components_fmpp(test_data, tmpdir, monkeypatch):
     mask[1:5, 1:5] = 1
     mask[5:10, 5:10] = 2
     _ = npq_components(ps, mask.astype(np.uint8))
-    assert outputs.observations["default_1"]["mean_qE_t0"]
+    assert outputs.observations["default_1"]["mean_qE_t2"]
 
 
 def test_npq_components_bad_frame(test_data):
@@ -59,3 +59,32 @@ def test_npq_components_bad_frame(test_data):
     mask[51:100, 51:100] = 2
     with pytest.raises(RuntimeError):
         _ = npq_components(ps, mask.astype(np.uint8))
+
+
+def test_npq_components_no_light_measurements(test_data):
+    """Test for PlantCV."""
+    outputs.clear()
+    ps = test_data.make_synthetic_pmt()
+    ps.pmt.pam_time.coords["frame_label"] = [
+        "frame_" + str(i) for i in range(len(ps.pmt.pam_time.frame_label))
+    ]
+    mask = np.ones((4, 4), dtype=np.uint8)
+    with pytest.raises(RuntimeError):
+        _ = npq_components(ps, mask)
+
+
+def test_npq_components_frame_pairing(test_data):
+    """Test that frames are paired across measurements"""
+    outputs.clear()
+    ps = test_data.make_synthetic_pmt()
+    mask = np.ones((4, 4), dtype=np.uint8)
+    out = npq_components(ps, mask)
+    obs = outputs.observations["default_1"]
+    # light components are only reported for the light measurement (t1)
+    assert "mean_qP_t0" not in obs
+    assert np.isclose(obs["mean_qP_t1"]["value"], (300 - 200) / (300 - 90))
+    assert np.isclose(obs["mean_qN_t1"]["value"], 1 - (300 - 90) / (500 - 100))
+    # recovery components use Fm from t0 and Fmp from t1
+    assert np.isclose(obs["mean_qI_t2"]["value"], (500 - 400) / 400)
+    assert np.isclose(obs["mean_qE_t2"]["value"], 500 * (400 - 300) / (400 * 300))
+    assert [d["measurement"] for d in out] == ["t1", "t2"]
