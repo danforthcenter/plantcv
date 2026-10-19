@@ -4,11 +4,11 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv._globals import params
-from plantcv.plantcv.transform import resize_factor
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv.transform.resize import resize_factor
+from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv.threshold import otsu
-from plantcv.plantcv.threshold import triangle
+from plantcv.plantcv.threshold.threshold_methods import otsu
+from plantcv.plantcv.threshold.threshold_methods import triangle
 
 
 def auto_threshold_methods(gray_img, grid_img=True, object_type="light"):

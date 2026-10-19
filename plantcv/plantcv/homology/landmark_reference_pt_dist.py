@@ -3,7 +3,7 @@ import numpy as np
 import math
 import numbers
 from plantcv.plantcv._globals import params
-from plantcv.plantcv import outputs
+from plantcv.plantcv._globals import outputs
 
 
 def landmark_reference_pt_dist(points_r, centroid_r, bline_r, label=None):

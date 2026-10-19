@@ -1,7 +1,7 @@
 """Find geodesic lengths of skeleton segments."""
 import os
 import cv2
-from plantcv.plantcv import params, outputs
+from plantcv.plantcv._globals import params, outputs
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _scale_size
 
