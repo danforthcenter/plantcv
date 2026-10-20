@@ -4,7 +4,8 @@ import os
 import sys
 import argparse
 import datetime
-import plantcv.learn
+from plantcv.learn.naive_bayes import naive_bayes, naive_bayes_multiclass, tabulate_bayes_classes
+from plantcv.learn.train_kmeans import train_kmeans
 
 
 # Parse command-line arguments
@@ -61,6 +62,8 @@ def options():
     nbm_cmd.add_argument("-o", "--out", help="Trained model output path and filename.", required=True)
     nbm_cmd.add_argument("-r", "--prefix", help="File prefix for training images.", required=False, default="")
     nbm_cmd.add_argument("-p", "--patch_size", help="Patch size.", required=False, type=int, default=10)
+    nbm_cmd.add_argument("-m", "--mode", help="Mode, None for RGB or grayscale, 'spectral' for multispectral",
+                         required=False, default=None)
     nbm_cmd.add_argument("-s", "--sigma", help="Severity of Gaussian blur, sigma.", required=False, type=int,
                          default=5)
     nbm_cmd.add_argument("--sampling", help="Fraction of pixels sampled per image for patch extraction",
@@ -94,7 +97,7 @@ def run_naive_bayes(args):
     if not os.path.exists(args.maskdir):
         raise IOError(f"Directory does not exist: {args.maskdir}")
     print("Running the naive Bayes two-class training method...")
-    plantcv.learn.naive_bayes(imgdir=args.imgdir, maskdir=args.maskdir, outfile=args.outfile, mkplots=args.plots)
+    naive_bayes(imgdir=args.imgdir, maskdir=args.maskdir, outfile=args.outfile, mkplots=args.plots)
 ###########################################
 
 
@@ -105,8 +108,8 @@ def run_naive_bayes_multiclass(args):
     if not os.path.exists(args.file):
         raise IOError(f"File does not exist: {args.file}")
     print("Running the naive Bayes multiclass training method...")
-    plantcv.learn.naive_bayes_multiclass(samples_file=args.file, outfile=args.outfile, mkplots=args.plots,
-                                         max_errors=args.max_errors)
+    naive_bayes_multiclass(samples_file=args.file, outfile=args.outfile, mkplots=args.plots,
+                           max_errors=args.max_errors)
 ###########################################
 
 
@@ -116,7 +119,7 @@ def run_tabulate_bayes_classes(args):
     """Run the naive Bayes tabulation method"""
     if not os.path.exists(args.file):
         raise IOError(f"File does not exist: {args.file}")
-    plantcv.learn.tabulate_bayes_classes(input_file=args.file, output_file=args.outfile)
+    tabulate_bayes_classes(input_file=args.file, output_file=args.outfile)
 ###########################################
 
 
@@ -127,10 +130,10 @@ def run_kmeans(args):
     if not os.path.exists(args.imgdir):
         raise IOError(f"Directory does not exist: {args.imgdir}")
     print("Running the Kmeans training method...")
-    plantcv.learn.train_kmeans(img_dir=args.imgdir, k=args.categories, out_path=args.out,
-                               prefix=args.prefix, patch_size=args.patch_size, sigma=args.sigma,
-                               sampling=args.sampling, seed=args.seed, num_imgs=args.num_imgs,
-                               n_init=args.n_init)
+    train_kmeans(img_dir=args.imgdir, k=args.categories, out_path=args.out,
+                 prefix=args.prefix, patch_size=args.patch_size, sigma=args.sigma,
+                 sampling=args.sampling, seed=args.seed, num_imgs=args.num_imgs,
+                 n_init=args.n_init)
 ###########################################
 
 
