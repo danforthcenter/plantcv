@@ -9,8 +9,7 @@ from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.warn import warn
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv.get_kernel import _format_kernel
-from plantcv.plantcv.roi.quick_filter import quick_filter
-from plantcv.plantcv._helpers import _rgb2lab, _rgb2hsv, _rgb2gray, _rgb2cmyk
+from plantcv.plantcv._helpers import _rgb2lab, _rgb2hsv, _rgb2gray, _rgb2cmyk, _roi_filter
 from skimage.feature import graycomatrix, graycoprops
 from scipy.ndimage import generic_filter
 
@@ -989,7 +988,7 @@ def _dual_channel_roi(img_x_ch, img_y_ch, img, roi):
     params.debug = None
     color_mat_binary = _call_threshold(color_mat_gray, 254, cv2.THRESH_BINARY_INV, "binary")
     # filter for pixels within an ROI
-    thresh = quick_filter(color_mat_binary, roi, roi_type="cutto")
+    thresh = _roi_filter(color_mat_binary, roi, roi_type="cutto")
     # reset debugging
     params.debug = debug
     # get X, Y coordinates of the kept pixels
