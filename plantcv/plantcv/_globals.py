@@ -15,7 +15,7 @@ class Params:
                  line_color=(255, 0, 255), dpi=100, text_size=0.55,
                  text_thickness=2, marker_size=60, color_scale="gist_rainbow", color_sequence="sequential",
                  sample_label="default", saved_color_scale=None, verbose=1, unit="pixels", px_height=1, px_width=1,
-                 deltaE="deltaE_ciede2000"):
+                 deltaE="deltaE_ciede2000", area_unit=None):
         """Initialize parameters.
 
         Parameters
@@ -57,6 +57,9 @@ class Params:
         deltaE : str
             Name of skimage function to use calculating Delta E, defaults to 'deltaE_ciede2000'.
             Currently 'deltaE_cie76', 'deltaE_ciede2000', 'deltaE_ciede94', and 'deltaE_cmc' are supported
+        area_unit : str, optional
+            Label for area trait outputs. Default is None, which derives the label from unit
+            ("pixels" stays "pixels", other units are suffixed with "2", e.g. "mm2").
         """
         self.device = device
         self.debug = debug
@@ -77,6 +80,7 @@ class Params:
         self.px_width = px_width
         self.function_args = {}
         self.deltaE = deltaE
+        self.area_unit = area_unit
 
 
 class Outputs:
