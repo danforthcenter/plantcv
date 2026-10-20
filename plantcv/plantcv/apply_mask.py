@@ -5,25 +5,27 @@ import cv2
 import numpy as np
 from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import fatal_error
-from plantcv.plantcv.transform import rescale
+from plantcv.plantcv._helpers import _is_binary
+from plantcv.plantcv.fatal_error import fatal_error
+from plantcv.plantcv.transform.rescale import rescale
 
 
 def apply_mask(img, mask, mask_color):
     """Apply white image mask to image, with bitwise AND operator bitwise NOT operator and ADD operator.
 
-    Inputs:
-    img        = RGB image data
-    mask       = Binary mask image data
-    mask_color = 'white' or 'black'
+    Parameters:
+    -----------
+    img        = numpy.ndarray,
+        RGB image data
+    mask       = numpy.ndarray,
+        Binary mask image data
+    mask_color = str,
+        'white' or 'black'
 
     Returns:
-    masked_img = masked image data
-
-    :param img: numpy.ndarray
-    :param mask: numpy.ndarray
-    :param mask_color: str
-    :return masked_img: numpy.ndarray
+    --------
+    masked_img = numpy.ndarray,
+        masked image data
     """
     if mask_color.upper() == "WHITE":
         color_val = 255
@@ -31,6 +33,9 @@ def apply_mask(img, mask, mask_color):
         color_val = 0
     else:
         fatal_error('Mask Color ' + str(mask_color) + ' is not "white" or "black"!')
+
+    # Check mask
+    _ = _is_binary(mask, True, True)
 
     array_data = img.copy()
 

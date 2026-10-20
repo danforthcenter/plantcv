@@ -3,9 +3,10 @@ import os
 import re
 import numpy as np
 from skimage.measure import label, regionprops
-from plantcv.plantcv import params, fatal_error
+from plantcv.plantcv._globals import params
+from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _rect_filter, _rect_replace
+from plantcv.plantcv._helpers import _rect_filter, _rect_replace, _is_binary
 
 
 def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area", roi=None, scale_size=False):
@@ -37,6 +38,8 @@ def obj_props(bin_img, cut_side="upper", thresh=0, regprop="area", roi=None, sca
     filtered_mask : numpy.ndarray
         Binary image that contains only the filtered objects.
     """
+    # Check mask
+    _ = _is_binary(bin_img, True, True)
     # Increment step counter
     params.device += 1
     # Make cut_side all lowercase
