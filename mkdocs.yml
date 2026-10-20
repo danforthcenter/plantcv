@@ -168,6 +168,7 @@ nav:
       - 'Vertical Boundary Tool': analyze_bound_vertical2.md
       - 'Analyze Texture': analyze_texture.md
       - 'Analyze Thermal': analyze_thermal.md
+      - 'Analyze Radial Percentiles': analyze_radial_percentile.md
       - 'Analyze Size Marker': report_size_marker.md
       - 'Analyze Spectral Reflectance': analyze_spectral_reflectance.md
       - 'Analyze Spectral Index': analyze_spectral_index.md
@@ -265,3 +266,4 @@ markdown_extensions:
   - toc:
       permalink: True
   - admonition
+  - attr_list

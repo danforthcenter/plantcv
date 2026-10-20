@@ -4,8 +4,9 @@
 import os
 import cv2
 import numpy as np
+from plantcv.plantcv.warn import warn
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import fatal_error, warn
+from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv._globals import params
 
 
@@ -20,16 +21,17 @@ def background_subtraction(background_image, foreground_image):
     If not, larger image will be taken and downsampled to smaller image size.
     If they are of different types, an error will occur.
 
-    Inputs:
-    background_image       = img object, RGB or binary/grayscale/single-channel
-    foreground_image       = img object, RGB or binary/grayscale/single-channel
+    Parameters:
+    -----------
+    background_image       : numpy.ndarray,
+        img object, RGB or binary/grayscale/single-channel
+    foreground_image       : numpy.ndarray,
+        img object, RGB or binary/grayscale/single-channel
 
     Returns:
-    fgmask                 = background subtracted foreground image (mask)
-
-    :param background_image: numpy.ndarray
-    :param foreground_image: numpy.ndarray
-    :return fgmask: numpy.ndarray
+    --------
+    fgmask                 : numpy.ndarray,
+        background subtracted foreground image (mask)
     """
     # Copying images to make sure not alter originals
     bg_img = np.copy(background_image)

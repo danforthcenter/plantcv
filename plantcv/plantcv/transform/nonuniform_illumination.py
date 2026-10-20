@@ -4,8 +4,8 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv._globals import params
-from plantcv.plantcv import gaussian_blur
-from plantcv.plantcv.transform import rescale
+from plantcv.plantcv.gaussian_blur import gaussian_blur
+from plantcv.plantcv.transform.rescale import rescale
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _rgb2gray
 from plantcv.plantcv.get_kernel import _format_kernel

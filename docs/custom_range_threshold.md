@@ -5,7 +5,7 @@ The threshold color-spaces that can be used are grayscale, RGB, HSV, CMYK, or LA
 
 **plantcv.threshold.custom_range**(*img, lower_thresh, upper_thresh, channel='RGB'*)
 
-**returns** mask, masked_img
+**returns** mask
 
 - **Parameters:**
     - img - RGB image data
@@ -32,15 +32,11 @@ img, path, filename = pcv.readimage(filename="rgb_example_img.jpg")
 # Create masked image from a color image based RGB color-space and threshold values. 
 # for lower and upper_thresh list as: thresh = [red_thresh, green_thresh, blue_thresh]
 
-mask, masked_img = pcv.threshold.custom_range(img=img, lower_thresh=[10,10,10], upper_thresh=[100,255,100], channel='RGB')
+mask = pcv.threshold.custom_range(img=img, lower_thresh=[10,10,10], upper_thresh=[100,255,100], channel='RGB')
 ```
 **Original image (RGB Color-space)**
 
 ![Screenshot](img/documentation_images/custom_range_threshold/rgb_original.jpg)
-
-**Masked image (RGB Color-space)**
-
-![Screenshot](img/documentation_images/custom_range_threshold/rgb_masked.jpg)
 
 **Mask (RGB Color-space)**
 
@@ -53,17 +49,13 @@ img, path, filename = pcv.readimage(filename="hsv_example_img.jpg")
 # Create masked image from a color image based HSV color-space and threshold values. 
 # for lower and upper_thresh list as: thresh = [hue_thresh, saturation_thresh, value_thresh]
 
-mask, masked_img = pcv.threshold.custom_range(img=img, lower_thresh=[30,65,20], upper_thresh=[70,255,220], channel='HSV')
+mask = pcv.threshold.custom_range(img=img, lower_thresh=[30,65,20], upper_thresh=[70,255,220], channel='HSV')
 
 ```
 
 **Original image (HSV Color-space)**
 
 ![Screenshot](img/documentation_images/custom_range_threshold/hsv_original.jpg)
-
-**Masked image (HSV Color-space)**
-
-![Screenshot](img/documentation_images/custom_range_threshold/hsv_masked.jpg)
 
 **Mask (HSV Color-space)**
 
@@ -76,17 +68,13 @@ img, path, filename = pcv.readimage(filename="lab_example_img.jpg")
 
 # Create masked image from a color image based LAB color-space and threshold values.
 # for lower and upper_thresh list as: thresh = [L_thresh, A_thresh, B_thresh]
-mask, masked_img = pcv.threshold.custom_range(img=img, lower_thresh=[0,0,158], upper_thresh=[255,255,255], channel='LAB')
+mask = pcv.threshold.custom_range(img=img, lower_thresh=[0,0,158], upper_thresh=[255,255,255], channel='LAB')
 
 ```
 
 **Original image (LAB Color-space)**
 
 ![Screenshot](img/documentation_images/custom_range_threshold/lab_original.jpg)
-
-**Masked image (LAB Color-space)**
-
-![Screenshot](img/documentation_images/custom_range_threshold/lab_masked.jpg)
 
 **Mask (LAB Color-space)**
 
@@ -100,17 +88,13 @@ gray_img, path, filename = pcv.readimage(filename="gray_example_img.jpg")
 
 # Create masked image based grayscale color-space and threshold values. 
 # Note that a grayscale image is used. pcv.threshold.custom_range works with both RGB and gray input images. 
-mask, masked_img = pcv.threshold.custom_range(img=gray_img, lower_thresh=[39], upper_thresh=[100], channel='gray')
+mask = pcv.threshold.custom_range(img=gray_img, lower_thresh=[39], upper_thresh=[100], channel='gray')
 
 ```
 
 **Original image (Grayscale Color-space)**
 
 ![Screenshot](img/documentation_images/custom_range_threshold/gray_original.jpg)
-
-**Masked image (Grayscale Color-space)**
-
-![Screenshot](img/documentation_images/custom_range_threshold/gray_masked.jpg)
 
 **Mask (Grayscale Color-space)**
 
