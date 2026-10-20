@@ -367,6 +367,13 @@ def _hash_current_file():
         # (ie, don't change has based on filename changes to read/save)
         exporter = PythonExporter()
         source, _ = exporter.from_notebook_node(nb)
+        pattern = r"|".join(
+            [
+                r".*?(.*?[.])?readimage\(.*?\)",  # ignore calls to readimage
+                r".*?(.*?[.])save_results\(.*?\)|\#\sIn\[[0-9]*\]",  # ignore save_results
+                r".*?WorkflowInputs\((\s*.*)?\s*images=\[.*\].*\)?"  # ignore WorkflowInputs images
+            ]
+        )
         pattern = r".*?(.*?[.])?read_image\(.*?\)|.*?(.*?[.])save_results\(.*?\)|\#\sIn\[[0-9]*\]"
         data = re.sub(pattern, "", source)
         # md5 sum of file
