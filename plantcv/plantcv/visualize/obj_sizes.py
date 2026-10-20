@@ -5,8 +5,9 @@ import cv2
 import random
 import numpy as np
 from plantcv.plantcv._globals import params
-from plantcv.plantcv import color_palette
+from plantcv.plantcv.color_palette import color_palette
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _is_binary
 
 
 def obj_sizes(img, mask, num_objects=100, scale_size=False):
@@ -29,6 +30,7 @@ def obj_sizes(img, mask, num_objects=100, scale_size=False):
     plotting_img : numpy.ndarray,
         Plotting image with objects labeled by area
     """
+    _ = _is_binary(mask, True, True)
     plotting_img = np.copy(img)
     # Convert grayscale images to color
     if len(np.shape(plotting_img)) == 2:

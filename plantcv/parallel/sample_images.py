@@ -2,7 +2,7 @@ import os
 import random
 import shutil
 import json
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.parallel.workflowconfig import WorkflowConfig
 from plantcv.parallel.parsers import metadata_parser
 

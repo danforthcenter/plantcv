@@ -32,4 +32,23 @@ Before training, `samples_file` is automatically checked for formatting problems
 - **Context:**
     - Used to help differentiate two or more feature classes
 
+- **Example use:**
+    - below
+
+Through python we can call `naive_bayes_multiclass` through the `plantcv.learn` module.
+
+```python
+from plantcv import learn
+
+learn.naive_bayes_multiclass(samples_file="naive_bayes_data.txt",
+                  outfile="probability_densities.txt")
+```
+
+Alternatively, a command line utility is available.
+
+```bash
+plantcv-train naive_bayes_multiclass --file ./naive_bayes_data.txt --outfile ./probability_densities.txt
+```
+
+
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/learn/naive_bayes.py)

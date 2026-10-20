@@ -3,10 +3,9 @@
 import inspect
 import numpy as np
 import os
-from plantcv.plantcv import fatal_error
 from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv._helpers import _rect_filter, _rect_replace
+from plantcv.plantcv._helpers import _rect_filter, _rect_replace, _is_binary
 from skimage.morphology import remove_small_objects
 
 _SKIMAGE_USE_MAX_SIZE = "max_size" in inspect.signature(remove_small_objects).parameters
@@ -42,6 +41,8 @@ def fill(bin_img, size, roi=None, scale_size=False):
     size_px = size
     if scale_size:
         size_px = size / (params.px_height * params.px_width)
+    # Make sure the image is binary
+    _ = _is_binary(bin_img, True, True)
 
     # Cast binary image to boolean
     bool_img = bin_img.astype(bool)

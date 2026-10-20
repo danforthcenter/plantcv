@@ -2,8 +2,9 @@
 import os
 import cv2
 import numpy as np
-from plantcv.plantcv import params, fatal_error
-from plantcv.plantcv.roi import circle
+from plantcv.plantcv._globals import params
+from plantcv.plantcv.fatal_error import fatal_error
+from plantcv.plantcv.roi.roi_methods import circle
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv.transform.rerun_delta_e import _rerun_delta_e
 from plantcv.plantcv.transform.get_color_matrix import get_color_matrix, get_matrix_m
