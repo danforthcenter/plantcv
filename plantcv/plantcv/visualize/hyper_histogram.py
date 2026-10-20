@@ -3,9 +3,11 @@ import os
 import numpy as np
 import pandas as pd
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import fatal_error, params, color_palette
-from plantcv.plantcv.hyperspectral import _find_closest
-from plantcv.plantcv.visualize import histogram
+from plantcv.plantcv._globals import params
+from plantcv.plantcv.color_palette import color_palette
+from plantcv.plantcv.fatal_error import fatal_error
+from plantcv.plantcv.hyperspectral.read_data import _find_closest
+from plantcv.plantcv.visualize.histogram import histogram
 import altair as alt
 import math
 

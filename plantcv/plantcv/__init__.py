@@ -87,6 +87,7 @@ from plantcv.plantcv import qc
 from plantcv.plantcv.process_results import process_results
 from plantcv.plantcv.json2csv import json2csv
 from plantcv.plantcv.masks2labels import masks2labels
+from plantcv.plantcv.submask import sub_mask
 from plantcv.plantcv import multispec
 # add new functions to end of lists
 
@@ -172,5 +173,6 @@ __all__ = [
     "process_results",
     "json2csv",
     "masks2labels",
+    "sub_mask",
     "multispec"
 ]
