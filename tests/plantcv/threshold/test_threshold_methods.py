@@ -250,7 +250,7 @@ def test_dual_channels_img_return():
     roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     roi_obj = Objects(contours=[roi], hierarchy=[roi_str])
     mask = dual_channels(img, "a", "b", cut=roi_obj)
-    assert(np.shape(mask) == (10, 10))
+    assert np.shape(mask) == (10, 10)
 
 
 def test_dual_channels_bad_points():
