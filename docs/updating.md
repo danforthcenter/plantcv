@@ -63,6 +63,14 @@ automatically. Alternatively, you can run `pip install -e .` to reinstall the pa
 
 Deprecated the function in favor of `plantcv.filters.obj_props(..., regprop="eccentricity")`.
 
+#### plantcv.analyze.bound_horizontal
+
+Return value change from debug analysis image to a labeled mask and added `simplify` argument.
+
+#### plantcv.analyze.bound_vertical
+
+Return value change from debug analysis image to a labeled mask and added `simplify` argument.
+
 #### plantcv.analyze.npq
 
 Removed `ps_da_light` and `ps_da_dark` arguments in favor of `ps` argument that takes the entire `PSII_data` object.
@@ -78,6 +86,15 @@ The `plantcv.utils` module has been deleted with `sample_images` moving to `plan
 #### plantcv.parallel.WorkflowConfig
 
 Renamed the "json" attribute to "results" for clarity about what it controls and for consistency with new [JupyterConfig](parallel_jupyterconfig.md)
+
+#### plantcv.report_size_marker_area
+
+Removed `label` parameter since size marker data is now stored as metadata in the
+[`Outputs` class](outputs.md) and does not need to be labeled per sample.
+
+#### plantcv.roi.quick_filter
+
+Speed improvement was applied to `plantcv.roi.filter` and the `quick_filter` function has been deprecated.
 
 #### plantcv.segment_image_series
 
@@ -98,6 +115,10 @@ Removed `label` parameter since size marker data is now stored as metadata in th
 Renamed `points` argument to `cut` because ROI tools can now be used to threshold the
 chosen colorspace. Return value is a binary mask unless `cut` is `None` (the default)
 in which case a 3D numpy array (RGB image) is returned.
+
+#### plantcv.threshold.custom_range
+
+Removed the `masked_img` output. If the `masked_img` visualization is desired then the `pcv.apply_mask` function should be used.
 
 #### plantcv.transform.auto_correct_color
 
@@ -376,13 +397,13 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: (see plantcv.analyze_bound_horizontal)
 * post v4.0: analysis_image = **plantcv.analyze.bound_horizontal**(*img, labeled_mask, line_position, n_labels=1, label=None*)
-
+* post v5.0: boundary_labeled_mask = **plantcv.analyze.bound_horizontal**(*img, labeled_mask, line_position, simplify=True, n_labels=1, label=None*)
 
 #### plantcv.analyze.bound_vertical
 
 * pre v4.0: (see plantcv.analyze_bound_vertical)
 * post v4.0: analysis_image = **plantcv.analyze.bound_vertical**(*img, labeled_mask, line_position, n_labels=1, label=None*)
-
+* post v5.0: boundary_labeled_mask = **plantcv.analyze.bound_vertical**(*img, labeled_mask, line_position, simplify=True, n_labels=1, label=None*)
 
 #### plantcv.analyze.color
 
@@ -394,6 +415,11 @@ pages for more details on the input and output variable types.
 * pre v4.2.1: NA
 * post v4.2.1: dist_chart = **plantcv.analyze.distribution**(*labeled_mask, n_labels=1, direction="down", bin_size=100, hist_range="absolute", label=None*)
 
+#### plantcv.analyze.etr
+
+* pre v5.0: NA
+* post v5.0: _ = **plantcv.analyze.etr**(*actinic_light, psi_psii_ratio=0.5*)
+
 #### plantcv.analyze.grayscale
 
 * pre v4.0: (see plantcv.analyze_nir_intensity)
@@ -404,6 +430,10 @@ pages for more details on the input and output variable types.
 * pre v4.0: NA
 * post v4.0: npq, npq_hist = **plantcv.analyze.npq**(*ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto", measurement_labels=None, label=None*)
 * post v5.0: npq, npq_hist = **plantcv.analyze.npq**(*ps, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto", measurement_labels=None, label=None*)
+
+#### plantcv.analyze.radial_percentile
+* pre v4.9: NA
+* post v5.0: avgs = **plantcv.analyze.radial_percentile**(*img, labeled_mask, n_labels=1, percentile=50, label=None*)
 
 #### plantcv.analyze.size
 
@@ -730,13 +760,18 @@ pages for more details on the input and output variable types.
 * post v3.11: **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r, label="default"*)
 * post v4.0: DEPRECATED see plantcv.homology.landmark_reference_pt_dist
 
-
 #### plantcv.laplace_filter
 
 * pre v3.0dev2: device, lp_filtered = **plantcv.laplace_filter**(*img, k, scale, device, debug=None*)
 * post v3.0dev2: lp_filtered = **plantcv.laplace_filter**(*gray_img, k, scale*)
 * post v3.2: lp_filtered = **plantcv.laplace_filter**(*gray_img, ksize, scale*)
 * post v4.9: lp_filtered = **plantcv.laplace_filter**(*gray_img, ksize, scale, roi=None*)
+
+#### plantcv.learn.train_kmeans
+
+* pre v4.3: NA 
+* post v4.3: **plantcv.learn.train_kmeans**(*img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, sigma=5, sampling=None, seed=1, num_imgs=0, n_init=10*)
+* post v4.6: **plantcv.learn.train_kmeans**(*img_dir, k, out_path="./kmeansout.fit", prefix="", patch_size=10, mode=None, sigma=5, sampling=None, seed=1, num_imgs=0, n_init=10*)
 
 #### plantcv.logical_and
 
@@ -1014,6 +1049,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.3: NA
 * post v4.3: **plantcv.predict_kmeans**(*img, model_path="./kmeansout.fit", patch_size=10*)
+* post v4.6: **plantcv.predict_kmeans**(*img, model_path="./kmeansout.fit", patch_size=10, mode=None*)
 
 #### plantcv.print_image
 
@@ -1183,6 +1219,8 @@ pages for more details on the input and output variable types.
 * pre v4.2.1: NA
 * post v4.2.1: filtered_mask = **plantcv.roi.quick_filter**(*mask, roi*)
 * post v4.9: filtered_mask = **plantcv.roi.quick_filter**(*mask, roi, roi_type="partial"*)
+* post v5.0: Deprecated, see:
+    * filtered_mask = **pcv.roi.filter**(*mask, roi, roi_type='partial'*)
 
 #### plantcv.roi_objects
 
@@ -1437,6 +1475,7 @@ pages for more details on the input and output variable types.
 * pre v3.3: NA
 * post v3.3: mask, masked_img = **plantcv.threshold.custom_range**(*rgb_img, lower_thresh, upper_thresh, channel='RGB'*)**
 * post v3.8: mask, masked_img = **plantcv.threshold.custom_range**(*img, lower_thresh, upper_thresh, channel='RGB'*)**
+* post v5.0: mask = **plantcv.threshold.custom_range**(*img, lower_thresh, upper_thresh, channel='RGB'*)**
 
 #### plantcv.threshold.gaussian
 

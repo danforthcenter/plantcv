@@ -1,5 +1,6 @@
 import pytest
 import cv2
+import numpy as np
 from plantcv.plantcv import spatial_clustering
 
 
@@ -18,3 +19,10 @@ def test_spatial_clustering_badinput(test_data):
     img = cv2.imread(test_data.small_bin_img)
     with pytest.raises(NameError):
         _ = spatial_clustering(img, algorithm="Hydra", min_cluster_size=5, max_distance=100)
+
+
+def test_spatial_clustering_empty_mask():
+    """Test for PlantCV."""
+    mask = np.zeros((100, 100), dtype=np.uint8)
+    spmask = spatial_clustering(mask, algorithm="DBSCAN", min_cluster_size=5, max_distance=100)
+    assert spmask[1] == []

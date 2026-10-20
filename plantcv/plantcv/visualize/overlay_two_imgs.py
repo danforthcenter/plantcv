@@ -4,10 +4,10 @@ import os
 import cv2
 import numpy as np
 from skimage import img_as_ubyte
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._globals import params
-from plantcv.plantcv.transform import rescale
+from plantcv.plantcv.transform.rescale import rescale
 
 
 def _preprocess_img_dtype(img):

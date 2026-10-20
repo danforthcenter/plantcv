@@ -2,8 +2,11 @@
 import cv2
 import numpy as np
 import os
-from plantcv.plantcv import params, outputs, fatal_error, apply_mask, warn
-from plantcv.plantcv.threshold import binary as binary_threshold
+from plantcv.plantcv._globals import params, outputs
+from plantcv.plantcv.apply_mask import apply_mask
+from plantcv.plantcv.fatal_error import fatal_error
+from plantcv.plantcv.warn import warn
+from plantcv.plantcv.threshold.threshold_methods import binary as binary_threshold
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _object_composition, _roi_filter, _rgb2hsv
 
@@ -62,15 +65,8 @@ def report_size_marker_area(img, roi, marker='define', objcolor='dark', thresh_c
             marker_hsv = _rgb2hsv(rgb_img=masked, channel=thresh_channel)
             # Threshold the HSV image
             marker_bin = binary_threshold(gray_img=marker_hsv, threshold=thresh, object_type=objcolor)
-            # Identify contours in the masked image
-            contours, hierarchy = _cv2_findcontours(bin_img=marker_bin)
-
             # Filter marker contours using the input ROI
-            kept_contours, kept_hierarchy, _ = _roi_filter(img=marker_bin, roi=roi, obj=contours,
-                                                           hierarchy=hierarchy, roi_type="partial")
-            # If there are more than one contour detected, combine them into one
-            marker_contour = _object_composition(contours=kept_contours, hierarchy=kept_hierarchy)
-            cv2.drawContours(marker_mask, kept_contours, -1, (255), -1, hierarchy=kept_hierarchy)
+            marker_mask = _roi_filter(mask=marker_bin, roi=roi, roi_type="partial")
         else:
             # Reset debug mode
             params.debug = debug

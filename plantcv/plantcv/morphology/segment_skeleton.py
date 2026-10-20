@@ -3,8 +3,8 @@
 import os
 import cv2
 from plantcv.plantcv._globals import params
-from plantcv.plantcv import color_palette
-from plantcv.plantcv.morphology import find_branch_pts
+from plantcv.plantcv.color_palette import color_palette
+from plantcv.plantcv.morphology.find_branch_pts import find_branch_pts
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _dilate, _image_subtract
 
