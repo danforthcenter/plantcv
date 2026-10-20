@@ -28,6 +28,7 @@ nav:
       - 'Params (Debugging)': params.md
       - 'Read Image': read_image.md
       - 'Read Raw Image (bayer)': read_bayer.md
+      - 'Read Multispectral images': multispec_read_ms.md
       - 'Open Image from URL': io_open_url.md
       - 'Random Subset': io_random_subset.md
       - 'Read Dataset': io_read_dataset.md
@@ -49,6 +50,7 @@ nav:
       - 'Auto-Detect Color Card': transform_detect_color_card.md
       - 'Auto Correct Color': transform_auto_correct_color.md
       - 'Auto Correct Color (non-linear)': transform_auto_correct_color_nonlinear.md
+      - 'Alternative MCC Color Card Detection': transform_mcc_detect.md
       - 'Create Color Card Mask': create_color_card_mask.md
       - 'Convert Color Card to Matrix': get_color_matrix.md
       - 'Color Correct to Target Image': transform_correct_color.md
@@ -128,6 +130,7 @@ nav:
       - 'Filter a mask by ROI': roi_filter.md
       - 'Filter a mask by ROI (quickly)': roi_quick_filter.md
       - 'Convert ROI to Mask': roi2mask.md
+      - 'Sample Regions of a Mask': sub_mask.md
       - 'Objects Class': objects.md
     - 'Segmentation Methods':
       - 'Naive Bayes': naive_bayes.md
@@ -231,6 +234,8 @@ nav:
     - 'Extract wavelength': extract_wavelength.md
     - 'Rotate HSI': hyperspectral_rot90.md
     - 'Spectral data objects': Spectral_data.md
+    - 'Multispectra data objects': ms_data.md
+    - 'Read Multispectral images': multispec_read_ms.md
     - 'Write HSI data': write_data.md
     - 'Merge Multispectral Images': image_fusion.md
   - 'Photosynthesis Functions':
@@ -238,6 +243,8 @@ nav:
     - 'Reassign Frame Labels': photosynthesis_reassign_frame_labels.md
     - 'Analyze YII': analyze_yii.md
     - 'Analyze NPQ': analyze_npq.md
+    - 'Analyze ETR': analyze_etr.md
+    - 'Analyze AlphaL': analyze_alphaL.md
     - 'Visualize Chlorophyll Fluorescence': visualize_chlorophyll_fluorescence.md     
   - 'Machine Learning Training':
     - 'Kmeans Clustering': train_kmeans.md
