@@ -352,12 +352,12 @@ def _hash_current_file():
     hash_code = None
     import __main__ as main
     in_file = bool(getattr(main, "__file__", False))
-    in_jupyter = "JPY_SESSION_NAME" in os.environ.keys()
+    in_jupyter = "JPY_SESSION_NAME" in os.environ
     # if in_file then we are in a python script and we'll use it as is
     if in_file:
         py_file_name = main.__file__
         with open(py_file_name, "rb") as f:
-            hash_code = hashlib.file_digest(f, "md5").hexdigest()
+            hash_code = hashlib.file_digest(f, "sha256").hexdigest()
     # if in_jupyter then we'll convert the ipynb to py
     if in_jupyter:
         ipynb_path = os.environ["JPY_SESSION_NAME"]
@@ -370,7 +370,7 @@ def _hash_current_file():
         pattern = r".*?(.*?[.])?read_image\(.*?\)|.*?(.*?[.])save_results\(.*?\)|\#\sIn\[[0-9]*\]"
         data = re.sub(pattern, "", source)
         # md5 sum of file
-        hash_code = hashlib.md5(data.encode('utf-8')).hexdigest()
+        hash_code = hashlib.sha256(data.encode('utf-8')).hexdigest()
 
     return hash_code
 
