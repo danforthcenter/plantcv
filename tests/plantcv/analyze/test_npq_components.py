@@ -16,10 +16,10 @@ def test_npq_components(test_data):
     mask = np.zeros(ps.pmt.pam_time.shape[0:2])
     mask[1:50, 1:50] = 1
     mask[51:100, 51:100] = 2
-    l = npq_components(ps, mask.astype(np.uint8))
+    comps = npq_components(ps, mask.astype(np.uint8))
     # this will be nan here, but the data does seem to work
     assert outputs.observations["default_1"]["mean_qP_t1"]
-    assert np.isclose(np.max(l[0]["qP"][np.isfinite(l[0]["qP"])]), 69)
+    assert np.isclose(np.max(comps[0]["qP"][np.isfinite(comps[0]["qP"])]), 69)
 
 
 def test_npq_components_fmpp(test_data, tmpdir, monkeypatch):
