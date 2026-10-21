@@ -110,6 +110,12 @@ with RGB and hyperspectral data.
 Removed `label` parameter since size marker data is now stored as metadata in the
 [`Outputs` class](outputs.md) and does not need to be labeled per sample.
 
+#### plantcv.threshold.dual_channels
+
+Renamed `points` argument to `cut` because ROI tools can now be used to threshold the
+chosen colorspace. Return value is a binary mask unless `cut` is `None` (the default)
+in which case a 3D numpy array (RGB image) is returned.
+
 #### plantcv.threshold.custom_range
 
 Removed the `masked_img` output. If the `masked_img` visualization is desired then the `pcv.apply_mask` function should be used.
@@ -1460,6 +1466,7 @@ pages for more details on the input and output variable types.
 
 * pre v4.0: NA
 * post v4.0: bin_img = **plantcv.threshold.dual_channels**(*rgb_img, x_channel, y_channel, points, above=True*)
+* post v5.0: bin_img or numpy.ndarray = **plantcv.threshold.dual_channels**(*rgb_img, x_channel, y_channel, cut=None, above=True*)
 
 #### plantcv.threshold.binary
 
