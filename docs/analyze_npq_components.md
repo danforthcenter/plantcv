@@ -6,7 +6,7 @@ calculated components.
 
 **plantcv.analyze.npq_componeents**(*ps, labeled_mask, n_labels=1, label=None*)
 
-**returns** list of dictionaries containing numpy.ndarrays
+**returns** list of dictionaries containing numpy.ndarrays for each light and recovery measurement.
 
 - **Parameters:**
     - ps - PSII Data object containing `ojip_dark` and `ojip_light` data from `npq` or `psl` and `psd` images.
@@ -45,7 +45,7 @@ pcv.params.sample_label = "plant"
 l = pcv.analyze.npq_components(ps=ps, labeled_mask=kept_mask)
 
 # Access the qP mean value
-qP_median = pcv.outputs.observations['plant_1']['qP_median_t0']['value']
+qP_median = pcv.outputs.observations['plant_1']['qP_median_t1']['value']
 
 ```
 
