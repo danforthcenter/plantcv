@@ -4,7 +4,6 @@ import sys
 import dask
 import pytest
 import shutil
-import tempfile
 from plantcv.parallel import WorkflowConfig
 from plantcv.parallel.cli import main
 
@@ -14,7 +13,6 @@ def test_parallel_cli_template(tmpdir):
     # Create a test tmp directory and results file
     conf_file = tmpdir.mkdir("sub").join("config.json")
     # Mock ARGV
-    import sys
     sys.argv = ["plantcv-run-workflow", "--template", conf_file.strpath]
     with pytest.raises(SystemExit):
         main()
@@ -32,7 +30,6 @@ def test_parallel_cli_dryrun(parallel_test_data, tmpdir):
     config.img_outdir = str(conf_file.dirpath())
     config.save_config(config_file=conf_file.strpath)
     # Mock ARGV
-    import sys
     sys.argv = ["plantcv-run-workflow", "--dryrun", conf_file.strpath]
     assert main() is None
 
@@ -49,7 +46,6 @@ def test_parallel_cli_invalid_config(parallel_test_data, tmpdir):
     config.img_outdir = str(conf_file.dirpath())
     config.save_config(config_file=conf_file.strpath)
     # Mock ARGV
-    import sys
     sys.argv = ["plantcv-run-workflow", "--config", conf_file.strpath]
     with pytest.raises(SystemExit) as exitcode:
         main()
@@ -68,7 +64,6 @@ def test_parallel_cli_overwriting_config(parallel_test_data, tmpdir):
     config.img_outdir = str(conf_file.dirpath())
     config.save_config(config_file=conf_file.strpath)
     # Mock ARGV
-    import sys
     sys.argv = ["plantcv-run-workflow", "--config", conf_file.strpath]
     with pytest.raises(SystemExit) as exitcode:
         main()
