@@ -274,7 +274,7 @@ Below is an overview of all updates to function signatures through the developme
 #### parallel.inspect_dataset
 
 * pre v4.10: NA
-* post v4.10: **parallel.inspect_dataset**(*config*)
+* post v4.10: summary, meta = **parallel.inspect_dataset**(*config*)
 
 #### parallel.job_builder
 
@@ -295,6 +295,12 @@ Below is an overview of all updates to function signatures through the developme
 
 * pre v4.10: Untracked
 * post v4.10: **parallel.multiprocess**(*jobs, client*)
+
+#### parallel.process_results
+
+* pre v4.10: Untracked
+* post v4.10: **parallel.process_results**(*config*)
+* post v5.0: DEPRECATED, see plantcv.process_results
 
 #### parallel.run_parallel
 
@@ -990,52 +996,6 @@ Below is an overview of all updates to function signatures through the developme
 
 * pre v3.12: NA
 * post v3.12: **plantcv.outputs.save_results**(*filename, outformat="json"*)
-
-#### plantcv.parallel.create_dask_cluster
-
-* pre v4.10: Untracked
-* post v4.10: **plantcv.parallel.create_dask_cluster**(*config, cluster_config*)
-
-#### plantcv.parallel.inspect_dataset
-
-* pre v4.10: NA
-* post v4.10: **plantcv.parallel.inspect_dataset**(*config*)
-
-#### plantcv.parallel.job_builder
-
-* pre v4.10: Untracked
-* post v4.10: **plantcv.parallel.job_builder**(*meta, config*)
-
-#### plantcv.parallel.JupyterConfig
-
-* pre v5: NA
-* post v5: **plantcv.parallel.JupyterConfig()**
-
-#### plantcv.parallel.metadata_parser
-
-* pre v4.10: Untracked
-* post 4.10: **plantcv.parallel.metadata_parser**(*config*)
-
-#### plantcv.parallel.multiprocess
-
-* pre v4.10: Untracked
-* post v4.10: **plantcv.parallel.multiprocess**(*jobs, client*)
-
-#### plantcv.parallel.process_results
-
-* pre v4.10: Untracked
-* post v4.10: **plantcv.parallel.process_results**(*config*)
-* post v5.0: DEPRECATED, see plantcv.process_results
-
-#### plantcv.parallel.workflow_inputs
-
-* pre v4.10: Untracked
-* post v4.10: **plantcv.parallel.workflow_inputs**(*\*other_args*)
-
-#### plantcv.parallel.WorkflowConfig
-
-* pre v5: Untracked
-* post v5: **plantcv.parallel.WorkflowConfig()
 
 #### plantcv.Params
 
