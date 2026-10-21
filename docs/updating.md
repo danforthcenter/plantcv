@@ -259,10 +259,7 @@ new [parallel processing documentation](pipeline_parallel.md) for more details.
 
 ### Changelog <a name="changelog"></a>
 
-Below is an overview of all updates that are required to convert a pre-v3.0dev2
-function call to the most updated function call.
-See the individual function help
-pages for more details on the input and output variable types.
+Below is an overview of all updates to function signatures through the development of PlantCV. See the individual function help pages for more details on the input and output variable types.
 
 #### learn.train_kmeans
 
@@ -284,6 +281,11 @@ pages for more details on the input and output variable types.
 * pre v4.10: Untracked
 * post v4.10: **parallel.job_builder**(*meta, config*)
 
+#### parallel.JupyterConfig
+
+* pre v5.0: Untracked
+* post v5.0: JupyterConfig_instance = **parallel.JupyterConfig**(*\*other_args*)
+
 #### parallel.metadata_parser
 
 * pre v4.10: Untracked
@@ -299,10 +301,20 @@ pages for more details on the input and output variable types.
 * pre v4.10: NA
 * post v4.10: **parallel.run_parallel**(*config*)
 
+#### parallel.WorkflowConfig
+
+* pre v5.0: Untracked
+* post v5.0: WorkflowConfig_instance = **parallel.WorkflowConfig**(*input_dir="", results="", workflow="", \*other_args*)
+
 #### parallel.workflow_inputs
 
 * pre v4.10: Untracked
-* post v4.10: **parallel.workflow_inputs**(*\*other_args*)
+* post v4.10: workflow_inputs_instance = **parallel.workflow_inputs**(*\*other_args*)
+
+#### parallel.WorkflowInputs
+
+* pre v5.0: Untracked
+* post v5.0: WorkflowInputs_instance = **WorkflowInputs**(*\*other_args*)
 
 #### plantcv.acute
 
@@ -910,6 +922,11 @@ pages for more details on the input and output variable types.
 * pre v3.3: NA
 * post v3.3: skeleton = **plantcv.morphology.skeletonize**(*mask*)
 
+#### plantcv.MS_data
+
+* pre v5.0: NA
+* post v5.0: MS_data_instance = **plantcv.MS_data**(*array_data, wavelength_dict, max_wavelength, min_wavelength, pseudo_rgb, filename, metadata=None*)
+
 #### plantcv.multispec.read_ms
 
 * pre v5.0: NA
@@ -919,6 +936,11 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, masks = **plantcv.naive_bayes_classifier(*img, pdf_file, device, debug=None*)**
 * post v3.0dev2: masks = **plantcv.naive_bayes_classifier(*rgb_img, pdf_file*)**
+
+#### plantcv.Objects
+
+* pre v5.0: Untracked
+* post v5.0: Objects_instance = **plantcv.Objects**(*contours=None, hierarchy=None*)
 
 #### plantcv.object_composition
 
@@ -942,6 +964,11 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, maskpath, analysis_images = **plantcv.output_mask**(*device, img, mask, filename, outdir=None, mask_only=False, debug=None*)
 * post v3.0dev2: imgpath, maskpath, analysis_images = **plantcv.output_mask**(*img, mask, filename, outdir=None, mask_only=False*)
+
+#### plantcv.Outputs
+
+* pre v5.0: Untracked
+* post v5.0: outputs_instance = **plantcv.Outputs()**
 
 #### plantcv.outputs.add_observation
 
@@ -1010,6 +1037,11 @@ pages for more details on the input and output variable types.
 * pre v5: Untracked
 * post v5: **plantcv.parallel.WorkflowConfig()
 
+#### plantcv.Params
+
+* pre v5.0: Untracked
+* post v5.0: Params_instance = **plantcv.Params**(*device=0, debug=None, debug_outdir=".", line_thickness=5, line_color=(255, 0, 255), dpi=100, text_size=0.55, text_thickness=2, marker_size=60, color_scale="gist_rainbow", color_sequence="sequential", sample_label="default", saved_color_scale=None, verbose=1, unit="pixels", px_height=1, px_width=1, deltaE="deltaE_ciede2000", area_unit=None*)
+
 #### plantcv.photosynthesis.analyze_fvfm
 
 * pre v3.10: see plantcv.fluor_fvfm
@@ -1040,10 +1072,16 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: **plantcv.plot_image**(*img, cmap=None*)
 * post v3.0dev2: **plantcv.plot_image**(*img, cmap=None*)
 
+### plantcv.Point
+
+* pre v5.0: See plantcv.Points
+* post v5.0: Point_instance = **plantcv.Point**(*img, figsize=(6,12)*)
+
 #### plantcv.Points
 
 * pre v4.0: NA
 * post v4.0: marker = **plantcv.Points**(*img, figsize=(6,12)*)
+* post v5.0: Moved to plantcv.plantcv.Point
 
 #### plantcv.predict_kmeans
 
@@ -1073,6 +1111,11 @@ pages for more details on the input and output variable types.
 * post v3.1: pseudo_img = **plantcv.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, dpi=None, axes=True, colorbar=True*)
 * post v3.2: Deprecated, see:
     * pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, axes=True, colorbar=True*)
+
+#### plantcv.PSII_data
+
+* pre v5.0: Untracked
+* post v5.0: PSII_data_instance = **plantcv.PSII_data**(*metadata=None*)
 
 #### plantcv.qc.exposure
 
@@ -1313,6 +1356,11 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: sb_img = **plantcv.sobel_filter**(*gray_img, dx, dy, k*)
 * post v3.2: sb_img = **plantcv.sobel_filer**(*gray_img, dx, dy, ksize*)
 * post v4.9: sb_img = **plantcv.sobel_filer**(*gray_img, dx, dy, ksize, roi=None*)
+
+#### plantcv.Spectral_data
+
+* pre v5.0: Untracked
+* post v5.0: Spectral_data_instance = **plantcv.Spectral_data**(*array_data, max_wavelength, min_wavelength, max_value, min_value, d_type, wavelength_dict, samples, lines, interleave, wavelength_units, array_type, pseudo_rgb, filename, default_bands, byte_order=0, file_type="ENVI", header_offset=0, metadata=None*)
 
 #### plantcv.spectral_index.ari
 
