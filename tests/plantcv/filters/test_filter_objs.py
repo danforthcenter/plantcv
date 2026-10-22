@@ -108,3 +108,21 @@ def test_filter_objs_none_pass(filters_test_data):
     filtered_mask = obj_props(bin_img=mask, cut_side="upper", thresh=1000000, regprop="area")
     _, nobjs = create_labels(mask=filtered_mask)
     assert nobjs == 0
+
+
+def test_filter_objs_area_rescaled(test_data):
+    """Test for PlantCV."""
+    prev_px_height = params.px_height
+    prev_px_width = params.px_width
+    params.px_height = 0.1
+    params.px_width = 0.1
+    params.unit = "hectares"
+    img = np.zeros((100, 100), dtype=np.uint8)
+    img[0:10, 0:10] = 1
+    img[11:40, 11:40] = 1
+    img[50:99, 50:99] = 1
+    filtered_mask = obj_props(bin_img=img, thresh=9, scale_size=True)
+    params.px_height = prev_px_height
+    params.px_width = prev_px_width
+    params.unit = "pixels"
+    assert np.sum(filtered_mask / 255) == 2401
