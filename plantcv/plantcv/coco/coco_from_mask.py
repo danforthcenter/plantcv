@@ -117,14 +117,6 @@ def _coco_annotation_from_mask(coco, mask, **kwargs):
                           "image_id": image_id}
 
     # binary masks are split into connected objects, labeled masks keep their labels
-    if np.unique(mask[mask != 0]).size <= 1:
-        labeled_mask = label(mask != 0, background=0, connectivity=2)
-    else:
-        labeled_mask = mask
-
-    # building this for object detection to start, I might end up
-    # having helpers for object (stuff), keypoints, panoptics, captions, and densepose though.
-
     labeled_mask = mask
     if np.unique(mask[mask != 0]).size <= 1:
         labeled_mask = label(mask != 0, background=0, connectivity=2)

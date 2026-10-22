@@ -5,6 +5,7 @@ from plantcv.plantcv.classes import COCO
 
 
 def _square_mask():
+    """Helper for tests."""
     mask = np.zeros((100, 100), dtype=np.uint8)
     mask[30:70, 30:70] = 1
     return mask

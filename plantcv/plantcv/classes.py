@@ -264,7 +264,7 @@ class COCO:
                 "images": self.images,
                 "annotations": self.annotations,
                 "categories": self.categories}
-    
+
     def __str__(self):
         """string representation of COCO object"""
         content = vars(self)
@@ -424,11 +424,10 @@ class COCO:
         content = self._to_dict()
         # if file already exists then append/merge records
         if os.path.isfile(filename) and mode.lower() == "a":
-            with open(filename, 'r') as f:
-                existing = COCO()
-                existing.load(filename)
-                existing._append(self)
-                content = existing._to_dict()
+            existing = COCO()
+            existing.load(filename)
+            existing._append(self)
+            content = existing._to_dict()
 
         with open(filename, mode='w') as fp:
             # Save the data in JSON format with indentation
