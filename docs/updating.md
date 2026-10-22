@@ -449,7 +449,13 @@ Below is an overview of all updates to function signatures through the developme
 * post v4.0: npq, npq_hist = **plantcv.analyze.npq**(*ps_da_light, ps_da_dark, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto", measurement_labels=None, label=None*)
 * post v5.0: npq, npq_hist = **plantcv.analyze.npq**(*ps, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto", measurement_labels=None, label=None*)
 
+#### plantcv.analyze.npq_components
+
+* pre v5.0: NA
+* post v5.0: output_list = **plantcv.analyze.npq_components**(*ps, labeled_mask, n_labels=1, label=None*)
+
 #### plantcv.analyze.radial_percentile
+
 * pre v4.9: NA
 * post v5.0: avgs = **plantcv.analyze.radial_percentile**(*img, labeled_mask, n_labels=1, percentile=50, label=None*)
 
@@ -458,12 +464,10 @@ Below is an overview of all updates to function signatures through the developme
 * pre v4.0: (see plantcv.analyze_object)
 * post v4.0: analysis_image = **plantcv.analyze.size**(*img, labeled_mask, n_labels=1, label=None*)
 
-
 #### plantcv.analyze.spectral_index
 
 * pre v4.0: (see plantcv.hyperspectral.analyze_index)
 * post v4.0: analysis_image = **plantcv.analyze.spectral_index**(*index_img, labeled_mask, n_labels=1, bins=100, min_bin=0, max_bin=1, label=None*)
-
 
 #### plantcv.analyze.spectral_reflectance
 

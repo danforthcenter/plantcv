@@ -539,6 +539,39 @@ class TestData:
             })
             return ps
 
+    @staticmethod
+    def make_synthetic_pmt():
+        """Build a 4x4 PMT cube laid out the way PMT._load fills it.
+
+        t0 = dark-adapted baseline, t1 = light, t2 = recovery (also holds F0p).
+        Every frame_label is zero outside the measurement it belongs to.
+        """
+        frame_labels = ["Fdark", "F0", "Fm", "Fdarksat",
+                        "Flight", "Fp", "Fmp", "Flightsat",
+                        "Fdarkpp", "F0pp", "Fmpp", "Fdarksatpp",
+                        "F0p"]
+        measurements = ["t0", "t1", "t2"]
+        data = np.zeros((4, 4, len(frame_labels), len(measurements)))
+
+        def put(label, meas, value):
+            data[:, :, frame_labels.index(label), measurements.index(meas)] = value
+
+        put("F0", "t0", 100)
+        put("Fm", "t0", 500)
+        put("Fp", "t1", 200)
+        put("Fmp", "t1", 300)
+        put("Fmpp", "t2", 400)
+        put("F0p", "t2", 90)
+
+        da = xr.DataArray(data=data,
+                          dims=("x", "y", "frame_label", "measurement"),
+                          coords={"frame_label": frame_labels,
+                                  "frame_num": ("frame_label", list(range(len(frame_labels)))),
+                                  "measurement": measurements},
+                          name="pam_time")
+        sub_ps = type("subpsdata", (object,), {"pam_time": da})
+        return type("psdata", (object,), {"pmt": sub_ps})
+
 
 @pytest.fixture(scope="session")
 def test_data():
