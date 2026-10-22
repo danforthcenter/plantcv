@@ -74,8 +74,7 @@ def npqfast(ps, labeled_mask, n_labels=1, min_bin=0, max_bin="auto", measurement
             submask = np.where(mask_copy == i, 255, 0).astype(np.uint8)
 
             # Mask the Fm frame with the label submask
-            first_meas = str(ps_da_light.measurement[0].values)
-            f0p = ps_da_light.sel(measurement=first_meas,
+            f0p = ps_da_light.sel(measurement=ps_da_light.measurement.values[-1],
                                   frame_label="F0p", drop=True).where(submask > 0, other=0)
             # Calculate NPQ fast
             fmp_var = str(ps_da_light.frame_label.values[ps_da_light.frame_label.str.match("Fmp+")][0])
