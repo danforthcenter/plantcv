@@ -1,3 +1,4 @@
+import pytest
 from plantcv.parallel import inspect_dataset, WorkflowConfig
 
 
@@ -29,6 +30,15 @@ def test_inspect_dataset_config_file(parallel_test_data):
     """Test for PlantCV
     Testing inspection for existing config files
     """
-    # workflowconfig_template_file here has an empty string input_dir so nothing is found
+    # workflowconfig_template_file here points to "." which will be an empty cache
     sdf, df = inspect_dataset(parallel_test_data.workflowconfig_template_file)
     assert sdf.shape == (0, 5) and df.shape == (0, 6)
+
+
+def test_inspect_dataset_bad_path():
+    """Test for PlantCV
+    Testing inspection for existing config files
+    """
+    with pytest.raises(RuntimeError):
+        _ = inspect_dataset("/badpath/worsepath")
+    

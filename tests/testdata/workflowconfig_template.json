@@ -1,5 +1,5 @@
 {
-    "input_dir": "",
+    "input_dir": ".",
     "results": "",
     "filename_metadata": [],
     "include_all_subdirs": true,

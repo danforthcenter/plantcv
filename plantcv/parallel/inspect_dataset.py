@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.parallel.parsers import metadata_parser
 from plantcv.parallel.workflowconfig import WorkflowConfig
 
@@ -23,6 +24,8 @@ def inspect_dataset(config):
             config.import_config(config_file=input_dir)
         else:
             config.input_dir = input_dir
+    if not os.path.exists(config.input_dir):
+        fatal_error(f"Path {config.input_dir} does not exist from {os.getcwd()}")
     # run the metadata parser to find images and return dataframes
     meta, removed = metadata_parser(config)
     # flag kept images
