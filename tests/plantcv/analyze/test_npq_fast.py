@@ -16,7 +16,7 @@ def test_npqfast(test_data):
                     labeled_mask=(255 * np.ones(ps.pmt.pam_time.shape[0:2])).astype(np.uint8),
                     measurement_labels=["x0", "x1"],
                     label="prefix", min_bin="auto", max_bin="auto")
-    assert bool(outputs.observations["prefix_1"]["npqfast_mean_x1"])
+    assert all(outputs.observations["prefix_1"]["npqfast_mean_x1"].items())
 
 
 def test_npqfast_bad_labels(test_data):

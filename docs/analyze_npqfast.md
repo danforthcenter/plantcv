@@ -6,7 +6,7 @@ Calculates  `4.88 / (Fmp / F0p - 1) - 1` data from a masked region for each `Fmp
 
 **plantcv.analyze.npqfast**(*ps, labeled_mask, n_labels=1, min_bin=0, max_bin="auto", measurement_labels=None, label=None*)
 
-**returns** NPQ DataArray and Histograms of NPQ values
+**returns** a list of NPQ DataArrays and a list of histograms
 
 - **Parameters:**
     - ps - PSII Data object containing `PMT` pam time data.
