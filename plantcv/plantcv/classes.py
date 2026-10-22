@@ -6,7 +6,7 @@ import datetime
 import numpy as np
 from importlib.metadata import version
 from plantcv.plantcv.annotate.points import _find_closest_pt
-from plantcv.plantcv.coco.coco_from_mask import _coco_annotation_from_mask
+from plantcv.plantcv.coco.coco_from_mask import _coco_annotation_from_mask, _next_id
 import matplotlib.pyplot as plt
 from math import floor
 
@@ -228,33 +228,43 @@ class COCO:
 
     def __init__(self, mask=None, **kwargs):
         # Define which keys are for each coco field
-        info_fields = ["description", "datetime", "date", "time"]
+        info_fields = ["description", "version", "year", "contributor", "date_created",
+                       "datetime", "date", "time"]
         license_fields = ["id", "name", "url"]
-        image_anno_fields = ["image_id", "file_name", "date_captured",
+        image_anno_fields = ["image_id", "file_name", "filename", "date_captured",
                              "license", "iscrowd", "category_id"]
+        kwargs = {k.lower(): v for k, v in kwargs.items()}
 
-        info_kwargs = {k.lower(): v for k, v in kwargs.items() if k.lower() in info_fields}
+        info_kwargs = {k.lower(): v for k, v in kwargs.items() if k in info_fields}
         info_kwargs["plantcv_version"] = version("plantcv")
-        run_datetime = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        run_datetime = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
         info_kwargs["plantcv_run_date"] = run_datetime
-        license_kwargs = {k.lower(): v for k, v in kwargs.items() if k.lower() in license_fields}
+        license_kwargs = {k.lower(): v for k, v in kwargs.items() if k in license_fields}
 
         licenses = []
         if license_kwargs:
             licenses = [license_kwargs]
 
         self._info = info_kwargs
-        self._license = licenses
+        self._licenses = licenses
         self._images = []
         self._annotations = []
         self._categories = []
 
         if mask is not None:
-            image_kwargs = {k.lower(): v for k, v in kwargs.items() if k.lower() in image_anno_fields}
+            image_kwargs = {k: v for k, v in kwargs.items() if k in image_anno_fields}
             self.add_record(mask=mask, info=None, rights=None,
-                            category={"id": 1, "name": "plant"},
+                            category={"id": kwargs.get("category_id", 1), "name": "plant"},
                             **image_kwargs)
 
+    def _to_dict(self):
+        """COCO formatted dictionary of the data"""
+        return {"info": self.info,
+                "licenses": self.licenses,
+                "images": self.images,
+                "annotations": self.annotations,
+                "categories": self.categories}
+    
     def __str__(self):
         """string representation of COCO object"""
         content = vars(self)
@@ -273,8 +283,8 @@ class COCO:
 
     def clear(self):
         """Clear all coco data"""
-        self._info = []
-        self._license = []
+        self._info = {}
+        self._licenses = []
         self._images = []
         self._annotations = []
         self._categories = []
@@ -290,14 +300,14 @@ class COCO:
         self._info = new
 
     @property
-    def license(self):
+    def licenses(self):
         """Get license value"""
-        return self._license
+        return self._licenses
 
-    @license.setter
-    def license(self, new):
+    @licenses.setter
+    def licenses(self, new):
         """Set new license value"""
-        self._license = new
+        self._licenses = new
 
     @property
     def images(self):
@@ -332,13 +342,35 @@ class COCO:
     def _update_list_field(self, attr, new):
         """Update a list field to update existing values or append new values"""
         existing = getattr(self, attr)
-        which_match = [i for i, v in enumerate(existing) if bool(set(v.items()) & set(new.items()))]
-        if which_match:
-            for i in which_match:
-                existing[i] = existing[i] | new
-        else:
-            existing.append(new)
+        new_records = new if isinstance(new, list) else [new]
+        for record in new_records:
+            which_match = [i for i, v in enumerate(existing) if "id" in record and v.get("id") == record["id"]]
+            if which_match:
+                for i in which_match:
+                    existing[i] = existing[i] | record
+            else:
+                existing.append(record)
         setattr(self, attr, existing)
+
+    def _append(self, other):
+        """Append another COCO object's records, renumbering its image and annotation ids"""
+        # categories with the same id must be the same category or annotations change meaning
+        existing_names = {c["id"]: c.get("name") for c in self.categories}
+        for category in other.categories:
+            if category["id"] in existing_names and existing_names[category["id"]] != category.get("name"):
+                raise ValueError(f"category id {category['id']} is '{existing_names[category['id']]}' "
+                                 f"in existing data but '{category.get('name')}' in new data")
+        self.info = self.info | other.info
+        self._update_list_field(attr="licenses", new=other.licenses)
+        self._update_list_field(attr="categories", new=other.categories)
+        # offset ids so appended images and annotations never collide with existing ones
+        image_offset = _next_id(self.images) - 1
+        annotation_offset = _next_id(self.annotations) - 1
+        self.images = self.images + [img | {"id": img["id"] + image_offset} for img in other.images]
+        self.annotations = self.annotations + [
+            ann | {"id": ann["id"] + annotation_offset, "image_id": ann["image_id"] + image_offset}
+            for ann in other.annotations
+        ]
 
     def add_record(self, mask=None, info=None, rights=None, category=None, **kwargs):
         """Add an image and any appropriate annotations
@@ -358,14 +390,24 @@ class COCO:
             self.info = self.info | info
 
         if rights is not None:
-            self._update_list_field(attr="license", new=rights)
+            self._update_list_field(attr="licenses", new=rights)
 
         if category is not None:
             self._update_list_field(attr="categories", new=category)
 
         if mask is not None:
-            new_annotation, new_image = _coco_annotation_from_mask(self, mask, **kwargs)
-            self.annotations.append(new_annotation)
+            kwargs = {k.lower(): v for k, v in kwargs.items()}
+            if category is not None and "category_id" not in kwargs:
+                kwargs["category_id"] = category["id"]
+            category_id = kwargs.get("category_id", 1)
+            if category_id not in [c["id"] for c in self.categories]:
+                if category_id != 1 or self.categories:
+                    raise ValueError(f"category_id {category_id} is not defined, "
+                                     "pass category={'id': ..., 'name': ...}")
+                # default category, matching COCO(mask)
+                self._update_list_field(attr="categories", new={"id": 1, "name": "plant"})
+            new_annotations, new_image = _coco_annotation_from_mask(self, mask, **kwargs)
+            self.annotations.extend(new_annotations)
             self.images.append(new_image)
 
     def save(self, filename, mode="a"):
@@ -379,20 +421,16 @@ class COCO:
             "a" or "w", for "append" or "write".
             If "a" then an existing file will be appended to if possible.
         """
+        content = self._to_dict()
         # if file already exists then append/merge records
         if os.path.isfile(filename) and mode.lower() == "a":
             with open(filename, 'r') as f:
-                existing_data = json.load(f)
-                # for info this is a single dict, so overwriting may happen
-                self.info = existing_data["info"] | self.info
-                # update license, images, and annotations with update method
-                self._update_list_field(attr="license", new=existing_data["license"])
-                self._update_list_field(attr="images", new=existing_data["images"])
-                self._update_list_field(attr="annotations", new=existing_data["annotations"])
+                existing = COCO()
+                existing.load(filename)
+                existing._append(self)
+                content = existing._to_dict()
 
         with open(filename, mode='w') as fp:
-            content = vars(self)
-            content = {k.strip("_"): v for k, v in content.items()}
             # Save the data in JSON format with indentation
             json.dump(obj=content, fp=fp, indent=4)
 
@@ -406,5 +444,8 @@ class COCO:
         """
         with open(filename, "r") as fp:
             data = json.load(fp)
-            for key, value in data.items():
-                object.__setattr__(self, key, value)
+        self.info = data.get("info", {})
+        self.licenses = data.get("licenses", [])
+        self.images = data.get("images", [])
+        self.annotations = data.get("annotations", [])
+        self.categories = data.get("categories", [])

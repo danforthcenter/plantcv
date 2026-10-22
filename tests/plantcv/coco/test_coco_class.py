@@ -1,6 +1,13 @@
 import os
+import pytest
 import numpy as np
 from plantcv.plantcv.classes import COCO
+
+
+def _square_mask():
+    mask = np.zeros((100, 100), dtype=np.uint8)
+    mask[30:70, 30:70] = 1
+    return mask
 
 
 def test_init_coco():
@@ -41,7 +48,8 @@ def test_coco_clear():
     # check that adding data worked
     assert len(coco_imgs) == 1
     # check that removing data cleared all lists
-    for attr in ["info", "license", "images", "annotations", "categories"]:
+    assert coco.info == {}
+    for attr in ["licenses", "images", "annotations", "categories"]:
         assert getattr(coco, attr) == []
         # touch the setters
         setattr(coco, attr, [1])
@@ -76,8 +84,43 @@ def test_coco_save_and_load(tmpdir):
 def test_coco_updating_list_fields():
     """Test for PlantCV."""
     coco = COCO(description="testing", id=1, name="Open")
-    assert coco.license[0]["name"] == "Open"
+    assert coco.licenses[0]["name"] == "Open"
     coco.add_record(info = {"datetime": "now"}, rights={"id": 1, "name": "Open Access"})
-    assert coco.license[0]["name"] == "Open Access"
+    assert coco.licenses[0]["name"] == "Open Access"
     coco.add_record(rights={"id": 2, "name": "Open"})
-    assert coco.license[1]["name"] == "Open"
+    assert coco.licenses[1]["name"] == "Open"
+
+
+def test_coco_append_category_conflict(tmpdir):
+    """Test for PlantCV."""
+    outpath = os.path.join(tmpdir.mkdir("cache"), "coco.json")
+    # existing file has category 1 = "plant"
+    COCO(_square_mask()).save(outpath, mode="w")
+    # new data uses category 1 = "weed"
+    coco = COCO()
+    coco.add_record(mask=_square_mask(), category={"id": 1, "name": "weed"})
+    with pytest.raises(ValueError):
+        coco.save(outpath, mode="a")
+
+
+def test_coco_add_record_default_category():
+    """Test for PlantCV."""
+    coco = COCO()
+    coco.add_record(mask=_square_mask())
+    assert coco.categories == [{"id": 1, "name": "plant"}]
+    assert coco.annotations[0]["category_id"] == 1
+
+
+def test_coco_add_record_undefined_category():
+    """Test for PlantCV."""
+    coco = COCO()
+    with pytest.raises(ValueError):
+        coco.add_record(mask=_square_mask(), category_id=2)
+
+
+def test_coco_add_record_default_category_with_existing():
+    """Test for PlantCV."""
+    # categories exist but none is id 1, so the default category_id is undefined
+    coco = COCO(_square_mask(), category_id=2)
+    with pytest.raises(ValueError):
+        coco.add_record(mask=_square_mask())
