@@ -53,6 +53,7 @@ nav:
       - 'Auto Crop': auto_crop.md
       - 'Background Subtraction': background_subtraction.md
       - 'Canny Edge Detection': canny_edge_detect.md
+      - 'Circular Sub Masks': sub_mask.md
       - 'Closing': closing.md
       - 'Color Palette': color_palette.md
       - 'Colorspace Conversion':
@@ -191,6 +192,7 @@ nav:
         - 'Texture Threshold': texture_threshold.md
       - 'Transformation Methods':
           - 'Auto-Detect Color Card': transform_detect_color_card.md
+          - 'Detect Color Card using cv2.mcc': transform_mcc_detect.md
           - 'Auto Correct Color': transform_auto_correct_color.md
           - 'Auto Correct Color (non-linear)': transform_auto_correct_color_nonlinear.md
           - 'Calibrate Camera': transform_calibrate_camera.md
@@ -261,3 +263,4 @@ markdown_extensions:
   - toc:
       permalink: True
   - admonition
+  - attr_list

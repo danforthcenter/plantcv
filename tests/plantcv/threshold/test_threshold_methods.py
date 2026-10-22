@@ -3,6 +3,7 @@ import numpy as np
 import cv2
 from plantcv.plantcv.threshold import binary, gaussian, mean, otsu, custom_range, saturation, triangle, texture, \
     mask_bad, dual_channels
+from plantcv.plantcv.classes import Objects
 from plantcv.plantcv import params
 
 
@@ -95,7 +96,7 @@ def test_custom_range_rgb(channel, lower_thresh, upper_thresh, threshold_test_da
     """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(threshold_test_data.small_rgb_img)
-    binary_img, _ = custom_range(img, lower_thresh=lower_thresh, upper_thresh=upper_thresh, channel=channel)
+    binary_img = custom_range(img, lower_thresh=lower_thresh, upper_thresh=upper_thresh, channel=channel)
     # Assert that the output image has the dimensions of the input image and is binary
     assert img.shape[:2] == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
@@ -105,7 +106,7 @@ def test_custom_range_grayscale(threshold_test_data):
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
     # # Test channel='gray'
-    binary_img, _ = custom_range(gray_img, lower_thresh=[0], upper_thresh=[100], channel='gray')
+    binary_img = custom_range(gray_img, lower_thresh=[0], upper_thresh=[100], channel='gray')
     # Assert that the output image has the dimensions of the input image and is binary
     assert gray_img.shape == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
@@ -121,7 +122,7 @@ def test_custom_range_bad_input(channel, lower_thresh, upper_thresh, threshold_t
     # Read in test data
     img = cv2.imread(threshold_test_data.small_rgb_img)
     with pytest.raises(RuntimeError):
-        _, _ = custom_range(img, lower_thresh=lower_thresh, upper_thresh=upper_thresh, channel=channel)
+        _ = custom_range(img, lower_thresh=lower_thresh, upper_thresh=upper_thresh, channel=channel)
 
 
 @pytest.mark.parametrize("channel", ["all", "any"])
@@ -223,7 +224,7 @@ def test_mask_bad_input_color_img(threshold_test_data):
 @pytest.mark.parametrize("y_ch,abv,expected", [
     ['R', True, 255], ['G', True, 0], ['l', True, 255], ['a', True, 255], ['b', True, 255], ['h', False, 0],
     ['s', False, 0], ['v', False, 0], ['gray', True, 255], ['index', True, 0]])
-def test_dual_channels(y_ch, abv, expected):
+def test_dual_channels_points(y_ch, abv, expected):
     """Test for PlantCV."""
     # Create a synthetic RGB image containing a single pixel
     img = np.array([100, 50, 200], dtype=np.uint8).reshape((1, 1, 3))
@@ -231,8 +232,25 @@ def test_dual_channels(y_ch, abv, expected):
     # last two points are ignored ut trigger the warning
     pts = [(0, 0), (255, 255), (0, 1), (2, 3)]
     x_ch = 'B'
-    mask = dual_channels(img, x_channel=x_ch, y_channel=y_ch, points=pts, above=abv)
+    mask = dual_channels(img, x_channel=x_ch, y_channel=y_ch, cut=pts, above=abv)
     assert mask[0, 0] == expected
+
+
+def test_dual_channels_roi_img_return():
+    """Test for PlantCV"""
+    img = np.random.randint(0, 255, (10, 10, 3), dtype=np.uint8)
+    color_mat = dual_channels(img, "a", "b")
+    assert np.shape(color_mat) == (256, 256, 3)
+
+
+def test_dual_channels_img_return():
+    """Test for PlantCV"""
+    img = np.random.randint(0, 255, (10, 10, 3), dtype=np.uint8)
+    roi = [np.array([[[200, 200]], [[200, 190]], [[249, 190]], [[249, 200]]], dtype=np.int32)]
+    roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
+    roi_obj = Objects(contours=[roi], hierarchy=[roi_str])
+    mask = dual_channels(img, "a", "b", cut=roi_obj)
+    assert np.shape(mask) == (10, 10)
 
 
 def test_dual_channels_bad_points():
@@ -244,7 +262,7 @@ def test_dual_channels_bad_points():
     x_ch = 'B'
     y_ch = 'R'
     with pytest.raises(RuntimeError):
-        _ = dual_channels(img, x_channel=x_ch, y_channel=y_ch, points=pts, above=True)
+        _ = dual_channels(img, x_channel=x_ch, y_channel=y_ch, cut=pts, above=True)
 
 
 def test_dual_channels_bad_channel():
@@ -254,4 +272,4 @@ def test_dual_channels_bad_channel():
     # only one point given
     pts = [(0, 0), (255, 255)]
     with pytest.raises(RuntimeError):
-        _ = dual_channels(img, x_channel='wrong_ch', y_channel='index', points=pts, above=True)
+        _ = dual_channels(img, x_channel='wrong_ch', y_channel='index', cut=pts, above=True)
