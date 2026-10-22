@@ -80,6 +80,7 @@ def reassign_frame_labels(ps_da, mask):
     ind_size = ps_da.frame_label.size
     # Create a new frame label array populated with the current labels
     idx = ps_da.frame_label.values
+    idx = idx.copy()
     # Find the frame corresponding to the first frame after F0/Fp
     f = idx.tolist().index(datasets[ps_da.name.lower()]['F']) + 1
     # Reset the frame labels after F0/Fp
