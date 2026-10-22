@@ -21,9 +21,6 @@ def npqfast(ps, labeled_mask, n_labels=1, min_bin=0, max_bin="auto", measurement
         Labeled mask of objects (32-bit).
     n_labels           = int,
         Total number expected individual objects (default = 1).
-    auto_fm            = bool,
-        Automatically calculate the frame with maximum fluorescence per label, otherwise
-        use a fixed frame for all labels (default = False).
     min_bin            = int, str
         minimum bin value ("auto" or user input minimum value - must be an integer)
     max_bin            = int, str
