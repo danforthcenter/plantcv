@@ -101,4 +101,3 @@ def test_jupcon_run_bad_input(parallel_test_data, tmpdir):
     jupcon.run()
     os.environ.pop("JPY_SESSION_NAME")
     assert not os.path.exists(jupcon.results)
-
