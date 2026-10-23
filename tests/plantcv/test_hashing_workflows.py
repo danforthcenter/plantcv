@@ -38,15 +38,15 @@ def test_hashing_notebook(tmpdir, monkeypatch):
     notebook1 = {
         "cells": [
             {
-            "cell_type": "code",
-            "execution_count": None,
-            "id": "d1a897aa-d499-437c-8c22-5b6dc7876691",
-            "metadata": {},
-            "outputs": [],
-            "source": [
-                "from plantcv import plantcv as pcv\n",
-                "pcv.read_image(\"my_image\")",
-            ],
+                "cell_type": "code",
+                "execution_count": None,
+                "id": "d1a897aa-d499-437c-8c22-5b6dc7876691",
+                "metadata": {},
+                "outputs": [],
+                "source": [
+                    "from plantcv import plantcv as pcv\n",
+                    "pcv.read_image(\"my_image\")",
+                ],
             }
         ],
         "metadata": {
@@ -71,7 +71,7 @@ def test_hashing_notebook(tmpdir, monkeypatch):
     with open(filename, "w") as f:
         json.dump(notebook1, f, indent=1, ensure_ascii=False)
         f.write("\n")
-    
+
     import __main__ as main
     monkeypatch.setattr(main, "__file__", False)
 
