@@ -13,9 +13,9 @@ def test_npqfast(test_data):
     source_path = test_data.photosynthesis.cropreporter_pmt
     ps = read_cropreporter(filename=source_path)
     _ = analyze_npqfast(ps=ps,
-                    labeled_mask=(255 * np.ones(ps.pmt.pam_time.shape[0:2])).astype(np.uint8),
-                    measurement_labels=["x0", "x1"],
-                    label="prefix", min_bin="auto", max_bin="auto")
+                        labeled_mask=(255 * np.ones(ps.pmt.pam_time.shape[0:2])).astype(np.uint8),
+                        measurement_labels=["x0", "x1"],
+                        label="prefix", min_bin="auto", max_bin="auto")
     assert all(outputs.observations["prefix_1"]["npqfast_mean_x1"].items())
 
 
@@ -30,7 +30,7 @@ def test_npqfast_bad_labels(test_data):
                             labeled_mask=(255 * np.ones(ps.pmt.pam_time.shape[0:2])).astype(np.uint8),
                             measurement_labels=["only_one"],
                             label="prefix", min_bin="auto", max_bin="auto")
-    
+
 
 def test_npqfast_bad_frames(test_data):
     """Test for PlantCV."""
