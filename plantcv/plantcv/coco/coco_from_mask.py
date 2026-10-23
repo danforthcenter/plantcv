@@ -47,36 +47,52 @@ def _mask_to_rle(obj_mask):
     return {"counts": counts, "size": [int(obj_mask.shape[0]), int(obj_mask.shape[1])]}
 
 
-def _mask_to_polygons(obj_mask, epsilon_frac=0.01):
-    """COCO polygons of the outer contours of an object mask
+def _mask_to_polygons(obj_mask, epsilon=0):
+    """COCO polygons of an object mask, traced along pixel edges
 
     Parameters
     ----------
     obj_mask : numpy.ndarray
-        Binary (0/255) mask of one object
-    epsilon_frac : float
-        Fraction of each contour's perimeter used as the approxPolyDP tolerance
+        Binary mask of one object
+    epsilon : float
+        approxPolyDP tolerance in pixels, 0 keeps the exact pixel boundary
 
     Returns
     -------
     polygons : list
-        List of flat [x1, y1, x2, y2, ...] polygons. Holes are not represented.
+        List of flat [x1, y1, x2, y2, ...] polygons with vertices on pixel corners
     """
-    contours, hierarchy = _cv2_findcontours(obj_mask)
+    rows = np.any(obj_mask, axis=1)
+    cols = np.any(obj_mask, axis=0)
+    y_min, y_max = np.where(rows)[0][[0, -1]]
+    x_min, x_max = np.where(cols)[0][[0, -1]]
+    # crop to only the section with this object
+    crop = obj_mask[y_min:y_max + 1, x_min:x_max + 1] > 0
+    # upsample the mask by a factor of 2 in each direction.
+    # this puts the boundary pixels at even counts instead of halfway through a pixel
+    upsampled = np.kron(crop, np.ones((2, 2))).astype(np.uint8)
+    # find contours in the upscaled image
+    contours, hierarchy = cv2.findContours(upsampled, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_NONE)
+    corners = []
+    for contour in contours:
+        # reshape contour to original image size, undoing upscale and crop
+        pts = (contour.reshape(-1, 2) + 1) // 2 + [x_min, y_min]
+        # remove points identical to the preceding point, end with only unique points
+        pts = pts[np.any(pts != np.roll(pts, 1, axis=0), axis=1)]
+        # epsilon 0 removes collinear points, raise epsilon for simpler segments
+        corners.append(cv2.approxPolyDP(pts.reshape(-1, 1, 2).astype(np.int32), epsilon, True).reshape(-1, 2))
     polygons = []
-    for contour, (_, _, _, parent) in zip(contours, hierarchy[0]):
-        # skip hole contours, COCO polygons are unioned so holes cannot be represented
+    for outer, (_, _, child, parent) in zip(corners, hierarchy[0]):
+        # do not do this for "top level" objects
         if parent != -1:
             continue
-        epsilon = epsilon_frac * cv2.arcLength(contour, True)
-        approx = cv2.approxPolyDP(contour, epsilon, True)
-        if len(approx) < 3 or cv2.contourArea(approx) == 0:
-            # single pixels and 1 pixel wide lines have no polygon area through pixel centers,
-            # use the pixel edges of their bounding box instead
-            x, y, w, h = cv2.boundingRect(contour)
-            polygons.append([x, y, x + w, y, x + w, y + h, x, y + h])
-        else:
-            polygons.append(approx.flatten().tolist())
+        polygon = outer
+        # for nested objects stack the polygons until we reach the top level
+        while child != -1:
+            hole = corners[child]
+            polygon = np.vstack([polygon[:1], hole, hole[:1], polygon])
+            child = hierarchy[0][child][0]
+        polygons.append(polygon.flatten().tolist())
     return polygons
 
 

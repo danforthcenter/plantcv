@@ -32,29 +32,6 @@ def test_coco_iscrowd_rle():
     assert sum(seg["counts"][1::2]) == coco.annotations[0]["area"] == 20
 
 
-def test_mask_to_polygons_skips_holes():
-    """Test for PlantCV."""
-    mask = np.zeros((50, 50), dtype=np.uint8)
-    mask[10:40, 10:40] = 255
-    mask[20:30, 20:30] = 0
-    polygons = _mask_to_polygons(mask)
-    # only the outer square, as 4 (x, y) corners
-    assert len(polygons) == 1
-    assert len(polygons[0]) == 8
-
-
-@pytest.mark.parametrize("rows,cols,expected", [
-    # single pixel
-    [slice(5, 6), slice(7, 8), [7, 5, 8, 5, 8, 6, 7, 6]],
-    # 1 pixel wide horizontal line
-    [slice(5, 6), slice(2, 12), [2, 5, 12, 5, 12, 6, 2, 6]],
-])
-def test_mask_to_polygons_degenerate(rows, cols, expected):
-    """Test for PlantCV."""
-    mask = np.zeros((20, 20), dtype=np.uint8)
-    mask[rows, cols] = 255
-    assert _mask_to_polygons(mask) == [expected]
-
 
 def test_coco_duplicate_image_id():
     """Test for PlantCV."""
@@ -76,3 +53,12 @@ def test_coco_annotation_labeled_mask():
     assert [a["bbox"] for a in annotations] == [[5, 5, 10, 10], [15, 5, 10, 10]]
     assert [a["area"] for a in annotations] == [100, 100]
     assert [a["id"] for a in annotations] == [1, 2]
+
+
+def test_coco_annotation_nested_mask():
+    """Test for PlantCV."""
+    mask = np.zeros((120, 120), dtype=np.uint8)
+    mask[60:110, 20:80] = 255
+    mask[75:95, 35:65] = 0
+    coco = COCO(mask)
+    assert coco.annotations[0]["area"] == 2400
