@@ -1,5 +1,6 @@
 # PlantCV classes
 import os
+import re
 import cv2
 import json
 import datetime
@@ -427,7 +428,7 @@ class COCO:
             self.annotations.extend(new_annotations)
             self.images.append(new_image)
 
-    def save(self, filename, mode="a"):
+    def save(self, filename, mode="a", coco_suffix=True):
         """Save COCO data
 
         Parameters
@@ -437,8 +438,16 @@ class COCO:
         mode : str,
             "a" or "w", for "append" or "write".
             If "a" then an existing file will be appended to if possible.
+        coco_suffix : bool,
+            Should names be enforced to end with '_pcv_coco.json' for compatibility
+            with other plantcv functions (plantcv.plantcv.coco.combine)?
         """
         content = self._to_dict()
+        suffix = "_pcv_coco.json"
+        if not re.search(suffix, filename) and coco_suffix:
+            filename = os.path.splitext(filename)[0] + suffix
+            print(f"Adding '_pcv_coco.json' suffix ({filename})")
+
         # if file already exists then append/merge records
         if os.path.isfile(filename) and mode.lower() == "a":
             existing = COCO()

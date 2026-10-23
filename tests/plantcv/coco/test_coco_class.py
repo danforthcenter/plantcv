@@ -71,14 +71,14 @@ def test_coco_save_and_load(tmpdir):
     cache_dir = tmpdir.mkdir("cache")
     outpath = os.path.join(cache_dir, "coco.json")
     # check saving as write
-    coco.save(outpath)
+    coco.save(outpath, coco_suffix=False)
     assert os.path.exists(outpath)
     # check loading
     coco_new = COCO()
     coco_new.load(outpath)
     assert coco_new.info["description"] == "testing"
     # check saving with append
-    coco_new.save(outpath, mode="a")
+    coco_new.save(outpath, mode="a", coco_suffix=False)
     assert os.path.exists(outpath)
 
 

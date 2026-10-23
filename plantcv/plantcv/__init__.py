@@ -90,6 +90,7 @@ from plantcv.plantcv.json2csv import json2csv
 from plantcv.plantcv.masks2labels import masks2labels
 from plantcv.plantcv.submask import sub_mask
 from plantcv.plantcv import multispec
+from plantcv.plantcv import coco
 # add new functions to end of lists
 
 __all__ = [
@@ -176,5 +177,6 @@ __all__ = [
     "json2csv",
     "masks2labels",
     "sub_mask",
-    "multispec"
+    "multispec",
+    "coco"
 ]
