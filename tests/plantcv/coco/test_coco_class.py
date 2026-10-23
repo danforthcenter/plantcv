@@ -1,7 +1,7 @@
 import os
 import pytest
 import numpy as np
-from plantcv.plantcv.classes import COCO
+from plantcv.plantcv.classes import COCO, Objects
 
 
 def _square_mask():
@@ -21,7 +21,7 @@ def test_init_complex_coco():
     """Test for PlantCV."""
     mask = np.zeros((100, 100), dtype=np.uint8)
     mask[30:70, 30:70] = 1
-    coco = COCO(mask, description="description", datetime="datetime",
+    coco = COCO(source=mask, description="description", datetime="datetime",
                 id=1, name="my_license", url="my_license.com",
                 image_id=200, filename="my_file.png", iscrowd=1)
     assert isinstance(coco, COCO)
@@ -34,16 +34,16 @@ def test_coco_add_record():
     mask2 = np.zeros((150, 150), dtype=np.uint8)
     mask2[30:70, 30:70] = 1
     coco = COCO(mask)
-    coco.add_record(mask2)
+    coco.add_record(source=mask2)
     assert isinstance(coco, COCO)
     assert len(coco.annotations) == 2
-    
+
 
 def test_coco_clear():
     """Test for PlantCV."""
     mask = np.zeros((100, 100), dtype=np.uint8)
     mask[30:70, 30:70] = 1
-    coco = COCO(mask)
+    coco = COCO(source=mask)
     coco_imgs = coco.images
     coco.clear()
     # check that adding data worked
@@ -96,10 +96,10 @@ def test_coco_append_category_conflict(tmpdir):
     """Test for PlantCV."""
     outpath = os.path.join(tmpdir.mkdir("cache"), "coco.json")
     # existing file has category 1 = "plant"
-    COCO(_square_mask()).save(outpath, mode="w")
+    COCO(source=_square_mask()).save(outpath, mode="w")
     # new data uses category 1 = "weed"
     coco = COCO()
-    coco.add_record(mask=_square_mask(), category={"id": 1, "name": "weed"})
+    coco.add_record(source=_square_mask(), category={"id": 1, "name": "weed"})
     with pytest.raises(ValueError):
         coco.save(outpath, mode="a")
 
@@ -107,7 +107,7 @@ def test_coco_append_category_conflict(tmpdir):
 def test_coco_add_record_default_category():
     """Test for PlantCV."""
     coco = COCO()
-    coco.add_record(mask=_square_mask())
+    coco.add_record(source=_square_mask())
     assert coco.categories == [{"id": 1, "name": "plant"}]
     assert coco.annotations[0]["category_id"] == 1
 
@@ -116,12 +116,30 @@ def test_coco_add_record_undefined_category():
     """Test for PlantCV."""
     coco = COCO()
     with pytest.raises(ValueError):
-        coco.add_record(mask=_square_mask(), category_id=2)
+        coco.add_record(source=_square_mask(), category_id=2)
 
 
 def test_coco_add_record_default_category_with_existing():
     """Test for PlantCV."""
     # categories exist but none is id 1, so the default category_id is undefined
-    coco = COCO(_square_mask(), category_id=2)
+    coco = COCO(source=_square_mask(), category_id=2)
     with pytest.raises(ValueError):
-        coco.add_record(mask=_square_mask())
+        coco.add_record(source=_square_mask())
+
+
+def test_coco_roi_source():
+    """Test for PlantCV."""
+    roi = [np.array([[[150, 150]], [[150, 174]], [[249, 174]], [[249, 150]]], dtype=np.int32)]
+    roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
+    roi_Obj = Objects(contours=[roi], hierarchy=[roi_str])
+    coco = COCO(source=roi_Obj, shape=(250, 250))
+    assert len(coco.annotations) == 1
+
+
+def test_coco_roi_source_no_shape():
+    """Test for PlantCV."""
+    roi = [np.array([[[150, 150]], [[150, 174]], [[249, 174]], [[249, 150]]], dtype=np.int32)]
+    roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
+    roi_Obj = Objects(contours=[roi], hierarchy=[roi_str])
+    with pytest.raises(RuntimeError):
+        _ = COCO(source=roi_Obj)

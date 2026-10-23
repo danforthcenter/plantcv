@@ -5,6 +5,7 @@ import json
 import datetime
 import numpy as np
 from importlib.metadata import version
+from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.annotate.points import _find_closest_pt
 from plantcv.plantcv.coco.coco_from_mask import _coco_annotation_from_mask, _next_id
 import matplotlib.pyplot as plt
@@ -226,7 +227,7 @@ class MS_data:
 class COCO:
     """PlantCV COCO data class"""
 
-    def __init__(self, mask=None, **kwargs):
+    def __init__(self, source=None, **kwargs):
         # Define which keys are for each coco field
         info_fields = ["description", "version", "year", "contributor", "date_created",
                        "datetime", "date", "time"]
@@ -251,11 +252,24 @@ class COCO:
         self._annotations = []
         self._categories = []
 
-        if mask is not None:
+        if source is not None:
+            shape = kwargs.get("shape", None)
+            mask = self._source_to_mask(source, shape)
             image_kwargs = {k: v for k, v in kwargs.items() if k in image_anno_fields}
-            self.add_record(mask=mask, info=None, rights=None,
+            self.add_record(source=mask, info=None, rights=None,
                             category={"id": kwargs.get("category_id", 1), "name": "plant"},
                             **image_kwargs)
+
+    def _source_to_mask(self, source, shape):
+        """Convert a plantcv.plantcv.Objects ROI to a mask given a shape"""
+        if isinstance(source, np.ndarray):
+            return source
+        if shape is None:
+            fatal_error("'shape' must be given to use ROI as source.")
+        mask = np.zeros(shape, dtype=np.int32)
+        for i, one_roi in enumerate(source):
+            cv2.drawContours(mask, one_roi.contours[0], -1, i + 1, -1)
+        return mask
 
     def _to_dict(self):
         """COCO formatted dictionary of the data"""
@@ -372,13 +386,13 @@ class COCO:
             for ann in other.annotations
         ]
 
-    def add_record(self, mask=None, info=None, rights=None, category=None, **kwargs):
+    def add_record(self, source=None, info=None, rights=None, category=None, **kwargs):
         """Add an image and any appropriate annotations
 
         Parameters
         ----------
-        mask : numpy.ndarray,
-            binary or labelled mask.
+        source : numpy.ndarray or plantcv.plantcv.Objects class ROI,
+            binary or labelled mask or ROI object.
         info : dict,
             new key: value pairs to add to the info dictionary
         rights : dict,
@@ -395,7 +409,9 @@ class COCO:
         if category is not None:
             self._update_list_field(attr="categories", new=category)
 
-        if mask is not None:
+        if source is not None:
+            shape = kwargs.get("shape", None)
+            mask = self._source_to_mask(source, shape)
             kwargs = {k.lower(): v for k, v in kwargs.items()}
             if category is not None and "category_id" not in kwargs:
                 kwargs["category_id"] = category["id"]

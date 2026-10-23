@@ -62,7 +62,7 @@ def test_coco_duplicate_image_id():
     mask[5:10, 5:10] = 255
     coco = COCO(mask, image_id=5)
     with pytest.raises(ValueError):
-        coco.add_record(mask=mask, image_id=5)
+        coco.add_record(source=mask, image_id=5)
 
 
 def test_coco_annotation_labeled_mask():
