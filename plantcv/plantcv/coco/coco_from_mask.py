@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from skimage.measure import label
-from plantcv.plantcv._helpers import _cv2_findcontours
+
 
 # COCO image fields that can be passed through as keyword arguments
 IMAGE_FIELDS = ["license", "file_name", "date_captured", "coco_url", "flickr_url"]
