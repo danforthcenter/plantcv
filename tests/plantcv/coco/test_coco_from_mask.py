@@ -1,8 +1,7 @@
 import pytest
 import numpy as np
 from plantcv.plantcv.classes import COCO
-from plantcv.plantcv.coco.coco_from_mask import (_coco_annotation_from_mask, _mask_to_polygons,
-                                                  _mask_to_rle)
+from plantcv.plantcv.coco.coco_from_mask import _coco_annotation_from_mask, _mask_to_rle
 
 
 def test_mask_to_rle_starts_with_foreground():
