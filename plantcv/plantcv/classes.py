@@ -260,7 +260,8 @@ class COCO:
                             category={"id": kwargs.get("category_id", 1), "name": "plant"},
                             **image_kwargs)
 
-    def _source_to_mask(self, source, shape):
+    @staticmethod
+    def _source_to_mask(source, shape):
         """Convert a plantcv.plantcv.Objects ROI to a mask given a shape"""
         if isinstance(source, np.ndarray):
             return source
@@ -410,7 +411,7 @@ class COCO:
             self._update_list_field(attr="categories", new=category)
 
         if source is not None:
-            shape = kwargs.get("shape", None)
+            shape = kwargs.get("shape")
             mask = self._source_to_mask(source, shape)
             kwargs = {k.lower(): v for k, v in kwargs.items()}
             if category is not None and "category_id" not in kwargs:
