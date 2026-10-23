@@ -11,10 +11,10 @@ We refer users to the [COCO data format documentation](https://cocodataset.org/#
 **plantcv.COCO**(mask=None, **kwargs)
 
 - **Parameters:**
-  - mask - Labeled or Binary mask of objects of interest. If provided then the COCO object will add image records and annotations from the mask.
+  - source - Either a Labeled or Binary mask of objects of interest or a [plantcv.plantcv.Objects](objects.md) object. If provided then the COCO object will add image records and annotations from the mask.
   - \*\*kwargs - Other keyword arguments passed to attributes of the COCO instance. See details in Attributes section.
     - "description", "datetime", "date", and "time" are passed to the `info` attribute if provided.
-	- "id", "name", and "url" are passed to the `license` attribute if provided.
+	- "id", "name", and "url" are passed to the `licenses` attribute if provided.
 	- "image_id", "license", "filename", and "date_captured" are passed  to the `images` attribute if provided.
 	- "category_id", "iscrowd", and "image_id" are paseed to the `annotations` attribute if provided.
 
@@ -28,9 +28,9 @@ Attributes are accessed as `COCO_instance.`*attribute_name*
 
 Common fields that may be required in downstream tools or for complete recordkeeping are "year", "version", "descriptor", "contributor", "url", and "date_created". Those fields can currently be added using `coco.add_record`.
 
-#### `license`
+#### `licenses`
 
-`coco.`**license** is a list containing any licenses present in the dataset. This will be empty unless the user specifies license information either on initializing the `coco` object or through `coco.add_record`.
+`coco.`**licenses** is a list containing any licenses present in the dataset. This will be empty unless the user specifies license information either on initializing the `coco` object or through `coco.add_record`.
 
 Common fields that may be required in downstream tools or for complete recordkeeping are "id", "name", and "url".
 
@@ -38,7 +38,7 @@ Common fields that may be required in downstream tools or for complete recordkee
 
 `coco.`**images** is a list containing dictionaries of image metadata for the images in a dataset.
 
-Commonly required fields are "id", "width", "height", "file_name", and "date_captured". "id", "width", and "height" are set automatically within a `coco` instance, `file_name` and `date_captured` may need to be added manually on initialization or through `coco.add_record`. A "license" field can also be used to map an image to a particular usage license (ie, `coco.images[0]["license"]` should match an "id" value in some entry in the `coco.license` list of dictionaries.
+Commonly required fields are "id", "width", "height", "file_name", and "date_captured". "id", "width", and "height" are set automatically within a `coco` instance, `file_name` and `date_captured` may need to be added manually on initialization or through `coco.add_record`. A "license" field can also be used to map an image to a particular usage license (ie, `coco.images[0]["licenses"]` should match an "id" value in some entry in the `coco.licenses` list of dictionaries.
 
 
 #### `annotations`
@@ -52,3 +52,44 @@ Commonly required fields are "category_id", "iscrowd", "image_id", and "bbox". B
 `coco.`**categories** is a list containing dictionaries of categories. Category dictionaries are added through `coco.add_record` and should include "id", and "name" fields with an optional "supercategory" field for nested categories.
 
 By default all objects annotations are labeled with `category_id: 1` which corresponds to "plant" in the categories dictionary that is made on initialization or calling `coco.add_record`.
+
+### Methods
+
+Methods are callable as `COCO_instance.`*method*()
+
+#### clear
+
+`coco.`**clear** will reset each attribute of the `coco` object to an empty dictionary or list.
+
+#### add_record
+
+`coco.`**add_record** adds images and corresponding annotations.
+
+- **coco.add_record**(*source=None, info=None, rights=None, category=None, \*\*kwargs*)
+
+- **Parameters:**
+  - source - Optional Binary or Labelled mask or an ROI, see initialization docs.
+  - info - Optional dictionary of additional info data
+  - rights - Optional dictionary of additional licenses data
+  - category - Optional dictionary of additional category data
+  - \*\*kwargs
+	- See initialization docs
+
+#### save
+
+`coco.`**save** writes the `coco` object to a json file.
+
+- **coco.save**(*filename, mode="a"*)
+
+- **Parameters:**
+  - filename - Name of file to save.
+  - mode - Mode to write the file with, either "a" (the default) to append or "w" to (over)write.
+
+#### load
+
+`coco.`**load**(*filename*)
+
+- **coco.load**(*filename*)
+
+- **Parameters:**
+  - filename - Name of coco json file to load data from
