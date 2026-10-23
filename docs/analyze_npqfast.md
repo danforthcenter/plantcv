@@ -36,7 +36,8 @@ pcv.params.debug = "plot"
 # Optionally, set a sample label name
 pcv.params.sample_label = "plant"
 
-# Analyze NPQ   
+# Analyze NPQ
+# one debug image is made per light frame
 npq, npq_hist = pcv.analyze.npqfast(ps=ps, labeled_mask=kept_mask)
 
 # Access the NPQ median value
@@ -44,5 +45,10 @@ npq, npq_hist = pcv.analyze.npqfast(ps=ps, labeled_mask=kept_mask)
 npq_median = pcv.outputs.observations['plant_1']['npqfast_median_t1']['value']
 
 ```
+
+**Debug image**
+
+![Screenshot](img/documentation_images/analyze_npqfast/analyze_npqfast_debug.png)
+
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/analyze/npq_fast.py)
