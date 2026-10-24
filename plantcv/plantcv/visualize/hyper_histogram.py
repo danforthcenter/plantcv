@@ -6,7 +6,7 @@ from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._globals import params
 from plantcv.plantcv.color_palette import color_palette
 from plantcv.plantcv.fatal_error import fatal_error
-from plantcv.plantcv.hyperspectral.read_data import _find_closest
+from plantcv.plantcv._helpers import _find_closest
 from plantcv.plantcv.visualize.histogram import histogram
 import altair as alt
 import math
