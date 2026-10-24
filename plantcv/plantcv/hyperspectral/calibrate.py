@@ -51,6 +51,6 @@ def calibrate(raw_data, white_reference, dark_reference):
 
     # Debug visualization
     _debug(visual=calibrated.pseudo_rgb(),
-           filename=os.path.join(params.debug_outdir, str(params.device) + '_calibrated_rgb.png'))
+           filename=os.path.join(params.debug_outdir, f"{params.device}_calibrated_rgb.png"))
 
     return calibrated

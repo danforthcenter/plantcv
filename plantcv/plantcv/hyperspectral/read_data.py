@@ -242,6 +242,6 @@ def read_data(filename, mode="ENVI"):
                                    )
     if params.debug:
         _debug(visual=spectral_array.pseudo_rgb(),
-               filename=os.path.join(params.debug_outdir, str(params.device) + "_pseudo_rgb.png"))
+               filename=os.path.join(params.debug_outdir, f"{params.device}_pseudo_rgb.png"))
 
     return spectral_array

@@ -39,6 +39,6 @@ def rot90(spectral_data, k):
 
     if params.debug:
         _debug(visual=rot_hsi.pseudo_rgb(),
-               filename=os.path.join(params.debug_outdir, str(params.device) + "_pseudo_rgb_rot_k" + str(k) + ".png"))
+               filename=os.path.join(params.debug_outdir, f"{params.device}_pseudo_rgb_rot_k{k}.png"))
 
     return rot_hsi

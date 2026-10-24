@@ -24,6 +24,6 @@ def rescale(gray_img, min_value=0, max_value=255):
     """
     rescaled_img = _rescale(gray_img, min_value, max_value)
 
-    _debug(visual=rescaled_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_rescaled.png'))
+    _debug(visual=rescaled_img, filename=os.path.join(params.debug_outdir, f"{params.device}_rescaled.png"))
 
     return rescaled_img

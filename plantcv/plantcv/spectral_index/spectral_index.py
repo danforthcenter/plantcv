@@ -1244,6 +1244,6 @@ def _package_index(hsi, raw_index, method):
 
     if params.debug:
         _debug(visual=index.pseudo_rgb(),
-               filename=os.path.join(params.debug_outdir, str(params.device) + method + "_index.png"))
+               filename=os.path.join(params.debug_outdir, f"{params.device}_{method}_index.png"))
 
     return index
