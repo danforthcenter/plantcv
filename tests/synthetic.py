@@ -18,8 +18,13 @@ In the RGB image every foreground pixel is BGR (0, 128, 0), which OpenCV encodes
 (120 degrees), and the background is BGR (128, 128, 128). In the grayscale image plant pixels
 are 200, small object pixels are 120, and background pixels are 50; having three distinct values
 means the grayscale image is never mistaken for a binary image.
+
+The two-plant mask is 50 x 125 with two separate disks of radius 12 centered at (row 25,
+column 30) and (row 25, column 90). A disk includes every pixel whose center is within the
+radius, so each disk has 441 pixels.
 """
 import os
+import cv2
 import numpy as np
 from plantcv.plantcv.classes import MS_data
 
@@ -35,6 +40,9 @@ BACKGROUND_BGR = (128, 128, 128)
 PLANT_GRAY = 200
 SMALL_OBJECT_GRAY = 120
 BACKGROUND_GRAY = 50
+TWO_PLANTS_SHAPE = (50, 125)
+TWO_PLANTS_CENTERS = ((25, 30), (25, 90))
+TWO_PLANTS_RADIUS = 12
 
 
 def plant_mask(small_object=True):
@@ -93,6 +101,58 @@ def plant_gray():
     y0, y1, x0, x1 = SMALL_OBJECT_RECT
     img[y0:y1, x0:x1] = SMALL_OBJECT_GRAY
     return img
+
+
+def disk_mask(shape, centers, radius):
+    """Create a binary mask of filled disks.
+
+    Parameters
+    ----------
+    shape : tuple
+        Shape of the mask (rows, columns).
+    centers : list
+        Disk centers as (row, column) tuples.
+    radius : int
+        Radius of every disk in pixels.
+
+    Returns
+    -------
+    numpy.ndarray
+        uint8 mask with pixels within radius of a center set to 255.
+    """
+    rows, cols = np.ogrid[:shape[0], :shape[1]]
+    mask = np.zeros(shape, dtype=np.uint8)
+    for cy, cx in centers:
+        mask[(rows - cy) ** 2 + (cols - cx) ** 2 <= radius ** 2] = 255
+    return mask
+
+
+def two_plants_mask():
+    """Create a binary mask of two separate disk-shaped plants.
+
+    Returns
+    -------
+    numpy.ndarray
+        uint8 mask with foreground 255 and background 0.
+    """
+    return disk_mask(TWO_PLANTS_SHAPE, TWO_PLANTS_CENTERS, TWO_PLANTS_RADIUS)
+
+
+def find_contours(mask):
+    """Find all contours of a binary mask with their hierarchy.
+
+    Parameters
+    ----------
+    mask : numpy.ndarray
+        Binary mask.
+
+    Returns
+    -------
+    tuple
+        Contours (tuple of numpy.ndarray) and hierarchy (numpy.ndarray), as returned by
+        cv2.findContours with RETR_TREE and CHAIN_APPROX_NONE.
+    """
+    return cv2.findContours(np.copy(mask), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
 
 
 def random_image(shape, seed=0):
