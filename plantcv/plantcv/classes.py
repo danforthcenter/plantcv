@@ -1,6 +1,8 @@
 # PlantCV classes
 import cv2
 import numpy as np
+from plantcv.plantcv.fatal_error import fatal_error
+from plantcv.plantcv._helpers import _find_closest, _rescale
 from plantcv.plantcv.annotate.points import _find_closest_pt
 import matplotlib.pyplot as plt
 from math import floor
@@ -10,7 +12,7 @@ class Spectral_data:
     """PlantCV Hyperspectral data class"""
 
     def __init__(self, array_data, max_wavelength, min_wavelength, max_value, min_value, d_type, wavelength_dict,
-                 samples, lines, interleave, wavelength_units, array_type, pseudo_rgb, filename, default_bands,
+                 samples, lines, interleave, wavelength_units, array_type, filename, default_bands,
                  byte_order=0, file_type="ENVI", header_offset=0, metadata=None):
         # The actual array/datacube
         self.array_data = array_data
@@ -36,8 +38,6 @@ class Spectral_data:
         self.header_offset = header_offset
         # The type of array data (entire datacube, specific index, first derivative, etc)
         self.array_type = array_type
-        # Pseudo-RGB image if the array_type is a datacube
-        self.pseudo_rgb = pseudo_rgb
         # The filename where the data originated from
         self.filename = filename
         # The default band indices needed to make an pseudo_rgb image, if not available then store None
@@ -46,6 +46,102 @@ class Spectral_data:
         self.metadata = metadata
         if not metadata:
             self.metadata = {}
+
+    def pseudo_rgb(self):
+        """Make a pseudo rgb"""
+        # Make shorter variable names for data from the spectral class instance object
+        array_data = self.array_data
+        default_bands = self.default_bands
+        wl_keys = self.wavelength_dict.keys()
+
+        if len(wl_keys) <= 1:
+            pseudo_rgb = array_data
+            if len(np.shape(pseudo_rgb)) > 2:
+                # the shape for these is [wavelengths, X, Y]
+                pseudo_rgb = array_data[0, :, :]
+            return np.repeat(_rescale(pseudo_rgb ** (1 / 2.2))[..., np.newaxis], 3, axis=-1)
+
+        if default_bands is not None:
+            pseudo_rgb = _make_default_bands_pseudo_rgb(self)
+        else:
+            pseudo_rgb = _make_no_default_bands_pseudo_rgb(self)
+        # Gamma correct pseudo_rgb image
+        pseudo_rgb = pseudo_rgb ** (1 / 2.2)
+        # Scale each of the channels up to 255
+        pseudo_rgb = cv2.merge((_rescale(pseudo_rgb[:, :, 0]),
+                                _rescale(pseudo_rgb[:, :, 1]),
+                                _rescale(pseudo_rgb[:, :, 2])))
+
+        return pseudo_rgb
+
+
+def _make_default_bands_pseudo_rgb(spectral_data):
+    """Helper to reduce complexity in Spectral_data.pseudo_rgb
+
+    Parameters:
+    -----------
+    spectral_data : plantcv.plantcv.Spectral_data,
+        the data to make a pseudo rgb image of
+
+    Returns:
+    --------
+    pseudo_rgb : numpy.ndarray
+    """
+    default_bands = spectral_data.default_bands
+    array_data = spectral_data.array_data
+    # The ENVI standard defines one default band for a grayscale image and three for an RGB image
+    if len(default_bands) == 1:
+        # Repeat the single band in each channel to make a grayscale pseudo-rgb image
+        default_bands = default_bands * 3
+    if len(default_bands) != 3:
+        fatal_error(
+            f"Expected 1 or 3 default bands in the header file but found {len(default_bands)}. " +
+            "Consider removing default_bands field of the header file."
+        )
+    # Default bands are positions on the band axis of the datacube, so they have to be in range
+    bands = [int(band) for band in default_bands]
+    if not all(0 <= band < array_data.shape[2] for band in bands):
+        fatal_error(f"Default bands {bands} are not all valid band numbers for a datacube with "
+                    f"{array_data.shape[2]} bands.")
+    pseudo_rgb = cv2.merge((array_data[:, :, bands[0]],
+                            array_data[:, :, bands[1]],
+                            array_data[:, :, bands[2]]))
+    return pseudo_rgb
+
+
+def _make_no_default_bands_pseudo_rgb(spectral_data):
+    """Helper to reduce complexity in Spectral_data.pseudo_rgb
+
+    Parameters:
+    -----------
+    spectral_data : plantcv.plantcv.Spectral_data,
+        the data to make a pseudo rgb image of
+
+    Returns:
+    --------
+    pseudo_rgb : numpy.ndarray
+    """
+    array_data = spectral_data.array_data
+    wl_keys = spectral_data.wavelength_dict.keys()
+    max_wavelength = max(float(i) for i in wl_keys)
+    min_wavelength = min(float(i) for i in wl_keys)
+    # Check range of available wavelength
+    if max_wavelength >= 600 and min_wavelength <= 490:
+        id_red = _find_closest(spectral_array=np.array([float(i) for i in wl_keys]), target=630)
+        id_green = _find_closest(spectral_array=np.array([float(i) for i in wl_keys]), target=540)
+        id_blue = _find_closest(spectral_array=np.array([float(i) for i in wl_keys]), target=480)
+
+        pseudo_rgb = cv2.merge((array_data[:, :, [id_blue]],
+                                array_data[:, :, [id_green]],
+                                array_data[:, :, [id_red]]))
+    else:
+        # Otherwise take 3 wavelengths, first, middle and last available wavelength
+        id_red = int(len(spectral_data.wavelength_dict)) - 1
+        id_green = int(id_red / 2)
+        pseudo_rgb = cv2.merge((array_data[:, :, [0]],
+                                array_data[:, :, [id_green]],
+                                array_data[:, :, [id_red]]))
+    return pseudo_rgb
 
 
 class PSII_data:
@@ -177,7 +273,7 @@ class MS_data:
                  wavelength_dict,
                  max_wavelength,
                  min_wavelength,
-                 pseudo_rgb, filename,
+                 filename,
                  metadata=None):
         # The actual array/datacube
         self.array_data = array_data
@@ -186,14 +282,44 @@ class MS_data:
         # store max/min wavelengths
         self.max_wavelength = max_wavelength
         self.min_wavelength = min_wavelength
-        # Pseudo-RGB image if the array_type is a datacube
-        self.pseudo_rgb = pseudo_rgb
         # The filename where the data originated from
         self.filename = filename
         # default wavelengths for making pseudo rgb
         self.default_bands = None
         # Metadata, flexible components in a dictionary
         self.metadata = metadata
+
+    def pseudo_rgb(self):
+        """Make pseudo rgb image on the fly"""
+        array_data = self.array_data
+        waves = list(self.wavelength_dict)
+
+        max_wavelength = float(self.max_wavelength)
+        min_wavelength = float(self.min_wavelength)
+        # Check range of available wavelength
+        if max_wavelength >= 600 and min_wavelength <= 490:
+            id_red = _find_closest(spectral_array=np.array([float(i) for i in waves]), target=630)
+            id_green = _find_closest(spectral_array=np.array([float(i) for i in waves]), target=540)
+            id_blue = _find_closest(spectral_array=np.array([float(i) for i in waves]), target=480)
+
+            pseudo_rgb = cv2.merge((array_data[:, :, [id_blue]],
+                                    array_data[:, :, [id_green]],
+                                    array_data[:, :, [id_red]]))
+        else:
+            # Otherwise take 3 wavelengths, first, middle and last available wavelength
+            id_red = int(len(waves)) - 1
+            id_green = int(id_red / 2)
+            pseudo_rgb = cv2.merge((array_data[:, :, [0]],
+                                    array_data[:, :, [id_green]],
+                                    array_data[:, :, [id_red]]))
+
+        # Gamma correct pseudo_rgb image
+        pseudo_rgb = pseudo_rgb ** (1 / 2.2)
+        # Scale each of the channels up to 255
+        pseudo_rgb = cv2.merge((_rescale(pseudo_rgb[:, :, 0]),
+                                _rescale(pseudo_rgb[:, :, 1]),
+                                _rescale(pseudo_rgb[:, :, 2])))
+        return pseudo_rgb
 
     def select(self, wavelength, ms=True):
         """Select a wavelength"""
@@ -211,7 +337,6 @@ class MS_data:
             wavelength_dict=wavelength_dict_new,
             max_wavelength=max(wavelength),
             min_wavelength=min(wavelength),
-            pseudo_rgb=self.pseudo_rgb,
             filename=self.filename,
             metadata=self.metadata
         )
