@@ -219,6 +219,8 @@ nav:
     - 'Analyze NPQ': analyze_npq.md
     - 'Analyze ETR': analyze_etr.md
     - 'Analyze AlphaL': analyze_alphaL.md
+    - 'Analyze NPQ Components': analyze_npq_components.md
+    - 'Analyze NPQ without dark frames': analyze_npqfast.md
     - 'Visualize Chlorophyll Fluorescence': visualize_chlorophyll_fluorescence.md    
   - 'Thermal Imaging':
       - 'Analyze Thermal': analyze_thermal.md

@@ -25,6 +25,8 @@ from plantcv import plantcv as pcv
 # calculate ETR
 pcv.analyze.etr(actinic_light=10)
 # check results
-pcv.outputs.observations["plant_1"]["mean_etr"]["value"]
+pcv.outputs.observations["plant_1"]["mean_etr"]["values"]
 
 ```
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/analyze/etr.py)
