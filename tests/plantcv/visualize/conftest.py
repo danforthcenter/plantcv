@@ -20,14 +20,8 @@ class VisualizeTestData:
         self.small_gray_img = os.path.join(self.datadir, "setaria_small_plant_gray.png")
         # Binary mask for RGB image
         self.small_bin_img = os.path.join(self.datadir, "setaria_small_plant_mask.png")
-        # Composed contours file
-        self.small_composed_contours_file = os.path.join(self.datadir, "setaria_small_plant_composed_contours.npz")
         # PlantCV hyperspectral image object
         self.hsi_file = os.path.join(self.datadir, "hsi.pkl")
-        # Tile image directory
-        self.tile_dir = os.path.join(self.datadir, "visualize_tile/")
-        # Tile image output
-        self.tile_out = os.path.join(self.datadir, "Tile_output.jpg")
 
     @staticmethod
     def load_hsi(pkl_file):

@@ -13,30 +13,18 @@ class ParallelTestData:
         self.workflowconfig_template_file = os.path.join(self.datadir, "workflowconfig_template.json")
         # Flat image directory
         self.flat_imgdir = os.path.join(self.datadir, "flat_imgdir")
-        # Flat image directory with dates in filenames
-        self.flat_imgdir_dates = os.path.join(self.datadir, "images_w_date")
         # Snapshot image directory
         self.snapshot_imgdir = os.path.join(self.datadir, "snapshot_imgdir")
         # Phenodata directory
         self.phenodata_dir = os.path.join(self.datadir, "phenodata_dir")
         # PlantCV workflow script
         self.workflow_script = os.path.join(self.datadir, "plantcv-script.py")
-        # Output directory from parallel processing, contains results files
-        self.parallel_results_dir = os.path.join(self.datadir, "parallel_results")
         # JSON results file with appended results
         self.appended_results_file = os.path.join(self.datadir, "appended_results.json")
         # JSON results file with a single set of results
         self.new_results_file = os.path.join(self.datadir, "new_results.json")
-        # Valid JSON file but invalid results
-        self.valid_json_file = os.path.join(self.datadir, "valid.json")
-        # PlantCV results file
-        self.plantcv_results_file = os.path.join(self.datadir, "plantcv_results.json")
-        # Invalid results file
-        self.invalid_results_file = os.path.join(self.datadir, "invalid_results.json")
         # Dummy jupyter notebook file
         self.jupyternotebook = os.path.join(self.datadir, "dummy.ipynb")
-        # checkpointing directory
-        self.checkpoint = os.path.join(self.datadir, "_PCV_PARALLEL_CHECKPOINT_")
         self.image_path = os.path.join(self.snapshot_imgdir, 'snapshot57383', 'VIS_SV_0_z1_h1_g0_e82_117770.jpg')
         self.nir_path = os.path.join(self.snapshot_imgdir, 'snapshot57383', 'NIR_SV_0_z1_h1_g0_e65_117779.jpg')
 

@@ -38,8 +38,6 @@ class PhotosynthesisTestData:
         self.cropreporter_rfp = os.path.join(self.datadir_rfp, "HDR_DYSeed_20251222191634684.INF")
         self.cropreporter_aph = os.path.join(self.datadir_aph, "HDR_2025-12-12_tob1_20251212205712029.INF")
         self.cropreporter_pmt = os.path.join(self.datadir_pmt, "HDR_E0001P0007N0001_GCU24100090_20260226.INF")
-        # Mask image
-        self.ps_mask = os.path.join(self.datadir_v441, "PSII_HDR_020321_WT_TOP_1_mask.png")
 
     @staticmethod
     def create_ps_mask():
@@ -94,8 +92,6 @@ class TestData:
         """Initialize simple variables."""
         # Test data directory
         self.datadir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "testdata")
-        # Flat image directory
-        self.snapshot_dir = os.path.join(self.datadir, "snapshot_dir")
         # RGB image
         self.small_rgb_img = os.path.join(self.datadir, "setaria_small_plant_rgb.png")
         # Binary mask for fill
@@ -149,18 +145,10 @@ class TestData:
         self.fmin = os.path.join(self.datadir, "FLUO_TV_min.png")
         # Fmax image
         self.fmax = os.path.join(self.datadir, "FLUO_TV_max.png")
-        # Mask image
-        self.ps_mask = os.path.join(self.datadir, "FLUO_TV_MASK.png")
-        # Multi-plant RGB image
-        self.multi_rgb_img = os.path.join(self.datadir, "brassica_multi_rgb_img.jpg")
         # Multi-plant contours file
         self.multi_contours_file = os.path.join(self.datadir, "brassica_multi_contours.npz")
         # Two plants binary mask
         self.multi_bin_img = os.path.join(self.datadir, "brassica_2plants_bin_img.png")
-        # Clustered contours names file
-        self.cluster_names = os.path.join(self.datadir, "cluster_names.txt")
-        # Clustered contours names file with too many labels
-        self.cluster_names_too_many = os.path.join(self.datadir, "cluster_names_too_many.txt")
         # Kmeans classifier directory
         self.kmeans_classifier_dir = os.path.join(self.datadir, "kmeans_classifier_dir")
         # Circle Wells for Hough Circle
@@ -172,8 +160,6 @@ class TestData:
         # Image, mask, and roi for radial percentile
         self.rgb_seed = os.path.join(self.datadir, "rgb_seed.jpg")
         self.rgb_seed_mask = os.path.join(self.datadir, "rgb_seed_mask.jpg")
-        self.small_circle = os.path.join(self.datadir, "small_circle.png")
-        self.empty_mask = os.path.join(self.datadir, "seed_empty_mask.png")
         # flir thermal img
         self.flir_img = os.path.join(self.datadir, "FLIR_test.jpg")
         # parallel results to process

@@ -18,13 +18,11 @@ class HyperspectralTestData:
         self.envi_appox_pseudo = os.path.join(self.datadir, "darkReference3")
         self.envi_bad_interleave = os.path.join(self.datadir, "darkReference4")
         self.arcgis = os.path.join(self.datadir, "darkReference_arcgis")
-        self.arcgis_hdr = os.path.join(self.datadir, "darkReference_arcgis.hdr")
         self.bad_filename = os.path.join(self.datadir, "darkReference0")
         self.hsi_file = os.path.join(self.datadir, "hsi.pkl")
         self.hsi_mask_file = os.path.join(self.datadir, "hsi_mask.png")
         self.hsi_whiteref_file = os.path.join(self.datadir, "hsi_whiteref.pkl")
         self.hsi_darkref_file = os.path.join(self.datadir, "hsi_darkref.pkl")
-        self.savi_file = os.path.join(self.datadir, "savi.pkl")
 
     @staticmethod
     def load_hsi(pkl_file):

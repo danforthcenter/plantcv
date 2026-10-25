@@ -28,8 +28,6 @@ class TransformTestData:
         self.source1_img = os.path.join(self.datadir, "source1_img.png")
         # Source 1 matrix file
         self.source1_matrix_file = os.path.join(self.datadir, "source1_matrix.npz")
-        # Source 2 RGB image
-        self.source2_img = os.path.join(self.datadir, "source2_img.png")
         # Source 1 matrix file
         self.source2_matrix_file = os.path.join(self.datadir, "source2_matrix.npz")
         # Matrix M (source 1)
