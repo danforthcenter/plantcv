@@ -6,6 +6,7 @@ import numpy as np
 import xarray as xr
 import pandas as pd
 import matplotlib
+from tests import synthetic
 
 # Disable plotting
 matplotlib.use("Template")
@@ -563,3 +564,21 @@ class TestData:
 def test_data():
     """Test data object for the main PlantCV package."""
     return TestData()
+
+
+@pytest.fixture
+def synthetic_mask():
+    """Binary mask of the synthetic plant (see tests/synthetic.py)."""
+    return synthetic.plant_mask()
+
+
+@pytest.fixture
+def synthetic_rgb():
+    """BGR image of the synthetic plant (see tests/synthetic.py)."""
+    return synthetic.plant_rgb()
+
+
+@pytest.fixture
+def synthetic_gray():
+    """Grayscale image of the synthetic plant (see tests/synthetic.py)."""
+    return synthetic.plant_gray()

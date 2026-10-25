@@ -83,20 +83,6 @@ class TransformTestData:
                                                           "..", "..", "testdata", "mergevert/"))
 
     @staticmethod
-    def create_test_img(sz_img):
-        """Create a test image."""
-        img = np.random.randint(np.prod(sz_img), size=sz_img) * 255
-        img = img.astype(np.uint8)
-        return img
-
-    @staticmethod
-    def create_test_img_bin(sz_img):
-        """Create a test binary image."""
-        img = np.zeros(sz_img)
-        img[3:7, 2:8] = 1
-        return img
-
-    @staticmethod
     def load_npz(npz_file):
         """Load data saved in a NumPy .npz file."""
         data = np.load(npz_file, encoding="latin1")
