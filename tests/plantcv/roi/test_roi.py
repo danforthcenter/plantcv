@@ -117,10 +117,14 @@ def test_ellipse_out_of_frame(synthetic_rgb):
         _ = ellipse(x=20, y=80, r1=30, r2=20, angle=0, img=synthetic_rgb)
 
 
-def test_auto_grid(roi_test_data):
+def grid_mask():
+    """Binary mask of four radius-10 disks in a 2 x 2 grid, centered at rows 35 and 65 and columns 40 and 80."""
+    return synthetic.disk_mask(synthetic.PLANT_SHAPE, [(35, 40), (35, 80), (65, 40), (65, 80)], 10)
+
+
+def test_auto_grid():
     """Test for PlantCV."""
-    # Read in test binary mask
-    mask = cv2.imread(roi_test_data.bin_grid_img, 0)
+    mask = grid_mask()
     rois = auto_grid(mask=mask, nrows=1, ncols=2)
     # Assert the contours has 2 ROIs
     assert len(rois.contours) == 2
@@ -135,29 +139,39 @@ def test_auto_grid_bad_input_img():
         _ = auto_grid(rgb_img, nrows=1, ncols=2)
 
 
-def test_auto_grid_one_column(roi_test_data):
+def test_auto_grid_one_column():
     """Test for PlantCV."""
-    # Read in test binary mask
-    mask = cv2.imread(roi_test_data.bin_grid_img, 0)
+    mask = grid_mask()
     rois = auto_grid(mask=mask, nrows=2, ncols=1)
     # Assert the contours has 2 ROIs
     assert len(rois.contours) == 2
 
 
-def test_auto_grid_overlap(roi_test_data, capsys):
+def test_auto_grid_overlap(capsys):
     """Test for PlantCV."""
-    # Read in test binary mask
-    mask = cv2.imread(roi_test_data.bin_grid_img, 0)
-    # Check for the overlapping ROI warning
-    _ = auto_grid(mask=mask, nrows=2, ncols=1, radius=50)
+    mask = grid_mask()
+    # Check for the overlapping ROI warning: radius-20 ROIs 30 px apart overlap but fit in the image
+    _ = auto_grid(mask=mask, nrows=2, ncols=1, radius=20)
     cap = capsys.readouterr()
-    assert len(cap.err) == 181
+    assert cap.err == ("Warning: Two or more of the user defined regions of interest overlap! "
+                       "If you only see one ROI then they may overlap exactly.\n")
 
 
-def test_auto_grid_multiple_cols_rows(roi_test_data):
+def test_auto_grid_shrink_radius(capsys):
     """Test for PlantCV."""
-    # Read in test binary mask
-    mask = cv2.imread(roi_test_data.bin_grid_img, 0)
+    mask = grid_mask()
+    # Radius-50 ROIs extend past the image edges, so the radius shrinks to fit
+    rois = auto_grid(mask=mask, nrows=2, ncols=2, radius=50)
+    cap = capsys.readouterr()
+    assert cap.err == ("Warning: Shrinking radius to make ROIs fit in the image\n"
+                       "Warning: Two or more of the user defined regions of interest overlap! "
+                       "If you only see one ROI then they may overlap exactly.\n")
+    assert len(rois.contours) == 4
+
+
+def test_auto_grid_multiple_cols_rows():
+    """Test for PlantCV."""
+    mask = grid_mask()
     rois = auto_grid(mask=mask, nrows=2, ncols=2)
     # Assert the contours has 4 ROIs
     assert len(rois.contours) == 4
