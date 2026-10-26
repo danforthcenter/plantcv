@@ -45,10 +45,11 @@ def test_deltaE_plotting(debug, transform_test_data, tmpdir):
     """Test for PlantCV."""
     cache = tmpdir.mkdir("cache")
     debug_outdir = params.debug_outdir
+    default_debug = params.debug
     params.debug_outdir = os.path.join(cache)
     params.debug = debug
     rgb_img = cv2.imread(transform_test_data.colorcard_img)
     de_matrix = deltaE(rgb_img=rgb_img, color_chip_size="classic")
     params.debug_outdir = debug_outdir
-    params.debug = debug
+    params.debug = default_debug
     assert np.shape(de_matrix) == (6, 4)
