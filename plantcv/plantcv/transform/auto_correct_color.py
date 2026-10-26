@@ -40,7 +40,7 @@ def auto_correct_color(rgb_img, color_chip_size=None, roi=None, delta_E=True, xr
     numpy.ndarray
         Color corrected image
     """
-    card_matrix = detect_color_card(rgb_img=rgb_img, color_chip_size=color_chip_size, roi=roi, delta_E=delta_E,
+    card_matrix, _ = detect_color_card(rgb_img=rgb_img, color_chip_size=color_chip_size, roi=roi, delta_E=delta_E,
                                     xrite_old=xrite_old, **kwargs)
 
     if isinstance(color_chip_size, str) and color_chip_size.upper() == 'ASTRO':
@@ -88,7 +88,7 @@ def auto_correct_color_nonlinear(rgb_img, color_chip_size=None, roi=None, delta_
         Color corrected image
     """
     # Measure colors in image
-    card_matrix = detect_color_card(rgb_img=rgb_img, color_chip_size=color_chip_size, roi=roi, delta_E=delta_E,
+    card_matrix, _ = detect_color_card(rgb_img=rgb_img, color_chip_size=color_chip_size, roi=roi, delta_E=delta_E,
                                     xrite_old=xrite_old, **kwargs)
 
     # Fetch reference values for the given type of color card

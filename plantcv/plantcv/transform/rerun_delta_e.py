@@ -26,7 +26,7 @@ def _rerun_delta_e(corrected_img, fun="affine_color_correction"):
         _ = kwargs_obj.pop("delta_E", None)
         debug = params.debug
         params.debug = None
-        obs_rgb = detect_color_card(corrected_img, color_chip_size=color_chip_size, roi=roi, xrite_old=xrite_old,
-                                    delta_E=False, **kwargs_obj)
+        obs_rgb, _ = detect_color_card(corrected_img, color_chip_size=color_chip_size, roi=roi, xrite_old=xrite_old,
+                                       delta_E=False, **kwargs_obj)
         params.debug = debug
         _ = _delta_e(obs_rgb, color_chip_size, obs=fun)

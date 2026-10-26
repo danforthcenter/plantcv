@@ -10,7 +10,7 @@ def test_detect_color_card(transform_test_data):
     """Test for PlantCV."""
     # Load rgb image
     rgb_img = cv2.imread(transform_test_data.colorcard_img)
-    color_matrix = detect_color_card(rgb_img=rgb_img, color_chip_size="classic")
+    color_matrix, _ = detect_color_card(rgb_img=rgb_img, color_chip_size="classic")
     params.function_args = {}
     assert np.shape(color_matrix) == (24, 4)
 
@@ -19,7 +19,7 @@ def test_detect_color_card_set_size(transform_test_data):
     """Test for PlantCV."""
     # Load rgb image
     rgb_img = cv2.imread(transform_test_data.colorcard_img)
-    color_matrix = detect_color_card(rgb_img=rgb_img, color_chip_size=(40, 40))
+    color_matrix, _ = detect_color_card(rgb_img=rgb_img, color_chip_size=(40, 40))
     params.function_args = {}
     assert np.shape(color_matrix) == (24, 4)
 
@@ -29,7 +29,7 @@ def test_draw_nonuniform_color_chips(transform_test_data):
     # Load rgb image
     rgb_img = cv2.imread(transform_test_data.colorcard_img)
     radii = [3*(i+1) for i in range(24)]
-    color_matrix = detect_color_card(rgb_img=rgb_img, color_chip_size=(40, 40), radius=radii)
+    color_matrix, _ = detect_color_card(rgb_img=rgb_img, color_chip_size=(40, 40), radius=radii)
     params.function_args = {}
     assert np.shape(color_matrix) == (24, 4)
 
@@ -102,7 +102,7 @@ def test_detect_color_card_masked_aruco_tags(transform_test_data, capsys):
 def test_detect_astro_card(transform_test_data):
     """Test for PlantCV."""
     rgb_img = cv2.imread(transform_test_data.astrocard_img)
-    color_matrix = detect_color_card(rgb_img=rgb_img, color_chip_size="astro")
+    color_matrix, _ = detect_color_card(rgb_img=rgb_img, color_chip_size="astro")
     params.function_args = {}
     assert np.shape(color_matrix) == (15, 4)
 
@@ -110,7 +110,7 @@ def test_detect_astro_card(transform_test_data):
 def test_detect_astro_card_missing_aruco_tags(transform_test_data):
     """Test for PlantCV."""
     rgb_img = cv2.imread(transform_test_data.astrocard_missing_tags)
-    color_matrix = detect_color_card(rgb_img=rgb_img, color_chip_size="astro")
+    color_matrix, _ = detect_color_card(rgb_img=rgb_img, color_chip_size="astro")
     params.function_args = {}
     assert np.shape(color_matrix) == (15, 4)
 

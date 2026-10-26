@@ -417,10 +417,11 @@ def _macbeth_card_detection(rgb_img, **kwargs):
     labeled_mask, debug_img = _draw_color_chips(out, new_centers_w, radius)
     # Check that new centers are inside each unique filtered_contour
     _check_point_per_chip(filtered_contours, new_centers_w, debug_img)
+
     # Calculate color matrix from the cropped color card image
     _, color_matrix = get_color_matrix(rgb_img=out, mask=labeled_mask)
 
-    return color_matrix, debug_img, marea, mheight, mwidth, bounding_mask
+    return color_matrix, debug_img, marea, mheight, mwidth, bounding_mask, labeled_mask
 
 
 def _find_aruco_tags(img, aruco_dict):
@@ -491,7 +492,7 @@ def _get_astro_std_mask():
     return std_mask
 
 
-def _astrobotany_card_detection(rgb_img, **kwargs):
+def _astrobotany_card_detection(rgb_img):
     """Algorithm to automatically detect an astrobotany.com-style color card.
 
     Parameters
@@ -597,7 +598,8 @@ def _astrobotany_card_detection(rgb_img, **kwargs):
                                         flags=cv2.INTER_NEAREST)
     # Calculate color matrix from the cropped color card image
     _, color_matrix = get_color_matrix(rgb_img=rgb_img, mask=labeled_mask)
-    return color_matrix, debug_img, marea, mheight, mwidth, bounding_mask
+
+    return color_matrix, debug_img, marea, mheight, mwidth, bounding_mask, labeled_mask
 
 
 def _set_size_scale_from_chip(color_chip_width, color_chip_height, color_chip_size):
@@ -693,9 +695,9 @@ def mask_color_card(rgb_img, card_type="macbeth", **kwargs):
         Binary bounding box mask of the detected color card chips
     """
     if card_type.upper() == "ASTRO":
-        *_, bounding_mask = _astrobotany_card_detection(rgb_img, **kwargs)
+        *_, bounding_mask, _ = _astrobotany_card_detection(rgb_img, **kwargs)
     else:
-        *_, bounding_mask = _macbeth_card_detection(rgb_img, **kwargs)
+        *_, bounding_mask, _ = _macbeth_card_detection(rgb_img, **kwargs)
 
     if params.debug is not None:
         # Find contours
@@ -744,7 +746,7 @@ def deltaE(rgb_img, color_chip_size=None, roi=None, xrite_old=False, obs="calibr
     delta_E
         numpy.ndarray, Delta E values between color chips.
     """
-    obs_rgb = detect_color_card(rgb_img, color_chip_size, roi, xrite_old=xrite_old, delta_E=False, **kwargs)
+    obs_rgb, _ = detect_color_card(rgb_img, color_chip_size, roi, xrite_old=xrite_old, delta_E=False, **kwargs)
     delta_E = _delta_e(obs_rgb, card_type=color_chip_size, xrite_old=xrite_old, obs=obs)
 
     if "detect_color_card" not in params.function_args:
@@ -789,10 +791,10 @@ def detect_color_card(rgb_img, color_chip_size=None, roi=None, delta_E=True, xri
     """
     if type(color_chip_size) is str and color_chip_size.upper() == 'ASTRO':
         # Search image for astrobotany.com color card aruco tags
-        color_matrix, debug_img, marea, mheight, mwidth, _ = _rect_filter(rgb_img,
-                                                                          roi,
-                                                                          function=_astrobotany_card_detection,
-                                                                          **kwargs)
+        color_matrix, debug_img, marea, mheight, mwidth, _, labeled_mask = _rect_filter(rgb_img,
+                                                                                        roi,
+                                                                                        function=_astrobotany_card_detection,
+                                                                                        **kwargs)
         # Create dataframe for easy summary stats
         chip_size = np.median(marea)
         chip_height = np.median(mheight)
@@ -812,10 +814,10 @@ def detect_color_card(rgb_img, color_chip_size=None, roi=None, delta_E=True, xri
 
     else:
         # apply _color_card_detection within bounding box
-        color_matrix, debug_img, marea, mheight, mwidth, _ = _rect_filter(rgb_img,
-                                                                          roi,
-                                                                          function=_macbeth_card_detection,
-                                                                          **kwargs)
+        color_matrix, debug_img, marea, mheight, mwidth, _, labeled_mask = _rect_filter(rgb_img,
+                                                                                        roi,
+                                                                                        function=_macbeth_card_detection,
+                                                                                        **kwargs)
         # Create dataframe for easy summary stats
         chip_size = np.median(marea)
         chip_height = np.median(mheight)
@@ -841,4 +843,4 @@ def detect_color_card(rgb_img, color_chip_size=None, roi=None, delta_E=True, xri
                                                      "kwargs": kwargs}
         _ = _delta_e(color_matrix, card_type=color_chip_size, xrite_old=xrite_old)
 
-    return color_matrix
+    return color_matrix, labeled_mask
