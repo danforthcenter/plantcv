@@ -6,57 +6,6 @@ from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._globals import params
 from plantcv.plantcv.classes import MS_data
 from plantcv.plantcv.fatal_error import fatal_error
-from plantcv.plantcv.transform.rescale import rescale
-from plantcv.plantcv.hyperspectral.read_data import _find_closest
-
-
-def _ms_make_pseudo_rgb(ms_array):
-    """Create pseudo-rgb image from a multispectral class image
-
-    Parameters:
-    -----------
-        ms_array = MS_data instance
-
-    Returns:
-    --------
-        numpy.ndarray     = Pseudo-rgb image
-    """
-    # Make shorter variable names for data from the spectral class instance object
-    array_data = ms_array.array_data
-    waves = list(ms_array.wavelength_dict)
-
-    max_wavelength = float(ms_array.max_wavelength)
-    min_wavelength = float(ms_array.min_wavelength)
-    # Check range of available wavelength
-    if max_wavelength >= 600 and min_wavelength <= 490:
-        id_red = _find_closest(spectral_array=np.array([float(i) for i in waves]), target=630)
-        id_green = _find_closest(spectral_array=np.array([float(i) for i in waves]), target=540)
-        id_blue = _find_closest(spectral_array=np.array([float(i) for i in waves]), target=480)
-
-        pseudo_rgb = cv2.merge((array_data[:, :, [id_blue]],
-                                array_data[:, :, [id_green]],
-                                array_data[:, :, [id_red]]))
-    else:
-        # Otherwise take 3 wavelengths, first, middle and last available wavelength
-        id_red = int(len(waves)) - 1
-        id_green = int(id_red / 2)
-        pseudo_rgb = cv2.merge((array_data[:, :, [0]],
-                                array_data[:, :, [id_green]],
-                                array_data[:, :, [id_red]]))
-
-    # Gamma correct pseudo_rgb image
-    pseudo_rgb = pseudo_rgb ** (1 / 2.2)
-    # Scale each of the channels up to 255
-    debug = params.debug
-    params.debug = None
-    pseudo_rgb = cv2.merge((rescale(pseudo_rgb[:, :, 0]),
-                            rescale(pseudo_rgb[:, :, 1]),
-                            rescale(pseudo_rgb[:, :, 2])))
-
-    # Reset debugging mode
-    params.debug = debug
-
-    return pseudo_rgb
 
 
 def _ms_file_matcher(pattern, filelist, ref):
@@ -197,11 +146,10 @@ def read_ms(source, wavelengths=None, pattern="MS(\\d+)_((SV|TV))_BP0_(\\d+).*")
         wavelength_dict=MS_wavelengths_dict,
         max_wavelength=max(MS_wavelengths),
         min_wavelength=min(MS_wavelengths),
-        pseudo_rgb=None,
         filename=source_str,
         metadata=meta
     )
-    ms.pseudo_rgb = _ms_make_pseudo_rgb(ms)
-    _debug(visual=ms.pseudo_rgb, filename=os.path.join(params.debug_outdir, "input_ms_pseudocolor.png"))
+
+    _debug(visual=ms.pseudo_rgb(), filename=os.path.join(params.debug_outdir, "input_ms_pseudocolor.png"))
 
     return ms
