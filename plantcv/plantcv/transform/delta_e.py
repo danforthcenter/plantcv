@@ -36,7 +36,7 @@ def _delta_e(obs_rgb, card_type=None, xrite_old=False, obs="uncalibrated"):
         obs_mat = (255 * np.delete(obs_rgb, 0, axis=1).reshape(3, 5, 3)).astype("uint8")
         exp_mat = (255 * np.delete(std, 0, axis=1).reshape(3, 5, 3)).astype("uint8")
     elif card_type.upper() == "CAMERATRAX":
-        std = ctrax_color_matrix()
+        std = ctrax_color_matrix(pos=3)
         obs_mat = (255 * np.delete(obs_rgb, 0, axis=1).reshape(6, 4, 3)).astype("uint8")
         exp_mat = (255 * np.delete(std, 0, axis=1).reshape(6, 4, 3)).astype("uint8")
     else:
