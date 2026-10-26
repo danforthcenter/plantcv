@@ -45,7 +45,6 @@ nav:
       - 'Auto Threshold Method Selection': visualize_auto_threshold_methods.md
       - 'Channel Selection': visualize_colorspace.md
       - 'Histogram': visualize_histogram.md
-      - 'Hyperspectral Histogram': visualize_hyper_histogram.md
       - 'Pixel Scatter Plot': 'visualize_pixel_scatter_vis.md'
     - 'Visualize Results':
       - 'Colorize Label Image': visualize_colorize_label_img.md
@@ -207,6 +206,7 @@ nav:
     - 'Spectral Index': spectral_index.md
     - 'Extract wavelength': extract_wavelength.md
     - 'Rotate HSI': hyperspectral_rot90.md
+    - 'Hyperspectral Histogram': visualize_hyper_histogram.md
     - 'Spectral data objects': Spectral_data.md
     - 'Multispectra data objects': ms_data.md
     - 'Read Multispectral images': multispec_read_ms.md
