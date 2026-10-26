@@ -12,7 +12,6 @@ from plantcv.plantcv.transform.get_color_matrix import get_color_matrix
 from plantcv.plantcv.transform.get_color_matrix import get_matrix_m
 from plantcv.plantcv.transform.rescale import rescale
 from plantcv.plantcv.transform.rotate import rotate
-from plantcv.plantcv.transform.standard_matrices import std_color_matrix
 from plantcv.plantcv.transform.standard_matrices import xrite_color_matrix
 from plantcv.plantcv.transform.standard_matrices import xrite_old_color_matrix
 from plantcv.plantcv.transform.standard_matrices import ctrax_color_matrix
