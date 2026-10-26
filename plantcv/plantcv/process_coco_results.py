@@ -1,6 +1,5 @@
 import os
 import re
-import json
 import mimetypes
 from plantcv.plantcv.classes import COCO
 
@@ -32,12 +31,12 @@ def process_coco_results(filename, source=".", pattern="_pcv_coco.json", mode="w
         for (dirpath, _, filenames) in os.walk(source):
             for fn in filenames:
                 if ('text/plain' in mimetypes.guess_type(fn) or
-                    'application/json' in mimetypes.guess_type(fn)) and re.search(pattern, fn):
+                        'application/json' in mimetypes.guess_type(fn)) and re.search(pattern, fn):
                     filelist.append(os.path.join(dirpath, fn))
 
     for fn in filelist:
         fn_coco = COCO()
         fn_coco.load(fn)
-        output._append(fn_coco)
+        output.append(fn_coco)
 
     output.save(filename, mode=mode, coco_suffix=False)

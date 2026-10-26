@@ -75,6 +75,15 @@ Methods are callable as `COCO_instance.`*method*()
   - \*\*kwargs
 	- See initialization docs
 
+#### append
+
+`coco.`**append** adds images/annotations/data from another `coco` object into the current object.
+
+- **coco.append**(*other*)
+
+- **Parameters:**
+  - other - Another `coco` object.
+
 #### save
 
 `coco.`**save** writes the `coco` object to a json file.

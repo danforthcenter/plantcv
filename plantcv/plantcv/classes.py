@@ -368,7 +368,7 @@ class COCO:
                 existing.append(record)
         setattr(self, attr, existing)
 
-    def _append(self, other):
+    def append(self, other):
         """Append another COCO object's records, renumbering its image and annotation ids"""
         # categories with the same id must be the same category or annotations change meaning
         existing_names = {c["id"]: c.get("name") for c in self.categories}
@@ -452,7 +452,7 @@ class COCO:
         if os.path.isfile(filename) and mode.lower() == "a":
             existing = COCO()
             existing.load(filename)
-            existing._append(self)
+            existing.append(self)
             content = existing._to_dict()
 
         with open(filename, mode='w') as fp:
