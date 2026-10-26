@@ -9,7 +9,8 @@ from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv.readimage import readimage
 from plantcv.plantcv.transform.detect_color_card import deltaE
-from plantcv.plantcv.transform.standard_matrices import std_color_matrix, astro_color_matrix
+from plantcv.plantcv.transform.standard_matrices import (xrite_color_matrix, xrite_old_color_matrix,
+                                                         astro_color_matrix, ctrax_color_matrix)
 
 
 def _bin_deltaE(v):
@@ -34,7 +35,7 @@ def _bin_deltaE(v):
     return ">49"
 
 
-def plot_deltaE(source, n=20, ext="png", **kwargs):
+def plot_deltaE(source, n=20, ext="png", card_type='xrite', xrite_old=False, **kwargs):
     """Make a boxplot of deltaE per color chip across a set of images
 
     Parameters
@@ -47,6 +48,10 @@ def plot_deltaE(source, n=20, ext="png", **kwargs):
         Max number of images to read if source is an str filepath
     ext : str,
         File extension of images
+    card_type : str (default "xrite")
+        Either "xrite", "cameratrax", or "astro" for color card type.
+    xrite_old : boolean (default False)
+        Option if using xrite color targets with the old (pre-2014) formulations. Typically only useful for legacy images.
     **kwargs : Further arguments passed to plantcv.plantcv.transform.deltaE
         Valid Keyword arguments:
         color_chip_size (None)
@@ -67,13 +72,13 @@ def plot_deltaE(source, n=20, ext="png", **kwargs):
         and standard chip color swatches below the x-axis
     """
     if isinstance(source, np.ndarray):
-        chart = _plot_single_deltaE(source)
+        chart = _plot_single_deltaE(source, card_type=card_type, xrite_old=xrite_old)
     else:
-        chart = _plot_dataset_deltaE(source, n, ext, **kwargs)
+        chart = _plot_dataset_deltaE(source, n, ext, card_type=card_type, xrite_old=xrite_old, **kwargs)
     return chart.interactive()
 
 
-def _plot_dataset_deltaE(source, n=20, ext="png", **kwargs):
+def _plot_dataset_deltaE(source, n=20, ext="png", card_type='xrite', xrite_old=False, **kwargs):
     """Make a boxplot of deltaE per color chip across a set of images
 
     Parameters
@@ -85,6 +90,10 @@ def _plot_dataset_deltaE(source, n=20, ext="png", **kwargs):
         Max number of images to read if source is an str filepath
     ext : str,
         File extension of images
+    card_type : str (default "xrite")
+        Either "xrite", "cameratrax", or "astro" for color card type.
+    xrite_old : boolean (default False)
+        Option if using xrite color targets with the old (pre-2014) formulations. Typically only useful for legacy images.
     **kwargs : Further arguments passed to plantcv.plantcv.transform.deltaE
         Valid Keyword arguments:
         color_chip_size (None)
@@ -112,6 +121,7 @@ def _plot_dataset_deltaE(source, n=20, ext="png", **kwargs):
                     # store debug mode
     debug = params.debug
     params.debug = None
+
     # load and plot the set of images sequentially
     image_dfs = []
     for p in paths_to_imgs:
@@ -132,6 +142,7 @@ def _plot_dataset_deltaE(source, n=20, ext="png", **kwargs):
             ),
         })
         image_dfs.append(iter_df)
+
     df = pd.concat(image_dfs, ignore_index=True)
     n_chips = df["chip_no"].max()
     y_max = float(df["deltaE"].max()) * 1.1
@@ -171,9 +182,17 @@ def _plot_dataset_deltaE(source, n=20, ext="png", **kwargs):
         y="y:Q",
         color=alt.Color("stroke:N", scale=None),
     )
-    std_mat = std_color_matrix(pos=3)
-    if n_chips == 15:
+
+    if card_type.upper() == "ASTRO":
         std_mat = astro_color_matrix()
+    elif card_type.upper() == "CAMERATRAX":
+        std_mat = ctrax_color_matrix(pos=3)
+    else:
+        if xrite_old:
+            std_mat = xrite_old_color_matrix(pos=3)
+        else:
+            std_mat = xrite_color_matrix(pos=3)
+
     swatch_chip_nos = (std_mat[:, 0] / 10).astype(int)
     swatch_hex = [
         f"#{int(r * 255):02X}{int(g * 255):02X}{int(b * 255):02X}"
@@ -199,14 +218,18 @@ def _plot_dataset_deltaE(source, n=20, ext="png", **kwargs):
     return plot
 
 
-def _plot_single_deltaE(deltaE_matrix):
+def _plot_single_deltaE(deltaE_matrix, card_type='xrite', xrite_old=False):
     """
     Plot a bar chart of deltaE values for color checker chips.
 
     Parameters
     ----------
-    deltaE_matrix = numpy.ndarray,
+    deltaE_matrix : numpy.ndarray,
         4x6 (macbeth) or 3x5 (astrobotany) array of per-chip deltaE values
+    card_type : str (default "xrite")
+        Either "xrite", "cameratrax", or "astro" for color card type.
+    xrite_old : boolean (default False)
+        Option if using xrite color targets with the old (pre-2014) formulations. Typically only useful for legacy images.
 
     Returns
     -------
@@ -215,11 +238,17 @@ def _plot_single_deltaE(deltaE_matrix):
         and standard chip color swatches below the x-axis
     """
     n_chips = math.prod(np.shape(deltaE_matrix))
+
     # chip color swatches below x-axis
-    std_mat = std_color_matrix(pos=3)
-    if n_chips == 15:
-        # astrobotany stuff
+    if card_type.upper() == "ASTRO":
         std_mat = astro_color_matrix()
+    elif card_type.upper() == "CAMERATRAX":
+        std_mat = ctrax_color_matrix(pos=3)
+    else:
+        if xrite_old:
+            std_mat = xrite_old_color_matrix(pos=3)
+        else:
+            std_mat = xrite_color_matrix(pos=3)
 
     params.device += 1
 

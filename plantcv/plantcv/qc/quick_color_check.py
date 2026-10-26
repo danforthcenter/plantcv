@@ -5,10 +5,11 @@ import pandas as pd
 import altair as alt
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._globals import params
-from plantcv.plantcv.transform.standard_matrices import std_color_matrix, astro_color_matrix
+from plantcv.plantcv.transform.standard_matrices import (xrite_color_matrix, xrite_old_color_matrix,
+                                                         astro_color_matrix, ctrax_color_matrix)
 
 
-def quick_color_check(source_matrix, target_matrix=None, num_chips=None):
+def quick_color_check(source_matrix, target_matrix=None, num_chips=None, card_type='xrite', xrite_old=False):
     """Plot the color values of a target and source color card matrix.
 
     Quickly plot target matrix values against source matrix values to determine
@@ -25,6 +26,10 @@ def quick_color_check(source_matrix, target_matrix=None, num_chips=None):
         plantcv.plantcv.transform.std_color_matrix or astro_color_matrix
     num_chips          = None or int,
         number of color card chips included in the matrices
+    card_type          = str (default "xrite")
+        Either "xrite", "cameratrax", or "astro" for color card type.
+    xrite_old          = boolean (default False)
+        Option if using xrite color targets with the old (pre-2014) formulations. Typically only useful for legacy images.
 
     Returns:
     --------
@@ -33,9 +38,16 @@ def quick_color_check(source_matrix, target_matrix=None, num_chips=None):
     """
     # handle None target_matrix
     if target_matrix is None:
-        target_matrix = std_color_matrix(pos=3)
-        if np.shape(source_matrix)[0] != 24:
+        if card_type.upper() == "ASTRO":
             target_matrix = astro_color_matrix()
+        elif card_type.upper() == "CAMERATRAX":
+            target_matrix = ctrax_color_matrix(pos=3)
+        else:
+            if xrite_old:
+                target_matrix = xrite_old_color_matrix(pos=3)
+            else:
+                target_matrix = xrite_color_matrix(pos=3)
+
     # handle None num_chips
     if num_chips is None:
         num_chips, _ = np.shape(target_matrix)
