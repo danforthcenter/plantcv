@@ -1,19 +1,19 @@
 import pytest
-import cv2
 import numpy as np
 from matplotlib.figure import Figure
 from plantcv.plantcv.visualize import pseudocolor
 from plantcv.plantcv import params
+from tests import synthetic
 
 
 @pytest.mark.parametrize("debug,axes", [["print", True], ["plot", False], [None, False]])
-def test_pseudocolor(debug, axes, tmpdir, visualize_test_data):
+def test_pseudocolor(debug, axes, tmpdir, synthetic_mask):
     """Test for PlantCV."""
     # Create a tmp directory
     cache_dir = tmpdir.mkdir("cache")
     params.debug_outdir = cache_dir
     # Input image
-    img = cv2.imread(visualize_test_data.small_bin_img, -1)
+    img = synthetic_mask
     r, c = img.shape
     # generate "bad" pixels
     mask_bad = np.zeros((r, c), dtype=np.uint8)
@@ -27,16 +27,16 @@ def test_pseudocolor(debug, axes, tmpdir, visualize_test_data):
 
 @pytest.mark.parametrize("bkgrd,bkgrd_img,axes",
                          [["image", False, True], ["image", True, True], ["white", False, False], ["black", False, True]])
-def test_pseudocolor_mask(bkgrd, bkgrd_img, axes, visualize_test_data):
+def test_pseudocolor_mask(bkgrd, bkgrd_img, axes, synthetic_mask, synthetic_rgb):
     """Test for PlantCV."""
     # Input image
-    img = cv2.imread(visualize_test_data.small_bin_img, -1)
+    img = synthetic_mask
     # Input mask
-    mask = cv2.imread(visualize_test_data.small_bin_img, -1)
+    mask = synthetic_mask
     r, c = img.shape
     # Input background image
     if bkgrd_img:
-        bkgrd = cv2.imread(visualize_test_data.small_rgb_img)
+        bkgrd = synthetic_rgb
 
     # generate "bad" pixels
     mask_bad = np.zeros((r, c), dtype=np.uint8)
@@ -47,25 +47,21 @@ def test_pseudocolor_mask(bkgrd, bkgrd_img, axes, visualize_test_data):
     assert isinstance(pseudo_img, Figure)
 
 
-def test_pseudocolor_bad_input(visualize_test_data):
+def test_pseudocolor_bad_input(synthetic_rgb):
     """Test for PlantCV."""
-    img = cv2.imread(visualize_test_data.small_rgb_img)
     with pytest.raises(RuntimeError):
-        _ = pseudocolor(gray_img=img)
+        _ = pseudocolor(gray_img=synthetic_rgb)
 
 
-def test_pseudocolor_bad_background(visualize_test_data):
+def test_pseudocolor_bad_background(synthetic_mask):
     """Test for PlantCV."""
-    img = cv2.imread(visualize_test_data.small_bin_img, -1)
-    mask = cv2.imread(visualize_test_data.small_bin_img, -1)
     with pytest.raises(RuntimeError):
-        _ = pseudocolor(gray_img=img, mask=mask, background="pink")
+        _ = pseudocolor(gray_img=synthetic_mask, mask=synthetic_mask, background="pink")
 
 
-def test_pseudocolor_bad_background_image_dimensions(visualize_test_data):
+def test_pseudocolor_bad_background_image_dimensions(synthetic_mask):
     """Test for PlantCV."""
-    img = cv2.imread(visualize_test_data.small_bin_img, -1)
-    bkgrd = cv2.imread(visualize_test_data.small_owl_rgb_img)
-    mask = cv2.imread(visualize_test_data.small_bin_img, -1)
+    # 50 x 125 background image that does not match the 100 x 120 input image
+    bkgrd = synthetic.plant_rgb(mask=synthetic.two_plants_mask())
     with pytest.raises(RuntimeError):
-        _ = pseudocolor(gray_img=img, mask=mask, background=bkgrd)
+        _ = pseudocolor(gray_img=synthetic_mask, mask=synthetic_mask, background=bkgrd)
