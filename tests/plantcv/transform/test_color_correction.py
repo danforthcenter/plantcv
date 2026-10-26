@@ -8,7 +8,8 @@ from plantcv.plantcv.transform.color_correction import (calc_transformation_matr
                                                         apply_transformation_matrix, save_matrix, load_matrix, correct_color,
                                                         create_color_card_mask, affine_color_correction)
 from plantcv.plantcv.transform.get_color_matrix import get_color_matrix, get_matrix_m
-from plantcv.plantcv.transform.standard_matrices import std_color_matrix, astro_color_matrix
+from plantcv.plantcv.transform.standard_matrices import (xrite_color_matrix, xrite_old_color_matrix,
+                                                         astro_color_matrix, ctrax_color_matrix)
 from plantcv.plantcv.transform.detect_color_card import detect_color_card
 
 
@@ -22,7 +23,7 @@ def test_affine_color_correction(transform_test_data):
     mask = create_color_card_mask(rgb_img=img, radius=20, start_coord=(1000, 400),
                                   spacing=(145, 145), nrows=6, ncols=4)
     _, s_matrix = get_color_matrix(rgb_img=img, mask=mask)
-    t_matrix = std_color_matrix(pos=3)
+    t_matrix = xrite_old_color_matrix(pos=3)
     corrected_img = affine_color_correction(rgb_img=img, source_matrix=s_matrix,
                                             target_matrix=t_matrix)
     _, c_matrix = get_color_matrix(rgb_img=corrected_img, mask=mask)
@@ -39,7 +40,7 @@ def test_affine_color_correction(transform_test_data):
 def test_affine_color_correction_bad_shape(transform_test_data):
     """Test for PlantCV."""
     img = cv2.imread(transform_test_data.colorcard_img)
-    t_matrix = std_color_matrix(pos=3)
+    t_matrix = xrite_old_color_matrix(pos=3)
     with pytest.raises(RuntimeError):
         _ = affine_color_correction(rgb_img=img, source_matrix=t_matrix,
                                     target_matrix=t_matrix[0:-1, :])
@@ -48,7 +49,7 @@ def test_affine_color_correction_bad_shape(transform_test_data):
 @pytest.mark.parametrize("pos", [0, 1, 2, 3])
 def test_std_color_matrix(pos):
     """Test for PlantCV."""
-    std_matrix = std_color_matrix(pos=pos)
+    std_matrix = xrite_old_color_matrix(pos=pos)
 
     # indices for the color matrix where the white chip should be depending on
     # the value of pos
@@ -67,7 +68,7 @@ def test_std_color_matrix(pos):
 def test_std_color_matrix_bad_pos():
     """Test for PlantCV."""
     with pytest.raises(RuntimeError):
-        _ = std_color_matrix(pos=4.5)
+        _ = xrite_color_matrix(pos=4.5)
 
 
 def test_astro_color_matrix():
@@ -83,6 +84,20 @@ def test_astro_color_matrix():
 
     # compare RGB values in the range [0-255]
     assert np.sum(np.abs(255*yellow_val - yellow_rgb)) < 1
+
+
+def test_ctrax_color_matrix():
+    """Test for PlantCV."""
+    ctrax_matrix = ctrax_color_matrix(pos=3)
+
+    # Index and RGB values (range [0-1]) of the 'foliage' chip in color matrix
+    foliage_idx = 4
+    foliage_val = ctrax_matrix[foliage_idx, 1:]
+    # RGB values of the 'foliage' chip
+    foliage_rgb = np.array([85., 107., 65.], dtype=np.float64)
+
+    # compare RGB values in the range [0-255]
+    assert np.sum(np.abs(255*foliage_val - foliage_rgb)) < 1
 
 
 def test_get_color_matrix(transform_test_data):

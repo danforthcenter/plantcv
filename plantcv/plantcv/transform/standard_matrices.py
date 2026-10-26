@@ -4,12 +4,14 @@ import numpy as np
 from plantcv.plantcv.fatal_error import fatal_error
 
 
-def std_color_matrix(pos=0):
+def xrite_old_color_matrix(pos=0):
     """Create a standard color matrix.
 
-    Standard color values compatible with the x-rite ColorChecker Classic,
-    ColorChecker Mini, and ColorChecker Passport targets.
-    Source: https://en.wikipedia.org/wiki/ColorChecker
+    Standard color values compatible with old (pre-2014) x-rite ColorChecker Classic, ColorChecker Mini, and ColorChecker
+    Passport targets. These standard values are kept for legacy images. For the modern (post-2014 reformulation) standard
+    color values, use the xrite_color_matrix method.
+
+    Source: https://www.xrite.com/service-support/new_color_specifications_for_colorchecker_sg_and_classic_charts
 
     Parameters
     ----------
@@ -52,6 +54,150 @@ def std_color_matrix(pos=0):
                             [122, 122, 121],  # neutral 5 (.7*)
                             [85, 85, 85],  # neutral 3.5 (1.05*)
                             [52, 52, 52]], dtype=np.float64)  # black (1.50*)
+
+    pos = math.floor(pos)
+    if (pos < 0) or (pos > 3):
+        fatal_error("white chip position reference 'pos' must be a value among {0, 1, 2, 3}")
+
+    N_chips = values_list.shape[0]
+
+    # array of indices from 1 to N chips in order to match the chip numbering
+    # in the color card specs. Later when used for indexing, we subtract the 1.
+    idx = np.arange(N_chips)+1
+    # indices in the shape of the color card
+    cc_indices = idx.reshape((4, 6), order='C')
+    # rotate the indices depending on the specified orientation
+    cc_indices_rot = np.rot90(cc_indices, k=pos, axes=(0, 1))
+    # arange color values based on the indices
+    color_matrix_wo_chip_nb = values_list[(cc_indices_rot-1).reshape(-1), :]/255.
+
+    # add chip number (mask value) compatible with other PlantCV functions
+    chip_nb = np.arange(10, 10*N_chips+1, 10)
+    color_matrix = np.concatenate((chip_nb.reshape(N_chips, 1), color_matrix_wo_chip_nb), axis=1)
+
+    return color_matrix
+
+
+def xrite_color_matrix(pos=0):
+    """Create a standard color matrix.
+
+    Standard color values compatible with modern (post-2014) x-rite/calibrite ColorChecker Classic, ColorChecker Mini, and 
+    ColorChecker Passport targets.
+
+    Source: https://www.xrite.com/service-support/new_color_specifications_for_colorchecker_sg_and_classic_charts
+
+    Parameters
+    ----------
+    pos : int
+        reference value indicating orientation of the color card. The reference is based on the position of the white chip:
+                pos = 0: bottom-left corner (default)
+                pos = 1: bottom-right corner
+                pos = 2: top-right corner
+                pos = 3: top-left corner
+
+    Returns
+    -------
+    color_matrix
+        matrix containing the standard red, green, and blue values for each color chip
+    """
+    # list of rgb values as indicated in the color card specs. They need to be
+    # arranged depending on the orientation of the color card of reference in the
+    # image to be corrected.
+    values_list = np.array([[116, 79, 65],  # dark skin
+                            [197, 144, 127],  # light skin
+                            [91, 120, 155],  # blue sky
+                            [91, 108, 64],  # foliage
+                            [131, 127, 175],  # blue flower
+                            [95, 189, 172],  # bluish green
+                            [224, 124, 48],  # orange
+                            [69, 90, 167],  # purplish blue
+                            [197, 80, 95],  # moderate red
+                            [93, 58, 104],  # purple
+                            [156, 187, 58],  # yellow green
+                            [227, 161, 39],  # orange yellow
+                            [40, 62, 145],  # blue
+                            [61, 147, 70],  # green
+                            [178, 54, 57],  # red
+                            [236, 199, 15],  # yellow
+                            [191, 89, 155],  # magenta
+                            [0, 133, 165],  # cyan
+                            [241, 242, 235],  # white (.05*)
+                            [201, 202, 201],  # neutral 8 (.23*)
+                            [161, 163, 163],  # neutral 6.5 (.44*)
+                            [121, 121, 121],  # neutral 5 (.7*)
+                            [83, 84, 85],  # neutral 3.5 (1.05*)
+                            [50, 50, 50]], dtype=np.float64)  # black (1.50*)
+
+    pos = math.floor(pos)
+    if (pos < 0) or (pos > 3):
+        fatal_error("white chip position reference 'pos' must be a value among {0, 1, 2, 3}")
+
+    N_chips = values_list.shape[0]
+
+    # array of indices from 1 to N chips in order to match the chip numbering
+    # in the color card specs. Later when used for indexing, we subtract the 1.
+    idx = np.arange(N_chips)+1
+    # indices in the shape of the color card
+    cc_indices = idx.reshape((4, 6), order='C')
+    # rotate the indices depending on the specified orientation
+    cc_indices_rot = np.rot90(cc_indices, k=pos, axes=(0, 1))
+    # arange color values based on the indices
+    color_matrix_wo_chip_nb = values_list[(cc_indices_rot-1).reshape(-1), :]/255.
+
+    # add chip number (mask value) compatible with other PlantCV functions
+    chip_nb = np.arange(10, 10*N_chips+1, 10)
+    color_matrix = np.concatenate((chip_nb.reshape(N_chips, 1), color_matrix_wo_chip_nb), axis=1)
+
+    return color_matrix
+
+
+def ctrax_color_matrix(pos=0):
+    """Create a standard color matrix.
+
+    Standard color values for CameraTrax targets. Users may want to define their own color matrix from card-specific values
+    provided by the manufacturer.
+
+    Parameters
+    ----------
+    pos : int
+        reference value indicating orientation of the color card. The reference is based on the position of the white chip:
+                pos = 0: bottom-left corner (default)
+                pos = 1: bottom-right corner
+                pos = 2: top-right corner
+                pos = 3: top-left corner
+
+    Returns
+    -------
+    color_matrix
+        matrix containing the standard red, green, and blue values for each color chip
+    """
+    # list of rgb values as indicated in the color card specs. They need to be
+    # arranged depending on the orientation of the color card of reference in the
+    # image to be corrected.
+    values_list = np.array([[112, 79, 66],  # dark skin
+                            [200, 146, 127],  # light skin
+                            [87, 121, 155],  # blue sky
+                            [85, 107, 65],  # foliage
+                            [127, 127, 175],  # blue flower
+                            [86, 190, 170],  # bluish green
+                            [228, 125, 46],  # orange
+                            [64, 89, 170],  # purplish blue
+                            [197, 79, 95],  # moderate red
+                            [89, 58, 105],  # purple
+                            [157, 190, 61],  # yellow green
+                            [230, 163, 40],  # orange yellow
+                            [43, 60, 145],  # blue
+                            [60, 148, 73],  # green
+                            [179, 45, 54],  # red
+                            [239, 200, 36],  # yellow
+                            [193, 82, 152],  # magenta
+                            [0, 135, 169],  # cyan
+                            [236, 234, 233],  # white (.05*)
+                            [203, 205, 205],  # neutral 8 (.23*)
+                            [161, 163, 164],  # neutral 6.5 (.44*)
+                            [119, 119, 121],  # neutral 5 (.7*)
+                            [80, 81, 85],  # neutral 3.5 (1.05*)
+                            [47, 46, 48]], dtype=np.float64)  # black (1.50*)
 
     pos = math.floor(pos)
     if (pos < 0) or (pos > 3):

@@ -13,6 +13,9 @@ from plantcv.plantcv.transform.get_color_matrix import get_matrix_m
 from plantcv.plantcv.transform.rescale import rescale
 from plantcv.plantcv.transform.rotate import rotate
 from plantcv.plantcv.transform.standard_matrices import std_color_matrix
+from plantcv.plantcv.transform.standard_matrices import xrite_color_matrix
+from plantcv.plantcv.transform.standard_matrices import xrite_old_color_matrix
+from plantcv.plantcv.transform.standard_matrices import ctrax_color_matrix
 from plantcv.plantcv.transform.standard_matrices import astro_color_matrix
 from plantcv.plantcv.transform.nonuniform_illumination import nonuniform_illumination
 from plantcv.plantcv.transform.resize import resize, resize_factor
@@ -27,7 +30,8 @@ from plantcv.plantcv.transform.clahe import clahe
 
 __all__ = ["get_color_matrix", "get_matrix_m", "calc_transformation_matrix", "apply_transformation_matrix",
            "save_matrix", "load_matrix", "correct_color", "create_color_card_mask",
-           "std_color_matrix", "affine_color_correction", "rescale", "nonuniform_illumination", "resize",
+           "xrite_color_matrix", "xrite_old_color_matrix", "ctrax_color_matrix", "astro_color_matrix",
+           "affine_color_correction", "rescale", "nonuniform_illumination", "resize",
            "resize_factor", "warp", "rotate", "warp", "warp_align", "gamma_correct", "deltaE",
            "detect_color_card", "checkerboard_calib", "calibrate_camera", "merge_images", "auto_correct_color",
-           "mask_color_card", "auto_correct_color_nonlinear", "astro_color_matrix", "mcc_detect", "clahe"]
+           "mask_color_card", "auto_correct_color_nonlinear", "mcc_detect", "clahe"]
