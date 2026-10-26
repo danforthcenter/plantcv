@@ -230,22 +230,22 @@ def astro_color_matrix():
     color_matrix
         matrix containing the standard red, green, and blue values for each color chip
     """
-    values_list = np.array([[47, 59, 128],      # Blue
-                            [87, 158, 63],      # Green
-                            [181, 64, 54],      # Red
-                            [228, 207, 50],     # Yellow
-                            [53, 56, 55],       # Black
-                            # Grayscale chips
-                            [233, 241, 238],
-                            [210, 220, 220],
-                            [184, 192, 186],
-                            [164, 170, 163],
-                            [145, 147, 142],
-                            [123, 126, 122],
-                            [100, 102,  99],
-                            [83, 82, 81],
-                            [70, 71, 70],
-                            [57, 58, 58]], dtype=np.float64)
+    values_list = np.array([[ 41.,  59., 129.],     # Blue
+                            [ 83., 158.,  57.],     # Green
+                            [188.,  62.,  52.],     # Red
+                            [234., 206.,  43.],     # Yellow
+                            [ 49.,  54.,  54.],     # Black
+                            # Grayscale
+                            [233., 242., 239.],
+                            [208., 221., 219.],
+                            [182., 192., 185.],
+                            [163., 170., 162.],
+                            [144., 146., 141.],
+                            [121., 125., 120.],
+                            [ 97., 102.,  98.],
+                            [ 80.,  81.,  79.],
+                            [ 67.,  70.,  69.],
+                            [ 53.,  57.,  57.]], dtype=np.float64)
 
     # Convert RGB values to float
     color_matrix_wo_chip_nb = values_list/255.

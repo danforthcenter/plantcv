@@ -327,7 +327,7 @@ def test_cameratrax_and_astro_consistent_color_calibration(transform_test_data):
 
     # Correct with cameratrax card and measure corrected astrocard values
     ctrax_mat = detect_color_card(rgb_img=rgb_img)
-    ctrax_std_mat = std_color_matrix(pos=3)
+    ctrax_std_mat = ctrax_color_matrix(pos=3)
     ctrax_corr_img = affine_color_correction(rgb_img=rgb_img, source_matrix=ctrax_mat, target_matrix=ctrax_std_mat)
 
     # Correct with astrocard and measure corrected astrocard values
