@@ -6,10 +6,11 @@ from plantcv.plantcv.transform.color_correction import (
     calc_transformation_matrix
 )
 from plantcv.plantcv.transform.get_color_matrix import get_matrix_m
-from plantcv.plantcv.transform.standard_matrices import std_color_matrix, astro_color_matrix
+from plantcv.plantcv.transform.standard_matrices import (xrite_old_color_matrix, xrite_color_matrix,
+                                                         astro_color_matrix, ctrax_color_matrix)
 
 
-def auto_correct_color(rgb_img, color_chip_size=None, roi=None, **kwargs):
+def auto_correct_color(rgb_img, color_chip_size=None, roi=None, xrite_old=False, **kwargs):
     """Automatically detect a color card.
     Parameters
     ----------
@@ -20,6 +21,8 @@ def auto_correct_color(rgb_img, color_chip_size=None, roi=None, **kwargs):
         in millimeters (default = None)
     roi: plantcv.plantcv.Objects, optional
         Objects class rectangular ROI passed to detect_color_card (default None)
+    xrite_old : boolean (default False)
+        Option if using xrite color targets with the old (pre-2014) formulations. Typically only useful for legacy images.
     **kwargs
         Other keyword arguments passed to cv2.adaptiveThreshold, cv2.circle and _rect_filter.
         Valid keyword arguments:
@@ -39,25 +42,32 @@ def auto_correct_color(rgb_img, color_chip_size=None, roi=None, **kwargs):
 
     if isinstance(color_chip_size, str) and color_chip_size.upper() == 'ASTRO':
         std_matrix = astro_color_matrix()
+    elif isinstance(color_chip_size, str) and color_chip_size.upper() == 'CAMERATRAX':
+        std_matrix = ctrax_color_matrix(pos=3)
     else:
-        std_matrix = std_color_matrix(pos=3)
+        if xrite_old:
+            std_matrix = xrite_old_color_matrix(pos=3)
+        else:
+            std_matrix = xrite_color_matrix(pos=3)
 
     corr_img = affine_color_correction(rgb_img=rgb_img, source_matrix=card_matrix, target_matrix=std_matrix)
 
     return corr_img
 
 
-def auto_correct_color_nonlinear(rgb_img, color_chip_size=None, roi=None, **kwargs):
+def auto_correct_color_nonlinear(rgb_img, color_chip_size=None, roi=None, xrite_old=False, **kwargs):
     """Automatically detect a color card and applies non-linear color correction
     Parameters
     ----------
     rgb_img : numpy.ndarray
         Input RGB image data containing a color card.
     color_chip_size: str, tuple, optional
-        "passport", "classic", "nano", "mini", or "cameratrax"; or tuple formatted (width, height)
+        "passport", "classic", "nano", "mini", "cameratrax", or "astro"; or tuple formatted (width, height)
         in millimeters (default = None)
     roi: plantcv.plantcv.Objects, optional
         Objects class rectangular ROI passed to detect_color_card (default None)
+    xrite_old : boolean (default False)
+        Option if using xrite color targets with the old (pre-2014) formulations. Typically only useful for legacy images.
     **kwargs
         Other keyword arguments passed to cv2.adaptiveThreshold, cv2.circle and _rect_filter.
         Valid keyword arguments:
@@ -72,8 +82,20 @@ def auto_correct_color_nonlinear(rgb_img, color_chip_size=None, roi=None, **kwar
     numpy.ndarray
         Color corrected image
     """
+    # Measure colors in image
     card_matrix = detect_color_card(rgb_img=rgb_img, color_chip_size=color_chip_size, roi=roi, **kwargs)
-    std_matrix = std_color_matrix(pos=3)
+
+    # Fetch reference values for the given type of color card
+    if isinstance(color_chip_size, str) and color_chip_size.upper() == 'ASTRO':
+        std_matrix = astro_color_matrix()
+    elif isinstance(color_chip_size, str) and color_chip_size.upper() == 'CAMERATRAX':
+        std_matrix = ctrax_color_matrix(pos=3)
+    else:
+        if xrite_old:
+            std_matrix = xrite_old_color_matrix(pos=3)
+        else:
+            std_matrix = xrite_color_matrix(pos=3)
+
     _, matrix_m, matrix_b = get_matrix_m(target_matrix=std_matrix, source_matrix=card_matrix)
     # calculate transformation_matrix and save
     _, transformation_matrix = calc_transformation_matrix(matrix_m, matrix_b)
