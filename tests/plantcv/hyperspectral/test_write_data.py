@@ -38,7 +38,6 @@ def test_write_data_default(tmpdir):
                                         interleave='bil',
                                         wavelength_units='nm',
                                         array_type="datacube",
-                                        pseudo_rgb=None,
                                         filename='random_hyperspectral_test',
                                         default_bands=[0, 1, 2])
 
