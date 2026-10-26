@@ -5,10 +5,11 @@ from skimage import color
 from matplotlib import pyplot as plt
 from plantcv.plantcv._globals import params, outputs
 from plantcv.plantcv.fatal_error import fatal_error
-from plantcv.plantcv.transform.standard_matrices import std_color_matrix, astro_color_matrix
+from plantcv.plantcv.transform.standard_matrices import (xrite_color_matrix, xrite_old_color_matrix,
+                                                         astro_color_matrix, ctrax_color_matrix)
 
 
-def _delta_e(obs_rgb, card_type=None, obs="uncalibrated"):
+def _delta_e(obs_rgb, card_type=None, xrite_old=False, obs="uncalibrated"):
     """Calculate summary of Delta E between two color cards
 
     Parameters
@@ -16,7 +17,9 @@ def _delta_e(obs_rgb, card_type=None, obs="uncalibrated"):
     obs_rgb : numpy.ndarray
         Observed RGB color chip values as returned from plantcv.transform.detect_color_card
     card_type : str
-        either "macbeth" or "astro" for color card type, defaults to None for compatibility with detection.
+        either "xrite", "cameratrax", or "astro" for color card type, defaults to None for compatibility with detection.
+    xrite_old : boolean (default False)
+        Option if using xrite color targets with the old (pre-2014) formulations. Typically only useful for legacy images.
     obs : str
         string describing what the obs_rgb data is, typically "uncalibrated" for an image input into color correction
         or "calibrated" for an image that has been through color correction.
@@ -27,16 +30,24 @@ def _delta_e(obs_rgb, card_type=None, obs="uncalibrated"):
         numpy.ndarray, Delta E values between color chips.
     """
     if card_type is None or isinstance(card_type, tuple):
-        card_type = "macbeth"
+        card_type = "xrite"
     if card_type.upper() == "ASTRO":
         std = astro_color_matrix()
         obs_mat = (255 * np.delete(obs_rgb, 0, axis=1).reshape(3, 5, 3)).astype("uint8")
         exp_mat = (255 * np.delete(std, 0, axis=1).reshape(3, 5, 3)).astype("uint8")
+    elif card_type.upper() == "CAMERATRAX":
+        std = ctrax_color_matrix()
+        obs_mat = (255 * np.delete(obs_rgb, 0, axis=1).reshape(6, 4, 3)).astype("uint8")
+        exp_mat = (255 * np.delete(std, 0, axis=1).reshape(6, 4, 3)).astype("uint8")
     else:
-        std = std_color_matrix(pos=3)
+        if xrite_old:
+            std = xrite_old_color_matrix(pos=3)
+        else:
+            std = xrite_color_matrix(pos=3)
         # format both rgb colors into 6x4 uint8 image
         obs_mat = (255 * np.delete(obs_rgb, 0, axis=1).reshape(6, 4, 3)).astype("uint8")
         exp_mat = (255 * np.delete(std, 0, axis=1).reshape(6, 4, 3)).astype("uint8")
+
     # convert to LAB for skimage color functions
     obs_lab = color.rgb2lab(obs_mat)
     exp_lab = color.rgb2lab(exp_mat)

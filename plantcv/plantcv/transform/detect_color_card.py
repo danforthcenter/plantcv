@@ -711,7 +711,7 @@ def mask_color_card(rgb_img, card_type="macbeth", **kwargs):
     return bounding_mask
 
 
-def deltaE(rgb_img, color_chip_size=None, roi=None, obs="calibrated", **kwargs):
+def deltaE(rgb_img, color_chip_size=None, roi=None, xrite_old=False, obs="calibrated", **kwargs):
     """Calculate Delta E from an rgb image with a color card
 
     Parameters
@@ -723,6 +723,8 @@ def deltaE(rgb_img, color_chip_size=None, roi=None, obs="calibrated", **kwargs):
         in millimeters (default = None)
     roi : plantcv.plantcv.Objects, optional
         A rectangular ROI as returned from pcv.roi.rectangle to detect a color card only in that region.
+    xrite_old : boolean (default False)
+        Option if using xrite color targets with the old (pre-2014) formulations. Typically only useful for legacy images.
     obs : str
         string describing what the obs_rgb data is, typically "uncalibrated" for an image input into color correction
         or "calibrated" for an image that has been through color correction.
@@ -742,16 +744,18 @@ def deltaE(rgb_img, color_chip_size=None, roi=None, obs="calibrated", **kwargs):
     delta_E
         numpy.ndarray, Delta E values between color chips.
     """
-    obs_rgb = detect_color_card(rgb_img, color_chip_size, roi, delta_E=False, **kwargs)
-    delta_E = _delta_e(obs_rgb, color_chip_size, obs)
+    obs_rgb = detect_color_card(rgb_img, color_chip_size, roi, xrite_old=xrite_old, delta_E=False, **kwargs)
+    delta_E = _delta_e(obs_rgb, card_type=color_chip_size, xrite_old=xrite_old, obs=obs)
+
     if "detect_color_card" not in params.function_args:
         params.function_args["detect_color_card"] = {"color_chip_size": kwargs.get("color_chip_size"),
                                                      "roi": kwargs.get("roi"),
+                                                     "xrite_old": kwargs.get("xrite_old"),
                                                      "kwargs": kwargs}
     return delta_E
 
 
-def detect_color_card(rgb_img, color_chip_size=None, roi=None, delta_E=True, **kwargs):
+def detect_color_card(rgb_img, color_chip_size=None, roi=None, delta_E=True, xrite_old=False, **kwargs):
     """Automatically detects a Macbeth ColorChecker or Astrobotany.com Calibration Sticker style color card.
 
     Parameters
@@ -765,6 +769,8 @@ def detect_color_card(rgb_img, color_chip_size=None, roi=None, delta_E=True, **k
         A rectangular ROI as returned from pcv.roi.rectangle to detect a color card only in that region.
     delta_E : Boolean, optional
         Should DeltaE be calculated between the observed vs expected color card? Defaults to True.
+    xrite_old : boolean (default False)
+        Option if using xrite color targets with the old (pre-2014) formulations. Typically only useful for legacy images.
     **kwargs
         Other keyword arguments passed to cv2.adaptiveThreshold and cv2.circle.
 
@@ -831,7 +837,8 @@ def detect_color_card(rgb_img, color_chip_size=None, roi=None, delta_E=True, **k
     if delta_E:
         params.function_args["detect_color_card"] = {"color_chip_size": color_chip_size,
                                                      "roi": roi,
+                                                     "xrite_old":xrite_old,
                                                      "kwargs": kwargs}
-        _ = _delta_e(color_matrix, card_type=color_chip_size)
+        _ = _delta_e(color_matrix, card_type=color_chip_size, xrite_old=xrite_old)
 
     return color_matrix
