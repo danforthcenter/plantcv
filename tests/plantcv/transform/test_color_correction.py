@@ -24,8 +24,7 @@ def test_affine_color_correction(transform_test_data):
                                   spacing=(145, 145), nrows=6, ncols=4)
     _, s_matrix = get_color_matrix(rgb_img=img, mask=mask)
     t_matrix = xrite_old_color_matrix(pos=3)
-    corrected_img = affine_color_correction(rgb_img=img, source_matrix=s_matrix,
-                                            target_matrix=t_matrix)
+    corrected_img = affine_color_correction(rgb_img=img, source_matrix=s_matrix, target_matrix=t_matrix, rerun_delta_E=False)
     _, c_matrix = get_color_matrix(rgb_img=corrected_img, mask=mask)
 
     # calculate Euclidean distance between the chip values
@@ -42,8 +41,7 @@ def test_affine_color_correction_bad_shape(transform_test_data):
     img = cv2.imread(transform_test_data.colorcard_img)
     t_matrix = xrite_old_color_matrix(pos=3)
     with pytest.raises(RuntimeError):
-        _ = affine_color_correction(rgb_img=img, source_matrix=t_matrix,
-                                    target_matrix=t_matrix[0:-1, :])
+        _ = affine_color_correction(rgb_img=img, source_matrix=t_matrix, target_matrix=t_matrix[0:-1, :], rerun_delta_E=False)
 
 
 @pytest.mark.parametrize("pos", [0, 1, 2, 3])
@@ -216,7 +214,7 @@ def test_apply_transformation(transform_test_data):
     matrix_t = transform_test_data.load_npz(transform_test_data.transformation_matrix_file)
     # read in images
     source_img = cv2.imread(transform_test_data.source1_img)
-    corrected_img = apply_transformation_matrix(source_img, matrix_t)
+    corrected_img = apply_transformation_matrix(source_img, matrix_t, rerun_delta_E=False)
     # assert source and corrected have same shape
     assert np.array_equal(corrected_img, corrected_compare)
 
@@ -228,7 +226,7 @@ def test_apply_transformation_incorrect_t(transform_test_data):
     # read in images
     source_img = cv2.imread(transform_test_data.source1_img)
     with pytest.raises(RuntimeError):
-        _ = apply_transformation_matrix(source_img, matrix_t)
+        _ = apply_transformation_matrix(source_img, matrix_t, rerun_delta_E=False)
 
 
 def test_apply_transformation_incorrect_img(transform_test_data):
@@ -238,7 +236,7 @@ def test_apply_transformation_incorrect_img(transform_test_data):
     # read in images
     source_img = cv2.imread(transform_test_data.colorcard_mask, -1)
     with pytest.raises(RuntimeError):
-        _ = apply_transformation_matrix(source_img, matrix_t)
+        _ = apply_transformation_matrix(source_img, matrix_t, rerun_delta_E=False)
 
 
 def test_save_matrix(transform_test_data, tmpdir):
@@ -282,7 +280,7 @@ def test_correct_color(transform_test_data, tmpdir):
     target_img = cv2.imread(transform_test_data.target_img)
     source_img = cv2.imread(transform_test_data.source1_img)
     mask = cv2.imread(transform_test_data.colorcard_mask, -1)
-    _, _, _, corrected_img = correct_color(target_img, mask, source_img, mask, cache_dir)
+    _, _, _, corrected_img = correct_color(target_img, mask, source_img, mask, cache_dir, rerun_delta_E=False)
     # assert source and corrected have same shape
     assert all([np.array_equal(corrected_img, corrected_compare),
                 os.path.exists(os.path.join(cache_dir, "target_matrix.npz")) is True,
@@ -301,7 +299,7 @@ def test_correct_color_output_dne(transform_test_data, tmpdir):
     target_img = cv2.imread(transform_test_data.target_img)
     source_img = cv2.imread(transform_test_data.source1_img)
     mask = cv2.imread(transform_test_data.colorcard_mask, -1)
-    _, _, _, corrected_img = correct_color(target_img, mask, source_img, mask, cache_dir)
+    _, _, _, corrected_img = correct_color(target_img, mask, source_img, mask, cache_dir, rerun_delta_E=False)
     # assert source and corrected have same shape
     assert all([np.array_equal(corrected_img, corrected_compare),
                 os.path.exists(os.path.join(cache_dir, "target_matrix.npz")) is True,
@@ -328,12 +326,14 @@ def test_cameratrax_and_astro_consistent_color_calibration(transform_test_data):
     # Correct with cameratrax card and measure corrected astrocard values
     ctrax_mat = detect_color_card(rgb_img=rgb_img)
     ctrax_std_mat = ctrax_color_matrix(pos=3)
-    ctrax_corr_img = affine_color_correction(rgb_img=rgb_img, source_matrix=ctrax_mat, target_matrix=ctrax_std_mat)
+    ctrax_corr_img = affine_color_correction(rgb_img=rgb_img, source_matrix=ctrax_mat, target_matrix=ctrax_std_mat,
+                                             rerun_delta_E=False)
 
     # Correct with astrocard and measure corrected astrocard values
     astro_mat = detect_color_card(rgb_img=rgb_img, color_chip_size="astro")
     astro_std_mat = astro_color_matrix()
-    astro_corr_img = affine_color_correction(rgb_img=rgb_img, source_matrix=astro_mat, target_matrix=astro_std_mat)
+    astro_corr_img = affine_color_correction(rgb_img=rgb_img, source_matrix=astro_mat, target_matrix=astro_std_mat,
+                                             rerun_delta_E=False)
 
     diff = np.abs(ctrax_corr_img - astro_corr_img)
     channel_diffs = np.sum(diff, axis=(0, 1)) / (diff.shape[0] * diff.shape[1])

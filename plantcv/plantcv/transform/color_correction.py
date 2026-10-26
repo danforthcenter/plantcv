@@ -10,7 +10,7 @@ from plantcv.plantcv.transform.rerun_delta_e import _rerun_delta_e
 from plantcv.plantcv.transform.get_color_matrix import get_color_matrix, get_matrix_m
 
 
-def affine_color_correction(rgb_img, source_matrix, target_matrix):
+def affine_color_correction(rgb_img, source_matrix, target_matrix, rerun_delta_E=True):
     """Affine color correction of RGB image.
 
     Correct the color of the input image based on the target color matrix using an affine transformation
@@ -18,17 +18,17 @@ def affine_color_correction(rgb_img, source_matrix, target_matrix):
     Euclidean distance between the transformed source color values and the target color values.
 
     Inputs:
-    rgb_img         = an RGB image with color chips visualized
-    source_matrix   = array of RGB color values (intensity in the range [0-1]) from
-                      the image to be corrected where each row is one
-                      color reference and the columns are organized as index,R,G,B
-    target_matrix   = array of target RGB color values (intensity in the range [0-1])
-                      where each row is one color reference and the columns are
-                      organized as index,R,G,B
+    rgb_img : an RGB image with color chips visualized
+    source_matrix : array of RGB color values (intensity in the range [0-1]) from
+        the image to be corrected where each row is one color reference and the columns
+        are organized as index,R,G,B
+    target_matrix : array of target RGB color values (intensity in the range [0-1])
+        where each row is one color reference and the columns are organized as index,R,G,B
+    rerun_delta_E : Boolean, optional
+        Should DeltaE be recalculated between the observed vs expected color card if run on uncorrected image? Defaults to True
 
     Outputs:
-    corrected_img   = color corrected image
-
+    corrected_img : color corrected image
 
     :param rgb_img: numpy.ndarray
     :param source_matrix: numpy.ndarray
@@ -75,8 +75,9 @@ def affine_color_correction(rgb_img, source_matrix, target_matrix):
     # reconstruct the RGB (actually BGR for openCV) image
     corrected_img = np.stack((img_b_cc, img_g_cc, img_r_cc), axis=1).reshape(h, w, c)
 
-    # rerun deltaE calculation if it was previously run
-    _rerun_delta_e(corrected_img, fun="affine_color_correction")
+    # rerun deltaE calculation if it was previously run, unless specified otherwise
+    if rerun_delta_E:
+        _rerun_delta_e(corrected_img, fun="affine_color_correction")
 
     # For debugging, create a horizontal view of the image before and after color correction
     debug_img = np.hstack([rgb_img, corrected_img])
@@ -142,15 +143,17 @@ def calc_transformation_matrix(matrix_m, matrix_b):
     return 1-t_det, transformation_matrix
 
 
-def apply_transformation_matrix(source_img, transformation_matrix):
+def apply_transformation_matrix(source_img, transformation_matrix, rerun_delta_E=True):
     """Apply the transformation matrix to the source_image.
 
     Inputs:
-    source_img      = an RGB image to be corrected to the target color space
-    transformation_matrix        = a 9x9 matrix of transformation coefficients
+    source_img : an RGB image to be corrected to the target color space
+    transformation_matrix : a 9x9 matrix of transformation coefficients
+    rerun_delta_E : Boolean, optional
+        Should DeltaE be recalculated between the observed vs expected color card if run on uncorrected image? Defaults to True
 
     Outputs:
-    corrected_img    = an RGB image in correct color space
+    corrected_img : an RGB image in correct color space
 
     :param source_img: numpy.ndarray
     :param transformation_matrix: numpy.ndarray
@@ -207,8 +210,9 @@ def apply_transformation_matrix(source_img, transformation_matrix):
     out_img = ((255.0/max_val)*out_img).astype(np.uint8)
     _debug(visual=out_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_corrected.png'))
 
-    # rerun deltaE calculation if it was previously run
-    _rerun_delta_e(corrected_img, fun="apply_transformation_matrix")
+    # rerun deltaE calculation if it was previously run, unless specified otherwise
+    if rerun_delta_E:
+        _rerun_delta_e(corrected_img, fun="apply_transformation_matrix")
 
     # return the corrected image
     return corrected_img
@@ -252,7 +256,7 @@ def load_matrix(filename):
     return matrix
 
 
-def correct_color(target_img, target_mask, source_img, source_mask, output_directory):
+def correct_color(target_img, target_mask, source_img, source_mask, output_directory, rerun_delta_E=True):
     """Take a target_img with preferred color_space and convert source_img to that color_space.
 
     Inputs:
@@ -261,6 +265,8 @@ def correct_color(target_img, target_mask, source_img, source_mask, output_direc
     target_mask         = a gray-scale image with color chips and background each represented with unique values
     source_mask         = a gray-scale image with color chips and background each represented as unique values
     output_directory    = a file path to which outputs will be saved
+    rerun_delta_E       = Boolean, optional
+        Should DeltaE be recalculated between the observed vs expected color card if run on uncorrected image? Defaults to True
 
     Outputs:
     target_matrix   = saved in .npz file, a 22x4 matrix containing the average red value, average green value, and
@@ -301,7 +307,7 @@ def correct_color(target_img, target_mask, source_img, source_mask, output_direc
     save_matrix(transformation_matrix, os.path.join(output_directory, "transformation_matrix.npz"))
 
     # apply transformation
-    corrected_img = apply_transformation_matrix(source_img, transformation_matrix)
+    corrected_img = apply_transformation_matrix(source_img, transformation_matrix, rerun_delta_E=rerun_delta_E)
 
     return target_matrix, source_matrix, transformation_matrix, corrected_img
 

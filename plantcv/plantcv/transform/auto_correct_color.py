@@ -10,7 +10,7 @@ from plantcv.plantcv.transform.standard_matrices import (xrite_old_color_matrix,
                                                          astro_color_matrix, ctrax_color_matrix)
 
 
-def auto_correct_color(rgb_img, color_chip_size=None, roi=None, xrite_old=False, **kwargs):
+def auto_correct_color(rgb_img, color_chip_size=None, roi=None, delta_E=True, xrite_old=False, **kwargs):
     """Automatically detect a color card.
     Parameters
     ----------
@@ -21,6 +21,8 @@ def auto_correct_color(rgb_img, color_chip_size=None, roi=None, xrite_old=False,
         in millimeters (default = None)
     roi: plantcv.plantcv.Objects, optional
         Objects class rectangular ROI passed to detect_color_card (default None)
+    delta_E : Boolean, optional
+        Should DeltaE be calculated between the observed vs expected color card? Defaults to True.
     xrite_old : boolean (default False)
         Option if using xrite color targets with the old (pre-2014) formulations. Typically only useful for legacy images.
     **kwargs
@@ -38,7 +40,8 @@ def auto_correct_color(rgb_img, color_chip_size=None, roi=None, xrite_old=False,
     numpy.ndarray
         Color corrected image
     """
-    card_matrix = detect_color_card(rgb_img=rgb_img, color_chip_size=color_chip_size, roi=roi, **kwargs)
+    card_matrix = detect_color_card(rgb_img=rgb_img, color_chip_size=color_chip_size, roi=roi, delta_E=delta_E,
+                                    xrite_old=xrite_old, **kwargs)
 
     if isinstance(color_chip_size, str) and color_chip_size.upper() == 'ASTRO':
         std_matrix = astro_color_matrix()
@@ -50,12 +53,12 @@ def auto_correct_color(rgb_img, color_chip_size=None, roi=None, xrite_old=False,
         else:
             std_matrix = xrite_color_matrix(pos=3)
 
-    corr_img = affine_color_correction(rgb_img=rgb_img, source_matrix=card_matrix, target_matrix=std_matrix)
+    corr_img = affine_color_correction(rgb_img=rgb_img, source_matrix=card_matrix, target_matrix=std_matrix, rerun_delta_E=delta_E)
 
     return corr_img
 
 
-def auto_correct_color_nonlinear(rgb_img, color_chip_size=None, roi=None, xrite_old=False, **kwargs):
+def auto_correct_color_nonlinear(rgb_img, color_chip_size=None, roi=None, delta_E=True, xrite_old=False, **kwargs):
     """Automatically detect a color card and applies non-linear color correction
     Parameters
     ----------
@@ -66,6 +69,8 @@ def auto_correct_color_nonlinear(rgb_img, color_chip_size=None, roi=None, xrite_
         in millimeters (default = None)
     roi: plantcv.plantcv.Objects, optional
         Objects class rectangular ROI passed to detect_color_card (default None)
+    delta_E : Boolean, optional
+        Should DeltaE be calculated between the observed vs expected color card? Defaults to True.
     xrite_old : boolean (default False)
         Option if using xrite color targets with the old (pre-2014) formulations. Typically only useful for legacy images.
     **kwargs
@@ -83,7 +88,8 @@ def auto_correct_color_nonlinear(rgb_img, color_chip_size=None, roi=None, xrite_
         Color corrected image
     """
     # Measure colors in image
-    card_matrix = detect_color_card(rgb_img=rgb_img, color_chip_size=color_chip_size, roi=roi, **kwargs)
+    card_matrix = detect_color_card(rgb_img=rgb_img, color_chip_size=color_chip_size, roi=roi, delta_E=delta_E,
+                                    xrite_old=xrite_old, **kwargs)
 
     # Fetch reference values for the given type of color card
     if isinstance(color_chip_size, str) and color_chip_size.upper() == 'ASTRO':
@@ -100,5 +106,6 @@ def auto_correct_color_nonlinear(rgb_img, color_chip_size=None, roi=None, xrite_
     # calculate transformation_matrix and save
     _, transformation_matrix = calc_transformation_matrix(matrix_m, matrix_b)
     # apply non-linear color transformation to the input image
-    corrected = apply_transformation_matrix(source_img=rgb_img, transformation_matrix=transformation_matrix)
+    corrected = apply_transformation_matrix(source_img=rgb_img, transformation_matrix=transformation_matrix, rerun_delta_E=delta_E)
+
     return corrected
