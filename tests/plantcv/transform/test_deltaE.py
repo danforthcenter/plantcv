@@ -18,9 +18,9 @@ def test_deltaE_macbeth(transform_test_data):
     outputs.clear()
     params.function_args = {}
     rgb_img = cv2.imread(transform_test_data.colorcard_img)
-    de_matrix = deltaE(rgb_img=rgb_img, obs="testname", color_chip_size="classic")
+    de_matrix = deltaE(rgb_img=rgb_img, obs="testname", color_chip_size="classic", xrite_old=False)
     assert np.shape(de_matrix) == (6, 4)
-    assert np.max(outputs.metadata["deltaE_testname"]["value"]) == [pytest.approx(np.float64(15.279), 0.001)]
+    assert np.max(outputs.metadata["deltaE_testname"]["value"]) == [pytest.approx(np.float64(15.131), 0.001)]
 
 
 def test_deltaE_astro(transform_test_data):
@@ -29,7 +29,7 @@ def test_deltaE_astro(transform_test_data):
     rgb_img = cv2.imread(transform_test_data.astrocard_img)
     de_matrix = deltaE(rgb_img=rgb_img, color_chip_size="astro")
     assert np.shape(de_matrix) == (3, 5)
-    assert np.max(outputs.metadata["deltaE_calibrated"]["value"]) == [pytest.approx(np.float64(35.899), 0.001)]
+    assert np.max(outputs.metadata["deltaE_calibrated"]["value"]) == [pytest.approx(np.float64(35.844), 0.001)]
 
 
 def test_deltaE_bad_param(transform_test_data, monkeypatch):

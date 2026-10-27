@@ -84,18 +84,24 @@ def test_astro_color_matrix():
     assert np.sum(np.abs(255*yellow_val - yellow_rgb)) < 1
 
 
-def test_ctrax_color_matrix():
+@pytest.mark.parametrize("pos", [0, 1, 2, 3])
+def test_ctrax_color_matrix(pos):
     """Test for PlantCV."""
-    ctrax_matrix = ctrax_color_matrix(pos=3)
+    std_matrix = ctrax_color_matrix(pos=pos)
 
-    # Index and RGB values (range [0-1]) of the 'foliage' chip in color matrix
-    foliage_idx = 4
-    foliage_val = ctrax_matrix[foliage_idx, 1:]
-    # RGB values of the 'foliage' chip
-    foliage_rgb = np.array([85., 107., 65.], dtype=np.float64)
+    # indices for the color matrix where the white chip should be depending on
+    # the value of pos
+    white_indices = [18, 23, 5, 0]
+    white_idx_pos = white_indices[pos]
+
+    # RGB values in white chip of the returned matrix in the range [0-1]
+    white_val = std_matrix[white_idx_pos, 1:]
+
+    # RGB values of the white chip in the range [0-255]
+    white_rgb = np.array([236., 234., 233.], dtype=np.float64)
 
     # compare RGB values in the range [0-255]
-    assert np.sum(np.abs(255*foliage_val - foliage_rgb)) < 1
+    assert np.sum(np.abs(255*white_val - white_rgb)) < 1
 
 
 def test_get_color_matrix(transform_test_data):
