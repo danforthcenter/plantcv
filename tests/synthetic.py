@@ -22,6 +22,19 @@ means the grayscale image is never mistaken for a binary image.
 The two-plant mask is 50 x 125 with two separate disks of radius 12 centered at (row 25,
 column 30) and (row 25, column 90). A disk includes every pixel whose center is within the
 radius, so each disk has 441 pixels.
+
+The squares mask is 60 x 250 with seven separate squares in rows 10 onward. Filled squares have
+solidity 1. A frame (a square outline of a given thickness) has the filled square as its convex
+hull, so its solidity is the frame area divided by the square area.
+
+    Columns   Size   Thickness   Pixels   Solidity
+    10:20     10     filled      100      1
+    30:50     20     filled      400      1
+    60:80     20     4           256      0.64
+    90:120    30     5           500      0.5556
+    130:150   20     2           144      0.36
+    160:180   20     1           76       0.19
+    190:230   40     1           156      0.0975
 """
 import os
 import cv2
@@ -43,6 +56,10 @@ BACKGROUND_GRAY = 50
 TWO_PLANTS_SHAPE = (50, 125)
 TWO_PLANTS_CENTERS = ((25, 30), (25, 90))
 TWO_PLANTS_RADIUS = 12
+SQUARES_SHAPE = (60, 250)
+# (row, column, size, thickness) of each square; thickness 0 means filled
+SQUARES = ((10, 10, 10, 0), (10, 30, 20, 0), (10, 60, 20, 4), (10, 90, 30, 5),
+           (10, 130, 20, 2), (10, 160, 20, 1), (10, 190, 40, 1))
 
 
 def plant_mask(small_object=True):
@@ -136,6 +153,22 @@ def two_plants_mask():
         uint8 mask with foreground 255 and background 0.
     """
     return disk_mask(TWO_PLANTS_SHAPE, TWO_PLANTS_CENTERS, TWO_PLANTS_RADIUS)
+
+
+def squares_mask():
+    """Create a binary mask of filled squares and square frames.
+
+    Returns
+    -------
+    numpy.ndarray
+        uint8 mask with foreground 255 and background 0.
+    """
+    mask = np.zeros(SQUARES_SHAPE, dtype=np.uint8)
+    for y, x, size, thickness in SQUARES:
+        mask[y:y + size, x:x + size] = 255
+        if thickness:
+            mask[y + thickness:y + size - thickness, x + thickness:x + size - thickness] = 0
+    return mask
 
 
 def find_contours(mask):
