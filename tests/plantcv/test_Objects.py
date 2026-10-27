@@ -1,5 +1,6 @@
 import os
 from plantcv.plantcv import Objects
+from tests import synthetic
 
 
 def test_save_Objects(tmpdir):
@@ -12,11 +13,16 @@ def test_save_Objects(tmpdir):
     assert os.path.exists(outfile)
 
 
-def test_load_objects(test_data):
+def test_load_objects(tmp_path):
     """Test for PlantCV."""
-    # Load in npz file
-    obj = Objects.load(test_data.small_contours_file)
-    assert len(obj.contours[0]) == 130
+    # Save the contour of the plant without the small object to an npz file
+    contours, hierarchy = synthetic.find_contours(synthetic.plant_mask(small_object=False))
+    outfile = os.path.join(tmp_path, "contours.npz")
+    Objects(contours=list(contours), hierarchy=hierarchy).save(outfile)
+    obj = Objects.load(outfile)
+    # Outline through boundary pixel centers is 236 px long; each of the 4 concave
+    # stem-leaf corners is cut by one diagonal step
+    assert len(obj.contours[0]) == 232
 
 
 def test_objects_iteration():
