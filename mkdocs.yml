@@ -4,7 +4,10 @@ site_description: Plant phenotyping using computer vision
 site_author: PlantCV Development Team
 repo_url: https://github.com/danforthcenter/plantcv
 copyright: Copyright 2020, Donald Danforth Plant Science Center
-theme: readthedocs
+theme: 
+  name: material
+  features:
+    - content.code.copy
 
 nav:
 - Home: index.md
