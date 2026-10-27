@@ -143,3 +143,9 @@ def test_coco_roi_source_no_shape():
     roi_Obj = Objects(contours=[roi], hierarchy=[roi_str])
     with pytest.raises(RuntimeError):
         _ = COCO(source=roi_Obj)
+
+
+def test_coco_add_record_bad_input_type():
+    """Test for PlantCV."""
+    with pytest.raises(RuntimeError):
+        _ = COCO(source={})

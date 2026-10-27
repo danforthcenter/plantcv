@@ -9,7 +9,7 @@ from importlib.metadata import version
 from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv._helpers import _find_closest, _rescale
 from plantcv.plantcv.annotate.points import _find_closest_pt
-from plantcv.plantcv.coco.coco_from_mask import _coco_annotation_from_mask, _next_id
+from plantcv.plantcv.coco.coco_from_mask import _coco_object_annotation_from_mask, _next_id
 import matplotlib.pyplot as plt
 from math import floor
 
@@ -358,7 +358,7 @@ class COCO:
                        "datetime", "date", "time"]
         license_fields = ["id", "name", "url"]
         image_anno_fields = ["image_id", "file_name", "filename", "date_captured",
-                             "license", "iscrowd", "category_id"]
+                             "license", "iscrowd", "category_id", "shape"]
         kwargs = {k.lower(): v for k, v in kwargs.items()}
 
         info_kwargs = {k.lower(): v for k, v in kwargs.items() if k in info_fields}
@@ -378,12 +378,21 @@ class COCO:
         self._categories = []
 
         if source is not None:
-            shape = kwargs.get("shape", None)
-            mask = self._source_to_mask(source, shape)
             image_kwargs = {k: v for k, v in kwargs.items() if k in image_anno_fields}
-            self.add_record(source=mask, info=None, rights=None,
+            self.add_record(source=source, info=None, rights=None,
                             category={"id": kwargs.get("category_id", 1), "name": "plant"},
                             **image_kwargs)
+            
+    @staticmethod
+    def _standardize_source(source, **kwargs):
+        """Standardize sources to different annotation types' inputs"""
+        if isinstance(source, (np.ndarray, Objects)):
+            shape = kwargs.get("shape")
+            standardized_source = COCO._source_to_mask(source, shape)
+            kind = "object"
+        else:
+            fatal_error(f"source is type {str(type(source))}, which is not supported.")
+        return standardized_source, kind
 
     @staticmethod
     def _source_to_mask(source, shape):
@@ -526,6 +535,9 @@ class COCO:
             If any key: value pairs are duplicated then the dictionary is updated
             with any of the new values.
         """
+        annotation_kinds = {
+            "object": _coco_object_annotation_from_mask
+        }
         if info is not None:
             self.info = self.info | info
 
@@ -536,9 +548,9 @@ class COCO:
             self._update_list_field(attr="categories", new=category)
 
         if source is not None:
-            shape = kwargs.get("shape")
-            mask = self._source_to_mask(source, shape)
             kwargs = {k.lower(): v for k, v in kwargs.items()}
+            shape = kwargs.get("shape")
+            source, kind = self._standardize_source(source, **kwargs)
             if category is not None and "category_id" not in kwargs:
                 kwargs["category_id"] = category["id"]
             category_id = kwargs.get("category_id", 1)
@@ -548,7 +560,7 @@ class COCO:
                                      "pass category={'id': ..., 'name': ...}")
                 # default category, matching COCO(mask)
                 self._update_list_field(attr="categories", new={"id": 1, "name": "plant"})
-            new_annotations, new_image = _coco_annotation_from_mask(self, mask, **kwargs)
+            new_annotations, new_image = annotation_kinds[kind](self, source, **kwargs)
             self.annotations.extend(new_annotations)
             self.images.append(new_image)
 

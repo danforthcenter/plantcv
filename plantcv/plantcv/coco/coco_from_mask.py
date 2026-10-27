@@ -96,7 +96,7 @@ def _mask_to_polygons(obj_mask, epsilon=0):
     return polygons
 
 
-def _coco_annotation_from_mask(coco, mask, **kwargs):
+def _coco_object_annotation_from_mask(coco, mask, **kwargs):
     """Extract COCO traits from a mask
 
     Parameters
