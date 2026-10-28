@@ -417,7 +417,7 @@ class COCO:
                 l = src.markers
             elif isinstance(src, tuple):
                 l = [src]
-            elif not all([isinstance(e, tuple) and len(e) in [2, 3] for e in l]):
+            if not all([isinstance(e, tuple) and len(e) in [2, 3] for e in l]):
                 fatal_error("All elements of source list must be tuples for key points")
             # now point_list is a list of tuples of length 2 or 3
             # length 2 options will need to have visibility added
