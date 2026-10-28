@@ -160,3 +160,35 @@ def test_coco_format_points():
     p.markers = [(10, 10)]
     coco = COCO(mask, points = p)
     assert coco.annotations[0]["keypoints"] == [10, 10, 2]
+
+
+def test_coco_format_points_tuple():
+    """Test for PlantCV."""
+    img = np.random.randint(0, 256, (10, 10, 3), dtype=np.uint8)
+    mask = np.zeros((12, 12), dtype=np.uint8)
+    mask[10, 10] = 1
+    p = (10, 10)
+    coco = COCO(mask, points = p)
+    assert coco.annotations[0]["keypoints"] == [10, 10, 2]
+
+
+def test_coco_bad_points():
+    """Test for PlantCV."""
+    img = np.random.randint(0, 256, (10, 10, 3), dtype=np.uint8)
+    mask = np.zeros((12, 12), dtype=np.uint8)
+    mask[10, 10] = 1
+    p = (10, 10, 10, 10)
+    with pytest.raises(RuntimeError):
+        _ = COCO(mask, points = p)
+
+
+def test_coco_one_point_many_objects_error():
+    """Test for PlantCV."""
+    img = np.random.randint(0, 256, (10, 10, 3), dtype=np.uint8)
+    mask = np.zeros((12, 12), dtype=np.uint8)
+    mask[8:10, 8:10] = 1
+    mask[3:6, 3:6] = 1
+    p = Point(img)
+    p.markers = [(10, 10)]
+    with pytest.raises(RuntimeError):
+        _ = COCO(mask, points = p)
