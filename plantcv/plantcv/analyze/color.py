@@ -132,6 +132,9 @@ def _analyze_color(channels, slices, obj_mask, colorspaces="hsv", label=None):
     hue_median = np.nan
     hue_circular_mean = np.nan
     hue_circular_std = np.nan
+    h = np.full((1,1), np.nan)
+    s = np.full((1,1), np.nan)
+    v = np.full((1,1), np.nan)
 
     # Skip empty masks
     if np.count_nonzero(obj_mask) != 0:
