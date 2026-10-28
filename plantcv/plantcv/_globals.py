@@ -1,7 +1,11 @@
 # define singletons
 import os
+import re
 import json
+import hashlib
 import datetime
+import nbformat
+from nbconvert import PythonExporter
 import altair as alt
 import pandas as pd
 from importlib.metadata import version
@@ -207,8 +211,10 @@ class Outputs:
         """
         # Add current date & time to metadata in UTC format
         run_datetime = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        hash_code = _hash_current_file()
         self.add_metadata(term="run_date", datatype=str, value=run_datetime)
         self.add_metadata(term="plantcv_version", datatype=str, value=version("plantcv"))
+        self.add_metadata(term="workflow_hash", datatype=str, value=hash_code)
 
         if outformat.upper() == "JSON":
             if os.path.isfile(filename):
@@ -338,6 +344,42 @@ def _validate_data_type(data):
         fatal_error(f"The Data type {type(data)} is not compatible with JSON! Please use only these: {type_list}!")
 
     return True
+
+
+def _hash_current_file():
+    """Hash a file if python is running interactively"""
+    # check if python is running interactively
+    hash_code = None
+    import __main__ as main
+    in_file = bool(getattr(main, "__file__", False))
+    in_jupyter = "JPY_SESSION_NAME" in os.environ
+    # if in_file then we are in a python script and we'll use it as is
+    if in_file:
+        py_file_name = main.__file__
+        with open(py_file_name, "rb") as f:
+            hash_code = hashlib.file_digest(f, "sha256").hexdigest()
+    # if in_jupyter then we'll convert the ipynb to py
+    if in_jupyter:
+        ipynb_path = os.environ["JPY_SESSION_NAME"]
+        with open(ipynb_path) as fh:
+            nb = nbformat.reads(fh.read(), nbformat.NO_CONVERT)
+        # ignore changes that should not effect interactive hashing
+        # (ie, don't change has based on filename changes to read/save)
+        exporter = PythonExporter()
+        source, _ = exporter.from_notebook_node(nb)
+        pattern = r"|".join(
+            [
+                r".*?(.*?[.])?readimage\(.*?\)",  # ignore calls to readimage
+                r".*?(.*?[.])save_results\(.*?\)|\#\sIn\[[0-9]*\]",  # ignore save_results
+                r".*?WorkflowInputs\((\s*.*)?\s*images=\[.*\].*\)?"  # ignore WorkflowInputs images
+            ]
+        )
+        pattern = r".*?(.*?[.])?read_image\(.*?\)|.*?(.*?[.])save_results\(.*?\)|\#\sIn\[[0-9]*\]"
+        data = re.sub(pattern, "", source)
+        # md5 sum of file
+        hash_code = hashlib.sha256(data.encode('utf-8')).hexdigest()
+
+    return hash_code
 
 
 params = Params()

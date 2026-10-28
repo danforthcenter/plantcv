@@ -2,6 +2,7 @@ import os
 import re
 import sys
 import time
+import hashlib
 import datetime
 import tempfile
 import shutil
@@ -28,7 +29,11 @@ def run_parallel(config):
     # Job start time
     start_time = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     print("Starting run " + start_time + '\n', file=sys.stderr)
+    # Check for a conda environment, editing config if job prologue is needed
     config = _check_for_conda(config)
+    # Hash the workflow
+    with open(config.workflow, "rb") as f:
+        workflow_sha256_hash = hashlib.file_digest(f, "sha256").hexdigest()
     # Create temporary directory for job
     if config.tmp_dir is not None:
         os.makedirs(os.path.join(config.tmp_dir, "_PCV_PARALLEL_CHECKPOINT_"), exist_ok=True)
@@ -36,6 +41,18 @@ def run_parallel(config):
     config.chkpt_start_dir = config.tmp_dir
     config.tmp_dir = tempfile.mkdtemp(prefix=start_time + '_',
                                       dir=os.path.join(config.tmp_dir, "_PCV_PARALLEL_CHECKPOINT_"))
+    # Check in the temp directory for an existing workflow hash if checkpointing
+    if os.path.exists(os.path.join(config.chkpt_start_dir,
+                                   "_PCV_PARALLEL_CHECKPOINT_",
+                                   "_PCV_WORKFLOW_HASH")) and config.checkpoint:
+        with open(os.path.join(config.chkpt_start_dir,
+                               "_PCV_PARALLEL_CHECKPOINT_",
+                               "_PCV_WORKFLOW_HASH"), "r") as f:
+            existing_hash = f.read()
+        same_hash = existing_hash == workflow_sha256_hash
+        if not same_hash:
+            print(f"Sha256 Hash of {config.workflow} has changed, checkpoint data will be ignored.")
+            config.checkpoint = False
     # if a logs directory is specified then add the tmpdir inside it.
     if config.cluster_config["log_directory"] is not None:
         config.cluster_config["log_directory"] = os.path.join(
@@ -78,6 +95,9 @@ def run_parallel(config):
     cluster.close()
     multi_clock_time = time.time() - multi_start_time
     parallel_print(f"Processing images took {multi_clock_time} seconds.", file=sys.stderr, verbose=verbose)
+    with open(os.path.join(config.tmp_dir, "_PCV_WORKFLOW_HASH"), "w") as f:
+        f.write(workflow_sha256_hash)
+
     ###########################################
 
     # Compile image analysis results
