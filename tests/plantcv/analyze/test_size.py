@@ -106,6 +106,7 @@ def test_size_small_contour(synthetic_rgb):
 
 
 def test_size_empty_mask(synthetic_rgb):
+    """Test for PlantCV."""
     mask = np.zeros(np.shape(synthetic_rgb)[0:2], dtype=np.uint8)
     _ = analyze_size(synthetic_rgb, mask)
     assert outputs.observations['default_1']['area']['value'] == 0

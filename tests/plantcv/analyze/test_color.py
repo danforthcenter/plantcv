@@ -1,4 +1,3 @@
-import pytest
 import numpy as np
 from plantcv.plantcv import outputs
 from plantcv.plantcv.analyze import color as analyze_color
@@ -42,6 +41,7 @@ def test_color_bad_hist_type(synthetic_rgb, synthetic_mask):
 
 
 def test_color_empty_mask(synthetic_rgb):
+    """Test for PlantCV."""
     mask = np.zeros(np.shape(synthetic_rgb)[0:2], dtype=np.uint8)
     _ = analyze_color(synthetic_rgb, mask)
     assert np.isnan(outputs.observations['default_1']['hue_median']['value'])
