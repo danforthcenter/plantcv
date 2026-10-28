@@ -5,6 +5,7 @@ import cv2
 import json
 import datetime
 import numpy as np
+from skimage.measure import label
 from importlib.metadata import version
 from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv._helpers import _find_closest, _rescale
@@ -358,7 +359,8 @@ class COCO:
                        "datetime", "date", "time"]
         license_fields = ["id", "name", "url"]
         image_anno_fields = ["image_id", "file_name", "filename", "date_captured",
-                             "license", "iscrowd", "category_id", "shape"]
+                             "license", "iscrowd", "category_id", "shape", "visibility",
+                             "points"]
         kwargs = {k.lower(): v for k, v in kwargs.items()}
 
         info_kwargs = {k.lower(): v for k, v in kwargs.items() if k in info_fields}
@@ -382,17 +384,49 @@ class COCO:
             self.add_record(source=source, info=None, rights=None,
                             category={"id": kwargs.get("category_id", 1), "name": "plant"},
                             **image_kwargs)
-            
+
     @staticmethod
     def _standardize_source(source, **kwargs):
         """Standardize sources to different annotation types' inputs"""
+        points = kwargs.get("points")
         if isinstance(source, (np.ndarray, Objects)):
             shape = kwargs.get("shape")
             standardized_source = COCO._source_to_mask(source, shape)
             kind = "object"
         else:
             fatal_error(f"source is type {str(type(source))}, which is not supported.")
-        return standardized_source, kind
+        # format points
+        if isinstance(points, (Point, list, tuple)):
+            visibility = kwargs.get("visibility", 2)
+            points = COCO._format_points(standardized_source, points, visibility)
+        return standardized_source, kind, points
+
+    @staticmethod
+    def _format_points(standardized_source, point_source, visibility):
+        """Standardize point inputs to a list of tuples"""
+        if not isinstance(point_source, list):
+            point_source = [point_source]
+        _, num_labels = label(standardized_source, background=0, return_num=True, connectivity=2)
+        if len(point_source) != num_labels:
+            fatal_error(f"Length of points {len(point_source)} must be equal to number of objects {num_labels}")
+        out_list = []
+        for src in point_source:
+            # logic to reach this function demands Point, list, or tuple class, assume list of tuples
+            l = src
+            if isinstance(src, Point):
+                l = src.markers
+            elif isinstance(src, tuple):
+                l = [src]
+            elif not all([isinstance(e, tuple) and len(e) in [2, 3] for e in l]):
+                fatal_error("All elements of source list must be tuples for key points")
+            # now point_list is a list of tuples of length 2 or 3
+            # length 2 options will need to have visibility added
+            # length 3 is taken to include visibility already
+            # default if visibility is not specified is that the point is visible, see _standardize_source
+            point_list = [e + (visibility,) if len(e) == 2 else e for e in l]
+            out_list.append(point_list)
+
+        return out_list
 
     @staticmethod
     def _source_to_mask(source, shape):
@@ -528,6 +562,10 @@ class COCO:
         ----------
         source : numpy.ndarray or plantcv.plantcv.Objects class ROI,
             binary or labelled mask or ROI object.
+        points : plantcv.plantcv.Point, tuple, or list of tuples
+            Describes X, Y or X, Y, V coordinates where the V axis is COCO visibility:
+            (0 = unlabelled, 1 = labeled non-visibile, 2 = labeled visible).
+            Len 2 tuples will be taken as X, Y coordinates and assumed to be labeled visible (V = 2)
         info : dict,
             new key: value pairs to add to the info dictionary
         rights : dict,
@@ -550,7 +588,9 @@ class COCO:
         if source is not None:
             kwargs = {k.lower(): v for k, v in kwargs.items()}
             shape = kwargs.get("shape")
-            source, kind = self._standardize_source(source, **kwargs)
+            source, kind, points = self._standardize_source(source, **kwargs)
+            if points:
+                kwargs.pop("points")
             if category is not None and "category_id" not in kwargs:
                 kwargs["category_id"] = category["id"]
             category_id = kwargs.get("category_id", 1)
@@ -560,7 +600,7 @@ class COCO:
                                      "pass category={'id': ..., 'name': ...}")
                 # default category, matching COCO(mask)
                 self._update_list_field(attr="categories", new={"id": 1, "name": "plant"})
-            new_annotations, new_image = annotation_kinds[kind](self, source, **kwargs)
+            new_annotations, new_image = annotation_kinds[kind](self, source, points, **kwargs)
             self.annotations.extend(new_annotations)
             self.images.append(new_image)
 
