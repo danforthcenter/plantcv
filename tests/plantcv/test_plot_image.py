@@ -1,6 +1,5 @@
 """Tests for pcv.plot_image."""
 import pytest
-import cv2
 import altair as alt
 import pandas as pd
 from matplotlib import pyplot as plt
@@ -8,18 +7,16 @@ from plantcv.plantcv import PSII_data
 from plantcv.plantcv import plot_image
 
 
-def test_plot_image_rgb(test_data):
+def test_plot_image_rgb(synthetic_rgb):
     """Test for PlantCV."""
-    img = cv2.imread(test_data.small_rgb_img)
-    plot_image(img=img)
+    plot_image(img=synthetic_rgb)
     assert True
 
 
 @pytest.mark.parametrize("cmap", [None, "viridis"])
-def test_plot_image_gray(cmap, test_data):
+def test_plot_image_gray(cmap, synthetic_gray):
     """Test for PlantCV."""
-    gray_img = cv2.imread(test_data.small_gray_img, -1)
-    plot_image(img=gray_img, cmap=cmap)
+    plot_image(img=synthetic_gray, cmap=cmap)
 
 
 def test_plot_image_matplotlib():

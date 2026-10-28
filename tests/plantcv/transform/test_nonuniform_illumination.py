@@ -1,19 +1,16 @@
-import cv2
 import numpy as np
 from plantcv.plantcv.transform import nonuniform_illumination
 
 
-def test_nonuniform_illumination_rgb(transform_test_data):
+def test_nonuniform_illumination_rgb(synthetic_rgb):
     """Test for PlantCV."""
-    # Load rgb image
-    rgb_img = cv2.imread(transform_test_data.small_rgb_img)
+    rgb_img = synthetic_rgb
     corrected = nonuniform_illumination(img=rgb_img, ksize=11)
     assert np.mean(corrected) < np.mean(rgb_img)
 
 
-def test_nonuniform_illumination_gray(transform_test_data):
+def test_nonuniform_illumination_gray(synthetic_gray):
     """Test for PlantCV."""
-    # Load rgb image
-    gray_img = cv2.imread(transform_test_data.small_gray_img, -1)
+    gray_img = synthetic_gray
     corrected = nonuniform_illumination(img=gray_img, ksize=11)
     assert corrected.shape == gray_img.shape

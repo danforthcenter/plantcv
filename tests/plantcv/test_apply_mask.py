@@ -4,22 +4,16 @@ import cv2
 from plantcv.plantcv import apply_mask
 
 
-def test_apply_mask_white(test_data):
+def test_apply_mask_white(synthetic_rgb, synthetic_mask):
     """Test for PlantCV."""
-    # Read in test data
-    img = cv2.imread(test_data.small_rgb_img)
-    mask = cv2.imread(test_data.small_bin_img, -1)
-    masked_img = apply_mask(img=img, mask=mask, mask_color="white")
-    assert np.unique(masked_img[np.where(mask == 0)]) == 255
+    masked_img = apply_mask(img=synthetic_rgb, mask=synthetic_mask, mask_color="white")
+    assert np.unique(masked_img[np.where(synthetic_mask == 0)]) == 255
 
 
-def test_apply_mask_black(test_data):
+def test_apply_mask_black(synthetic_rgb, synthetic_mask):
     """Test for PlantCV."""
-    # Read in test data
-    img = cv2.imread(test_data.small_rgb_img)
-    mask = cv2.imread(test_data.small_bin_img, -1)
-    masked_img = apply_mask(img=img, mask=mask, mask_color="black")
-    assert np.unique(masked_img[np.where(mask == 0)]) == 0
+    masked_img = apply_mask(img=synthetic_rgb, mask=synthetic_mask, mask_color="black")
+    assert np.unique(masked_img[np.where(synthetic_mask == 0)]) == 0
 
 
 def test_apply_mask_hyperspectral(test_data):
@@ -31,10 +25,7 @@ def test_apply_mask_hyperspectral(test_data):
     assert np.unique(masked_array[np.where(mask == 0)]) == 0
 
 
-def test_apply_mask_bad_input(test_data):
+def test_apply_mask_bad_input(synthetic_rgb, synthetic_mask):
     """Test for PlantCV."""
-    # Read in test data
-    img = cv2.imread(test_data.small_rgb_img)
-    mask = cv2.imread(test_data.small_bin_img, -1)
     with pytest.raises(RuntimeError):
-        _ = apply_mask(img=img, mask=mask, mask_color="wite")
+        _ = apply_mask(img=synthetic_rgb, mask=synthetic_mask, mask_color="wite")
