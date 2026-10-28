@@ -1,5 +1,4 @@
 import cv2
-import pytest
 import numpy as np
 from plantcv.plantcv import outputs, params
 from plantcv.plantcv.analyze import size as analyze_size
