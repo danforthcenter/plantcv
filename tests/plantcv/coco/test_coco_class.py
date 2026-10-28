@@ -164,7 +164,6 @@ def test_coco_format_points():
 
 def test_coco_format_points_tuple():
     """Test for PlantCV."""
-    img = np.random.randint(0, 256, (10, 10, 3), dtype=np.uint8)
     mask = np.zeros((12, 12), dtype=np.uint8)
     mask[10, 10] = 1
     p = (10, 10)
@@ -174,7 +173,6 @@ def test_coco_format_points_tuple():
 
 def test_coco_bad_points():
     """Test for PlantCV."""
-    img = np.random.randint(0, 256, (10, 10, 3), dtype=np.uint8)
     mask = np.zeros((12, 12), dtype=np.uint8)
     mask[10, 10] = 1
     p = (10, 10, 10, 10)

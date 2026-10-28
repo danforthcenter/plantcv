@@ -412,18 +412,18 @@ class COCO:
         out_list = []
         for src in point_source:
             # logic to reach this function demands Point, list, or tuple class, assume list of tuples
-            l = src
+            lst = src
             if isinstance(src, Point):
-                l = src.markers
+                lst = src.markers
             elif isinstance(src, tuple):
-                l = [src]
-            if not all([isinstance(e, tuple) and len(e) in [2, 3] for e in l]):
+                lst = [src]
+            if not all((isinstance(e, tuple) and len(e) in [2, 3] for e in lst)):
                 fatal_error("All elements of source list must be tuples for key points")
             # now point_list is a list of tuples of length 2 or 3
             # length 2 options will need to have visibility added
             # length 3 is taken to include visibility already
             # default if visibility is not specified is that the point is visible, see _standardize_source
-            point_list = [e + (visibility,) if len(e) == 2 else e for e in l]
+            point_list = [e + (visibility,) if len(e) == 2 else e for e in lst]
             out_list.append(point_list)
 
         return out_list
@@ -587,7 +587,6 @@ class COCO:
 
         if source is not None:
             kwargs = {k.lower(): v for k, v in kwargs.items()}
-            shape = kwargs.get("shape")
             source, kind, points = self._standardize_source(source, **kwargs)
             if points:
                 kwargs.pop("points")
