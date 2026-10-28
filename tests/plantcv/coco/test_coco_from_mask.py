@@ -46,7 +46,7 @@ def test_coco_annotation_labeled_mask():
     mask = np.zeros((30, 30), dtype=np.int32)
     mask[5:15, 5:15] = 1
     mask[5:15, 15:25] = 2
-    annotations, image = _coco_object_annotation_from_mask(COCO(), mask)
+    annotations, image = _coco_object_annotation_from_mask(COCO(), mask, None)
     assert image["width"] == 30 and image["height"] == 30
     assert [a["bbox"] for a in annotations] == [[5, 5, 10, 10], [15, 5, 10, 10]]
     assert [a["area"] for a in annotations] == [100, 100]

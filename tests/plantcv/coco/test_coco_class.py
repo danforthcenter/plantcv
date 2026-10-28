@@ -1,7 +1,7 @@
 import os
 import pytest
 import numpy as np
-from plantcv.plantcv.classes import COCO, Objects
+from plantcv.plantcv.classes import COCO, Objects, Point
 
 
 def _square_mask():
@@ -149,3 +149,14 @@ def test_coco_add_record_bad_input_type():
     """Test for PlantCV."""
     with pytest.raises(RuntimeError):
         _ = COCO(source={})
+
+
+def test_coco_format_points():
+    """Test for PlantCV."""
+    img = np.random.randint(0, 256, (10, 10, 3), dtype=np.uint8)
+    mask = np.zeros((12, 12), dtype=np.uint8)
+    mask[10, 10] = 1
+    p = Point(img)
+    p.markers = [(10, 10)]
+    coco = COCO(mask, points = p)
+    assert coco.annotations[0]["keypoints"] == [10, 10, 2]
