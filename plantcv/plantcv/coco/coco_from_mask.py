@@ -96,7 +96,7 @@ def _mask_to_polygons(obj_mask, epsilon=0):
     return polygons
 
 
-def _coco_object_annotation_from_mask(coco, mask, **kwargs):
+def _coco_object_annotation_from_mask(coco, mask, points, **kwargs):
     """Extract COCO traits from a mask
 
     Parameters
@@ -143,7 +143,7 @@ def _coco_object_annotation_from_mask(coco, mask, **kwargs):
     first_ann_id = _next_id(coco.annotations)
     annotations = []
 
-    for offset, obj_label in enumerate(obj_labels):
+    for i, obj_label in enumerate(obj_labels):
         # mask of only this object
         obj_mask = np.where(labeled_mask == obj_label, 255, 0).astype(np.uint8)
         # get object area
@@ -158,10 +158,12 @@ def _coco_object_annotation_from_mask(coco, mask, **kwargs):
             segmentation = _mask_to_rle(obj_mask)
         else:
             segmentation = _mask_to_polygons(obj_mask)
-        obj_dict = {"id": first_ann_id + offset,
+        obj_dict = {"id": first_ann_id + i,
                     "bbox": [int(x_min), int(y_min), int(x_max - x_min) + 1, int(y_max - y_min) + 1],
                     "area": obj_area,
                     "segmentation": segmentation}
+        if points:
+            obj_dict["keypoints"] = [o for el in points[i] for o in el]
         annotations.append(annotation_starter | obj_dict)
 
     return annotations, image
