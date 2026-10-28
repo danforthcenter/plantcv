@@ -39,3 +39,9 @@ def test_color_bad_hist_type(synthetic_rgb, synthetic_mask):
     """Test for PlantCV."""
     with pytest.raises(RuntimeError):
         _ = analyze_color(rgb_img=synthetic_rgb, labeled_mask=synthetic_mask, n_labels=1, colorspaces='bgr')
+
+
+def test_color_empty_mask(synthetic_rgb):
+    mask = np.zeros(np.shape(synthetic_rgb)[0:2], dtype=np.uint8)
+    _ = analyze_color(synthetic_rgb, mask)
+    assert np.isnan(outputs.observations['default_1']['hue_median']['value'])

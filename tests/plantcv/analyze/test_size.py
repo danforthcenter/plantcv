@@ -1,4 +1,5 @@
 import cv2
+import pytest
 import numpy as np
 from plantcv.plantcv import outputs, params
 from plantcv.plantcv.analyze import size as analyze_size
@@ -102,3 +103,9 @@ def test_size_small_contour(synthetic_rgb):
     mask = cv2.drawContours(mask, obj_contour, -1, (255), thickness=-1)
     _ = analyze_size(img=img, labeled_mask=mask, n_labels=1)
     assert "defaults" not in outputs.observations
+
+
+def test_size_empty_mask(synthetic_rgb):
+    mask = np.zeros(np.shape(synthetic_rgb)[0:2], dtype=np.uint8)
+    _ = analyze_size(synthetic_rgb, mask)
+    assert outputs.observations['default_1']['area']['value'] == 0
