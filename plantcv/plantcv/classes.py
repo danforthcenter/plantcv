@@ -59,20 +59,46 @@ class Spectral_data:
             if len(np.shape(pseudo_rgb)) > 2:
                 # the shape for these is [wavelengths, X, Y]
                 pseudo_rgb = array_data[0, :, :]
-            return np.repeat(_rescale(pseudo_rgb ** (1 / 2.2))[..., np.newaxis], 3, axis=-1)
+            return np.repeat(_rescale(_pseudo_rgb_gamma_correction(pseudo_rgb))[..., np.newaxis], 3, axis=-1)
 
         if default_bands is not None:
             pseudo_rgb = _make_default_bands_pseudo_rgb(self)
         else:
             pseudo_rgb = _make_no_default_bands_pseudo_rgb(self)
         # Gamma correct pseudo_rgb image
-        pseudo_rgb = pseudo_rgb ** (1 / 2.2)
+        pseudo_rgb = _pseudo_rgb_gamma_correction(pseudo_rgb)
         # Scale each of the channels up to 255
         pseudo_rgb = cv2.merge((_rescale(pseudo_rgb[:, :, 0]),
                                 _rescale(pseudo_rgb[:, :, 1]),
                                 _rescale(pseudo_rgb[:, :, 2])))
 
         return pseudo_rgb
+
+
+def _pseudo_rgb_gamma_correction(array_data, decoding_gamma=(1 / 2.2)):
+    """Gamma correct a pseudo rgb array
+
+    Parameters
+    ----------
+    array_data : numpy.ndarray,
+        The pseudo RGB image, typically straight from the HSI.array_data attribute
+    decoding_gamma : float,
+        The gamma value to use in decoding. Canonically 1 / 2.2 is correct for most
+        displays, but this is just to adjust contrast here.
+
+    Returns
+    -------
+    pseudo_rgb : numpy.ndarray,
+        Gamma corrected array
+    """
+    psrgb = array_data
+    minimum = np.nanmin(array_data)
+    # if there are negative values in the index, shift all to positive before
+    # applying gamma correction
+    if minimum < 0:
+        psrgb = array_data + abs(minimum)
+    psrgb = psrgb ** decoding_gamma
+    return psrgb
 
 
 def _make_default_bands_pseudo_rgb(spectral_data):
