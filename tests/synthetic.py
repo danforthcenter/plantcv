@@ -35,6 +35,32 @@ hull, so its solidity is the frame area divided by the square area.
     130:150   20     2           144      0.36
     160:180   20     1           76       0.19
     190:230   40     1           156      0.0975
+
+The skeleton is a 1-pixel-wide, 8-connected line drawing on the 100 x 120 canvas. Its points are
+given as (x, y) = (column, row), as in OpenCV.
+
+    Branch            Pixels                                       Tip
+    stem              x = 60, y = 45..89                           (60, 89)
+    upper left leaf   (60 - k, 45 - k), k = 1..20                  (40, 25)
+    upper right leaf  (60 + k, 45 - k), k = 1..20                  (80, 25)
+    lower left leaf   y = 70, x = 31..59                           (31, 70)
+    right leaf        y = 58, x = 61..79, then x = 80, y = 59..68  (80, 68)
+
+The skeleton has 143 pixels, 5 tips and 3 branch points: (60, 45), where the upper leaves leave the
+top of the stem, and (60, 58) and (60, 70). Removing the 3 x 3 block around each branch point, as
+plantcv.morphology.segment_skeleton does, leaves 7 segments:
+
+    Segment           Pixels   Ends
+    lower left leaf   28       (31, 70), (58, 70)
+    right leaf        28       (62, 58), (80, 68); it bends from horizontal to vertical
+    upper left leaf   19       (40, 25), (58, 43)
+    upper right leaf  19       (62, 43), (80, 25)
+    stem (bottom)     18       (60, 72), (60, 89)
+    stem (middle)     9        (60, 60), (60, 68)
+    stem (top)        10       (60, 47), (60, 56)
+
+The cycle option adds the outline of the square x, y = 5..14, separate from the plant, which
+encloses one cycle. The skeleton mask is the skeleton dilated by a 3 x 3 square.
 """
 import os
 import cv2
@@ -57,6 +83,8 @@ TWO_PLANTS_SHAPE = (50, 125)
 TWO_PLANTS_CENTERS = ((25, 30), (25, 90))
 TWO_PLANTS_RADIUS = 12
 SQUARES_SHAPE = (60, 250)
+SKELETON_TIPS = ((60, 89), (31, 70), (80, 68), (80, 25), (40, 25))
+SKELETON_BRANCH_PTS = ((60, 45), (60, 58), (60, 70))
 # (row, column, size, thickness) of each square; thickness 0 means filled
 SQUARES = ((10, 10, 10, 0), (10, 30, 20, 0), (10, 60, 20, 4), (10, 90, 30, 5),
            (10, 130, 20, 2), (10, 160, 20, 1), (10, 190, 40, 1))
@@ -169,6 +197,97 @@ def squares_mask():
         if thickness:
             mask[y + thickness:y + size - thickness, x + thickness:x + size - thickness] = 0
     return mask
+
+
+def _skeleton_branches():
+    """List the pixels of each branch of the synthetic skeleton.
+
+    Returns
+    -------
+    dict
+        Branch name mapped to a list of (x, y) pixel coordinates.
+    """
+    return {
+        "stem": [(60, y) for y in range(45, 90)],
+        "lower_left_leaf": [(x, 70) for x in range(31, 60)],
+        "right_leaf": [(x, 58) for x in range(61, 80)] + [(80, y) for y in range(59, 69)],
+        "upper_left_leaf": [(60 - k, 45 - k) for k in range(1, 21)],
+        "upper_right_leaf": [(60 + k, 45 - k) for k in range(1, 21)],
+    }
+
+
+def _draw_pixels(points):
+    """Draw pixels on a blank canvas the size of the synthetic plant.
+
+    Parameters
+    ----------
+    points : list
+        (x, y) pixel coordinates.
+
+    Returns
+    -------
+    numpy.ndarray
+        uint8 image with the points set to 255.
+    """
+    img = np.zeros(PLANT_SHAPE, dtype=np.uint8)
+    for x, y in points:
+        img[y, x] = 255
+    return img
+
+
+def skeleton(cycle=False):
+    """Create the synthetic plant skeleton.
+
+    Parameters
+    ----------
+    cycle : bool
+        Add a separate square outline that encloses one cycle (default False).
+
+    Returns
+    -------
+    numpy.ndarray
+        uint8 image with skeleton pixels 255 and background 0.
+    """
+    img = _draw_pixels([p for points in _skeleton_branches().values() for p in points])
+    if cycle:
+        cv2.rectangle(img, (5, 5), (14, 14), 255, 1)
+    return img
+
+
+def skeleton_mask():
+    """Create a binary mask around the synthetic plant skeleton.
+
+    Returns
+    -------
+    numpy.ndarray
+        uint8 mask of the skeleton dilated by a 3 x 3 square.
+    """
+    return cv2.dilate(skeleton(), np.ones((3, 3), dtype=np.uint8))
+
+
+def skeleton_segments():
+    """Create the contours of the synthetic skeleton segments.
+
+    The segments are the skeleton branches with the 3 x 3 block around each branch point removed.
+
+    Returns
+    -------
+    tuple
+        Leaf segment contours (lower left, right, upper left and upper right leaf) and stem segment
+        contours (bottom to top), each a list of numpy.ndarray.
+    """
+    branches = _skeleton_branches()
+    leaves = []
+    stem = []
+    for name, points in branches.items():
+        kept = [(x, y) for x, y in points
+                if all(max(abs(x - bx), abs(y - by)) > 1 for bx, by in SKELETON_BRANCH_PTS)]
+        contours, _ = find_contours(_draw_pixels(kept))
+        if name == "stem":
+            stem = sorted(contours, key=lambda c: c[:, 0, 1].max(), reverse=True)
+        else:
+            leaves.append(contours[0])
+    return leaves, stem
 
 
 def find_contours(mask):

@@ -12,14 +12,10 @@ class MorphologyTestData:
         """Initialize simple variables."""
         # Test data directory
         self.datadir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "testdata")
-        # Binary mask
-        self.bin_img = os.path.join(self.datadir, "morphology_bin_img.png")
         # Skeleton image
         self.skel_img = os.path.join(self.datadir, "morphology_skel_img.png")
         # Skeleton segments
         self.segments_file = os.path.join(self.datadir, "morphology_segments.npz")
-        # Mask image
-        self.ps_mask = os.path.join(self.datadir, "FLUO_TV_MASK.png")
         # Disconnected leaf skeleton
         self.disconnected_segment_file = os.path.join(self.datadir, "morphology_disconnected_leaf.npz")
         # Disconnected leaf obj
