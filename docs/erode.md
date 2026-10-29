@@ -3,7 +3,7 @@
 Perform morphological 'erosion' filtering. Keeps pixel in center of the kernel if 
 conditions set in kernel are true, otherwise removes pixel.
 
-**plantcv.erode**(*gray_img, ksize, i, roi=None*)
+**plantcv.erode**(*gray_img, ksize, i=1, roi=None*)
 
 **returns** image after erosion
 

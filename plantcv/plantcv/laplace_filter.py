@@ -8,7 +8,7 @@ from plantcv.plantcv._globals import params
 from plantcv.plantcv.get_kernel import _format_kernel
 
 
-def laplace_filter(gray_img, ksize, scale, roi=None):
+def laplace_filter(gray_img, ksize, scale=1, roi=None):
     """Apply the Lapace filter.
     This is a filtering method used to identify and highlight fine edges based on the 2nd derivative. A very
     sensetive method to highlight edges but will also amplify background noise. ddepth = -1 specifies that the
