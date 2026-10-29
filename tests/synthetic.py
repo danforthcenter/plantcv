@@ -421,11 +421,23 @@ def spectral_mask():
     return mask
 
 
-def write_envi(outdir, filename, default_bands=None):
+def envi_array():
+    """Create the datacube that write_envi and write_arcgis store.
+
+    Returns
+    -------
+    numpy.ndarray
+        2 x 3 x 5 (lines x samples x bands) uint16 array of the values 0-29, numbered in band
+        interleaved by line order: value = 15 * line + 3 * band + sample.
+    """
+    return np.arange(30, dtype=np.uint16).reshape(2, 5, 3).transpose(0, 2, 1)
+
+
+def write_envi(outdir, filename, default_bands=None, wavelengths=None, wavelength_units="nm", interleave="bil"):
     """Write a small ENVI datacube and the matching header file.
 
-    The datacube has 2 lines, 3 samples, and 5 bands (500-700 nm in 50 nm steps), stored
-    band interleaved by line as unsigned 16-bit integers with values 0-29.
+    The datacube is envi_array(): 2 lines, 3 samples, and 5 bands, stored band interleaved by line
+    as unsigned 16-bit integers with values 0-29.
 
     Parameters
     ----------
@@ -435,6 +447,13 @@ def write_envi(outdir, filename, default_bands=None):
         Base name of the data and header files.
     default_bands : str, optional
         Value of the default bands header field, or None to leave the field out.
+    wavelengths : list, optional
+        The 5 band wavelengths (default 500-700 nm in 50 nm steps).
+    wavelength_units : str, optional
+        Value of the wavelength units header field (default "nm"), or None to leave the field out.
+    interleave : str
+        Value of the interleave header field (default "bil"). The data is always stored band
+        interleaved by line.
 
     Returns
     -------
@@ -442,8 +461,10 @@ def write_envi(outdir, filename, default_bands=None):
         Path of the ENVI data file.
     """
     lines, samples, bands = 2, 3, 5
-    wavelengths = [500.0, 550.0, 600.0, 650.0, 700.0]
+    if wavelengths is None:
+        wavelengths = [500.0, 550.0, 600.0, 650.0, 700.0]
     default = "" if default_bands is None else "default bands = {" + default_bands + "}\n"
+    units = "" if wavelength_units is None else f"wavelength units = {wavelength_units}\n"
     header = ("ENVI\n"
               f"samples = {samples}\n"
               f"lines = {lines}\n"
@@ -451,14 +472,51 @@ def write_envi(outdir, filename, default_bands=None):
               "header offset = 0\n"
               "file type = ENVI Standard\n"
               "data type = 12\n"
-              "interleave = bil\n"
+              f"interleave = {interleave}\n"
               "byte order = 0\n"
-              "wavelength units = nm\n"
+              f"{units}"
               f"{default}"
               "wavelength = {" + ",".join(str(wl) for wl in wavelengths) + "}\n")
     datafile = os.path.join(str(outdir), filename)
     with open(datafile + ".hdr", "w") as fp:
         fp.write(header)
     # Band Interleaved by Line data stored as unsigned 16-bit integers (ENVI data type 12)
-    np.arange(lines * bands * samples, dtype=np.uint16).reshape(lines, bands, samples).tofile(datafile)
+    envi_array().transpose(0, 2, 1).tofile(datafile)
+    return datafile
+
+
+def write_arcgis(outdir, filename):
+    """Write the datacube of write_envi with an ArcGIS-style header file.
+
+    The header gives the layout as keyword and value pairs and lists the wavelengths (500-700 nm
+    in 50 nm steps) between WAVELENGTHS and WAVELENGTHS_END. The data is stored band interleaved by
+    line as 16-bit integers.
+
+    Parameters
+    ----------
+    outdir : str
+        Directory to write the data and header files to.
+    filename : str
+        Base name of the data and header files.
+
+    Returns
+    -------
+    str
+        Path of the data file.
+    """
+    header = ("BYTEORDER I\n"
+              "LAYOUT BIL\n"
+              "NROWS 2\n"
+              "NCOLS 3\n"
+              "NBANDS 5\n"
+              "NBITS 16\n"
+              "BANDROWBYTES 6\n"
+              "TOTALROWBYTES 30\n"
+              "WAVELENGTHS\n"
+              "500.0\n550.0\n600.0\n650.0\n700.0\n"
+              "WAVELENGTHS_END\n")
+    datafile = os.path.join(str(outdir), filename)
+    with open(datafile + ".hdr", "w") as fp:
+        fp.write(header)
+    envi_array().astype(np.int16).transpose(0, 2, 1).tofile(datafile)
     return datafile

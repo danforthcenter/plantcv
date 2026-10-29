@@ -98,10 +98,6 @@ class TestData:
         self.outputs_results_json = os.path.join(self.datadir, "outputs_results.json")
         # Outputs results file - CSV
         self.outputs_results_csv = os.path.join(self.datadir, "outputs_results.csv")
-        # ENVI hyperspectral data
-        self.envi_bil_file = os.path.join(self.datadir, "darkReference")
-        # ENVI hyperspectral data
-        self.envi_sample_data = os.path.join(self.datadir, "corn-kernel-hyperspectral.raw")
         # Thermal image
         self.thermal_img = os.path.join(self.datadir, "FLIR2600.csv")
         # Thermal image data
