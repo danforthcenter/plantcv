@@ -1,48 +1,41 @@
 import pytest
-import cv2
 import numpy as np
 from plantcv.plantcv import outputs
 from plantcv.plantcv.analyze import bound_horizontal as analyze_bound_horizontal
 from plantcv.plantcv.analyze.bound_horizontal import _boundary_img_annotation
 
 
-@pytest.mark.parametrize('pos,exp', [[200, 58], [-1, 0], [100, 0], [150, 11]])
-def test_analyze_bound_horizontal(pos, exp, test_data):
+# Foreground spans rows 10:90: a line below it (95) gives the full 80 px height, a line crossing
+# the stem (50) gives rows 10-49 (40 px), and lines above it (5) or negative (-1) give 0
+@pytest.mark.parametrize('pos,exp', [[95, 80], [-1, 0], [5, 0], [50, 40]])
+def test_analyze_bound_horizontal(pos, exp, synthetic_rgb, synthetic_mask):
     """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
-    # Read in test data
-    img = cv2.imread(test_data.small_rgb_img)
-    mask = cv2.imread(test_data.small_bin_img, -1)
-    _ = analyze_bound_horizontal(img=img, labeled_mask=mask, simplify=True,
+    _ = analyze_bound_horizontal(img=synthetic_rgb, labeled_mask=synthetic_mask, simplify=True,
                                  n_labels=1, line_position=pos)
     assert outputs.observations["default_1"]["height_above_reference"]["value"] == exp
     assert outputs.observations["default_1"]["area_above_reference"]["label"] == "pixels"
     assert outputs.observations["default_1"]["area_below_reference"]["label"] == "pixels"
 
 
-def test_analyze_bound_horizontal_grayscale_image(test_data):
+def test_analyze_bound_horizontal_grayscale_image(synthetic_gray, synthetic_mask):
     """Test for PlantCV."""
-    # Read in test data
-    img = cv2.imread(test_data.small_gray_img, -1)
-    mask = cv2.imread(test_data.small_bin_img, -1)
-    boundary_img = analyze_bound_horizontal(img=img, labeled_mask=mask, simplify=False,
-                                            n_labels=1, line_position=200)
+    boundary_img = analyze_bound_horizontal(img=synthetic_gray, labeled_mask=synthetic_mask, simplify=False,
+                                            n_labels=1, line_position=95)
     assert len(boundary_img.shape) == 2
 
 
-def test_analyze_bound_horizontal_simplify_labels(test_data):
+def test_analyze_bound_horizontal_simplify_labels(synthetic_rgb, synthetic_mask):
     """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
-    # Read in test data
-    img = cv2.imread(test_data.small_rgb_img)
-    mask = cv2.imread(test_data.small_bin_img, -1)
-    labeled = analyze_bound_horizontal(img=img, labeled_mask=mask, simplify=True,
-                                       n_labels=1, line_position=150, label="prefix")
+    # Line crosses the stem so foreground lies on both sides
+    labeled = analyze_bound_horizontal(img=synthetic_rgb, labeled_mask=synthetic_mask, simplify=True,
+                                       n_labels=1, line_position=50, label="prefix")
     # Simplified output is 1 above the line and 2 below
     assert np.array_equal(np.unique(labeled), [0, 1, 2])
-    assert np.count_nonzero(labeled) == np.count_nonzero(mask)
+    assert np.count_nonzero(labeled) == np.count_nonzero(synthetic_mask)
     assert "prefix_1" in outputs.observations
 
 

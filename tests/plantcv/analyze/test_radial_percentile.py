@@ -1,33 +1,43 @@
 """Tests for pcv.analyze.radial_percentile"""
-import cv2
 import numpy as np
 from plantcv.plantcv.analyze.radial import radial_percentile
 from plantcv.plantcv import outputs
+from tests import synthetic
 
 
-def _binary_seed_mask(test_data):
-    """Read the seed mask (JPEG) and convert it to a clean 0/255 binary mask."""
-    mask = cv2.imread(test_data.rgb_seed_mask, -1)
-    return np.where(mask > 127, 255, 0).astype(np.uint8)
+def _seed(inner, outer):
+    """Create a round seed of radius 20 at (30, 30) whose central disk of radius 10 has a different value.
+
+    The farthest seed pixel is 20 px from the center, so a percentile of at most 50 keeps only central pixels.
+    """
+    mask = synthetic.disk_mask((60, 60), [(30, 30)], 20)
+    center = synthetic.disk_mask((60, 60), [(30, 30)], 10)
+    shape = (60, 60) if np.isscalar(inner) else (60, 60, 3)
+    img = np.zeros(shape, dtype=np.uint8)
+    img[mask > 0] = outer
+    img[center > 0] = inner
+    return img, mask
 
 
-def test_radial_rgb(test_data):
+def test_radial_rgb():
     """Test for PlantCV."""
     outputs.clear()
-    img = cv2.imread(test_data.rgb_seed)
-    mask = _binary_seed_mask(test_data)
+    img, mask = _seed(inner=(30, 60, 90), outer=(200, 200, 200))
     avgs = radial_percentile(img=img, labeled_mask=mask)
     assert len(avgs) == 1 and len(avgs[0]) == 3
+    # The 50% cutoff (10 px) keeps only the central BGR (30, 60, 90) disk, reported as R, G, B
+    assert avgs[0] == [90.0, 60.0, 30.0]
     assert outputs.observations["default_1"]["red_50%_avg"]["value"] == avgs[0][0]
 
 
-def test_radial_gray(test_data):
+def test_radial_gray():
     """Test for PlantCV."""
     outputs.clear()
-    img = cv2.imread(test_data.rgb_seed, 0)
-    mask = _binary_seed_mask(test_data)
+    img, mask = _seed(inner=100, outer=200)
     avgs = radial_percentile(img=img, labeled_mask=mask, percentile=40)
     assert isinstance(avgs[0], float)
+    # The 40% cutoff (8 px) lies within the central disk of value 100
+    assert avgs[0] == 100.0
     assert outputs.observations["default_1"]["gray_40%_avg"]["value"] == avgs[0]
 
 

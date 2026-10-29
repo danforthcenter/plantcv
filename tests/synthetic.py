@@ -1,0 +1,407 @@
+"""Synthetic image and data generators for the PlantCV test suite.
+
+The synthetic plant is drawn on a 100 x 120 (rows x columns) canvas from non-overlapping,
+axis-aligned rectangles so that pixel counts and dimensions are exact. Row and column ranges
+are half-open, as in NumPy slicing.
+
+    Region          Rows     Columns   Pixels
+    stem            30:90    58:62     60 x 4  = 240
+    left leaf       40:50    30:58     10 x 28 = 280
+    right leaf      55:65    62:90     10 x 28 = 280
+    small object    10:14    10:14     4 x 4   = 16
+
+The stem and leaves touch and form one connected plant of 800 pixels whose bounding box is
+rows 30:90 and columns 30:90 (60 x 60). The small object is separate from the plant, giving
+816 foreground pixels in total.
+
+In the RGB image every foreground pixel is BGR (0, 128, 0), which OpenCV encodes as hue 60
+(120 degrees), and the background is BGR (128, 128, 128). In the grayscale image plant pixels
+are 200, small object pixels are 120, and background pixels are 50; having three distinct values
+means the grayscale image is never mistaken for a binary image.
+
+The two-plant mask is 50 x 125 with two separate disks of radius 12 centered at (row 25,
+column 30) and (row 25, column 90). A disk includes every pixel whose center is within the
+radius, so each disk has 441 pixels.
+
+The squares mask is 60 x 250 with seven separate squares in rows 10 onward. Filled squares have
+solidity 1. A frame (a square outline of a given thickness) has the filled square as its convex
+hull, so its solidity is the frame area divided by the square area.
+
+    Columns   Size   Thickness   Pixels   Solidity
+    10:20     10     filled      100      1
+    30:50     20     filled      400      1
+    60:80     20     4           256      0.64
+    90:120    30     5           500      0.5556
+    130:150   20     2           144      0.36
+    160:180   20     1           76       0.19
+    190:230   40     1           156      0.0975
+
+The skeleton is a 1-pixel-wide, 8-connected line drawing on the 100 x 120 canvas. Its points are
+given as (x, y) = (column, row), as in OpenCV.
+
+    Branch            Pixels                                       Tip
+    stem              x = 60, y = 45..89                           (60, 89)
+    upper left leaf   (60 - k, 45 - k), k = 1..20                  (40, 25)
+    upper right leaf  (60 + k, 45 - k), k = 1..20                  (80, 25)
+    lower left leaf   y = 70, x = 31..59                           (31, 70)
+    right leaf        y = 58, x = 61..79, then x = 80, y = 59..68  (80, 68)
+
+The skeleton has 143 pixels, 5 tips and 3 branch points: (60, 45), where the upper leaves leave the
+top of the stem, and (60, 58) and (60, 70). Removing the 3 x 3 block around each branch point, as
+plantcv.morphology.segment_skeleton does, leaves 7 segments:
+
+    Segment           Pixels   Ends
+    lower left leaf   28       (31, 70), (58, 70)
+    right leaf        28       (62, 58), (80, 68); it bends from horizontal to vertical
+    upper left leaf   19       (40, 25), (58, 43)
+    upper right leaf  19       (62, 43), (80, 25)
+    stem (bottom)     18       (60, 72), (60, 89)
+    stem (middle)     9        (60, 60), (60, 68)
+    stem (top)        10       (60, 47), (60, 56)
+
+The cycle option adds the outline of the square x, y = 5..14, separate from the plant, which
+encloses one cycle. The skeleton mask is the skeleton dilated by a 3 x 3 square.
+"""
+import os
+import cv2
+import numpy as np
+from plantcv.plantcv.classes import MS_data
+
+PLANT_SHAPE = (100, 120)
+PLANT_RECTS = {
+    "stem": (30, 90, 58, 62),
+    "left_leaf": (40, 50, 30, 58),
+    "right_leaf": (55, 65, 62, 90),
+}
+SMALL_OBJECT_RECT = (10, 14, 10, 14)
+PLANT_BGR = (0, 128, 0)
+BACKGROUND_BGR = (128, 128, 128)
+PLANT_GRAY = 200
+SMALL_OBJECT_GRAY = 120
+BACKGROUND_GRAY = 50
+TWO_PLANTS_SHAPE = (50, 125)
+TWO_PLANTS_CENTERS = ((25, 30), (25, 90))
+TWO_PLANTS_RADIUS = 12
+SQUARES_SHAPE = (60, 250)
+SKELETON_TIPS = ((60, 89), (31, 70), (80, 68), (80, 25), (40, 25))
+SKELETON_BRANCH_PTS = ((60, 45), (60, 58), (60, 70))
+# (row, column, size, thickness) of each square; thickness 0 means filled
+SQUARES = ((10, 10, 10, 0), (10, 30, 20, 0), (10, 60, 20, 4), (10, 90, 30, 5),
+           (10, 130, 20, 2), (10, 160, 20, 1), (10, 190, 40, 1))
+
+
+def plant_mask(small_object=True):
+    """Create the binary mask of the synthetic plant.
+
+    Parameters
+    ----------
+    small_object : bool
+        Include the separate 4 x 4 object (default True).
+
+    Returns
+    -------
+    numpy.ndarray
+        uint8 mask with foreground 255 and background 0.
+    """
+    mask = np.zeros(PLANT_SHAPE, dtype=np.uint8)
+    rects = list(PLANT_RECTS.values())
+    if small_object:
+        rects.append(SMALL_OBJECT_RECT)
+    for y0, y1, x0, x1 in rects:
+        mask[y0:y1, x0:x1] = 255
+    return mask
+
+
+def plant_rgb(mask=None):
+    """Create a BGR image of the synthetic plant.
+
+    Parameters
+    ----------
+    mask : numpy.ndarray, optional
+        Binary mask of foreground pixels (default plant_mask()).
+
+    Returns
+    -------
+    numpy.ndarray
+        uint8 BGR image with PLANT_BGR foreground and BACKGROUND_BGR background.
+    """
+    if mask is None:
+        mask = plant_mask()
+    img = np.full((*mask.shape, 3), BACKGROUND_BGR, dtype=np.uint8)
+    img[mask > 0] = PLANT_BGR
+    return img
+
+
+def plant_gray():
+    """Create a grayscale image of the synthetic plant.
+
+    Returns
+    -------
+    numpy.ndarray
+        uint8 image with PLANT_GRAY plant, SMALL_OBJECT_GRAY small object, and
+        BACKGROUND_GRAY background.
+    """
+    img = np.full(PLANT_SHAPE, BACKGROUND_GRAY, dtype=np.uint8)
+    img[plant_mask(small_object=False) > 0] = PLANT_GRAY
+    y0, y1, x0, x1 = SMALL_OBJECT_RECT
+    img[y0:y1, x0:x1] = SMALL_OBJECT_GRAY
+    return img
+
+
+def disk_mask(shape, centers, radius):
+    """Create a binary mask of filled disks.
+
+    Parameters
+    ----------
+    shape : tuple
+        Shape of the mask (rows, columns).
+    centers : list
+        Disk centers as (row, column) tuples.
+    radius : int
+        Radius of every disk in pixels.
+
+    Returns
+    -------
+    numpy.ndarray
+        uint8 mask with pixels within radius of a center set to 255.
+    """
+    rows, cols = np.ogrid[:shape[0], :shape[1]]
+    mask = np.zeros(shape, dtype=np.uint8)
+    for cy, cx in centers:
+        mask[(rows - cy) ** 2 + (cols - cx) ** 2 <= radius ** 2] = 255
+    return mask
+
+
+def two_plants_mask():
+    """Create a binary mask of two separate disk-shaped plants.
+
+    Returns
+    -------
+    numpy.ndarray
+        uint8 mask with foreground 255 and background 0.
+    """
+    return disk_mask(TWO_PLANTS_SHAPE, TWO_PLANTS_CENTERS, TWO_PLANTS_RADIUS)
+
+
+def squares_mask():
+    """Create a binary mask of filled squares and square frames.
+
+    Returns
+    -------
+    numpy.ndarray
+        uint8 mask with foreground 255 and background 0.
+    """
+    mask = np.zeros(SQUARES_SHAPE, dtype=np.uint8)
+    for y, x, size, thickness in SQUARES:
+        mask[y:y + size, x:x + size] = 255
+        if thickness:
+            mask[y + thickness:y + size - thickness, x + thickness:x + size - thickness] = 0
+    return mask
+
+
+def _skeleton_branches():
+    """List the pixels of each branch of the synthetic skeleton.
+
+    Returns
+    -------
+    dict
+        Branch name mapped to a list of (x, y) pixel coordinates.
+    """
+    return {
+        "stem": [(60, y) for y in range(45, 90)],
+        "lower_left_leaf": [(x, 70) for x in range(31, 60)],
+        "right_leaf": [(x, 58) for x in range(61, 80)] + [(80, y) for y in range(59, 69)],
+        "upper_left_leaf": [(60 - k, 45 - k) for k in range(1, 21)],
+        "upper_right_leaf": [(60 + k, 45 - k) for k in range(1, 21)],
+    }
+
+
+def _draw_pixels(points):
+    """Draw pixels on a blank canvas the size of the synthetic plant.
+
+    Parameters
+    ----------
+    points : list
+        (x, y) pixel coordinates.
+
+    Returns
+    -------
+    numpy.ndarray
+        uint8 image with the points set to 255.
+    """
+    img = np.zeros(PLANT_SHAPE, dtype=np.uint8)
+    for x, y in points:
+        img[y, x] = 255
+    return img
+
+
+def skeleton(cycle=False):
+    """Create the synthetic plant skeleton.
+
+    Parameters
+    ----------
+    cycle : bool
+        Add a separate square outline that encloses one cycle (default False).
+
+    Returns
+    -------
+    numpy.ndarray
+        uint8 image with skeleton pixels 255 and background 0.
+    """
+    img = _draw_pixels([p for points in _skeleton_branches().values() for p in points])
+    if cycle:
+        cv2.rectangle(img, (5, 5), (14, 14), 255, 1)
+    return img
+
+
+def skeleton_mask():
+    """Create a binary mask around the synthetic plant skeleton.
+
+    Returns
+    -------
+    numpy.ndarray
+        uint8 mask of the skeleton dilated by a 3 x 3 square.
+    """
+    return cv2.dilate(skeleton(), np.ones((3, 3), dtype=np.uint8))
+
+
+def skeleton_segments():
+    """Create the contours of the synthetic skeleton segments.
+
+    The segments are the skeleton branches with the 3 x 3 block around each branch point removed.
+
+    Returns
+    -------
+    tuple
+        Leaf segment contours (lower left, right, upper left and upper right leaf) and stem segment
+        contours (bottom to top), each a list of numpy.ndarray.
+    """
+    branches = _skeleton_branches()
+    leaves = []
+    stem = []
+    for name, points in branches.items():
+        kept = [(x, y) for x, y in points
+                if all(max(abs(x - bx), abs(y - by)) > 1 for bx, by in SKELETON_BRANCH_PTS)]
+        contours, _ = find_contours(_draw_pixels(kept))
+        if name == "stem":
+            stem = sorted(contours, key=lambda c: c[:, 0, 1].max(), reverse=True)
+        else:
+            leaves.append(contours[0])
+    return leaves, stem
+
+
+def find_contours(mask):
+    """Find all contours of a binary mask with their hierarchy.
+
+    Parameters
+    ----------
+    mask : numpy.ndarray
+        Binary mask.
+
+    Returns
+    -------
+    tuple
+        Contours (tuple of numpy.ndarray) and hierarchy (numpy.ndarray), as returned by
+        cv2.findContours with RETR_TREE and CHAIN_APPROX_NONE.
+    """
+    return cv2.findContours(np.copy(mask), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+
+
+def random_image(shape, seed=0):
+    """Create an image of uniformly distributed random values.
+
+    Parameters
+    ----------
+    shape : tuple
+        Shape of the image.
+    seed : int
+        Seed for the random number generator (default 0).
+
+    Returns
+    -------
+    numpy.ndarray
+        uint8 image.
+    """
+    rng = np.random.default_rng(seed)
+    return rng.integers(0, 256, size=shape, dtype=np.uint8)
+
+
+def binary_rect_image(shape):
+    """Create a float image with a rectangle of ones at rows 3:7 and columns 2:8.
+
+    Parameters
+    ----------
+    shape : tuple
+        Shape of the image.
+
+    Returns
+    -------
+    numpy.ndarray
+        float64 image of zeros and ones.
+    """
+    img = np.zeros(shape)
+    img[3:7, 2:8] = 1
+    return img
+
+
+def ms_data(wavelengths):
+    """Create a 10 x 10 multispectral data object with every band equal to one.
+
+    Parameters
+    ----------
+    wavelengths : list
+        Wavelengths of the bands.
+
+    Returns
+    -------
+    plantcv.plantcv.classes.MS_data
+        Multispectral data object.
+    """
+    array_data = np.stack([np.ones((10, 10)) for _ in wavelengths], axis=-1)
+    wavelength_dict = {k: i for i, k in enumerate(wavelengths)}
+    return MS_data(array_data=array_data, wavelength_dict=wavelength_dict,
+                   max_wavelength=max(wavelengths), min_wavelength=min(wavelengths),
+                   filename="test")
+
+
+def write_envi(outdir, filename, default_bands=None):
+    """Write a small ENVI datacube and the matching header file.
+
+    The datacube has 2 lines, 3 samples, and 5 bands (500-700 nm in 50 nm steps), stored
+    band interleaved by line as unsigned 16-bit integers with values 0-29.
+
+    Parameters
+    ----------
+    outdir : str
+        Directory to write the data and header files to.
+    filename : str
+        Base name of the data and header files.
+    default_bands : str, optional
+        Value of the default bands header field, or None to leave the field out.
+
+    Returns
+    -------
+    str
+        Path of the ENVI data file.
+    """
+    lines, samples, bands = 2, 3, 5
+    wavelengths = [500.0, 550.0, 600.0, 650.0, 700.0]
+    default = "" if default_bands is None else "default bands = {" + default_bands + "}\n"
+    header = ("ENVI\n"
+              f"samples = {samples}\n"
+              f"lines = {lines}\n"
+              f"bands = {bands}\n"
+              "header offset = 0\n"
+              "file type = ENVI Standard\n"
+              "data type = 12\n"
+              "interleave = bil\n"
+              "byte order = 0\n"
+              "wavelength units = nm\n"
+              f"{default}"
+              "wavelength = {" + ",".join(str(wl) for wl in wavelengths) + "}\n")
+    datafile = os.path.join(str(outdir), filename)
+    with open(datafile + ".hdr", "w") as fp:
+        fp.write(header)
+    # Band Interleaved by Line data stored as unsigned 16-bit integers (ENVI data type 12)
+    np.arange(lines * bands * samples, dtype=np.uint16).reshape(lines, bands, samples).tofile(datafile)
+    return datafile

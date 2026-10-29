@@ -17,9 +17,9 @@ def test_image_fusion(test_data):
     assert isinstance(fused_img, Spectral_data)
 
 
-def test_image_fusion_size_diff(test_data):
+def test_image_fusion_size_diff(synthetic_mask):
     """Test for PlantCV."""
-    img1 = cv2.imread(test_data.small_bin_img, 0)
+    img1 = synthetic_mask
     img2 = np.copy(img1)
     img2 = img2[0:10, 0:10]
     with pytest.raises(RuntimeError):

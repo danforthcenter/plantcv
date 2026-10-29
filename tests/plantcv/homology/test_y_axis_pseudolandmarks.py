@@ -4,11 +4,9 @@ import numpy as np
 from plantcv.plantcv.homology import y_axis_pseudolandmarks
 
 
-def test_y_axis_pseudolandmarks(test_data):
+def test_y_axis_pseudolandmarks(synthetic_rgb, synthetic_mask):
     """Test for PlantCV."""
-    img = cv2.imread(test_data.small_rgb_img)
-    mask = cv2.imread(test_data.small_bin_img, -1)
-    left, right, center_h = y_axis_pseudolandmarks(mask=mask, img=img)
+    left, right, center_h = y_axis_pseudolandmarks(mask=synthetic_mask, img=synthetic_rgb)
     assert all([left.shape == (20, 1, 2), right.shape == (20, 1, 2), center_h.shape == (20, 1, 2)])
 
 
@@ -18,12 +16,11 @@ def test_y_axis_pseudolandmarks(test_data):
     [np.array(([[21, 11]], [[159, 155]], [[237, 11]])), (20, 1, 2)],
     [np.array(([[0, 0]], [[100, 0]], [[100, 100]], [[0, 100]])), (20, 1, 2)]
 ])
-def test_y_axis_pseudolandmarks_small_obj(obj, shape, test_data):
+def test_y_axis_pseudolandmarks_small_obj(obj, shape, synthetic_rgb):
     """Test for PlantCV."""
-    img = cv2.imread(test_data.small_rgb_img)
     mask = np.zeros((250, 250), dtype=np.uint8)
     cv2.drawContours(mask, obj, -1, (255), thickness=-1)
-    left, right, center_h = y_axis_pseudolandmarks(mask=mask, img=img)
+    left, right, center_h = y_axis_pseudolandmarks(mask=mask, img=synthetic_rgb)
     assert all([np.shape(left) == shape, np.shape(right) == shape, np.shape(center_h) == shape])
 
 
