@@ -59,8 +59,8 @@ def npq(ps, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto",
             fatal_error('measurement_labels must be the same length as the number of measurements in `ps_da_light`')
 
         # Make an zeroed array of the same shape as the input DataArray
-        npq_global = xr.zeros_like(ps_da_dark.sel(frame_label="F0"), dtype=float)
-        # Drop the frame_label coordinate
+        fmp_var = str(ps_da_light.frame_label.values[ps_da_light.frame_label.str.match("Fmp+")][0])
+        npq_global = xr.zeros_like(ps_da_light.sel(frame_label=fmp_var), dtype=float)
         npq_global = npq_global.drop_vars('frame_label')
 
         # Make a copy of the labeled mask
