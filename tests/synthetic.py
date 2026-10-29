@@ -67,7 +67,8 @@ The hyperspectral datacube has 2 lines, 3 samples, and one band per nanometer fr
 wavelength. Pixel p = 3 * line + sample (0 to 5) has reflectance (wavelength / 700) ** (p - 2.5). Every
 pixel has reflectance 1 at 700 nm; pixels 0 to 2 fall and pixels 3 to 5 rise with wavelength, each
 along a different curve. Every spectral index therefore takes several distinct non-negative values,
-which a pseudo-RGB image of the index needs.
+which a pseudo-RGB image of the index needs. The hyperspectral mask selects the middle column,
+pixels 1 and 4, whose reflectance is (wavelength / 700) ** -1.5 and (wavelength / 700) ** 1.5.
 """
 import os
 import cv2
@@ -405,6 +406,19 @@ def spectral_data():
                          wavelength_dict={float(wl): float(i) for i, wl in enumerate(SPECTRAL_WAVELENGTHS)},
                          samples=SPECTRAL_SHAPE[1], lines=SPECTRAL_SHAPE[0], interleave="bil",
                          wavelength_units="nm", array_type="datacube", filename="synthetic", default_bands=None)
+
+
+def spectral_mask():
+    """Create a binary mask of the middle column of the hyperspectral datacube.
+
+    Returns
+    -------
+    numpy.ndarray
+        2 x 3 uint8 mask with pixels 1 and 4 set to 255.
+    """
+    mask = np.zeros(SPECTRAL_SHAPE, dtype=np.uint8)
+    mask[:, 1] = 255
+    return mask
 
 
 def write_envi(outdir, filename, default_bands=None):
