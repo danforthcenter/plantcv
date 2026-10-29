@@ -357,7 +357,8 @@ def _hash_current_file():
     if in_file:
         py_file_name = main.__file__
         with open(py_file_name, "rb") as f:
-            hash_code = hashlib.file_digest(f, "sha256").hexdigest()
+            hash_code = hashlib.sha256(f.read()).hexdigest()
+
     # if in_jupyter then we'll convert the ipynb to py
     if in_jupyter:
         ipynb_path = os.environ["JPY_SESSION_NAME"]

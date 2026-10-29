@@ -33,7 +33,7 @@ def test_hashing_notebook(tmpdir, monkeypatch):
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("cache")
     filename = os.path.join(cache_dir, "test.ipynb")
-    os.environ["JPY_SESSION_NAME"] = filename
+    monkeypatch.setenv("JPY_SESSION_NAME", filename)
 
     notebook1 = {
         "cells": [
@@ -85,7 +85,15 @@ def test_hashing_notebook(tmpdir, monkeypatch):
         json.dump(notebook1, f, indent=1, ensure_ascii=False)
         f.write("\n")
 
-    os.environ["JPY_SESSION_NAME"] = filename2
+    monkeypatch.setenv("JPY_SESSION_NAME", filename2)
     hc2 = _hash_current_file()
 
     assert hc1 == hc2
+
+
+def test_no_file(monkeypatch):
+    """Test for PlantCV."""
+    import __main__ as main
+    monkeypatch.setattr(main, "__file__", False)
+    hc1 = _hash_current_file()
+    assert hc1 is None
