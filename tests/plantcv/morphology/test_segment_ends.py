@@ -2,34 +2,51 @@ import cv2
 import numpy as np
 from plantcv.plantcv import outputs
 from plantcv.plantcv.morphology.segment_ends import segment_ends
+from tests import synthetic
+
+# Leaf tips, and the leaf segment ends next to the branch points (see tests/synthetic.py)
+LEAF_TIPS = [(31, 70), (80, 68), (40, 25), (80, 25)]
+LEAF_INNER_ENDS = [(58, 70), (62, 58), (58, 43), (62, 43)]
 
 
-def test_segment_ends(morphology_test_data):
+def _check_sorted(sorted_objs, leaves):
+    """Check that leaves are sorted by the y-coordinate of their inner end, bottom first."""
+    assert np.array_equal(sorted_objs[0], leaves[0]) and np.array_equal(sorted_objs[1], leaves[1])
+    # The upper leaves share the inner end y-coordinate 43
+    assert all(any(np.array_equal(a, b) for b in sorted_objs[2:]) for a in leaves[2:])
+
+
+def test_segment_ends():
     """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
-    leaf_obj = morphology_test_data.load_segments(morphology_test_data.segments_file, "leaves")
-    skeleton = cv2.imread(morphology_test_data.skel_img, -1)
-    _, _, tips = segment_ends(skel_img=skeleton, leaf_objects=leaf_obj, mask=skeleton)
-    assert len(tips) == 4
+    leaves, _ = synthetic.skeleton_segments()
+    skeleton = synthetic.skeleton()
+    sorted_objs, inner, tips = segment_ends(skel_img=skeleton, leaf_objects=leaves, mask=skeleton)
+    assert sorted(tips) == sorted(LEAF_TIPS)
+    assert sorted(inner) == sorted(LEAF_INNER_ENDS)
+    _check_sorted(sorted_objs, leaves)
 
 
-def test_segment_ends_no_mask(morphology_test_data):
+def test_segment_ends_no_mask():
     """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
-    leaf_obj = morphology_test_data.load_segments(morphology_test_data.segments_file, "leaves")
-    skeleton = cv2.imread(morphology_test_data.skel_img, -1)
-    _, _, tips = segment_ends(skel_img=skeleton, leaf_objects=leaf_obj, mask=None)
-    assert len(tips) == 4
+    leaves, _ = synthetic.skeleton_segments()
+    sorted_objs, inner, tips = segment_ends(skel_img=synthetic.skeleton(), leaf_objects=leaves, mask=None)
+    assert sorted(tips) == sorted(LEAF_TIPS)
+    assert sorted(inner) == sorted(LEAF_INNER_ENDS)
+    _check_sorted(sorted_objs, leaves)
 
 
-def test_segment_ends_unsortable(morphology_test_data):
+def test_segment_ends_unsortable():
     """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
-    obj = np.load(morphology_test_data.disconnected_segment_file)
-    leaf_object = obj["data1"]
-    skeleton = cv2.imread(morphology_test_data.disconnected_skel_img, -1)
-    sorted_objs, _, tip_list = segment_ends(skel_img=skeleton, leaf_objects=[leaf_object], mask=None)
-    assert len(tip_list) == 2 and len(sorted_objs) == 0
+    # A leaf disconnected from the rest of the skeleton has a tip at both ends and no branch point
+    skeleton = np.zeros(synthetic.PLANT_SHAPE, dtype=np.uint8)
+    cv2.line(skeleton, (30, 80), (70, 40), 255, 1)
+    leaf_object, _ = synthetic.find_contours(skeleton)
+    sorted_objs, inner, tip_list = segment_ends(skel_img=skeleton, leaf_objects=list(leaf_object), mask=None)
+    assert sorted(tip_list) == [(30, 80), (70, 40)]
+    assert inner == [] and sorted_objs == []
