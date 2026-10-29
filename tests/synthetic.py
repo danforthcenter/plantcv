@@ -61,11 +61,18 @@ plantcv.morphology.segment_skeleton does, leaves 7 segments:
 
 The cycle option adds the outline of the square x, y = 5..14, separate from the plant, which
 encloses one cycle. The skeleton mask is the skeleton dilated by a 3 x 3 square.
+
+The hyperspectral datacube has 2 lines, 3 samples, and one band per nanometer from 400 to 1000 nm
+(601 bands), so the band closest to any whole-nanometer wavelength in that range is exactly that
+wavelength. Pixel p = 3 * line + sample (0 to 5) has reflectance (wavelength / 700) ** (p - 2.5). Every
+pixel has reflectance 1 at 700 nm; pixels 0 to 2 fall and pixels 3 to 5 rise with wavelength, each
+along a different curve. Every spectral index therefore takes several distinct non-negative values,
+which a pseudo-RGB image of the index needs.
 """
 import os
 import cv2
 import numpy as np
-from plantcv.plantcv.classes import MS_data
+from plantcv.plantcv.classes import MS_data, Spectral_data
 
 PLANT_SHAPE = (100, 120)
 PLANT_RECTS = {
@@ -85,6 +92,8 @@ TWO_PLANTS_RADIUS = 12
 SQUARES_SHAPE = (60, 250)
 SKELETON_TIPS = ((60, 89), (31, 70), (80, 68), (80, 25), (40, 25))
 SKELETON_BRANCH_PTS = ((60, 45), (60, 58), (60, 70))
+SPECTRAL_SHAPE = (2, 3)
+SPECTRAL_WAVELENGTHS = range(400, 1001)
 # (row, column, size, thickness) of each square; thickness 0 means filled
 SQUARES = ((10, 10, 10, 0), (10, 30, 20, 0), (10, 60, 20, 4), (10, 90, 30, 5),
            (10, 130, 20, 2), (10, 160, 20, 1), (10, 190, 40, 1))
@@ -362,6 +371,40 @@ def ms_data(wavelengths):
     return MS_data(array_data=array_data, wavelength_dict=wavelength_dict,
                    max_wavelength=max(wavelengths), min_wavelength=min(wavelengths),
                    filename="test")
+
+
+def reflectance(wavelength):
+    """Compute the reflectance of every pixel of the hyperspectral datacube at one wavelength.
+
+    Parameters
+    ----------
+    wavelength : float
+        Wavelength in nanometers.
+
+    Returns
+    -------
+    numpy.ndarray
+        2 x 3 float64 array of (wavelength / 700) ** (p - 2.5) for pixel p = 3 * line + sample.
+    """
+    pixel = np.arange(SPECTRAL_SHAPE[0] * SPECTRAL_SHAPE[1]).reshape(SPECTRAL_SHAPE)
+    return (wavelength / 700) ** (pixel - 2.5)
+
+
+def spectral_data():
+    """Create the hyperspectral datacube.
+
+    Returns
+    -------
+    plantcv.plantcv.classes.Spectral_data
+        Hyperspectral data object with reflectance(wavelength) in each band and no default bands.
+    """
+    array_data = np.stack([reflectance(wl) for wl in SPECTRAL_WAVELENGTHS], axis=-1)
+    return Spectral_data(array_data=array_data, max_wavelength=float(max(SPECTRAL_WAVELENGTHS)),
+                         min_wavelength=float(min(SPECTRAL_WAVELENGTHS)), max_value=float(np.amax(array_data)),
+                         min_value=float(np.amin(array_data)), d_type=array_data.dtype,
+                         wavelength_dict={float(wl): float(i) for i, wl in enumerate(SPECTRAL_WAVELENGTHS)},
+                         samples=SPECTRAL_SHAPE[1], lines=SPECTRAL_SHAPE[0], interleave="bil",
+                         wavelength_units="nm", array_type="datacube", filename="synthetic", default_bands=None)
 
 
 def write_envi(outdir, filename, default_bands=None):
