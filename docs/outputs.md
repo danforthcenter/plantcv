@@ -82,6 +82,12 @@ Methods are accessed as plantcv.outputs.*method*.
 * outformat: Output file format (default = "json"). Supports "json" and "csv" formats
 
 !!!note
+	When `Outputs.save_results` is called `run_date`, `plantcv_version`, and `workflow_hash` are created as additional output fields.
+	`run_date` is the current datetime as `%Y-%m-%dT%H:%M:%S.%fZ`.
+	`plantcv_version` is version of plantcv running.
+	`workflow_hash` is the SHA256 hash of the running file. A python script is hashed as is, a jupyter notebook has calls to `readimage`, `save_results`, and `WorkflowInputs` removed since we expect those to change between sequential runs of a juypter notebook.
+
+!!!note
     Supported data types for JSON output are: int, float, str, list, bool, tuple, dict, NoneType, numpy.float64.
 
 **Example use:**
