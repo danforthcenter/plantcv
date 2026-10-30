@@ -25,6 +25,9 @@ closest collected point.
 ```python
 from plantcv import plantcv as pcv
 
+# plots must be interactive to click for points
+%matplotlib widget
+
 # Create an instance of the Point class
 marker = pcv.Point(img=img, figsize=(12,6))
 
