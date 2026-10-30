@@ -12,10 +12,6 @@ class TransformTestData:
         """Initialize simple variables."""
         # Test data directory
         self.datadir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "testdata")
-        # RGB image
-        self.small_rgb_img = os.path.join(self.datadir, "setaria_small_plant_rgb.png")
-        # Gray image
-        self.small_gray_img = os.path.join(self.datadir, "setaria_small_plant_gray.png")
         # RGB image with partial cover card
         self.partial_card_rgb_img = os.path.join(self.datadir, "partial_card_rgb.png")
         # Target RGB image
@@ -28,8 +24,6 @@ class TransformTestData:
         self.source1_img = os.path.join(self.datadir, "source1_img.png")
         # Source 1 matrix file
         self.source1_matrix_file = os.path.join(self.datadir, "source1_matrix.npz")
-        # Source 2 RGB image
-        self.source2_img = os.path.join(self.datadir, "source2_img.png")
         # Source 1 matrix file
         self.source2_matrix_file = os.path.join(self.datadir, "source2_matrix.npz")
         # Matrix M (source 1)
@@ -83,20 +77,6 @@ class TransformTestData:
         # Horizontal images to merge
         self.mergevert = self.get_file_paths(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                                           "..", "..", "testdata", "mergevert/"))
-
-    @staticmethod
-    def create_test_img(sz_img):
-        """Create a test image."""
-        img = np.random.randint(np.prod(sz_img), size=sz_img) * 255
-        img = img.astype(np.uint8)
-        return img
-
-    @staticmethod
-    def create_test_img_bin(sz_img):
-        """Create a test binary image."""
-        img = np.zeros(sz_img)
-        img[3:7, 2:8] = 1
-        return img
 
     @staticmethod
     def load_npz(npz_file):

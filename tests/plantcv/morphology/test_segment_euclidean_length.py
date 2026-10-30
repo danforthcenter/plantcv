@@ -1,18 +1,19 @@
 import pytest
-import cv2
 import numpy as np
 from plantcv.plantcv import outputs
 from plantcv.plantcv.morphology.segment_euclidean_length import segment_euclidean_length
+from tests import synthetic
 
 
-def test_segment_euclidean_length(morphology_test_data):
+def test_segment_euclidean_length():
     """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
-    skeleton = cv2.imread(morphology_test_data.skel_img, -1)
-    _ = segment_euclidean_length(segmented_img=skeleton,
-                                 objects=morphology_test_data.load_segments(morphology_test_data.segments_file, "leaves"))
-    assert len(outputs.observations['default']['segment_eu_length']['value']) == 4
+    leaves, _ = synthetic.skeleton_segments()
+    _ = segment_euclidean_length(segmented_img=synthetic.skeleton(), objects=leaves)
+    # Distance between segment ends: (31, 70)-(58, 70); (62, 58)-(80, 68); (40, 25)-(58, 43); (62, 43)-(80, 25)
+    assert outputs.observations['default']['segment_eu_length']['value'] == pytest.approx(
+        [27, np.sqrt(18 ** 2 + 10 ** 2), 18 * np.sqrt(2), 18 * np.sqrt(2)])
 
 
 def test_segment_euclidean_length_bad_input():

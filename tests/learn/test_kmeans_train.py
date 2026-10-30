@@ -48,12 +48,12 @@ def test_train_kmeans_full_gray(learn_test_data, tmpdir):
     assert os.path.exists(outfile_full_gray)
 
 
-def test_train_kmeans_spectral(test_data, tmp_path, monkeypatch):
+def test_train_kmeans_spectral(synthetic_rgb, tmp_path, monkeypatch):
     """Test for PlantCV."""
     train_kmeans_module = importlib.import_module("plantcv.learn.train_kmeans")
-    array_data = cv2.imread(test_data.small_rgb_img)
+    array_data = synthetic_rgb
     calls = []
-    
+
     # define a dummy function to return that object
     def fake_read(path, mode):
         """patch function for reading HSI data"""

@@ -5,11 +5,9 @@ from plantcv.plantcv import crop
 from plantcv.plantcv import readimage
 
 
-def test_plantcv_crop(test_data):
+def test_plantcv_crop(synthetic_gray):
     """Test for PlantCV."""
-    # Read test data
-    gray_img = cv2.imread(test_data.small_gray_img, -1)
-    cropped = crop(img=gray_img, x=10, y=10, h=50, w=50)
+    cropped = crop(img=synthetic_gray, x=10, y=10, h=50, w=50)
     assert np.shape(cropped) == (50, 50)
 
 
