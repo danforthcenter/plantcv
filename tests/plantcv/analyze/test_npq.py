@@ -1,15 +1,21 @@
 """Tests for pcv.analyze.npq."""
+import os
 import pytest
 import numpy as np
-from plantcv.plantcv import outputs
+from plantcv.plantcv._globals import params, outputs
 from plantcv.plantcv.photosynthesis.read_cropreporter import read_cropreporter
 from plantcv.plantcv.analyze import npq as analyze_npq
 
 
-def test_npq_cropreporter(test_data):
+def test_npq_cropreporter(test_data, monkeypatch, tmpdir):
     """Test for PlantCV."""
     # Clear results
     outputs.clear()
+    # set up for printing
+    cache_dir = tmpdir.mkdir("cache")
+    monkeypatch.setattr(params, "debug", "print")
+    monkeypatch.setattr(params, "device", 1)
+    monkeypatch.setattr(params, "debug_outdir", cache_dir)
     source_path = test_data.photosynthesis.cropreporter_npq
     ps = read_cropreporter(filename=source_path)
     _ = analyze_npq(ps=ps,
@@ -18,6 +24,7 @@ def test_npq_cropreporter(test_data):
                     measurement_labels=["Fq/Fm"],
                     label="prefix", min_bin="auto", max_bin="auto")
     assert np.isclose(outputs.observations["prefix_1"]["npq_median_Fq/Fm"]["value"], 1.09790)
+    assert os.path.exists(os.path.join(cache_dir, "2_NPQ_dataarray.png"))
 
 
 def test_npq_cropreporter_auto(test_data):
