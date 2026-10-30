@@ -10,7 +10,7 @@ from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.transform.rescale import rescale
 
 
-def apply_mask(img, mask, mask_color):
+def apply_mask(img, mask, mask_color="black"):
     """Apply white image mask to image, with bitwise AND operator bitwise NOT operator and ADD operator.
 
     Parameters:

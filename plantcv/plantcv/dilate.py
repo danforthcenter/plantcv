@@ -7,7 +7,7 @@ from plantcv.plantcv._globals import params
 from plantcv.plantcv.get_kernel import _format_kernel
 
 
-def dilate(gray_img, ksize, i, roi=None):
+def dilate(gray_img, ksize, i=1, roi=None):
     """
     Performs morphological 'dilation' filtering. Adds pixel to center of kernel if conditions set in kernel are true.
 

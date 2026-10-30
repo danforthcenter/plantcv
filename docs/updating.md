@@ -499,6 +499,7 @@ Below is an overview of all updates to function signatures through the developme
 * pre v3.0dev2: device, masked_img = **plantcv.apply_mask**(*img, mask, mask_color, device, debug=None*)
 * post v3.0dev2: masked_img = **plantcv.apply_mask**(*rgb_img, mask, mask_color*)
 * post v3.7: masked_img = **plantcv.apply_mask**(*img, mask, mask_color*)
+* post v5.0: masked_img = **plantcv.apply_mask**(*img, mask, mask_color="black"*)
 
 #### plantcv.auto_crop
 
@@ -581,6 +582,7 @@ Below is an overview of all updates to function signatures through the developme
 * post v3.0dev2: dil_img = **plantcv.dilate**(*gray_img, kernel, i*)
 * post v3.2: dil_img = **plantcv.dilate**(*gray_img, ksize, i*)
 * post v4.9: dil_img = **plantcv.dilate**(*gray_img, ksize, i, roi=None*)
+* post v5.0: dil_img = **plantcv.dilate**(*gray_img, ksize, i=1, roi=None*)
 
 #### plantcv.distance_transform
 
@@ -593,6 +595,7 @@ Below is an overview of all updates to function signatures through the developme
 * post v3.0dev2: er_img = **plantcv.erode**(*gray_img, kernel, i*)
 * post v3.2: er_img = **plantcv.erode**(*gray_img, ksize, i*)
 * post v4.9: er_img = **plantcv.erode**(*gray_img, ksize, i, roi=None*)
+* post v5.0: er_img = **plantcv.erode**(*gray_img, ksize, i=1, roi=None*)
 
 #### plantcv.fill
 
@@ -793,6 +796,7 @@ Below is an overview of all updates to function signatures through the developme
 * post v3.0dev2: lp_filtered = **plantcv.laplace_filter**(*gray_img, k, scale*)
 * post v3.2: lp_filtered = **plantcv.laplace_filter**(*gray_img, ksize, scale*)
 * post v4.9: lp_filtered = **plantcv.laplace_filter**(*gray_img, ksize, scale, roi=None*)
+* post v5.0: lp_filtered = **plantcv.laplace_filter**(*gray_img, ksize, scale=1, roi=None*)
 
 #### plantcv.learn.train_kmeans
 

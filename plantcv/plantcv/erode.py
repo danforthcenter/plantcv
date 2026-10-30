@@ -7,7 +7,7 @@ from plantcv.plantcv._globals import params
 from plantcv.plantcv.get_kernel import _format_kernel
 
 
-def erode(gray_img, ksize, i, roi=None):
+def erode(gray_img, ksize, i=1, roi=None):
     """Perform morphological 'erosion' filtering.
 
     Keeps pixel in center of the kernel if conditions set in kernel are
