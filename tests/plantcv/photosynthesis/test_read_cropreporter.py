@@ -4,42 +4,37 @@ import shutil
 import numpy as np
 from plantcv.plantcv import PSII_data
 from plantcv.plantcv.photosynthesis import read_cropreporter
+from tests import synthetic
 
 
-def test_read_cropreporter_psd(test_data, tmpdir):
+def test_read_cropreporter_psd(tmp_path):
     """Test for PlantCV."""
-    # Create a test tmp directory
-    cache_dir = tmpdir.mkdir("sub")
-    # Create dataset with only PSD
-    shutil.copyfile(test_data.photosynthesis.cropreporter, os.path.join(cache_dir, "PSII_HDR_test.INF"))
-    psd_dat = test_data.photosynthesis.cropreporter.replace("HDR", "PSD")
-    psd_dat = psd_dat.replace("INF", "DAT")
-    shutil.copyfile(psd_dat, os.path.join(cache_dir, "PSII_PSD_test.DAT"))
-    filename = os.path.join(cache_dir, "PSII_HDR_test.INF")
-
-    # Run the test
+    filename = synthetic.write_cropreporter(tmp_path, "v441", ["PSD"])
     ps = read_cropreporter(filename=filename)
     assert isinstance(ps, PSII_data)
-    assert ps.psd.ojip_dark.shape == (966, 1296, 21, 1)
+    assert ps.psd.ojip_dark.shape == (10, 12, 21, 1)
+    # FvFmFrameF0=0 and FvFmFrameFm=5 label frames 1 and 6
+    assert list(ps.psd.ojip_dark.frame_label.values) == (["Fdark", "F0"] + [f"PSD{i}" for i in range(2, 6)] +
+                                                         ["Fm"] + [f"PSD{i}" for i in range(7, 21)])
+    # Frame i + 1 is at FvFmTimePoint{i} = 100 + 50000 * i
+    assert list(ps.psd.ojip_dark.frame_num.values) == [0] + [100 + 50000 * i for i in range(20)]
+    assert np.all(ps.psd.ojip_dark.values == np.array(synthetic.CROPREPORTER_FRAMES["PSD"])[:, None])
     assert ps.psd
     assert "PSD" in repr(ps.psd)
 
 
-def test_read_cropreporter_psl(test_data, tmpdir):
+def test_read_cropreporter_psl(tmp_path):
     """Test for PlantCV."""
-    # Create a test tmp directory
-    cache_dir = tmpdir.mkdir("sub")
-    # Create dataset with only PSL
-    shutil.copyfile(test_data.photosynthesis.cropreporter, os.path.join(cache_dir, "PSII_HDR_test.INF"))
-    psl_dat = test_data.photosynthesis.cropreporter.replace("HDR", "PSL")
-    psl_dat = psl_dat.replace("INF", "DAT")
-    shutil.copyfile(psl_dat, os.path.join(cache_dir, "PSII_PSL_test.DAT"))
-    filename = os.path.join(cache_dir, "PSII_HDR_test.INF")
-
-    # Run the test
+    filename = synthetic.write_cropreporter(tmp_path, "v441", ["PSL"])
     ps = read_cropreporter(filename=filename)
     assert isinstance(ps, PSII_data)
-    assert ps.psl.ojip_light.shape == (966, 1296, 21, 1)
+    assert ps.psl.ojip_light.shape == (10, 12, 21, 1)
+    # FqFmFrameFsp=0 and FqFmFrameFmp=5 label frames 1 and 6
+    assert list(ps.psl.ojip_light.frame_label.values) == (["Flight", "Fp"] + [f"PSL{i}" for i in range(2, 6)] +
+                                                          ["Fmp"] + [f"PSL{i}" for i in range(7, 21)])
+    # Frame i + 1 is at FqFmTimePoint{i} = 100 + 50000 * i
+    assert list(ps.psl.ojip_light.frame_num.values) == [0] + [100 + 50000 * i for i in range(20)]
+    assert np.all(ps.psl.ojip_light.values == np.array(synthetic.CROPREPORTER_FRAMES["PSL"])[:, None])
     assert ps.psl
     assert "PSL" in repr(ps.psl)
 
@@ -80,62 +75,64 @@ def test_read_cropreporter_pml(test_data, tmpdir):
     assert "PML" in repr(ps.pml)
 
 
-def test_read_cropreporter_spc_only(test_data, tmpdir):
+def test_read_cropreporter_spc_only(tmp_path):
     """Test for PlantCV."""
-    # Create a test tmp directory
-    cache_dir = tmpdir.mkdir("sub")
-    # Create dataset with only SPC
-    shutil.copyfile(test_data.photosynthesis.cropreporter, os.path.join(cache_dir, "PSII_HDR_test.INF"))
-    spc_dat = test_data.photosynthesis.cropreporter.replace("HDR", "SPC")
-    spc_dat = spc_dat.replace("INF", "DAT")
-    shutil.copyfile(spc_dat, os.path.join(cache_dir, "PSII_SPC_test.DAT"))
-    fluor_filename = os.path.join(cache_dir, "PSII_HDR_test.INF")
+    fluor_filename = synthetic.write_cropreporter(tmp_path, "v441", ["SPC"])
     ps = read_cropreporter(filename=fluor_filename)
     assert isinstance(ps, PSII_data)
     assert ps.spc
     assert "SPC" in repr(ps.spc)
-    assert ps.spc.spectral.array_data.shape == (966, 1296, 3)
+    assert ps.spc.spectral.array_data.shape == (10, 12, 3)
+    assert ps.spc.spectral.wavelength_dict == {540: 0.0, 710: 1.0, 770: 2.0}
+    # 13107, 26214 and 39321 are 0.2, 0.4 and 0.6 of 65535
+    assert np.allclose(ps.spc.spectral.array_data, [0.2, 0.4, 0.6])
 
 
-def test_read_cropreporter_spc_full(test_data, tmpdir):
+def test_read_cropreporter_spc_full(tmp_path):
     """Test for PlantCV."""
-    ps = read_cropreporter(filename=os.path.join(test_data.photosynthesis.cropreporter))
+    filename = synthetic.write_cropreporter(tmp_path, "v441", ["CHL", "CLR", "PSD", "PSL", "SPC"])
+    ps = read_cropreporter(filename=filename)
     assert isinstance(ps, PSII_data)
     assert ps.spc
     assert "SPC" in repr(ps.spc)
-    assert ps.spc.spectral.array_data.shape == (966, 1296, 6)
+    assert ps.spc.spectral.array_data.shape == (10, 12, 6)
+    # CLR is 640, 550 and 475 nm, SPC is 540, 710 and 770 nm; bands are sorted by wavelength
+    assert ps.spc.spectral.wavelength_dict == {475: 0.0, 540: 1.0, 550: 2.0, 640: 3.0, 710: 4.0, 770: 5.0}
+    expected = np.array([51200, 13107, 38400, 25600, 26214, 39321]) / 65535
+    assert np.allclose(ps.spc.spectral.array_data, expected)
 
 
-def test_read_cropreporter_npq(test_data):
+def test_read_cropreporter_npq(tmp_path):
     """Test for PlantCV."""
-    ps = read_cropreporter(filename=test_data.photosynthesis.cropreporter_npq)
-    assert isinstance(ps, PSII_data) and ps.npq.ojip_dark.shape == (966, 1296, 3, 1)
-    assert isinstance(ps, PSII_data) and ps.npq.ojip_light.shape == (966, 1296, 3, 1)
+    filename = synthetic.write_cropreporter(tmp_path, "v441", ["NPQ"])
+    ps = read_cropreporter(filename=filename)
+    assert isinstance(ps, PSII_data) and ps.npq.ojip_dark.shape == (10, 12, 3, 1)
+    assert isinstance(ps, PSII_data) and ps.npq.ojip_light.shape == (10, 12, 3, 1)
     # check reverse ordered loading
-    ps = read_cropreporter(filename=test_data.photosynthesis.cropreporter_npq)
-    assert isinstance(ps, PSII_data) and ps.npq.ojip_light.shape == (966, 1296, 3, 1)
-    assert isinstance(ps, PSII_data) and ps.npq.ojip_dark.shape == (966, 1296, 3, 1)
+    ps = read_cropreporter(filename=filename)
+    assert isinstance(ps, PSII_data) and ps.npq.ojip_light.shape == (10, 12, 3, 1)
+    assert isinstance(ps, PSII_data) and ps.npq.ojip_dark.shape == (10, 12, 3, 1)
     # check shortcut
-    ps = read_cropreporter(filename=test_data.photosynthesis.cropreporter_npq)
-    assert isinstance(ps, PSII_data) and ps.ojip_light.shape == (966, 1296, 3, 1)
-    assert isinstance(ps, PSII_data) and ps.ojip_dark.shape == (966, 1296, 3, 1)
+    ps = read_cropreporter(filename=filename)
+    assert isinstance(ps, PSII_data) and ps.ojip_light.shape == (10, 12, 3, 1)
+    assert isinstance(ps, PSII_data) and ps.ojip_dark.shape == (10, 12, 3, 1)
+    # frames 0-2 are dark-adapted and frames 3-5 light-adapted
+    assert list(ps.ojip_dark.frame_label.values) == ["Fdark", "F0", "Fm"]
+    assert list(ps.ojip_light.frame_label.values) == ["Flight", "Fp", "Fmp"]
+    assert list(ps.ojip_dark.frame_num.values) == [0, 1, 2]
+    assert list(ps.ojip_light.frame_num.values) == [3, 4, 5]
+    assert np.all(ps.ojip_dark.values == np.array([10, 300, 1000])[:, None])
+    assert np.all(ps.ojip_light.values == np.array([20, 150, 250])[:, None])
     # check class traits
     assert ps.npq
     assert "NPQ" in repr(ps.npq)
 
 
-def test_read_cropreporter_chl_only(test_data, tmpdir):
+def test_read_cropreporter_chl_only(tmp_path):
     """Test CHL import."""
-    # Create a test tmp directory
-    cache_dir = tmpdir.mkdir("sub")
-    # Create dataset with only CHL
-    shutil.copyfile(test_data.photosynthesis.cropreporter,
-                    os.path.join(cache_dir,
-                                 os.path.basename(test_data.photosynthesis.cropreporter)))
-    chl_dat = test_data.photosynthesis.cropreporter.replace("HDR", "CHL")
-    chl_dat = chl_dat.replace("INF", "DAT")
-    shutil.copyfile(chl_dat, os.path.join(cache_dir, os.path.basename(chl_dat)))
-    fluor_filename = os.path.join(cache_dir, os.path.basename(test_data.photosynthesis.cropreporter))
+    # A frame with a distinct value in every pixel shows the rows and columns are read in place
+    chl = np.arange(120).reshape(synthetic.CROPREPORTER_SHAPE)
+    fluor_filename = synthetic.write_cropreporter(tmp_path, "v441", {"CHL": [10, chl]})
     ps = read_cropreporter(filename=fluor_filename)
     assert isinstance(ps, PSII_data)
     assert ps.chl
@@ -143,20 +140,12 @@ def test_read_cropreporter_chl_only(test_data, tmpdir):
     # Check for a 2D NumPy array (Height, Width)
     assert len(ps.chl.chlorophyll.shape) == 2
     assert isinstance(ps.chl.chlorophyll, np.ndarray)
+    assert np.array_equal(ps.chl.chlorophyll, chl)
 
 
-def test_read_cropreporter_clr_only(test_data, tmpdir):
+def test_read_cropreporter_clr_only(tmp_path):
     """Test CLR import."""
-    # Create a test tmp directory
-    cache_dir = tmpdir.mkdir("sub")
-    # Create dataset with only CLR
-    shutil.copyfile(test_data.photosynthesis.cropreporter,
-                    os.path.join(cache_dir,
-                                 os.path.basename(test_data.photosynthesis.cropreporter)))
-    clr_dat = test_data.photosynthesis.cropreporter.replace("HDR", "CLR")
-    clr_dat = clr_dat.replace("INF", "DAT")
-    shutil.copyfile(clr_dat, os.path.join(cache_dir, os.path.basename(clr_dat)))
-    fluor_filename = os.path.join(cache_dir, os.path.basename(test_data.photosynthesis.cropreporter))
+    fluor_filename = synthetic.write_cropreporter(tmp_path, "v441", ["CLR"])
     ps = read_cropreporter(filename=fluor_filename)
     assert isinstance(ps, PSII_data)
     assert ps.clr
@@ -164,6 +153,9 @@ def test_read_cropreporter_clr_only(test_data, tmpdir):
     # Check for a 3D NumPy array (Height, Width, Channels)
     assert len(ps.clr.color.shape) == 3
     assert isinstance(ps.clr.color, np.ndarray)
+    # Red 25600, green 38400 and blue 51200 become 8-bit BGR (200, 150, 100)
+    assert ps.clr.color.dtype == np.uint8
+    assert np.all(ps.clr.color == [200, 150, 100])
 
 
 def test_read_cropreporter_gfp_only(test_data, tmpdir):
