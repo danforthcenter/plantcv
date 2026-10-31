@@ -4,6 +4,7 @@ import numpy as np
 from plantcv.plantcv import outputs
 from plantcv.plantcv.photosynthesis.read_cropreporter import read_cropreporter
 from plantcv.plantcv.analyze.npq_fast import npqfast as analyze_npqfast
+from tests import synthetic
 
 
 def test_npqfast(test_data):
@@ -32,11 +33,11 @@ def test_npqfast_bad_labels(test_data):
                             label="prefix", min_bin="auto", max_bin="auto")
 
 
-def test_npqfast_bad_frames(test_data):
+def test_npqfast_bad_frames(tmp_path):
     """Test for PlantCV."""
     # Clear results
     outputs.clear()
-    source_path = test_data.photosynthesis.cropreporter_npq
+    source_path = synthetic.write_cropreporter(tmp_path, "v441", ["NPQ"])
     ps = read_cropreporter(filename=source_path)
     with pytest.raises(RuntimeError):
         _ = analyze_npqfast(ps=ps,
