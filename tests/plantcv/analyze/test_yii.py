@@ -14,8 +14,10 @@ from tests import synthetic
     ["psd", "ojip_dark", None, 1, 0.7],
     # test lightadapted control seq and measurement_labels arg: Fq'/Fm' = (Fmp - Fp) / Fmp = (250 - 150) / 250
     ["psl", "ojip_light", ["Fq/Fm"], 255, 0.4],
-    ["pmd", "pam_dark", None, 1, 0.95238],
-    ["pml", "pam_light", None, 1, 0.95238],
+    # Fv/Fm = (1000 - 300) / 1000
+    ["pmd", "pam_dark", None, 1, 0.7],
+    # Fq'/Fm' = (250 - 150) / 250
+    ["pml", "pam_light", None, 1, 0.4],
     ["pmt", "pam_time", None, 1, 0.75],
     ["pmt", "pam_time", ["example", "example2"], 255, 0.75],
     # Fq'/Fm' of the light-adapted NPQ frames, (250 - 150) / 250
@@ -24,10 +26,10 @@ def test_yii_cropreporter(frame, data, mlabels, maskval, exp, test_data, tmp_pat
     """Test for PlantCV."""
     # Clear results
     outputs.clear()
-    if frame in ["pmd", "pml"]:
-        source_path = test_data.photosynthesis.cropreporter_v653
-    elif frame == "pmt":
+    if frame == "pmt":
         source_path = test_data.photosynthesis.cropreporter_pmt
+    elif frame in ["pmd", "pml"]:
+        source_path = synthetic.write_cropreporter(tmp_path, "v653", [frame.upper()])
     else:
         source_path = synthetic.write_cropreporter(tmp_path, "v441", [frame.upper()])
 

@@ -39,38 +39,26 @@ def test_read_cropreporter_psl(tmp_path):
     assert "PSL" in repr(ps.psl)
 
 
-def test_read_cropreporter_pmd(test_data, tmpdir):
+def test_read_cropreporter_pmd(tmp_path):
     """Test for PlantCV."""
-    # Create a test tmp directory
-    cache_dir = tmpdir.mkdir("sub")
-    # Create dataset with only PMD
-    shutil.copyfile(test_data.photosynthesis.cropreporter_v653, os.path.join(cache_dir, "HDR_dark_light.INF"))
-    pmd_dat = test_data.photosynthesis.cropreporter_v653.replace("HDR", "PMD")
-    pmd_dat = pmd_dat.replace("INF", "DAT")
-    shutil.copyfile(pmd_dat, os.path.join(cache_dir, "PMD_dark_light.DAT"))
-    filename = os.path.join(cache_dir, "HDR_dark_light.INF")
-    # Run the test
+    filename = synthetic.write_cropreporter(tmp_path, "v653", ["PMD"])
     ps = read_cropreporter(filename=filename)
     assert isinstance(ps, PSII_data)
-    assert ps.pmd.pam_dark.shape == (1500, 2048, 4, 1)
+    assert ps.pmd.pam_dark.shape == (10, 12, 4, 1)
+    assert list(ps.pmd.pam_dark.frame_label.values) == ["Fdark", "F0", "Fm", "Fdarksat"]
+    assert np.all(ps.pmd.pam_dark.values == np.array([10, 300, 1000, 500])[:, None])
     assert ps.pmd
     assert "PMD" in repr(ps.pmd)
 
 
-def test_read_cropreporter_pml(test_data, tmpdir):
+def test_read_cropreporter_pml(tmp_path):
     """Test for PlantCV."""
-    # Create a test tmp directory
-    cache_dir = tmpdir.mkdir("sub")
-    # Create dataset with only PML
-    shutil.copyfile(test_data.photosynthesis.cropreporter_v653, os.path.join(cache_dir, "HDR_dark_light.INF"))
-    pml_dat = test_data.photosynthesis.cropreporter_v653.replace("HDR", "PML")
-    pml_dat = pml_dat.replace("INF", "DAT")
-    shutil.copyfile(pml_dat, os.path.join(cache_dir, "PML_dark_light.DAT"))
-    filename = os.path.join(cache_dir, "HDR_dark_light.INF")
-    # Run the test
+    filename = synthetic.write_cropreporter(tmp_path, "v653", ["PML"])
     ps = read_cropreporter(filename=filename)
     assert isinstance(ps, PSII_data)
-    assert ps.pml.pam_light.shape == (1500, 2048, 4, 1)
+    assert ps.pml.pam_light.shape == (10, 12, 4, 1)
+    assert list(ps.pml.pam_light.frame_label.values) == ["Flight", "Fp", "Fmp", "Flightsat"]
+    assert np.all(ps.pml.pam_light.values == np.array([20, 150, 250, 200])[:, None])
     assert ps.pml
     assert "PML" in repr(ps.pml)
 

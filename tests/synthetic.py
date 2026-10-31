@@ -74,10 +74,11 @@ The CropReporter datasets are 10 x 12 (rows x columns). Each header is a real Cr
 (CROPREPORTER_TEMPLATES) with ImageRows and ImageCols set to 10 and 12. Every frame is uniform and
 takes its value from these fluorescence levels (CROPREPORTER_LEVELS):
 
-    Dark-adapted     Light-adapted
-    Fdark   10       Flight   20
-    F0      300      Fp       150
-    Fm      1000     Fmp      250
+    Dark-adapted       Light-adapted
+    Fdark      10      Flight      20
+    F0         300     Fp          150
+    Fm         1000    Fmp         250
+    Fdarksat   500     Flightsat   200
 
 So Fv/Fm = (1000 - 300) / 1000 = 0.7, Fq'/Fm' = (250 - 150) / 250 = 0.4, and NPQ = Fm / Fmp - 1 = 3.
 
@@ -88,9 +89,12 @@ So Fv/Fm = (1000 - 300) / 1000 = 0.7, Fq'/Fm' = (250 - 150) / 250 = 0.4, and NPQ
     CHL       v441       Fdark, 1200
     CLR       v441       25600, 38400, 51200 (red, green, blue; 100, 150, 200 as 8-bit values)
     SPC       v441       13107, 26214, 39321 (540, 710, 770 nm; 0.2, 0.4, 0.6 of the 16-bit range)
+    PMD       v653       Fdark, F0, Fm, Fdarksat
+    PML       v653       Flight, Fp, Fmp, Flightsat
 
 The v441 header puts F0 and Fp at frame 1 and Fm and Fmp at frame 6 (FvFmFrameF0=0, FvFmFrameFm=5,
-FqFmFrameFsp=0, FqFmFrameFmp=5), and in PSD and PSL every later frame is lower than Fm or Fmp.
+FqFmFrameFsp=0, FqFmFrameFmp=5), and in PSD and PSL every later frame is lower than Fm or Fmp. In every
+dataset Fm and Fmp are the brightest frames after F0 and Fp.
 """
 import os
 import cv2
@@ -124,8 +128,10 @@ TESTDATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "testdata")
 CROPREPORTER_SHAPE = (10, 12)
 CROPREPORTER_TEMPLATES = {
     "v441": os.path.join(TESTDATA, "cropreporter_v441", "PSII_HDR_020321_WT_TOP_1.INF"),
+    "v653": os.path.join(TESTDATA, "cropreporter_v653", "HDR_dark_light.INF"),
 }
-CROPREPORTER_LEVELS = {"Fdark": 10, "F0": 300, "Fm": 1000, "Flight": 20, "Fp": 150, "Fmp": 250}
+CROPREPORTER_LEVELS = {"Fdark": 10, "F0": 300, "Fm": 1000, "Fdarksat": 500,
+                       "Flight": 20, "Fp": 150, "Fmp": 250, "Flightsat": 200}
 _LVL = CROPREPORTER_LEVELS
 CROPREPORTER_FRAMES = {
     "PSD": ([_LVL["Fdark"], _LVL["F0"]] + [_LVL["F0"] + 100 * k for k in range(1, 5)] + [_LVL["Fm"]] +
@@ -136,6 +142,8 @@ CROPREPORTER_FRAMES = {
     "CHL": [_LVL["Fdark"], 1200],
     "CLR": [25600, 38400, 51200],
     "SPC": [13107, 26214, 39321],
+    "PMD": [_LVL[f] for f in ("Fdark", "F0", "Fm", "Fdarksat")],
+    "PML": [_LVL[f] for f in ("Flight", "Fp", "Fmp", "Flightsat")],
 }
 
 
