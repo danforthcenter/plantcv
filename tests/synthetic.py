@@ -61,11 +61,19 @@ plantcv.morphology.segment_skeleton does, leaves 7 segments:
 
 The cycle option adds the outline of the square x, y = 5..14, separate from the plant, which
 encloses one cycle. The skeleton mask is the skeleton dilated by a 3 x 3 square.
+
+The hyperspectral datacube has 2 lines, 3 samples, and one band per nanometer from 400 to 1000 nm
+(601 bands), so the band closest to any whole-nanometer wavelength in that range is exactly that
+wavelength. Pixel p = 3 * line + sample (0 to 5) has reflectance (wavelength / 700) ** (p - 2.5). Every
+pixel has reflectance 1 at 700 nm; pixels 0 to 2 fall and pixels 3 to 5 rise with wavelength, each
+along a different curve. Every spectral index therefore takes several distinct non-negative values,
+which a pseudo-RGB image of the index needs. The hyperspectral mask selects the middle column,
+pixels 1 and 4, whose reflectance is (wavelength / 700) ** -1.5 and (wavelength / 700) ** 1.5.
 """
 import os
 import cv2
 import numpy as np
-from plantcv.plantcv.classes import MS_data
+from plantcv.plantcv.classes import MS_data, Spectral_data
 
 PLANT_SHAPE = (100, 120)
 PLANT_RECTS = {
@@ -85,6 +93,8 @@ TWO_PLANTS_RADIUS = 12
 SQUARES_SHAPE = (60, 250)
 SKELETON_TIPS = ((60, 89), (31, 70), (80, 68), (80, 25), (40, 25))
 SKELETON_BRANCH_PTS = ((60, 45), (60, 58), (60, 70))
+SPECTRAL_SHAPE = (2, 3)
+SPECTRAL_WAVELENGTHS = range(400, 1001)
 # (row, column, size, thickness) of each square; thickness 0 means filled
 SQUARES = ((10, 10, 10, 0), (10, 30, 20, 0), (10, 60, 20, 4), (10, 90, 30, 5),
            (10, 130, 20, 2), (10, 160, 20, 1), (10, 190, 40, 1))
@@ -364,11 +374,70 @@ def ms_data(wavelengths):
                    filename="test")
 
 
-def write_envi(outdir, filename, default_bands=None):
+def reflectance(wavelength):
+    """Compute the reflectance of every pixel of the hyperspectral datacube at one wavelength.
+
+    Parameters
+    ----------
+    wavelength : float
+        Wavelength in nanometers.
+
+    Returns
+    -------
+    numpy.ndarray
+        2 x 3 float64 array of (wavelength / 700) ** (p - 2.5) for pixel p = 3 * line + sample.
+    """
+    pixel = np.arange(SPECTRAL_SHAPE[0] * SPECTRAL_SHAPE[1]).reshape(SPECTRAL_SHAPE)
+    return (wavelength / 700) ** (pixel - 2.5)
+
+
+def spectral_data():
+    """Create the hyperspectral datacube.
+
+    Returns
+    -------
+    plantcv.plantcv.classes.Spectral_data
+        Hyperspectral data object with reflectance(wavelength) in each band and no default bands.
+    """
+    array_data = np.stack([reflectance(wl) for wl in SPECTRAL_WAVELENGTHS], axis=-1)
+    return Spectral_data(array_data=array_data, max_wavelength=float(max(SPECTRAL_WAVELENGTHS)),
+                         min_wavelength=float(min(SPECTRAL_WAVELENGTHS)), max_value=float(np.amax(array_data)),
+                         min_value=float(np.amin(array_data)), d_type=array_data.dtype,
+                         wavelength_dict={float(wl): float(i) for i, wl in enumerate(SPECTRAL_WAVELENGTHS)},
+                         samples=SPECTRAL_SHAPE[1], lines=SPECTRAL_SHAPE[0], interleave="bil",
+                         wavelength_units="nm", array_type="datacube", filename="synthetic", default_bands=None)
+
+
+def spectral_mask():
+    """Create a binary mask of the middle column of the hyperspectral datacube.
+
+    Returns
+    -------
+    numpy.ndarray
+        2 x 3 uint8 mask with pixels 1 and 4 set to 255.
+    """
+    mask = np.zeros(SPECTRAL_SHAPE, dtype=np.uint8)
+    mask[:, 1] = 255
+    return mask
+
+
+def envi_array():
+    """Create the datacube that write_envi and write_arcgis store.
+
+    Returns
+    -------
+    numpy.ndarray
+        2 x 3 x 5 (lines x samples x bands) uint16 array of the values 0-29, numbered in band
+        interleaved by line order: value = 15 * line + 3 * band + sample.
+    """
+    return np.arange(30, dtype=np.uint16).reshape(2, 5, 3).transpose(0, 2, 1)
+
+
+def write_envi(outdir, filename, default_bands=None, wavelengths=None, wavelength_units="nm", interleave="bil"):
     """Write a small ENVI datacube and the matching header file.
 
-    The datacube has 2 lines, 3 samples, and 5 bands (500-700 nm in 50 nm steps), stored
-    band interleaved by line as unsigned 16-bit integers with values 0-29.
+    The datacube is envi_array(): 2 lines, 3 samples, and 5 bands, stored band interleaved by line
+    as unsigned 16-bit integers with values 0-29.
 
     Parameters
     ----------
@@ -378,6 +447,13 @@ def write_envi(outdir, filename, default_bands=None):
         Base name of the data and header files.
     default_bands : str, optional
         Value of the default bands header field, or None to leave the field out.
+    wavelengths : list, optional
+        The 5 band wavelengths (default 500-700 nm in 50 nm steps).
+    wavelength_units : str, optional
+        Value of the wavelength units header field (default "nm"), or None to leave the field out.
+    interleave : str
+        Value of the interleave header field (default "bil"). The data is always stored band
+        interleaved by line.
 
     Returns
     -------
@@ -385,8 +461,10 @@ def write_envi(outdir, filename, default_bands=None):
         Path of the ENVI data file.
     """
     lines, samples, bands = 2, 3, 5
-    wavelengths = [500.0, 550.0, 600.0, 650.0, 700.0]
+    if wavelengths is None:
+        wavelengths = [500.0, 550.0, 600.0, 650.0, 700.0]
     default = "" if default_bands is None else "default bands = {" + default_bands + "}\n"
+    units = "" if wavelength_units is None else f"wavelength units = {wavelength_units}\n"
     header = ("ENVI\n"
               f"samples = {samples}\n"
               f"lines = {lines}\n"
@@ -394,14 +472,51 @@ def write_envi(outdir, filename, default_bands=None):
               "header offset = 0\n"
               "file type = ENVI Standard\n"
               "data type = 12\n"
-              "interleave = bil\n"
+              f"interleave = {interleave}\n"
               "byte order = 0\n"
-              "wavelength units = nm\n"
+              f"{units}"
               f"{default}"
               "wavelength = {" + ",".join(str(wl) for wl in wavelengths) + "}\n")
     datafile = os.path.join(str(outdir), filename)
     with open(datafile + ".hdr", "w") as fp:
         fp.write(header)
     # Band Interleaved by Line data stored as unsigned 16-bit integers (ENVI data type 12)
-    np.arange(lines * bands * samples, dtype=np.uint16).reshape(lines, bands, samples).tofile(datafile)
+    envi_array().transpose(0, 2, 1).tofile(datafile)
+    return datafile
+
+
+def write_arcgis(outdir, filename):
+    """Write the datacube of write_envi with an ArcGIS-style header file.
+
+    The header gives the layout as keyword and value pairs and lists the wavelengths (500-700 nm
+    in 50 nm steps) between WAVELENGTHS and WAVELENGTHS_END. The data is stored band interleaved by
+    line as 16-bit integers.
+
+    Parameters
+    ----------
+    outdir : str
+        Directory to write the data and header files to.
+    filename : str
+        Base name of the data and header files.
+
+    Returns
+    -------
+    str
+        Path of the data file.
+    """
+    header = ("BYTEORDER I\n"
+              "LAYOUT BIL\n"
+              "NROWS 2\n"
+              "NCOLS 3\n"
+              "NBANDS 5\n"
+              "NBITS 16\n"
+              "BANDROWBYTES 6\n"
+              "TOTALROWBYTES 30\n"
+              "WAVELENGTHS\n"
+              "500.0\n550.0\n600.0\n650.0\n700.0\n"
+              "WAVELENGTHS_END\n")
+    datafile = os.path.join(str(outdir), filename)
+    with open(datafile + ".hdr", "w") as fp:
+        fp.write(header)
+    envi_array().astype(np.int16).transpose(0, 2, 1).tofile(datafile)
     return datafile

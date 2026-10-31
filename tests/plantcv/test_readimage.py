@@ -62,10 +62,10 @@ def test_readimage_csv(test_data):
     assert len(img.shape) == 2
 
 
-def test_readimage_envi(test_data):
+def test_readimage_envi(tmpdir):
     """Test for PlantCV."""
-    hsi = readimage(filename=test_data.envi_bil_file, mode="envi")
-    assert hsi.array_data.shape[2] == 978
+    hsi = readimage(filename=synthetic.write_envi(outdir=tmpdir, filename="envi"), mode="envi")
+    assert hsi.array_data.shape[2] == 5
 
 
 def test_readimage_nd2(test_data):

@@ -3,30 +3,30 @@ import pytest
 import numpy as np
 from altair.vegalite.v5.api import Chart
 from plantcv.plantcv.visualize import hyper_histogram
+from tests import synthetic
 
 
-@pytest.mark.parametrize("wavelengths", [[], [390, 500, 640, 992, 990]])
-def test_hyper_histogram(wavelengths, visualize_test_data):
+# Ultraviolet (below 445 nm), visible and near-infrared wavelengths
+@pytest.mark.parametrize("wavelengths", [[], [410, 500, 640, 992, 990]])
+def test_hyper_histogram(wavelengths):
     """Test for PlantCV."""
-    # Read in test data
-    hsi = visualize_test_data.load_hsi(visualize_test_data.hsi_file)
+    hsi = synthetic.spectral_data()
     mask = np.zeros(hsi.array_data.shape[:2], dtype=np.uint8)
     mask += 255
     fig_hist = hyper_histogram(hsi=hsi, mask=mask, wvlengths=wavelengths, title="Hyper Histogram Test")
     assert isinstance(fig_hist, Chart)
 
 
-def test_hyper_histogram_wv_out_range(visualize_test_data):
+def test_hyper_histogram_wv_out_range():
     """Test for PlantCV."""
-    hsi = visualize_test_data.load_hsi(visualize_test_data.hsi_file)
+    hsi = synthetic.spectral_data()
     with pytest.raises(RuntimeError):
         _ = hyper_histogram(hsi=hsi, wvlengths=[200,  550])
 
 
-def test_hyper_histogram_extreme_wvs(visualize_test_data):
+def test_hyper_histogram_extreme_wvs():
     """Test for PlantCV."""
-    # Read in test data
-    hsi = visualize_test_data.load_hsi(visualize_test_data.hsi_file)
+    hsi = synthetic.spectral_data()
     mask = np.zeros(hsi.array_data.shape[:2], dtype=np.uint8)
     mask += 255
     wv_keys = list(hsi.wavelength_dict.keys())
@@ -39,10 +39,9 @@ def test_hyper_histogram_extreme_wvs(visualize_test_data):
     assert isinstance(fig_hist, Chart)
 
 
-def test_hyper_histogram_no_wvs(visualize_test_data):
+def test_hyper_histogram_no_wvs():
     """Test for PlantCV."""
-    # Read in test data
-    hsi = visualize_test_data.load_hsi(visualize_test_data.hsi_file)
+    hsi = synthetic.spectral_data()
     mask = np.zeros(hsi.array_data.shape[:2], dtype=np.uint8)
     mask += 255
     wavelengths = None

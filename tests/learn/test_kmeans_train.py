@@ -3,6 +3,7 @@ import cv2
 import importlib
 import numpy as np
 from plantcv.learn.train_kmeans import train_kmeans, _read_by_mode
+from tests import synthetic
 
 
 def test_train_kmeans_subset(learn_test_data, tmpdir):
@@ -71,10 +72,10 @@ def test_train_kmeans_spectral(synthetic_rgb, tmp_path, monkeypatch):
     assert calls == [("kmeans_train_0.raw", "spectral"), ("kmeans_train_1.raw", "spectral")]
 
 
-def test_read_by_mode(test_data):
+def test_read_by_mode(tmpdir):
     """Test for PlantCV."""
-    img = _read_by_mode(test_data.envi_sample_data, mode="spectral")
-    assert isinstance(img, np.ndarray)
+    img = _read_by_mode(synthetic.write_envi(outdir=tmpdir, filename="envi"), mode="spectral")
+    assert np.array_equal(img, synthetic.envi_array())
 
 
 def test_read_by_mode_drop_rgba_alpha(tmpdir):
