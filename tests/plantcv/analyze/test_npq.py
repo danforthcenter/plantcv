@@ -44,11 +44,11 @@ def test_npq_cropreporter_auto(tmp_path):
     assert np.isclose(outputs.observations["prefix_1"]["npq_median_Fq/Fm"]["value"], 0.2)
 
 
-def test_npq_pml_pmd_cropreporter(test_data):
+def test_npq_pml_pmd_cropreporter(tmp_path):
     """Test for PlantCV."""
     # Clear results
     outputs.clear()
-    source_path = test_data.photosynthesis.cropreporter_v653
+    source_path = synthetic.write_cropreporter(tmp_path, "v653", ["PMD", "PML"])
     ps = read_cropreporter(filename=source_path)
     ps.ojip_dark = None
     ps.ojip_light = None
@@ -57,7 +57,8 @@ def test_npq_pml_pmd_cropreporter(test_data):
                     auto_fm=True,
                     measurement_labels=["Fq/Fm"],
                     label="prefix", min_bin="auto", max_bin="auto")
-    assert np.isclose(outputs.observations["prefix_1"]["npq_median_Fq/Fm"]["value"], 0.1)
+    # npq divides F0 by Fmp (#2104): 300 / 250 - 1
+    assert np.isclose(outputs.observations["prefix_1"]["npq_median_Fq/Fm"]["value"], 0.2)
 
 
 def test_npq_pmt_cropreporter(test_data):
