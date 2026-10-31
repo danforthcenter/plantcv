@@ -1,12 +1,11 @@
 import pytest
-import cv2
 from plantcv.plantcv import white_balance
+from tests import synthetic
 
 
-def test_white_balance_gray_16bit(test_data):
+def test_white_balance_gray_16bit():
     """Test for PlantCV."""
-    # Read in test data
-    img = cv2.imread(test_data.fmax, -1)
+    img = synthetic.fluor_image()
     # Test with mode "hist"
     white_balanced = white_balance(img=img, mode='hist', roi=(5, 5, 80, 80))
     assert img.shape == white_balanced.shape

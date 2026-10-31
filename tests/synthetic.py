@@ -103,10 +103,18 @@ FqFmFrameFsp=0, FqFmFrameFmp=5), and in PSD and PSL every later frame is lower t
 dataset Fm and Fmp are the brightest frames after F0 and Fp. The pmt header has one dark-adapted and one
 light-adapted measurement (TmPamMeasFvfm=1, TmPamMeasFqfm=1); pmt_frames adds measurements of the second
 dark adaptation for headers with a larger TmPamMeasFvfm.
+
+The PSII DataArray (psii_dataarray) is 10 x 10 with 4 frames and one measurement. Only pixel (row 5,
+column 5) is non-zero; it is 1, 2, 10 and 8 in frames 0-3, so frame 2 is the brightest. psii_mask selects
+that pixel.
+
+The fluorescence image (fluor_image) is the grayscale image of the synthetic plant as unsigned 16-bit
+values (each value times 256) with a 20-pixel background border, 140 x 160 in total.
 """
 import os
 import cv2
 import numpy as np
+import xarray as xr
 from plantcv.plantcv.classes import MS_data, Spectral_data
 
 PLANT_SHAPE = (100, 120)
@@ -224,6 +232,17 @@ def plant_gray():
     y0, y1, x0, x1 = SMALL_OBJECT_RECT
     img[y0:y1, x0:x1] = SMALL_OBJECT_GRAY
     return img
+
+
+def fluor_image():
+    """Create a 16-bit grayscale image of the synthetic plant with a 20-pixel border.
+
+    Returns
+    -------
+    numpy.ndarray
+        140 x 160 uint16 image of plant_gray() values times 256, padded with the background value.
+    """
+    return np.pad(plant_gray().astype(np.uint16) * 256, 20, constant_values=BACKGROUND_GRAY * 256)
 
 
 def disk_mask(shape, centers, radius):
@@ -654,3 +673,48 @@ def pmt_frames(n_fvfm=0):
     """
     labels = PMT_BLOCKS["dark"] + PMT_BLOCKS["light"] + PMT_BLOCKS["dark2"] * n_fvfm + ("F0p",)
     return [CROPREPORTER_LEVELS[label] for label in labels]
+
+
+def psii_mask():
+    """Create a 10 x 10 mask that selects the pixel at row 5, column 5.
+
+    Returns
+    -------
+    numpy.ndarray
+        uint8 mask with that pixel 255 and the rest 0.
+    """
+    mask = np.zeros((10, 10), dtype=np.uint8)
+    mask[5, 5] = 255
+    return mask
+
+
+def psii_dataarray(var):
+    """Create a PSII DataArray with 4 frames and one measurement.
+
+    Parameters
+    ----------
+    var : str
+        "ojip_dark" (frame labels Fdark, F0, Fm, 3; measurement t0) or "ojip_light" (frame labels Fdark, Fp, 2,
+        Fmp; measurement t1). It is also the name of the DataArray.
+
+    Returns
+    -------
+    xarray.DataArray
+        10 x 10 x 4 x 1 uint8 array (x, y, frame_label, measurement). Pixel (5, 5) is 1, 2, 10 and 8 in
+        frames 0-3; every other pixel is 0.
+    """
+    frames = []
+    for value in (1, 2, 10, 8):
+        frame = np.zeros((10, 10), dtype=np.uint8)
+        frame[5, 5] = value
+        frames.append(frame)
+    if var == "ojip_dark":
+        frame_labels = ["Fdark", "F0", "Fm", "3"]
+        measurements = ["t0"]
+    else:
+        frame_labels = ["Fdark", "Fp", "2", "Fmp"]
+        measurements = ["t1"]
+    return xr.DataArray(data=np.dstack(frames)[..., None],
+                        dims=("x", "y", "frame_label", "measurement"),
+                        coords={"frame_label": frame_labels, "frame_num": ("frame_label", [0, 1, 2, 3]),
+                                "measurement": measurements}, name=var)
