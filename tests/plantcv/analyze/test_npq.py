@@ -61,18 +61,20 @@ def test_npq_pml_pmd_cropreporter(tmp_path):
     assert np.isclose(outputs.observations["prefix_1"]["npq_median_Fq/Fm"]["value"], 0.2)
 
 
-def test_npq_pmt_cropreporter(test_data):
+def test_npq_pmt_cropreporter(tmp_path):
     """Test for PlantCV."""
     # Clear results
     outputs.clear()
-    source_path = test_data.photosynthesis.cropreporter_pmt
+    source_path = synthetic.write_cropreporter(tmp_path, "pmt", ["PMT"])
     ps = read_cropreporter(filename=source_path)
     _ = analyze_npq(ps=ps,
                     labeled_mask=np.ones(ps.pmt.pam_time.shape[0:2]),
                     auto_fm=False,
                     measurement_labels=["Fq/Fm", "other"],
                     label="prefix", min_bin="auto", max_bin="auto")
-    assert bool(outputs.observations["prefix_1"]["npq_median_Fq/Fm"])
+    # t0 has no Fmp frame; in t1 npq divides F0 by Fmp (#2104): 300 / 250 - 1
+    assert np.isnan(outputs.observations["prefix_1"]["npq_median_Fq/Fm"]["value"])
+    assert np.isclose(outputs.observations["prefix_1"]["npq_median_other"]["value"], 0.2)
 
 
 @pytest.mark.parametrize("mlabels, tmask",
@@ -94,9 +96,9 @@ def test_npq_fatalerror(mlabels, tmask, tmp_path):
                         measurement_labels=mlabels, label="default")
 
 
-def test_npq_bad_var(test_data):
+def test_npq_bad_var(tmp_path):
     """Test for PlantCV."""
-    source_path = test_data.photosynthesis.cropreporter_rfp
+    source_path = synthetic.write_cropreporter(tmp_path, "gfp", ["RFP"])
     ps = read_cropreporter(filename=source_path)
     with pytest.raises(RuntimeError):
         _ = analyze_npq(ps=ps,

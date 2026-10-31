@@ -74,13 +74,15 @@ The CropReporter datasets are 10 x 12 (rows x columns). Each header is a real Cr
 (CROPREPORTER_TEMPLATES) with ImageRows and ImageCols set to 10 and 12. Every frame is uniform and
 takes its value from these fluorescence levels (CROPREPORTER_LEVELS):
 
-    Dark-adapted       Light-adapted
-    Fdark      10      Flight      20
-    F0         300     Fp          150
-    Fm         1000    Fmp         250
-    Fdarksat   500     Flightsat   200
+    Dark-adapted       Light-adapted       Second dark adaptation
+    Fdark      10      Flight      20      Fdarkpp      15
+    F0         300     Fp          150     F0pp         280
+    Fm         1000    Fmp         250     Fmpp         800
+    Fdarksat   500     Flightsat   200     Fdarksatpp   400
+                       F0p         125
 
-So Fv/Fm = (1000 - 300) / 1000 = 0.7, Fq'/Fm' = (250 - 150) / 250 = 0.4, and NPQ = Fm / Fmp - 1 = 3.
+So Fv/Fm = (1000 - 300) / 1000 = 0.7, Fq'/Fm' = (250 - 150) / 250 = 0.4, Fv''/Fm'' = (800 - 280) / 800
+= 0.65, and NPQ = Fm / Fmp - 1 = 3.
 
     Dataset   Template   Frames
     PSD       v441       Fdark, F0, 400, 500, 600, 700, Fm, 990, 980, ..., 860 (21 frames)
@@ -91,10 +93,16 @@ So Fv/Fm = (1000 - 300) / 1000 = 0.7, Fq'/Fm' = (250 - 150) / 250 = 0.4, and NPQ
     SPC       v441       13107, 26214, 39321 (540, 710, 770 nm; 0.2, 0.4, 0.6 of the 16-bit range)
     PMD       v653       Fdark, F0, Fm, Fdarksat
     PML       v653       Flight, Fp, Fmp, Flightsat
+    GFP       gfp        Fdark, 700, 90 (GFP, autofluorescence)
+    RFP       gfp        Fdark, 650
+    APH       aph        600, 800 (red, far-red)
+    PMT       pmt        Fdark, F0, Fm, Fdarksat, Flight, Fp, Fmp, Flightsat, F0p
 
 The v441 header puts F0 and Fp at frame 1 and Fm and Fmp at frame 6 (FvFmFrameF0=0, FvFmFrameFm=5,
 FqFmFrameFsp=0, FqFmFrameFmp=5), and in PSD and PSL every later frame is lower than Fm or Fmp. In every
-dataset Fm and Fmp are the brightest frames after F0 and Fp.
+dataset Fm and Fmp are the brightest frames after F0 and Fp. The pmt header has one dark-adapted and one
+light-adapted measurement (TmPamMeasFvfm=1, TmPamMeasFqfm=1); pmt_frames adds measurements of the second
+dark adaptation for headers with a larger TmPamMeasFvfm.
 """
 import os
 import cv2
@@ -129,9 +137,18 @@ CROPREPORTER_SHAPE = (10, 12)
 CROPREPORTER_TEMPLATES = {
     "v441": os.path.join(TESTDATA, "cropreporter_v441", "PSII_HDR_020321_WT_TOP_1.INF"),
     "v653": os.path.join(TESTDATA, "cropreporter_v653", "HDR_dark_light.INF"),
+    # The GFP and RFP measurements came with identical headers
+    "gfp": os.path.join(TESTDATA, "cropreporter_gfp", "HDR_DYSeed_20251222191634684.INF"),
+    "aph": os.path.join(TESTDATA, "cropreporter_aph", "HDR_2025-12-12_tob1_20251212205712029.INF"),
+    "pmt": os.path.join(TESTDATA, "cropreporter_pmt", "HDR_E0001P0007N0001_GCU24100090_20260226.INF"),
 }
 CROPREPORTER_LEVELS = {"Fdark": 10, "F0": 300, "Fm": 1000, "Fdarksat": 500,
-                       "Flight": 20, "Fp": 150, "Fmp": 250, "Flightsat": 200}
+                       "Flight": 20, "Fp": 150, "Fmp": 250, "Flightsat": 200,
+                       "Fdarkpp": 15, "F0pp": 280, "Fmpp": 800, "Fdarksatpp": 400, "F0p": 125}
+# Frame labels of each PMT measurement block, in the order PMT frames are stored
+PMT_BLOCKS = {"dark": ("Fdark", "F0", "Fm", "Fdarksat"),
+              "light": ("Flight", "Fp", "Fmp", "Flightsat"),
+              "dark2": ("Fdarkpp", "F0pp", "Fmpp", "Fdarksatpp")}
 _LVL = CROPREPORTER_LEVELS
 CROPREPORTER_FRAMES = {
     "PSD": ([_LVL["Fdark"], _LVL["F0"]] + [_LVL["F0"] + 100 * k for k in range(1, 5)] + [_LVL["Fm"]] +
@@ -142,8 +159,12 @@ CROPREPORTER_FRAMES = {
     "CHL": [_LVL["Fdark"], 1200],
     "CLR": [25600, 38400, 51200],
     "SPC": [13107, 26214, 39321],
-    "PMD": [_LVL[f] for f in ("Fdark", "F0", "Fm", "Fdarksat")],
-    "PML": [_LVL[f] for f in ("Flight", "Fp", "Fmp", "Flightsat")],
+    "PMD": [_LVL[f] for f in PMT_BLOCKS["dark"]],
+    "PML": [_LVL[f] for f in PMT_BLOCKS["light"]],
+    "GFP": [_LVL["Fdark"], 700, 90],
+    "RFP": [_LVL["Fdark"], 650],
+    "APH": [600, 800],
+    "PMT": [_LVL[f] for f in PMT_BLOCKS["dark"] + PMT_BLOCKS["light"] + ("F0p",)],
 }
 
 
@@ -614,3 +635,22 @@ def write_cropreporter(outdir, template, datasets, metadata=None, shape=CROPREPO
         # Unsigned 16-bit frames one after another, each stored column by column
         cube.transpose(0, 2, 1).tofile(os.path.join(str(outdir), "_".join(parts).replace(".INF", ".DAT")))
     return inf
+
+
+def pmt_frames(n_fvfm=0):
+    """List the frames of a PMT dataset with measurements of the second dark adaptation.
+
+    Parameters
+    ----------
+    n_fvfm : int
+        Number of measurements of the second dark adaptation (default 0). The header needs
+        TmPamMeasFvfm = n_fvfm + 1.
+
+    Returns
+    -------
+    list
+        Frame values: the dark-adapted block, the light-adapted block, n_fvfm second dark adaptation
+        blocks, then F0p.
+    """
+    labels = PMT_BLOCKS["dark"] + PMT_BLOCKS["light"] + PMT_BLOCKS["dark2"] * n_fvfm + ("F0p",)
+    return [CROPREPORTER_LEVELS[label] for label in labels]

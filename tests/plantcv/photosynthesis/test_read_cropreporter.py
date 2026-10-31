@@ -1,6 +1,4 @@
 """Tests for plantcv.photosynthesis.read_cropreporter."""
-import os
-import shutil
 import numpy as np
 from plantcv.plantcv import PSII_data
 from plantcv.plantcv.photosynthesis import read_cropreporter
@@ -146,16 +144,9 @@ def test_read_cropreporter_clr_only(tmp_path):
     assert np.all(ps.clr.color == [200, 150, 100])
 
 
-def test_read_cropreporter_gfp_only(test_data, tmpdir):
+def test_read_cropreporter_gfp_only(tmp_path):
     """Test GFP import."""
-    # Create a test tmp directory
-    cache_dir = tmpdir.mkdir("sub")
-    # Create dataset with only GFP
-    shutil.copyfile(test_data.photosynthesis.cropreporter_gfp, os.path.join(cache_dir, "HDR_DYSeed_20251222191634684.INF"))
-    gfp_dat = test_data.photosynthesis.cropreporter_gfp.replace("HDR", "GFP")
-    gfp_dat = gfp_dat.replace("INF", "DAT")
-    shutil.copyfile(gfp_dat, os.path.join(cache_dir, "GFP_DYSeed_20251222191634684.DAT"))
-    fluor_filename = os.path.join(cache_dir, "HDR_DYSeed_20251222191634684.INF")
+    fluor_filename = synthetic.write_cropreporter(tmp_path, "gfp", ["GFP"])
     ps = read_cropreporter(filename=fluor_filename)
     assert isinstance(ps, PSII_data)
     assert ps.gfp
@@ -163,74 +154,56 @@ def test_read_cropreporter_gfp_only(test_data, tmpdir):
     assert ps.gfp.green is not None
     # (rows, cols, frames)
     assert len(ps.gfp.green.shape) == 2
+    # GFP is the second to last frame
+    assert ps.gfp.green.shape == (10, 12)
+    assert np.all(ps.gfp.green == 700)
     # reach other attribute first
     ps = read_cropreporter(filename=fluor_filename)
     assert ps.gfp.auto is not None
+    # autofluorescence is the last frame
+    assert np.all(ps.gfp.auto == 90)
 
 
-def test_read_cropreporter_rfp_only(test_data, tmpdir):
+def test_read_cropreporter_rfp_only(tmp_path):
     """Test RFP import."""
-    # Create a test tmp directory
-    cache_dir = tmpdir.mkdir("sub")
-    # Create dataset with only RFP
-    shutil.copyfile(test_data.photosynthesis.cropreporter_rfp, os.path.join(cache_dir, "HDR_DYSeed_20251222191634684.INF"))
-    rfp_dat = test_data.photosynthesis.cropreporter_rfp.replace("HDR", "RFP")
-    rfp_dat = rfp_dat.replace("INF", "DAT")
-    shutil.copyfile(rfp_dat, os.path.join(cache_dir, "RFP_DYSeed_20251222191634684.DAT"))
-    fluor_filename = os.path.join(cache_dir, "HDR_DYSeed_20251222191634684.INF")
+    fluor_filename = synthetic.write_cropreporter(tmp_path, "gfp", ["RFP"])
     ps = read_cropreporter(filename=fluor_filename)
     assert isinstance(ps, PSII_data)
     assert ps.rfp
     assert "RFP" in repr(ps.rfp)
     assert ps.rfp.red is not None
     assert len(ps.rfp.red.shape) == 2
+    # RFP is the last frame
+    assert ps.rfp.red.shape == (10, 12)
+    assert np.all(ps.rfp.red == 650)
 
 
-def test_read_cropreporter_aph_only(test_data, tmpdir):
+def test_read_cropreporter_aph_only(tmp_path):
     """Test APH (Red / FarRed reflectance) import."""
-    # Create a test tmp directory
-    cache_dir = tmpdir.mkdir("sub")
-    # Create dataset with only APH
-    shutil.copyfile(test_data.photosynthesis.cropreporter_aph, os.path.join(cache_dir,
-                                                                            "HDR_2025-12-12_tob1_20251212205712029.INF"))
-    aph_dat = test_data.photosynthesis.cropreporter_aph.replace("HDR", "APH")
-    aph_dat = aph_dat.replace("INF", "DAT")
-    shutil.copyfile(aph_dat, os.path.join(cache_dir, "APH_2025-12-12_tob1_20251212205712029.DAT"))
-    fluor_filename = os.path.join(cache_dir, "HDR_2025-12-12_tob1_20251212205712029.INF")
+    fluor_filename = synthetic.write_cropreporter(tmp_path, "aph", ["APH"])
     ps = read_cropreporter(filename=fluor_filename)
     assert isinstance(ps, PSII_data)
     assert ps.aph
     assert "loaded=False" in repr(ps.aph)
     assert hasattr(ps.aph, "red")
     assert hasattr(ps.aph, "farred")
+    # red is the second to last frame and far-red the last
+    assert np.all(ps.aph.red == 600)
+    assert np.all(ps.aph.farred == 800)
 
 
-def test_read_cropreporter_aph_farred(test_data, tmpdir):
+def test_read_cropreporter_aph_farred(tmp_path):
     """Test APH (Red / FarRed reflectance) import."""
-    # Create a test tmp directory
-    cache_dir = tmpdir.mkdir("sub")
-    # Create dataset with only APH
-    shutil.copyfile(test_data.photosynthesis.cropreporter_aph, os.path.join(cache_dir,
-                                                                            "HDR_2025-12-12_tob1_20251212205712029.INF"))
-    aph_dat = test_data.photosynthesis.cropreporter_aph.replace("HDR", "APH")
-    aph_dat = aph_dat.replace("INF", "DAT")
-    shutil.copyfile(aph_dat, os.path.join(cache_dir, "APH_2025-12-12_tob1_20251212205712029.DAT"))
-    fluor_filename = os.path.join(cache_dir, "HDR_2025-12-12_tob1_20251212205712029.INF")
+    fluor_filename = synthetic.write_cropreporter(tmp_path, "aph", ["APH"])
     ps = read_cropreporter(filename=fluor_filename)
     assert hasattr(ps.aph, "farred")
+    assert np.all(ps.aph.farred == 800)
+    assert np.all(ps.aph.red == 600)
 
 
-def test_read_cropreporter_pmt_only_9_labels(test_data, tmpdir):
+def test_read_cropreporter_pmt_only_9_labels(tmp_path):
     """Test PMT (PAM Time) import with 9 frames."""
-    # Create a test tmp directory
-    cache_dir = tmpdir.mkdir("sub")
-    # Create dataset with only PMT
-    shutil.copyfile(test_data.photosynthesis.cropreporter_pmt, os.path.join(cache_dir,
-                                                                            "HDR_E0001P0007N0001_GCU24100090_20260226.INF"))
-    pmt_dat = test_data.photosynthesis.cropreporter_pmt.replace("HDR", "PMT")
-    pmt_dat = pmt_dat.replace("INF", "DAT")
-    shutil.copyfile(pmt_dat, os.path.join(cache_dir, "PMT_E0001P0007N0001_GCU24100090_20260226.DAT"))
-    fluor_filename = os.path.join(cache_dir, "HDR_E0001P0007N0001_GCU24100090_20260226.INF")
+    fluor_filename = synthetic.write_cropreporter(tmp_path, "pmt", ["PMT"])
     ps = read_cropreporter(filename=fluor_filename)
     assert isinstance(ps, PSII_data)
     assert ps.pmt.pam_time is not None
@@ -241,45 +214,34 @@ def test_read_cropreporter_pmt_only_9_labels(test_data, tmpdir):
     assert "measurement" in ps.pmt.pam_time.coords
 
     # Verify the shape (x, y, 9 labels, N measurements)
-    # The 9 or 13 comes from 'frame_labels' list in read_cropreporter.py, and depends on the presence of second dark adaptation
+    # The 9 or 13 comes from 'frame_labels' list in read_cropreporter.py, and depends on the presence of second dark
+    # adaptation
     num_labels = len(ps.pmt.pam_time.frame_label)
     assert num_labels == 9
+    assert list(ps.pmt.pam_time.frame_label.values) == ["Fdark", "F0", "Fm", "Fdarksat",
+                                                        "Flight", "Fp", "Fmp", "Flightsat", "F0p"]
 
-    # Check that at least one measurement label was created (t0, t1...)
+    # TmPamMeasFvfm=1 and TmPamMeasFqfm=1 give one dark-adapted and one light-adapted measurement
     assert "t0" in ps.pmt.pam_time.measurement.values
+    assert list(ps.pmt.pam_time.measurement.values) == ["t0", "t1"]
 
     # Access a value to ensure the loops actually ran
     # This forces the test to "touch" the data assigned inside the loops
     assert ps.pmt.pam_time.sel(frame_label="Fdark", measurement="t0").values.any()
+    # Each frame is stored in its own measurement and the rest are zero; F0p goes in the last measurement
+    pam_time = ps.pmt.pam_time
+    assert np.all(pam_time.sel(measurement="t0").values == [10, 300, 1000, 500, 0, 0, 0, 0, 0])
+    assert np.all(pam_time.sel(measurement="t1").values == [0, 0, 0, 0, 20, 150, 250, 200, 125])
 
     # Verify the F0p (the very last line of your function)
     assert "F0p" in ps.pmt.pam_time.frame_label.values
 
 
-def test_read_cropreporter_pmt_only_13_labels(test_data, tmpdir, monkeypatch):
+def test_read_cropreporter_pmt_only_13_labels(tmp_path):
     """Test PMT (PAM Time) import with 13 frames."""
-    # Create a test tmp directory
-    cache_dir = tmpdir.mkdir("sub")
-    # 1. Align filenames (P0008 for both) so the reader finds the DAT file
-    inf_dest = os.path.join(cache_dir, "HDR_E0001P0008N0001_GCU24100090_20260226.INF")
-    dat_dest = os.path.join(cache_dir, "PMT_E0001P0008N0001_GCU24100090_20260226.DAT")
-
-    # Create dataset with only PMT
-    shutil.copyfile(test_data.photosynthesis.cropreporter_pmt, inf_dest)
-
-    pmt_dat_src = test_data.photosynthesis.cropreporter_pmt.replace("HDR", "PMT").replace("INF", "DAT")
-    shutil.copyfile(pmt_dat_src, dat_dest)
-
-    # Force the INF to trigger the 13-label logic (n_fvfm > 0)
-    with open(inf_dest, "a") as f:
-        f.write("\nTmPamMeasFvfm=3")
-        # Override image size to keep memory usage small in tests
-        f.write("\nImageRows=10")
-        f.write("\nImageCols=10")
-
-    # Mock numpy with the correct 13-frame size for the overridden metadata (10 * 10 * 13 = 1300)
-    # Using ones * 50 to ensure .any() assertions pass
-    monkeypatch.setattr(np, "fromfile", lambda *args, **kwargs: np.ones(1300, dtype=np.uint16) * 50)
+    # TmPamMeasFvfm=3 adds two measurements of the second dark adaptation (17 frames)
+    inf_dest = synthetic.write_cropreporter(tmp_path, "pmt", {"PMT": synthetic.pmt_frames(n_fvfm=2)},
+                                            metadata={"TmPamMeasFvfm": 3})
 
     ps = read_cropreporter(filename=inf_dest)
     assert isinstance(ps, PSII_data)
@@ -291,16 +253,26 @@ def test_read_cropreporter_pmt_only_13_labels(test_data, tmpdir, monkeypatch):
     assert "measurement" in ps.pmt.pam_time.coords
 
     # Verify the shape (x, y, 13 labels, N measurements)
-    # The 9 or 13 comes from 'frame_labels' list in read_cropreporter.py, and depends on the presence of second dark adaptation
+    # The 9 or 13 comes from 'frame_labels' list in read_cropreporter.py, and depends on the presence of second dark
+    # adaptation
     num_labels = len(ps.pmt.pam_time.frame_label)
     assert num_labels == 13
+    assert list(ps.pmt.pam_time.frame_label.values) == ["Fdark", "F0", "Fm", "Fdarksat",
+                                                        "Flight", "Fp", "Fmp", "Flightsat",
+                                                        "Fdarkpp", "F0pp", "Fmpp", "Fdarksatpp", "F0p"]
 
     # Check that at least one measurement label was created (t0, t1...)
     assert "t0" in ps.pmt.pam_time.measurement.values
+    assert list(ps.pmt.pam_time.measurement.values) == ["t0", "t1", "t2", "t3"]
 
     # Access a value to ensure the loops actually ran
     # This forces the test to "touch" the data assigned inside the loops
     assert ps.pmt.pam_time.sel(frame_label="Fdark", measurement="t0").values.any()
+    pam_time = ps.pmt.pam_time
+    assert np.all(pam_time.sel(measurement="t0").values == [10, 300, 1000, 500] + [0] * 9)
+    assert np.all(pam_time.sel(measurement="t1").values == [0] * 4 + [20, 150, 250, 200] + [0] * 5)
+    assert np.all(pam_time.sel(measurement="t2").values == [0] * 8 + [15, 280, 800, 400, 0])
+    assert np.all(pam_time.sel(measurement="t3").values == [0] * 8 + [15, 280, 800, 400, 125])
 
     # Verify the F0p (the very last line of your function)
     assert "F0p" in ps.pmt.pam_time.frame_label.values
