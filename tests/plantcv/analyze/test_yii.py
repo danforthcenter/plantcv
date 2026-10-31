@@ -99,7 +99,7 @@ def test_yii_bad_var(tmp_path):
                         measurement_labels=None, label="default")
 
 
-def test_yii_wrong_num_labels(test_data, tmp_path):
+def test_yii_wrong_num_labels(tmp_path):
     """Test for PlantCV."""
     filename = synthetic.write_cropreporter(tmp_path, "v441", ["PSL"])
     ps = read_cropreporter(filename=filename)
@@ -107,7 +107,7 @@ def test_yii_wrong_num_labels(test_data, tmp_path):
     assert read_in_worked
     with pytest.raises(RuntimeError):
         _ = analyze_yii(ps=ps,
-                        labeled_mask=test_data.create_ps_mask(),
+                        labeled_mask=synthetic.psii_mask(),
                         measurement_labels=None, label=["prefix", "prefix"])
 
 
