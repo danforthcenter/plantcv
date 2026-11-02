@@ -2,8 +2,6 @@ from plantcv.plantcv.morphology.find_branch_pts import find_branch_pts
 from plantcv.plantcv.morphology.find_tips import find_tips
 from plantcv.plantcv.morphology.segment_skeleton import segment_skeleton
 from plantcv.plantcv.morphology.segment_sort import segment_sort
-from plantcv.plantcv.morphology.prune import prune
-from plantcv.plantcv.morphology.skeletonize import skeletonize
 from plantcv.plantcv.morphology.check_cycles import check_cycles
 from plantcv.plantcv.morphology.segment_angle import segment_angle
 from plantcv.plantcv.morphology.segment_path_length import segment_path_length
@@ -20,8 +18,7 @@ from plantcv.plantcv.morphology.segment_width import segment_width
 from plantcv.plantcv.morphology.morph_class import morph
 
 
-__all__ = ["find_branch_pts", "find_tips", "prune",
-           "skeletonize", "check_cycles", "segment_skeleton", "segment_angle",
+__all__ = ["find_branch_pts", "find_tips", "check_cycles", "segment_skeleton", "segment_angle",
            "segment_path_length", "segment_euclidean_length", "segment_curvature", "segment_sort", "segment_id",
            "segment_tangent_angle", "segment_insertion_angle", "segment_combine", "analyze_stem",
            "fill_segments", "segment_ends", "segment_width", "morph"]
