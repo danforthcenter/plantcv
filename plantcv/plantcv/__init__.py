@@ -9,6 +9,7 @@ from plantcv.plantcv.classes import PSII_data
 from plantcv.plantcv.classes import Point
 from plantcv.plantcv.classes import Objects
 from plantcv.plantcv.classes import MS_data
+from plantcv.plantcv.classes import COCO
 
 
 # Initialize an instance of the Params and Outputs class with default values
@@ -89,6 +90,7 @@ from plantcv.plantcv.json2csv import json2csv
 from plantcv.plantcv.masks2labels import masks2labels
 from plantcv.plantcv.submask import sub_mask
 from plantcv.plantcv import multispec
+from plantcv.plantcv import coco
 # add new functions to end of lists
 
 __all__ = [
@@ -98,6 +100,7 @@ __all__ = [
     'Point',
     "Objects",
     "MS_data",
+    "COCO",
     "Params",
     "Outputs",
     "params",
@@ -174,5 +177,6 @@ __all__ = [
     "json2csv",
     "masks2labels",
     "sub_mask",
-    "multispec"
+    "multispec",
+    "coco"
 ]
