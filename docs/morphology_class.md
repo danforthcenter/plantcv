@@ -50,4 +50,4 @@ morpho.prune(60)
 ![Screenshot](img/documentation_images/morphology_class/pruned_skel_mask.png)
 
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv.morphology.Morph_class.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/morphology/morph_class.py)
