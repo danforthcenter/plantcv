@@ -117,6 +117,7 @@ nav:
       - 'Masks to Labels': masks2labels.md
       - 'Median Blur': median_blur.md
       - 'Morphology Functions':
+        - 'Morph class': morphology_class.md
         - 'Analyze_stem': analyze_stem.md
         - 'Check Cycles': check_cycles.md
         - 'Fill Segments': fill_segments.md
