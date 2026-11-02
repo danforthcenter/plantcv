@@ -11,23 +11,61 @@ from plantcv.plantcv._debug import _debug
 def segment_sort(skel_img, objects, mask=None, first_stem=True):
     """Sort segments from a skeletonized image into two categories: leaf objects and other objects.
 
-    Inputs:
-    skel_img          = Skeletonized image
-    objects           = List of contours
-    mask              = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
-    first_stem        = (Optional) if True, then the first (bottom) segment always gets classified as stem
+    Parameters
+    ----------
+    skel_img   = numpy.ndarray,
+        Skeletonized image
+    objects    = list,
+        List of contours
+    mask       = numpy.ndarray,
+        (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
+    first_stem = numpy.ndarray,
+        (Optional) if True, then the first (bottom) segment always gets classified as stem
 
-    Returns:
-    labeled_img       = Segmented debugging image with lengths labeled
-    secondary_objects = List of secondary segments (leaf)
-    primary_objects   = List of primary objects (stem)
+    Returns
+    -------
+    secondary_objects = list,
+        List of secondary segments (leaf)
+    primary_objects   = list,
+        List of primary objects (stem)
+    """
+    secondary_objects, primary_objects, labeled_img = _segment_sort(skel_img, objects, mask, first_stem)
 
-    :param skel_img: numpy.ndarray
-    :param objects: list
-    :param mask: numpy.ndarray
-    :param first_stem: bool
-    :return secondary_objects: list
-    :return other_objects: list
+    # Plot segments where green segments are leaf objects and fuschia are other objects
+    if params.debug:
+        labeled_img = cv2.cvtColor(labeled_img, cv2.COLOR_GRAY2RGB)
+        for i, cnt in enumerate(primary_objects):
+            cv2.drawContours(labeled_img, primary_objects, i, (255, 0, 255), params.line_thickness, lineType=8)
+        for i, cnt in enumerate(secondary_objects):
+            cv2.drawContours(labeled_img, secondary_objects, i, (0, 255, 0), params.line_thickness, lineType=8)
+
+        _debug(visual=labeled_img, filename=os.path.join(params.debug_outdir, f"{params.device}_sorted_segments.png"))
+
+    return secondary_objects, primary_objects
+
+
+def _segment_sort(skel_img, objects, mask=None, first_stem=True):
+    """Sort segments from a skeletonized image into two categories: leaf objects and other objects.
+
+    Parameters
+    ----------
+    skel_img   = numpy.ndarray,
+        Skeletonized image
+    objects    = list,
+        List of contours
+    mask       = numpy.ndarray,
+        (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
+    first_stem = boolean,
+        (Optional) if True, then the first (bottom) segment always gets classified as stem
+
+    Returns
+    -------
+    secondary_objects = list,
+        List of secondary segments (leaf)
+    primary_objects   = list,
+        List of primary objects (stem)
+    labeled_img       = numpy.ndarray,
+        Segmented debugging image with lengths labeled
     """
     secondary_objects = []
     primary_objects = []
@@ -58,13 +96,4 @@ def segment_sort(skel_img, objects, mask=None, first_stem=True):
             else:
                 primary_objects.append(cnt)
 
-    # Plot segments where green segments are leaf objects and fuschia are other objects
-    labeled_img = cv2.cvtColor(labeled_img, cv2.COLOR_GRAY2RGB)
-    for i, cnt in enumerate(primary_objects):
-        cv2.drawContours(labeled_img, primary_objects, i, (255, 0, 255), params.line_thickness, lineType=8)
-    for i, cnt in enumerate(secondary_objects):
-        cv2.drawContours(labeled_img, secondary_objects, i, (0, 255, 0), params.line_thickness, lineType=8)
-
-    _debug(visual=labeled_img, filename=os.path.join(params.debug_outdir, f"{params.device}_sorted_segments.png"))
-
-    return secondary_objects, primary_objects
+    return secondary_objects, primary_objects, labeled_img
