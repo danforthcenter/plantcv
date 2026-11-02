@@ -12,28 +12,21 @@ from plantcv.plantcv._helpers import _cv2_findcontours, _dilate, _image_subtract
 def segment_skeleton(skel_img, mask=None):
     """Segment a skeleton image into pieces.
 
-    Inputs:
-    skel_img         = Skeletonized image
-    mask             = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
+    Parameters
+    ----------
+    skel_img = numpy.ndarray,
+        Skeletonized image
+    mask     = numpy.ndarray,
+        binary mask for debugging. If provided, debug image will be overlaid on the mask.
 
-    Returns:
-    segmented_img       = Segmented debugging image
-    segment_objects     = list of contours
-
-    :param skel_img: numpy.ndarray
-    :param mask: numpy.ndarray
-    :return segmented_img: numpy.ndarray
-    :return segment_objects: list
+    Returns
+    -------
+    segmented_img    = numpy.ndarray,
+        Segmented debugging image
+    segment_objects  = list,
+        list of contours
     """
-    # Find branch points
-    bp = find_branch_pts(skel_img)
-    bp = _dilate(bp, 3, 1)
-
-    # Subtract from the skeleton so that leaves are no longer connected
-    segments = _image_subtract(skel_img, bp)
-
-    # Gather contours of leaves
-    segment_objects, _ = _cv2_findcontours(bin_img=segments)
+    segment_objects = _segment_skeleton(skel_img)
 
     # Color each segment a different color, do not used a previously saved color scale
     rand_color = color_palette(num=len(segment_objects), saved=False)
@@ -50,3 +43,32 @@ def segment_skeleton(skel_img, mask=None):
     _debug(visual=segmented_img, filename=os.path.join(params.debug_outdir, f"{params.device}_segmented.png"))
 
     return segmented_img, list(segment_objects)
+
+
+def _segment_skeleton(skel_img):
+    """Segment a skeleton image into pieces.
+
+    Parameters
+    ----------
+    skel_img = numpy.ndarray,
+        Skeletonized image
+
+    Returns
+    -------
+    segmented_img    = numpy.ndarray,
+        Segmented debugging image
+    segment_objects  = list,
+        list of contours
+    """
+    # Find branch points
+    debug = params.debug
+    params.debug = None
+    bp = find_branch_pts(skel_img)
+    params.debug = debug
+    bp = _dilate(bp, 3, 1)
+    # Subtract from the skeleton so that leaves are no longer connected
+    segments = _image_subtract(skel_img, bp)
+    # Gather contours of leaves
+    segment_objects, _ = _cv2_findcontours(bin_img=segments)
+
+    return segment_objects
