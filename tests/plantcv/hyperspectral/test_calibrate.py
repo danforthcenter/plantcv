@@ -1,11 +1,24 @@
+import copy
 import numpy as np
 from plantcv.plantcv.hyperspectral import calibrate
+from tests import synthetic
 
 
-def test_calibrate(hyperspectral_test_data):
+def _reference(line_values):
+    """Copy the synthetic datacube with one constant value per line."""
+    reference = copy.deepcopy(synthetic.spectral_data())
+    bands = len(synthetic.SPECTRAL_WAVELENGTHS)
+    reference.array_data = np.stack([np.full((synthetic.SPECTRAL_SHAPE[1], bands), v) for v in line_values])
+    return reference
+
+
+def test_calibrate():
     """Test for PlantCV."""
-    white = hyperspectral_test_data.load_hsi(hyperspectral_test_data.hsi_whiteref_file)
-    dark = hyperspectral_test_data.load_hsi(hyperspectral_test_data.hsi_darkref_file)
-    raw = hyperspectral_test_data.load_hsi(hyperspectral_test_data.hsi_file)
+    raw = synthetic.spectral_data()
+    # References are averaged over their lines: white 2, dark 0.5
+    white = _reference([1.5, 2.5, 2, 2])
+    dark = _reference([0.4, 0.6])
     calibrated = calibrate(raw_data=raw, white_reference=white, dark_reference=dark)
-    assert np.shape(calibrated.array_data) == (1, 1600, 978)
+    assert np.shape(calibrated.array_data) == (2, 3, 601)
+    # (raw - dark) / (white - dark), clipped to [0, 1]
+    np.testing.assert_allclose(calibrated.array_data, np.clip((raw.array_data - 0.5) / 1.5, 0, 1), rtol=1e-12)

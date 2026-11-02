@@ -1,7 +1,6 @@
 import pytest
 import os
 import json
-import pickle as pkl
 import numpy as np
 import xarray as xr
 import pandas as pd
@@ -95,20 +94,10 @@ class TestData:
         self.datadir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "testdata")
         # heic image
         self.heic_img = os.path.join(self.datadir, "example.HEIC")
-        # PlantCV Spectral_data object
-        self.hsi_file = os.path.join(self.datadir, "hsi.pkl")
-        # Binary mask for HSI
-        self.hsi_mask_file = os.path.join(self.datadir, "hsi_mask.png")
-        # SAVI index file
-        self.savi_file = os.path.join(self.datadir, "savi.pkl")
         # Outputs results file - JSON
         self.outputs_results_json = os.path.join(self.datadir, "outputs_results.json")
         # Outputs results file - CSV
         self.outputs_results_csv = os.path.join(self.datadir, "outputs_results.csv")
-        # ENVI hyperspectral data
-        self.envi_bil_file = os.path.join(self.datadir, "darkReference")
-        # ENVI hyperspectral data
-        self.envi_sample_data = os.path.join(self.datadir, "corn-kernel-hyperspectral.raw")
         # Thermal image
         self.thermal_img = os.path.join(self.datadir, "FLIR2600.csv")
         # Thermal image data
@@ -151,12 +140,6 @@ class TestData:
         self.masks_list = os.path.join(self.datadir, "masks_list.pkl")
         # photosynthesis test data class as attribute
         self.photosynthesis = PhotosynthesisTestData()
-
-    @staticmethod
-    def load_hsi(pkl_file):
-        """Load PlantCV Spectral_data pickled object."""
-        with open(pkl_file, "rb") as fp:
-            return pkl.load(fp)
 
     @staticmethod
     def load_npz(npz_file):
