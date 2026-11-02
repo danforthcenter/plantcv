@@ -129,7 +129,6 @@ nav:
         - 'Fill Segments': fill_segments.md
         - 'Find Branches': find_branch_pts.md
         - 'Find Tips': find_tips.md
-        - 'Prune (by size)': prune.md
         - 'Segment Angles': segment_angle.md
         - 'Combine Segments': segment_combine.md
         - 'Segment Curvature': segment_curvature.md
@@ -141,7 +140,6 @@ nav:
         - 'Segment Skeleton': segment_skeleton.md
         - 'Segment Sort': segment_sort.md
         - 'Segment Tangent Angle': segment_tangent_angle.md
-        - 'Skeletonize': skeletonize.md
         - 'Segment Width': segment_width.md
       - 'Multispectral Data Class': ms_data.md
       - 'Naive Bayes Classifier': naive_bayes_classifier.md

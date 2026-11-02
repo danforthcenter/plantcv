@@ -9,9 +9,7 @@ Measure the geodesic distance of segments.
 - **Parameters:**
     - segmented_img - Segmented image (output either from [plantcv.morphology.segment_skeleton](segment_skeleton.md)
     or [plantcv.morphology.segment_id](segment_id.md)), used for creating the labeled image. 
-    - objects - Segment objects (output from either [plantcv.morphology.prune](prune.md),
-    [plantcv.morphology.segment_skeleton](segment_skeleton.md), or
-    [plantcv.morphology.segment_sort](segment_sort.md)).
+    - objects - Segment objects (output [plantcv.morphology.segment_sort](segment_sort.md)).
     - label         - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
 - **Context:**
     - Calculates the geodesic distance of each segment. Users can pass only 
