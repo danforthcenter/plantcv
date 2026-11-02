@@ -73,15 +73,15 @@ def test_astro_color_matrix():
     """Test for PlantCV."""
     astro_matrix = astro_color_matrix()
 
-    # Index and RGB values (range [0-1]) of the yellow chip in color matrix
+    # Index and RGB values (range [0-1]) of the yellow chip in standard astro color matrix
     yellow_idx = 3
-    yellow_val = astro_matrix[yellow_idx, 1:]
+    yellow_std = astro_matrix[yellow_idx, 1:]
 
     # RGB values of the yellow chip
-    yellow_rgb = np.array([228., 207., 50.], dtype=np.float64)
+    yellow_rgb = np.array([234., 206., 43.], dtype=np.float64)
 
     # compare RGB values in the range [0-255]
-    assert np.sum(np.abs(255*yellow_val - yellow_rgb)) < 1
+    assert np.sum(np.abs(255*yellow_std - yellow_rgb)) < 1
 
 
 @pytest.mark.parametrize("pos", [0, 1, 2, 3])
@@ -330,18 +330,19 @@ def test_cameratrax_and_astro_consistent_color_calibration(transform_test_data):
     rgb_img = cv2.imread(transform_test_data.cameratrax_astro_img)
 
     # Correct with cameratrax card and measure corrected astrocard values
-    ctrax_mat, _ = detect_color_card(rgb_img=rgb_img)
+    ctrax_mat, _ = detect_color_card(rgb_img=rgb_img, color_chip_size='cameratrax', delta_E=False)
     ctrax_std_mat = ctrax_color_matrix(pos=3)
     ctrax_corr_img = affine_color_correction(rgb_img=rgb_img, source_matrix=ctrax_mat, target_matrix=ctrax_std_mat,
                                              rerun_delta_E=False)
 
     # Correct with astrocard and measure corrected astrocard values
-    astro_mat, _ = detect_color_card(rgb_img=rgb_img, color_chip_size="astro")
+    astro_mat, _ = detect_color_card(rgb_img=rgb_img, color_chip_size="astro", delta_E=False)
     astro_std_mat = astro_color_matrix()
     astro_corr_img = affine_color_correction(rgb_img=rgb_img, source_matrix=astro_mat, target_matrix=astro_std_mat,
                                              rerun_delta_E=False)
 
-    diff = np.abs(ctrax_corr_img - astro_corr_img)
+    # Take absolute difference of corrected images, avoiding underflows from uint8
+    diff =  np.abs(ctrax_corr_img.astype(np.int8) - astro_corr_img.astype(np.int8)).astype(np.uint8)
     channel_diffs = np.sum(diff, axis=(0, 1)) / (diff.shape[0] * diff.shape[1])
     # Check for similarity in corrected color: mean absolute color difference less than 2.5 (1% of range)
     assert all(channel_diffs < 3) and np.mean(channel_diffs) < 2.5
