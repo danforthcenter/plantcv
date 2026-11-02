@@ -34,9 +34,9 @@ def segment_sort(skel_img, objects, mask=None, first_stem=True):
     # Plot segments where green segments are leaf objects and fuschia are other objects
     if params.debug:
         labeled_img = cv2.cvtColor(labeled_img, cv2.COLOR_GRAY2RGB)
-        for i, cnt in enumerate(primary_objects):
+        for i, _ in enumerate(primary_objects):
             cv2.drawContours(labeled_img, primary_objects, i, (255, 0, 255), params.line_thickness, lineType=8)
-        for i, cnt in enumerate(secondary_objects):
+        for i, _ in enumerate(secondary_objects):
             cv2.drawContours(labeled_img, secondary_objects, i, (0, 255, 0), params.line_thickness, lineType=8)
 
         _debug(visual=labeled_img, filename=os.path.join(params.debug_outdir, f"{params.device}_sorted_segments.png"))

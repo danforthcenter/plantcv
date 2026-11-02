@@ -7,8 +7,7 @@ from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._globals import params
 from plantcv.plantcv.morphology.segment_sort import _segment_sort
 from plantcv.plantcv.morphology.segment_skeleton import _segment_skeleton
-from plantcv.plantcv._helpers import (_find_tips, _dilate, _cv2_findcontours,
-                                      _iterative_prune, _image_subtract)
+from plantcv.plantcv._helpers import _cv2_findcontours, _iterative_prune, _image_subtract
 
 
 class morph:
