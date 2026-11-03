@@ -177,7 +177,6 @@ class Morph:
             _debug(visual=pruned_plot, filename=os.path.join(params.debug_outdir,
                                                              f"{params.device}_pruned_debug.png"))
 
-
     def _check_cycles(self):
         """Check for cycles, returning number of cycles"""
         skel_img = self.skeleton
@@ -194,7 +193,7 @@ class Morph:
 
         # Erode slightly so that cv2.findContours doesn't think diagonal pixels are contours
         just_cycles = _erode(just_cycles, 2, 1)
-            
+
         # Use pcv.find_objects to turn plots of holes into countable contours
         cycle_objects, cycle_hierarchies = _cv2_findcontours(bin_img=just_cycles)
 
