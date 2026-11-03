@@ -16,6 +16,8 @@ Object to store morphology elements including skeletonized mask, stem and leaf c
 	- stem - list of contours of stem objects, generated automatically from the plant skeleton and updated with pruning.
 	- leaves - list of contours of leaf objects, generated automatically from the plant skeleton and updated with pruning.
 	- cycles - Numeric, number of cycles in the skeleton. Downstream tools may fail if cycles > 0. If cycles are detected and debug is plot/print then they will be plotted when the attribute is accessed.
+	- leaf_tips - list of points representing leaf (and stem) tips.
+	- branch_points - list of points representing branch points.
 
 - **Methods**
     - **morph.prune**(*size=0, first_stem=True, reprune=False*)
