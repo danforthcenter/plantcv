@@ -161,7 +161,6 @@ Functions that automatically store data to the [`Outputs` class](outputs.md) are
 [homology.x_axis_pseudolandmarks](homology_x_axis_pseudolandmarks.md), 
 [homology.y_axis_pseudolandmarks](homology_y_axis_pseudolandmarks.md), 
 [morphology.analyze_stem](analyze_stem.md), 
-[morphology.check_cycles](check_cycles.md), 
 [morphology.fill_segments](fill_segments.md), 
 [morphology.find_tips](find_tips.md), 
 [morphology.find_branch_pts](find_branch_pts.md), 

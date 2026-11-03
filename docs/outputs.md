@@ -23,7 +23,6 @@ functions:
 * `homology.x_axis_pseudolandmarks`
 * `homology.y_axis_pseudolandmarks`
 * `morphology.analyze_stem`
-* `morphology.check_cycles`
 * `morphology.euclidean_length`
 * `morphology.fill_segments`
 * `morphology.find_tips`
