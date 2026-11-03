@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from plantcv.plantcv import outputs
+from plantcv.plantcv import outputs, params
 from plantcv.plantcv.morphology.segment_angle import segment_angle
 from tests import synthetic
 
