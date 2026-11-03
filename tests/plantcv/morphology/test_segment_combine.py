@@ -7,6 +7,7 @@ from tests import synthetic
 
 @pytest.fixture(autouse=True)
 def setup_and_teardown():
+    """Helper to reset color scale before and after tests"""
     params.saved_color_scale = None
     yield
     params.saved_color_scale = None
