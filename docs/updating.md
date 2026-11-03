@@ -859,6 +859,7 @@ Below is an overview of all updates to function signatures through the developme
 * post v3.3: branch_pts_img = **plantcv.morphology.find_branch_pts**(*skel_img, mask=None*)
 * post v3.11: branch_pts_img = **plantcv.morphology.find_branch_pts**(*skel_img, mask=None, label="default"*)
 * post v4.0: branch_pts_img = **plantcv.morphology.find_branch_pts**(*skel_img, mask=None, label=None*)
+* post v5.0: NA, see `plantcv.morphology.morph` class
 
 #### plantcv.morphology.find_tips
 
@@ -866,6 +867,7 @@ Below is an overview of all updates to function signatures through the developme
 * post v3.3: tip_img = **plantcv.morphology.find_tips**(*skel_img, mask=None*)
 * post v3.11: tip_img = **plantcv.morphology.find_tips**(*skel_img, mask=None, label="default"*)
 * post v4.0: tip_img = **plantcv.morphology.find_tips**(*skel_img, mask=None, label=None*)
+* post v5.0: NA, see `plantcv.morphology.morph` class
 
 #### plantcv.morphology.morph
 
