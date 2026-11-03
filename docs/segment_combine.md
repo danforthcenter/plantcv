@@ -15,7 +15,7 @@ Manually combine segments from a segmented skeleton
     - Objects with more complexity will often cause issues with the algorithms used in functions within the 
     `plantcv.morphology` sub-package. However, it is still possible to collect accurate data from such images
     with a manual step such as `plantcv.morphology.segment_combine`. An example workflow would use 
-    [plantcv.morphology.check_cycles](check_cycles.md) to identify images that have parts of plant that occlude 
+    [plantcv.morphology.morph.cycles](morphology_class.md) to identify images that have parts of plant that occlude 
     others, and get corrected by combining segments that are recognized as belonging to the same leaf. 
 
 
