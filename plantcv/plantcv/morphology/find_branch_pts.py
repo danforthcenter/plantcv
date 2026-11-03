@@ -30,6 +30,36 @@ def find_branch_pts(skel_img, mask=None, label=None):
     if label is None:
         label = params.sample_label
 
+    branch_list, branch_labels, branch_plot, branch_pts_img = _find_branch_pts(skel_img=skel_img, mask=mask)
+
+    outputs.add_observation(sample=label, variable='branch_pts',
+                            trait='list of branch-point coordinates identified from a skeleton',
+                            method='plantcv.plantcv.morphology.find_branch_pts', scale='pixels', datatype=list,
+                            value=branch_list, label=branch_labels)
+
+    _debug(visual=branch_plot, filename=os.path.join(params.debug_outdir, f"{params.device}_branch_pts.png"))
+
+    return branch_pts_img
+
+
+def _find_branch_pts(skel_img, mask=None):
+    """Find branch points in a skeletonized image.
+    The branching algorithm was inspired by Jean-Patrick Pommier: https://gist.github.com/jeanpat/5712699
+
+    Parameters
+    ----------
+    skel_img    = numpy.ndarray,
+        Skeletonized image
+    mask        = numpy.ndarray,
+        binary mask for debugging. If provided, debug image will be overlaid on the mask.
+    plot        = Boolean,
+        should an image be annotated with the branch points?
+
+    Returns
+    -------
+    branch_pts_img = numpy.ndarray,
+        Image with just branch points, rest 0
+    """
     # In a kernel: 1 values line up with 255s, -1s line up with 0s, and 0s correspond to don't care
     # T like branch points
     t1 = np.array([[-1, 1, -1],
@@ -94,11 +124,4 @@ def find_branch_pts(skel_img, mask=None, label=None):
         branch_labels.append(i)
         cv2.circle(branch_plot, (x, y), params.line_thickness, (255, 0, 255), -1)
 
-    outputs.add_observation(sample=label, variable='branch_pts',
-                            trait='list of branch-point coordinates identified from a skeleton',
-                            method='plantcv.plantcv.morphology.find_branch_pts', scale='pixels', datatype=list,
-                            value=branch_list, label=branch_labels)
-
-    _debug(visual=branch_plot, filename=os.path.join(params.debug_outdir, f"{params.device}_branch_pts.png"))
-
-    return branch_pts_img
+    return branch_list, branch_labels, branch_plot, branch_pts_img
