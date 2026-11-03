@@ -22,16 +22,8 @@ class TestData:
         self.outputs_results_csv = os.path.join(self.datadir, "outputs_results.csv")
         # Bayer image
         self.bayer_img = os.path.join(self.datadir, "bayer_img.png")
-        # Naive Bayes trained model file
-        self.nb_trained_model = os.path.join(self.datadir, "naive_bayes_pdfs.txt")
-        # Naive Bayes bad model file
-        self.nb_bad_model = os.path.join(self.datadir, "naive_bayes_pdfs_bad.txt")
-        # Kmeans classifier directory
-        self.kmeans_classifier_dir = os.path.join(self.datadir, "kmeans_classifier_dir")
         # Circle Wells for Hough Circle
         self.hough_circle = os.path.join(self.datadir, "circle-wells.png")
-        # Kmeans classifier grayscale directory
-        self.kmeans_classifier_gray_dir = os.path.join(self.datadir, "kmeans_classifier_gray_dir")
         # nd2 file
         self.nd2_img = os.path.join(self.datadir, "test_nd2_img.nd2")
         # flir thermal img

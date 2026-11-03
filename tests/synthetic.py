@@ -119,6 +119,17 @@ minimum is 30, the maximum 34, the mean (240 * 30 + 280 * 32 + 280 * 34) / 800 =
 The merge tiles (write_tiles) are three uniform 10 x 20 BGR images, (40, 100, 160), (100, 160, 220)
 and (160, 220, 40). Neighboring tiles differ by a multiple of 60 in every channel, so their averages
 and the evenly weighted steps of a 3- or 6-pixel gradual blend are whole numbers.
+
+The two-region image (two_region_image) is 20 x 60 with the background color (BGR or gray) in columns
+0:30 and the plant color in columns 30:60. It is symmetric about the boundary, so after any symmetric
+blur a pixel is closer to the plant color than to the background color exactly when it lies in
+columns 30:60.
+
+The naive Bayes PDFs (write_nb_pdfs) are Gaussian curves over 0-255 for the HSV channels: plant hue 60,
+saturation 255 and value 128 (PLANT_BGR) and background hue 0, saturation 0 and value 128
+(BACKGROUND_BGR), with standard deviations 10 (hue), 30 (saturation) and 40 (value). The naive Bayes
+training image (nb_train_image) is the plant mask colored with seeded uniform noise: plant BGR
+(0-20, 110-150, 0-20), near hue 60, and background BGR (30-50, 70-90, 110-130), near hue 15.
 """
 import os
 import cv2
@@ -153,6 +164,9 @@ THERMAL_TEMPS = {"stem": 30.0, "left_leaf": 32.0, "right_leaf": 34.0}
 THERMAL_BACKGROUND = 20.0
 TILE_SHAPE = (10, 20)
 TILE_BGR = ((40, 100, 160), (100, 160, 220), (160, 220, 40))
+TWO_REGION_SHAPE = (20, 60)
+NB_PDFS = {"plant": {"hue": (60, 10), "saturation": (255, 30), "value": (128, 40)},
+           "background": {"hue": (0, 10), "saturation": (0, 30), "value": (128, 40)}}
 TESTDATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "testdata")
 CROPREPORTER_SHAPE = (10, 12)
 CROPREPORTER_TEMPLATES = {
@@ -329,6 +343,102 @@ def write_tiles(outdir):
         cv2.imwrite(path, np.full((*TILE_SHAPE, 3), bgr, dtype=np.uint8))
         paths.append(path)
     return paths
+
+
+def two_region_image(gray=False):
+    """Create an image with the background color on the left and the plant color on the right.
+
+    Parameters
+    ----------
+    gray : bool
+        Make a grayscale image instead of a BGR image (default False).
+
+    Returns
+    -------
+    numpy.ndarray
+        20 x 60 uint8 image, background in columns 0:30 and plant in columns 30:60.
+    """
+    background, plant = (BACKGROUND_GRAY, PLANT_GRAY) if gray else (BACKGROUND_BGR, PLANT_BGR)
+    channels = () if gray else (3,)
+    img = np.full((*TWO_REGION_SHAPE, *channels), background, dtype=np.uint8)
+    img[:, TWO_REGION_SHAPE[1] // 2:] = plant
+    return img
+
+
+def nb_train_image(seed=0):
+    """Create a naive Bayes training image: the synthetic plant in noisy green on a noisy soil color.
+
+    Parameters
+    ----------
+    seed : int
+        Seed for the random number generator (default 0).
+
+    Returns
+    -------
+    numpy.ndarray
+        uint8 BGR image with plant pixels drawn from BGR (0-20, 110-150, 0-20) and background pixels
+        from BGR (30-50, 70-90, 110-130), each channel uniformly.
+    """
+    rng = np.random.default_rng(seed)
+    mask = plant_mask()
+    plant = rng.integers((0, 110, 0), (21, 151, 21), size=(*PLANT_SHAPE, 3))
+    background = rng.integers((30, 70, 110), (51, 91, 131), size=(*PLANT_SHAPE, 3))
+    return np.where(mask[..., None] > 0, plant, background).astype(np.uint8)
+
+
+def write_images(outdir, images):
+    """Write images to a directory.
+
+    Parameters
+    ----------
+    outdir : str
+        Directory to write the files to. It is created if it does not exist.
+    images : dict
+        Maps each file name (a path relative to outdir) to its image.
+
+    Returns
+    -------
+    list
+        Paths of the files, in the order of images.
+    """
+    paths = []
+    for name, img in images.items():
+        path = os.path.join(str(outdir), name)
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        cv2.imwrite(path, img)
+        paths.append(path)
+    return paths
+
+
+def write_nb_pdfs(outdir, filename="naive_bayes_pdfs.txt", bad=False):
+    """Write a naive Bayes PDF file with the NB_PDFS Gaussian curves.
+
+    Parameters
+    ----------
+    outdir : str
+        Directory to write the file to.
+    filename : str
+        Name of the file (default "naive_bayes_pdfs.txt").
+    bad : bool
+        Drop the last value of the last row so the file is malformed (default False).
+
+    Returns
+    -------
+    str
+        Path of the file.
+    """
+    x = np.arange(256)
+    lines = ["class\tchannel\t" + "\t".join(map(str, x))]
+    for class_name, channels in NB_PDFS.items():
+        for channel, (mean, sd) in channels.items():
+            pdf = np.exp(-((x - mean) ** 2) / (2 * sd ** 2)) / (sd * np.sqrt(2 * np.pi))
+            lines.append("\t".join([class_name, channel] + [str(p) for p in pdf]))
+    if bad:
+        lines[-1] = lines[-1].rsplit("\t", 1)[0]
+    path = os.path.join(str(outdir), filename)
+    with open(path, "w") as fp:
+        fp.write("\n".join(lines) + "\n")
+    return path
 
 
 def disk_mask(shape, centers, radius):
