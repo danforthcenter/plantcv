@@ -866,11 +866,17 @@ Below is an overview of all updates to function signatures through the developme
 * post v3.11: tip_img = **plantcv.morphology.find_tips**(*skel_img, mask=None, label="default"*)
 * post v4.0: tip_img = **plantcv.morphology.find_tips**(*skel_img, mask=None, label=None*)
 
+#### plantcv.morphology.morph
+
+* pre v5.0: NA
+* post v5.0: morph_obj = **plantcv.morphology.morph**(*mask, first_stem=True*)
+
 #### plantcv.morphology.prune
 
 * pre v3.3: NA
 * post v3.3: pruned_img = **plantcv.morphology.prune**(*skel_img, size*)
 * post v3.4: pruned_skeleton, segmented_img, segment_objects = **plantcv.morphology.prune**(*skel_img, size=0, mask=None*)
+* post v5.0: NA, see `plantcv.morphology.morph` class
 
 #### plantcv.morphology.segment_angle
 
@@ -936,6 +942,7 @@ Below is an overview of all updates to function signatures through the developme
 
 * pre v3.3: NA
 * post v3.3: skeleton = **plantcv.morphology.skeletonize**(*mask*)
+* post v5.0: NA, see `plantcv.morphology.morph` class
 
 #### plantcv.MS_data
 
