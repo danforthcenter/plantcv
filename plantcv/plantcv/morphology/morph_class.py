@@ -221,4 +221,4 @@ class morph:
                                  lineType=8, hierarchy=cycle_hierarchies)
             _debug(visual=cycle_img, filename=os.path.join(params.debug_outdir,
                                                            f"{params.device}_cycles.png"))
-        self._cycles = num_cycles
+        self.cycles = num_cycles
