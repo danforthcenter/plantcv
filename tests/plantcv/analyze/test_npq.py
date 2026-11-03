@@ -24,8 +24,7 @@ def test_npq_cropreporter(monkeypatch, tmpdir):
                     auto_fm=False,
                     measurement_labels=["Fq/Fm"],
                     label="prefix", min_bin="auto", max_bin="auto")
-    # npq divides F0 by Fmp (#2104): 300 / 250 - 1; Fm / Fmp - 1 would be 3
-    assert np.isclose(outputs.observations["prefix_1"]["npq_median_Fq/Fm"]["value"], 0.2)
+    assert np.isclose(outputs.observations["prefix_1"]["npq_median_Fq/Fm"]["value"], 3)
     assert os.path.exists(os.path.join(cache_dir, "2_NPQ_dataarray.png"))
 
 
@@ -40,8 +39,7 @@ def test_npq_cropreporter_auto(tmp_path):
                     auto_fm=True,
                     measurement_labels=["Fq/Fm"],
                     label="prefix", min_bin="auto", max_bin="auto")
-    # npq divides F0 by Fmp (#2104): 300 / 250 - 1
-    assert np.isclose(outputs.observations["prefix_1"]["npq_median_Fq/Fm"]["value"], 0.2)
+    assert np.isclose(outputs.observations["prefix_1"]["npq_median_Fq/Fm"]["value"], 3)
 
 
 def test_npq_pml_pmd_cropreporter(tmp_path):
@@ -57,8 +55,7 @@ def test_npq_pml_pmd_cropreporter(tmp_path):
                     auto_fm=True,
                     measurement_labels=["Fq/Fm"],
                     label="prefix", min_bin="auto", max_bin="auto")
-    # npq divides F0 by Fmp (#2104): 300 / 250 - 1
-    assert np.isclose(outputs.observations["prefix_1"]["npq_median_Fq/Fm"]["value"], 0.2)
+    assert np.isclose(outputs.observations["prefix_1"]["npq_median_Fq/Fm"]["value"], 3)
 
 
 def test_npq_pmt_cropreporter(tmp_path):
@@ -72,9 +69,8 @@ def test_npq_pmt_cropreporter(tmp_path):
                     auto_fm=False,
                     measurement_labels=["Fq/Fm", "other"],
                     label="prefix", min_bin="auto", max_bin="auto")
-    # t0 has no Fmp frame; in t1 npq divides F0 by Fmp (#2104): 300 / 250 - 1
     assert np.isnan(outputs.observations["prefix_1"]["npq_median_Fq/Fm"]["value"])
-    assert np.isclose(outputs.observations["prefix_1"]["npq_median_other"]["value"], 0.2)
+    assert np.isclose(outputs.observations["prefix_1"]["npq_median_other"]["value"], 3)
 
 
 @pytest.mark.parametrize("mlabels, tmask",
