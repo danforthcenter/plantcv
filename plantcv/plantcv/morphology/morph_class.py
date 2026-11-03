@@ -7,9 +7,10 @@ from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._globals import params
 from plantcv.plantcv.color_palette import color_palette
 from plantcv.plantcv.morphology.segment_sort import _segment_sort
+from plantcv.plantcv.morphology.find_branch_pts import _find_branch_pts
 from plantcv.plantcv.morphology.segment_skeleton import _segment_skeleton
 from plantcv.plantcv._helpers import (_cv2_findcontours, _iterative_prune, _image_subtract,
-                                      _dilate, _erode)
+                                      _dilate, _erode, _find_tips)
 
 
 class morph:
@@ -34,6 +35,8 @@ class morph:
         self.stem = skel_stems
         self.leaves = skel_leaves
         self._cycles = 0
+        self._leaf_tips = []
+        self._branch_points = []
 
     # `mask`
     @property
@@ -104,6 +107,32 @@ class morph:
     def cycles(self, new_cycle):
         """Update number of cycles"""
         self._cycles = new_cycle
+
+    # `leaf_tips`
+    @property
+    def leaf_tips(self):
+        """Leaf tips of skeleton"""
+        _, tip_list, _ = _find_tips(self.skeleton)
+        self.leaf_tips = tip_list
+        return self._leaf_tips
+
+    @leaf_tips.setter
+    def leaf_tips(self, new_tips):
+        """Update leaf tips"""
+        self._leaf_tips = new_tips
+
+    # `branch_points`
+    @property
+    def branch_points(self):
+        """branch points of skeleton"""
+        branch_list, _, _, _ = _find_branch_pts(self.skeleton)
+        self.branch_points = branch_list
+        return self._branch_points
+
+    @branch_points.setter
+    def branch_points(self, new_points):
+        """Update leaf tips"""
+        self._branch_points = new_points
 
     # `Making and segmenting a skeleton`
     def _skeletonize(self):
