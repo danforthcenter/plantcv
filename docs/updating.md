@@ -846,6 +846,7 @@ Below is an overview of all updates to function signatures through the developme
 * post v3.3: cycle_img = **plantcv.morphology.check_cycles**(*skel_img*)
 * post v3.11: cycle_img = **plantcv.morphology.check_cycles**(*skel_img, label="default"*)
 * post v4.0: cycle_img = **plantcv.morphology.check_cycles**(*skel_img, label=None*)
+* post v5.0: NA, see `plantcv.morphology.morph` class
 
 #### plantcv.morphology.fill_segments
 * pre v3.13: filled_img = **plantcv.morphology.fill_segments**(*mask, objects, stem_objects=None, label="default"*)
