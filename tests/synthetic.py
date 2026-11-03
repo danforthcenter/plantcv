@@ -69,10 +69,52 @@ pixel has reflectance 1 at 700 nm; pixels 0 to 2 fall and pixels 3 to 5 rise wit
 along a different curve. Every spectral index therefore takes several distinct non-negative values,
 which a pseudo-RGB image of the index needs. The hyperspectral mask selects the middle column,
 pixels 1 and 4, whose reflectance is (wavelength / 700) ** -1.5 and (wavelength / 700) ** 1.5.
+
+The CropReporter datasets are 10 x 12 (rows x columns). Each header is a real CropReporter .INF file
+(CROPREPORTER_TEMPLATES) with ImageRows and ImageCols set to 10 and 12. Every frame is uniform and
+takes its value from these fluorescence levels (CROPREPORTER_LEVELS):
+
+    Dark-adapted       Light-adapted       Second dark adaptation
+    Fdark      10      Flight      20      Fdarkpp      15
+    F0         300     Fp          150     F0pp         280
+    Fm         1000    Fmp         250     Fmpp         800
+    Fdarksat   500     Flightsat   200     Fdarksatpp   400
+                       F0p         125
+
+So Fv/Fm = (1000 - 300) / 1000 = 0.7, Fq'/Fm' = (250 - 150) / 250 = 0.4, Fv''/Fm'' = (800 - 280) / 800
+= 0.65, and NPQ = Fm / Fmp - 1 = 3.
+
+    Dataset   Template   Frames
+    PSD       v441       Fdark, F0, 400, 500, 600, 700, Fm, 990, 980, ..., 860 (21 frames)
+    PSL       v441       Flight, Fp, 170, 190, 210, 230, Fmp, 245, 240, ..., 180 (21 frames)
+    NPQ       v441       Fdark, F0, Fm, Flight, Fp, Fmp
+    CHL       v441       Fdark, 1200
+    CLR       v441       25600, 38400, 51200 (red, green, blue; 100, 150, 200 as 8-bit values)
+    SPC       v441       13107, 26214, 39321 (540, 710, 770 nm; 0.2, 0.4, 0.6 of the 16-bit range)
+    PMD       v653       Fdark, F0, Fm, Fdarksat
+    PML       v653       Flight, Fp, Fmp, Flightsat
+    GFP       gfp        Fdark, 700, 90 (GFP, autofluorescence)
+    RFP       gfp        Fdark, 650
+    APH       aph        600, 800 (red, far-red)
+    PMT       pmt        Fdark, F0, Fm, Fdarksat, Flight, Fp, Fmp, Flightsat, F0p
+
+The v441 header puts F0 and Fp at frame 1 and Fm and Fmp at frame 6 (FvFmFrameF0=0, FvFmFrameFm=5,
+FqFmFrameFsp=0, FqFmFrameFmp=5), and in PSD and PSL every later frame is lower than Fm or Fmp. In every
+dataset Fm and Fmp are the brightest frames after F0 and Fp. The pmt header has one dark-adapted and one
+light-adapted measurement (TmPamMeasFvfm=1, TmPamMeasFqfm=1); pmt_frames adds measurements of the second
+dark adaptation for headers with a larger TmPamMeasFvfm.
+
+The PSII DataArray (psii_dataarray) is 10 x 10 with 4 frames and one measurement. Only pixel (row 5,
+column 5) is non-zero; it is 1, 2, 10 and 8 in frames 0-3, so frame 2 is the brightest. psii_mask selects
+that pixel.
+
+The fluorescence image (fluor_image) is the grayscale image of the synthetic plant as unsigned 16-bit
+values (each value times 256) with a 20-pixel background border, 140 x 160 in total.
 """
 import os
 import cv2
 import numpy as np
+import xarray as xr
 from plantcv.plantcv.classes import MS_data, Spectral_data
 
 PLANT_SHAPE = (100, 120)
@@ -98,6 +140,40 @@ SPECTRAL_WAVELENGTHS = range(400, 1001)
 # (row, column, size, thickness) of each square; thickness 0 means filled
 SQUARES = ((10, 10, 10, 0), (10, 30, 20, 0), (10, 60, 20, 4), (10, 90, 30, 5),
            (10, 130, 20, 2), (10, 160, 20, 1), (10, 190, 40, 1))
+TESTDATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "testdata")
+CROPREPORTER_SHAPE = (10, 12)
+CROPREPORTER_TEMPLATES = {
+    "v441": os.path.join(TESTDATA, "cropreporter_v441", "PSII_HDR_020321_WT_TOP_1.INF"),
+    "v653": os.path.join(TESTDATA, "cropreporter_v653", "HDR_dark_light.INF"),
+    # The GFP and RFP measurements came with identical headers
+    "gfp": os.path.join(TESTDATA, "cropreporter_gfp", "HDR_DYSeed_20251222191634684.INF"),
+    "aph": os.path.join(TESTDATA, "cropreporter_aph", "HDR_2025-12-12_tob1_20251212205712029.INF"),
+    "pmt": os.path.join(TESTDATA, "cropreporter_pmt", "HDR_E0001P0007N0001_GCU24100090_20260226.INF"),
+}
+CROPREPORTER_LEVELS = {"Fdark": 10, "F0": 300, "Fm": 1000, "Fdarksat": 500,
+                       "Flight": 20, "Fp": 150, "Fmp": 250, "Flightsat": 200,
+                       "Fdarkpp": 15, "F0pp": 280, "Fmpp": 800, "Fdarksatpp": 400, "F0p": 125}
+# Frame labels of each PMT measurement block, in the order PMT frames are stored
+PMT_BLOCKS = {"dark": ("Fdark", "F0", "Fm", "Fdarksat"),
+              "light": ("Flight", "Fp", "Fmp", "Flightsat"),
+              "dark2": ("Fdarkpp", "F0pp", "Fmpp", "Fdarksatpp")}
+_LVL = CROPREPORTER_LEVELS
+CROPREPORTER_FRAMES = {
+    "PSD": ([_LVL["Fdark"], _LVL["F0"]] + [_LVL["F0"] + 100 * k for k in range(1, 5)] + [_LVL["Fm"]] +
+            [_LVL["Fm"] - 10 * k for k in range(1, 15)]),
+    "PSL": ([_LVL["Flight"], _LVL["Fp"]] + [_LVL["Fp"] + 20 * k for k in range(1, 5)] + [_LVL["Fmp"]] +
+            [_LVL["Fmp"] - 5 * k for k in range(1, 15)]),
+    "NPQ": [_LVL[f] for f in ("Fdark", "F0", "Fm", "Flight", "Fp", "Fmp")],
+    "CHL": [_LVL["Fdark"], 1200],
+    "CLR": [25600, 38400, 51200],
+    "SPC": [13107, 26214, 39321],
+    "PMD": [_LVL[f] for f in PMT_BLOCKS["dark"]],
+    "PML": [_LVL[f] for f in PMT_BLOCKS["light"]],
+    "GFP": [_LVL["Fdark"], 700, 90],
+    "RFP": [_LVL["Fdark"], 650],
+    "APH": [600, 800],
+    "PMT": [_LVL[f] for f in PMT_BLOCKS["dark"] + PMT_BLOCKS["light"] + ("F0p",)],
+}
 
 
 def plant_mask(small_object=True):
@@ -156,6 +232,17 @@ def plant_gray():
     y0, y1, x0, x1 = SMALL_OBJECT_RECT
     img[y0:y1, x0:x1] = SMALL_OBJECT_GRAY
     return img
+
+
+def fluor_image():
+    """Create a 16-bit grayscale image of the synthetic plant with a 20-pixel border.
+
+    Returns
+    -------
+    numpy.ndarray
+        140 x 160 uint16 image of plant_gray() values times 256, padded with the background value.
+    """
+    return np.pad(plant_gray().astype(np.uint16) * 256, 20, constant_values=BACKGROUND_GRAY * 256)
 
 
 def disk_mask(shape, centers, radius):
@@ -520,3 +607,114 @@ def write_arcgis(outdir, filename):
         fp.write(header)
     envi_array().astype(np.int16).transpose(0, 2, 1).tofile(datafile)
     return datafile
+
+
+def write_cropreporter(outdir, template, datasets, metadata=None, shape=CROPREPORTER_SHAPE):
+    """Write a CropReporter dataset: an .INF header and one .DAT file per dataset.
+
+    Parameters
+    ----------
+    outdir : str
+        Directory to write the files to.
+    template : str
+        Key of the CROPREPORTER_TEMPLATES header to start from. The files keep its name, with HDR
+        replaced by the dataset key for each .DAT file.
+    datasets : list or dict
+        Dataset keys (e.g. ["PSD", "PSL"]) whose frames come from CROPREPORTER_FRAMES, or a dict
+        mapping each dataset key to its frames. A frame is a number (a uniform frame) or an array
+        of the given shape.
+    metadata : dict, optional
+        Header keys to replace or add.
+    shape : tuple
+        Frame shape (rows, columns) (default CROPREPORTER_SHAPE). It sets ImageRows and ImageCols.
+
+    Returns
+    -------
+    str
+        Path of the .INF file.
+    """
+    if not isinstance(datasets, dict):
+        datasets = {key: CROPREPORTER_FRAMES[key] for key in datasets}
+    metadata = {"ImageRows": shape[0], "ImageCols": shape[1], **(metadata or {})}
+    with open(CROPREPORTER_TEMPLATES[template], "r") as fp:
+        header = fp.read().splitlines()
+    for i, line in enumerate(header):
+        key = line.split("=")[0]
+        if key in metadata:
+            header[i] = f"{key}={metadata.pop(key)}"
+    header += [f"{key}={value}" for key, value in metadata.items()]
+    filename = os.path.basename(CROPREPORTER_TEMPLATES[template])
+    inf = os.path.join(str(outdir), filename)
+    with open(inf, "w") as fp:
+        fp.write("\n".join(header) + "\n")
+    for key, frames in datasets.items():
+        cube = np.stack([np.broadcast_to(frame, shape) for frame in frames]).astype(np.uint16)
+        parts = filename.split("_")
+        parts[parts.index("HDR")] = key
+        # Unsigned 16-bit frames one after another, each stored column by column
+        cube.transpose(0, 2, 1).tofile(os.path.join(str(outdir), "_".join(parts).replace(".INF", ".DAT")))
+    return inf
+
+
+def pmt_frames(n_fvfm=0):
+    """List the frames of a PMT dataset with measurements of the second dark adaptation.
+
+    Parameters
+    ----------
+    n_fvfm : int
+        Number of measurements of the second dark adaptation (default 0). The header needs
+        TmPamMeasFvfm = n_fvfm + 1.
+
+    Returns
+    -------
+    list
+        Frame values: the dark-adapted block, the light-adapted block, n_fvfm second dark adaptation
+        blocks, then F0p.
+    """
+    labels = PMT_BLOCKS["dark"] + PMT_BLOCKS["light"] + PMT_BLOCKS["dark2"] * n_fvfm + ("F0p",)
+    return [CROPREPORTER_LEVELS[label] for label in labels]
+
+
+def psii_mask():
+    """Create a 10 x 10 mask that selects the pixel at row 5, column 5.
+
+    Returns
+    -------
+    numpy.ndarray
+        uint8 mask with that pixel 255 and the rest 0.
+    """
+    mask = np.zeros((10, 10), dtype=np.uint8)
+    mask[5, 5] = 255
+    return mask
+
+
+def psii_dataarray(var):
+    """Create a PSII DataArray with 4 frames and one measurement.
+
+    Parameters
+    ----------
+    var : str
+        "ojip_dark" (frame labels Fdark, F0, Fm, 3; measurement t0) or "ojip_light" (frame labels Fdark, Fp, 2,
+        Fmp; measurement t1). It is also the name of the DataArray.
+
+    Returns
+    -------
+    xarray.DataArray
+        10 x 10 x 4 x 1 uint8 array (x, y, frame_label, measurement). Pixel (5, 5) is 1, 2, 10 and 8 in
+        frames 0-3; every other pixel is 0.
+    """
+    frames = []
+    for value in (1, 2, 10, 8):
+        frame = np.zeros((10, 10), dtype=np.uint8)
+        frame[5, 5] = value
+        frames.append(frame)
+    if var == "ojip_dark":
+        frame_labels = ["Fdark", "F0", "Fm", "3"]
+        measurements = ["t0"]
+    else:
+        frame_labels = ["Fdark", "Fp", "2", "Fmp"]
+        measurements = ["t1"]
+    return xr.DataArray(data=np.dstack(frames)[..., None],
+                        dims=("x", "y", "frame_label", "measurement"),
+                        coords={"frame_label": frame_labels, "frame_num": ("frame_label", [0, 1, 2, 3]),
+                                "measurement": measurements}, name=var)
