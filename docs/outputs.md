@@ -25,8 +25,6 @@ functions:
 * `morphology.analyze_stem`
 * `morphology.euclidean_length`
 * `morphology.fill_segments`
-* `morphology.find_tips`
-* `morphology.find_branch_pts`
 * `morphology.segment_angle`
 * `morphology.segment_curvature`
 * `morphology.segment_euclidean_length`
