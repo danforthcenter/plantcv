@@ -7,7 +7,7 @@ Sort segments from a skeletonized image into two categories: leaf objects and ot
 **returns** Secondary objects, primary objects
 
 - **Parameters:**
-    - skel_img - Skeleton image (output from [plantcv.morphology.skeletonize](skeletonize.md))
+    - skel_img - Skeleton image (output from [plantcv.morphology.morph.skeleton](morphology_class.md))
     - objects - Segment objects (output from [plantcv.morphology.segment_skeleton](segment_skeleton.md))
     - mask - Binary mask for debugging. If provided, debug image will be overlaid on the mask.
     - first_stem - When True, the first segment (the bottom segment) gets classified as stem. If False, then the algorithm classification is applied to each segment. 
