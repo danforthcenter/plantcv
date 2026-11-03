@@ -113,7 +113,8 @@ class morph:
     def leaf_tips(self):
         """Leaf tips of skeleton"""
         _, tip_list, _ = _find_tips(self.skeleton)
-        self.leaf_tips = tip_list
+        # switch to X, Y
+        self.leaf_tips = [(t[1], t[0]) for t in tip_list]
         return self._leaf_tips
 
     @leaf_tips.setter
@@ -126,7 +127,8 @@ class morph:
     def branch_points(self):
         """branch points of skeleton"""
         branch_list, _, _, _ = _find_branch_pts(self.skeleton)
-        self.branch_points = branch_list
+        # switch to X, Y
+        self.branch_points = [(t[1], t[0]) for t in branch_list]
         return self._branch_points
 
     @branch_points.setter
