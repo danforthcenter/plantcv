@@ -51,3 +51,4 @@ def test_morph_cycles(monkeypatch, tmpdir):
     n_cycles = morpho.cycles
     assert n_cycles == 1
     assert os.path.exists(os.path.join(cache, "1_cycles.png"))
+    params.saved_color_scale = None
