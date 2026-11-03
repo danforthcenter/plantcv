@@ -113,7 +113,7 @@ nav:
       - 'Image Add': image_add.md
       - 'Image Subtract': image_subtract.md
       - 'Merge Images': transform_merge_images.md
-  - 'Separate Plants from Background (Segmentation)':
+  - 'Separate Objects from Background (Segmentation)':
     - 'Threshold by Color or Brightness':
       - 'Binary Threshold': binary_threshold.md
       - 'Custom Range Threshold': custom_range_threshold.md
@@ -155,7 +155,7 @@ nav:
     - 'Object Filter': filters_obj_props.md
     - 'Apply Mask': apply_mask.md
     - 'Get Kernel': get_kernel.md
-  - 'Find and Label Individual Plants (Regions of Interest)':
+  - 'Find and Label Individual Objects (Regions of Interest)':
     - 'Define Regions of Interest':
       - 'Create a Circular ROI': roi_circle.md
       - 'Create an Elliptical ROI': roi_ellipse.md
@@ -181,7 +181,7 @@ nav:
       - 'Create Labels': create_labels.md
       - 'Label Objects from Masks': masks2labels.md 
     - 'Objects Class': objects.md
-  - 'Measure Plant Traits (Analysis)':
+  - 'Measure Object Traits (Analysis)':
     - 'Size and Shape':
       - 'Analyze Size and Shape': analyze_size.md
       - 'Horizontal Boundary Tool': analyze_bound_horizontal2.md
