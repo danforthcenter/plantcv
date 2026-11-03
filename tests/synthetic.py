@@ -110,6 +110,15 @@ that pixel.
 
 The fluorescence image (fluor_image) is the grayscale image of the synthetic plant as unsigned 16-bit
 values (each value times 256) with a 20-pixel background border, 140 x 160 in total.
+
+The thermal image (thermal_image) has the shape of the synthetic plant, in degrees: stem 30, left leaf
+32, right leaf 34, and 20 everywhere else, including the small object. Over the 800 plant pixels the
+minimum is 30, the maximum 34, the mean (240 * 30 + 280 * 32 + 280 * 34) / 800 = 32.1, and the median
+32 (sorted pixels 400 and 401 both fall in the left leaf).
+
+The merge tiles (write_tiles) are three uniform 10 x 20 BGR images, (40, 100, 160), (100, 160, 220)
+and (160, 220, 40). Neighboring tiles differ by a multiple of 60 in every channel, so their averages
+and the evenly weighted steps of a 3- or 6-pixel gradual blend are whole numbers.
 """
 import os
 import cv2
@@ -140,6 +149,10 @@ SPECTRAL_WAVELENGTHS = range(400, 1001)
 # (row, column, size, thickness) of each square; thickness 0 means filled
 SQUARES = ((10, 10, 10, 0), (10, 30, 20, 0), (10, 60, 20, 4), (10, 90, 30, 5),
            (10, 130, 20, 2), (10, 160, 20, 1), (10, 190, 40, 1))
+THERMAL_TEMPS = {"stem": 30.0, "left_leaf": 32.0, "right_leaf": 34.0}
+THERMAL_BACKGROUND = 20.0
+TILE_SHAPE = (10, 20)
+TILE_BGR = ((40, 100, 160), (100, 160, 220), (160, 220, 40))
 TESTDATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "testdata")
 CROPREPORTER_SHAPE = (10, 12)
 CROPREPORTER_TEMPLATES = {
@@ -243,6 +256,79 @@ def fluor_image():
         140 x 160 uint16 image of plant_gray() values times 256, padded with the background value.
     """
     return np.pad(plant_gray().astype(np.uint16) * 256, 20, constant_values=BACKGROUND_GRAY * 256)
+
+
+def region_masks():
+    """Create one binary mask per region of the synthetic plant.
+
+    Returns
+    -------
+    list
+        uint8 masks (foreground 255) of the stem, left leaf, right leaf, and small object, in that order.
+    """
+    masks = []
+    for y0, y1, x0, x1 in list(PLANT_RECTS.values()) + [SMALL_OBJECT_RECT]:
+        mask = np.zeros(PLANT_SHAPE, dtype=np.uint8)
+        mask[y0:y1, x0:x1] = 255
+        masks.append(mask)
+    return masks
+
+
+def thermal_image():
+    """Create a thermal image of the synthetic plant.
+
+    Returns
+    -------
+    numpy.ndarray
+        float64 image with THERMAL_TEMPS in each plant region and THERMAL_BACKGROUND elsewhere.
+    """
+    img = np.full(PLANT_SHAPE, THERMAL_BACKGROUND)
+    for region, (y0, y1, x0, x1) in PLANT_RECTS.items():
+        img[y0:y1, x0:x1] = THERMAL_TEMPS[region]
+    return img
+
+
+def write_csv(outdir, filename, img):
+    """Write a 2-D image as comma-separated values with two decimal places and no header.
+
+    Parameters
+    ----------
+    outdir : str
+        Directory to write the file to.
+    filename : str
+        Name of the file.
+    img : numpy.ndarray
+        2-D image.
+
+    Returns
+    -------
+    str
+        Path of the file.
+    """
+    path = os.path.join(str(outdir), filename)
+    np.savetxt(path, img, fmt="%.2f", delimiter=",")
+    return path
+
+
+def write_tiles(outdir):
+    """Write the merge tiles as PNG images named tile_1.png, tile_2.png, and so on.
+
+    Parameters
+    ----------
+    outdir : str
+        Directory to write the files to.
+
+    Returns
+    -------
+    list
+        Paths of the tiles, in order.
+    """
+    paths = []
+    for i, bgr in enumerate(TILE_BGR, start=1):
+        path = os.path.join(str(outdir), f"tile_{i}.png")
+        cv2.imwrite(path, np.full((*TILE_SHAPE, 3), bgr, dtype=np.uint8))
+        paths.append(path)
+    return paths
 
 
 def disk_mask(shape, centers, radius):
