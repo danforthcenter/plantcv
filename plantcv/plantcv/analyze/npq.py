@@ -81,7 +81,7 @@ def npq(ps, labeled_mask, n_labels=1, auto_fm=False, min_bin=0, max_bin="auto",
                 ps_da_dark = reassign_frame_labels(ps_da=ps_da_dark, mask=submask)
 
             # Mask the Fm frame with the label submask
-            fm = ps_da_dark.sel(measurement='t0', frame_label="F0", drop=True).where(submask > 0, other=0)
+            fm = ps_da_dark.sel(measurement='t0', frame_label="Fm", drop=True).where(submask > 0, other=0)
             # Calculate NPQ for the labeled region, matching whatever the Fmp+ light measurement is
             fmp_var = str(ps_da_light.frame_label.values[ps_da_light.frame_label.str.match("Fmp+")][0])
             npq_lbl = ps_da_light.sel(
