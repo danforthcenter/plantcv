@@ -1,45 +1,8 @@
 """Find branch points from skeleton image."""
-import os
 import cv2
 import numpy as np
 from plantcv.plantcv._globals import params
-from plantcv.plantcv._globals import outputs
-from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _dilate
-
-
-def find_branch_pts(skel_img, mask=None, label=None):
-    """Find branch points in a skeletonized image.
-    The branching algorithm was inspired by Jean-Patrick Pommier: https://gist.github.com/jeanpat/5712699
-
-    Inputs:
-    skel_img    = Skeletonized image
-    mask        = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
-    label        = Optional label parameter, modifies the variable name of
-                   observations recorded (default = pcv.params.sample_label).
-
-    Returns:
-    branch_pts_img = Image with just branch points, rest 0
-
-    :param skel_img: numpy.ndarray
-    :param mask: np.ndarray
-    :param label: str
-    :return branch_pts_img: numpy.ndarray
-    """
-    # Set lable to params.sample_label if None
-    if label is None:
-        label = params.sample_label
-
-    branch_list, branch_labels, branch_plot, branch_pts_img = _find_branch_pts(skel_img=skel_img, mask=mask)
-
-    outputs.add_observation(sample=label, variable='branch_pts',
-                            trait='list of branch-point coordinates identified from a skeleton',
-                            method='plantcv.plantcv.morphology.find_branch_pts', scale='pixels', datatype=list,
-                            value=branch_list, label=branch_labels)
-
-    _debug(visual=branch_plot, filename=os.path.join(params.debug_outdir, f"{params.device}_branch_pts.png"))
-
-    return branch_pts_img
 
 
 def _find_branch_pts(skel_img, mask=None):
