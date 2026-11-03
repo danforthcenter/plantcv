@@ -1,35 +1,32 @@
 """Tests for pcv.analyze.yii."""
-import os
 import pytest
-import shutil
 import numpy as np
 from plantcv.plantcv import outputs
 from plantcv.plantcv.analyze import yii as analyze_yii
 from plantcv.plantcv.photosynthesis.read_cropreporter import read_cropreporter
+from tests import synthetic
 
 
 @pytest.mark.parametrize("frame,data,mlabels,maskval,exp", [
-    # test ojip_dark control seq
-    ["psd", "ojip_dark", None, 1, 0.80874],
-    # test lightadapted control seq and measurement_labels arg
-    ["psl", "ojip_light", ["Fq/Fm"], 255, 0.80874],
-    ["pmd", "pam_dark", None, 1, 0.95238],
-    ["pml", "pam_light", None, 1, 0.95238],
-    ["pmt", "pam_time", None, 1, 0.75],
-    ["pmt", "pam_time", ["example", "example2"], 255, 0.75],
-    ["npq", "ojip_light", None, 255, 0.69841]])
-def test_yii_cropreporter(frame, data, mlabels, maskval, exp, test_data):
+    # test ojip_dark control seq: Fv/Fm = (Fm - F0) / Fm = (1000 - 300) / 1000
+    ["psd", "ojip_dark", None, 1, 0.7],
+    # test lightadapted control seq and measurement_labels arg: Fq'/Fm' = (Fmp - Fp) / Fmp = (250 - 150) / 250
+    ["psl", "ojip_light", ["Fq/Fm"], 255, 0.4],
+    # Fv/Fm = (1000 - 300) / 1000
+    ["pmd", "pam_dark", None, 1, 0.7],
+    # Fq'/Fm' = (250 - 150) / 250
+    ["pml", "pam_light", None, 1, 0.4],
+    # Fv/Fm of the dark-adapted measurement, (1000 - 300) / 1000
+    ["pmt", "pam_time", None, 1, 0.7],
+    ["pmt", "pam_time", ["example", "example2"], 255, 0.7],
+    # Fq'/Fm' of the light-adapted NPQ frames, (250 - 150) / 250
+    ["npq", "ojip_light", None, 255, 0.4]])
+def test_yii_cropreporter(frame, data, mlabels, maskval, exp, tmp_path):
     """Test for PlantCV."""
     # Clear results
     outputs.clear()
-    if frame in ["psd", "psl"]:
-        source_path = test_data.photosynthesis.cropreporter
-    elif frame in ["pmd", "pml"]:
-        source_path = test_data.photosynthesis.cropreporter_v653
-    elif frame == "pmt":
-        source_path = test_data.photosynthesis.cropreporter_pmt
-    else:
-        source_path = test_data.photosynthesis.cropreporter_npq
+    template = {"pmd": "v653", "pml": "v653", "pmt": "pmt"}.get(frame, "v441")
+    source_path = synthetic.write_cropreporter(tmp_path, template, [frame.upper()])
 
     ps = read_cropreporter(filename=source_path)
     ps_frame = getattr(ps, frame, None)
@@ -53,28 +50,13 @@ def test_yii_cropreporter(frame, data, mlabels, maskval, exp, test_data):
     assert np.isclose(outputs.observations["default_1"][f"yii_median_{label}"]["value"], exp)
 
 
-def test_yii_cropreporter_13_frame_pmt(test_data, tmpdir, monkeypatch):
+def test_yii_cropreporter_13_frame_pmt(tmp_path):
     """Test for PlantCV."""
     # Clear results
     outputs.clear()
-    # Create a test tmp directory
-    cache_dir = tmpdir.mkdir("sub")
-    # 1. Align filenames (P0008 for both) so the reader finds the DAT file
-    inf_dest = os.path.join(cache_dir, "HDR_E0001P0008N0001_GCU24100090_20260226.INF")
-    dat_dest = os.path.join(cache_dir, "PMT_E0001P0008N0001_GCU24100090_20260226.DAT")
-    # Create dataset with only PMT
-    shutil.copyfile(test_data.photosynthesis.cropreporter_pmt, inf_dest)
-    pmt_dat_src = test_data.photosynthesis.cropreporter_pmt.replace("HDR", "PMT").replace("INF", "DAT")
-    shutil.copyfile(pmt_dat_src, dat_dest)
-    # Force the INF to trigger the 13-label logic (n_fvfm > 0)
-    with open(inf_dest, "a") as f:
-        f.write("\nTmPamMeasFvfm=3")
-        # Override image size to keep memory usage small in tests
-        f.write("\nImageRows=10")
-        f.write("\nImageCols=10")
-    # Mock numpy with the correct 13-frame size for the overridden metadata (10 * 10 * 13 = 1300)
-    # Using ones * 50 to ensure .any() assertions pass
-    monkeypatch.setattr(np, "fromfile", lambda *args, **kwargs: np.ones(1300, dtype=np.uint16) * 50)
+    # TmPamMeasFvfm=3 adds two measurements of the second dark adaptation, t2 and t3
+    inf_dest = synthetic.write_cropreporter(tmp_path, "pmt", {"PMT": synthetic.pmt_frames(n_fvfm=2)},
+                                            metadata={"TmPamMeasFvfm": 3})
     ps = read_cropreporter(filename=inf_dest)
     shape = getattr(getattr(ps, "pmt", None), "pam_time", None).shape[0:2]
     # run analyze
@@ -83,6 +65,8 @@ def test_yii_cropreporter_13_frame_pmt(test_data, tmpdir, monkeypatch):
                     n_labels=1, auto_fm=True,
                     measurement_labels=None)
     assert "yii_median_t0_fvfmpp" in [key for key, value in outputs.observations["default_1"].items()]
+    # Fv''/Fm'' = (Fmpp - F0pp) / Fmpp = (800 - 280) / 800
+    assert np.isclose(outputs.observations["default_1"]["yii_median_t2_fvfmpp"]["value"], 0.65)
     with pytest.raises(RuntimeError):
         _ = analyze_yii(ps=ps, labeled_mask=np.ones(shape),
                         measurement_labels=["x", "y", "z"], label="default")
@@ -92,17 +76,10 @@ def test_yii_cropreporter_13_frame_pmt(test_data, tmpdir, monkeypatch):
                          # test wrong mask shape
                          [[None, np.ones((2, 2))],
                           # test bad measurement_labels
-                          [['f', 'm'], np.ones((10, 10), dtype=np.uint8)]])
-def test_yii_fatalerror(mlabels, tmask, test_data, tmpdir):
+                          [['f', 'm'], np.ones(synthetic.CROPREPORTER_SHAPE, dtype=np.uint8)]])
+def test_yii_fatalerror(mlabels, tmask, tmp_path):
     """Test for PlantCV."""
-    # Create a test tmp directory
-    cache_dir = tmpdir.mkdir("sub")
-    # Create dataset with only PSD
-    shutil.copyfile(test_data.photosynthesis.cropreporter, os.path.join(cache_dir, "PSII_HDR_test.INF"))
-    dat = test_data.photosynthesis.cropreporter.replace("HDR", "PSL")
-    dat = dat.replace("INF", "DAT")
-    shutil.copyfile(dat, os.path.join(cache_dir, "PSII_PSL_test.DAT"))
-    filename = os.path.join(cache_dir, "PSII_HDR_test.INF")
+    filename = synthetic.write_cropreporter(tmp_path, "v441", ["PSL"])
     ps = read_cropreporter(filename=filename)
     read_in_worked = bool(getattr(ps, "psl", False))
     assert read_in_worked
@@ -112,9 +89,9 @@ def test_yii_fatalerror(mlabels, tmask, test_data, tmpdir):
                         measurement_labels=mlabels, label="default")
 
 
-def test_yii_bad_var(test_data):
+def test_yii_bad_var(tmp_path):
     """Test for PlantCV."""
-    ps = read_cropreporter(filename=test_data.photosynthesis.cropreporter_rfp)
+    ps = read_cropreporter(filename=synthetic.write_cropreporter(tmp_path, "gfp", ["RFP"]))
     read_in_worked = bool(getattr(ps, "rfp", False))
     assert read_in_worked
     with pytest.raises(RuntimeError):
@@ -122,39 +99,23 @@ def test_yii_bad_var(test_data):
                         measurement_labels=None, label="default")
 
 
-def test_yii_wrong_num_labels(test_data, tmpdir):
+def test_yii_wrong_num_labels(tmp_path):
     """Test for PlantCV."""
-    # Create a test tmp directory
-    cache_dir = tmpdir.mkdir("sub")
-    # Create dataset with only PSD
-    shutil.copyfile(test_data.photosynthesis.cropreporter, os.path.join(cache_dir, "PSII_HDR_test.INF"))
-    dat = test_data.photosynthesis.cropreporter.replace("HDR", "PSL")
-    dat = dat.replace("INF", "DAT")
-    shutil.copyfile(dat, os.path.join(cache_dir, "PSII_PSL_test.DAT"))
-    filename = os.path.join(cache_dir, "PSII_HDR_test.INF")
+    filename = synthetic.write_cropreporter(tmp_path, "v441", ["PSL"])
     ps = read_cropreporter(filename=filename)
     read_in_worked = bool(getattr(ps, "psl", False))
     assert read_in_worked
     with pytest.raises(RuntimeError):
         _ = analyze_yii(ps=ps,
-                        labeled_mask=test_data.create_ps_mask(),
+                        labeled_mask=synthetic.psii_mask(),
                         measurement_labels=None, label=["prefix", "prefix"])
 
 
-def test_yii_pam_time(test_data, tmpdir):
+def test_yii_pam_time(tmp_path):
     """Test for PlantCV."""
     # Clear results
     outputs.clear()
-    # Create a test tmp directory
-    cache_dir = tmpdir.mkdir("sub")
-    # Create dataset with only PMT
-    shutil.copyfile(test_data.photosynthesis.cropreporter_pmt,
-                    os.path.join(cache_dir, "HDR_E0001P0007N0001_GCU24100090_20260226.INF"))
-    pmt_dat = test_data.photosynthesis.cropreporter_pmt.replace("HDR", "PMT")
-    pmt_dat = pmt_dat.replace("INF", "DAT")
-    shutil.copyfile(pmt_dat, os.path.join(cache_dir, "PMT_E0001P0007N0001_GCU24100090_20260226.DAT"))
-    fluor_filename = os.path.join(cache_dir, "HDR_E0001P0007N0001_GCU24100090_20260226.INF")
-    ps = read_cropreporter(filename=fluor_filename)
+    ps = read_cropreporter(filename=synthetic.write_cropreporter(tmp_path, "pmt", ["PMT"]))
     read_in_worked = bool(getattr(ps, "pmt", False))
     assert read_in_worked
     _ = analyze_yii(ps=ps,
@@ -162,21 +123,15 @@ def test_yii_pam_time(test_data, tmpdir):
                     n_labels=1, auto_fm=True,
                     measurement_labels=None)
     assert "yii_median_t0_fvfm" in [key for key, value in outputs.observations["default_1"].items()]
+    # (1000 - 300) / 1000
+    assert np.isclose(outputs.observations["default_1"]["yii_median_t0_fvfm"]["value"], 0.7)
 
 
-def test_yii_pam_time_bad_labels(test_data, tmpdir):
+def test_yii_pam_time_bad_labels(tmp_path):
     """Test for PlantCV."""
     # Clear results
     outputs.clear()
-    # Create a test tmp directory
-    cache_dir = tmpdir.mkdir("sub")
-    # Create dataset with only PSD
-    shutil.copyfile(test_data.photosynthesis.cropreporter,
-                    os.path.join(cache_dir, "PSII_HDR_test.INF"))
-    dat = test_data.photosynthesis.cropreporter.replace("HDR", "PSL")
-    dat = dat.replace("INF", "DAT")
-    shutil.copyfile(dat, os.path.join(cache_dir, "PSII_PSL_test.DAT"))
-    filename = os.path.join(cache_dir, "PSII_HDR_test.INF")
+    filename = synthetic.write_cropreporter(tmp_path, "v441", ["PSL"])
     ps = read_cropreporter(filename=filename)
     read_in_worked = bool(getattr(ps, "psl", False))
     assert read_in_worked
