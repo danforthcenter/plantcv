@@ -130,8 +130,22 @@ saturation 255 and value 128 (PLANT_BGR) and background hue 0, saturation 0 and 
 (BACKGROUND_BGR), with standard deviations 10 (hue), 30 (saturation) and 40 (value). The naive Bayes
 training image (nb_train_image) is the plant mask colored with seeded uniform noise: plant BGR
 (0-20, 110-150, 0-20), near hue 60, and background BGR (30-50, 70-90, 110-130), near hue 15.
+
+The image directories (write_image_dir) hold small synthetic images under the file names of three
+dataset layouts: plant_rgb() for VIS images and plant_gray() for NIR images.
+
+    Layout      Files
+    flat        VIS_SV_0_z1_h1_g0_e82_117770.jpg, VIS_SV_0_z1_h1_g0_e82_999999.jpeg,
+                NIR_SV_0_z1_h1_g0_e65_117779.jpg
+    snapshot    SnapshotInfo.csv (PARALLEL_TEMPLATES) and snapshot57381, snapshot57382 and
+                snapshot57383, each with VIS_SV_0_z1_h1_g0_e82_117770.jpg and
+                NIR_SV_0_z1_h1_g0_e65_117779.jpg
+    phenodata   metadata.json (PARALLEL_TEMPLATES) and the 12 PNG images it lists (6 VIS, 6 NIR) in two
+                date/snapshot directories
 """
 import os
+import json
+import shutil
 import cv2
 import numpy as np
 import xarray as xr
@@ -169,6 +183,12 @@ NB_PDFS = {"plant": {"hue": (60, 10), "saturation": (255, 30), "value": (128, 40
            "background": {"hue": (0, 10), "saturation": (0, 30), "value": (128, 40)}}
 TESTDATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "testdata")
 CROPREPORTER_SHAPE = (10, 12)
+PARALLEL_TEMPLATES = {
+    "snapshot": os.path.join(TESTDATA, "SnapshotInfo.csv"),
+    "phenodata": os.path.join(TESTDATA, "phenodata_metadata.json"),
+}
+SNAPSHOT_IMAGES = ("VIS_SV_0_z1_h1_g0_e82_117770.jpg", "NIR_SV_0_z1_h1_g0_e65_117779.jpg")
+FLAT_IMAGES = SNAPSHOT_IMAGES + ("VIS_SV_0_z1_h1_g0_e82_999999.jpeg",)
 CROPREPORTER_TEMPLATES = {
     "v441": os.path.join(TESTDATA, "cropreporter_v441", "PSII_HDR_020321_WT_TOP_1.INF"),
     "v653": os.path.join(TESTDATA, "cropreporter_v653", "HDR_dark_light.INF"),
@@ -439,6 +459,69 @@ def write_nb_pdfs(outdir, filename="naive_bayes_pdfs.txt", bad=False):
     with open(path, "w") as fp:
         fp.write("\n".join(lines) + "\n")
     return path
+
+
+def write_image_dir(outdir, layout):
+    """Write a dataset directory of synthetic images for plantcv.parallel.
+
+    Parameters
+    ----------
+    outdir : str
+        Directory to write the dataset to. It is created if it does not exist.
+    layout : str
+        "flat" (images named by their metadata), "snapshot" (a SnapshotInfo.csv and snapshot
+        directories), or "phenodata" (a metadata.json and date/snapshot directories).
+
+    Returns
+    -------
+    str
+        Path of the dataset directory.
+    """
+    outdir = str(outdir)
+    os.makedirs(outdir, exist_ok=True)
+    if layout == "flat":
+        names = FLAT_IMAGES
+    elif layout == "snapshot":
+        names = [os.path.join(f"snapshot{n}", name) for n in (57381, 57382, 57383) for name in SNAPSHOT_IMAGES]
+        shutil.copy(PARALLEL_TEMPLATES["snapshot"], os.path.join(outdir, "SnapshotInfo.csv"))
+    else:
+        with open(PARALLEL_TEMPLATES["phenodata"], "r") as fp:
+            names = list(json.load(fp)["images"])
+        shutil.copy(PARALLEL_TEMPLATES["phenodata"], os.path.join(outdir, "metadata.json"))
+    write_images(outdir, {name: plant_gray() if os.path.basename(name).startswith("NIR") else plant_rgb()
+                          for name in names})
+    return outdir
+
+
+def write_checkpoint(outdir, filepaths, complete=True):
+    """Write a plantcv.parallel checkpoint result for each image.
+
+    Parameters
+    ----------
+    outdir : str
+        Directory to write the results to (a _PCV_PARALLEL_CHECKPOINT_ subdirectory of a tmp_dir).
+    filepaths : list
+        Image file paths, one result file per image.
+    complete : bool
+        Also write the empty "_complete" file that marks each result as finished (default True).
+
+    Returns
+    -------
+    list
+        Paths of the result files.
+    """
+    os.makedirs(str(outdir), exist_ok=True)
+    paths = []
+    for i, filepath in enumerate(filepaths):
+        path = os.path.join(str(outdir), f"result_{i}.json")
+        result = {"metadata": {"filepath": {"label": "file path", "datatype": "<class 'str'>", "value": [filepath]}},
+                  "observations": {}}
+        with open(path, "w") as fp:
+            json.dump(result, fp)
+        if complete:
+            open(path.replace(".json", "_complete"), "w").close()
+        paths.append(path)
+    return paths
 
 
 def disk_mask(shape, centers, radius):
