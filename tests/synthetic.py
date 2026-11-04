@@ -1150,3 +1150,21 @@ def color_cast(img):
         uint8 BGR image, rounded to the nearest integer.
     """
     return np.rint(img * np.array(COLOR_CAST_BGR)).astype(np.uint8)
+
+
+def color_cast_matrix(color_matrix):
+    """Apply color_cast to a color matrix without rounding.
+
+    Parameters
+    ----------
+    color_matrix : numpy.ndarray
+        Color matrix (chip number, R, G, B in 0-1).
+
+    Returns
+    -------
+    numpy.ndarray
+        Copy of the matrix with R, G and B scaled by 0.7, 0.8 and 0.9.
+    """
+    cast = np.array(color_matrix, dtype=np.float64)
+    cast[:, 1:] *= np.array(COLOR_CAST_BGR[::-1])
+    return cast
