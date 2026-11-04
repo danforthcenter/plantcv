@@ -2,7 +2,7 @@
 
 This is a filtering method used to identify and highlight fine edges based on the 2nd derivative.
 
-**plantcv.laplace_filter**(*gray_img, ksize, scale, roi=None*)
+**plantcv.laplace_filter**(*gray_img, ksize, scale=1, roi=None*)
 
 **returns** filtered image
 
