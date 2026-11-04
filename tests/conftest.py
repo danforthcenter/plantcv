@@ -20,24 +20,10 @@ class TestData:
         self.outputs_results_json = os.path.join(self.datadir, "outputs_results.json")
         # Outputs results file - CSV
         self.outputs_results_csv = os.path.join(self.datadir, "outputs_results.csv")
-        # Thermal image
-        self.thermal_img = os.path.join(self.datadir, "FLIR2600.csv")
-        # Thermal image data
-        self.thermal_obj_file = os.path.join(self.datadir, "thermal_img.npz")
-        # Thermal image mask
-        self.thermal_mask = os.path.join(self.datadir, "thermal_img_mask.png")
         # Bayer image
         self.bayer_img = os.path.join(self.datadir, "bayer_img.png")
-        # Naive Bayes trained model file
-        self.nb_trained_model = os.path.join(self.datadir, "naive_bayes_pdfs.txt")
-        # Naive Bayes bad model file
-        self.nb_bad_model = os.path.join(self.datadir, "naive_bayes_pdfs_bad.txt")
-        # Kmeans classifier directory
-        self.kmeans_classifier_dir = os.path.join(self.datadir, "kmeans_classifier_dir")
         # Circle Wells for Hough Circle
         self.hough_circle = os.path.join(self.datadir, "circle-wells.png")
-        # Kmeans classifier grayscale directory
-        self.kmeans_classifier_gray_dir = os.path.join(self.datadir, "kmeans_classifier_gray_dir")
         # nd2 file
         self.nd2_img = os.path.join(self.datadir, "test_nd2_img.nd2")
         # flir thermal img
@@ -54,8 +40,6 @@ class TestData:
         self.invalid_results_file = os.path.join(self.datadir, "invalid_results.json")
         # plantcv general results file
         self.plantcv_results_file = os.path.join(self.datadir, "plantcv_results.json")
-        # List of masks
-        self.masks_list = os.path.join(self.datadir, "masks_list.pkl")
 
     @staticmethod
     def load_npz(npz_file):

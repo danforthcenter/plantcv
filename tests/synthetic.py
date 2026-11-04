@@ -110,8 +110,42 @@ that pixel.
 
 The fluorescence image (fluor_image) is the grayscale image of the synthetic plant as unsigned 16-bit
 values (each value times 256) with a 20-pixel background border, 140 x 160 in total.
+
+The thermal image (thermal_image) has the shape of the synthetic plant, in degrees: stem 30, left leaf
+32, right leaf 34, and 20 everywhere else, including the small object. Over the 800 plant pixels the
+minimum is 30, the maximum 34, the mean (240 * 30 + 280 * 32 + 280 * 34) / 800 = 32.1, and the median
+32 (sorted pixels 400 and 401 both fall in the left leaf).
+
+The merge tiles (write_tiles) are three uniform 10 x 20 BGR images, (40, 100, 160), (100, 160, 220)
+and (160, 220, 40). Neighboring tiles differ by a multiple of 60 in every channel, so their averages
+and the evenly weighted steps of a 3- or 6-pixel gradual blend are whole numbers.
+
+The two-region image (two_region_image) is 20 x 60 with the background color (BGR or gray) in columns
+0:30 and the plant color in columns 30:60. It is symmetric about the boundary, so after any symmetric
+blur a pixel is closer to the plant color than to the background color exactly when it lies in
+columns 30:60.
+
+The naive Bayes PDFs (write_nb_pdfs) are Gaussian curves over 0-255 for the HSV channels: plant hue 60,
+saturation 255 and value 128 (PLANT_BGR) and background hue 0, saturation 0 and value 128
+(BACKGROUND_BGR), with standard deviations 10 (hue), 30 (saturation) and 40 (value). The naive Bayes
+training image (nb_train_image) is the plant mask colored with seeded uniform noise: plant BGR
+(0-20, 110-150, 0-20), near hue 60, and background BGR (30-50, 70-90, 110-130), near hue 15.
+
+The image directories (write_image_dir) hold small synthetic images under the file names of three
+dataset layouts: plant_rgb() for VIS images and plant_gray() for NIR images.
+
+    Layout      Files
+    flat        VIS_SV_0_z1_h1_g0_e82_117770.jpg, VIS_SV_0_z1_h1_g0_e82_999999.jpeg,
+                NIR_SV_0_z1_h1_g0_e65_117779.jpg
+    snapshot    SnapshotInfo.csv (PARALLEL_TEMPLATES) and snapshot57381, snapshot57382 and
+                snapshot57383, each with VIS_SV_0_z1_h1_g0_e82_117770.jpg and
+                NIR_SV_0_z1_h1_g0_e65_117779.jpg
+    phenodata   metadata.json (PARALLEL_TEMPLATES) and the 12 PNG images it lists (6 VIS, 6 NIR) in two
+                date/snapshot directories
 """
 import os
+import json
+import shutil
 import cv2
 import numpy as np
 import xarray as xr
@@ -140,8 +174,21 @@ SPECTRAL_WAVELENGTHS = range(400, 1001)
 # (row, column, size, thickness) of each square; thickness 0 means filled
 SQUARES = ((10, 10, 10, 0), (10, 30, 20, 0), (10, 60, 20, 4), (10, 90, 30, 5),
            (10, 130, 20, 2), (10, 160, 20, 1), (10, 190, 40, 1))
+THERMAL_TEMPS = {"stem": 30.0, "left_leaf": 32.0, "right_leaf": 34.0}
+THERMAL_BACKGROUND = 20.0
+TILE_SHAPE = (10, 20)
+TILE_BGR = ((40, 100, 160), (100, 160, 220), (160, 220, 40))
+TWO_REGION_SHAPE = (20, 60)
+NB_PDFS = {"plant": {"hue": (60, 10), "saturation": (255, 30), "value": (128, 40)},
+           "background": {"hue": (0, 10), "saturation": (0, 30), "value": (128, 40)}}
 TESTDATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "testdata")
 CROPREPORTER_SHAPE = (10, 12)
+PARALLEL_TEMPLATES = {
+    "snapshot": os.path.join(TESTDATA, "SnapshotInfo.csv"),
+    "phenodata": os.path.join(TESTDATA, "phenodata_metadata.json"),
+}
+SNAPSHOT_IMAGES = ("VIS_SV_0_z1_h1_g0_e82_117770.jpg", "NIR_SV_0_z1_h1_g0_e65_117779.jpg")
+FLAT_IMAGES = SNAPSHOT_IMAGES + ("VIS_SV_0_z1_h1_g0_e82_999999.jpeg",)
 CROPREPORTER_TEMPLATES = {
     "v441": os.path.join(TESTDATA, "cropreporter_v441", "PSII_HDR_020321_WT_TOP_1.INF"),
     "v653": os.path.join(TESTDATA, "cropreporter_v653", "HDR_dark_light.INF"),
@@ -243,6 +290,238 @@ def fluor_image():
         140 x 160 uint16 image of plant_gray() values times 256, padded with the background value.
     """
     return np.pad(plant_gray().astype(np.uint16) * 256, 20, constant_values=BACKGROUND_GRAY * 256)
+
+
+def region_masks():
+    """Create one binary mask per region of the synthetic plant.
+
+    Returns
+    -------
+    list
+        uint8 masks (foreground 255) of the stem, left leaf, right leaf, and small object, in that order.
+    """
+    masks = []
+    for y0, y1, x0, x1 in list(PLANT_RECTS.values()) + [SMALL_OBJECT_RECT]:
+        mask = np.zeros(PLANT_SHAPE, dtype=np.uint8)
+        mask[y0:y1, x0:x1] = 255
+        masks.append(mask)
+    return masks
+
+
+def thermal_image():
+    """Create a thermal image of the synthetic plant.
+
+    Returns
+    -------
+    numpy.ndarray
+        float64 image with THERMAL_TEMPS in each plant region and THERMAL_BACKGROUND elsewhere.
+    """
+    img = np.full(PLANT_SHAPE, THERMAL_BACKGROUND)
+    for region, (y0, y1, x0, x1) in PLANT_RECTS.items():
+        img[y0:y1, x0:x1] = THERMAL_TEMPS[region]
+    return img
+
+
+def write_csv(outdir, filename, img):
+    """Write a 2-D image as comma-separated values with two decimal places and no header.
+
+    Parameters
+    ----------
+    outdir : str
+        Directory to write the file to.
+    filename : str
+        Name of the file.
+    img : numpy.ndarray
+        2-D image.
+
+    Returns
+    -------
+    str
+        Path of the file.
+    """
+    path = os.path.join(str(outdir), filename)
+    np.savetxt(path, img, fmt="%.2f", delimiter=",")
+    return path
+
+
+def write_tiles(outdir):
+    """Write the merge tiles as PNG images named tile_1.png, tile_2.png, and so on.
+
+    Parameters
+    ----------
+    outdir : str
+        Directory to write the files to.
+
+    Returns
+    -------
+    list
+        Paths of the tiles, in order.
+    """
+    paths = []
+    for i, bgr in enumerate(TILE_BGR, start=1):
+        path = os.path.join(str(outdir), f"tile_{i}.png")
+        cv2.imwrite(path, np.full((*TILE_SHAPE, 3), bgr, dtype=np.uint8))
+        paths.append(path)
+    return paths
+
+
+def two_region_image(gray=False):
+    """Create an image with the background color on the left and the plant color on the right.
+
+    Parameters
+    ----------
+    gray : bool
+        Make a grayscale image instead of a BGR image (default False).
+
+    Returns
+    -------
+    numpy.ndarray
+        20 x 60 uint8 image, background in columns 0:30 and plant in columns 30:60.
+    """
+    background, plant = (BACKGROUND_GRAY, PLANT_GRAY) if gray else (BACKGROUND_BGR, PLANT_BGR)
+    channels = () if gray else (3,)
+    img = np.full((*TWO_REGION_SHAPE, *channels), background, dtype=np.uint8)
+    img[:, TWO_REGION_SHAPE[1] // 2:] = plant
+    return img
+
+
+def nb_train_image(seed=0):
+    """Create a naive Bayes training image: the synthetic plant in noisy green on a noisy soil color.
+
+    Parameters
+    ----------
+    seed : int
+        Seed for the random number generator (default 0).
+
+    Returns
+    -------
+    numpy.ndarray
+        uint8 BGR image with plant pixels drawn from BGR (0-20, 110-150, 0-20) and background pixels
+        from BGR (30-50, 70-90, 110-130), each channel uniformly.
+    """
+    rng = np.random.default_rng(seed)
+    mask = plant_mask()
+    plant = rng.integers((0, 110, 0), (21, 151, 21), size=(*PLANT_SHAPE, 3))
+    background = rng.integers((30, 70, 110), (51, 91, 131), size=(*PLANT_SHAPE, 3))
+    return np.where(mask[..., None] > 0, plant, background).astype(np.uint8)
+
+
+def write_images(outdir, images):
+    """Write images to a directory.
+
+    Parameters
+    ----------
+    outdir : str
+        Directory to write the files to. It is created if it does not exist.
+    images : dict
+        Maps each file name (a path relative to outdir) to its image.
+
+    Returns
+    -------
+    list
+        Paths of the files, in the order of images.
+    """
+    paths = []
+    for name, img in images.items():
+        path = os.path.join(str(outdir), name)
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        cv2.imwrite(path, img)
+        paths.append(path)
+    return paths
+
+
+def write_nb_pdfs(outdir, filename="naive_bayes_pdfs.txt", bad=False):
+    """Write a naive Bayes PDF file with the NB_PDFS Gaussian curves.
+
+    Parameters
+    ----------
+    outdir : str
+        Directory to write the file to.
+    filename : str
+        Name of the file (default "naive_bayes_pdfs.txt").
+    bad : bool
+        Drop the last value of the last row so the file is malformed (default False).
+
+    Returns
+    -------
+    str
+        Path of the file.
+    """
+    x = np.arange(256)
+    lines = ["class\tchannel\t" + "\t".join(map(str, x))]
+    for class_name, channels in NB_PDFS.items():
+        for channel, (mean, sd) in channels.items():
+            pdf = np.exp(-((x - mean) ** 2) / (2 * sd ** 2)) / (sd * np.sqrt(2 * np.pi))
+            lines.append("\t".join([class_name, channel] + [str(p) for p in pdf]))
+    if bad:
+        lines[-1] = lines[-1].rsplit("\t", 1)[0]
+    path = os.path.join(str(outdir), filename)
+    with open(path, "w") as fp:
+        fp.write("\n".join(lines) + "\n")
+    return path
+
+
+def write_image_dir(outdir, layout):
+    """Write a dataset directory of synthetic images for plantcv.parallel.
+
+    Parameters
+    ----------
+    outdir : str
+        Directory to write the dataset to. It is created if it does not exist.
+    layout : str
+        "flat" (images named by their metadata), "snapshot" (a SnapshotInfo.csv and snapshot
+        directories), or "phenodata" (a metadata.json and date/snapshot directories).
+
+    Returns
+    -------
+    str
+        Path of the dataset directory.
+    """
+    outdir = str(outdir)
+    os.makedirs(outdir, exist_ok=True)
+    if layout == "flat":
+        names = FLAT_IMAGES
+    elif layout == "snapshot":
+        names = [os.path.join(f"snapshot{n}", name) for n in (57381, 57382, 57383) for name in SNAPSHOT_IMAGES]
+        shutil.copy(PARALLEL_TEMPLATES["snapshot"], os.path.join(outdir, "SnapshotInfo.csv"))
+    else:
+        with open(PARALLEL_TEMPLATES["phenodata"], "r") as fp:
+            names = list(json.load(fp)["images"])
+        shutil.copy(PARALLEL_TEMPLATES["phenodata"], os.path.join(outdir, "metadata.json"))
+    write_images(outdir, {name: plant_gray() if os.path.basename(name).startswith("NIR") else plant_rgb()
+                          for name in names})
+    return outdir
+
+
+def write_checkpoint(outdir, filepaths, complete=True):
+    """Write a plantcv.parallel checkpoint result for each image.
+
+    Parameters
+    ----------
+    outdir : str
+        Directory to write the results to (a _PCV_PARALLEL_CHECKPOINT_ subdirectory of a tmp_dir).
+    filepaths : list
+        Image file paths, one result file per image.
+    complete : bool
+        Also write the empty "_complete" file that marks each result as finished (default True).
+
+    Returns
+    -------
+    list
+        Paths of the result files.
+    """
+    os.makedirs(str(outdir), exist_ok=True)
+    paths = []
+    for i, filepath in enumerate(filepaths):
+        path = os.path.join(str(outdir), f"result_{i}.json")
+        result = {"metadata": {"filepath": {"label": "file path", "datatype": "<class 'str'>", "value": [filepath]}},
+                  "observations": {}}
+        with open(path, "w") as fp:
+            json.dump(result, fp)
+        if complete:
+            open(path.replace(".json", "_complete"), "w").close()
+        paths.append(path)
+    return paths
 
 
 def disk_mask(shape, centers, radius):
