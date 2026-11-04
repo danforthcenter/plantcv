@@ -29,7 +29,8 @@ def learn_test_data():
 @pytest.fixture
 def nb_train_dirs(tmp_path):
     """Naive Bayes training directories (images, masks) holding the synthetic training image and its mask."""
-    imgdir, maskdir = tmp_path / "images", tmp_path / "masks"
+    imgdir = tmp_path / "images"
+    maskdir = tmp_path / "masks"
     synthetic.write_images(imgdir, {"plant.png": synthetic.nb_train_image()})
     synthetic.write_images(maskdir, {"plant.png": synthetic.plant_mask()})
     return str(imgdir), str(maskdir)
