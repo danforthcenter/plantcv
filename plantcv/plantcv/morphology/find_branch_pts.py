@@ -5,7 +5,7 @@ from plantcv.plantcv._globals import params
 from plantcv.plantcv._helpers import _cv2_findcontours, _dilate
 
 
-def _find_branch_pts(skel_img, mask=None):
+def _find_branch_pts(skel_img):
     """Find branch points in a skeletonized image.
     The branching algorithm was inspired by Jean-Patrick Pommier: https://gist.github.com/jeanpat/5712699
 
@@ -13,13 +13,13 @@ def _find_branch_pts(skel_img, mask=None):
     ----------
     skel_img    = numpy.ndarray,
         Skeletonized image
-    mask        = numpy.ndarray,
-        binary mask for debugging. If provided, debug image will be overlaid on the mask.
-    plot        = Boolean,
-        should an image be annotated with the branch points?
 
     Returns
     -------
+    branch_list    = list,
+        list of coordinates for branch points
+    branch_labels  = list,
+        list of labels for branch points
     branch_pts_img = numpy.ndarray,
         Image with just branch points, rest 0
     """
@@ -64,16 +64,8 @@ def _find_branch_pts(skel_img, mask=None):
     branch_pts_img = branch_pts_img.astype(np.uint8) * 255
 
     # Make debugging image
-    if mask is None:
-        dilated_skel = _dilate(skel_img, params.line_thickness, 1)
-        branch_plot = cv2.cvtColor(dilated_skel, cv2.COLOR_GRAY2RGB)
-    else:
-        # Make debugging image on mask
-        mask_copy = mask.copy()
-        branch_plot = cv2.cvtColor(mask_copy, cv2.COLOR_GRAY2RGB)
-        skel_obj, skel_hier = _cv2_findcontours(bin_img=skel_img)
-        cv2.drawContours(branch_plot, skel_obj, -1, (150, 150, 150), params.line_thickness, lineType=8,
-                         hierarchy=skel_hier)
+    dilated_skel = _dilate(skel_img, params.line_thickness, 1)
+    branch_plot = cv2.cvtColor(dilated_skel, cv2.COLOR_GRAY2RGB)
 
     branch_objects, _ = _cv2_findcontours(bin_img=branch_pts_img)
 
@@ -87,4 +79,4 @@ def _find_branch_pts(skel_img, mask=None):
         branch_labels.append(i)
         cv2.circle(branch_plot, (x, y), params.line_thickness, (255, 0, 255), -1)
 
-    return branch_list, branch_labels, branch_plot, branch_pts_img
+    return branch_list, branch_labels, branch_pts_img
