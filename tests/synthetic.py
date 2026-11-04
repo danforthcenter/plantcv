@@ -142,6 +142,24 @@ dataset layouts: plant_rgb() for VIS images and plant_gray() for NIR images.
                 NIR_SV_0_z1_h1_g0_e65_117779.jpg
     phenodata   metadata.json (PARALLEL_TEMPLATES) and the 12 PNG images it lists (6 VIS, 6 NIR) in two
                 date/snapshot directories
+
+The color card (color_card) is a 4 x 6 ColorChecker-style card on a 521 x 381 image with the background
+color BGR (128, 128, 128). The card body, BGR (20, 20, 20), fills rows 40:481 and columns 40:341. Its
+49 x 49 chips are 70 pixels apart (a 21 pixel gap), the first chip in rows and columns 61:110, and
+they have the standard colors std_color_matrix(pos=3) in row-major order, so the white chip is at the top
+left. The chips are larger than the ArUco tags of the astro card, so ColorChecker detection ignores the
+tags in an image with both cards. color_card_mask labels the chips 10, 20, ..., 240 in the same order.
+
+The astro card (astro_card) is the 600 x 700 astrobotany.com reference layout scaled by 0.4 onto a
+240 x 280 card body, BGR (235, 235, 235), at rows and columns 30 onward of a white 300 x 340 image. The
+105 pixel ArUco tags (DICT_4X4_50) become 42 pixels and the chips are circles of radius 20 (color) and
+11 (gray) around the reference centers, with the colors of astro_color_matrix(). Every reference position
+is a whole number of pixels after scaling, so detection maps the reference card exactly onto the card
+body.
+
+The color card scene (color_card_scene) puts the color card on the left and the astro card at the top
+right of a 521 x 721 image. color_cast scales the B, G and R channels by 0.9, 0.8 and 0.7 and rounds; an
+affine or cubic color correction undoes it up to that rounding.
 """
 import os
 import json
@@ -150,6 +168,7 @@ import cv2
 import numpy as np
 import xarray as xr
 from plantcv.plantcv.classes import MS_data, Spectral_data
+from plantcv.plantcv.transform.standard_matrices import std_color_matrix, astro_color_matrix
 
 PLANT_SHAPE = (100, 120)
 PLANT_RECTS = {
@@ -181,6 +200,22 @@ TILE_BGR = ((40, 100, 160), (100, 160, 220), (160, 220, 40))
 TWO_REGION_SHAPE = (20, 60)
 NB_PDFS = {"plant": {"hue": (60, 10), "saturation": (255, 30), "value": (128, 40)},
            "background": {"hue": (0, 10), "saturation": (0, 30), "value": (128, 40)}}
+COLOR_CARD_PITCH = 70
+COLOR_CARD_CHIP = 49
+COLOR_CARD_MARGIN = 40
+COLOR_CARD_BODY_BGR = (20, 20, 20)
+# 6 x 4 chips with a border of one gap (pitch - chip) around them, plus the margin
+COLOR_CARD_SHAPE = (2 * COLOR_CARD_MARGIN + 7 * COLOR_CARD_PITCH - COLOR_CARD_CHIP,
+                    2 * COLOR_CARD_MARGIN + 5 * COLOR_CARD_PITCH - COLOR_CARD_CHIP)
+ASTRO_CARD_SCALE = 0.4
+ASTRO_CARD_MARGIN = 30
+ASTRO_CARD_BODY_BGR = (235, 235, 235)
+ASTRO_CARD_SHAPE = (300, 340)
+ASTRO_TAG_IDS = (46, 47, 48, 49)
+# Top-left (x, y) of each tag and center (x, y) of each chip on the 600 x 700 reference card
+ASTRO_TAG_TOPLEFT = {46: (0, 495), 47: (0, 0), 48: (595, 0), 49: (595, 495)}
+ASTRO_CHIP_CENTERS = tuple((94 + 128 * i, 271) for i in range(5)) + tuple((62 + 65 * i, 371) for i in range(10))
+COLOR_CAST_BGR = (0.9, 0.8, 0.7)
 TESTDATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "testdata")
 CROPREPORTER_SHAPE = (10, 12)
 PARALLEL_TEMPLATES = {
@@ -997,3 +1032,121 @@ def psii_dataarray(var):
                         dims=("x", "y", "frame_label", "measurement"),
                         coords={"frame_label": frame_labels, "frame_num": ("frame_label", [0, 1, 2, 3]),
                                 "measurement": measurements}, name=var)
+
+
+def _chip_bgr(colors):
+    """Convert a color matrix (chip number, R, G, B in 0-1) to uint8 BGR chip colors."""
+    return np.rint(np.asarray(colors)[:, :0:-1] * 255).astype(np.uint8)
+
+
+def color_card(colors=None, rotation=0):
+    """Create an image of a 4 x 6 ColorChecker-style color card on a gray background.
+
+    Parameters
+    ----------
+    colors : numpy.ndarray, optional
+        24 x 4 color matrix (chip number, R, G, B in 0-1) in row-major chip order, white chip first.
+        Defaults to std_color_matrix(pos=3).
+    rotation : int
+        Number of times to rotate the image by 90 degrees counterclockwise (default 0).
+
+    Returns
+    -------
+    numpy.ndarray
+        521 x 381 uint8 BGR image (rows and columns swap when rotation is odd).
+    """
+    colors = std_color_matrix(pos=3) if colors is None else colors
+    bgr = _chip_bgr(colors).reshape(6, 4, 3)
+    img = np.full((*COLOR_CARD_SHAPE, 3), BACKGROUND_BGR, dtype=np.uint8)
+    m = COLOR_CARD_MARGIN
+    img[m:-m, m:-m] = COLOR_CARD_BODY_BGR
+    for (row, col), (y, x) in zip(np.ndindex(6, 4), color_card_chip_origins()):
+        img[y:y + COLOR_CARD_CHIP, x:x + COLOR_CARD_CHIP] = bgr[row, col]
+    return np.rot90(img, k=rotation).copy()
+
+
+def color_card_chip_origins():
+    """Get the top-left (row, column) of each chip of color_card, in row-major chip order.
+
+    Returns
+    -------
+    list
+        24 (row, column) tuples.
+    """
+    start = COLOR_CARD_MARGIN + COLOR_CARD_PITCH - COLOR_CARD_CHIP
+    return [(start + row * COLOR_CARD_PITCH, start + col * COLOR_CARD_PITCH) for row, col in np.ndindex(6, 4)]
+
+
+def color_card_mask():
+    """Create a labeled mask of the color_card chips.
+
+    Returns
+    -------
+    numpy.ndarray
+        521 x 381 uint8 mask, 10 for the pixels of the first chip, 20 for the second, and so on up to 240,
+        and 0 elsewhere.
+    """
+    mask = np.zeros(COLOR_CARD_SHAPE, dtype=np.uint8)
+    for i, (y, x) in enumerate(color_card_chip_origins(), start=1):
+        mask[y:y + COLOR_CARD_CHIP, x:x + COLOR_CARD_CHIP] = 10 * i
+    return mask
+
+
+def astro_card(tag_ids=ASTRO_TAG_IDS):
+    """Create an image of an astrobotany.com-style color card on a white background.
+
+    Parameters
+    ----------
+    tag_ids : tuple
+        ArUco tag (DICT_4X4_50) to draw at the positions of tags 46, 47, 48 and 49, in that order; None
+        leaves a position empty (default (46, 47, 48, 49)).
+
+    Returns
+    -------
+    numpy.ndarray
+        300 x 340 uint8 BGR image with chip colors from astro_color_matrix().
+    """
+    aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
+    scale, m = ASTRO_CARD_SCALE, ASTRO_CARD_MARGIN
+    tag_size = int(105 * scale)
+    img = np.full((*ASTRO_CARD_SHAPE, 3), 255, dtype=np.uint8)
+    img[m:-m, m:-m] = ASTRO_CARD_BODY_BGR
+    for position, tag_id in zip(ASTRO_TAG_IDS, tag_ids):
+        if tag_id is not None:
+            x, y = (m + int(v * scale) for v in ASTRO_TAG_TOPLEFT[position])
+            img[y:y + tag_size, x:x + tag_size] = cv2.aruco.generateImageMarker(aruco_dict, tag_id, tag_size)[..., None]
+    for (x, y), bgr in zip(ASTRO_CHIP_CENTERS, _chip_bgr(astro_color_matrix())):
+        radius = 50 if y == 271 else 28
+        cv2.circle(img, (m + int(x * scale), m + int(y * scale)), int(radius * scale), bgr.tolist(), -1)
+    return img
+
+
+def color_card_scene():
+    """Create an image with color_card() on the left and astro_card() on the right.
+
+    Returns
+    -------
+    numpy.ndarray
+        521 x 721 uint8 BGR image; the astro card fills rows 0:300 of columns 381:721.
+    """
+    img = np.full((COLOR_CARD_SHAPE[0], COLOR_CARD_SHAPE[1] + ASTRO_CARD_SHAPE[1], 3), BACKGROUND_BGR,
+                  dtype=np.uint8)
+    img[:, :COLOR_CARD_SHAPE[1]] = color_card()
+    img[:ASTRO_CARD_SHAPE[0], COLOR_CARD_SHAPE[1]:] = astro_card()
+    return img
+
+
+def color_cast(img):
+    """Scale the B, G and R channels of an image by 0.9, 0.8 and 0.7 (COLOR_CAST_BGR).
+
+    Parameters
+    ----------
+    img : numpy.ndarray
+        uint8 BGR image.
+
+    Returns
+    -------
+    numpy.ndarray
+        uint8 BGR image, rounded to the nearest integer.
+    """
+    return np.rint(img * np.array(COLOR_CAST_BGR)).astype(np.uint8)

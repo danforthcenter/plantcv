@@ -10,17 +10,18 @@ from plantcv.plantcv.transform.color_correction import (calc_transformation_matr
 from plantcv.plantcv.transform.get_color_matrix import get_color_matrix, get_matrix_m
 from plantcv.plantcv.transform.standard_matrices import std_color_matrix, astro_color_matrix
 from plantcv.plantcv.transform.detect_color_card import detect_color_card
+from tests import synthetic
 
 
-def test_affine_color_correction(transform_test_data):
+def test_affine_color_correction():
     """Test for Plantcv."""
     outputs.clear()
     # apply affine color correction to an image and check that the chip colors
     # get closer to the standard values
-    img = cv2.imread(transform_test_data.colorcard_img)
-    # parameters hard coded for the image used
-    mask = create_color_card_mask(rgb_img=img, radius=20, start_coord=(1000, 400),
-                                  spacing=(145, 145), nrows=6, ncols=4)
+    img = synthetic.color_cast(synthetic.color_card())
+    # The first chip is centered at (85, 85) and the chips are 70 px apart
+    mask = create_color_card_mask(rgb_img=img, radius=20, start_coord=(85, 85),
+                                  spacing=(70, 70), nrows=6, ncols=4)
     _, s_matrix = get_color_matrix(rgb_img=img, mask=mask)
     t_matrix = std_color_matrix(pos=3)
     corrected_img = affine_color_correction(rgb_img=img, source_matrix=s_matrix,
@@ -34,11 +35,14 @@ def test_affine_color_correction(transform_test_data):
     dist_correct = np.sum((c_matrix - t_matrix)**2)
 
     assert dist_correct <= dist_source
+    # The cast is a per-channel scale, which the affine correction undoes up to rounding: recorded value 1
+    # (8-bit units; each chip is uniform, so its mean is a whole number of 8-bit units)
+    assert np.max(np.abs(np.rint(c_matrix[:, 1:] * 255) - np.rint(t_matrix[:, 1:] * 255))) <= 1
 
 
-def test_affine_color_correction_bad_shape(transform_test_data):
+def test_affine_color_correction_bad_shape():
     """Test for PlantCV."""
-    img = cv2.imread(transform_test_data.colorcard_img)
+    img = synthetic.color_card()
     t_matrix = std_color_matrix(pos=3)
     with pytest.raises(RuntimeError):
         _ = affine_color_correction(rgb_img=img, source_matrix=t_matrix,
@@ -305,10 +309,9 @@ def test_create_color_card_mask(transform_test_data):
                                                                    220], dtype=np.uint8)))
 
 
-def test_cameratrax_and_astro_consistent_color_calibration(transform_test_data):
+def test_cameratrax_and_astro_consistent_color_calibration():
     """Test for PlantCV."""
-    # Load rgb image
-    rgb_img = cv2.imread(transform_test_data.cameratrax_astro_img)
+    rgb_img = synthetic.color_cast(synthetic.color_card_scene())
 
     # Correct with cameratrax card and measure corrected astrocard values
     ctrax_mat = detect_color_card(rgb_img=rgb_img)
@@ -320,7 +323,10 @@ def test_cameratrax_and_astro_consistent_color_calibration(transform_test_data):
     astro_std_mat = astro_color_matrix()
     astro_corr_img = affine_color_correction(rgb_img=rgb_img, source_matrix=astro_mat, target_matrix=astro_std_mat)
 
-    diff = np.abs(ctrax_corr_img - astro_corr_img)
+    # Subtract as signed integers; uint8 subtraction would wrap a difference of -1 around to 255
+    diff = np.abs(ctrax_corr_img.astype(int) - astro_corr_img.astype(int))
     channel_diffs = np.sum(diff, axis=(0, 1)) / (diff.shape[0] * diff.shape[1])
     # Check for similarity in corrected color: mean absolute color difference less than 2.5 (1% of range)
     assert all(channel_diffs < 3) and np.mean(channel_diffs) < 2.5
+    # Both cards carry the same cast, so the two corrections agree up to rounding: recorded value 1
+    assert np.max(diff) <= 1

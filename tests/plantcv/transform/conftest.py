@@ -12,8 +12,6 @@ class TransformTestData:
         """Initialize simple variables."""
         # Test data directory
         self.datadir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "testdata")
-        # RGB image with partial cover card
-        self.partial_card_rgb_img = os.path.join(self.datadir, "partial_card_rgb.png")
         # Target RGB image
         self.target_img = os.path.join(self.datadir, "target_img.png")
         # Target matrix file
@@ -38,18 +36,6 @@ class TransformTestData:
         self.transformation_matrix_file = os.path.join(self.datadir, "transformation_matrix.npz")
         # Corrected source image
         self.source_corrected = os.path.join(self.datadir, "source_corrected.png")
-        # Color card image
-        self.colorcard_img = os.path.join(self.datadir, "colorcard_img.png")
-        # Astro color card image
-        self.astrocard_img = os.path.join(self.datadir, "astrocard_img.png")
-        # Cameratrax and astrocard in same image
-        self.cameratrax_astro_img = os.path.join(self.datadir, "cameratrax_and_astro_img.png")
-        # Duplicate aruco tags image
-        self.duplicate_aruco_tags = os.path.join(self.datadir, "duplicate_aruco_tags.png")
-        # Image of non-astrocard aruco tags
-        self.wrong_aruco_tags = os.path.join(self.datadir, "wrong_aruco_tags.png")
-        # Image of astrocard with some aruco tags not in image or too blurry to be identified
-        self.astrocard_missing_tags = os.path.join(self.datadir, "astrocard_missing_tags.png")
         # Checkerboard image directory
         self.checkerboard_imgdir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                                 "..", "..", "testdata", "checkerboard_imgdir")
