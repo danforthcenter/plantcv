@@ -8,6 +8,7 @@ TILES = np.array(synthetic.TILE_BGR, dtype=int)
 
 def _merge_line(length, method):
     """Expected BGR values along the merge axis for 3 tiles of the given length overlapping by 30%."""
+    # Same formula as merge_images: int(height * overlap_percentage / 100).
     n = int(length * 30 / 100)
     step = length - n
     line = np.zeros((3 * length - 2 * n, 3), dtype=int)
@@ -19,7 +20,9 @@ def _merge_line(length, method):
             # Weight of tile i: 1 (stacked), 1/2 (average), x/n (gradual). Neighboring tiles differ
             # by a multiple of 60, so with n = 3 or 6 every blend is a whole number.
             weight = {"stacked": (1, 1), "average": (1, 2), "gradual": (x, n)}[method]
-            line[start + x] = a + (b - a) * weight[0] // weight[1]
+            # given positive (b-a) and whole results / and // should be the same.
+            # using / here to be exact.
+            line[start + x] = a + (b - a) * weight[0] / weight[1]
         line[start + n:start + length] = b
     return line
 
