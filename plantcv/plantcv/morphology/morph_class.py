@@ -121,7 +121,7 @@ class Morph:
     @property
     def branch_points(self):
         """branch points of skeleton"""
-        branch_list, _, _, _ = _find_branch_pts(self.skeleton)
+        branch_list, _, _ = _find_branch_pts(self.skeleton)
         # switch to X, Y
         self.branch_points = [(t[1], t[0]) for t in branch_list]
         return self._branch_points
