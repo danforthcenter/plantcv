@@ -196,6 +196,16 @@ def triangle(gray_img, object_type="light", xstep=1):
     :param xstep: int
     :return bin_img: numpy.ndarray
     """
+    # Set the threshold method. The image is thresholded at the triangle value itself, so no Otsu flag
+    # (with cv2.THRESH_OTSU set, OpenCV ignores the value it is given and applies Otsu's)
+    threshold_method = ""
+    if object_type.upper() == "LIGHT":
+        threshold_method = cv2.THRESH_BINARY
+    elif object_type.upper() == "DARK":
+        threshold_method = cv2.THRESH_BINARY_INV
+    else:
+        fatal_error('Object type ' + str(object_type) + ' is not "light" or "dark"!')
+
     # Calculate automatic threshold value based on triangle algorithm
     hist = cv2.calcHist([gray_img], [0], None, [256], [0, 255])
 
@@ -218,8 +228,16 @@ def triangle(gray_img, object_type="light", xstep=1):
     # Combine x,y
     max_peak_xy = [max_peak[0], max_peak_int]
 
-    # Find final point at end of long tail
+    # Find final point at end of the tail on the object's side of the peak:
+    # toward 255 for a light object, toward 0 for a dark one
+    direction = 1
     end_x = len(newhist) - 1
+    if threshold_method == cv2.THRESH_BINARY_INV:
+        direction = -1
+        end_x = 0
+    if max_peak[0] == end_x:
+        fatal_error(f"The histogram peak is at {end_x}, the end of the {object_type} side, so there is no tail "
+                    "to search for a triangle threshold.")
     end_y = newhist[end_x]
     end_xy = [end_x, end_y]
 
@@ -231,9 +249,11 @@ def triangle(gray_img, object_type="light", xstep=1):
     peaks = []
     dists = []
 
-    for i in range(x_coords[0], x_coords[1], xstep):
-        distance = (((x_coords[1] - x_coords[0]) * (y_coords[0] - hist[i])) -
-                    ((x_coords[0] - i) * (y_coords[1] - y_coords[0]))) / math.sqrt(
+    for i in range(x_coords[0], x_coords[1], direction * xstep):
+        # Signed distance from the peak-to-end line; multiplied by the direction so that, searching either
+        # way, it is largest for the bin furthest below the line
+        distance = direction * (((x_coords[1] - x_coords[0]) * (y_coords[0] - hist[i])) -
+                                ((x_coords[0] - i) * (y_coords[1] - y_coords[0]))) / math.sqrt(
             (float(x_coords[1]) - float(x_coords[0])) *
             (float(x_coords[1]) - float(x_coords[0])) +
             ((float(y_coords[1]) - float(y_coords[0])) *
@@ -242,15 +262,6 @@ def triangle(gray_img, object_type="light", xstep=1):
         dists.append(distance)
     autothresh = [peaks[x] for x in [i for i, x in enumerate(list(dists)) if x == max(list(dists))]]
     autothreshval = autothresh[0]
-
-    # Set the threshold method
-    threshold_method = ""
-    if object_type.upper() == "LIGHT":
-        threshold_method = cv2.THRESH_BINARY + cv2.THRESH_OTSU
-    elif object_type.upper() == "DARK":
-        threshold_method = cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU
-    else:
-        fatal_error('Object type ' + str(object_type) + ' is not "light" or "dark"!')
 
     params.device += 1
 
