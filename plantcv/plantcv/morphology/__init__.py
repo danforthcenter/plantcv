@@ -1,6 +1,5 @@
 from plantcv.plantcv.morphology.segment_skeleton import segment_skeleton
 from plantcv.plantcv.morphology.segment_sort import segment_sort
-from plantcv.plantcv.morphology.check_cycles import check_cycles
 from plantcv.plantcv.morphology.segment_angle import segment_angle
 from plantcv.plantcv.morphology.segment_path_length import segment_path_length
 from plantcv.plantcv.morphology.segment_euclidean_length import segment_euclidean_length
