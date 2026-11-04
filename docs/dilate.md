@@ -3,7 +3,7 @@
 Perform morphological 'dilation' filtering. Adds pixel in center of the kernel if 
 conditions set in kernel are true.
 
-**plantcv.dilate**(*gray_img, ksize, i, roi=None*)
+**plantcv.dilate**(*gray_img, ksize, i=1, roi=None*)
 
 **returns** image after dilation
 
