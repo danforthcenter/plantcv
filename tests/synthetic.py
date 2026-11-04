@@ -166,6 +166,16 @@ taken by a pinhole camera without lens distortion: 320 x 240 pixels, focal lengt
 and principal point (160, 120) (CHECKERBOARD_CAMERA). The board lies in the plane z = 0 with one-square
 units; CHECKERBOARD_POSES gives its rotation and translation in each of the six views. A seventh image
 shows a board with 4 x 3 inner corners in the first pose.
+
+The wells image (wells_image) is a 230 x 250 grayscale image with 4 rows and 6 columns of filled circles
+of radius 15, centered at x = 25, 65, ..., 225 and y = 25, 65, 105, 145, and two circles of radius 10
+centered at (65, 190) and (185, 190). Circles are 200 and the background 50, and the image is smoothed
+with a 5 x 5 Gaussian blur so that the Hough transform finds the circles.
+
+The Bayer mosaic (bayer_mosaic) samples a BGR image in the OpenCV BG layout: blue at odd rows and odd
+columns, red at even rows and even columns, and green elsewhere. Demosaicing the mosaic of a uniform
+BAYER_BGR = (40, 100, 160) image with the BG pattern gives back that color at every pixel; the RG pattern
+swaps blue and red, giving (160, 100, 40).
 """
 import os
 import json
@@ -229,6 +239,13 @@ CHECKERBOARD_CAMERA = ((300.0, 0.0, 160.0), (0.0, 300.0, 120.0), (0.0, 0.0, 1.0)
 CHECKERBOARD_POSES = (((0.3, 0, 0), (-5, -3.5, 15)), ((-0.3, 0, 0), (-5, -3.5, 15)),
                       ((0, 0.3, 0), (-5, -3.5, 15)), ((0, -0.3, 0), (-5, -3.5, 15)),
                       ((0.2, 0.2, 0.1), (-5, -4, 16)), ((-0.2, 0.25, -0.1), (-4.5, -3, 14)))
+WELLS_SHAPE = (230, 250)
+WELL_RADIUS = 15
+# (x, y) centers of the 4 x 6 wells and of the two smaller circles below them
+WELL_CENTERS = tuple((25 + 40 * col, 25 + 40 * row) for row in range(4) for col in range(6))
+WELL_EXTRA_CENTERS = ((65, 190), (185, 190))
+WELL_EXTRA_RADIUS = 10
+BAYER_BGR = (40, 100, 160)
 TESTDATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "testdata")
 CROPREPORTER_SHAPE = (10, 12)
 PARALLEL_TEMPLATES = {
@@ -1217,3 +1234,38 @@ def write_checkerboards(outdir):
     images["bad_checkerboard.png"] = _checkerboard_view((4, 3), *CHECKERBOARD_POSES[0])
     write_images(outdir, images)
     return str(outdir)
+
+
+def wells_image():
+    """Create a grayscale image of 24 wells in 4 rows and 6 columns, and two smaller circles below them.
+
+    Returns
+    -------
+    numpy.ndarray
+        230 x 250 uint8 image.
+    """
+    img = np.full(WELLS_SHAPE, 50, dtype=np.uint8)
+    for center in WELL_CENTERS:
+        cv2.circle(img, center, WELL_RADIUS, 200, -1)
+    for center in WELL_EXTRA_CENTERS:
+        cv2.circle(img, center, WELL_EXTRA_RADIUS, 200, -1)
+    return cv2.GaussianBlur(img, (5, 5), 0)
+
+
+def bayer_mosaic(img):
+    """Sample a BGR image in the OpenCV BG Bayer layout.
+
+    Parameters
+    ----------
+    img : numpy.ndarray
+        BGR image.
+
+    Returns
+    -------
+    numpy.ndarray
+        Single-channel image of the same height, width and dtype.
+    """
+    mosaic = img[..., 1].copy()
+    mosaic[1::2, 1::2] = img[1::2, 1::2, 0]
+    mosaic[0::2, 0::2] = img[0::2, 0::2, 2]
+    return mosaic
