@@ -1,44 +1,52 @@
 """Tests for pcv.analyze.npq."""
+import os
 import pytest
 import numpy as np
-from plantcv.plantcv import outputs
+from plantcv.plantcv._globals import params, outputs
 from plantcv.plantcv.photosynthesis.read_cropreporter import read_cropreporter
 from plantcv.plantcv.analyze import npq as analyze_npq
+from tests import synthetic
 
 
-def test_npq_cropreporter(test_data):
+def test_npq_cropreporter(monkeypatch, tmpdir):
     """Test for PlantCV."""
     # Clear results
     outputs.clear()
-    source_path = test_data.photosynthesis.cropreporter_npq
+    # set up for printing
+    cache_dir = tmpdir.mkdir("cache")
+    monkeypatch.setattr(params, "debug", "print")
+    monkeypatch.setattr(params, "device", 1)
+    monkeypatch.setattr(params, "debug_outdir", cache_dir)
+    source_path = synthetic.write_cropreporter(tmpdir, "v441", ["NPQ"])
     ps = read_cropreporter(filename=source_path)
     _ = analyze_npq(ps=ps,
                     labeled_mask=np.ones(ps.ojip_dark.shape[0:2]),
                     auto_fm=False,
                     measurement_labels=["Fq/Fm"],
                     label="prefix", min_bin="auto", max_bin="auto")
-    assert np.isclose(outputs.observations["prefix_1"]["npq_median_Fq/Fm"]["value"], 1.09790)
+    assert np.isclose(outputs.observations["prefix_1"]["npq_median_Fq/Fm"]["value"], 3)
+    assert os.path.exists(os.path.join(cache_dir, "2_NPQ_dataarray.png"))
 
 
-def test_npq_cropreporter_auto(test_data):
+def test_npq_cropreporter_auto(tmp_path):
     """Test for PlantCV."""
     # Clear results
     outputs.clear()
-    source_path = test_data.photosynthesis.cropreporter_npq
+    source_path = synthetic.write_cropreporter(tmp_path, "v441", ["NPQ"])
     ps = read_cropreporter(filename=source_path)
     _ = analyze_npq(ps=ps,
                     labeled_mask=(255 * np.ones(ps.ojip_dark.shape[0:2])).astype(np.uint8),
                     auto_fm=True,
                     measurement_labels=["Fq/Fm"],
                     label="prefix", min_bin="auto", max_bin="auto")
-    assert np.isclose(outputs.observations["prefix_1"]["npq_median_Fq/Fm"]["value"], 1.09790)
+    assert np.isclose(outputs.observations["prefix_1"]["npq_median_Fq/Fm"]["value"], 3)
 
 
-def test_npq_pml_pmd_cropreporter(test_data):
+def test_npq_pml_pmd_cropreporter(tmp_path):
     """Test for PlantCV."""
     # Clear results
     outputs.clear()
-    source_path = test_data.photosynthesis.cropreporter_v653
+    source_path = synthetic.write_cropreporter(tmp_path, "v653", ["PMD", "PML"])
     ps = read_cropreporter(filename=source_path)
     ps.ojip_dark = None
     ps.ojip_light = None
@@ -47,21 +55,22 @@ def test_npq_pml_pmd_cropreporter(test_data):
                     auto_fm=True,
                     measurement_labels=["Fq/Fm"],
                     label="prefix", min_bin="auto", max_bin="auto")
-    assert np.isclose(outputs.observations["prefix_1"]["npq_median_Fq/Fm"]["value"], 0.1)
+    assert np.isclose(outputs.observations["prefix_1"]["npq_median_Fq/Fm"]["value"], 3)
 
 
-def test_npq_pmt_cropreporter(test_data):
+def test_npq_pmt_cropreporter(tmp_path):
     """Test for PlantCV."""
     # Clear results
     outputs.clear()
-    source_path = test_data.photosynthesis.cropreporter_pmt
+    source_path = synthetic.write_cropreporter(tmp_path, "pmt", ["PMT"])
     ps = read_cropreporter(filename=source_path)
     _ = analyze_npq(ps=ps,
                     labeled_mask=np.ones(ps.pmt.pam_time.shape[0:2]),
                     auto_fm=False,
                     measurement_labels=["Fq/Fm", "other"],
                     label="prefix", min_bin="auto", max_bin="auto")
-    assert bool(outputs.observations["prefix_1"]["npq_median_Fq/Fm"])
+    assert np.isnan(outputs.observations["prefix_1"]["npq_median_Fq/Fm"]["value"])
+    assert np.isclose(outputs.observations["prefix_1"]["npq_median_other"]["value"], 3)
 
 
 @pytest.mark.parametrize("mlabels, tmask",
@@ -69,9 +78,9 @@ def test_npq_pmt_cropreporter(test_data):
                          [[None, np.ones((2, 2))],
                           # test bad measurement_labels
                           [['fm', 'fm2'], "mask"]])
-def test_npq_fatalerror(mlabels, tmask, test_data):
+def test_npq_fatalerror(mlabels, tmask, tmp_path):
     """Test for PlantCV."""
-    source_path = test_data.photosynthesis.cropreporter_npq
+    source_path = synthetic.write_cropreporter(tmp_path, "v441", ["NPQ"])
     ps = read_cropreporter(filename=source_path)
     if isinstance(tmask, str):
         tmask = np.ones(ps.ojip_dark.shape[0:2])
@@ -83,9 +92,9 @@ def test_npq_fatalerror(mlabels, tmask, test_data):
                         measurement_labels=mlabels, label="default")
 
 
-def test_npq_bad_var(test_data):
+def test_npq_bad_var(tmp_path):
     """Test for PlantCV."""
-    source_path = test_data.photosynthesis.cropreporter_rfp
+    source_path = synthetic.write_cropreporter(tmp_path, "gfp", ["RFP"])
     ps = read_cropreporter(filename=source_path)
     with pytest.raises(RuntimeError):
         _ = analyze_npq(ps=ps,
@@ -93,9 +102,9 @@ def test_npq_bad_var(test_data):
                         measurement_labels=None)
 
 
-def test_npq_wrong_num_labels(test_data):
+def test_npq_wrong_num_labels(tmp_path):
     """Test for PlantCV."""
-    source_path = test_data.photosynthesis.cropreporter_npq
+    source_path = synthetic.write_cropreporter(tmp_path, "v441", ["NPQ"])
     ps = read_cropreporter(filename=source_path)
     with pytest.raises(RuntimeError):
         _ = analyze_npq(ps=ps,

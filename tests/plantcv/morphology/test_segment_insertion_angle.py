@@ -3,27 +3,35 @@ import cv2
 import numpy as np
 from plantcv.plantcv import outputs
 from plantcv.plantcv.morphology.segment_insertion_angle import segment_insertion_angle
+from tests import synthetic
 
 
-@pytest.mark.parametrize("size", [3, 100])
-def test_segment_insertion_angle(size, morphology_test_data):
+@pytest.mark.parametrize("size,expected", [
+    # The vertical stem meets the horizontal leaves at 90 degrees and the diagonal leaves at 45 degrees
+    [3, [90, 90, 45, 45]],
+    # The 28-pixel leaves are pruned away completely (see test_segment_tangent_angle)
+    [100, ["NA", "NA", 45, 45]]])
+def test_segment_insertion_angle(size, expected):
     """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
-    skel = cv2.imread(morphology_test_data.skel_img, -1)
-    leaf_obj = morphology_test_data.load_segments(morphology_test_data.segments_file, "leaves")
-    stem_obj = morphology_test_data.load_segments(morphology_test_data.segments_file, "stem")
-    _ = segment_insertion_angle(skel_img=skel, segmented_img=skel, leaf_objects=leaf_obj, stem_objects=stem_obj, size=size)
-    assert len(outputs.observations['default']['segment_insertion_angle']['value']) == 4
+    skel = synthetic.skeleton()
+    leaf_obj, stem_obj = synthetic.skeleton_segments()
+    _ = segment_insertion_angle(skel_img=skel, segmented_img=skel, leaf_objects=leaf_obj, stem_objects=stem_obj,
+                                size=size)
+    # The stem fit is vertical to float32 precision, so angles are within 1e-4 degrees
+    assert outputs.observations['default']['segment_insertion_angle']['value'] == pytest.approx(expected, abs=1e-4)
 
 
-def test_segment_insertion_angle_bad_stem(morphology_test_data):
+def test_segment_insertion_angle_bad_stem():
     """Test for PlantCV."""
-    skel = cv2.imread(morphology_test_data.skel_img, -1)
-    leaf_obj = morphology_test_data.load_segments(morphology_test_data.segments_file, "leaves")
+    skel = synthetic.skeleton()
+    leaf_obj, _ = synthetic.skeleton_segments()
+    # A stem piece in the far corner, too far from the lower left leaf to be merged with it
     stem_obj = [leaf_obj[0], np.array([[[0, 0]], [[1, 1]], [[2, 2]], [[3, 3]], [[4, 4]]], dtype=np.int32)]
     with pytest.raises(RuntimeError):
-        _ = segment_insertion_angle(skel_img=skel, segmented_img=skel, leaf_objects=leaf_obj, stem_objects=stem_obj, size=10)
+        _ = segment_insertion_angle(skel_img=skel, segmented_img=skel, leaf_objects=leaf_obj, stem_objects=stem_obj,
+                                    size=10)
 
 
 def test_segment_insertion_angle_overflow():
@@ -63,7 +71,7 @@ def test_segment_insertion_angle_vertical_stem():
     assert (labeled_img[:, 250] == 150).any()
 
 
-def test_segment_insertion_angle_slanted_stem(morphology_test_data):
+def test_segment_insertion_angle_slanted_stem():
     """Regression test for PlantCV."""
     # Clear previous outputs
     outputs.clear()

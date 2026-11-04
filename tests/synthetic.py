@@ -35,11 +35,87 @@ hull, so its solidity is the frame area divided by the square area.
     130:150   20     2           144      0.36
     160:180   20     1           76       0.19
     190:230   40     1           156      0.0975
+
+The skeleton is a 1-pixel-wide, 8-connected line drawing on the 100 x 120 canvas. Its points are
+given as (x, y) = (column, row), as in OpenCV.
+
+    Branch            Pixels                                       Tip
+    stem              x = 60, y = 45..89                           (60, 89)
+    upper left leaf   (60 - k, 45 - k), k = 1..20                  (40, 25)
+    upper right leaf  (60 + k, 45 - k), k = 1..20                  (80, 25)
+    lower left leaf   y = 70, x = 31..59                           (31, 70)
+    right leaf        y = 58, x = 61..79, then x = 80, y = 59..68  (80, 68)
+
+The skeleton has 143 pixels, 5 tips and 3 branch points: (60, 45), where the upper leaves leave the
+top of the stem, and (60, 58) and (60, 70). Removing the 3 x 3 block around each branch point, as
+plantcv.morphology.segment_skeleton does, leaves 7 segments:
+
+    Segment           Pixels   Ends
+    lower left leaf   28       (31, 70), (58, 70)
+    right leaf        28       (62, 58), (80, 68); it bends from horizontal to vertical
+    upper left leaf   19       (40, 25), (58, 43)
+    upper right leaf  19       (62, 43), (80, 25)
+    stem (bottom)     18       (60, 72), (60, 89)
+    stem (middle)     9        (60, 60), (60, 68)
+    stem (top)        10       (60, 47), (60, 56)
+
+The cycle option adds the outline of the square x, y = 5..14, separate from the plant, which
+encloses one cycle. The skeleton mask is the skeleton dilated by a 3 x 3 square.
+
+The hyperspectral datacube has 2 lines, 3 samples, and one band per nanometer from 400 to 1000 nm
+(601 bands), so the band closest to any whole-nanometer wavelength in that range is exactly that
+wavelength. Pixel p = 3 * line + sample (0 to 5) has reflectance (wavelength / 700) ** (p - 2.5). Every
+pixel has reflectance 1 at 700 nm; pixels 0 to 2 fall and pixels 3 to 5 rise with wavelength, each
+along a different curve. Every spectral index therefore takes several distinct non-negative values,
+which a pseudo-RGB image of the index needs. The hyperspectral mask selects the middle column,
+pixels 1 and 4, whose reflectance is (wavelength / 700) ** -1.5 and (wavelength / 700) ** 1.5.
+
+The CropReporter datasets are 10 x 12 (rows x columns). Each header is a real CropReporter .INF file
+(CROPREPORTER_TEMPLATES) with ImageRows and ImageCols set to 10 and 12. Every frame is uniform and
+takes its value from these fluorescence levels (CROPREPORTER_LEVELS):
+
+    Dark-adapted       Light-adapted       Second dark adaptation
+    Fdark      10      Flight      20      Fdarkpp      15
+    F0         300     Fp          150     F0pp         280
+    Fm         1000    Fmp         250     Fmpp         800
+    Fdarksat   500     Flightsat   200     Fdarksatpp   400
+                       F0p         125
+
+So Fv/Fm = (1000 - 300) / 1000 = 0.7, Fq'/Fm' = (250 - 150) / 250 = 0.4, Fv''/Fm'' = (800 - 280) / 800
+= 0.65, and NPQ = Fm / Fmp - 1 = 3.
+
+    Dataset   Template   Frames
+    PSD       v441       Fdark, F0, 400, 500, 600, 700, Fm, 990, 980, ..., 860 (21 frames)
+    PSL       v441       Flight, Fp, 170, 190, 210, 230, Fmp, 245, 240, ..., 180 (21 frames)
+    NPQ       v441       Fdark, F0, Fm, Flight, Fp, Fmp
+    CHL       v441       Fdark, 1200
+    CLR       v441       25600, 38400, 51200 (red, green, blue; 100, 150, 200 as 8-bit values)
+    SPC       v441       13107, 26214, 39321 (540, 710, 770 nm; 0.2, 0.4, 0.6 of the 16-bit range)
+    PMD       v653       Fdark, F0, Fm, Fdarksat
+    PML       v653       Flight, Fp, Fmp, Flightsat
+    GFP       gfp        Fdark, 700, 90 (GFP, autofluorescence)
+    RFP       gfp        Fdark, 650
+    APH       aph        600, 800 (red, far-red)
+    PMT       pmt        Fdark, F0, Fm, Fdarksat, Flight, Fp, Fmp, Flightsat, F0p
+
+The v441 header puts F0 and Fp at frame 1 and Fm and Fmp at frame 6 (FvFmFrameF0=0, FvFmFrameFm=5,
+FqFmFrameFsp=0, FqFmFrameFmp=5), and in PSD and PSL every later frame is lower than Fm or Fmp. In every
+dataset Fm and Fmp are the brightest frames after F0 and Fp. The pmt header has one dark-adapted and one
+light-adapted measurement (TmPamMeasFvfm=1, TmPamMeasFqfm=1); pmt_frames adds measurements of the second
+dark adaptation for headers with a larger TmPamMeasFvfm.
+
+The PSII DataArray (psii_dataarray) is 10 x 10 with 4 frames and one measurement. Only pixel (row 5,
+column 5) is non-zero; it is 1, 2, 10 and 8 in frames 0-3, so frame 2 is the brightest. psii_mask selects
+that pixel.
+
+The fluorescence image (fluor_image) is the grayscale image of the synthetic plant as unsigned 16-bit
+values (each value times 256) with a 20-pixel background border, 140 x 160 in total.
 """
 import os
 import cv2
 import numpy as np
-from plantcv.plantcv.classes import MS_data
+import xarray as xr
+from plantcv.plantcv.classes import MS_data, Spectral_data
 
 PLANT_SHAPE = (100, 120)
 PLANT_RECTS = {
@@ -57,9 +133,47 @@ TWO_PLANTS_SHAPE = (50, 125)
 TWO_PLANTS_CENTERS = ((25, 30), (25, 90))
 TWO_PLANTS_RADIUS = 12
 SQUARES_SHAPE = (60, 250)
+SKELETON_TIPS = ((60, 89), (31, 70), (80, 68), (80, 25), (40, 25))
+SKELETON_BRANCH_PTS = ((60, 45), (60, 58), (60, 70))
+SPECTRAL_SHAPE = (2, 3)
+SPECTRAL_WAVELENGTHS = range(400, 1001)
 # (row, column, size, thickness) of each square; thickness 0 means filled
 SQUARES = ((10, 10, 10, 0), (10, 30, 20, 0), (10, 60, 20, 4), (10, 90, 30, 5),
            (10, 130, 20, 2), (10, 160, 20, 1), (10, 190, 40, 1))
+TESTDATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "testdata")
+CROPREPORTER_SHAPE = (10, 12)
+CROPREPORTER_TEMPLATES = {
+    "v441": os.path.join(TESTDATA, "cropreporter_v441", "PSII_HDR_020321_WT_TOP_1.INF"),
+    "v653": os.path.join(TESTDATA, "cropreporter_v653", "HDR_dark_light.INF"),
+    # The GFP and RFP measurements came with identical headers
+    "gfp": os.path.join(TESTDATA, "cropreporter_gfp", "HDR_DYSeed_20251222191634684.INF"),
+    "aph": os.path.join(TESTDATA, "cropreporter_aph", "HDR_2025-12-12_tob1_20251212205712029.INF"),
+    "pmt": os.path.join(TESTDATA, "cropreporter_pmt", "HDR_E0001P0007N0001_GCU24100090_20260226.INF"),
+}
+CROPREPORTER_LEVELS = {"Fdark": 10, "F0": 300, "Fm": 1000, "Fdarksat": 500,
+                       "Flight": 20, "Fp": 150, "Fmp": 250, "Flightsat": 200,
+                       "Fdarkpp": 15, "F0pp": 280, "Fmpp": 800, "Fdarksatpp": 400, "F0p": 125}
+# Frame labels of each PMT measurement block, in the order PMT frames are stored
+PMT_BLOCKS = {"dark": ("Fdark", "F0", "Fm", "Fdarksat"),
+              "light": ("Flight", "Fp", "Fmp", "Flightsat"),
+              "dark2": ("Fdarkpp", "F0pp", "Fmpp", "Fdarksatpp")}
+_LVL = CROPREPORTER_LEVELS
+CROPREPORTER_FRAMES = {
+    "PSD": ([_LVL["Fdark"], _LVL["F0"]] + [_LVL["F0"] + 100 * k for k in range(1, 5)] + [_LVL["Fm"]] +
+            [_LVL["Fm"] - 10 * k for k in range(1, 15)]),
+    "PSL": ([_LVL["Flight"], _LVL["Fp"]] + [_LVL["Fp"] + 20 * k for k in range(1, 5)] + [_LVL["Fmp"]] +
+            [_LVL["Fmp"] - 5 * k for k in range(1, 15)]),
+    "NPQ": [_LVL[f] for f in ("Fdark", "F0", "Fm", "Flight", "Fp", "Fmp")],
+    "CHL": [_LVL["Fdark"], 1200],
+    "CLR": [25600, 38400, 51200],
+    "SPC": [13107, 26214, 39321],
+    "PMD": [_LVL[f] for f in PMT_BLOCKS["dark"]],
+    "PML": [_LVL[f] for f in PMT_BLOCKS["light"]],
+    "GFP": [_LVL["Fdark"], 700, 90],
+    "RFP": [_LVL["Fdark"], 650],
+    "APH": [600, 800],
+    "PMT": [_LVL[f] for f in PMT_BLOCKS["dark"] + PMT_BLOCKS["light"] + ("F0p",)],
+}
 
 
 def plant_mask(small_object=True):
@@ -120,6 +234,17 @@ def plant_gray():
     return img
 
 
+def fluor_image():
+    """Create a 16-bit grayscale image of the synthetic plant with a 20-pixel border.
+
+    Returns
+    -------
+    numpy.ndarray
+        140 x 160 uint16 image of plant_gray() values times 256, padded with the background value.
+    """
+    return np.pad(plant_gray().astype(np.uint16) * 256, 20, constant_values=BACKGROUND_GRAY * 256)
+
+
 def disk_mask(shape, centers, radius):
     """Create a binary mask of filled disks.
 
@@ -169,6 +294,97 @@ def squares_mask():
         if thickness:
             mask[y + thickness:y + size - thickness, x + thickness:x + size - thickness] = 0
     return mask
+
+
+def _skeleton_branches():
+    """List the pixels of each branch of the synthetic skeleton.
+
+    Returns
+    -------
+    dict
+        Branch name mapped to a list of (x, y) pixel coordinates.
+    """
+    return {
+        "stem": [(60, y) for y in range(45, 90)],
+        "lower_left_leaf": [(x, 70) for x in range(31, 60)],
+        "right_leaf": [(x, 58) for x in range(61, 80)] + [(80, y) for y in range(59, 69)],
+        "upper_left_leaf": [(60 - k, 45 - k) for k in range(1, 21)],
+        "upper_right_leaf": [(60 + k, 45 - k) for k in range(1, 21)],
+    }
+
+
+def _draw_pixels(points):
+    """Draw pixels on a blank canvas the size of the synthetic plant.
+
+    Parameters
+    ----------
+    points : list
+        (x, y) pixel coordinates.
+
+    Returns
+    -------
+    numpy.ndarray
+        uint8 image with the points set to 255.
+    """
+    img = np.zeros(PLANT_SHAPE, dtype=np.uint8)
+    for x, y in points:
+        img[y, x] = 255
+    return img
+
+
+def skeleton(cycle=False):
+    """Create the synthetic plant skeleton.
+
+    Parameters
+    ----------
+    cycle : bool
+        Add a separate square outline that encloses one cycle (default False).
+
+    Returns
+    -------
+    numpy.ndarray
+        uint8 image with skeleton pixels 255 and background 0.
+    """
+    img = _draw_pixels([p for points in _skeleton_branches().values() for p in points])
+    if cycle:
+        cv2.rectangle(img, (5, 5), (14, 14), 255, 1)
+    return img
+
+
+def skeleton_mask():
+    """Create a binary mask around the synthetic plant skeleton.
+
+    Returns
+    -------
+    numpy.ndarray
+        uint8 mask of the skeleton dilated by a 3 x 3 square.
+    """
+    return cv2.dilate(skeleton(), np.ones((3, 3), dtype=np.uint8))
+
+
+def skeleton_segments():
+    """Create the contours of the synthetic skeleton segments.
+
+    The segments are the skeleton branches with the 3 x 3 block around each branch point removed.
+
+    Returns
+    -------
+    tuple
+        Leaf segment contours (lower left, right, upper left and upper right leaf) and stem segment
+        contours (bottom to top), each a list of numpy.ndarray.
+    """
+    branches = _skeleton_branches()
+    leaves = []
+    stem = []
+    for name, points in branches.items():
+        kept = [(x, y) for x, y in points
+                if all(max(abs(x - bx), abs(y - by)) > 1 for bx, by in SKELETON_BRANCH_PTS)]
+        contours, _ = find_contours(_draw_pixels(kept))
+        if name == "stem":
+            stem = sorted(contours, key=lambda c: c[:, 0, 1].max(), reverse=True)
+        else:
+            leaves.append(contours[0])
+    return leaves, stem
 
 
 def find_contours(mask):
@@ -245,11 +461,70 @@ def ms_data(wavelengths):
                    filename="test")
 
 
-def write_envi(outdir, filename, default_bands=None):
+def reflectance(wavelength):
+    """Compute the reflectance of every pixel of the hyperspectral datacube at one wavelength.
+
+    Parameters
+    ----------
+    wavelength : float
+        Wavelength in nanometers.
+
+    Returns
+    -------
+    numpy.ndarray
+        2 x 3 float64 array of (wavelength / 700) ** (p - 2.5) for pixel p = 3 * line + sample.
+    """
+    pixel = np.arange(SPECTRAL_SHAPE[0] * SPECTRAL_SHAPE[1]).reshape(SPECTRAL_SHAPE)
+    return (wavelength / 700) ** (pixel - 2.5)
+
+
+def spectral_data():
+    """Create the hyperspectral datacube.
+
+    Returns
+    -------
+    plantcv.plantcv.classes.Spectral_data
+        Hyperspectral data object with reflectance(wavelength) in each band and no default bands.
+    """
+    array_data = np.stack([reflectance(wl) for wl in SPECTRAL_WAVELENGTHS], axis=-1)
+    return Spectral_data(array_data=array_data, max_wavelength=float(max(SPECTRAL_WAVELENGTHS)),
+                         min_wavelength=float(min(SPECTRAL_WAVELENGTHS)), max_value=float(np.amax(array_data)),
+                         min_value=float(np.amin(array_data)), d_type=array_data.dtype,
+                         wavelength_dict={float(wl): float(i) for i, wl in enumerate(SPECTRAL_WAVELENGTHS)},
+                         samples=SPECTRAL_SHAPE[1], lines=SPECTRAL_SHAPE[0], interleave="bil",
+                         wavelength_units="nm", array_type="datacube", filename="synthetic", default_bands=None)
+
+
+def spectral_mask():
+    """Create a binary mask of the middle column of the hyperspectral datacube.
+
+    Returns
+    -------
+    numpy.ndarray
+        2 x 3 uint8 mask with pixels 1 and 4 set to 255.
+    """
+    mask = np.zeros(SPECTRAL_SHAPE, dtype=np.uint8)
+    mask[:, 1] = 255
+    return mask
+
+
+def envi_array():
+    """Create the datacube that write_envi and write_arcgis store.
+
+    Returns
+    -------
+    numpy.ndarray
+        2 x 3 x 5 (lines x samples x bands) uint16 array of the values 0-29, numbered in band
+        interleaved by line order: value = 15 * line + 3 * band + sample.
+    """
+    return np.arange(30, dtype=np.uint16).reshape(2, 5, 3).transpose(0, 2, 1)
+
+
+def write_envi(outdir, filename, default_bands=None, wavelengths=None, wavelength_units="nm", interleave="bil"):
     """Write a small ENVI datacube and the matching header file.
 
-    The datacube has 2 lines, 3 samples, and 5 bands (500-700 nm in 50 nm steps), stored
-    band interleaved by line as unsigned 16-bit integers with values 0-29.
+    The datacube is envi_array(): 2 lines, 3 samples, and 5 bands, stored band interleaved by line
+    as unsigned 16-bit integers with values 0-29.
 
     Parameters
     ----------
@@ -259,6 +534,13 @@ def write_envi(outdir, filename, default_bands=None):
         Base name of the data and header files.
     default_bands : str, optional
         Value of the default bands header field, or None to leave the field out.
+    wavelengths : list, optional
+        The 5 band wavelengths (default 500-700 nm in 50 nm steps).
+    wavelength_units : str, optional
+        Value of the wavelength units header field (default "nm"), or None to leave the field out.
+    interleave : str
+        Value of the interleave header field (default "bil"). The data is always stored band
+        interleaved by line.
 
     Returns
     -------
@@ -266,8 +548,10 @@ def write_envi(outdir, filename, default_bands=None):
         Path of the ENVI data file.
     """
     lines, samples, bands = 2, 3, 5
-    wavelengths = [500.0, 550.0, 600.0, 650.0, 700.0]
+    if wavelengths is None:
+        wavelengths = [500.0, 550.0, 600.0, 650.0, 700.0]
     default = "" if default_bands is None else "default bands = {" + default_bands + "}\n"
+    units = "" if wavelength_units is None else f"wavelength units = {wavelength_units}\n"
     header = ("ENVI\n"
               f"samples = {samples}\n"
               f"lines = {lines}\n"
@@ -275,14 +559,162 @@ def write_envi(outdir, filename, default_bands=None):
               "header offset = 0\n"
               "file type = ENVI Standard\n"
               "data type = 12\n"
-              "interleave = bil\n"
+              f"interleave = {interleave}\n"
               "byte order = 0\n"
-              "wavelength units = nm\n"
+              f"{units}"
               f"{default}"
               "wavelength = {" + ",".join(str(wl) for wl in wavelengths) + "}\n")
     datafile = os.path.join(str(outdir), filename)
     with open(datafile + ".hdr", "w") as fp:
         fp.write(header)
     # Band Interleaved by Line data stored as unsigned 16-bit integers (ENVI data type 12)
-    np.arange(lines * bands * samples, dtype=np.uint16).reshape(lines, bands, samples).tofile(datafile)
+    envi_array().transpose(0, 2, 1).tofile(datafile)
     return datafile
+
+
+def write_arcgis(outdir, filename):
+    """Write the datacube of write_envi with an ArcGIS-style header file.
+
+    The header gives the layout as keyword and value pairs and lists the wavelengths (500-700 nm
+    in 50 nm steps) between WAVELENGTHS and WAVELENGTHS_END. The data is stored band interleaved by
+    line as 16-bit integers.
+
+    Parameters
+    ----------
+    outdir : str
+        Directory to write the data and header files to.
+    filename : str
+        Base name of the data and header files.
+
+    Returns
+    -------
+    str
+        Path of the data file.
+    """
+    header = ("BYTEORDER I\n"
+              "LAYOUT BIL\n"
+              "NROWS 2\n"
+              "NCOLS 3\n"
+              "NBANDS 5\n"
+              "NBITS 16\n"
+              "BANDROWBYTES 6\n"
+              "TOTALROWBYTES 30\n"
+              "WAVELENGTHS\n"
+              "500.0\n550.0\n600.0\n650.0\n700.0\n"
+              "WAVELENGTHS_END\n")
+    datafile = os.path.join(str(outdir), filename)
+    with open(datafile + ".hdr", "w") as fp:
+        fp.write(header)
+    envi_array().astype(np.int16).transpose(0, 2, 1).tofile(datafile)
+    return datafile
+
+
+def write_cropreporter(outdir, template, datasets, metadata=None, shape=CROPREPORTER_SHAPE):
+    """Write a CropReporter dataset: an .INF header and one .DAT file per dataset.
+
+    Parameters
+    ----------
+    outdir : str
+        Directory to write the files to.
+    template : str
+        Key of the CROPREPORTER_TEMPLATES header to start from. The files keep its name, with HDR
+        replaced by the dataset key for each .DAT file.
+    datasets : list or dict
+        Dataset keys (e.g. ["PSD", "PSL"]) whose frames come from CROPREPORTER_FRAMES, or a dict
+        mapping each dataset key to its frames. A frame is a number (a uniform frame) or an array
+        of the given shape.
+    metadata : dict, optional
+        Header keys to replace or add.
+    shape : tuple
+        Frame shape (rows, columns) (default CROPREPORTER_SHAPE). It sets ImageRows and ImageCols.
+
+    Returns
+    -------
+    str
+        Path of the .INF file.
+    """
+    if not isinstance(datasets, dict):
+        datasets = {key: CROPREPORTER_FRAMES[key] for key in datasets}
+    metadata = {"ImageRows": shape[0], "ImageCols": shape[1], **(metadata or {})}
+    with open(CROPREPORTER_TEMPLATES[template], "r") as fp:
+        header = fp.read().splitlines()
+    for i, line in enumerate(header):
+        key = line.split("=")[0]
+        if key in metadata:
+            header[i] = f"{key}={metadata.pop(key)}"
+    header += [f"{key}={value}" for key, value in metadata.items()]
+    filename = os.path.basename(CROPREPORTER_TEMPLATES[template])
+    inf = os.path.join(str(outdir), filename)
+    with open(inf, "w") as fp:
+        fp.write("\n".join(header) + "\n")
+    for key, frames in datasets.items():
+        cube = np.stack([np.broadcast_to(frame, shape) for frame in frames]).astype(np.uint16)
+        parts = filename.split("_")
+        parts[parts.index("HDR")] = key
+        # Unsigned 16-bit frames one after another, each stored column by column
+        cube.transpose(0, 2, 1).tofile(os.path.join(str(outdir), "_".join(parts).replace(".INF", ".DAT")))
+    return inf
+
+
+def pmt_frames(n_fvfm=0):
+    """List the frames of a PMT dataset with measurements of the second dark adaptation.
+
+    Parameters
+    ----------
+    n_fvfm : int
+        Number of measurements of the second dark adaptation (default 0). The header needs
+        TmPamMeasFvfm = n_fvfm + 1.
+
+    Returns
+    -------
+    list
+        Frame values: the dark-adapted block, the light-adapted block, n_fvfm second dark adaptation
+        blocks, then F0p.
+    """
+    labels = PMT_BLOCKS["dark"] + PMT_BLOCKS["light"] + PMT_BLOCKS["dark2"] * n_fvfm + ("F0p",)
+    return [CROPREPORTER_LEVELS[label] for label in labels]
+
+
+def psii_mask():
+    """Create a 10 x 10 mask that selects the pixel at row 5, column 5.
+
+    Returns
+    -------
+    numpy.ndarray
+        uint8 mask with that pixel 255 and the rest 0.
+    """
+    mask = np.zeros((10, 10), dtype=np.uint8)
+    mask[5, 5] = 255
+    return mask
+
+
+def psii_dataarray(var):
+    """Create a PSII DataArray with 4 frames and one measurement.
+
+    Parameters
+    ----------
+    var : str
+        "ojip_dark" (frame labels Fdark, F0, Fm, 3; measurement t0) or "ojip_light" (frame labels Fdark, Fp, 2,
+        Fmp; measurement t1). It is also the name of the DataArray.
+
+    Returns
+    -------
+    xarray.DataArray
+        10 x 10 x 4 x 1 uint8 array (x, y, frame_label, measurement). Pixel (5, 5) is 1, 2, 10 and 8 in
+        frames 0-3; every other pixel is 0.
+    """
+    frames = []
+    for value in (1, 2, 10, 8):
+        frame = np.zeros((10, 10), dtype=np.uint8)
+        frame[5, 5] = value
+        frames.append(frame)
+    if var == "ojip_dark":
+        frame_labels = ["Fdark", "F0", "Fm", "3"]
+        measurements = ["t0"]
+    else:
+        frame_labels = ["Fdark", "Fp", "2", "Fmp"]
+        measurements = ["t1"]
+    return xr.DataArray(data=np.dstack(frames)[..., None],
+                        dims=("x", "y", "frame_label", "measurement"),
+                        coords={"frame_label": frame_labels, "frame_num": ("frame_label", [0, 1, 2, 3]),
+                                "measurement": measurements}, name=var)
