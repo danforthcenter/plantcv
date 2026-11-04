@@ -61,7 +61,7 @@ def _segment_skeleton(skel_img):
         list of contours
     """
     # Find branch points
-    _, _, _, bp = _find_branch_pts(skel_img)
+    _, _, bp = _find_branch_pts(skel_img)
     bp = _dilate(bp, 3, 1)
     # Subtract from the skeleton so that leaves are no longer connected
     segments = _image_subtract(skel_img, bp)
