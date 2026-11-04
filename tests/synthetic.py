@@ -160,6 +160,12 @@ body.
 The color card scene (color_card_scene) puts the color card on the left and the astro card at the top
 right of a 521 x 721 image. color_cast scales the B, G and R channels by 0.9, 0.8 and 0.7 and rounds; an
 affine or cubic color correction undoes it up to that rounding.
+
+The checkerboard views (write_checkerboards) are photographs of a checkerboard with 7 x 5 inner corners
+taken by a pinhole camera without lens distortion: 320 x 240 pixels, focal length 300 pixels in x and y,
+and principal point (160, 120) (CHECKERBOARD_CAMERA). The board lies in the plane z = 0 with one-square
+units; CHECKERBOARD_POSES gives its rotation and translation in each of the six views. A seventh image
+shows a board with 4 x 3 inner corners in the first pose.
 """
 import os
 import json
@@ -216,6 +222,13 @@ ASTRO_TAG_IDS = (46, 47, 48, 49)
 ASTRO_TAG_TOPLEFT = {46: (0, 495), 47: (0, 0), 48: (595, 0), 49: (595, 495)}
 ASTRO_CHIP_CENTERS = tuple((94 + 128 * i, 271) for i in range(5)) + tuple((62 + 65 * i, 371) for i in range(10))
 COLOR_CAST_BGR = (0.9, 0.8, 0.7)
+CHECKERBOARD_SHAPE = (240, 320)
+CHECKERBOARD_CORNERS = (7, 5)
+CHECKERBOARD_CAMERA = ((300.0, 0.0, 160.0), (0.0, 300.0, 120.0), (0.0, 0.0, 1.0))
+# Rotation vector and translation (in squares) of each checkerboard view
+CHECKERBOARD_POSES = (((0.3, 0, 0), (-5, -3.5, 15)), ((-0.3, 0, 0), (-5, -3.5, 15)),
+                      ((0, 0.3, 0), (-5, -3.5, 15)), ((0, -0.3, 0), (-5, -3.5, 15)),
+                      ((0.2, 0.2, 0.1), (-5, -4, 16)), ((-0.2, 0.25, -0.1), (-4.5, -3, 14)))
 TESTDATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "testdata")
 CROPREPORTER_SHAPE = (10, 12)
 PARALLEL_TEMPLATES = {
@@ -1168,3 +1181,39 @@ def color_cast_matrix(color_matrix):
     cast = np.array(color_matrix, dtype=np.float64)
     cast[:, 1:] *= np.array(COLOR_CAST_BGR[::-1])
     return cast
+
+
+def _checkerboard_view(corners, rotation, translation, squares=10):
+    """Render a checkerboard with the given inner corners as seen by CHECKERBOARD_CAMERA."""
+    ncols, nrows = corners
+    # One white square of margin around the (ncols + 1) x (nrows + 1) squares
+    board = np.full(((nrows + 3) * squares, (ncols + 3) * squares), 255, dtype=np.uint8)
+    for row, col in np.ndindex(nrows + 1, ncols + 1):
+        if (row + col) % 2 == 0:
+            board[(row + 1) * squares:(row + 2) * squares, (col + 1) * squares:(col + 2) * squares] = 0
+    rmat, _ = cv2.Rodrigues(np.array(rotation, dtype=np.float64))
+    # Board pixel (u, v) is the world point (u, v, 0) / squares
+    homography = (np.array(CHECKERBOARD_CAMERA) @ np.column_stack([rmat[:, 0], rmat[:, 1], translation]) @
+                  np.diag([1 / squares, 1 / squares, 1]))
+    view = cv2.warpPerspective(board, homography, CHECKERBOARD_SHAPE[::-1], flags=cv2.INTER_AREA, borderValue=128)
+    return cv2.cvtColor(view, cv2.COLOR_GRAY2BGR)
+
+
+def write_checkerboards(outdir):
+    """Write the checkerboard views and one view of a smaller board as PNG images.
+
+    Parameters
+    ----------
+    outdir : str
+        Directory to write the files to. It is created if it does not exist.
+
+    Returns
+    -------
+    str
+        The directory, which holds checkerboard1.png to checkerboard6.png and bad_checkerboard.png.
+    """
+    images = {f"checkerboard{i}.png": _checkerboard_view(CHECKERBOARD_CORNERS, *pose)
+              for i, pose in enumerate(CHECKERBOARD_POSES, start=1)}
+    images["bad_checkerboard.png"] = _checkerboard_view((4, 3), *CHECKERBOARD_POSES[0])
+    write_images(outdir, images)
+    return str(outdir)
