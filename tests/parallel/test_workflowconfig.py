@@ -8,6 +8,7 @@ def test_save_config_file(parallel_test_data, tmpdir):
     template_file = tmpdir.mkdir("cache").join("config.json")
     # Create config instance
     config = WorkflowConfig()
+    config.input_dir = "."
     # Save template file
     config.save_config(config_file=template_file)
     content = parallel_test_data.load_json(json_file=template_file)
