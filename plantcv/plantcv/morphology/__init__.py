@@ -15,7 +15,7 @@ from plantcv.plantcv.morphology.segment_width import segment_width
 from plantcv.plantcv.morphology.morph_class import morph
 
 
-__all__ = ["check_cycles", "segment_skeleton", "segment_angle",
+__all__ = ["segment_skeleton", "segment_angle",
            "segment_path_length", "segment_euclidean_length", "segment_curvature", "segment_sort", "segment_id",
            "segment_tangent_angle", "segment_insertion_angle", "segment_combine", "analyze_stem",
            "fill_segments", "segment_ends", "segment_width", "morph"]
