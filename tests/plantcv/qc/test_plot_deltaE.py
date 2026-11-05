@@ -35,7 +35,8 @@ def test_plot_deltaE_astro():
 def test_plot_deltaE_file_list(tmp_path):
     """Test for PlantCV"""
     outputs.clear()
-    path, = synthetic.write_images(tmp_path, {"color_card.png": synthetic.color_card()})
+    images = {"color_card.png": synthetic.color_card()}
+    path, = synthetic.write_images(tmp_path, images)
     p = plot_deltaE([path])
     assert isinstance(p, alt.LayerChart)
 
@@ -43,7 +44,8 @@ def test_plot_deltaE_file_list(tmp_path):
 def test_plot_deltaE_astro_list(tmp_path):
     """Test for PlantCV"""
     outputs.clear()
-    path, = synthetic.write_images(tmp_path, {"astro_card.png": synthetic.astro_card()})
+    images = {"astro_card.png": synthetic.astro_card()}
+    path, = synthetic.write_images(tmp_path, images)
     p = plot_deltaE([path], color_chip_size="astro")
     assert isinstance(p, alt.LayerChart)
 
