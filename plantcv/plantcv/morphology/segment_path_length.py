@@ -17,9 +17,6 @@ def _segment_path_length(morph, label=None):
         observations recorded (default = pcv.params.sample_label).
     """
     objects = morph.leaves
-    
-    if label is None:
-        label = params.sample_label
 
     label_coord_x = []
     label_coord_y = []
