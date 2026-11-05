@@ -22,12 +22,6 @@ class TransformTestData:
         # dist matrix
         self.dist = os.path.join(self.datadir, "dist.npz")
 
-    @staticmethod
-    def load_npz(npz_file):
-        """Load data saved in a NumPy .npz file."""
-        data = np.load(npz_file, encoding="latin1")
-        return data['arr_0']
-
 
 @pytest.fixture(scope="session")
 def transform_test_data():
