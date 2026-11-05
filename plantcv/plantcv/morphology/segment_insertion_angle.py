@@ -10,7 +10,7 @@ from plantcv.plantcv.morphology.segment_tangent_angle import _slope_to_intersect
 from plantcv.plantcv._helpers import _cv2_findcontours, _find_tips, _iterative_prune, _logical_operation, _dilate, _closing
 
 
-def segment_insertion_angle(morph, size=20, label=None):
+def _segment_insertion_angle(morph, size=20, label=None):
     """
     Find leaf insertion angles in degrees of skeleton segments.
 
@@ -80,9 +80,6 @@ def segment_insertion_angle(morph, size=20, label=None):
             label_coord_x.append(leaf_objects[i][0][0][0])
             label_coord_y.append(leaf_objects[i][0][0][1])
 
-    # Create a color scale, use a previously stored scale if available
-    rand_color = color_palette(num=len(valid_segment), saved=True)
-
     # Plot stem segments
     combined_stem = _combine_stem(segmented_img, stem_objects)
     # Find slope of the stem
@@ -105,13 +102,14 @@ def segment_insertion_angle(morph, size=20, label=None):
             intersection_angle = 180 - intersection_angle
         intersection_angles.append(intersection_angle)
 
+    intersection_angles_editing = intersection_angles.copy()
     for j in pruned_away:
         if j:
             all_intersection_angles.append('NA')
         else:
-            all_intersection_angles.append(intersection_angles_editing[0])
+            all_intersection_angles.append(intersection_angles_editing.pop(0))
 
-    segment_ids = [i for i in range(len(segment_lengths))]
+    segment_ids = [i for i in range(len(insertion_segments))]
 
     outputs.add_observation(sample=label, variable='segment_insertion_angle', trait='segment insertion angle',
                             method='plantcv.plantcv.morphology.segment_insertion_angle', scale='degrees', datatype=list,
