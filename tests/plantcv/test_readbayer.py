@@ -8,8 +8,8 @@ from tests import synthetic
 def bayer_img(tmp_path):
     """Bayer mosaic of a uniform BAYER_BGR image, written to a PNG file."""
     img = np.full((*synthetic.PLANT_SHAPE, 3), synthetic.BAYER_BGR, dtype=np.uint8)
-    path, = synthetic.write_images(tmp_path, {"bayer_img.png": synthetic.bayer_mosaic(img)})
-    return path
+    path = synthetic.write_images(tmp_path, {"bayer_img.png": synthetic.bayer_mosaic(img)})
+    return path[0]
 
 
 @pytest.mark.parametrize("alg, pattern", [["default", 'BG'],
