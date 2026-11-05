@@ -5,32 +5,31 @@ import numpy as np
 from skimage.segmentation import watershed
 from plantcv.plantcv._globals import params, outputs
 from plantcv.plantcv.visualize.colorize_label_img import colorize_label_img
-from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _scale_size, _area_unit
 
 
-def fill_segments(mask, objects, stem_objects=None, label=None):
+def _fill_segments(morph, stems=False, label=None):
     """Fills masked segments from contours.
 
-    Inputs:
-    mask         = Binary image, single channel, object = 1 and background = 0
-    objects      = List of contours
-    stem_objects = Array of stem contours
-    label        = Optional label parameter, modifies the variable name of
-                   observations recorded (default = pcv.params.sample_label).
+    Parameters
+    ----------
+    morph = plantcv.plantcv.morphology.morph object,
+        Morphology object to analyze
+    stems = boolean,
+        Should stems be separated? Defaults to False.
+    label        = str,
+        Optional label parameter, modifies the variable name of
+        observations recorded (default = pcv.params.sample_label).
 
-    Returns:
-    filled_mask   = Labeled mask
-
-    :param mask: numpy.ndarray
-    :param objects: list
-    :param stem_objects: numpy.ndarray
-    :param label: str
-    :return filled_mask: numpy.ndarray
+    Returns
+    -------
+    filled_mask = numpy.ndarray, Labeled mask
     """
-    # Set lable to params.sample_label if None
-    if label is None:
-        label = params.sample_label
+    mask = morph.mask
+    objects = morph.leaves
+    stem_objects = None
+    if stems:
+        stem_objects = morph.stem
 
     h, w = mask.shape
     markers = np.zeros((h, w), dtype=np.int32)
@@ -52,18 +51,18 @@ def fill_segments(mask, objects, stem_objects=None, label=None):
 
     if stem_objects is None:
         outputs.add_observation(sample=label, variable='segment_area', trait='segment area',
-                                method='plantcv.plantcv.morphology.fill_segments',
+                                method='plantcv.plantcv.analyze.morphology',
                                 scale=_area_unit(), datatype=list,
                                 value=_scale_size(value=counts[1:].tolist(), trait_type="area"),
                                 label=(ids[1:]-1).tolist())
     else:
         outputs.add_observation(sample=label, variable='leaf_area', trait='segment area',
-                                method='plantcv.plantcv.morphology.fill_segments',
+                                method='plantcv.plantcv.analyze.morphology',
                                 scale=_area_unit(), datatype=list,
                                 value=_scale_size(value=counts[1:-1].tolist(), trait_type="area"),
                                 label=(ids[1:-1]-1).tolist())
         outputs.add_observation(sample=label, variable='stem_area', trait='segment area',
-                                method='plantcv.plantcv.morphology.fill_segments',
+                                method='plantcv.plantcv.analyze.morphology',
                                 scale=_area_unit(), datatype=list,
                                 value=_scale_size(value=counts[-1].tolist(), trait_type="area"),
                                 label=(ids[-1]-1).tolist())
@@ -72,7 +71,5 @@ def fill_segments(mask, objects, stem_objects=None, label=None):
     params.debug = None
     filled_img = colorize_label_img(filled_mask)
     params.debug = debug
-    _debug(visual=filled_img, filename=os.path.join(params.debug_outdir,
-                                                    str(params.device) + "_filled_segments_img.png"))
 
     return filled_mask

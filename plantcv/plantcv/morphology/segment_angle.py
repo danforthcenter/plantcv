@@ -5,19 +5,16 @@ import numpy as np
 from plantcv.plantcv._globals import params
 from plantcv.plantcv._globals import outputs
 from plantcv.plantcv.color_palette import color_palette
-from plantcv.plantcv._debug import _debug
 
 
-def segment_angle(segmented_img, objects, label=None):
+def _segment_angle(morph, label=None):
     """
     Calculate the angle of skeleton segments in degrees by fitting a linear regression line.
 
     Parameters
     ----------
-    segmented_img : numpy.ndarray
-        Segmented image to plot slope lines and angles on.
-    objects : list
-        List of contours representing skeleton segments.
+    morph = plantcv.plantcv.morphology.morph object,
+        Morphology object to analyze
     label : str, optional
         Label for the observation variable. If None, uses `params.sample_label`.
 
@@ -26,18 +23,12 @@ def segment_angle(segmented_img, objects, label=None):
     labeled_img : numpy.ndarray
         Segmented image with slope lines and angles labeled.
     """
-    # Set lable to params.sample_label if None
-    if label is None:
-        label = params.sample_label
-
+    segmented_img = morph.skeleton
+    objects = morph.leaves
+    
     label_coord_x = []
     label_coord_y = []
     segment_angles = []
-
-    labeled_img = segmented_img.copy()
-
-    # Use a previously saved color scale if available
-    rand_color = color_palette(num=len(objects), saved=True)
 
     for i, cnt in enumerate(objects):
         # Find bounds for regression lines to get drawn
@@ -52,12 +43,6 @@ def segment_angle(segmented_img, objects, label=None):
         left_list = int(np.array(((x - x_min) * slope) + y).item())
         right_list = int(np.array(((x - x_max) * slope) + y).item())
 
-        if abs(slope) > 1000000:
-            print("Slope of contour with ID#", i, "is", slope, "and cannot be plotted.")
-        else:
-            # Draw slope lines
-            cv2.line(labeled_img, (x_max - 1, right_list), (x_min, left_list), rand_color[i], 1)
-
         # Store coordinates for labels
         label_coord_x.append(objects[i][0][0][0])
         label_coord_y.append(objects[i][0][0][1])
@@ -66,20 +51,8 @@ def segment_angle(segmented_img, objects, label=None):
         angle_value = (np.arctan(slope[0]) * 180 / np.pi).astype(np.float64)
         segment_angles.append(angle_value)
 
-    segment_ids = []
-    for i, cnt in enumerate(objects):
-        # Label slope lines
-        w = label_coord_x[i]
-        h = label_coord_y[i]
-        text = f"{segment_angles[i]:0,.2f}"
-        cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                    fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
-        segment_ids.append(i)
+    segment_ids = [i for i in range(len(objects))]
 
     outputs.add_observation(sample=label, variable='segment_angle', trait='segment angle',
-                            method='plantcv.plantcv.morphology.segment_angle', scale='degrees', datatype=list,
-                            value=segment_angles, label=segment_ids)
-
-    _debug(visual=labeled_img, filename=os.path.join(params.debug_outdir, f"{params.device}_segmented_angles.png"))
-
-    return labeled_img
+                            method='plantcv.plantcv.analyze.morphology', scale='degrees',
+                            datatype=list, value=segment_angles, label=segment_ids)
