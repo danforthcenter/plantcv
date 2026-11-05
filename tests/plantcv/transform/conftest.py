@@ -1,6 +1,5 @@
 import pytest
 import os
-import numpy as np
 import matplotlib
 
 # Disable plotting
