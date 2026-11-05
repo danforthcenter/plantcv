@@ -56,10 +56,12 @@ def test_readimage_rgba(mode, depth, tmp_path):
     assert img.shape[2] == depth
 
 
-def test_readimage_csv(test_data):
+def test_readimage_csv(tmp_path):
     """Test for PlantCV."""
-    img, _, _ = readimage(filename=test_data.thermal_img, mode="csv")
-    assert len(img.shape) == 2
+    thermal = synthetic.thermal_image()
+    img, _, _ = readimage(filename=synthetic.write_csv(tmp_path, "thermal.csv", thermal), mode="csv")
+    # The temperatures are whole numbers, so the two-decimal CSV holds them exactly
+    assert np.array_equal(img, thermal)
 
 
 def test_readimage_envi(tmpdir):

@@ -2,51 +2,24 @@ import os
 import cv2
 import importlib
 import numpy as np
+import pytest
+from joblib import load
 from plantcv.learn.train_kmeans import train_kmeans, _read_by_mode
 from tests import synthetic
 
 
-def test_train_kmeans_subset(learn_test_data, tmpdir):
+@pytest.mark.parametrize("num_imgs", [0, 3])
+def test_train_kmeans(num_imgs, kmeans_train_dir, tmp_path):
     """Test for PlantCV."""
-    # Create a test tmp directory
-    cache_dir = tmpdir.mkdir("cache")
-    training_dir = learn_test_data.kmeans_train_dir
-    outfile_subset = os.path.join(str(cache_dir), "kmeansout_subset.fit")
-    # Train full model and partial model
-    train_kmeans(img_dir=training_dir, prefix="kmeans_train",
-                 out_path=outfile_subset, k=5, patch_size=4, num_imgs=3)
-    assert os.path.exists(outfile_subset)
-
-
-def test_train_kmeans_full(learn_test_data, tmpdir):
-    """Test for PlantCV."""
-    # Create a test tmp directory
-    cache_dir = tmpdir.mkdir("cache")
-    training_dir = learn_test_data.kmeans_train_dir
-    outfile_full = os.path.join(str(cache_dir), "kmeansout_full.fit")
-    train_kmeans(img_dir=training_dir, prefix="kmeans_train",
-                 out_path=outfile_full, k=5, patch_size=4)
-    assert os.path.exists(outfile_full)
-
-
-def test_train_kmeans_subset_gray(learn_test_data, tmpdir):
-    """Test for PlantCV."""
-    cache_dir = tmpdir.mkdir("cache")
-    training_dir_gray = learn_test_data.kmeans_train_gray_dir
-    outfile_subset_gray = os.path.join(str(cache_dir), "kmeansout_subset_gray.fit")
-    train_kmeans(img_dir=training_dir_gray, prefix="kmeans_train",
-                 out_path=outfile_subset_gray, k=5, patch_size=4, num_imgs=3)
-    assert os.path.exists(outfile_subset_gray)
-
-
-def test_train_kmeans_full_gray(learn_test_data, tmpdir):
-    """Test for PlantCV."""
-    cache_dir = tmpdir.mkdir("cache")
-    training_dir_gray = learn_test_data.kmeans_train_gray_dir
-    outfile_full_gray = os.path.join(str(cache_dir), "kmeansout_full_gray.fit")
-    train_kmeans(img_dir=training_dir_gray, prefix="kmeans_train",
-                 out_path=outfile_full_gray, k=5, patch_size=4)
-    assert os.path.exists(outfile_full_gray)
+    training_dir, channels = kmeans_train_dir
+    outfile = os.path.join(str(tmp_path), "kmeansout.fit")
+    # num_imgs=0 trains on every image; num_imgs=3 on 3 drawn at random
+    fitted = train_kmeans(img_dir=training_dir, prefix="kmeans_train", out_path=outfile, k=5, patch_size=4,
+                          num_imgs=num_imgs)
+    model = load(outfile)
+    # 5 clusters of 4 x 4 patches with 3 (BGR) or 1 (gray) channels
+    assert model.cluster_centers_.shape == fitted.cluster_centers_.shape == (5, 4 * 4 * channels)
+    assert np.array_equal(model.cluster_centers_, fitted.cluster_centers_)
 
 
 def test_train_kmeans_spectral(synthetic_rgb, tmp_path, monkeypatch):
