@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import pytest
 from plantcv.plantcv import outputs
-from plantcv.plantcv.morphology.analyze_stem import analyze_stem
+from plantcv.plantcv.morphology.analyze_stem import _analyze_stem as analyze_stem
 from tests import synthetic
 
 
