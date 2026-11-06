@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-import math
 from scipy import ndimage
 from skimage import morphology
 from plantcv.plantcv.fatal_error import fatal_error
