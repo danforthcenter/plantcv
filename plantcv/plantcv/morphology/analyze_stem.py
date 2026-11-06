@@ -1,5 +1,4 @@
 """Analyze stem characteristics."""
-import os
 import cv2
 import numpy as np
 from plantcv.plantcv._globals import params, outputs
@@ -26,7 +25,7 @@ def _analyze_stem(morph, label=None):
     grouped_stem = np.vstack(stem_objects)
 
     # Find vertical height of the stem by measuring bounding box
-    stem_x, _, _, height = cv2.boundingRect(grouped_stem)
+    _, _, _, height = cv2.boundingRect(grouped_stem)
 
     # Calculate stem angle
     [vx, vy, _, _] = cv2.fitLine(grouped_stem, cv2.DIST_L2, 0, 0.01, 0.01)

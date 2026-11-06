@@ -2,7 +2,6 @@ import os
 import numpy as np
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._globals import params
-from plantcv.plantcv.morphology.morph_class import morph
 from plantcv.plantcv.morphology.analyze_stem import _analyze_stem
 from plantcv.plantcv.morphology.segment_angle import _segment_angle
 from plantcv.plantcv.morphology.segment_width import _segment_width
