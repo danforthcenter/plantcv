@@ -38,8 +38,6 @@ def _segment_width(morph, labeled_mask, n_labels=1, label=None):
         submask = np.where(labeled_mask == i, 255, 0).astype(np.uint8)
         if np.count_nonzero(submask) > 0:
             mask_copy = submask.copy().astype(np.uint8)
-            # Find contours from the submask
-            id_objects = cv2.findContours(mask_copy, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2]
             k = cv2.distanceTransform(mask_copy, cv2.DIST_L2, cv2.DIST_MASK_PRECISE)
 
             # Select central non-zero values from weighted distance transform
