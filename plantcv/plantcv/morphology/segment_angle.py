@@ -26,7 +26,7 @@ def _segment_angle(morph, label=None):
     label_coord_y = []
     segment_angles = []
 
-    for i, cnt in enumerate(objects):
+    for i, _ in enumerate(objects):
         # Find line fit to each segment
         [vx, vy, _, _] = cv2.fitLine(objects[i], cv2.DIST_L2, 0, 0.01, 0.01)
         slope = -vy / vx
