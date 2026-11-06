@@ -254,7 +254,7 @@ class morph:
                                                            f"{params.device}_cycles.png"))
         self.cycles = num_cycles
 
-    def combine_segments(self, leaves=None, stems=None, combined_type=None):
+    def combine_segments(self, leaves=None, stems=None, combined_type="leaf"):
         """Combine selected leaf and/or stem segments into a single segment.
 
         Parameters
@@ -263,7 +263,7 @@ class morph:
             Indices (into `leaves`) of leaf segments to combine
         stems         = list,
             Indices (into `stem`) of stem segments to combine
-        combined_type = str or None,
+        combined_type = str,
             "leaf" or "stem", which list the combined segment is added to.
             Defaults to the type of the input segments; required when mixing
             leaves and stems.
@@ -276,24 +276,9 @@ class morph:
         leaves = [] if leaves is None else list(leaves)
         stems = [] if stems is None else list(stems)
 
-        # Validate IDs before changing anything
-        for name, ids, segs in (("leaves", leaves, self.leaves), ("stems", stems, self.stem)):
-            if not all(isinstance(i, (int, np.integer)) and not isinstance(i, bool) for i in ids):
-                fatal_error(f"{name} must be a list of integer segment IDs")
-            if any(i < 0 or i >= len(segs) for i in ids):
-                fatal_error(f"{name} IDs must be between 0 and {len(segs) - 1}")
-            if len(set(ids)) != len(ids):
-                fatal_error(f"{name} contains duplicate IDs")
-        if len(leaves) + len(stems) < 2:
-            fatal_error("At least two segments are needed to combine")
-
-        # Pick which list gets the combined segment
-        if combined_type is None:
-            if leaves and stems:
-                fatal_error("combined_type ('leaf' or 'stem') is required when combining leaves and stems")
-            combined_type = "leaf" if leaves else "stem"
-        if combined_type not in ("leaf", "stem"):
-            fatal_error(f"combined_type must be 'leaf' or 'stem', not '{combined_type}'")
+        all_leaves = self.leaves
+        all_stems = self.stem
+        combined_type = self._validate_segments(leaves, all_leaves, stems, all_stems, combined_type)
 
         # Concatenate contour points, highest index first to match legacy segment_combine
         to_combine = [self.leaves[i] for i in sorted(leaves, reverse=True)] + \
@@ -323,3 +308,37 @@ class morph:
             cv2.drawContours(labeled_img, self.stem, -1, (0, 255, 0), params.line_thickness, lineType=8)
             _debug(visual=labeled_img,
                    filename=os.path.join(params.debug_outdir, f"{params.device}_combined_segment_ids.png"))
+
+    @staticmethod
+    def _validate_segments(leaves, all_leaves, stems, all_stems, combined_type):
+        """Check that segments can be combined
+
+        Parameters
+        ----------
+        leaves : list,
+            leaf indices to combine
+        all_leaves : list,
+            list of leaf contours
+        stems : list,
+            stem indices to combine
+        all_stems : list,
+            list of stem contours
+        combined_type : str or None,
+            whether to combine leaves or stems if both are given.
+        """
+        # set combined type
+        if len(leaves) and not len(stems):
+            combined_type = "leaf"
+        elif len(stems) and not len(leaves):
+            combined_type = "stem"
+        # Validate IDs before changing anything
+        for name, ids, segs in (("leaves", leaves, all_leaves), ("stems", stems, all_stems)):
+            if not all(isinstance(i, (int, np.integer)) and not isinstance(i, bool) for i in ids):
+                fatal_error(f"{name} must be a list of integer segment IDs")
+            if any(i < 0 or i >= len(segs) for i in ids):
+                fatal_error(f"{name} IDs must be between 0 and {len(segs) - 1}")
+            if len(set(ids)) != len(ids):
+                fatal_error(f"{name} contains duplicate IDs")
+        if len(leaves) + len(stems) < 2:
+            fatal_error("At least two segments are needed to combine")
+        return combined_type

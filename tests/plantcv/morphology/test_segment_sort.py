@@ -1,6 +1,4 @@
-import os
 import numpy as np
-from plantcv.plantcv._globals import params
 from plantcv.plantcv.morphology.segment_sort import _segment_sort as segment_sort
 from tests import synthetic
 
