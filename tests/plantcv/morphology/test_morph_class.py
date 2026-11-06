@@ -15,6 +15,8 @@ def test_morph_init():
     assert isinstance(morpho.leaves, list) and len(morpho.leaves) == 3
     assert isinstance(morpho.skeleton, np.ndarray)
     assert np.count_nonzero(morpho.skeleton) == 106
+    assert len(morpho.branch_points) == 2
+    assert len(morpho.leaf_tips) == 4  # tips does not distinguish leaves vs stem segments
 
 
 def test_morph_prune(monkeypatch, tmpdir):
@@ -30,7 +32,7 @@ def test_morph_prune(monkeypatch, tmpdir):
     assert np.count_nonzero(morpho.skeleton) == 89
     morpho.prune(size=60, reprune=True)
     assert np.count_nonzero(morpho.skeleton) == 65
-    assert os.path.exists(os.path.join(cache, "3_pruned_debug.png"))
+    assert os.path.exists(os.path.join(cache, "1_pruned_debug.png"))
 
 
 def test_morph_cycles(monkeypatch, tmpdir):
@@ -45,5 +47,5 @@ def test_morph_cycles(monkeypatch, tmpdir):
     morpho.skeleton = cycling_skeleton
     n_cycles = morpho.cycles
     assert n_cycles == 1
-    assert os.path.exists(os.path.join(cache, "1_cycles.png"))
+    assert os.path.exists(os.path.join(cache, "0_cycles.png"))
     params.saved_color_scale = None
