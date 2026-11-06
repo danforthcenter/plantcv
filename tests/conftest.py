@@ -20,10 +20,6 @@ class TestData:
         self.outputs_results_json = os.path.join(self.datadir, "outputs_results.json")
         # Outputs results file - CSV
         self.outputs_results_csv = os.path.join(self.datadir, "outputs_results.csv")
-        # Bayer image
-        self.bayer_img = os.path.join(self.datadir, "bayer_img.png")
-        # Circle Wells for Hough Circle
-        self.hough_circle = os.path.join(self.datadir, "circle-wells.png")
         # nd2 file
         self.nd2_img = os.path.join(self.datadir, "test_nd2_img.nd2")
         # flir thermal img
