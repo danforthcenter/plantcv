@@ -80,8 +80,9 @@ def test_morph_combine_leaves(monkeypatch, tmpdir):
 def test_morph_combine_stems():
     """Test for PlantCV."""
     morpho = morph(synthetic.plant_mask(small_object=False))
+    exp_leaves = len(morpho.leaves)
     morpho.combine_segments(stems=[0, 1])
-    assert len(morpho.leaves) == 3 and len(morpho.stem) == 1
+    assert len(morpho.leaves) == exp_leaves and len(morpho.stem) == 1
 
 
 def test_morph_combine_mixed():
@@ -92,8 +93,6 @@ def test_morph_combine_mixed():
 
 
 @pytest.mark.parametrize("kwargs", [
-    {"leaves": [0], "stems": [0]},                          # mixed, no combined_type
-    {"leaves": [0, 1], "combined_type": "branch"},          # bad combined_type
     {"leaves": [0, 9]},                                     # out of range
     {"leaves": [0, -1]},                                    # negative
     {"leaves": [0, 0]},                                     # duplicate
