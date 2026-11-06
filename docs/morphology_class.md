@@ -24,6 +24,10 @@ Object to store morphology elements including skeletonized mask, stem and leaf c
 	  - **size**: size to be pruned off of each branch, branches below this size will be rmoeved.
 	  - **first_stem**: Boolean, should the first (bottom) segment always be categorized as a stem? Defaults to True.
 	  - **reprune**: Boolean, should the prune be done on the updated, already pruned, skeleton? If False, the default, each prune will start from the original skeleton.
+	- **morph.combine_segments**(*leaves=None, stems=None, combined_type=None*)
+	  - **leaves**: list of leaf segments to combine (by index)
+	  - **stems**: list of stem segments to combine (by index)
+	  - **combined_type**: If stems and leaves are combined then is the result a stem or a leaf? Accepts "stem" or "leaf" if leaves and stems are both populated.
 
 - **Context:**
 	- Used to generate and store a skeletonized mask from a mask for use with morphology functions. (More pending?)
