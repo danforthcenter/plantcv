@@ -13,8 +13,6 @@ class TestData:
         """Initialize simple variables."""
         # Test data directory
         self.datadir = synthetic.TESTDATA
-        # heic image
-        self.heic_img = os.path.join(self.datadir, "example.HEIC")
         # Outputs results file - JSON
         self.outputs_results_json = os.path.join(self.datadir, "outputs_results.json")
         # Outputs results file - CSV

@@ -14,7 +14,6 @@ Readers are tested against files written by the real software or device.
 
 | File | Used by | Why it is kept |
 |---|---|---|
-| `example.HEIC` | `test_readimage.py` | HEIC container written by a real device, not by the library under test. |
 | `test_nd2_img.nd2` | `test_readimage.py` | Nikon ND2 container. |
 | `FLIR_test.jpg` | `test_readimage.py` | FLIR radiometric JPEG read with `flyr`; the thermal data sits in FLIR-specific metadata segments inside the JPEG. |
 
