@@ -2,21 +2,22 @@ import pytest
 import os
 import json
 import pandas as pd
+from tests import synthetic
 
 
 class ParallelTestData:
-    def __init__(self):
-        """Initialize simple variables."""
+    def __init__(self, imgroot):
+        """Initialize simple variables and write the synthetic image datasets to imgroot."""
         # Test data directory
         self.datadir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "testdata")
         # plantcv.parallel.WorkflowConfig template file
         self.workflowconfig_template_file = os.path.join(self.datadir, "workflowconfig_template.json")
         # Flat image directory
-        self.flat_imgdir = os.path.join(self.datadir, "flat_imgdir")
+        self.flat_imgdir = synthetic.write_image_dir(os.path.join(imgroot, "flat_imgdir"), "flat")
         # Snapshot image directory
-        self.snapshot_imgdir = os.path.join(self.datadir, "snapshot_imgdir")
+        self.snapshot_imgdir = synthetic.write_image_dir(os.path.join(imgroot, "snapshot_imgdir"), "snapshot")
         # Phenodata directory
-        self.phenodata_dir = os.path.join(self.datadir, "phenodata_dir")
+        self.phenodata_dir = synthetic.write_image_dir(os.path.join(imgroot, "phenodata_dir"), "phenodata")
         # PlantCV workflow script
         self.workflow_script = os.path.join(self.datadir, "plantcv-script.py")
         # JSON results file with appended results
@@ -105,6 +106,6 @@ class ParallelTestData:
 
 
 @pytest.fixture(scope="session")
-def parallel_test_data():
+def parallel_test_data(tmp_path_factory):
     """Test data object for the PlantCV parallel submodule."""
-    return ParallelTestData()
+    return ParallelTestData(str(tmp_path_factory.mktemp("parallel_data")))

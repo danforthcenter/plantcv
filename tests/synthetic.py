@@ -110,12 +110,81 @@ that pixel.
 
 The fluorescence image (fluor_image) is the grayscale image of the synthetic plant as unsigned 16-bit
 values (each value times 256) with a 20-pixel background border, 140 x 160 in total.
+
+The thermal image (thermal_image) has the shape of the synthetic plant, in degrees: stem 30, left leaf
+32, right leaf 34, and 20 everywhere else, including the small object. Over the 800 plant pixels the
+minimum is 30, the maximum 34, the mean (240 * 30 + 280 * 32 + 280 * 34) / 800 = 32.1, and the median
+32 (sorted pixels 400 and 401 both fall in the left leaf).
+
+The merge tiles (write_tiles) are three uniform 10 x 20 BGR images, (40, 100, 160), (100, 160, 220)
+and (160, 220, 40). Neighboring tiles differ by a multiple of 60 in every channel, so their averages
+and the evenly weighted steps of a 3- or 6-pixel gradual blend are whole numbers.
+
+The two-region image (two_region_image) is 20 x 60 with the background color (BGR or gray) in columns
+0:30 and the plant color in columns 30:60. It is symmetric about the boundary, so after any symmetric
+blur a pixel is closer to the plant color than to the background color exactly when it lies in
+columns 30:60.
+
+The naive Bayes PDFs (write_nb_pdfs) are Gaussian curves over 0-255 for the HSV channels: plant hue 60,
+saturation 255 and value 128 (PLANT_BGR) and background hue 0, saturation 0 and value 128
+(BACKGROUND_BGR), with standard deviations 10 (hue), 30 (saturation) and 40 (value). The naive Bayes
+training image (nb_train_image) is the plant mask colored with seeded uniform noise: plant BGR
+(0-20, 110-150, 0-20), near hue 60, and background BGR (30-50, 70-90, 110-130), near hue 15.
+
+The image directories (write_image_dir) hold small synthetic images under the file names of three
+dataset layouts: plant_rgb() for VIS images and plant_gray() for NIR images.
+
+    Layout      Files
+    flat        VIS_SV_0_z1_h1_g0_e82_117770.jpg, VIS_SV_0_z1_h1_g0_e82_999999.jpeg,
+                NIR_SV_0_z1_h1_g0_e65_117779.jpg
+    snapshot    SnapshotInfo.csv (PARALLEL_TEMPLATES) and snapshot57381, snapshot57382 and
+                snapshot57383, each with VIS_SV_0_z1_h1_g0_e82_117770.jpg and
+                NIR_SV_0_z1_h1_g0_e65_117779.jpg
+    phenodata   metadata.json (PARALLEL_TEMPLATES) and the 12 PNG images it lists (6 VIS, 6 NIR) in two
+                date/snapshot directories
+
+The color card (color_card) is a 4 x 6 ColorChecker-style card on a 521 x 381 image with the background
+color BGR (128, 128, 128). The card body, BGR (20, 20, 20), fills rows 40:481 and columns 40:341. Its
+49 x 49 chips are 70 pixels apart (a 21 pixel gap), the first chip in rows and columns 61:110, and
+they have the standard colors std_color_matrix(pos=3) in row-major order, so the white chip is at the top
+left. The chips are larger than the ArUco tags of the astro card, so ColorChecker detection ignores the
+tags in an image with both cards. color_card_mask labels the chips 10, 20, ..., 240 in the same order.
+
+The astro card (astro_card) is the 600 x 700 astrobotany.com reference layout scaled by 0.4 onto a
+240 x 280 card body, BGR (235, 235, 235), at rows and columns 30 onward of a white 300 x 340 image. The
+105 pixel ArUco tags (DICT_4X4_50) become 42 pixels and the chips are circles of radius 20 (color) and
+11 (gray) around the reference centers, with the colors of astro_color_matrix(). Every reference position
+is a whole number of pixels after scaling, so detection maps the reference card exactly onto the card
+body.
+
+The color card scene (color_card_scene) puts the color card on the left and the astro card at the top
+right of a 521 x 721 image. color_cast scales the B, G and R channels by 0.9, 0.8 and 0.7 and rounds; an
+affine or cubic color correction undoes it up to that rounding.
+
+The checkerboard views (write_checkerboards) are photographs of a checkerboard with 7 x 5 inner corners
+taken by a pinhole camera without lens distortion: 320 x 240 pixels, focal length 300 pixels in x and y,
+and principal point (160, 120) (CHECKERBOARD_CAMERA). The board lies in the plane z = 0 with one-square
+units; CHECKERBOARD_POSES gives its rotation and translation in each of the six views. A seventh image
+shows a board with 4 x 3 inner corners in the first pose.
+
+The wells image (wells_image) is a 230 x 250 grayscale image with 4 rows and 6 columns of filled circles
+of radius 15, centered at x = 25, 65, ..., 225 and y = 25, 65, 105, 145, and two circles of radius 10
+centered at (65, 190) and (185, 190). Circles are 200 and the background 50, and the image is smoothed
+with a 5 x 5 Gaussian blur so that the Hough transform finds the circles.
+
+The Bayer mosaic (bayer_mosaic) samples a BGR image in the OpenCV BG layout: blue at odd rows and odd
+columns, red at even rows and even columns, and green elsewhere. Demosaicing the mosaic of a uniform
+BAYER_BGR = (40, 100, 160) image with the BG pattern gives back that color at every pixel; the RG pattern
+swaps blue and red, giving (160, 100, 40).
 """
 import os
+import json
+import shutil
 import cv2
 import numpy as np
 import xarray as xr
 from plantcv.plantcv.classes import MS_data, Spectral_data
+from plantcv.plantcv.transform.standard_matrices import std_color_matrix, astro_color_matrix
 
 PLANT_SHAPE = (100, 120)
 PLANT_RECTS = {
@@ -140,8 +209,51 @@ SPECTRAL_WAVELENGTHS = range(400, 1001)
 # (row, column, size, thickness) of each square; thickness 0 means filled
 SQUARES = ((10, 10, 10, 0), (10, 30, 20, 0), (10, 60, 20, 4), (10, 90, 30, 5),
            (10, 130, 20, 2), (10, 160, 20, 1), (10, 190, 40, 1))
+THERMAL_TEMPS = {"stem": 30.0, "left_leaf": 32.0, "right_leaf": 34.0}
+THERMAL_BACKGROUND = 20.0
+TILE_SHAPE = (10, 20)
+TILE_BGR = ((40, 100, 160), (100, 160, 220), (160, 220, 40))
+TWO_REGION_SHAPE = (20, 60)
+NB_PDFS = {"plant": {"hue": (60, 10), "saturation": (255, 30), "value": (128, 40)},
+           "background": {"hue": (0, 10), "saturation": (0, 30), "value": (128, 40)}}
+COLOR_CARD_PITCH = 70
+COLOR_CARD_CHIP = 49
+COLOR_CARD_MARGIN = 40
+COLOR_CARD_BODY_BGR = (20, 20, 20)
+# 6 x 4 chips with a border of one gap (pitch - chip) around them, plus the margin
+COLOR_CARD_SHAPE = (2 * COLOR_CARD_MARGIN + 7 * COLOR_CARD_PITCH - COLOR_CARD_CHIP,
+                    2 * COLOR_CARD_MARGIN + 5 * COLOR_CARD_PITCH - COLOR_CARD_CHIP)
+ASTRO_CARD_SCALE = 0.4
+ASTRO_CARD_MARGIN = 30
+ASTRO_CARD_BODY_BGR = (235, 235, 235)
+ASTRO_CARD_SHAPE = (300, 340)
+ASTRO_TAG_IDS = (46, 47, 48, 49)
+# Top-left (x, y) of each tag and center (x, y) of each chip on the 600 x 700 reference card
+ASTRO_TAG_TOPLEFT = {46: (0, 495), 47: (0, 0), 48: (595, 0), 49: (595, 495)}
+ASTRO_CHIP_CENTERS = tuple((94 + 128 * i, 271) for i in range(5)) + tuple((62 + 65 * i, 371) for i in range(10))
+COLOR_CAST_BGR = (0.9, 0.8, 0.7)
+CHECKERBOARD_SHAPE = (240, 320)
+CHECKERBOARD_CORNERS = (7, 5)
+CHECKERBOARD_CAMERA = ((300.0, 0.0, 160.0), (0.0, 300.0, 120.0), (0.0, 0.0, 1.0))
+# Rotation vector and translation (in squares) of each checkerboard view
+CHECKERBOARD_POSES = (((0.3, 0, 0), (-5, -3.5, 15)), ((-0.3, 0, 0), (-5, -3.5, 15)),
+                      ((0, 0.3, 0), (-5, -3.5, 15)), ((0, -0.3, 0), (-5, -3.5, 15)),
+                      ((0.2, 0.2, 0.1), (-5, -4, 16)), ((-0.2, 0.25, -0.1), (-4.5, -3, 14)))
+WELLS_SHAPE = (230, 250)
+WELL_RADIUS = 15
+# (x, y) centers of the 4 x 6 wells and of the two smaller circles below them
+WELL_CENTERS = tuple((25 + 40 * col, 25 + 40 * row) for row in range(4) for col in range(6))
+WELL_EXTRA_CENTERS = ((65, 190), (185, 190))
+WELL_EXTRA_RADIUS = 10
+BAYER_BGR = (40, 100, 160)
 TESTDATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "testdata")
 CROPREPORTER_SHAPE = (10, 12)
+PARALLEL_TEMPLATES = {
+    "snapshot": os.path.join(TESTDATA, "SnapshotInfo.csv"),
+    "phenodata": os.path.join(TESTDATA, "phenodata_metadata.json"),
+}
+SNAPSHOT_IMAGES = ("VIS_SV_0_z1_h1_g0_e82_117770.jpg", "NIR_SV_0_z1_h1_g0_e65_117779.jpg")
+FLAT_IMAGES = SNAPSHOT_IMAGES + ("VIS_SV_0_z1_h1_g0_e82_999999.jpeg",)
 CROPREPORTER_TEMPLATES = {
     "v441": os.path.join(TESTDATA, "cropreporter_v441", "PSII_HDR_020321_WT_TOP_1.INF"),
     "v653": os.path.join(TESTDATA, "cropreporter_v653", "HDR_dark_light.INF"),
@@ -243,6 +355,238 @@ def fluor_image():
         140 x 160 uint16 image of plant_gray() values times 256, padded with the background value.
     """
     return np.pad(plant_gray().astype(np.uint16) * 256, 20, constant_values=BACKGROUND_GRAY * 256)
+
+
+def region_masks():
+    """Create one binary mask per region of the synthetic plant.
+
+    Returns
+    -------
+    list
+        uint8 masks (foreground 255) of the stem, left leaf, right leaf, and small object, in that order.
+    """
+    masks = []
+    for y0, y1, x0, x1 in list(PLANT_RECTS.values()) + [SMALL_OBJECT_RECT]:
+        mask = np.zeros(PLANT_SHAPE, dtype=np.uint8)
+        mask[y0:y1, x0:x1] = 255
+        masks.append(mask)
+    return masks
+
+
+def thermal_image():
+    """Create a thermal image of the synthetic plant.
+
+    Returns
+    -------
+    numpy.ndarray
+        float64 image with THERMAL_TEMPS in each plant region and THERMAL_BACKGROUND elsewhere.
+    """
+    img = np.full(PLANT_SHAPE, THERMAL_BACKGROUND)
+    for region, (y0, y1, x0, x1) in PLANT_RECTS.items():
+        img[y0:y1, x0:x1] = THERMAL_TEMPS[region]
+    return img
+
+
+def write_csv(outdir, filename, img):
+    """Write a 2-D image as comma-separated values with two decimal places and no header.
+
+    Parameters
+    ----------
+    outdir : str
+        Directory to write the file to.
+    filename : str
+        Name of the file.
+    img : numpy.ndarray
+        2-D image.
+
+    Returns
+    -------
+    str
+        Path of the file.
+    """
+    path = os.path.join(str(outdir), filename)
+    np.savetxt(path, img, fmt="%.2f", delimiter=",")
+    return path
+
+
+def write_tiles(outdir):
+    """Write the merge tiles as PNG images named tile_1.png, tile_2.png, and so on.
+
+    Parameters
+    ----------
+    outdir : str
+        Directory to write the files to.
+
+    Returns
+    -------
+    list
+        Paths of the tiles, in order.
+    """
+    paths = []
+    for i, bgr in enumerate(TILE_BGR, start=1):
+        path = os.path.join(str(outdir), f"tile_{i}.png")
+        cv2.imwrite(path, np.full((*TILE_SHAPE, 3), bgr, dtype=np.uint8))
+        paths.append(path)
+    return paths
+
+
+def two_region_image(gray=False):
+    """Create an image with the background color on the left and the plant color on the right.
+
+    Parameters
+    ----------
+    gray : bool
+        Make a grayscale image instead of a BGR image (default False).
+
+    Returns
+    -------
+    numpy.ndarray
+        20 x 60 uint8 image, background in columns 0:30 and plant in columns 30:60.
+    """
+    background, plant = (BACKGROUND_GRAY, PLANT_GRAY) if gray else (BACKGROUND_BGR, PLANT_BGR)
+    channels = () if gray else (3,)
+    img = np.full((*TWO_REGION_SHAPE, *channels), background, dtype=np.uint8)
+    img[:, TWO_REGION_SHAPE[1] // 2:] = plant
+    return img
+
+
+def nb_train_image(seed=0):
+    """Create a naive Bayes training image: the synthetic plant in noisy green on a noisy soil color.
+
+    Parameters
+    ----------
+    seed : int
+        Seed for the random number generator (default 0).
+
+    Returns
+    -------
+    numpy.ndarray
+        uint8 BGR image with plant pixels drawn from BGR (0-20, 110-150, 0-20) and background pixels
+        from BGR (30-50, 70-90, 110-130), each channel uniformly.
+    """
+    rng = np.random.default_rng(seed)
+    mask = plant_mask()
+    plant = rng.integers((0, 110, 0), (21, 151, 21), size=(*PLANT_SHAPE, 3))
+    background = rng.integers((30, 70, 110), (51, 91, 131), size=(*PLANT_SHAPE, 3))
+    return np.where(mask[..., None] > 0, plant, background).astype(np.uint8)
+
+
+def write_images(outdir, images):
+    """Write images to a directory.
+
+    Parameters
+    ----------
+    outdir : str
+        Directory to write the files to. It is created if it does not exist.
+    images : dict
+        Maps each file name (a path relative to outdir) to its image.
+
+    Returns
+    -------
+    list
+        Paths of the files, in the order of images.
+    """
+    paths = []
+    for name, img in images.items():
+        path = os.path.join(str(outdir), name)
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        cv2.imwrite(path, img)
+        paths.append(path)
+    return paths
+
+
+def write_nb_pdfs(outdir, filename="naive_bayes_pdfs.txt", bad=False):
+    """Write a naive Bayes PDF file with the NB_PDFS Gaussian curves.
+
+    Parameters
+    ----------
+    outdir : str
+        Directory to write the file to.
+    filename : str
+        Name of the file (default "naive_bayes_pdfs.txt").
+    bad : bool
+        Drop the last value of the last row so the file is malformed (default False).
+
+    Returns
+    -------
+    str
+        Path of the file.
+    """
+    x = np.arange(256)
+    lines = ["class\tchannel\t" + "\t".join(map(str, x))]
+    for class_name, channels in NB_PDFS.items():
+        for channel, (mean, sd) in channels.items():
+            pdf = np.exp(-((x - mean) ** 2) / (2 * sd ** 2)) / (sd * np.sqrt(2 * np.pi))
+            lines.append("\t".join([class_name, channel] + [str(p) for p in pdf]))
+    if bad:
+        lines[-1] = lines[-1].rsplit("\t", 1)[0]
+    path = os.path.join(str(outdir), filename)
+    with open(path, "w") as fp:
+        fp.write("\n".join(lines) + "\n")
+    return path
+
+
+def write_image_dir(outdir, layout):
+    """Write a dataset directory of synthetic images for plantcv.parallel.
+
+    Parameters
+    ----------
+    outdir : str
+        Directory to write the dataset to. It is created if it does not exist.
+    layout : str
+        "flat" (images named by their metadata), "snapshot" (a SnapshotInfo.csv and snapshot
+        directories), or "phenodata" (a metadata.json and date/snapshot directories).
+
+    Returns
+    -------
+    str
+        Path of the dataset directory.
+    """
+    outdir = str(outdir)
+    os.makedirs(outdir, exist_ok=True)
+    if layout == "flat":
+        names = FLAT_IMAGES
+    elif layout == "snapshot":
+        names = [os.path.join(f"snapshot{n}", name) for n in (57381, 57382, 57383) for name in SNAPSHOT_IMAGES]
+        shutil.copy(PARALLEL_TEMPLATES["snapshot"], os.path.join(outdir, "SnapshotInfo.csv"))
+    else:
+        with open(PARALLEL_TEMPLATES["phenodata"], "r") as fp:
+            names = list(json.load(fp)["images"])
+        shutil.copy(PARALLEL_TEMPLATES["phenodata"], os.path.join(outdir, "metadata.json"))
+    write_images(outdir, {name: plant_gray() if os.path.basename(name).startswith("NIR") else plant_rgb()
+                          for name in names})
+    return outdir
+
+
+def write_checkpoint(outdir, filepaths, complete=True):
+    """Write a plantcv.parallel checkpoint result for each image.
+
+    Parameters
+    ----------
+    outdir : str
+        Directory to write the results to (a _PCV_PARALLEL_CHECKPOINT_ subdirectory of a tmp_dir).
+    filepaths : list
+        Image file paths, one result file per image.
+    complete : bool
+        Also write the empty "_complete" file that marks each result as finished (default True).
+
+    Returns
+    -------
+    list
+        Paths of the result files.
+    """
+    os.makedirs(str(outdir), exist_ok=True)
+    paths = []
+    for i, filepath in enumerate(filepaths):
+        path = os.path.join(str(outdir), f"result_{i}.json")
+        result = {"metadata": {"filepath": {"label": "file path", "datatype": "<class 'str'>", "value": [filepath]}},
+                  "observations": {}}
+        with open(path, "w") as fp:
+            json.dump(result, fp)
+        if complete:
+            open(path.replace(".json", "_complete"), "w").close()
+        paths.append(path)
+    return paths
 
 
 def disk_mask(shape, centers, radius):
@@ -718,3 +1062,210 @@ def psii_dataarray(var):
                         dims=("x", "y", "frame_label", "measurement"),
                         coords={"frame_label": frame_labels, "frame_num": ("frame_label", [0, 1, 2, 3]),
                                 "measurement": measurements}, name=var)
+
+
+def _chip_bgr(colors):
+    """Convert a color matrix (chip number, R, G, B in 0-1) to uint8 BGR chip colors."""
+    return np.rint(np.asarray(colors)[:, :0:-1] * 255).astype(np.uint8)
+
+
+def color_card(colors=None, rotation=0):
+    """Create an image of a 4 x 6 ColorChecker-style color card on a gray background.
+
+    Parameters
+    ----------
+    colors : numpy.ndarray, optional
+        24 x 4 color matrix (chip number, R, G, B in 0-1) in row-major chip order, white chip first.
+        Defaults to std_color_matrix(pos=3).
+    rotation : int
+        Number of times to rotate the image by 90 degrees counterclockwise (default 0).
+
+    Returns
+    -------
+    numpy.ndarray
+        521 x 381 uint8 BGR image (rows and columns swap when rotation is odd).
+    """
+    colors = std_color_matrix(pos=3) if colors is None else colors
+    bgr = _chip_bgr(colors).reshape(6, 4, 3)
+    img = np.full((*COLOR_CARD_SHAPE, 3), BACKGROUND_BGR, dtype=np.uint8)
+    m = COLOR_CARD_MARGIN
+    img[m:-m, m:-m] = COLOR_CARD_BODY_BGR
+    for (row, col), (y, x) in zip(np.ndindex(6, 4), color_card_chip_origins()):
+        img[y:y + COLOR_CARD_CHIP, x:x + COLOR_CARD_CHIP] = bgr[row, col]
+    return np.rot90(img, k=rotation).copy()
+
+
+def color_card_chip_origins():
+    """Get the top-left (row, column) of each chip of color_card, in row-major chip order.
+
+    Returns
+    -------
+    list
+        24 (row, column) tuples.
+    """
+    start = COLOR_CARD_MARGIN + COLOR_CARD_PITCH - COLOR_CARD_CHIP
+    return [(start + row * COLOR_CARD_PITCH, start + col * COLOR_CARD_PITCH) for row, col in np.ndindex(6, 4)]
+
+
+def color_card_mask():
+    """Create a labeled mask of the color_card chips.
+
+    Returns
+    -------
+    numpy.ndarray
+        521 x 381 uint8 mask, 10 for the pixels of the first chip, 20 for the second, and so on up to 240,
+        and 0 elsewhere.
+    """
+    mask = np.zeros(COLOR_CARD_SHAPE, dtype=np.uint8)
+    for i, (y, x) in enumerate(color_card_chip_origins(), start=1):
+        mask[y:y + COLOR_CARD_CHIP, x:x + COLOR_CARD_CHIP] = 10 * i
+    return mask
+
+
+def astro_card(tag_ids=ASTRO_TAG_IDS):
+    """Create an image of an astrobotany.com-style color card on a white background.
+
+    Parameters
+    ----------
+    tag_ids : tuple
+        ArUco tag (DICT_4X4_50) to draw at the positions of tags 46, 47, 48 and 49, in that order; None
+        leaves a position empty (default (46, 47, 48, 49)).
+
+    Returns
+    -------
+    numpy.ndarray
+        300 x 340 uint8 BGR image with chip colors from astro_color_matrix().
+    """
+    aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
+    scale, m = ASTRO_CARD_SCALE, ASTRO_CARD_MARGIN
+    tag_size = int(105 * scale)
+    img = np.full((*ASTRO_CARD_SHAPE, 3), 255, dtype=np.uint8)
+    img[m:-m, m:-m] = ASTRO_CARD_BODY_BGR
+    for position, tag_id in zip(ASTRO_TAG_IDS, tag_ids):
+        if tag_id is not None:
+            x, y = (m + int(v * scale) for v in ASTRO_TAG_TOPLEFT[position])
+            img[y:y + tag_size, x:x + tag_size] = cv2.aruco.generateImageMarker(aruco_dict, tag_id, tag_size)[..., None]
+    for (x, y), bgr in zip(ASTRO_CHIP_CENTERS, _chip_bgr(astro_color_matrix())):
+        radius = 50 if y == 271 else 28
+        cv2.circle(img, (m + int(x * scale), m + int(y * scale)), int(radius * scale), bgr.tolist(), -1)
+    return img
+
+
+def color_card_scene():
+    """Create an image with color_card() on the left and astro_card() on the right.
+
+    Returns
+    -------
+    numpy.ndarray
+        521 x 721 uint8 BGR image; the astro card fills rows 0:300 of columns 381:721.
+    """
+    img = np.full((COLOR_CARD_SHAPE[0], COLOR_CARD_SHAPE[1] + ASTRO_CARD_SHAPE[1], 3), BACKGROUND_BGR,
+                  dtype=np.uint8)
+    img[:, :COLOR_CARD_SHAPE[1]] = color_card()
+    img[:ASTRO_CARD_SHAPE[0], COLOR_CARD_SHAPE[1]:] = astro_card()
+    return img
+
+
+def color_cast(img):
+    """Scale the B, G and R channels of an image by 0.9, 0.8 and 0.7 (COLOR_CAST_BGR).
+
+    Parameters
+    ----------
+    img : numpy.ndarray
+        uint8 BGR image.
+
+    Returns
+    -------
+    numpy.ndarray
+        uint8 BGR image, rounded to the nearest integer.
+    """
+    return np.rint(img * np.array(COLOR_CAST_BGR)).astype(np.uint8)
+
+
+def color_cast_matrix(color_matrix):
+    """Apply color_cast to a color matrix without rounding.
+
+    Parameters
+    ----------
+    color_matrix : numpy.ndarray
+        Color matrix (chip number, R, G, B in 0-1).
+
+    Returns
+    -------
+    numpy.ndarray
+        Copy of the matrix with R, G and B scaled by 0.7, 0.8 and 0.9.
+    """
+    cast = np.array(color_matrix, dtype=np.float64)
+    cast[:, 1:] *= np.array(COLOR_CAST_BGR[::-1])
+    return cast
+
+
+def _checkerboard_view(corners, rotation, translation, squares=10):
+    """Render a checkerboard with the given inner corners as seen by CHECKERBOARD_CAMERA."""
+    ncols, nrows = corners
+    # One white square of margin around the (ncols + 1) x (nrows + 1) squares
+    board = np.full(((nrows + 3) * squares, (ncols + 3) * squares), 255, dtype=np.uint8)
+    for row, col in np.ndindex(nrows + 1, ncols + 1):
+        if (row + col) % 2 == 0:
+            board[(row + 1) * squares:(row + 2) * squares, (col + 1) * squares:(col + 2) * squares] = 0
+    rmat, _ = cv2.Rodrigues(np.array(rotation, dtype=np.float64))
+    # Board pixel (u, v) is the world point (u, v, 0) / squares
+    homography = (np.array(CHECKERBOARD_CAMERA) @ np.column_stack([rmat[:, 0], rmat[:, 1], translation]) @
+                  np.diag([1 / squares, 1 / squares, 1]))
+    view = cv2.warpPerspective(board, homography, CHECKERBOARD_SHAPE[::-1], flags=cv2.INTER_AREA, borderValue=128)
+    return cv2.cvtColor(view, cv2.COLOR_GRAY2BGR)
+
+
+def write_checkerboards(outdir):
+    """Write the checkerboard views and one view of a smaller board as PNG images.
+
+    Parameters
+    ----------
+    outdir : str
+        Directory to write the files to. It is created if it does not exist.
+
+    Returns
+    -------
+    str
+        The directory, which holds checkerboard1.png to checkerboard6.png and bad_checkerboard.png.
+    """
+    images = {f"checkerboard{i}.png": _checkerboard_view(CHECKERBOARD_CORNERS, *pose)
+              for i, pose in enumerate(CHECKERBOARD_POSES, start=1)}
+    images["bad_checkerboard.png"] = _checkerboard_view((4, 3), *CHECKERBOARD_POSES[0])
+    write_images(outdir, images)
+    return str(outdir)
+
+
+def wells_image():
+    """Create a grayscale image of 24 wells in 4 rows and 6 columns, and two smaller circles below them.
+
+    Returns
+    -------
+    numpy.ndarray
+        230 x 250 uint8 image.
+    """
+    img = np.full(WELLS_SHAPE, 50, dtype=np.uint8)
+    for center in WELL_CENTERS:
+        cv2.circle(img, center, WELL_RADIUS, 200, -1)
+    for center in WELL_EXTRA_CENTERS:
+        cv2.circle(img, center, WELL_EXTRA_RADIUS, 200, -1)
+    return cv2.GaussianBlur(img, (5, 5), 0)
+
+
+def bayer_mosaic(img):
+    """Sample a BGR image in the OpenCV BG Bayer layout.
+
+    Parameters
+    ----------
+    img : numpy.ndarray
+        BGR image.
+
+    Returns
+    -------
+    numpy.ndarray
+        Single-channel image of the same height, width and dtype.
+    """
+    mosaic = img[..., 1].copy()
+    mosaic[1::2, 1::2] = img[1::2, 1::2, 0]
+    mosaic[0::2, 0::2] = img[0::2, 0::2, 2]
+    return mosaic
