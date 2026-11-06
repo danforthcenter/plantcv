@@ -82,12 +82,14 @@ def test_readimage_thermal(test_data):
     assert len(img.shape) == 2
 
 
-def test_readimage_heic(test_data):
+@pytest.mark.parametrize("mode", ["heic", "native"])
+def test_readimage_heic(mode, tmp_path):
     """Test for PlantCV."""
-    img, _, _ = readimage(filename=test_data.heic_img, mode="heic")
-    assert len(img.shape) == 3
-    img, _, _ = readimage(filename=test_data.heic_img, mode="native")
-    assert len(img.shape) == 3
+    expected = synthetic.random_image((100, 120, 3))
+    filename = synthetic.write_heic(tmp_path, "random.HEIC", expected)
+    img, _, _ = readimage(filename=filename, mode=mode)
+    # Lossless encoding returns the BGR input exactly; random values catch a swapped channel order
+    assert np.array_equal(img, expected)
 
 
 def test_readimage_bad_file():

@@ -1,17 +1,13 @@
 import pytest
 import os
-import matplotlib
 from tests import synthetic
-
-# Disable plotting
-matplotlib.use("Template")
 
 
 class LearnTestData:
     def __init__(self):
         """Initialize simple variables."""
         # Test data directory
-        self.datadir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "testdata")
+        self.datadir = synthetic.TESTDATA
         # RGB values table
         self.rgb_values_table = os.path.join(self.datadir, "rgb_values_table.txt")
         # RGB values table with formatting problems
