@@ -8,9 +8,7 @@ Propagate the labels of a segmented skeleton to fill the mask.
 
 - **Parameters:**
     - mask         - Binary mask
-    - objects      - Segment objects (output from either [plantcv.morphology.prune](prune.md),
-    [plantcv.morphology.segment_skeleton](segment_skeleton.md), or
-    [plantcv.morphology.segment_sort](segment_sort.md)).
+    - objects      - Segment objects (output from [plantcv.morphology.segment_sort](segment_sort.md)).
     - stem_objects - Optional input for stem objects that will be combined into a single object before filling the mask. 
     - label        - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
 - **Context:**
