@@ -21,7 +21,7 @@ def test_deltaE_macbeth():
     de_matrix = deltaE(rgb_img=rgb_img, obs="testname", color_chip_size="classic")
     assert np.shape(de_matrix) == (6, 4)
     # recorded value
-    assert np.max(outputs.metadata["deltaE_testname"]["value"]) == [pytest.approx(np.float64(16.712), 0.001)]
+    assert np.max(outputs.metadata["deltaE_testname"]["value"]) == [pytest.approx(np.float64(16.852), 0.001)]
 
 
 def test_deltaE_astro():
@@ -31,7 +31,24 @@ def test_deltaE_astro():
     de_matrix = deltaE(rgb_img=rgb_img, color_chip_size="astro")
     assert np.shape(de_matrix) == (3, 5)
     # recorded value
-    assert np.max(outputs.metadata["deltaE_calibrated"]["value"]) == [pytest.approx(np.float64(16.277), 0.001)]
+    assert np.max(outputs.metadata["deltaE_calibrated"]["value"]) == [pytest.approx(np.float64(16.186), 0.001)]
+
+
+@pytest.mark.parametrize(
+    "color_chip_size, card_factory",
+    [
+        ("classic", synthetic.color_card),
+        ("astro", synthetic.astro_card),
+    ],
+)
+def test_deltaE_identical_color_card(color_chip_size, card_factory):
+    """Test that identical observed and reference colors have zero Delta E."""
+    outputs.clear()
+    params.function_args = {}
+    rgb_img = card_factory()
+    de_matrix = deltaE(rgb_img=rgb_img, color_chip_size=color_chip_size)
+
+    assert np.max(de_matrix) == pytest.approx(0, abs=1e-6)
 
 
 def test_deltaE_bad_param(monkeypatch):
