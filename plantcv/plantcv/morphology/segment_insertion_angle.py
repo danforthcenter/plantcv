@@ -1,17 +1,13 @@
 """Find leaf insertion angles with stem."""
-import os
 import cv2
 import numpy as np
-from plantcv.plantcv._globals import params
 from plantcv.plantcv._globals import outputs
 from plantcv.plantcv.fatal_error import fatal_error
-from plantcv.plantcv.color_palette import color_palette
 from plantcv.plantcv.morphology.segment_tangent_angle import _slope_to_intersect_angle
-from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _find_tips, _iterative_prune, _logical_operation, _dilate, _closing
 
 
-def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects, size, label=None):
+def _segment_insertion_angle(morph, size=20, label=None):
     """
     Find leaf insertion angles in degrees of skeleton segments.
 
@@ -20,30 +16,16 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
 
     Parameters
     ----------
-    skel_img : numpy.ndarray
-        Skeletonized image.
-    segmented_img : numpy.ndarray
-        Segmented image to plot slope lines and intersection angles on.
-    leaf_objects : list
-        List of leaf segments.
-    stem_objects : list
-        List of stem segments.
-    size : int
-        Size of inner leaf used to calculate slope lines.
+    morph = plantcv.plantcv.morphology.morph object,
+        Morphology object to analyze
     label : str, optional
         Label parameter, modifies the variable name of observations recorded (default = pcv.params.sample_label).
-
-    Returns
-    -------
-    labeled_img : numpy.ndarray
-        Debugging image with angles labeled.
     """
-    # Set lable to params.sample_label if None
-    if label is None:
-        label = params.sample_label
+    skel_img = morph.skeleton
+    segmented_img = morph.skeleton
+    leaf_objects = morph.leaves
+    stem_objects = morph.stem
 
-    cols = segmented_img.shape[1]
-    labeled_img = segmented_img.copy()
     segment_slopes = []
     insertion_segments = []
     insertion_hierarchies = []
@@ -94,33 +76,18 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
             label_coord_x.append(leaf_objects[i][0][0][0])
             label_coord_y.append(leaf_objects[i][0][0][1])
 
-    # Create a color scale, use a previously stored scale if available
-    rand_color = color_palette(num=len(valid_segment), saved=True)
-
-    for i, cnt in enumerate(valid_segment):
-        cv2.drawContours(labeled_img, valid_segment, i, rand_color[i], params.line_thickness, lineType=8)
-
     # Plot stem segments
     combined_stem = _combine_stem(segmented_img, stem_objects)
     # Find slope of the stem
-    [vx, vy, x, y] = cv2.fitLine(combined_stem[0], cv2.DIST_L2, 0, 0.01, 0.01)
+    [vx, vy, _, _] = cv2.fitLine(combined_stem[0], cv2.DIST_L2, 0, 0.01, 0.01)
     stem_slope = -vy / vx
     stem_slope = stem_slope[0]
-    _plot_stem_line(labeled_img, vx, vy, x, y, cols)
 
-    for t, segment in enumerate(insertion_segments):
+    for segment in insertion_segments:
         # Find line fit to each segment
-        [vx, vy, x, y] = cv2.fitLine(segment, cv2.DIST_L2, 0, 0.01, 0.01)
+        [vx, vy, _, _] = cv2.fitLine(segment, cv2.DIST_L2, 0, 0.01, 0.01)
         slope = -vy / vx
-        left_list = int(np.array((-x * vy / vx) + y).item())
-        right_list = int(np.array(((cols - x) * vy / vx) + y).item())
         segment_slopes.append(slope[0])
-
-        # Draw slope lines if possible
-        if abs(slope) > 1000000:
-            print("Slope of contour with ID#", t, "is", slope, "and cannot be plotted.")
-        else:
-            cv2.line(labeled_img, (cols - 1, right_list), (0, left_list), rand_color[t], 1)
 
         # Store intersection angles between insertion segment and stem line
         intersection_angle = _slope_to_intersect_angle(slope[0], stem_slope)
@@ -129,34 +96,18 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
             intersection_angle = 180 - intersection_angle
         intersection_angles.append(intersection_angle)
 
-    # Compile list of measurements where there is a 'NA' where pruned away segments would go.
     intersection_angles_editing = intersection_angles.copy()
     for j in pruned_away:
         if j:
             all_intersection_angles.append('NA')
         else:
-            all_intersection_angles.append(intersection_angles_editing[0])
-            intersection_angles_editing.remove(intersection_angles_editing[0])
+            all_intersection_angles.append(intersection_angles_editing.pop(0))
 
-    segment_ids = []
-
-    for i, cnt in enumerate(insertion_segments):
-        # Label slope lines
-        w = label_coord_x[i]
-        h = label_coord_y[i]
-        text = f"{intersection_angles[i]:0,.2f}"
-        cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                    fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
-        segment_ids.append(i)
+    segment_ids = list(range(len(insertion_segments)))
 
     outputs.add_observation(sample=label, variable='segment_insertion_angle', trait='segment insertion angle',
                             method='plantcv.plantcv.morphology.segment_insertion_angle', scale='degrees', datatype=list,
                             value=all_intersection_angles, label=segment_ids)
-
-    _debug(visual=labeled_img,
-           filename=os.path.join(params.debug_outdir, f"{params.device}_segment_insertion_angles.png"))
-
-    return labeled_img
 
 
 def _combine_stem(segmented_img, stem_objects, maxiter=50):
@@ -200,28 +151,3 @@ def _combine_stem(segmented_img, stem_objects, maxiter=50):
     if len(combined_stem) > 1:
         fatal_error('Unable to combine stem objects.')
     return combined_stem
-
-
-def _plot_stem_line(labeled_img, vx, vy, x, y, cols):
-    """Draw a fitted stem line.
-
-    A nearly vertical stem extrapolates to y-intercepts beyond the 32-bit range
-    accepted by ``cv2.line``. In that case, draw the stem line vertically at
-    the fitted x position instead.
-
-    Parameters
-    ----------
-    labeled_img : numpy.ndarray
-        Image on which to draw the fitted stem line.
-    vx, vy, x, y : numpy.ndarray
-        Parameters of the line fitted to the stem.
-    cols : int
-        Number of image columns.
-    """
-    lefty = np.array((-x * vy / vx) + y).item()
-    righty = np.array(((cols - x) * vy / vx) + y).item()
-    if np.all(np.abs([lefty, righty]) < 2 ** 31):
-        cv2.line(labeled_img, (cols - 1, int(righty)), (0, int(lefty)), (150, 150, 150), 3)
-    else:
-        stem_x = int(np.array(x).item())
-        cv2.line(labeled_img, (stem_x, 0), (stem_x, labeled_img.shape[0] - 1), (150, 150, 150), 3)
