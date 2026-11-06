@@ -18,7 +18,7 @@ Calculates morphological traits and stores them to `pcv.outputs`.
 - **Example use:**
     - Below
 
-- **Output data stored:** Data ('segment_path_length', 'segment_insertion_angle', 'segment_area', 'mean_segment_width', 'segment_width_std', 'segment_width_max', 'segment_eu_length', 'segment_angle', 'stem_height', 'stem_angle', 'stem_length', 'segment_curvature', 'segment_tangent_angle') are stored to the [`Outputs` class](outputs.md) when this function is run.
+- **Output data stored:** Data ('segment_path_length', 'segment_insertion_angle', 'segment_area' (or 'leaf_area' and 'stem_area' if `stems = True`), 'mean_segment_width', 'segment_width_std', 'segment_width_max', 'segment_eu_length', 'segment_angle', 'stem_height', 'stem_angle', 'stem_length', 'segment_curvature', 'segment_tangent_angle') are stored to the [`Outputs` class](outputs.md) when this function is run.
 
 ```python
 from plantcv import plantcv as pcv
