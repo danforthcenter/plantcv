@@ -2,7 +2,7 @@
 import cv2
 import numpy as np
 from skimage.segmentation import watershed
-from plantcv.plantcv._globals import params, outputs
+from plantcv.plantcv._globals import outputs
 from plantcv.plantcv._helpers import _scale_size, _area_unit
 
 

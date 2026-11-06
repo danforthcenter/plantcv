@@ -27,7 +27,6 @@ def _segment_width(morph, labeled_mask, n_labels=1, label=None):
     labeled_img : numpy.ndarray
         Segmented image with average width per segment.
     """
-    segmented_img = morph.skeleton
     skel_img = morph.skeleton
 
     widths = []
@@ -41,10 +40,6 @@ def _segment_width(morph, labeled_mask, n_labels=1, label=None):
             mask_copy = submask.copy().astype(np.uint8)
             # Find contours from the submask
             id_objects = cv2.findContours(mask_copy, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2]
-            # ID and store area values and centers of mass for labeling them
-            m = cv2.moments(id_objects[0])
-            # Skip iteration if contour area is zero
-            # This is needed because cv2.contourArea can be > 0 while moments area is 0.
             k = cv2.distanceTransform(mask_copy, cv2.DIST_L2, cv2.DIST_MASK_PRECISE)
 
             # Select central non-zero values from weighted distance transform

@@ -26,7 +26,6 @@ def _segment_insertion_angle(morph, size=20, label=None):
     leaf_objects = morph.leaves
     stem_objects = morph.stem
 
-    cols = segmented_img.shape[1]
     segment_slopes = []
     insertion_segments = []
     insertion_hierarchies = []
@@ -80,7 +79,7 @@ def _segment_insertion_angle(morph, size=20, label=None):
     # Plot stem segments
     combined_stem = _combine_stem(segmented_img, stem_objects)
     # Find slope of the stem
-    [vx, vy, x, y] = cv2.fitLine(combined_stem[0], cv2.DIST_L2, 0, 0.01, 0.01)
+    [vx, vy, _, _] = cv2.fitLine(combined_stem[0], cv2.DIST_L2, 0, 0.01, 0.01)
     stem_slope = -vy / vx
     stem_slope = stem_slope[0]
 
@@ -109,7 +108,6 @@ def _segment_insertion_angle(morph, size=20, label=None):
     outputs.add_observation(sample=label, variable='segment_insertion_angle', trait='segment insertion angle',
                             method='plantcv.plantcv.morphology.segment_insertion_angle', scale='degrees', datatype=list,
                             value=all_intersection_angles, label=segment_ids)
-
 
 
 def _combine_stem(segmented_img, stem_objects, maxiter=50):
