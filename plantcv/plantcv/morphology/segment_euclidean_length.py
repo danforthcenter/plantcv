@@ -1,11 +1,9 @@
 """Find euclidean lengths of skeleton segments."""
-import os
 import cv2
 import numpy as np
 from plantcv.plantcv._globals import params
 from plantcv.plantcv._globals import outputs
 from plantcv.plantcv.fatal_error import fatal_error
-from plantcv.plantcv.color_palette import color_palette
 from plantcv.plantcv._helpers import _cv2_findcontours, _find_tips, _scale_size
 from scipy.spatial.distance import euclidean
 
@@ -50,7 +48,7 @@ def _segment_euclidean_length(morph, label=None):
         # Calculate euclidean distance between tips of each contour
         segment_lengths.append(float(euclidean(points[0], points[1])))
 
-    segment_ids = [i for i in range(len(segment_lengths))]
+    segment_ids = list(range(len(segment_lengths)))
 
     outputs.add_observation(sample=label, variable='segment_eu_length', trait='segment euclidean length',
                             method='plantcv.plantcv.analyze.morphology', scale=params.unit, datatype=list,

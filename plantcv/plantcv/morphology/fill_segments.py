@@ -1,10 +1,8 @@
 """Fill a mask using watershed and skeleton segments."""
-import os
 import cv2
 import numpy as np
 from skimage.segmentation import watershed
 from plantcv.plantcv._globals import params, outputs
-from plantcv.plantcv.visualize.colorize_label_img import colorize_label_img
 from plantcv.plantcv._helpers import _scale_size, _area_unit
 
 
@@ -66,10 +64,5 @@ def _fill_segments(morph, stems=False, label=None):
                                 scale=_area_unit(), datatype=list,
                                 value=_scale_size(value=counts[-1].tolist(), trait_type="area"),
                                 label=(ids[-1]-1).tolist())
-
-    debug = params.debug
-    params.debug = None
-    filled_img = colorize_label_img(filled_mask)
-    params.debug = debug
 
     return filled_mask
