@@ -1,7 +1,6 @@
 import pytest
 import os
 import json
-import numpy as np
 import matplotlib
 from tests import synthetic
 
@@ -13,7 +12,7 @@ class TestData:
     def __init__(self):
         """Initialize simple variables."""
         # Test data directory
-        self.datadir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "testdata")
+        self.datadir = synthetic.TESTDATA
         # heic image
         self.heic_img = os.path.join(self.datadir, "example.HEIC")
         # Outputs results file - JSON
@@ -36,12 +35,6 @@ class TestData:
         self.invalid_results_file = os.path.join(self.datadir, "invalid_results.json")
         # plantcv general results file
         self.plantcv_results_file = os.path.join(self.datadir, "plantcv_results.json")
-
-    @staticmethod
-    def load_npz(npz_file):
-        """Load data saved in a NumPy .npz file."""
-        data = np.load(npz_file, encoding="latin1")
-        return data['arr_0']
 
     @staticmethod
     def load_json(json_file):
