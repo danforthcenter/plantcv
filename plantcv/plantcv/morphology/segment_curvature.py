@@ -1,13 +1,7 @@
 """Find curvature measure of skeleton segments."""
-import os
-import cv2
-import numpy as np
-from plantcv.plantcv._globals import params
 from plantcv.plantcv._globals import outputs
-from plantcv.plantcv.color_palette import color_palette
 from plantcv.plantcv.morphology.segment_path_length import _segment_path_length
 from plantcv.plantcv.morphology.segment_euclidean_length import _segment_euclidean_length
-from plantcv.plantcv._helpers import _cv2_findcontours, _find_tips
 
 
 def _segment_curvature(morph, label=None):
@@ -21,7 +15,6 @@ def _segment_curvature(morph, label=None):
         Optional label parameter, modifies the variable name of
         observations recorded (default = pcv.params.sample_label).
     """
-    segmented_img = morph.skeleton
     objects = morph.leaves
 
     _segment_euclidean_length(morph, label="__seg_curvature_backend__")
@@ -29,10 +22,10 @@ def _segment_curvature(morph, label=None):
     eu_lengths = outputs.observations["__seg_curvature_backend__"]['segment_eu_length']['value']
     path_lengths = outputs.observations["__seg_curvature_backend__"]['segment_path_length']['value']
     outputs.observations.pop("__seg_curvature_backend__")
-    
+
     curvature_measure = [float(x / y) for x, y in zip(path_lengths, eu_lengths)]
 
-    segment_ids = [i for i in range(len(objects))]
+    segment_ids = list(range(len(objects)))
 
     outputs.add_observation(sample=label, variable='segment_curvature', trait='segment curvature',
                             method='plantcv.plantcv.analyze.morphology', scale='none', datatype=list,

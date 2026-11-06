@@ -5,13 +5,8 @@ import pytest
 from plantcv.plantcv import outputs, params
 from plantcv.plantcv.analyze.morphology import morphology as analyze_morphology
 from plantcv.plantcv.morphology.morph_class import morph
-#from plantcv.plantcv.morphology.analyze_stem import _analyze_stem
-#from plantcv.plantcv.morphology.fill_segments import _fill_segments
-#from plantcv.plantcv.morphology.segment_angle import _segment_angle
-#from plantcv.plantcv.morphology.segment_curvature import _segment_curvature
 from plantcv.plantcv.morphology.segment_euclidean_length import _segment_euclidean_length
 from plantcv.plantcv.morphology.segment_insertion_angle import _segment_insertion_angle
-#from plantcv.plantcv.morphology.segment_path_length import _segment_path_length
 from plantcv.plantcv.morphology.segment_tangent_angle import _segment_tangent_angle
 from plantcv.plantcv.morphology.segment_width import _segment_width
 from tests import synthetic
@@ -150,7 +145,6 @@ def test_segment_insertion_angle_bad_stem():
 def test_segment_insertion_angle_disjoint_stem():
     """Test for PlantCV."""
     # Two stem pieces with a 3-pixel gap are dilated until they merge into a single stem
-    leaves, _ = synthetic.skeleton_segments()
     stem_img = np.zeros(synthetic.PLANT_SHAPE, dtype=np.uint8)
     cv2.line(stem_img, (60, 89), (60, 72), 255, 1)
     cv2.line(stem_img, (60, 68), (60, 47), 255, 1)

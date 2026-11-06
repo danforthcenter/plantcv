@@ -1,10 +1,7 @@
 """Find angles in degrees of skeleton segments."""
-import os
 import cv2
 import numpy as np
-from plantcv.plantcv._globals import params
 from plantcv.plantcv._globals import outputs
-from plantcv.plantcv.color_palette import color_palette
 
 
 def _segment_angle(morph, label=None):
@@ -23,9 +20,8 @@ def _segment_angle(morph, label=None):
     labeled_img : numpy.ndarray
         Segmented image with slope lines and angles labeled.
     """
-    segmented_img = morph.skeleton
     objects = morph.leaves
-    
+
     label_coord_x = []
     label_coord_y = []
     segment_angles = []
@@ -40,8 +36,6 @@ def _segment_angle(morph, label=None):
         # Find line fit to each segment
         [vx, vy, x, y] = cv2.fitLine(objects[i], cv2.DIST_L2, 0, 0.01, 0.01)
         slope = -vy / vx
-        left_list = int(np.array(((x - x_min) * slope) + y).item())
-        right_list = int(np.array(((x - x_max) * slope) + y).item())
 
         # Store coordinates for labels
         label_coord_x.append(objects[i][0][0][0])
@@ -51,7 +45,7 @@ def _segment_angle(morph, label=None):
         angle_value = (np.arctan(slope[0]) * 180 / np.pi).astype(np.float64)
         segment_angles.append(angle_value)
 
-    segment_ids = [i for i in range(len(objects))]
+    segment_ids = list(range(len(objects)))
 
     outputs.add_observation(sample=label, variable='segment_angle', trait='segment angle',
                             method='plantcv.plantcv.analyze.morphology', scale='degrees',

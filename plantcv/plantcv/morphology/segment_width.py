@@ -1,6 +1,4 @@
 """A function that analyzes the width of an object using a distance transformation."""
-
-import os
 import cv2
 import numpy as np
 from plantcv.plantcv._globals import params, outputs
@@ -36,7 +34,6 @@ def _segment_width(morph, labeled_mask, n_labels=1, label=None):
     stdevs = []
     max_width = []
     dilated_midline = _dilate(skel_img, 2, 1)
-    labeled_img = segmented_img.copy()
 
     for i in range(1, n_labels + 1):
         submask = np.where(labeled_mask == i, 255, 0).astype(np.uint8)
@@ -48,9 +45,6 @@ def _segment_width(morph, labeled_mask, n_labels=1, label=None):
             m = cv2.moments(id_objects[0])
             # Skip iteration if contour area is zero
             # This is needed because cv2.contourArea can be > 0 while moments area is 0.
-            if m['m00'] != 0:
-                label_coord_x = int(m["m10"] / m["m00"])
-                label_coord_y = int(m["m01"] / m["m00"])
             k = cv2.distanceTransform(mask_copy, cv2.DIST_L2, cv2.DIST_MASK_PRECISE)
 
             # Select central non-zero values from weighted distance transform
