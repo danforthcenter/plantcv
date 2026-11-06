@@ -318,9 +318,9 @@ class Morph:
             whether to combine leaves or stems if both are given.
         """
         # set combined type
-        if len(leaves) and not len(stems):
+        if leaves and not stems:
             combined_type = "leaf"
-        elif len(stems) and not len(leaves):
+        elif stems and not leaves:
             combined_type = "stem"
         # Validate IDs before changing anything
         for name, ids, segs in (("leaves", leaves, all_leaves), ("stems", stems, all_stems)):
