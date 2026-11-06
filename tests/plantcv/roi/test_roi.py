@@ -192,20 +192,21 @@ def test_multi_rect(synthetic_rgb):
     assert len(rois.hierarchy) == 4
 
 
-def test_auto_wells(test_data):
+def test_auto_wells():
     """Test for PlantCV."""
-    img = cv2.imread(test_data.hough_circle, -1)
-    rois = auto_wells(img, 20, 50, 30, 40, 50, 4, 6, -10)
+    img = synthetic.wells_image()
+    rois = auto_wells(img, 20, 50, 30, 13, 18, 4, 6, -5)
     assert len(rois.hierarchy) == 24
 
 
-def test_auto_wells_in_region(test_data):
+def test_auto_wells_in_region():
     """Test for PlantCV."""
-    img = cv2.imread(test_data.hough_circle, -1)
-    roi_cont = [np.array([[[50, 50]], [[50, 499]], [[399, 499]], [[399, 50]]], dtype=np.int32)]
+    img = synthetic.wells_image()
+    # The left 3 columns of wells (x = 25, 65, 105) in all 4 rows, above the two smaller circles
+    roi_cont = [np.array([[[5, 5]], [[5, 174]], [[124, 174]], [[124, 5]]], dtype=np.int32)]
     roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     rect = Objects(contours=[roi_cont], hierarchy=[roi_str])
-    rois = auto_wells(img, 20, 50, 30, 40, 50, 4, 6, -10, roi=rect)
+    rois = auto_wells(img, 20, 50, 30, 13, 18, 4, 6, -5, roi=rect)
     assert len(rois.hierarchy) == 12
 
 
