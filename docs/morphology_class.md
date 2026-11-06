@@ -15,6 +15,7 @@ Object to store morphology elements including skeletonized mask, stem and leaf c
 	- skeleton - Single pixel wide skeletonized image of a plant. This is auto-generated from the mask when the class is initialized.
 	- stem - list of contours of stem objects, generated automatically from the plant skeleton and updated with pruning.
 	- leaves - list of contours of leaf objects, generated automatically from the plant skeleton and updated with pruning.
+	- cycles - Numeric, number of cycles in the skeleton. Downstream tools may fail if cycles > 0. If cycles are detected and debug is plot/print then they will be plotted when the attribute is accessed.
 
 - **Methods**
     - **morph.prune**(*size=0, first_stem=True, reprune=False*)
