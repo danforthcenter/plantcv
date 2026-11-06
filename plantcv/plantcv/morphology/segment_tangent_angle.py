@@ -1,10 +1,7 @@
 """Find tangent angles in degrees of skeleton segments."""
-import os
 import cv2
 import numpy as np
-import pandas as pd
-from plantcv.plantcv._globals import params, outputs
-from plantcv.plantcv.color_palette import color_palette
+from plantcv.plantcv._globals import outputs
 from plantcv.plantcv._helpers import _cv2_findcontours, _iterative_prune
 
 
@@ -54,7 +51,7 @@ def _segment_tangent_angle(morph, size=20, label=None):
 
     intersection_angles = []
 
-    for i, cnt in enumerate(objects):
+    for i, _ in enumerate(objects):
         find_tangents = np.zeros(segmented_img.shape[:2], np.uint8)
         cv2.drawContours(find_tangents, objects, i, 255, 1, lineType=8)
         pruned_segment = _iterative_prune(find_tangents, size)
@@ -79,7 +76,7 @@ def _segment_tangent_angle(morph, size=20, label=None):
             intersection_angle = _slope_to_intersect_angle(slope1, slope2)
             intersection_angles.append(intersection_angle)
 
-    segment_ids = [i for i in range(len(objects))]
+    segment_ids = list(range(len(objects)))
 
     outputs.add_observation(sample=label, variable='segment_tangent_angle', trait='segment tangent angle',
                             method='plantcv.plantcv.analyze.morphology', scale='degrees', datatype=list,

@@ -26,10 +26,10 @@ def _analyze_stem(morph, label=None):
     grouped_stem = np.vstack(stem_objects)
 
     # Find vertical height of the stem by measuring bounding box
-    stem_x, stem_y, _, height = cv2.boundingRect(grouped_stem)
+    stem_x, _, _, height = cv2.boundingRect(grouped_stem)
 
     # Calculate stem angle
-    [vx, vy, x, y] = cv2.fitLine(grouped_stem, cv2.DIST_L2, 0, 0.01, 0.01)
+    [vx, vy, _, _] = cv2.fitLine(grouped_stem, cv2.DIST_L2, 0, 0.01, 0.01)
     slope = -vy / vx
 
     # Calculate stem path length

@@ -1,11 +1,8 @@
 """Find leaf insertion angles with stem."""
-import os
 import cv2
 import numpy as np
-from plantcv.plantcv._globals import params
 from plantcv.plantcv._globals import outputs
 from plantcv.plantcv.fatal_error import fatal_error
-from plantcv.plantcv.color_palette import color_palette
 from plantcv.plantcv.morphology.segment_tangent_angle import _slope_to_intersect_angle
 from plantcv.plantcv._helpers import _cv2_findcontours, _find_tips, _iterative_prune, _logical_operation, _dilate, _closing
 
@@ -87,12 +84,10 @@ def _segment_insertion_angle(morph, size=20, label=None):
     stem_slope = -vy / vx
     stem_slope = stem_slope[0]
 
-    for t, segment in enumerate(insertion_segments):
+    for segment in insertion_segments:
         # Find line fit to each segment
         [vx, vy, x, y] = cv2.fitLine(segment, cv2.DIST_L2, 0, 0.01, 0.01)
         slope = -vy / vx
-        left_list = int(np.array((-x * vy / vx) + y).item())
-        right_list = int(np.array(((cols - x) * vy / vx) + y).item())
         segment_slopes.append(slope[0])
 
         # Store intersection angles between insertion segment and stem line
@@ -109,7 +104,7 @@ def _segment_insertion_angle(morph, size=20, label=None):
         else:
             all_intersection_angles.append(intersection_angles_editing.pop(0))
 
-    segment_ids = [i for i in range(len(insertion_segments))]
+    segment_ids = list(range(len(insertion_segments)))
 
     outputs.add_observation(sample=label, variable='segment_insertion_angle', trait='segment insertion angle',
                             method='plantcv.plantcv.morphology.segment_insertion_angle', scale='degrees', datatype=list,
