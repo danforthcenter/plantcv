@@ -5,6 +5,7 @@ import numpy as np
 from skimage import morphology as skmorph
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._globals import params
+from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.color_palette import color_palette
 from plantcv.plantcv.morphology.segment_sort import _segment_sort
 from plantcv.plantcv.morphology.find_branch_pts import _find_branch_pts
@@ -252,3 +253,73 @@ class morph:
             _debug(visual=cycle_img, filename=os.path.join(params.debug_outdir,
                                                            f"{params.device}_cycles.png"))
         self.cycles = num_cycles
+
+    def combine_segments(self, leaves=None, stems=None, combined_type=None):
+        """Combine selected leaf and/or stem segments into a single segment.
+
+        Parameters
+        ----------
+        leaves        = list,
+            Indices (into `leaves`) of leaf segments to combine
+        stems         = list,
+            Indices (into `stem`) of stem segments to combine
+        combined_type = str or None,
+            "leaf" or "stem", which list the combined segment is added to.
+            Defaults to the type of the input segments; required when mixing
+            leaves and stems.
+
+        Returns
+        -------
+        None. Updates the `leaves` and `stem` attributes. The combined segment is
+        appended to the end of its list.
+        """
+        leaves = [] if leaves is None else list(leaves)
+        stems = [] if stems is None else list(stems)
+
+        # Validate IDs before changing anything
+        for name, ids, segs in (("leaves", leaves, self.leaves), ("stems", stems, self.stem)):
+            if not all(isinstance(i, (int, np.integer)) and not isinstance(i, bool) for i in ids):
+                fatal_error(f"{name} must be a list of integer segment IDs")
+            if any(i < 0 or i >= len(segs) for i in ids):
+                fatal_error(f"{name} IDs must be between 0 and {len(segs) - 1}")
+            if len(set(ids)) != len(ids):
+                fatal_error(f"{name} contains duplicate IDs")
+        if len(leaves) + len(stems) < 2:
+            fatal_error("At least two segments are needed to combine")
+
+        # Pick which list gets the combined segment
+        if combined_type is None:
+            if leaves and stems:
+                fatal_error("combined_type ('leaf' or 'stem') is required when combining leaves and stems")
+            combined_type = "leaf" if leaves else "stem"
+        if combined_type not in ("leaf", "stem"):
+            fatal_error(f"combined_type must be 'leaf' or 'stem', not '{combined_type}'")
+
+        # Concatenate contour points, highest index first to match legacy segment_combine
+        to_combine = [self.leaves[i] for i in sorted(leaves, reverse=True)] + \
+                     [self.stem[i] for i in sorted(stems, reverse=True)]
+        combined_object = np.concatenate(to_combine, axis=0)
+
+        # Build new lists instead of popping so the attributes are replaced, not mutated
+        new_leaves = [seg for i, seg in enumerate(self.leaves) if i not in leaves]
+        new_stem = [seg for i, seg in enumerate(self.stem) if i not in stems]
+        if combined_type == "leaf":
+            new_leaves.append(combined_object)
+        else:
+            new_stem.append(combined_object)
+        self.leaves = new_leaves
+        self.stem = new_stem
+
+        # Debug image: leaves labeled with their (new) IDs, stems in green
+        if params.debug:
+            labeled_img = cv2.cvtColor(self.mask.copy(), cv2.COLOR_GRAY2RGB)
+            rand_color = color_palette(num=len(self.leaves), saved=True)
+            for i, seg in enumerate(self.leaves):
+                cv2.drawContours(labeled_img, [seg], -1, rand_color[i], params.line_thickness, lineType=8)
+                x, y = seg[0][0]
+                cv2.putText(img=labeled_img, text=f"ID:{i}", org=(int(x), int(y)),
+                            fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=params.text_size,
+                            color=rand_color[i], thickness=2)
+            cv2.drawContours(labeled_img, self.stem, -1, (0, 255, 0), params.line_thickness, lineType=8)
+            _debug(visual=labeled_img,
+                   filename=os.path.join(params.debug_outdir, f"{params.device}_combined_segment_ids.png"))
