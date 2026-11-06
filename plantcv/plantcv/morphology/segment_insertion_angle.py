@@ -85,7 +85,7 @@ def _segment_insertion_angle(morph, size=20, label=None):
 
     for segment in insertion_segments:
         # Find line fit to each segment
-        [vx, vy, x, y] = cv2.fitLine(segment, cv2.DIST_L2, 0, 0.01, 0.01)
+        [vx, vy, _, _] = cv2.fitLine(segment, cv2.DIST_L2, 0, 0.01, 0.01)
         slope = -vy / vx
         segment_slopes.append(slope[0])
 

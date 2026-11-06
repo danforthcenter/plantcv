@@ -27,10 +27,6 @@ def _segment_angle(morph, label=None):
     segment_angles = []
 
     for i, cnt in enumerate(objects):
-        # Find bounds for regression lines to get drawn
-        rect = cv2.minAreaRect(cnt)
-        pts = cv2.boxPoints(rect)
-
         # Find line fit to each segment
         [vx, vy, _, _] = cv2.fitLine(objects[i], cv2.DIST_L2, 0, 0.01, 0.01)
         slope = -vy / vx
