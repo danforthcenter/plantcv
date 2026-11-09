@@ -67,7 +67,7 @@ from plantcv.plantcv.sharpen import sharpen
 from plantcv.plantcv import roi
 from plantcv.plantcv import threshold
 from plantcv.plantcv import visualize
-from plantcv.plantcv import morphology
+from plantcv.plantcv.morphology.morph_class import morph
 from plantcv.plantcv.fill_holes import fill_holes
 from plantcv.plantcv.get_kernel import get_kernel
 from plantcv.plantcv.crop import crop
@@ -152,7 +152,7 @@ __all__ = [
     "roi",
     "threshold",
     "visualize",
-    "morphology",
+    "morph",
     "fill_holes",
     "get_kernel",
     "crop",
