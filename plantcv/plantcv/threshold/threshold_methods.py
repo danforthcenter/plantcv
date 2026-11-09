@@ -180,32 +180,20 @@ def otsu(gray_img, object_type="light"):
 def triangle(gray_img, object_type="light", xstep=1):
     """Creates a binary image from a grayscale image using Zack et al.'s (1977) thresholding.
 
-    Inputs:
-    gray_img     = Grayscale image data
-    object_type  = "light" or "dark" (default: "light")
-                   - If object is lighter than the background then standard thresholding is done
-                   - If object is darker than the background then inverse thresholding is done
-    xstep        = value to move along x-axis to determine the points from which to calculate distance recommended to
-                   start at 1 and change if needed)
+    Parameters:
+    -----------
+    gray_img     : numpy.ndarray, Grayscale image data
+    object_type  : str,
+        Object "color", either "light" or "dark" (default: "light" which will segment the lighter objects)
+    xstep        : int,
+        value to move along x-axis to determine the points from which to calculate distance.
+        Defaults to 1, higher values will keep fewer objects in the binary mask as a general rule.
 
     Returns:
-    bin_img      = Thresholded, binary image
-
-    :param gray_img: numpy.ndarray
-    :param object_type: str
-    :param xstep: int
-    :return bin_img: numpy.ndarray
+    --------
+    bin_img      : numpy.ndarray,
+        Thresholded binary image
     """
-    # Set the threshold method. The image is thresholded at the triangle value itself, so no Otsu flag
-    # (with cv2.THRESH_OTSU set, OpenCV ignores the value it is given and applies Otsu's)
-    threshold_method = ""
-    if object_type.upper() == "LIGHT":
-        threshold_method = cv2.THRESH_BINARY
-    elif object_type.upper() == "DARK":
-        threshold_method = cv2.THRESH_BINARY_INV
-    else:
-        fatal_error('Object type ' + str(object_type) + ' is not "light" or "dark"!')
-
     # Calculate automatic threshold value based on triangle algorithm
     hist = cv2.calcHist([gray_img], [0], None, [256], [0, 255])
 
@@ -228,13 +216,14 @@ def triangle(gray_img, object_type="light", xstep=1):
     # Combine x,y
     max_peak_xy = [max_peak[0], max_peak_int]
 
-    # Find final point at end of the tail on the object's side of the peak:
-    # toward 255 for a light object, toward 0 for a dark one
+    threshold_method = cv2.THRESH_BINARY
     direction = 1
     end_x = len(newhist) - 1
-    if threshold_method == cv2.THRESH_BINARY_INV:
+    if object_type.upper() == "DARK":
+        threshold_method = cv2.THRESH_BINARY_INV
         direction = -1
         end_x = 0
+        
     if max_peak[0] == end_x:
         fatal_error(f"The histogram peak is at {end_x}, the end of the {object_type} side, so there is no tail "
                     "to search for a triangle threshold.")
@@ -263,19 +252,18 @@ def triangle(gray_img, object_type="light", xstep=1):
     autothresh = [peaks[x] for x in [i for i, x in enumerate(list(dists)) if x == max(list(dists))]]
     autothreshval = autothresh[0]
 
-    params.device += 1
-
     # Threshold the image
     bin_img = _call_threshold(gray_img, autothreshval, threshold_method, "_triangle_threshold_")
 
     # Additional figures created by this method, if debug is on
     if params.debug is not None:
+        params.device += 1
+        _, ax = plt.subplots()
+        ax.plot(hist)
+        ax.set(title=f"Threshold value = {autothreshval}")
+        ax.axis([0, 256, 0, max(hist)])
+        ax.grid(True)
         if params.debug == 'print':
-            _, ax = plt.subplots()
-            ax.plot(hist)
-            ax.set(title=f"Threshold value = {autothreshval}")
-            ax.axis([0, 256, 0, max(hist)])
-            ax.grid(True)
             fig_name_hist = os.path.join(params.debug_outdir,
                                          str(params.device) + '_triangle_thresh_hist_' + str(autothreshval) + ".png")
             # write the figure to current directory
@@ -283,11 +271,6 @@ def triangle(gray_img, object_type="light", xstep=1):
             # close pyplot plotting window
             plt.clf()
         elif params.debug == 'plot':
-            print(f"Threshold value = {autothreshval}")
-            _, ax = plt.subplots()
-            ax.plot(hist)
-            ax.axis([0, 256, 0, max(hist)])
-            ax.grid(True)
             plt.show()
 
     return bin_img

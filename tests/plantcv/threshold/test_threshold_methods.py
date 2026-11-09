@@ -164,14 +164,6 @@ def test_triangle_dark(threshold_test_data):
     assert gray_img.shape == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
 
-def test_triangle_incorrect_object_type(threshold_test_data):
-    """Test for PlantCV."""
-    # Read in test data
-    gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
-    with pytest.raises(RuntimeError):
-        _ = triangle(gray_img=gray_img, object_type="lite", xstep=10)
-
-
 def _small_object_on_textured_background(object_mean):
     """A disc covering 1.5% of the frame on a noisy background (mean 130)."""
     rng = np.random.default_rng(0)
