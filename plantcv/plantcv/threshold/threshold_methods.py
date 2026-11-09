@@ -223,7 +223,7 @@ def triangle(gray_img, object_type="light", xstep=1):
         threshold_method = cv2.THRESH_BINARY_INV
         direction = -1
         end_x = 0
-        
+
     if max_peak[0] == end_x:
         fatal_error(f"The histogram peak is at {end_x}, the end of the {object_type} side, so there is no tail "
                     "to search for a triangle threshold.")
