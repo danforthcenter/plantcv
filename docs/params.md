@@ -20,26 +20,19 @@ Attributes are accessed as plantcv.params.*attribute*.
 
 **line_thickness**: The line thickness for plots created by [plantcv.analyze.size](analyze_size.md), [plantcv.analyze.bound_horizontal](analyze_bound_horizontal2.md).
 [plantcv.analyze.bound_vertical](analyze_bound_vertical2.md), [plantcv.roi.filter](roi_filter.md),
-[plantcv.homology.scale_features](homology_scale_features.md), [plantcv.homology.x_axis_pseudolandmarks](homology_x_axis_pseudolandmarks.md), [plantcv.homology.y_axis_pseudolandmarks](homology_y_axis_pseudolandmarks.md), [plantcv.morphology.morph.cycles](morphology_class.md), [plantcv.morphology.segment_skeleton](segment_skeleton.md), [plantcv.morphology.segment_tangent_angle](segment_tangent_angle.md),
- [plantcv.morphology.segment_id](segment_id.md), and every region of interest function. Default = 5. 
+[plantcv.homology.scale_features](homology_scale_features.md), [plantcv.homology.x_axis_pseudolandmarks](homology_x_axis_pseudolandmarks.md), [plantcv.homology.y_axis_pseudolandmarks](homology_y_axis_pseudolandmarks.md), and every region of interest function. Default = 5. 
 
  **line_color**: The line color for singular ROI debug images, including [plantcv.roi.circle](roi_circle.md), [plantcv.roi.rectangle](roi_rectangle.md), [plantcv.roi.ellipse](roi_ellipse.md), and [plantcv.roi.custom](roi_custom.md).  
 
 **dpi**: Dots per inch for plotting debugging images. Default = 100.
 
-**text_size**: Size of the text for labels in debugging plots created by [segment_angle](segment_angle.md), [segment_curvature](segment_curvature.md), [segment_euclidean_length](segment_euclidean_length.md),
-[segment_id](segment_id.md), [segment_insertion_angle](segment_insertion_angle.md), [segment_path_length](segment_pathlength.md), and [segment_tangent_angle](segment_tangent_angle.md) from
-the morphology sub-package. Default = 0.55.
+**text_size**: Size of the text for labels in debugging plots, particularly in color correction via the `transform` submodule. Default = 0.55.
 
-**text_thickness**: Thickness of the text for labels in debugging plots created by [segment_angle](segment_angle.md), [segment_curvature](segment_curvature.md), [segment_euclidean_length](segment_euclidean_length.md),
-[segment_id](segment_id.md), [segment_insertion_angle](segment_insertion_angle.md), [segment_path_length](segment_pathlength.md), and [segment_tangent_angle](segment_tangent_angle.md) from
-the morphology sub-package. Default = 2.
+**text_thickness**: Thickness of the text for labels in debugging plots. Default = 2.
 
 **marker_size**: Size of markers in debugging plots created by [plantcv.transform.warp](transform_warp.md). Default = 60.
 
-**color_scale**: The name of a color scale (a Matplot lib colormap) used by [segment_angle](segment_angle.md), [segment_curvature](segment_curvature.md), 
-[segment_euclidean_length](segment_euclidean_length.md), [segment_insertion_angle](segment_insertion_angle.md), [segment_path_length](segment_pathlength.md), and [segment_skeleton](segment_skeleton.md), 
-[segment_tangent_angle](segment_tangent_angle.md) from the morphology sub-package, [spatial_clustering](spatial_clustering.md), and 
+**color_scale**: The name of a color scale (a Matplot lib colormap) used by [spatial_clustering](spatial_clustering.md) and 
 [watershed_segmentation](watershed.md) from the base package. Default = "gist_rainbow". See the [Matplotlib](https://matplotlib.org/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py) website for available options.
 
 **color_sequence**: Set the sequence of colors from the `color_scale` created by the `color_palette` function to "sequential" or "random" order. Default = "sequential".
