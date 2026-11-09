@@ -975,6 +975,7 @@ Below is an overview of all updates to function signatures through the developme
 
 * pre v4.8: NA
 * post v4.8: sorted_obs, branch_pts, tips = **plantcv.morphology.segment_ends**(*skel_img, leaf_objects, mask=None, label=None*)
+* post v5.0: NA, see `plantcv.analyze.morphology`
 
 #### plantcv.morphology.segment_euclidean_length
 
