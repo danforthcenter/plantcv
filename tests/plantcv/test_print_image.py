@@ -6,6 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import altair as alt
 from plantcv.plantcv import print_image, PSII_data
+from tests import synthetic
 
 
 def test_print_image(tmpdir):
@@ -41,11 +42,11 @@ def test_print_image_matplotlib(tmpdir):
     assert os.path.exists(filename)
 
 
-def test_print_image_dataarray(test_data, tmpdir):
+def test_print_image_dataarray(tmpdir):
     """Test for PlantCV."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("cache")
-    da = test_data.psii_cropreporter('ojip_dark').squeeze('measurement', drop=True)
+    da = synthetic.psii_dataarray('ojip_dark').squeeze('measurement', drop=True)
     filename = os.path.join(cache_dir, 'plantcv_print_image.png')
     print_image(img=da, col='frame_label', filename=filename)
     # Assert that the file was created

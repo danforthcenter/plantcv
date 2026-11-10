@@ -1,6 +1,5 @@
 import pytest
 import numpy as np
-import cv2
 from plantcv.plantcv.threshold import binary, gaussian, mean, otsu, custom_range, saturation, triangle, texture, \
     mask_bad, dual_channels
 from plantcv.plantcv.classes import Objects
@@ -8,103 +7,94 @@ from plantcv.plantcv import params
 
 
 @pytest.mark.parametrize("objtype", ["dark", "light"])
-def test_binary(objtype, threshold_test_data):
+def test_binary(objtype, synthetic_gray):
     """Test for PlantCV."""
-    # Read in test data
-    gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
-    binary_img = binary(gray_img=gray_img, threshold=25, object_type=objtype)
+    gray_img = synthetic_gray
+    # The threshold separates the background (50) from the plant (200) and small object (120)
+    binary_img = binary(gray_img=gray_img, threshold=100, object_type=objtype)
     # Assert that the output image has the dimensions of the input image and is binary
     assert gray_img.shape == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
 
-def test_binary_incorrect_object_type(threshold_test_data):
+def test_binary_incorrect_object_type(synthetic_gray):
     """Test for PlantCV."""
-    # Read in test data
-    gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
+    gray_img = synthetic_gray
     with pytest.raises(RuntimeError):
         _ = binary(gray_img=gray_img, threshold=25, object_type="lite")
 
 
 @pytest.mark.parametrize("objtype", ["dark", "light"])
-def test_gaussian(objtype, threshold_test_data):
+def test_gaussian(objtype, synthetic_gray):
     """Test for PlantCV."""
-    # Read in test data
-    gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
+    gray_img = synthetic_gray
     binary_img = gaussian(gray_img=gray_img, ksize=11, offset=2, object_type=objtype)
     # Assert that the output image has the dimensions of the input image and is binary
     assert gray_img.shape == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
 
-def test_gaussian_incorrect_object_type(threshold_test_data):
+def test_gaussian_incorrect_object_type(synthetic_gray):
     """Test for PlantCV."""
-    # Read in test data
-    gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
+    gray_img = synthetic_gray
     with pytest.raises(RuntimeError):
         _ = gaussian(gray_img=gray_img, ksize=11, offset=2, object_type="lite")
 
 
 @pytest.mark.parametrize("objtype, size", [["dark", 11], ["light", 10]])
-def test_mean(objtype, size, threshold_test_data):
+def test_mean(objtype, size, synthetic_gray):
     """Test for PlantCV."""
-    # Read in test data
-    gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
+    gray_img = synthetic_gray
     binary_img = mean(gray_img=gray_img, ksize=size, offset=2, object_type=objtype)
     # Assert that the output image has the dimensions of the input image and is binary
     assert gray_img.shape == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
 
-def test_mean_incorrect_object_type(threshold_test_data):
+def test_mean_incorrect_object_type(synthetic_gray):
     """Test for PlantCV."""
-    # Read in test data
-    gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
+    gray_img = synthetic_gray
     with pytest.raises(RuntimeError):
         _ = mean(gray_img=gray_img, ksize=11, offset=2, object_type="lite")
 
 
-def test_mean_incorrect_ksize(threshold_test_data):
+def test_mean_incorrect_ksize(synthetic_gray):
     """Test for PlantCV."""
-    # Read in test data
-    gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
+    gray_img = synthetic_gray
     with pytest.raises(RuntimeError):
         _ = mean(gray_img=gray_img, ksize=1, offset=2, object_type="dark")
 
 
 @pytest.mark.parametrize("objtype", ["dark", "light"])
-def test_otsu(objtype, threshold_test_data):
+def test_otsu(objtype, synthetic_gray):
     """Test for PlantCV."""
-    # Read in test data
-    gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
+    gray_img = synthetic_gray
     binary_img = otsu(gray_img=gray_img, object_type=objtype)
     # Assert that the output image has the dimensions of the input image and is binary
     assert gray_img.shape == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
 
-def test_otsu_incorrect_object_type(threshold_test_data):
+def test_otsu_incorrect_object_type(synthetic_gray):
     """Test for PlantCV."""
-    # Read in test data
-    gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
+    gray_img = synthetic_gray
     with pytest.raises(RuntimeError):
         _ = otsu(gray_img=gray_img, object_type="lite")
 
 
-@pytest.mark.parametrize("channel,lower_thresh,upper_thresh", [["HSV", [0, 0, 0], [100, 100, 100]],
+# Each range selects the background or the foreground of the synthetic image, but not both
+@pytest.mark.parametrize("channel,lower_thresh,upper_thresh", [["HSV", [0, 0, 0], [100, 100, 200]],
                                                                ["LAB", [100, 100, 100], [255, 255, 255]],
-                                                               ["RGB", [0, 0, 0], [100, 100, 100]],
-                                                               ["CMYK", [0, 0, 0, 0], [2, 100, 100, 100]],
+                                                               ["RGB", [0, 0, 0], [100, 200, 100]],
+                                                               ["CMYK", [0, 0, 0, 0], [2, 100, 100, 200]],
                                                                ["GRAY", [0], [100]]])
-def test_custom_range_rgb(channel, lower_thresh, upper_thresh, threshold_test_data):
+def test_custom_range_rgb(channel, lower_thresh, upper_thresh, synthetic_rgb):
     """Test for PlantCV."""
-    # Read in test data
-    img = cv2.imread(threshold_test_data.small_rgb_img)
+    img = synthetic_rgb
     binary_img = custom_range(img, lower_thresh=lower_thresh, upper_thresh=upper_thresh, channel=channel)
     # Assert that the output image has the dimensions of the input image and is binary
     assert img.shape[:2] == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
 
-def test_custom_range_grayscale(threshold_test_data):
+def test_custom_range_grayscale(synthetic_gray):
     """Test for PlantCV."""
-    # Read in test data
-    gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
+    gray_img = synthetic_gray
     # # Test channel='gray'
     binary_img = custom_range(gray_img, lower_thresh=[0], upper_thresh=[100], channel='gray')
     # Assert that the output image has the dimensions of the input image and is binary
@@ -117,68 +107,63 @@ def test_custom_range_grayscale(threshold_test_data):
                                                                ["GRAY", [0, 0], [2]],
                                                                ["YIQ", [0], [2]],
                                                                ["CMYK", [0], [2]]])
-def test_custom_range_bad_input(channel, lower_thresh, upper_thresh, threshold_test_data):
+def test_custom_range_bad_input(channel, lower_thresh, upper_thresh, synthetic_rgb):
     """Test for PlantCV."""
-    # Read in test data
-    img = cv2.imread(threshold_test_data.small_rgb_img)
+    img = synthetic_rgb
     with pytest.raises(RuntimeError):
         _ = custom_range(img, lower_thresh=lower_thresh, upper_thresh=upper_thresh, channel=channel)
 
 
 @pytest.mark.parametrize("channel", ["all", "any"])
-def test_saturation(channel, threshold_test_data):
+def test_saturation(channel, synthetic_rgb):
     """Test for PlantCV."""
-    # Read in test data
-    rgb_img = cv2.imread(threshold_test_data.small_rgb_img)
+    rgb_img = synthetic_rgb
+    # Saturate a 5 x 5 corner of the image in all channels
+    rgb_img[0:5, 0:5] = 255
     thresh = saturation(rgb_img=rgb_img, threshold=254, channel=channel)
     assert len(np.unique(thresh)) == 2
 
 
-def test_saturation_bad_input(threshold_test_data):
+def test_saturation_bad_input(synthetic_rgb):
     """Test for PlantCV."""
-    # Read in test data
-    rgb_img = cv2.imread(threshold_test_data.small_rgb_img)
+    rgb_img = synthetic_rgb
     with pytest.raises(RuntimeError):
         _ = saturation(rgb_img=rgb_img, threshold=254, channel="red")
 
 
 @pytest.mark.parametrize("debug", ["print", "plot", None])
-def test_triangle(debug, threshold_test_data, tmpdir):
+def test_triangle(debug, synthetic_gray, tmpdir):
     """Test for PlantCV."""
     # Test cache directory
     cache_dir = tmpdir.mkdir("cache")
     params.debug_outdir = cache_dir
     params.debug = debug
-    # Read in test data
-    gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
+    gray_img = synthetic_gray
     binary_img = triangle(gray_img=gray_img, object_type="light", xstep=10)
     # Assert that the output image has the dimensions of the input image and is binary
     assert gray_img.shape == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
 
-def test_triangle_dark(threshold_test_data):
+def test_triangle_dark(synthetic_gray):
     """Test for PlantCV."""
-    # Read in test data
-    gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
+    gray_img = synthetic_gray
     binary_img = triangle(gray_img=gray_img, object_type="dark", xstep=10)
     # Assert that the output image has the dimensions of the input image and is binary
     assert gray_img.shape == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
 
-def test_triangle_incorrect_object_type(threshold_test_data):
+def test_triangle_incorrect_object_type(synthetic_gray):
     """Test for PlantCV."""
-    # Read in test data
-    gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
+    gray_img = synthetic_gray
     with pytest.raises(RuntimeError):
         _ = triangle(gray_img=gray_img, object_type="lite", xstep=10)
 
 
-def test_texture(threshold_test_data):
+def test_texture(synthetic_gray):
     """Test for PlantCV."""
-    # Read in test data
-    gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
-    # Subset input data
-    gray_img = gray_img[150:200, 200:250]
+    gray_img = synthetic_gray
+    # Subset input data to a region that includes the left leaf and stem edges
+    gray_img = gray_img[30:80, 40:90]
     binary_img = texture(gray_img, ksize=6, threshold=7, offset=3, texture_method='dissimilarity', borders='nearest')
     # Assert that the output image has the dimensions of the input image and is binary
     assert gray_img.shape == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
@@ -213,10 +198,9 @@ def test_mask_bad_nan_bad_input():
     assert np.sum(mask) == 0
 
 
-def test_mask_bad_input_color_img(threshold_test_data):
+def test_mask_bad_input_color_img(synthetic_rgb):
     """Test for PlantCV."""
-    # Read in test data
-    bad_img = cv2.imread(threshold_test_data.small_rgb_img)
+    bad_img = synthetic_rgb
     with pytest.raises(RuntimeError):
         _ = mask_bad(bad_img, bad_type='nan')
 

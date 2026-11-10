@@ -1,20 +1,17 @@
-import cv2
 from plantcv.plantcv import outputs
 from plantcv.plantcv.morphology.find_tips import find_tips
+from tests import synthetic
 
 
-def test_find_tips(morphology_test_data):
+def test_find_tips():
     """Test for PlantCV."""
     outputs.clear()
-    mask = cv2.imread(morphology_test_data.bin_img, -1)
-    skeleton = cv2.imread(morphology_test_data.skel_img, -1)
-    _ = find_tips(skel_img=skeleton, mask=mask)
-    assert len(outputs.observations["default"]["tips"]["value"]) == 5
+    _ = find_tips(skel_img=synthetic.skeleton(), mask=synthetic.skeleton_mask())
+    assert sorted(outputs.observations["default"]["tips"]["value"]) == sorted(synthetic.SKELETON_TIPS)
 
 
-def test_find_tips_no_mask(morphology_test_data):
+def test_find_tips_no_mask():
     """Test for PlantCV."""
     outputs.clear()
-    skeleton = cv2.imread(morphology_test_data.skel_img, -1)
-    _ = find_tips(skel_img=skeleton)
-    assert len(outputs.observations["default"]["tips"]["value"]) == 5
+    _ = find_tips(skel_img=synthetic.skeleton())
+    assert sorted(outputs.observations["default"]["tips"]["value"]) == sorted(synthetic.SKELETON_TIPS)

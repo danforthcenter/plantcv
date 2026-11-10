@@ -25,10 +25,10 @@ def test_run_naive_bayes_bad_imgdir():
         main()
 
 
-def test_run_naive_bayes_bad_maskdir(learn_test_data):
+def test_run_naive_bayes_bad_maskdir(nb_train_dirs):
     """Test for PlantCV."""
     # Define input and output files
-    imgdir = os.path.join(learn_test_data.train_data, "images")
+    imgdir, _ = nb_train_dirs
     # Mock ARGV
     import sys
     sys.argv = ["plantcv-train", "naive_bayes",
@@ -40,13 +40,12 @@ def test_run_naive_bayes_bad_maskdir(learn_test_data):
         main()
 
 
-def test_run_naive_bayes(tmpdir, learn_test_data):
+def test_run_naive_bayes(tmpdir, nb_train_dirs):
     """Test for PlantCV."""
     # Temp directory
     tmp_dir = tmpdir.mkdir("sub")
     # Define input and output files
-    imgdir = os.path.join(learn_test_data.train_data, "images")
-    maskdir = os.path.join(learn_test_data.train_data, "masks")
+    imgdir, maskdir = nb_train_dirs
     outfile = os.path.join(str(tmp_dir), "naive_bayes_pdfs.txt")
     # Mock ARGV
     import sys
@@ -122,12 +121,12 @@ def test_run_kmeans_bad_imgdir():
         main()
 
 
-def test_run_kmeans(tmpdir, learn_test_data):
+def test_run_kmeans(tmpdir, kmeans_train_dir):
     """Test for PlantCV."""
     # Temp directory
     tmp_dir = tmpdir.mkdir("sub")
     # Define input and output files
-    imgdir = learn_test_data.kmeans_train_dir
+    imgdir, _ = kmeans_train_dir
     outfile = os.path.join(str(tmp_dir), "kmeans.fit")
     # Mock ARGV
     import sys

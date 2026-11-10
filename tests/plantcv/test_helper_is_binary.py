@@ -1,4 +1,3 @@
-import cv2
 import numpy as np
 import pytest
 from plantcv.plantcv._helpers import _is_binary
@@ -24,15 +23,15 @@ def test_is_binary_zero_size():
     assert _is_binary(img=img) is True
 
 
-def test_is_binary_grayscale(test_data):
+def test_is_binary_grayscale(synthetic_gray):
     """Test for PlantCV."""
-    img = cv2.imread(test_data.small_gray_img, -1)
+    img = synthetic_gray
     assert _is_binary(img=img) is False
 
 
-def test_is_binary_bin_img(test_data):
+def test_is_binary_bin_img(synthetic_mask):
     """Test for PlantCV."""
-    img = cv2.imread(test_data.small_bin_img, -1)
+    img = synthetic_mask
     assert _is_binary(img=img) is True
 
 
@@ -43,8 +42,8 @@ def test_is_binary_raise_error_on_dimensions():
         _ = _is_binary(img=img, dimCheck=True, raiseError=True)
 
 
-def test_is_binary_raise_error(test_data):
+def test_is_binary_raise_error(synthetic_gray):
     """Test for PlantCV."""
-    img = cv2.imread(test_data.small_gray_img, -1)
+    img = synthetic_gray
     with pytest.raises(RuntimeError):
         _ = _is_binary(img=img, raiseError=True)

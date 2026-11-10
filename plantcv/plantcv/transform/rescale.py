@@ -1,8 +1,7 @@
 # Rescale grayscale images to user defined range
 
 import os
-import numpy as np
-from plantcv.plantcv.fatal_error import fatal_error
+from plantcv.plantcv._helpers import _rescale
 from plantcv.plantcv._globals import params
 from plantcv.plantcv._debug import _debug
 
@@ -10,27 +9,21 @@ from plantcv.plantcv._debug import _debug
 def rescale(gray_img, min_value=0, max_value=255):
     """Rescale image.
 
-    Inputs:
-    gray_img  = Grayscale image data
-    min_value = (optional) new minimum value for range of interest. default = 0
-    max_value = (optional) new maximum value for range of interest. default = 255
+    Parameters:
+    -----------
+    gray_img  : numpy.ndarray,
+        Grayscale image data
+    min_value : int (optional),
+        new minimum value for range of interest. default = 0
+    max_value : int (optional),
+        new maximum value for range of interest. default = 255
 
     Returns:
-    rescaled_img = rescaled image
-
-    :param gray_img: numpy.ndarray
-    :param min_value: int
-    :param max_value: int
-    :return c: numpy.ndarray
+    rescaled_img : numpy.ndarray,
+        rescaled image
     """
-    if len(np.shape(gray_img)) != 2:
-        fatal_error("Image is not grayscale")
-    # replace Inf with Nan for compatibility with interpolation
-    gray_finite = np.where(np.isinf(gray_img), np.nan, gray_img)
+    rescaled_img = _rescale(gray_img, min_value, max_value)
 
-    rescaled_img = np.interp(gray_finite, (np.nanmin(gray_finite), np.nanmax(gray_finite)), (min_value, max_value))
-    rescaled_img = (rescaled_img).astype('uint8')
-
-    _debug(visual=rescaled_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_rescaled.png'))
+    _debug(visual=rescaled_img, filename=os.path.join(params.debug_outdir, f"{params.device}_rescaled.png"))
 
     return rescaled_img

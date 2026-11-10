@@ -2,7 +2,7 @@ from plantcv.parallel import WorkflowConfig
 import pytest
 
 
-def test_save_config_file(parallel_test_data, tmpdir):
+def test_save_config_file(test_data, parallel_test_data, tmpdir):
     """Test for PlantCV."""
     # Create a tmp JSON file
     template_file = tmpdir.mkdir("cache").join("config.json")
@@ -11,7 +11,7 @@ def test_save_config_file(parallel_test_data, tmpdir):
     config.input_dir = "."
     # Save template file
     config.save_config(config_file=template_file)
-    content = parallel_test_data.load_json(json_file=template_file)
+    content = test_data.load_json(json_file=template_file)
 
     assert content == parallel_test_data.workflowconfig_template()
 

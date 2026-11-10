@@ -1,12 +1,11 @@
-import cv2
 import numpy as np
 import pytest
 from plantcv.plantcv._helpers import _iterate_objects
 
 
-def test_iterate_objects_binary_mask(test_data):
+def test_iterate_objects_binary_mask(synthetic_mask):
     """Test for PlantCV."""
-    mask = cv2.imread(test_data.small_bin_img, -1)
+    mask = synthetic_mask
     objects = list(_iterate_objects(labeled_mask=mask, n_labels=1, label="test"))
     sample, slices, obj_mask = objects[0]
     assert len(objects) == 1
@@ -27,8 +26,8 @@ def test_iterate_objects_labeled_mask():
     assert sizes == [6, 8, 0]
 
 
-def test_iterate_objects_wrong_num_labels(test_data):
+def test_iterate_objects_wrong_num_labels(synthetic_mask):
     """Test for PlantCV."""
-    mask = cv2.imread(test_data.small_bin_img, -1)
+    mask = synthetic_mask
     with pytest.raises(RuntimeError):
         _ = list(_iterate_objects(labeled_mask=mask, n_labels=1, label=["test", "test"]))

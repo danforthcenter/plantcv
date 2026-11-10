@@ -31,7 +31,6 @@ modified_spectral = pcv.Spectral_data(array_data=modified_array_data,
                           lines=modified_array_data.shape[0], interleave='bil',
                           wavelength_units=source_spectral.wavelength_units,
                           array_type="datacube",
-                          pseudo_rgb=None,
                           filename=source_spectral.filename,
                           default_bands=None)
 

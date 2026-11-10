@@ -1,19 +1,22 @@
-import cv2
+import numpy as np
 from plantcv.plantcv.morphology.segment_sort import segment_sort
+from tests import synthetic
 
 
-def test_segment_sort(morphology_test_data):
+def test_segment_sort():
     """Test for PlantCV."""
-    skeleton = cv2.imread(morphology_test_data.skel_img, -1)
-    leaf_obj, _ = segment_sort(skel_img=skeleton,
-                               objects=morphology_test_data.load_segments(morphology_test_data.segments_file, "edges"),
-                               mask=skeleton)
-    assert len(leaf_obj) == 4
+    skeleton = synthetic.skeleton()
+    leaves, stem = synthetic.skeleton_segments()
+    leaf_obj, stem_obj = segment_sort(skel_img=skeleton, objects=stem + leaves, mask=skeleton)
+    # The first (bottom) stem segment is always stem; of the others only the leaves hold a tip
+    assert len(leaf_obj) == 4 and len(stem_obj) == 3
+    assert all(np.array_equal(a, b) for a, b in zip(leaf_obj, leaves))
 
 
-def test_segment_sort_no_mask(morphology_test_data):
+def test_segment_sort_no_mask():
     """Test for PlantCV."""
-    skeleton = cv2.imread(morphology_test_data.skel_img, -1)
-    leaf_obj, _ = segment_sort(skel_img=skeleton,
-                               objects=morphology_test_data.load_segments(morphology_test_data.segments_file, "edges"))
-    assert len(leaf_obj) == 4
+    skeleton = synthetic.skeleton()
+    leaves, stem = synthetic.skeleton_segments()
+    leaf_obj, stem_obj = segment_sort(skel_img=skeleton, objects=stem + leaves)
+    assert len(leaf_obj) == 4 and len(stem_obj) == 3
+    assert all(np.array_equal(a, b) for a, b in zip(leaf_obj, leaves))

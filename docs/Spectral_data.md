@@ -34,8 +34,6 @@ Attributes are accessed as spectral_data_instance.*attribute*.
 
 **array_type**: The type of array data (entire datacube, specific index, first derivative, etc)
 
-**pseudo_rgb**: Pseudo-RGB image if the array_type is a datacube
-
 **filename**: The filename where the data originated from
 
 **default_bands**: The bands that are used to make the pseudo-RGB image, read from the `default bands` field of the .hdr file. Contains one band number for a grayscale image or three band numbers for an RGB image. Set to `None` if the .hdr file does not name any default bands, in which case the bands are selected from the available wavelengths.
@@ -47,6 +45,12 @@ Attributes are accessed as spectral_data_instance.*attribute*.
 **header_offset**: Number of bytes ENVI should skip when reading the file, defaults to 0. This is not used by PlantCV but is stored for cross platform compatibility.
 
 **metadata**: Metadata in a dictionary. Included keys might be specific to hyperspectral or geospatial image types 
+
+### Methods
+
+Methods are accessed as `object_name.method`.
+
+**pseudo_rgb()**: Calculates and returns a pseudo-RGB image. If fewer than 3 wavelengths are present then the first array is repeated to make a 3 channel image.
 
 ### Example
 
@@ -64,7 +68,7 @@ index_array_gdvi = pcv.hyperspectral.extract_index(array=spectral_data_instance,
                                                    distance=20)
                                                    
 # Plot the pseudo-RGB image that is created when reading in hyperspectral data 
-pcv.plot_image(spectral_data_instance.pseudo_rgb)
+pcv.plot_image(spectral_data_instance.pseudo_rgb())
 
 # Plot the index extracted from the hyperspectral datacube 
 pcv.plot_image(index_array_gdvi.array_data)
