@@ -151,7 +151,9 @@ tests (to make sure they aren't broken by future pull requests) we need a 'unit 
 need more than one test to cover function options).
 
 Existing unit tests can be found in `tests/` as examples.
-The data to support unit tests can be found in the `tests/testdata/` directory.
+Test data is generated at test time by the functions in `tests/synthetic.py`; prefer these over adding new files.
+The few files that cannot be generated are kept in the `tests/testdata/` directory, and its `README.md` lists each one
+with the reason it is kept.
 
 If you are updating existing code, make sure that the test(s) pass on the function you modified.
 Testing locally can be done with pytest:

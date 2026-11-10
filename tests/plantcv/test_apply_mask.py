@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
-import cv2
 from plantcv.plantcv import apply_mask
+from tests import synthetic
 
 
 def test_apply_mask_white(synthetic_rgb, synthetic_mask):
@@ -16,13 +16,14 @@ def test_apply_mask_black(synthetic_rgb, synthetic_mask):
     assert np.unique(masked_img[np.where(synthetic_mask == 0)]) == 0
 
 
-def test_apply_mask_hyperspectral(test_data):
+def test_apply_mask_hyperspectral():
     """Test for PlantCV."""
-    # Read in test data
-    hsi = test_data.load_hsi(test_data.hsi_file)
-    mask = cv2.imread(test_data.hsi_mask_file, -1)
+    hsi = synthetic.spectral_data()
+    mask = synthetic.spectral_mask()
     masked_array = apply_mask(img=hsi.array_data, mask=mask, mask_color="black")
-    assert np.unique(masked_array[np.where(mask == 0)]) == 0
+    # Every band is zero outside the mask and unchanged inside it
+    assert np.all(masked_array[np.where(mask == 0)] == 0)
+    assert np.array_equal(masked_array[np.where(mask > 0)], hsi.array_data[np.where(mask > 0)])
 
 
 def test_apply_mask_bad_input(synthetic_rgb, synthetic_mask):

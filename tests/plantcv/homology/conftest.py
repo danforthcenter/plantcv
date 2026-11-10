@@ -1,17 +1,14 @@
 import pytest
 import os
 import pandas as pd
-import matplotlib
-
-# Disable plotting
-matplotlib.use("Template")
+from tests import synthetic
 
 
 class HomologyTestData:
     def __init__(self):
         """Initialize simple variables."""
         # Test data directory
-        self.datadir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "testdata")
+        self.datadir = synthetic.TESTDATA
         # Pseudolandmarks CSV file
         self.plms = os.path.join(self.datadir, "plms_df.csv")
         # Pseudolandmarks Space CSV file
