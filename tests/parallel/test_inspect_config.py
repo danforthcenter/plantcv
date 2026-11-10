@@ -41,4 +41,3 @@ def test_inspect_dataset_bad_path():
     """
     with pytest.raises(RuntimeError):
         _ = inspect_dataset("/badpath/worsepath")
-    
