@@ -40,6 +40,7 @@ def test_save_results_json_newfile(tmpdir):
     with open(outfile, "r") as fp:
         results = json.load(fp)
         assert results["observations"]["default"]["test"]["value"] == "test"
+        assert list(results["metadata"].keys()) == ['add_date', 'run_date', 'plantcv_version', 'workflow_hash']
 
 
 def test_save_results_json_existing_file(test_data, tmpdir):
