@@ -1,12 +1,23 @@
 import pytest
 import os
+import cv2
+import numpy as np
 from plantcv.plantcv import readimage
+from tests import synthetic
 
 
-def test_plantcv_readimage_native(test_data):
+def _write_img(tmp_path, filename, img):
+    """Write an image to tmp_path and return its path."""
+    path = os.path.join(tmp_path, filename)
+    cv2.imwrite(path, img)
+    return path
+
+
+def test_plantcv_readimage_native(tmp_path):
     """Test for PlantCV."""
-    img, path, img_name = readimage(filename=test_data.small_rgb_img, mode='native')
-    expected = [3] + list(os.path.split(test_data.small_rgb_img))
+    filename = _write_img(tmp_path, "plant_rgb.png", synthetic.plant_rgb())
+    img, path, img_name = readimage(filename=filename, mode='native')
+    expected = [3] + list(os.path.split(filename))
     # Assert that the image name returned equals the name of the input image
     # Assert that the path of the image returned equals the path of the input image
     # Assert that the dimensions of the returned image equals the expected dimensions
@@ -14,41 +25,49 @@ def test_plantcv_readimage_native(test_data):
 
 
 @pytest.mark.parametrize("mode", ["gray", "grey"])
-def test_readimage_grayscale(mode, test_data):
+def test_readimage_grayscale(mode, tmp_path):
     """Test for PlantCV."""
-    img, _, _ = readimage(filename=test_data.small_gray_img, mode=mode)
+    filename = _write_img(tmp_path, "plant_gray.png", synthetic.plant_gray())
+    img, _, _ = readimage(filename=filename, mode=mode)
     assert len(img.shape) == 2
 
 
-def test_readimage_rgb(test_data):
+def test_readimage_rgb(tmp_path):
     """Test for PlantCV."""
-    img, _, _ = readimage(filename=test_data.small_gray_img, mode="rgb")
+    filename = _write_img(tmp_path, "plant_gray.png", synthetic.plant_gray())
+    img, _, _ = readimage(filename=filename, mode="rgb")
     assert len(img.shape) == 3
 
 
-def test_readimage_normalized(test_data):
+def test_readimage_normalized(tmp_path):
     """Test for PlantCV."""
-    img, _, _ = readimage(filename=test_data.small_gray_img, mode="normalize")
+    filename = _write_img(tmp_path, "plant_gray.png", synthetic.plant_gray())
+    img, _, _ = readimage(filename=filename, mode="normalize")
     assert len(img.shape) == 2
 
 
 @pytest.mark.parametrize("mode,depth", [["rgba", 4], ["native", 3]])
-def test_readimage_rgba(mode, depth, test_data):
+def test_readimage_rgba(mode, depth, tmp_path):
     """Test for PlantCV."""
-    img, _, _ = readimage(filename=test_data.rgba_img, mode=mode)
+    # BGRA image with the plant opaque and the background transparent
+    mask = synthetic.plant_mask()
+    filename = _write_img(tmp_path, "plant_rgba.png", np.dstack((synthetic.plant_rgb(mask=mask), mask)))
+    img, _, _ = readimage(filename=filename, mode=mode)
     assert img.shape[2] == depth
 
 
-def test_readimage_csv(test_data):
+def test_readimage_csv(tmp_path):
     """Test for PlantCV."""
-    img, _, _ = readimage(filename=test_data.thermal_img, mode="csv")
-    assert len(img.shape) == 2
+    thermal = synthetic.thermal_image()
+    img, _, _ = readimage(filename=synthetic.write_csv(tmp_path, "thermal.csv", thermal), mode="csv")
+    # The temperatures are whole numbers, so the two-decimal CSV holds them exactly
+    assert np.array_equal(img, thermal)
 
 
-def test_readimage_envi(test_data):
+def test_readimage_envi(tmpdir):
     """Test for PlantCV."""
-    hsi = readimage(filename=test_data.envi_bil_file, mode="envi")
-    assert hsi.array_data.shape[2] == 978
+    hsi = readimage(filename=synthetic.write_envi(outdir=tmpdir, filename="envi"), mode="envi")
+    assert hsi.array_data.shape[2] == 5
 
 
 def test_readimage_nd2(test_data):
@@ -63,12 +82,14 @@ def test_readimage_thermal(test_data):
     assert len(img.shape) == 2
 
 
-def test_readimage_heic(test_data):
+@pytest.mark.parametrize("mode", ["heic", "native"])
+def test_readimage_heic(mode, tmp_path):
     """Test for PlantCV."""
-    img, _, _ = readimage(filename=test_data.heic_img, mode="heic")
-    assert len(img.shape) == 3
-    img, _, _ = readimage(filename=test_data.heic_img, mode="native")
-    assert len(img.shape) == 3
+    expected = synthetic.random_image((100, 120, 3))
+    filename = synthetic.write_heic(tmp_path, "random.HEIC", expected)
+    img, _, _ = readimage(filename=filename, mode=mode)
+    # Lossless encoding returns the BGR input exactly; random values catch a swapped channel order
+    assert np.array_equal(img, expected)
 
 
 def test_readimage_bad_file():

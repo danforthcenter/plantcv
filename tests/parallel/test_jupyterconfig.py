@@ -1,3 +1,4 @@
+import shutil
 from plantcv.parallel import JupyterConfig
 import os
 
@@ -54,12 +55,12 @@ def test_jupcon_inspect_dataset(parallel_test_data, tmpdir):
 def test_jupcon_notebook2script(parallel_test_data, tmpdir):
     """Test for PlantCV."""
     # initialize JupyterConfig
-    starting_dir = os.getcwd()
     os.chdir(tmpdir.mkdir("cache"))
     os.environ["JPY_SESSION_NAME"] = "dummy.ipynb"
     jupcon = JupyterConfig()
     object.__setattr__(jupcon, "in_notebook", lambda: True)
-    jupcon.notebook = os.path.join(starting_dir, parallel_test_data.jupyternotebook)
+    # Setting the notebook writes the converted script next to it, so use a copy
+    jupcon.notebook = shutil.copy(parallel_test_data.jupyternotebook, os.getcwd())
     jupcon.workflow = os.path.join(os.getcwd(), "dummy.py")
 
     jupcon.notebook2script()

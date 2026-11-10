@@ -1,37 +1,44 @@
 import numpy as np
-import cv2
 from plantcv.plantcv import create_labels, Objects, params
+from tests import synthetic
 
 
-def test_create_labels(test_data):
+def test_create_labels(synthetic_mask):
     """Test for PlantCV."""
-    cnt, cnt_str = test_data.load_contours(test_data.small_contours_file)
-    mask = cv2.imread(test_data.small_bin_img, -1)
+    # ROI traced around the plant only
+    cnt, cnt_str = synthetic.find_contours(synthetic.plant_mask(small_object=False))
     cnt_Obj = Objects(contours=[cnt], hierarchy=[cnt_str])
-    masks, num = create_labels(mask=mask, rois=cnt_Obj, roi_type="partial")
+    masks, num = create_labels(mask=synthetic_mask, rois=cnt_Obj, roi_type="partial")
     assert np.unique(masks).size == (num + 1)
+    # One ROI; only the 800 px plant overlaps it, so the small object is not labeled
+    assert num == 1
+    assert np.count_nonzero(masks) == 800
 
 
-def test_create_labels_multi(test_data):
+def test_create_labels_multi():
     """Test for PlantCV."""
-    cnt, cnt_str = test_data.load_contours(test_data.multi_contours_file)
-    mask = cv2.imread(test_data.multi_bin_img, -1)
+    mask = synthetic.two_plants_mask()
+    # ROI traced around both plants
+    cnt, cnt_str = synthetic.find_contours(mask)
     cnt_Obj = Objects(contours=[cnt], hierarchy=[cnt_str])
     mask, num = create_labels(mask=mask, rois=cnt_Obj, roi_type="partial")
     assert np.unique(mask).size == (num + 1)
-
-    
-def test_create_labels_no_roi(test_data):
-    """Test for PlantCV."""
-    mask = cv2.imread(test_data.small_bin_img, -1)
-    _, num = create_labels(mask=mask)
+    # One ROI overlapping both 441 px disks
     assert num == 1
+    assert np.count_nonzero(mask) == 2 * 441
 
 
-def test_create_labels_debug(test_data):
+def test_create_labels_no_roi(synthetic_mask):
+    """Test for PlantCV."""
+    _, num = create_labels(mask=synthetic_mask)
+    # Plant and small object
+    assert num == 2
+
+
+def test_create_labels_debug(synthetic_mask):
     """Test for PlantCV."""
     params.debug = "plot"
-    mask = cv2.imread(test_data.small_bin_img, -1)
-    _, num = create_labels(mask=mask)
+    _, num = create_labels(mask=synthetic_mask)
     params.debug = None
-    assert num == 1
+    # Plant and small object
+    assert num == 2

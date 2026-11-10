@@ -1,7 +1,6 @@
 """Tests for the color_correction module."""
 import pytest
 import os
-import cv2
 import numpy as np
 from plantcv.plantcv._globals import outputs
 from plantcv.plantcv.transform.color_correction import (calc_transformation_matrix,
@@ -10,17 +9,18 @@ from plantcv.plantcv.transform.color_correction import (calc_transformation_matr
 from plantcv.plantcv.transform.get_color_matrix import get_color_matrix, get_matrix_m
 from plantcv.plantcv.transform.standard_matrices import std_color_matrix, astro_color_matrix
 from plantcv.plantcv.transform.detect_color_card import detect_color_card
+from tests import synthetic
 
 
-def test_affine_color_correction(transform_test_data):
+def test_affine_color_correction():
     """Test for Plantcv."""
     outputs.clear()
     # apply affine color correction to an image and check that the chip colors
     # get closer to the standard values
-    img = cv2.imread(transform_test_data.colorcard_img)
-    # parameters hard coded for the image used
-    mask = create_color_card_mask(rgb_img=img, radius=20, start_coord=(1000, 400),
-                                  spacing=(145, 145), nrows=6, ncols=4)
+    img = synthetic.color_cast(synthetic.color_card())
+    # The first chip is centered at (85, 85) and the chips are 70 px apart
+    mask = create_color_card_mask(rgb_img=img, radius=20, start_coord=(85, 85),
+                                  spacing=(70, 70), nrows=6, ncols=4)
     _, s_matrix = get_color_matrix(rgb_img=img, mask=mask)
     t_matrix = std_color_matrix(pos=3)
     corrected_img = affine_color_correction(rgb_img=img, source_matrix=s_matrix,
@@ -34,11 +34,14 @@ def test_affine_color_correction(transform_test_data):
     dist_correct = np.sum((c_matrix - t_matrix)**2)
 
     assert dist_correct <= dist_source
+    # The cast is a per-channel scale, which the affine correction undoes up to rounding: recorded value 1
+    # (8-bit units; each chip is uniform, so its mean is a whole number of 8-bit units)
+    assert np.max(np.abs(np.rint(c_matrix[:, 1:] * 255) - np.rint(t_matrix[:, 1:] * 255))) <= 1
 
 
-def test_affine_color_correction_bad_shape(transform_test_data):
+def test_affine_color_correction_bad_shape():
     """Test for PlantCV."""
-    img = cv2.imread(transform_test_data.colorcard_img)
+    img = synthetic.color_card()
     t_matrix = std_color_matrix(pos=3)
     with pytest.raises(RuntimeError):
         _ = affine_color_correction(rgb_img=img, source_matrix=t_matrix,
@@ -85,230 +88,211 @@ def test_astro_color_matrix():
     assert np.sum(np.abs(255*yellow_val - yellow_rgb)) < 1
 
 
-def test_get_color_matrix(transform_test_data):
+def test_get_color_matrix():
     """Test for PlantCV."""
-    # load in target_matrix
-    matrix_compare = transform_test_data.load_npz(transform_test_data.target_matrix_file)
-    # Read in rgb_img and gray-scale mask
-    rgb_img = cv2.imread(transform_test_data.target_img)
-    mask = cv2.imread(transform_test_data.colorcard_mask, -1)
-    # The result should be a len(np.unique(mask))-1 x 4 matrix
-    _, matrix = get_color_matrix(rgb_img, mask)
-    assert np.array_equal(matrix, matrix_compare)
+    # Each chip of the card is uniform with its standard color
+    _, matrix = get_color_matrix(synthetic.color_card(), synthetic.color_card_mask())
+    assert np.allclose(matrix, std_color_matrix(pos=3), rtol=0, atol=1e-12)
 
 
-def test_get_color_matrix_img(transform_test_data):
+def test_get_color_matrix_img():
     """Test for PlantCV."""
-    # Read in two gray-scale images
-    rgb_img = cv2.imread(transform_test_data.colorcard_mask, -1)
-    mask = cv2.imread(transform_test_data.colorcard_mask, -1)
+    # Two gray-scale images
+    mask = synthetic.color_card_mask()
     # The input for rgb_img needs to be an RGB image
     with pytest.raises(RuntimeError):
-        _, _ = get_color_matrix(rgb_img, mask)
+        _, _ = get_color_matrix(mask, mask)
 
 
-def test_get_color_matrix_mask(transform_test_data):
+def test_get_color_matrix_mask():
     """Test for PlantCV."""
-    # Read in two gray-scale images
-    rgb_img = cv2.imread(transform_test_data.target_img)
-    mask = cv2.imread(transform_test_data.colorcard_mask)
-    # The input for rgb_img needs to be an RGB image
+    # A 3-channel mask
+    mask = np.dstack([synthetic.color_card_mask()] * 3)
+    # The mask needs to be a gray-scale image
     with pytest.raises(RuntimeError):
-        _, _ = get_color_matrix(rgb_img, mask)
+        _, _ = get_color_matrix(synthetic.color_card(), mask)
 
 
-def test_get_matrix_m(transform_test_data):
+def _powers(matrix):
+    """R, R^2, R^3, G, G^2, G^3, B, B^2, B^3 columns of a color matrix."""
+    return np.column_stack([matrix[:, c] ** p for c in (1, 2, 3) for p in (1, 2, 3)])
+
+
+def test_get_matrix_m():
     """Test for PlantCV."""
-    # load in comparison matrices
-    matrix_compare_m = transform_test_data.load_npz(transform_test_data.matrix_m1_file)
-    matrix_compare_b = transform_test_data.load_npz(transform_test_data.matrix_b1_file)
-    # read in matrices
-    t_matrix = transform_test_data.load_npz(transform_test_data.target_matrix_file)
-    s_matrix = transform_test_data.load_npz(transform_test_data.source1_matrix_file)
-    # apply matrices to function
-    _, matrix_m, matrix_b = get_matrix_m(t_matrix, s_matrix)
-    matrix_compare_m = np.rint(matrix_compare_m)
-    matrix_compare_b = np.rint(matrix_compare_b)
-    matrix_m = np.rint(matrix_m)
-    matrix_b = np.rint(matrix_b)
-    assert np.array_equal(matrix_m, matrix_compare_m) and np.array_equal(matrix_b, matrix_compare_b)
+    t_matrix = std_color_matrix(pos=3)
+    s_matrix = synthetic.color_cast_matrix(t_matrix)
+    matrix_a, matrix_m, matrix_b = get_matrix_m(t_matrix, s_matrix)
+    # matrix_a holds the source R, G, B, then their squares, then their cubes
+    expected_a = np.column_stack([s_matrix[:, 1:] ** p for p in (1, 2, 3)])
+    assert np.array_equal(matrix_a, expected_a)
+    # matrix_m is the left inverse of matrix_a
+    assert np.allclose(matrix_m @ matrix_a, np.eye(9), rtol=0, atol=1e-6)
+    assert np.array_equal(matrix_b, _powers(t_matrix))
 
 
-def test_get_matrix_m_unequal_data(transform_test_data):
+def test_get_matrix_m_unequal_data():
     """Test for PlantCV."""
-    # load in comparison matrices
-    matrix_compare_m = transform_test_data.load_npz(transform_test_data.matrix_m2_file)
-    matrix_compare_b = transform_test_data.load_npz(transform_test_data.matrix_b2_file)
-    # read in matrices
-    t_matrix = transform_test_data.load_npz(transform_test_data.target_matrix_file)
-    s_matrix = transform_test_data.load_npz(transform_test_data.source2_matrix_file)
-    # apply matrices to function
-    _, matrix_m, matrix_b = get_matrix_m(t_matrix, s_matrix)
-    matrix_compare_m = np.rint(matrix_compare_m)
-    matrix_compare_b = np.rint(matrix_compare_b)
-    matrix_m = np.rint(matrix_m)
-    matrix_b = np.rint(matrix_b)
-    assert np.array_equal(matrix_m, matrix_compare_m) and np.array_equal(matrix_b, matrix_compare_b)
+    t_matrix = std_color_matrix(pos=3)
+    # The source is missing chips 30 and 60; only the matching chips are used
+    s_matrix = np.delete(synthetic.color_cast_matrix(t_matrix), [2, 5], axis=0)
+    matrix_a, matrix_m, matrix_b = get_matrix_m(t_matrix, s_matrix)
+    expected_a = np.column_stack([s_matrix[:, 1:] ** p for p in (1, 2, 3)])
+    assert np.array_equal(matrix_a, expected_a)
+    assert np.allclose(matrix_m @ matrix_a, np.eye(9), rtol=0, atol=1e-6)
+    assert np.array_equal(matrix_b, _powers(np.delete(t_matrix, [2, 5], axis=0)))
 
 
-def test_calc_transformation_matrix(transform_test_data):
+def _cast_transformation():
+    """Transformation from the cast standard colors back to the standard colors, and the exact solution."""
+    t_matrix = std_color_matrix(pos=3)
+    _, matrix_m, matrix_b = get_matrix_m(t_matrix, synthetic.color_cast_matrix(t_matrix))
+    # Target R = source R / 0.7 (and so on), so target R^p = source R^p / 0.7^p: the fit is exact and diagonal
+    scale = 1 / np.array([0.7, 0.8, 0.9])
+    expected = np.diag(np.concatenate([scale, scale ** 2, scale ** 3]))
+    return matrix_m, matrix_b, expected
+
+
+def test_calc_transformation_matrix():
     """Test for PlantCV."""
-    # load in comparison matrices
-    matrix_compare = transform_test_data.load_npz(transform_test_data.transformation_matrix_file)
-    # read in matrices
-    matrix_m = transform_test_data.load_npz(transform_test_data.matrix_m1_file)
-    matrix_b = transform_test_data.load_npz(transform_test_data.matrix_b1_file)
-    # apply to function
-    _, matrix_t = calc_transformation_matrix(matrix_m, matrix_b)
-    matrix_t = np.rint(matrix_t)
-    matrix_compare = np.rint(matrix_compare)
-    assert np.array_equal(matrix_t, matrix_compare)
+    matrix_m, matrix_b, expected = _cast_transformation()
+    deviance, matrix_t = calc_transformation_matrix(matrix_m, matrix_b)
+    assert np.allclose(matrix_t, expected, rtol=0, atol=1e-6)
+    assert deviance == pytest.approx(1 - np.prod(np.diag(expected)))
 
 
-def test_calc_transformation_matrix_b_incorrect(transform_test_data):
+def test_calc_transformation_matrix_b_incorrect():
     """Test for PlantCV."""
-    # read in matrices
-    matrix_m = transform_test_data.load_npz(transform_test_data.matrix_m1_file)
-    matrix_b = transform_test_data.load_npz(transform_test_data.matrix_b1_file)
+    matrix_m, matrix_b, _ = _cast_transformation()
     matrix_b = np.asmatrix(matrix_b, float)
     with pytest.raises(RuntimeError):
         _, _ = calc_transformation_matrix(matrix_m, matrix_b.T)
 
 
-def test_calc_transformation_matrix_not_mult(transform_test_data):
+def test_calc_transformation_matrix_not_mult():
     """Test for PlantCV."""
-    # read in matrices
-    matrix_m = transform_test_data.load_npz(transform_test_data.matrix_m1_file)
-    matrix_b = transform_test_data.load_npz(transform_test_data.matrix_b1_file)
+    matrix_m, matrix_b, _ = _cast_transformation()
     with pytest.raises(RuntimeError):
         _, _ = calc_transformation_matrix(matrix_m, matrix_b[:3])
 
 
-def test_calc_transformation_matrix_not_mat(transform_test_data):
+def test_calc_transformation_matrix_not_mat():
     """Test for PlantCV."""
-    # read in matrices
-    matrix_m = transform_test_data.load_npz(transform_test_data.matrix_m1_file)
-    matrix_b = transform_test_data.load_npz(transform_test_data.matrix_b1_file)
+    matrix_m, matrix_b, _ = _cast_transformation()
     with pytest.raises(RuntimeError):
         _, _ = calc_transformation_matrix(matrix_m[:, 1], matrix_b[:, 1])
 
 
-def test_apply_transformation(transform_test_data):
-    """Test for PlantCV."""
-    # load corrected image to compare
-    corrected_compare = cv2.imread(transform_test_data.source_corrected)
-    # read in matrices
-    matrix_t = transform_test_data.load_npz(transform_test_data.transformation_matrix_file)
-    # read in images
-    source_img = cv2.imread(transform_test_data.source1_img)
-    corrected_img = apply_transformation_matrix(source_img, matrix_t)
-    # assert source and corrected have same shape
-    assert np.array_equal(corrected_img, corrected_compare)
+def _half_square_transformation():
+    """Transformation that maps every channel x (0-1) to 0.5 * x + 0.5 * x^2."""
+    matrix_t = np.zeros((9, 9))
+    for c in range(3):
+        # Column c is the output channel c (R, G, B); rows c and c + 3 are that channel and its square
+        matrix_t[c, c] = 0.5
+        matrix_t[c + 3, c] = 0.5
+    return matrix_t
 
 
-def test_apply_transformation_incorrect_t(transform_test_data):
+def test_apply_transformation():
     """Test for PlantCV."""
-    # read in matrices
-    matrix_t = transform_test_data.load_npz(transform_test_data.matrix_b1_file)
-    # read in images
-    source_img = cv2.imread(transform_test_data.source1_img)
+    # x = 0, 0.2, 0.4, 0.6, 0.8, 1 maps to 0, 0.12, 0.28, 0.48, 0.72, 1, and 255 times those values truncates to
+    # 0, 30, 71, 122, 183, 255
+    values = np.array([0, 51, 102, 153, 204, 255], dtype=np.uint8)
+    expected = np.array([0, 30, 71, 122, 183, 255], dtype=np.uint8)
+    # Give each channel its own order of the values
+    order = np.array([[0, 1, 2, 3, 4, 5], [5, 4, 3, 2, 1, 0], [2, 3, 4, 5, 0, 1]])
+    source_img = np.dstack([values[o] for o in order])
+    corrected_img = apply_transformation_matrix(source_img, _half_square_transformation())
+    assert np.array_equal(corrected_img, np.dstack([expected[o] for o in order]))
+
+
+def test_apply_transformation_incorrect_t():
+    """Test for PlantCV."""
+    # A 24 x 9 matrix, like matrix_b
+    _, matrix_b, _ = _cast_transformation()
     with pytest.raises(RuntimeError):
-        _ = apply_transformation_matrix(source_img, matrix_t)
+        _ = apply_transformation_matrix(synthetic.color_card(), matrix_b)
 
 
-def test_apply_transformation_incorrect_img(transform_test_data):
+def test_apply_transformation_incorrect_img():
     """Test for PlantCV."""
-    # read in matrices
-    matrix_t = transform_test_data.load_npz(transform_test_data.transformation_matrix_file)
-    # read in images
-    source_img = cv2.imread(transform_test_data.colorcard_mask, -1)
+    source_img = synthetic.color_card_mask()
     with pytest.raises(RuntimeError):
-        _ = apply_transformation_matrix(source_img, matrix_t)
+        _ = apply_transformation_matrix(source_img, _half_square_transformation())
 
 
-def test_save_matrix(transform_test_data, tmpdir):
+def test_save_matrix(tmpdir):
     """Test for PlantCV."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("cache")
-    # read in matrix
-    matrix_t = transform_test_data.load_npz(transform_test_data.transformation_matrix_file)
     # .npz filename
     filename = os.path.join(cache_dir, 'test.npz')
-    save_matrix(matrix_t, filename)
+    save_matrix(_half_square_transformation(), filename)
     assert os.path.exists(filename) is True
 
 
-def test_save_matrix_incorrect_filename(transform_test_data):
+def test_save_matrix_incorrect_filename():
     """Test for PlantCV."""
-    # read in matrix
-    matrix_t = transform_test_data.load_npz(transform_test_data.transformation_matrix_file)
     # .npz filename
     filename = "test"
     with pytest.raises(RuntimeError):
-        save_matrix(matrix_t, filename)
+        save_matrix(_half_square_transformation(), filename)
 
 
-def test_load_matrix(transform_test_data):
+def test_load_matrix(tmp_path):
     """Test for PlantCV."""
-    # read in matrix_t
-    matrix_t = transform_test_data.load_npz(transform_test_data.transformation_matrix_file)
-    # test load function with matrix_t
-    matrix_t_loaded = load_matrix(transform_test_data.transformation_matrix_file)
+    matrix_t = _half_square_transformation()
+    filename = str(tmp_path / "matrix_t.npz")
+    np.savez(filename, matrix_t)
+    matrix_t_loaded = load_matrix(filename)
     assert np.array_equal(matrix_t, matrix_t_loaded)
 
 
-def test_correct_color(transform_test_data, tmpdir):
+def _doubling_cards():
+    """Source card with half the standard chip values and target card with twice those values."""
+    halves = std_color_matrix(pos=3)
+    halves[:, 1:] = np.floor(halves[:, 1:] * 255 / 2) / 255
+    doubles = halves.copy()
+    doubles[:, 1:] *= 2
+    return synthetic.color_card(colors=doubles), synthetic.color_card(colors=halves)
+
+
+@pytest.mark.parametrize("subdir", ["", "outputs"])
+def test_correct_color(subdir, tmpdir):
     """Test for PlantCV."""
-    # Create a test tmp directory
-    cache_dir = tmpdir.mkdir("cache")
-    # load corrected image to compare
-    corrected_compare = cv2.imread(transform_test_data.source_corrected)
-    # Read in target, source, and gray-scale mask
-    target_img = cv2.imread(transform_test_data.target_img)
-    source_img = cv2.imread(transform_test_data.source1_img)
-    mask = cv2.imread(transform_test_data.colorcard_mask, -1)
-    _, _, _, corrected_img = correct_color(target_img, mask, source_img, mask, cache_dir)
-    # assert source and corrected have same shape
-    assert all([np.array_equal(corrected_img, corrected_compare),
-                os.path.exists(os.path.join(cache_dir, "target_matrix.npz")) is True,
+    # Create a test tmp directory; correct_color creates the output directory if it does not exist
+    cache_dir = os.path.join(tmpdir.mkdir("cache"), subdir)
+    target_img, source_img = _doubling_cards()
+    mask = synthetic.color_card_mask()
+    _, _, matrix_t, corrected_img = correct_color(target_img, mask, source_img, mask, cache_dir)
+    # The target chips are twice the source chips, so the fit is exact: R, G, B scale by 2, their squares by 4
+    # and their cubes by 8
+    assert np.allclose(matrix_t, np.diag([2, 2, 2, 4, 4, 4, 8, 8, 8]), rtol=0, atol=1e-6)
+    # Every pixel doubles, up to 255; truncation of the floating point result can take off 1
+    expected = np.minimum(2 * source_img.astype(int), 255)
+    assert np.max(np.abs(corrected_img.astype(int) - expected)) <= 1
+    assert all([os.path.exists(os.path.join(cache_dir, "target_matrix.npz")) is True,
                 os.path.exists(os.path.join(cache_dir, "source_matrix.npz")) is True,
                 os.path.exists(os.path.join(cache_dir, "transformation_matrix.npz")) is True])
 
 
-def test_correct_color_output_dne(transform_test_data, tmpdir):
+def test_create_color_card_mask():
     """Test for PlantCV."""
-    # Create a test tmp directory
-    tmp_dir = tmpdir.mkdir("cache")
-    cache_dir = os.path.join(tmp_dir, "outputs")
-    # load corrected image to compare
-    corrected_compare = cv2.imread(transform_test_data.source_corrected)
-    # Read in target, source, and gray-scale mask
-    target_img = cv2.imread(transform_test_data.target_img)
-    source_img = cv2.imread(transform_test_data.source1_img)
-    mask = cv2.imread(transform_test_data.colorcard_mask, -1)
-    _, _, _, corrected_img = correct_color(target_img, mask, source_img, mask, cache_dir)
-    # assert source and corrected have same shape
-    assert all([np.array_equal(corrected_img, corrected_compare),
-                os.path.exists(os.path.join(cache_dir, "target_matrix.npz")) is True,
-                os.path.exists(os.path.join(cache_dir, "source_matrix.npz")) is True,
-                os.path.exists(os.path.join(cache_dir, "transformation_matrix.npz")) is True])
+    rgb_img = synthetic.color_card()
+    mask = create_color_card_mask(rgb_img=rgb_img, radius=20, start_coord=(85, 85), spacing=(70, 70), nrows=6,
+                                  ncols=4, exclude=[20, 0])
+    # 22 chips remain, labeled 10 to 220
+    assert np.array_equal(np.unique(mask), np.arange(0, 230, 10))
+    # Label 10 * k is chip k (counting from 0) for k up to 19 and chip k + 1 after that
+    chip_labels = synthetic.color_card_mask()
+    for k in range(1, 23):
+        chip = k if k < 20 else k + 1
+        assert np.all(chip_labels[mask == 10 * k] == 10 * (chip + 1))
 
 
-def test_create_color_card_mask(transform_test_data):
+def test_cameratrax_and_astro_consistent_color_calibration():
     """Test for PlantCV."""
-    # Load target image
-    rgb_img = cv2.imread(transform_test_data.target_img)
-    mask = create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=(166, 166), spacing=(21, 21), nrows=6, ncols=4,
-                                  exclude=[20, 0])
-    assert all([i == j] for i, j in zip(np.unique(mask), np.array([0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110,
-                                                                   120, 130, 140, 150, 160, 170, 180, 190, 200, 210,
-                                                                   220], dtype=np.uint8)))
-
-
-def test_cameratrax_and_astro_consistent_color_calibration(transform_test_data):
-    """Test for PlantCV."""
-    # Load rgb image
-    rgb_img = cv2.imread(transform_test_data.cameratrax_astro_img)
+    rgb_img = synthetic.color_cast(synthetic.color_card_scene())
 
     # Correct with cameratrax card and measure corrected astrocard values
     ctrax_mat = detect_color_card(rgb_img=rgb_img)
@@ -320,7 +304,10 @@ def test_cameratrax_and_astro_consistent_color_calibration(transform_test_data):
     astro_std_mat = astro_color_matrix()
     astro_corr_img = affine_color_correction(rgb_img=rgb_img, source_matrix=astro_mat, target_matrix=astro_std_mat)
 
-    diff = np.abs(ctrax_corr_img - astro_corr_img)
+    # Subtract as signed integers; uint8 subtraction would wrap a difference of -1 around to 255
+    diff = np.abs(ctrax_corr_img.astype(int) - astro_corr_img.astype(int))
     channel_diffs = np.sum(diff, axis=(0, 1)) / (diff.shape[0] * diff.shape[1])
     # Check for similarity in corrected color: mean absolute color difference less than 2.5 (1% of range)
     assert all(channel_diffs < 3) and np.mean(channel_diffs) < 2.5
+    # Both cards carry the same cast, so the two corrections agree up to rounding: recorded value 1
+    assert np.max(diff) <= 1

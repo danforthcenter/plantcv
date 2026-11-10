@@ -679,7 +679,7 @@ class SPC:
                                       wavelength_dict=wavelength_dict,
                                       samples=columns, lines=rows, interleave="NA",
                                       wavelength_units="nm", array_type="multispectral",
-                                      pseudo_rgb=rgb, filename="NA", default_bands=None)
+                                      filename="NA", default_bands=None)
             self._spectral = multispec
 
 

@@ -1,9 +1,8 @@
-import os
-import cv2
 import numpy as np
 from plantcv.plantcv._globals import outputs
 from plantcv.plantcv.qc import plot_deltaE
 import altair.vegalite.v5.api as alt
+from tests import synthetic
 
 
 def test_plot_deltaE_macbeth():
@@ -33,27 +32,26 @@ def test_plot_deltaE_astro():
     assert isinstance(p, alt.LayerChart)
 
 
-def test_plot_deltaE_file_list(qc_test_data):
+def test_plot_deltaE_file_list(tmp_path):
     """Test for PlantCV"""
     outputs.clear()
-    path = qc_test_data.cc_img
-    p = plot_deltaE([path])
+    images = {"color_card.png": synthetic.color_card()}
+    path = synthetic.write_images(tmp_path, images)
+    p = plot_deltaE([path[0]])
     assert isinstance(p, alt.LayerChart)
 
 
-def test_plot_deltaE_astro_list(qc_test_data):
+def test_plot_deltaE_astro_list(tmp_path):
     """Test for PlantCV"""
     outputs.clear()
-    path = qc_test_data.astrocard_img
-    p = plot_deltaE([path], color_chip_size="astro")
+    images = {"astro_card.png": synthetic.astro_card()}
+    path = synthetic.write_images(tmp_path, images)
+    p = plot_deltaE([path[0]], color_chip_size="astro")
     assert isinstance(p, alt.LayerChart)
 
 
-def test_plot_deltaE_filepath(qc_test_data, tmpdir):
+def test_plot_deltaE_filepath(tmp_path):
     """Test for PlantCV"""
-    img = cv2.imread(qc_test_data.cc_img)
-    cache_dir = tmpdir.mkdir("cache")
-    path_to_img = os.path.join(cache_dir, 'tmp_img.png')
-    cv2.imwrite(path_to_img, img)
-    p = plot_deltaE(str(cache_dir))
+    _ = synthetic.write_images(tmp_path, {"tmp_img.png": synthetic.color_card()})
+    p = plot_deltaE(str(tmp_path))
     assert isinstance(p, alt.LayerChart)

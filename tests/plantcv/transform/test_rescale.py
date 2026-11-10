@@ -1,27 +1,25 @@
 import pytest
-import cv2
 import numpy as np
 from plantcv.plantcv.transform import rescale
 
 
-def test_rescale(transform_test_data):
+def test_rescale(synthetic_gray):
     """Test for PlantCV."""
-    gray_img = cv2.imread(transform_test_data.small_gray_img, -1)
+    gray_img = synthetic_gray
     rescaled_img = rescale(gray_img=gray_img, min_value=0, max_value=100)
     assert max(np.unique(rescaled_img)) == 100
 
 
-def test_rescale_inf(transform_test_data):
+def test_rescale_inf(synthetic_gray):
     """Test for PlantCV."""
-    gray_img = cv2.imread(transform_test_data.small_gray_img, -1).astype(np.float32)
+    gray_img = synthetic_gray.astype(np.float32)
     gray_img[0,0] = np.inf
     rescaled_img = rescale(gray_img=gray_img, min_value=0, max_value=100)
     assert max(np.unique(rescaled_img)) == 100
 
 
-def test_rescale_bad_input(transform_test_data):
+def test_rescale_bad_input(synthetic_rgb):
     """Test for PlantCV."""
-    # Load rgb image
-    rgb_img = cv2.imread(transform_test_data.small_rgb_img)
+    rgb_img = synthetic_rgb
     with pytest.raises(RuntimeError):
         _ = rescale(gray_img=rgb_img)

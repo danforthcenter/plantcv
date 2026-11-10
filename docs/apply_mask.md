@@ -2,7 +2,7 @@
 
 Apply binary mask to an image.
 
-**plantcv.apply_mask**(*img, mask, mask_color*)
+**plantcv.apply_mask**(*img, mask, mask_color="black"*)
 
 **returns** masked image
 

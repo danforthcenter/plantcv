@@ -1059,3 +1059,48 @@ def _is_binary(img, dimCheck=False, raiseError=False):
     if raiseError and not result:
         fatal_error("Image is not binary")
     return result and dimension_okay
+
+
+def _find_closest(spectral_array, target):
+    """Find index of a target wavelength band in a hyperspectral data instance.
+
+    Parameters:
+    -----------
+    spectral_array : plantcv.Spectral_data,
+        Hyperspectral data instance
+    target         : int,
+        Target wavelength value
+
+    Returns:
+    --------
+    Index : int,
+        index of target wavelength
+    """
+    return np.argmin(np.abs(spectral_array - target))
+
+
+def _rescale(gray_img, min_value=0, max_value=255):
+    """Rescale image.
+
+    Parameters:
+    -----------
+    gray_img  : numpy.ndarray,
+        Grayscale image data
+    min_value : int (optional),
+        new minimum value for range of interest. default = 0
+    max_value : int (optional),
+        new maximum value for range of interest. default = 255
+
+    Returns:
+    rescaled_img : numpy.ndarray,
+        rescaled image
+    """
+    if len(np.shape(gray_img)) != 2:
+        fatal_error("Image is not grayscale")
+    # replace Inf with Nan for compatibility with interpolation
+    gray_finite = np.where(np.isinf(gray_img), np.nan, gray_img)
+
+    rescaled_img = np.interp(gray_finite, (np.nanmin(gray_finite), np.nanmax(gray_finite)), (min_value, max_value))
+    rescaled_img = (rescaled_img).astype('uint8')
+
+    return rescaled_img
