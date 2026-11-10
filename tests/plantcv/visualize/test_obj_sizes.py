@@ -15,15 +15,12 @@ def test_obj_sizes(num, expected):
     assert len(np.unique(visualization.reshape(-1, visualization.shape[2]), axis=0)) == expected
 
 
-def test_obj_sizes_rescaled(test_data):
+def test_obj_sizes_rescaled(monkeypatch):
     """Test for PlantCV."""
     monkeypatch.setattr(params, "px_height", 0.1)
     monkeypatch.setattr(params, "px_width", 0.1)
-    monkeypatch.setattr(params, "px_units", "hectares")
-    img = np.zeros((100, 100), dtype=np.uint8)
-    img[0:10, 0:10] = 1
-    img[11:40, 11:40] = 1
-    img[50:99, 50:99] = 1
+    monkeypatch.setattr(params, "unit", "hectares")
+    img = synthetic.plant_mask(True)
     x1 = obj_sizes(img, img, 100, scale_size=False)
     x2 = obj_sizes(img, img, 100, scale_size=True)
     assert np.sum(x1) != np.sum(x2)
