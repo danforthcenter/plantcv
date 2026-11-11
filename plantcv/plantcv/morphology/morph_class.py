@@ -138,6 +138,8 @@ class Morph:
         # make a skeleton
         skeleton = skmorph.skeletonize(self.mask.astype(bool))
         skeleton = skeleton.astype(np.uint8) * 255
+        _debug(visual=skeleton, filename=os.path.join(params.debug_outdir,
+                                                      f"{params.device}_morph_skeletonization.png"))
         return skeleton
 
     # `Pruning a Skeleton`

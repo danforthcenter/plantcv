@@ -96,7 +96,7 @@ def test_analyze_morphology_debug(monkeypatch, tmpdir):
     monkeypatch.setattr(params, "debug", "print")
     monkeypatch.setattr(params, "device", 0)
     analyze_morphology(_make_morph(), size=3, label="default")
-    assert os.path.exists(os.path.join(str(cache), "1_analyze_morphology.png"))
+    assert os.path.exists(os.path.join(str(cache), "2_analyze_morphology.png"))
 
 
 def test_analyze_morphology_from_mask():

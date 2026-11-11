@@ -51,7 +51,7 @@ def test_morph_cycles(monkeypatch, tmpdir):
     morpho = Morph(cycling_skeleton)
     n_cycles = morpho.cycles
     assert n_cycles == 1
-    assert os.path.exists(os.path.join(cache, "0_cycles.png"))
+    assert os.path.exists(os.path.join(cache, "1_cycles.png"))
     params.saved_color_scale = None
 
 
@@ -74,7 +74,7 @@ def test_morph_combine_leaves(monkeypatch, tmpdir):
     morpho.combine_segments(leaves=[0, 1])
     assert len(morpho.leaves) == 2 and len(morpho.stem) == 2
     assert np.array_equal(morpho.leaves[-1], combined)
-    assert os.path.exists(os.path.join(cache, "0_combined_segment_ids.png"))
+    assert os.path.exists(os.path.join(cache, "1_combined_segment_ids.png"))
 
 
 def test_morph_combine_stems():
