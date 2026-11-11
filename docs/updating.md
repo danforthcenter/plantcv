@@ -602,6 +602,7 @@ Below is an overview of all updates to function signatures through the developme
 * pre v3.0dev2: device, filtered_img = **plantcv.fill**(*img, mask, size, device, debug=None*)
 * post v3.0dev2: filtered_img = **plantcv.fill**(*bin_img, size*)
 * post v4.9: filtered_img = **plantcv.fill**(*bin_img, size, roi=None*)
+* post v5.0: filtered_img = **plantcv.fill**(*bin_img, size, roi=None, scale_size=False*)
 
 #### plantcv.fill_holes
 
@@ -620,6 +621,7 @@ Below is an overview of all updates to function signatures through the developme
 * pre v4.4:  NA 
 * post v4.4: filtered_mask = **plantcv.filters.obj_props**(*bin_img, cut_side = "upper", thresh=0, regprop="area"*)
 * post v4.9: filtered_mask = **plantcv.filters.obj_props**(*bin_img, cut_side = "upper", thresh=0, regprop="area", roi=None*)
+* post v5.0: filtered_mask = **plantcv.filters.obj_props**(*bin_img, cut_side = "upper", thresh=0, regprop="area", roi=None, scale_size=False*)
 
 #### plantcv.find_objects
 
@@ -1719,6 +1721,7 @@ Below is an overview of all updates to function signatures through the developme
 
 * pre v3.13: NA
 * post v3.13: plotting_img = **pcv.visualize.obj_sizes**(*img, mask, num_objects=100*)
+* post v5.0: plotting_img = **pcv.visualize.obj_sizes**(*img, mask, num_objects=100, scale_size=False*)
 
 #### plantcv.visualize.pseudocolor
 
