@@ -2,29 +2,31 @@ import cv2
 import numpy as np
 from plantcv.plantcv import outputs, params
 from plantcv.plantcv.analyze import size as analyze_size
+from tests import synthetic
 
 
-def test_size(test_data):
+def test_size(synthetic_rgb):
     """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
-    # Read in test data
-    img = cv2.imread(test_data.small_rgb_img)
-    mask = cv2.imread(test_data.small_bin_img, -1)
-    _ = analyze_size(img=img, labeled_mask=mask, n_labels=1)
-    assert int(outputs.observations["default_1"]["area"]["value"]) == 221
-    assert outputs.observations["default_1"]["area"]["label"] == "pixels"
+    # Plant without the small object, so the longest path runs steeply down the stem
+    mask = synthetic.plant_mask(small_object=False)
+    _ = analyze_size(img=synthetic_rgb, labeled_mask=mask, n_labels=1)
+    obs = outputs.observations["default_1"]
+    # Stem (240 px) plus two leaves (280 px each)
+    assert int(obs["area"]["value"]) == 800
+    assert obs["area"]["label"] == "pixels"
+    # Bounding box spans rows and columns 30:90
+    assert obs["width"]["value"] == 60
+    assert obs["height"]["value"] == 60
 
 
-def test_size_area_units(test_data, monkeypatch):
+def test_size_area_units(synthetic_rgb, synthetic_mask, monkeypatch):
     """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     monkeypatch.setattr(params, "unit", "mm")
-    # Read in test data
-    img = cv2.imread(test_data.small_rgb_img)
-    mask = cv2.imread(test_data.small_bin_img, -1)
-    _ = analyze_size(img=img, labeled_mask=mask, n_labels=1)
+    _ = analyze_size(img=synthetic_rgb, labeled_mask=synthetic_mask, n_labels=1)
     obs = outputs.observations["default_1"]
     assert obs["area"]["scale"] == obs["area"]["label"] == "mm2"
     assert obs["convex_hull_area"]["scale"] == obs["convex_hull_area"]["label"] == "mm2"
@@ -90,14 +92,20 @@ def test_size_longest_axis_2e():
     assert outputs.observations["default_1"]["longest_path"]["value"] == 29.068883707497267
 
 
-def test_size_small_contour(test_data):
+def test_size_small_contour(synthetic_rgb):
     """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
-    # Read in test data
-    img = cv2.imread(test_data.small_rgb_img)
+    img = synthetic_rgb
     mask = np.zeros(img.shape[:2], dtype=np.uint8)
     obj_contour = [np.array([[[0, 0]], [[0, 50]], [[50, 50]], [[50, 0]]], dtype=np.int32)]
     mask = cv2.drawContours(mask, obj_contour, -1, (255), thickness=-1)
     _ = analyze_size(img=img, labeled_mask=mask, n_labels=1)
     assert "defaults" not in outputs.observations
+
+
+def test_size_empty_mask(synthetic_rgb):
+    """Test for PlantCV."""
+    mask = np.zeros(np.shape(synthetic_rgb)[0:2], dtype=np.uint8)
+    _ = analyze_size(synthetic_rgb, mask)
+    assert outputs.observations['default_1']['area']['value'] == 0

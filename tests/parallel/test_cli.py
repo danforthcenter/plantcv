@@ -70,7 +70,7 @@ def test_parallel_cli_overwriting_config(parallel_test_data, tmpdir):
     assert exitcode.value.code == 1
 
 
-def test_parallel_cli_valid_config_checkpointed(parallel_test_data, tmpdir, capsys):
+def test_parallel_cli_valid_config(test_data, parallel_test_data, tmpdir, capsys):
     """Test for PlantCV."""
     # Create a test tmp directory
     conf_file = tmpdir.mkdir("cache").join("config.json")
@@ -80,7 +80,7 @@ def test_parallel_cli_valid_config_checkpointed(parallel_test_data, tmpdir, caps
     config = WorkflowConfig()
     # Set valid values in config
     config.input_dir = parallel_test_data.flat_imgdir
-    config.results = conf_file.dirpath().join(os.path.basename(parallel_test_data.new_results_file)).strpath
+    config.results = conf_file.dirpath().join(os.path.basename(test_data.new_results_file)).strpath
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
     config.metadata_regex = {"filepath": ".*"}
     config.workflow = parallel_test_data.workflow_script
@@ -96,7 +96,7 @@ def test_parallel_cli_valid_config_checkpointed(parallel_test_data, tmpdir, caps
     config.append = False
     config.checkpoint = True
     config.save_config(config_file=conf_file.strpath)
-    shutil.copy(parallel_test_data.new_results_file, conf_file.dirpath())
+    shutil.copy(test_data.new_results_file, conf_file.dirpath())
     # Mock ARGV
     sys.argv = ["plantcv-run-workflow", "--config", conf_file.strpath]
     assert main() is None

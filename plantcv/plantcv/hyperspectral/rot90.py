@@ -24,7 +24,6 @@ def rot90(spectral_data, k):
     """
     # Extract array data and rotate with numpy function
     rot_array = np.rot90(m=spectral_data.array_data, k=k)
-    rot_rgb = np.rot90(m=spectral_data.pseudo_rgb, k=k)
 
     # Dimensions of datacube might change depending on degree of rotation
     dims = np.shape(rot_array)
@@ -35,10 +34,11 @@ def rot90(spectral_data, k):
                             max_value=spectral_data.max_value, d_type=spectral_data.d_type,
                             wavelength_dict=spectral_data.wavelength_dict, samples=int(dims[2]), lines=int(dims[0]),
                             interleave=spectral_data.interleave, wavelength_units=spectral_data.wavelength_units,
-                            array_type="datacube", pseudo_rgb=rot_rgb, default_bands=spectral_data.default_bands,
+                            array_type="datacube", default_bands=spectral_data.default_bands,
                             filename="rot_k" + str(k) + spectral_data.filename)
 
-    _debug(visual=rot_rgb,
-           filename=os.path.join(params.debug_outdir, str(params.device) + "_pseudo_rgb_rot_k" + str(k) + ".png"))
+    if params.debug:
+        _debug(visual=rot_hsi.pseudo_rgb(),
+               filename=os.path.join(params.debug_outdir, f"{params.device}_pseudo_rgb_rot_k{k}.png"))
 
     return rot_hsi

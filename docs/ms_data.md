@@ -20,11 +20,13 @@ Attributes are accessed as ms_data.*attribute*.
 
 **min_wavelength**: The minimum wavelength in the `MS_data` object.
 
-**pseudo_rgb**: Pseudo-RGB image
-
 **filename**: The filename where the data originated from
 
 **metadata**: Metadata in a dictionary. Includes directory and list of files originally read.
+
+### Methods
+
+**pseudo_rgb()**: Calculate and return a pseudo-RGB image.
 
 ### Example
 

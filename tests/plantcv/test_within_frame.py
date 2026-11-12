@@ -1,5 +1,4 @@
 import pytest
-import cv2
 import numpy as np
 from plantcv.plantcv import within_frame
 
@@ -14,12 +13,10 @@ def test_within_frame(pos, expected):
     assert result == expected
 
 
-def test_within_frame_bad_input(test_data):
+def test_within_frame_bad_input(synthetic_gray):
     """Test for PlantCV."""
-    # Read in test data
-    gray_img = cv2.imread(test_data.small_gray_img, -1)
     with pytest.raises(RuntimeError):
-        _ = within_frame(gray_img)
+        _ = within_frame(synthetic_gray)
 
 
 @pytest.mark.parametrize('value', [1, 255])

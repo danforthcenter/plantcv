@@ -1,19 +1,34 @@
 import os
 import pytest
+import cv2
+import numpy as np
 import pandas as pd
 from plantcv.learn import naive_bayes, naive_bayes_multiclass, tabulate_bayes_classes, check_samples_file
+from tests import synthetic
 
 
-def test_naive_bayes(learn_test_data, tmpdir):
+def test_naive_bayes(nb_train_dirs, tmp_path):
     """Test for PlantCV."""
-    # Create tmp directory
-    tmp_dir = tmpdir.mkdir("cache")
-    imgdir = os.path.join(learn_test_data.train_data, "images")
-    maskdir = os.path.join(learn_test_data.train_data, "masks")
+    imgdir, maskdir = nb_train_dirs
     # Run the naive Bayes training module
-    outfile = os.path.join(str(tmp_dir), "naive_bayes_pdfs.txt")
+    outfile = os.path.join(str(tmp_path), "naive_bayes_pdfs.txt")
     naive_bayes(imgdir=imgdir, maskdir=maskdir, outfile=outfile, mkplots=True)
-    assert os.path.exists(outfile)
+    pdfs = pd.read_csv(outfile, sep="\t")
+    # One PDF per class and HSV channel, over the values 0-255
+    assert pdfs.shape == (6, 258)
+    assert list(zip(pdfs["class"], pdfs["channel"])) == [(c, ch) for ch in ("hue", "saturation", "value")
+                                                         for c in ("plant", "background")]
+    # The pixels are sampled at random, but a Gaussian KDE peaks within the range of its samples, so each
+    # PDF peaks within the range of its class's values in the training image
+    hsv = cv2.cvtColor(synthetic.nb_train_image(), cv2.COLOR_BGR2HSV)
+    mask = synthetic.plant_mask() > 0
+    for i, channel in enumerate(("hue", "saturation", "value")):
+        for class_name, pixels in (("plant", hsv[..., i][mask]), ("background", hsv[..., i][~mask])):
+            row = pdfs[(pdfs["class"] == class_name) & (pdfs["channel"] == channel)].iloc[0, 2:]
+            assert pixels.min() <= np.argmax(row.to_numpy()) <= pixels.max()
+    # mkplots writes one plot per channel
+    for channel in ("hue", "saturation", "value"):
+        assert os.path.exists(os.path.join(str(tmp_path), f"{channel}_pdf.svg"))
 
 
 def test_naive_bayes_multiclass(learn_test_data, tmpdir):

@@ -1,8 +1,9 @@
 from plantcv.plantcv import PSII_data
+from tests import synthetic
 
 
-def test_psii_data(test_data):
+def test_psii_data():
     """Test for PlantCV."""
     psii = PSII_data()
-    psii.psd = test_data.photosynthesis.psii_cropreporter('ojip_dark')
+    psii.psd = synthetic.psii_dataarray('ojip_dark')
     assert psii.psd.shape == (10, 10, 4, 1)

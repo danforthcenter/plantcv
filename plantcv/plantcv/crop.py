@@ -10,29 +10,28 @@ from plantcv.plantcv.classes import Spectral_data
 def crop(img, x, y, h, w):
     """Crop image.
 
-    Inputs:
-    img       = RGB, grayscale, or hyperspectral image data
-    x         = X coordinate of starting point
-    y         = Y coordinate of starting point
-    h         = Height
-    w         = Width
+    Parameters:
+    -----------
+    img       : numpy.ndarray,
+        RGB, grayscale, or hyperspectral image data
+    x         : int,
+        X coordinate of starting point
+    y         : int,
+        Y coordinate of starting point
+    h         : int,
+        Height
+    w         : int,
+        Width
 
     Returns:
-    cropped   = cropped image
-
-    :param img: numpy.ndarray
-    :param x: int
-    :param y: int
-    :param h: int
-    :param w: int
-    :return cropped: numpy.ndarray
+    --------
+    cropped   : numpy.ndarray,
+        cropped image
     """
     # Check if the array data format
     if isinstance(img, Spectral_data):
         # Copy the HSI array
         array = np.copy(img.array_data)
-        # Copy the pseudo_rgb image
-        ref_img = np.copy(img.pseudo_rgb)
         # Crop the HSI data
         cropped_array = array[y:y + h, x:x + w, :]
         # Calculate the array dimensions
@@ -52,10 +51,10 @@ def crop(img, x, y, h, w):
             interleave=img.interleave,
             wavelength_units=img.wavelength_units,
             array_type=img.array_type,
-            pseudo_rgb=ref_img[y:y + h, x:x + w, :],
             default_bands=img.default_bands,
             filename=img.filename
         )
+        ref_img = cropped.pseudo_rgb()
 
     else:
         if len(np.shape(img)) > 2 and np.shape(img)[-1] > 3:

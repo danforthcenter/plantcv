@@ -6,39 +6,31 @@ from plantcv.plantcv import Objects
 from plantcv.plantcv.roi.quick_filter import quick_filter
 
 
-@pytest.mark.parametrize("mode,exp", [["partial", 221], ["cutto", 7], ["within", 0], ["largest", 221]])
-def test_quick_filter(test_data, mode, exp):
+@pytest.mark.parametrize("mode,exp", [["partial", 800], ["cutto", 25], ["within", 0], ["largest", 800]])
+def test_quick_filter(synthetic_mask, mode, exp):
     """Test for PlantCV."""
-    # Read in test data
-    img = cv2.imread(test_data.small_rgb_img)
-    mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
-    cnt, cnt_str = test_data.load_contours(test_data.small_contours_file)
-    cv2.drawContours(mask, cnt, -1, (255), -1, lineType=8, hierarchy=cnt_str)
-    roi = [np.array([[[200, 200]], [[200, 190]], [[249, 190]], [[249, 200]]], dtype=np.int32)]
+    # ROI rows 60:71 and columns 85:100 overlaps the right leaf tip (rows 60:65, columns 85:90, 5 x 5 = 25 px);
+    # partial and largest keep the whole 800 px plant, within keeps nothing, and the small object is always removed
+    roi = [np.array([[[85, 70]], [[85, 60]], [[99, 60]], [[99, 70]]], dtype=np.int32)]
     roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     roi_obj = Objects(contours=[roi], hierarchy=[roi_str])
-    filtered_mask = quick_filter(mask=mask, roi=roi_obj, roi_type=mode)
+    filtered_mask = quick_filter(mask=synthetic_mask, roi=roi_obj, roi_type=mode)
     area = cv2.countNonZero(filtered_mask)
     # Assert that the contours were filtered as expected
     assert area == exp
 
 
-def test_quick_filter_bad_type(test_data):
+def test_quick_filter_bad_type(synthetic_mask):
     """Test for PlantCV."""
-    # Read in test data
-    img = cv2.imread(test_data.small_rgb_img)
-    mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
-    cnt, cnt_str = test_data.load_contours(test_data.small_contours_file)
-    cv2.drawContours(mask, cnt, -1, (255), -1, lineType=8, hierarchy=cnt_str)
-    roi = [np.array([[[200, 200]], [[200, 190]], [[249, 190]], [[249, 200]]], dtype=np.int32)]
+    roi = [np.array([[[85, 70]], [[85, 60]], [[99, 60]], [[99, 70]]], dtype=np.int32)]
     roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     roi_obj = Objects(contours=[roi], hierarchy=[roi_str])
     with pytest.raises(RuntimeError):
-        _ = quick_filter(mask=mask, roi=roi_obj, roi_type="bad")
+        _ = quick_filter(mask=synthetic_mask, roi=roi_obj, roi_type="bad")
 
 
 @pytest.mark.parametrize("mode,exp", [["partial", 0], ["cutto", 0], ["within", 0], ["largest", 0]])
-def test_quick_filter_empty(test_data, mode, exp):
+def test_quick_filter_empty(mode, exp):
     """Test for PlantCV."""
     # Read in test data
     mask = np.zeros((20, 20), dtype=np.uint8)

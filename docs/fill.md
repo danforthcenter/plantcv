@@ -2,7 +2,7 @@
 
 Identifies objects and fills objects that are less than specified size
 
-**plantcv.fill**(*bin_img, size, roi=None*)
+**plantcv.fill**(*bin_img, size, roi=None, scale_size=False*)
 
 **returns** fill_image
 
@@ -10,6 +10,7 @@ Identifies objects and fills objects that are less than specified size
     - bin_img - Binary image data
     - size - minimum object area size in pixels (integer), smaller objects will be filled
 	- roi - Optional rectangular ROI as returned by [`pcv.roi.rectangle`](roi_rectangle.md) within which to apply this function. (default = None, which uses the entire image)
+	- scale_size - Boolean, is the size given in units other than pixels? Defaults to False, if True then `pcv.params.px_height` and `pcv.params.px_width` are used to rescale the given size to pixels internally.
   - **Context:**
     - Used to reduce image noise
 - **Example use:**

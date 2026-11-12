@@ -1,17 +1,22 @@
-import cv2
 import numpy as np
+import pytest
 from plantcv.plantcv import outputs
 from plantcv.plantcv.morphology.segment_angle import segment_angle
+from tests import synthetic
 
 
-def test_segment_angle(morphology_test_data):
+def test_segment_angle():
     """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
-    skeleton = cv2.imread(morphology_test_data.skel_img, -1)
-    _ = segment_angle(segmented_img=skeleton,
-                      objects=morphology_test_data.load_segments(morphology_test_data.segments_file, "leaves"))
-    assert len(outputs.observations['default']['segment_angle']['value']) == 4
+    leaves, _ = synthetic.skeleton_segments()
+    _ = segment_angle(segmented_img=synthetic.skeleton(), objects=leaves)
+    angles = outputs.observations['default']['segment_angle']['value']
+    # Lower left leaf is horizontal. Upper left leaf: y decreases with x, slope -1, -45 degrees.
+    # Upper right leaf: y increases with x, slope 1, 45 degrees.
+    assert angles[0] == 0
+    assert angles[1] == pytest.approx(-19.65889359)  # recorded value: the bent right leaf
+    assert angles[2:] == pytest.approx([-45, 45])
 
 
 def test_segment_angle_overflow():
