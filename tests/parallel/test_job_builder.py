@@ -1,4 +1,3 @@
-import os
 from plantcv.parallel import job_builder, WorkflowConfig
 
 
