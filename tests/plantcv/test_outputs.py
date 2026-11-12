@@ -40,6 +40,7 @@ def test_save_results_json_newfile(tmpdir):
     with open(outfile, "r") as fp:
         results = json.load(fp)
         assert results["observations"]["default"]["test"]["value"] == "test"
+        assert list(results["metadata"].keys()) == ['add_date', 'run_date', 'plantcv_version', 'workflow_hash']
 
 
 def test_save_results_json_existing_file(test_data, tmpdir):
@@ -96,8 +97,8 @@ def test_save_results_csv_add_metadata(tmpdir):
     outputs.save_results(filename=outfile, outformat="csv")
     with open(outfile, "r") as fp:
         results = fp.read()
-    x = slice(0, 58)
-    assert results[x] == "add_date,run_date,plantcv_version,sample,trait,value,label"
+    x = slice(0, 72)
+    assert results[x] == "add_date,run_date,plantcv_version,workflow_hash,sample,trait,value,label"
 
 
 def test_add_metadata_invalid_type():
