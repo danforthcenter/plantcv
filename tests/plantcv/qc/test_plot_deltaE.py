@@ -1,7 +1,7 @@
 import numpy as np
 from plantcv.plantcv._globals import outputs
 from plantcv.plantcv.qc import plot_deltaE
-import altair.vegalite.v5.api as alt
+from altair import LayerChart
 from tests import synthetic
 
 
@@ -16,7 +16,7 @@ def test_plot_deltaE_macbeth():
          [73.52994424, 39.50763664, 29.62213005, 47.82905849]]
     )
     p = plot_deltaE(de_mat)
-    assert isinstance(p, alt.LayerChart)
+    assert isinstance(p, LayerChart)
 
 
 def test_plot_deltaE_astro():
@@ -29,7 +29,7 @@ def test_plot_deltaE_astro():
          [73.52994424, 29.62213005, 47.82905849]]
     )
     p = plot_deltaE(de_mat)
-    assert isinstance(p, alt.LayerChart)
+    assert isinstance(p, LayerChart)
 
 
 def test_plot_deltaE_file_list(tmp_path):
@@ -38,7 +38,7 @@ def test_plot_deltaE_file_list(tmp_path):
     images = {"color_card.png": synthetic.color_card()}
     path = synthetic.write_images(tmp_path, images)
     p = plot_deltaE([path[0]])
-    assert isinstance(p, alt.LayerChart)
+    assert isinstance(p, LayerChart)
 
 
 def test_plot_deltaE_astro_list(tmp_path):
@@ -47,11 +47,11 @@ def test_plot_deltaE_astro_list(tmp_path):
     images = {"astro_card.png": synthetic.astro_card()}
     path = synthetic.write_images(tmp_path, images)
     p = plot_deltaE([path[0]], color_chip_size="astro")
-    assert isinstance(p, alt.LayerChart)
+    assert isinstance(p, LayerChart)
 
 
 def test_plot_deltaE_filepath(tmp_path):
     """Test for PlantCV"""
     _ = synthetic.write_images(tmp_path, {"tmp_img.png": synthetic.color_card()})
     p = plot_deltaE(str(tmp_path))
-    assert isinstance(p, alt.LayerChart)
+    assert isinstance(p, LayerChart)
