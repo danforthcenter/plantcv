@@ -1,6 +1,8 @@
 import pytest
 import numpy as np
 from plantcv.plantcv import fill, Objects
+from plantcv.plantcv._globals import params
+from tests import synthetic
 
 
 def test_fill(synthetic_mask):
@@ -26,3 +28,12 @@ def test_fill_roi(synthetic_mask):
     fill_img = fill(bin_img=synthetic_mask, size=1000, roi=roi)
     # The small object inside the ROI is removed and the 800 px plant outside it is kept
     assert np.sum(fill_img) == 800 * 255
+
+
+def test_fill_rescaled(monkeypatch):
+    """Test for PlantCV."""
+    monkeypatch.setattr(params, "px_height", 0.1)
+    monkeypatch.setattr(params, "px_width", 0.1)
+    monkeypatch.setattr(params, "unit", "hectares")
+    fill_img = fill(bin_img=synthetic.plant_mask(True), size=1, scale_size=True)
+    assert np.sum(fill_img / 255) == 800
