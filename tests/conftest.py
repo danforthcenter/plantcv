@@ -2,6 +2,8 @@ import pytest
 import os
 import json
 import matplotlib
+import matplotlib.pyplot as plt
+from plantcv.plantcv._globals import params, Params, outputs
 from tests import synthetic
 
 # Disable plotting
@@ -72,3 +74,12 @@ def synthetic_rgb():
 def synthetic_gray():
     """Grayscale image of the synthetic plant (see tests/synthetic.py)."""
     return synthetic.plant_gray()
+
+
+@pytest.fixture(autouse=True)
+def reset_params():
+    """Always clear parameter changes from running functions"""
+    params.__dict__.update(vars(Params()))
+    outputs.clear()
+    yield
+    plt.close("all")
