@@ -4,7 +4,7 @@ This function makes a plot comparing observed versus expected values from 1 or m
 
 **plantcv.qc.color_chip_comparison**(*std_matrix, \*args*)
 
-**returns** plot, a altair.vegalite.v5.api.VConcatChart object
+**returns** plot, an altair.VConcatChart
 
 - **Parameters:**
     - std_matrix       - A numpy.ndarray as returned from [`pcv.transform.std_color_matrix`](std_color_matrix.md).
