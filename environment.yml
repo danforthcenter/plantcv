@@ -3,6 +3,7 @@
 name: plantcv
 dependencies:
   - python=3.13
+  - pip
   - matplotlib>=1.5
   - numpy>=1.26
   - pandas!=3.0.4
@@ -16,6 +17,7 @@ dependencies:
   - xarray>=2022.11.0
   - mkdocs
   - nd2
+  - opencv>=4.11,<5[build=*headless*]
   - pytest
   - pytest-cov
   - flake8
@@ -32,6 +34,8 @@ dependencies:
   - imageio-ffmpeg
   - pillow
   - pillow-heif
+  - pip:
+    - opencv-contrib-python-headless>=4.11,<5
 
 channels:
   - conda-forge
