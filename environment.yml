@@ -24,7 +24,7 @@ dependencies:
   - ipympl
   - nodejs
   - jupyterlab
-  - altair<6
+  - altair
   - vl-convert-python
   - git
   - flyr

@@ -25,7 +25,7 @@ dependencies = [
     "opencv-contrib-python-headless >= 4.11, < 5",
     "xarray >= 2022.11.0",
     "statsmodels",
-    "altair < 6",
+    "altair",
     "vl-convert-python",
     "nd2",
     "flyr",
