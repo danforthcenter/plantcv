@@ -49,8 +49,7 @@ def run_parallel(config):
                                "_PCV_PARALLEL_CHECKPOINT_",
                                "_PCV_WORKFLOW_HASH"), "r") as f:
             existing_hash = f.read()
-        same_hash = existing_hash == workflow_sha256_hash
-        if not same_hash:
+        if not existing_hash == workflow_sha256_hash:
             print(f"Sha256 Hash of {config.workflow} has changed, checkpoint data will be ignored.")
             config.checkpoint = False
     # if a logs directory is specified then add the tmpdir inside it.
