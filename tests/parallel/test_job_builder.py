@@ -26,12 +26,17 @@ def test_job_builder_single_image(parallel_test_data, tmpdir):
     jobs = job_builder(meta=parallel_test_data.metadata_snapshot_vis(), config=config)
 
     image_path = parallel_test_data.image_path
-    result_file = os.path.join(tmp_dir, os.path.splitext(os.path.basename(image_path))[0] + '.json')
+    result_file = jobs[0][5]
 
-    expected = ['python', parallel_test_data.workflow_script, '--outdir', tmp_dir, '--result', result_file, "--names", "vis",
-                '--writeimg', '--other', 'on', image_path]
+    expected = ['python', parallel_test_data.workflow_script,
+                '--outdir', str(tmp_dir),
+                '--result', result_file,
+                '--checkpoint', 'True',
+                '--tmpfile', result_file,
+                "--names", "VIS",
+                '--other', 'on', '--writeimg', image_path]
 
-    assert all([i == j] for i, j in zip(jobs[0], expected))
+    assert jobs[0] == expected
 
 
 def test_job_builder_coprocess(parallel_test_data, tmpdir):
@@ -59,12 +64,17 @@ def test_job_builder_coprocess(parallel_test_data, tmpdir):
 
     image_path = parallel_test_data.image_path
     nir_path = parallel_test_data.nir_path
-    result_file = os.path.join(tmp_dir, os.path.splitext(os.path.basename(image_path))[0] + '.json')
+    result_file = jobs[0][5]
+    
+    expected = ['python', parallel_test_data.workflow_script,
+                '--outdir', str(tmp_dir),
+                '--result', result_file,
+                '--checkpoint', 'True',
+                '--tmpfile', result_file,
+                "--names", "image1,image2",
+                '--other', 'on', '--writeimg', image_path, nir_path]
 
-    expected = ['python', parallel_test_data.workflow_script, '--outdir', tmp_dir, '--result', result_file, "--names",
-                "vis,nir", '--writeimg', '--other', 'on', image_path, nir_path]
-
-    assert all([i == j] for i, j in zip(jobs[0], expected))
+    assert jobs[0] == expected
 
 
 def test_job_builder_auto_name(parallel_test_data, tmpdir):
@@ -91,9 +101,14 @@ def test_job_builder_auto_name(parallel_test_data, tmpdir):
     jobs = job_builder(meta=parallel_test_data.metadata_snapshot_vis(), config=config)
 
     image_path = parallel_test_data.image_path
-    result_file = os.path.join(tmp_dir, os.path.splitext(os.path.basename(image_path))[0] + '.json')
+    result_file = jobs[0][5]
 
-    expected = ['python', parallel_test_data.workflow_script, '--outdir', tmp_dir, '--result', result_file, "--names",
-                "image1", '--writeimg', '--other', 'on', image_path]
+    expected = ['python', parallel_test_data.workflow_script,
+                '--outdir', str(tmp_dir),
+                '--result', result_file,
+                '--checkpoint', 'True',
+                '--tmpfile', result_file,
+                "--names", "image1",
+                '--other', 'on', '--writeimg', image_path]
 
-    assert all([i == j] for i, j in zip(jobs[0], expected))
+    assert jobs[0] == expected
