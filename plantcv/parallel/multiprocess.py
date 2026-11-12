@@ -39,6 +39,7 @@ def create_dask_cluster(cluster, cluster_config):
         client = Client(cluster)
     # Otherwise the cluster is a class from dask_jobqueue (a distributed resource scheduler)
     else:
+        _ = cluster_config.pop("threads_per_worker", None)
         # if "cores" is not a key in the cluster_config then set it to 1
         cluster_config["cores"] = cluster_config.get('cores', 1)
         # Retrieve the scheduler class from dask-jobqueue
