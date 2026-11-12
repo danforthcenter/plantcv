@@ -35,7 +35,7 @@ def yii(ps, labeled_mask, n_labels=1, auto_fm=False, measurement_labels=None, la
     -------
     yii_global          = list of xarray.core.dataarray.DataArray,
         DataArray of efficiency estimate values
-    yii_chart           = list of altair.vegalite.v4.api.FacetChart,
+    yii_chart           = list of altair.FacetChart,
         Histograms of efficiency estimate
     """
     # Set labels
@@ -95,7 +95,7 @@ def _yii_multi(ps, labeled_mask,
     -------
     yii_global          = list of xarray.core.dataarray.DataArray,
         DataArray of efficiency estimate values
-    yii_chart           = list of altair.vegalite.v4.api.FacetChart,
+    yii_chart           = list of altair.FacetChart,
         Histograms of efficiency estimate
     """
     yii_charts_fvfm = []
@@ -253,7 +253,7 @@ def _yii_single(ps, labeled_mask,
     -------
     yii_global          = list of xarray.core.dataarray.DataArray,
         DataArray of efficiency estimate values
-    yii_chart           = list of altair.vegalite.v4.api.FacetChart,
+    yii_chart           = list of altair.FacetChart,
         Histograms of efficiency estimate
     """
     # Validate that ps has the right frames with information in them

@@ -41,7 +41,7 @@ def texture(img, labeled_mask, n_labels=1, methods=None,
 
     Returns
     -------
-    plot = altair.vegalite.v5.api.FacetChart, Diagnostic image showing measurements.
+    plot = altair.FacetChart, Diagnostic image showing measurements.
     """
     if distances is None:
         distances = [1]
