@@ -46,7 +46,7 @@ def test_morph_cycles(monkeypatch, tmpdir):
     monkeypatch.setattr(params, "device", 0)
     cycling_skeleton = synthetic.skeleton(cycle=True)
     mask = np.zeros(cycling_skeleton.shape[:2], dtype=np.uint8)
-    morpho = morph(mask)
+    morpho = Morph(mask)
     morpho.skeleton = cycling_skeleton
     n_cycles = morpho.cycles
     assert n_cycles == 1
