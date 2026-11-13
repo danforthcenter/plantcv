@@ -176,12 +176,17 @@ The Bayer mosaic (bayer_mosaic) samples a BGR image in the OpenCV BG layout: blu
 columns, red at even rows and even columns, and green elsewhere. Demosaicing the mosaic of a uniform
 BAYER_BGR = (40, 100, 160) image with the BG pattern gives back that color at every pixel; the RG pattern
 swaps blue and red, giving (160, 100, 40).
+
+HEIC files (write_heic) are encoded losslessly with 4:4:4 chroma and the identity color matrix, so the
+stored samples are the R, G and B values themselves and reading the file gives back the input image
+exactly.
 """
 import os
 import json
 import shutil
 import cv2
 import numpy as np
+import pillow_heif
 import xarray as xr
 from plantcv.plantcv.classes import MS_data, Spectral_data
 from plantcv.plantcv.transform.standard_matrices import std_color_matrix, astro_color_matrix
@@ -406,6 +411,30 @@ def write_csv(outdir, filename, img):
     """
     path = os.path.join(str(outdir), filename)
     np.savetxt(path, img, fmt="%.2f", delimiter=",")
+    return path
+
+
+def write_heic(outdir, filename, img):
+    """Write a BGR image as a lossless HEIC file.
+
+    Parameters
+    ----------
+    outdir : str
+        Directory to write the file to.
+    filename : str
+        Name of the file.
+    img : numpy.ndarray
+        8-bit BGR image.
+
+    Returns
+    -------
+    str
+        Path of the file.
+    """
+    path = os.path.join(str(outdir), filename)
+    rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    heif = pillow_heif.from_bytes(mode="RGB", size=(rgb.shape[1], rgb.shape[0]), data=rgb.tobytes())
+    heif.save(path, quality=-1, chroma=444, matrix_coefficients=0)
     return path
 
 
