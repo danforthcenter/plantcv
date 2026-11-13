@@ -7,7 +7,7 @@ Find branch/junction points in a skeletonized image.
 **returns** Binary mask of branch points 
 
 - **Parameters:**
-    - skel_img - Skeleton image (See [plantcv.morphology.morph.skeleton](morphology_class.md))
+    - skel_img - Skeleton image (See [plantcv.morphology.Morph.skeleton](morphology_class.md))
     - mask     - Binary mask used for debugging image (optional). If provided the debug image will be overlaid on the mask.
     - label    - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
 - **Context:**

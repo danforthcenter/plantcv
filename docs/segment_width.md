@@ -9,7 +9,7 @@ Measure the average width of segments.
 - **Parameters:**
     - segmented_img - Segmented image (output either from [`plantcv.morphology.segment_skeleton`](segment_skeleton.md)
     or [`plantcv.morphology.segment_id`](segment_id.md)), used for creating the labeled image. 
-    - Skeleton image - See [`plantcv.morphology.morph`](morphology_class.md)
+    - Skeleton image - See [`plantcv.morphology.Morph`](morphology_class.md)
     - labeled_mask - Labeled mask of segments/objects to get analyzes (output from [`plantcv.morphology.fill_segments`](fill_segments.md),  [`pcv.create_labels`](create_labels.md), or [`pcv.roi.filter`](roi_filter.md))
     - label         - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
 - **Context:**
