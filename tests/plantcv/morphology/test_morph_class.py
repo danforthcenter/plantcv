@@ -3,14 +3,14 @@ import os
 import numpy as np
 from tests import synthetic
 from plantcv.plantcv._globals import params
-from plantcv.plantcv.morphology.morph_class import morph
+from plantcv.plantcv.morphology.morph_class import Morph
 
 
 def test_morph_init():
     """Test for PlantCV."""
     mask = synthetic.plant_mask(small_object=False)
-    morpho = morph(mask)
-    assert isinstance(morpho, morph)
+    morpho = Morph(mask)
+    assert isinstance(morpho, Morph)
     assert isinstance(morpho.stem, list) and len(morpho.stem) == 2
     assert isinstance(morpho.leaves, list) and len(morpho.leaves) == 3
     assert isinstance(morpho.skeleton, np.ndarray)
@@ -24,10 +24,15 @@ def test_morph_prune(monkeypatch, tmpdir):
     monkeypatch.setattr(params, "debug", "print")
     monkeypatch.setattr(params, "device", 0)
     mask = synthetic.plant_mask(small_object=False)
-    morpho = morph(mask)
+    morpho = Morph(mask)
     morpho.prune(size=30)
     assert np.count_nonzero(morpho._skeleton) == 106
     assert np.count_nonzero(morpho.skeleton) == 89
+    # test that repruning starts from the same _skeleton
+    morpho.prune(size=30)
+    assert np.count_nonzero(morpho._skeleton) == 106
+    assert np.count_nonzero(morpho.skeleton) == 89
+    # test that repruning with reprune on starts from pruned skeleton
     morpho.prune(size=60, reprune=True)
     assert np.count_nonzero(morpho.skeleton) == 65
     assert os.path.exists(os.path.join(cache, "3_pruned_debug.png"))

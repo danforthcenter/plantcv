@@ -23,7 +23,7 @@ class Morph:
         """
         self.mask = mask
         skeleton = self._skeletonize()
-        self.skeleton = skeleton
+        self._skeleton = skeleton
 
         skel_objects = _segment_skeleton(skeleton)
         skel_leaves, skel_stems, _ = _segment_sort(skeleton, skel_objects, first_stem=first_stem)
@@ -49,11 +49,6 @@ class Morph:
         """public skeleton"""
         # we return the pruned skeleton for ease of use
         return self.pruned_skeleton
-
-    @skeleton.setter
-    def skeleton(self, new_skeleton):
-        """update the skeleton"""
-        self._skeleton = new_skeleton
 
     # `pruned skeleton`
     @property
@@ -117,12 +112,8 @@ class Morph:
 
         Returns
         -------
-        pruned_img      = numpy.ndarray,
-            Pruned image
-        segmented_img   = numpy.ndarray,
-            Segmented debugging image
-        segment_objects = list,
-            List of contours
+        None
+             Updates ``skeleton``, ``leaves``, and ``stem`` in place.
         """
         # always pull from the hidden _skeleton attribute
         # public skeleton attribute pulls from pruned_skeleton.
@@ -161,7 +152,7 @@ class Morph:
 
         # Make debugging image
         if params.debug:
-            pruned_plot = self.mask.copy()
+            pruned_plot = (self.mask > 0).astype(np.uint8) * 255
             pruned_plot = cv2.cvtColor(pruned_plot, cv2.COLOR_GRAY2RGB)
             pruned_obj, _ = _cv2_findcontours(bin_img=pruned_skel)
             cv2.drawContours(pruned_plot, removed_segments,
