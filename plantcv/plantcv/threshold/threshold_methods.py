@@ -202,7 +202,7 @@ def triangle(gray_img, object_type="light", xstep=1):
     for item in hist:
         newhist.extend(item)
 
-    ind = _detect_peaks(newhist, mph=None, mpd=1)
+    ind = _detect_peaks(newhist)
 
     # Find point corresponding to highest peak
     # Find intensity value (y) of highest peak
@@ -614,7 +614,7 @@ def _call_adaptive_threshold(gray_img, ksize, offset, adaptive_method, threshold
 
 
 # Internal method for detecting peaks for the triangle autothreshold method
-def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', valley=False, ax=None):
+def _detect_peaks(x, edge="rising"):
     """Marcos Duarte, https://github.com/demotu/BMC; version 1.0.4; license MIT
 
     Detect peaks in data based on their amplitude and other features.
@@ -622,36 +622,11 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', valley=False, 
     Parameters
     ----------
     x : 1D array_like
-        data.
-    mph : {None, number}, optional (default = None)
-        detect peaks that are greater than minimum peak height.
-    mpd : positive integer, optional (default = 1)
-        detect peaks that are at least separated by minimum peak distance (in
-        number of data).
-    threshold : positive number, optional (default = 0)
-        detect peaks (valleys) that are greater (smaller) than `threshold`
-        in relation to their immediate neighbors.
-    edge : {None, 'rising', 'falling', 'both'}, optional (default = 'rising')
-        for a flat peak, keep only the rising edge ('rising'), only the
-        falling edge ('falling'), both edges ('both'), or don't detect a
-        flat peak (None).
-    valley : bool, optional (default = False)
-        if True (1), detect valleys (local minima) instead of peaks.
-    show : bool, optional (default = False)
-        if True (1), plot data in matplotlib figure.
-    ax : a matplotlib.axes.Axes instance, optional (default = None).
-
+        data
     Returns
     -------
     ind : 1D array_like
         indices of the peaks in `x`.
-
-    Notes
-    -----
-    The detection of valleys instead of peaks is performed internally by simply
-    negating the data: `ind_valleys = detect_peaks(-x)`
-
-    The function can handle NaN's
     """
     x = np.atleast_1d(x).astype('float64')
 
