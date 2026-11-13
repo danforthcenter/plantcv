@@ -164,12 +164,39 @@ def test_triangle_dark(threshold_test_data):
     assert gray_img.shape == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
 
-def test_triangle_incorrect_object_type(threshold_test_data):
+def _small_object_on_textured_background(object_mean):
+    """A disc covering 1.5% of the frame on a noisy background (mean 130)."""
+    rng = np.random.default_rng(0)
+    gray_img = rng.normal(130, 4, (200, 200))
+    yy, xx = np.mgrid[:200, :200]
+    obj = (yy - 100) ** 2 + (xx - 100) ** 2 < 14 ** 2
+    gray_img[obj] = rng.normal(object_mean, 3, obj.sum())
+    return np.clip(gray_img, 0, 255).astype(np.uint8), obj
+
+
+@pytest.mark.parametrize("object_type,object_mean", [["dark", 114], ["light", 146]])
+def test_triangle_thresholds_at_the_triangle_value(object_type, object_mean):
     """Test for PlantCV."""
-    # Read in test data
-    gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
-    with pytest.raises(RuntimeError):
-        _ = triangle(gray_img=gray_img, object_type="lite", xstep=10)
+    gray_img, obj = _small_object_on_textured_background(object_mean)
+    binary_img = triangle(gray_img=gray_img, object_type=object_type)
+    # Otsu's threshold on this image selects about 41% of the frame; the triangle threshold, searched on the
+    # object's side of the background peak, selects about the object
+    assert not np.array_equal(binary_img, otsu(gray_img=gray_img, object_type=object_type))
+    assert (binary_img > 0).mean() < 0.03
+    assert ((binary_img > 0) & obj).sum() / obj.sum() > 0.85
+
+
+def test_triangle_dark_peak_at_zero():
+    """Test for PlantCV."""
+    # A dark object inside a background already masked to 0: the histogram peak is at 0, so there is no tail
+    # below it to search
+    gray_img, _ = _small_object_on_textured_background(114)
+    gray_img[:, :120] = 0
+    with pytest.raises(RuntimeError, match="no tail"):
+        _ = triangle(gray_img=gray_img, object_type="dark")
+    # The light side of the same histogram still has a tail
+    binary_img = triangle(gray_img=gray_img, object_type="light")
+    assert np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
 
 def test_texture(threshold_test_data):
