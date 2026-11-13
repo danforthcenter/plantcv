@@ -7,7 +7,7 @@ Measure leaf insertion angles.
 **returns** labeled image 
 
 - **Parameters:**
-    - skel_img - Skeletonize image (See [plantcv.morphology.morph.skeleton](morphology_class.md)). 
+    - skel_img - Skeletonize image (See [plantcv.morphology.Morph.skeleton](morphology_class.md)). 
     - segmented_img - Segmented image (output from [plantcv.morphology.segment_sort](segment_sort.md))., used for creating the labeled debugging image. 
     - leaf_objects - Leaf segment objects (output from [plantcv.morphology.segment_sort](segment_sort.md)).
     - stem_objects - Stem segment objects (output from [plantcv.morphology.segment_sort](segment_sort.md)).

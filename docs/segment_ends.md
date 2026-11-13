@@ -7,7 +7,7 @@ Find segment tip and inner branch-point coordinates, and sort segments by the y-
 **returns** Re-ordered leaf segments, list of branch point coordinates, list of leaf tip coordinates
 
 - **Parameters:**
-    - skel_img - Skeleton image (See [plantcv.morphology.morph.skeleton](morphology_class.md))
+    - skel_img - Skeleton image (See [plantcv.morphology.Morph.skeleton](morphology_class.md))
     - leaf_objects - Secondary segment objects (output from [plantcv.morphology.segment_sort](segment_sort.md)).
     - mask - Binary mask for plotting. If provided, the debugging image will be overlaid on the mask (optional).
     - label - Optional label parameter, modifies the variable name of observations recorded. (default = `pcv.params.sample_label`)
