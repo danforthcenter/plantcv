@@ -10,7 +10,7 @@ from plantcv.plantcv.morphology.segment_skeleton import _segment_skeleton
 from plantcv.plantcv._helpers import _cv2_findcontours, _iterative_prune, _image_subtract
 
 
-class morph:
+class Morph:
     def __init__(self, mask, first_stem=True):
         """Initialize morph class
 

@@ -2,7 +2,7 @@
 
 Object to store morphology elements including skeletonized mask, stem and leaf contours, and masks/images.
 
-**plantcv.morphology.morph**(*mask, first_stem=True*)
+**plantcv.morphology.Morph**(*mask, first_stem=True*)
 
 **returns** `morph` class object
 
@@ -30,7 +30,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 # create a morph object
 
-morpho = pcv.morphology.morph(mask)
+morpho = pcv.morphology.Morph(mask)
 
 # view the skeleton
 pcv.plot_image(morpho.skeleton)
