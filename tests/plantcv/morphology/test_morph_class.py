@@ -44,10 +44,8 @@ def test_morph_cycles(monkeypatch, tmpdir):
     monkeypatch.setattr(params, "debug_outdir", cache)
     monkeypatch.setattr(params, "debug", "print")
     monkeypatch.setattr(params, "device", 0)
-    cycling_skeleton = synthetic.skeleton(cycle=True)
-    mask = np.zeros(cycling_skeleton.shape[:2], dtype=np.uint8)
-    morpho = Morph(mask)
-    morpho.skeleton = cycling_skeleton
+    cycling_skeleton = synthetic.skeleton(cycle=True).astype(np.uint8)
+    morpho = Morph(cycling_skeleton)
     n_cycles = morpho.cycles
     assert n_cycles == 1
     assert os.path.exists(os.path.join(cache, "1_cycles.png"))
