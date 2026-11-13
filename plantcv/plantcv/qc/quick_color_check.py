@@ -28,7 +28,7 @@ def quick_color_check(source_matrix, target_matrix=None, num_chips=None):
 
     Returns:
     --------
-    p1                 = altair.vegalite.v5.api.Chart,
+    p1                 = altair.Chart,
         an altair plot of the target and source color values
     """
     # handle None target_matrix

@@ -6,7 +6,7 @@ When passed a single `numpy.ndarray` of Delta E values, a bar chart is produced 
 
 **plantcv.qc.plot_deltaE**(*source, n=20, ext="png", \*\*kwargs*)
 
-**returns** chart, an altair.vegalite.v5.api.LayerChart object
+**returns** chart, an altair.LayerChart
 
 - **Parameters:**
     - source - one of:

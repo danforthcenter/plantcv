@@ -2,12 +2,13 @@
 # optionally, change channel name with -n {plantcv-dev}
 name: plantcv
 dependencies:
-  - python=3.13
+  - python=3.14
+  - pip
   - matplotlib>=1.5
   - numpy>=1.26
   - pandas!=3.0.4
   - python-dateutil
-  - scipy<1.16
+  - scipy
   - scikit-image>=0.19
   - scikit-learn
   - dask
@@ -16,13 +17,14 @@ dependencies:
   - xarray>=2022.11.0
   - mkdocs
   - nd2
+  - opencv>=4.11,<5[build=*headless*]
   - pytest
   - pytest-cov
   - flake8
   - ipympl
   - nodejs
   - jupyterlab
-  - altair<6
+  - altair
   - vl-convert-python
   - git
   - flyr
@@ -32,6 +34,8 @@ dependencies:
   - imageio-ffmpeg
   - pillow
   - pillow-heif
+  - pip:
+    - opencv-contrib-python-headless>=4.11,<5
 
 channels:
   - conda-forge
