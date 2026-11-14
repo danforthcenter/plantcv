@@ -4,7 +4,7 @@ import os
 import cv2
 from plantcv.plantcv._globals import params
 from plantcv.plantcv.color_palette import color_palette
-from plantcv.plantcv.morphology.find_branch_pts import find_branch_pts
+from plantcv.plantcv.morphology.find_branch_pts import _find_branch_pts
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _dilate, _image_subtract
 
@@ -61,10 +61,7 @@ def _segment_skeleton(skel_img):
         list of contours
     """
     # Find branch points
-    debug = params.debug
-    params.debug = None
-    bp = find_branch_pts(skel_img)
-    params.debug = debug
+    _, _, bp = _find_branch_pts(skel_img)
     bp = _dilate(bp, 3, 1)
     # Subtract from the skeleton so that leaves are no longer connected
     segments = _image_subtract(skel_img, bp)

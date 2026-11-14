@@ -20,8 +20,7 @@ Attributes are accessed as plantcv.params.*attribute*.
 
 **line_thickness**: The line thickness for plots created by [plantcv.analyze.size](analyze_size.md), [plantcv.analyze.bound_horizontal](analyze_bound_horizontal2.md).
 [plantcv.analyze.bound_vertical](analyze_bound_vertical2.md), [plantcv.roi.filter](roi_filter.md),
-[plantcv.homology.scale_features](homology_scale_features.md), [plantcv.homology.x_axis_pseudolandmarks](homology_x_axis_pseudolandmarks.md), [plantcv.homology.y_axis_pseudolandmarks](homology_y_axis_pseudolandmarks.md), [plantcv.morphology.find_branch_pts](find_branch_pts.md), [plantcv.morphology.morph.cycles](morphology_class.md),
- [plantcv.morphology.find_tips](find_tips.md), [plantcv.morphology.segment_skeleton](segment_skeleton.md), [plantcv.morphology.segment_tangent_angle](segment_tangent_angle.md),
+[plantcv.homology.scale_features](homology_scale_features.md), [plantcv.homology.x_axis_pseudolandmarks](homology_x_axis_pseudolandmarks.md), [plantcv.homology.y_axis_pseudolandmarks](homology_y_axis_pseudolandmarks.md), [plantcv.morphology.morph.cycles](morphology_class.md), [plantcv.morphology.segment_skeleton](segment_skeleton.md), [plantcv.morphology.segment_tangent_angle](segment_tangent_angle.md),
  [plantcv.morphology.segment_id](segment_id.md), and every region of interest function. Default = 5. 
 
  **line_color**: The line color for singular ROI debug images, including [plantcv.roi.circle](roi_circle.md), [plantcv.roi.rectangle](roi_rectangle.md), [plantcv.roi.ellipse](roi_ellipse.md), and [plantcv.roi.custom](roi_custom.md).  

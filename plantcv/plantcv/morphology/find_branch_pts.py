@@ -1,35 +1,28 @@
 """Find branch points from skeleton image."""
-import os
 import cv2
 import numpy as np
 from plantcv.plantcv._globals import params
-from plantcv.plantcv._globals import outputs
-from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _dilate
 
 
-def find_branch_pts(skel_img, mask=None, label=None):
+def _find_branch_pts(skel_img):
     """Find branch points in a skeletonized image.
     The branching algorithm was inspired by Jean-Patrick Pommier: https://gist.github.com/jeanpat/5712699
 
-    Inputs:
-    skel_img    = Skeletonized image
-    mask        = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
-    label        = Optional label parameter, modifies the variable name of
-                   observations recorded (default = pcv.params.sample_label).
+    Parameters
+    ----------
+    skel_img    = numpy.ndarray,
+        Skeletonized image
 
-    Returns:
-    branch_pts_img = Image with just branch points, rest 0
-
-    :param skel_img: numpy.ndarray
-    :param mask: np.ndarray
-    :param label: str
-    :return branch_pts_img: numpy.ndarray
+    Returns
+    -------
+    branch_list    = list,
+        list of coordinates for branch points
+    branch_labels  = list,
+        list of labels for branch points
+    branch_pts_img = numpy.ndarray,
+        Image with just branch points, rest 0
     """
-    # Set lable to params.sample_label if None
-    if label is None:
-        label = params.sample_label
-
     # In a kernel: 1 values line up with 255s, -1s line up with 0s, and 0s correspond to don't care
     # T like branch points
     t1 = np.array([[-1, 1, -1],
@@ -71,16 +64,8 @@ def find_branch_pts(skel_img, mask=None, label=None):
     branch_pts_img = branch_pts_img.astype(np.uint8) * 255
 
     # Make debugging image
-    if mask is None:
-        dilated_skel = _dilate(skel_img, params.line_thickness, 1)
-        branch_plot = cv2.cvtColor(dilated_skel, cv2.COLOR_GRAY2RGB)
-    else:
-        # Make debugging image on mask
-        mask_copy = mask.copy()
-        branch_plot = cv2.cvtColor(mask_copy, cv2.COLOR_GRAY2RGB)
-        skel_obj, skel_hier = _cv2_findcontours(bin_img=skel_img)
-        cv2.drawContours(branch_plot, skel_obj, -1, (150, 150, 150), params.line_thickness, lineType=8,
-                         hierarchy=skel_hier)
+    dilated_skel = _dilate(skel_img, params.line_thickness, 1)
+    branch_plot = cv2.cvtColor(dilated_skel, cv2.COLOR_GRAY2RGB)
 
     branch_objects, _ = _cv2_findcontours(bin_img=branch_pts_img)
 
@@ -94,11 +79,4 @@ def find_branch_pts(skel_img, mask=None, label=None):
         branch_labels.append(i)
         cv2.circle(branch_plot, (x, y), params.line_thickness, (255, 0, 255), -1)
 
-    outputs.add_observation(sample=label, variable='branch_pts',
-                            trait='list of branch-point coordinates identified from a skeleton',
-                            method='plantcv.plantcv.morphology.find_branch_pts', scale='pixels', datatype=list,
-                            value=branch_list, label=branch_labels)
-
-    _debug(visual=branch_plot, filename=os.path.join(params.debug_outdir, f"{params.device}_branch_pts.png"))
-
-    return branch_pts_img
+    return branch_list, branch_labels, branch_pts_img
