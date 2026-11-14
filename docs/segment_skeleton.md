@@ -7,11 +7,10 @@ Turn a skeletonized image into separate pieces.
 **returns** Segmented image, segment objects
 
 - **Parameters:**
-    - skel_img - Skeleton image (output from [plantcv.morphology.skeletonize](skeletonize.md))
+    - skel_img - Skeleton image (See [plantcv.morphology.Morph.skeleton](morphology_class.md))
     - mask - Binary mask for debugging (optional). If provided, debug image will be overlaid on the mask.
 - **Context:**
-    - Breaks skeleton into segments. Performs the exact same process as [plantcv.morphology.prune](prune.md) 
-    when `size=0`. If the prune function is performed, using `plantcv.morphology.segment_skeleton` is redundant. 
+    - Breaks skeleton into segments.
 
 **Reference Images**
 

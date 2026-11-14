@@ -7,10 +7,8 @@ Label segments with their ID numbers.
 **returns** Segmented image, labeled image with segment ID's 
 
 - **Parameters:**
-    - skel_img - Skeleton image (output from [plantcv.morphology.skeletonize](skeletonize.md))
-    - objects - Segment objects (output from either [plantcv.morphology.prune](prune.md),
-    [plantcv.morphology.segment_skeleton](segment_skeleton.md), or
-    [plantcv.morphology.segment_sort](segment_sort.md)).
+    - skel_img - Skeleton image (See [plantcv.morphology.Morph.skeleton](morphology_class.md))
+    - objects - Segment objects (output from [plantcv.morphology.segment_sort](segment_sort.md)).
     - mask - Binary mask for plotting. If provided, segmented and labeled image will be overlaid on the mask (optional).
 - **Context:**
     - Plots segmented image with segment ID's. The segmented image output can be used in downstream functions, such as [plantcv.morphology.segment_angle](segment_angle.md), [plantcv.morphology.segment_curvature](segment_curvature.md),
