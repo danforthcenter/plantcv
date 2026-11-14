@@ -18,9 +18,9 @@ Object to store morphology elements including skeletonized mask, stem and leaf c
 
 - **Methods**
     - **morph.prune**(*size=0, first_stem=True, reprune=False*)
-	  - **size**: size to be pruned off of each branch, branches below this size will be rmoeved.
-	  - **first_stem**: Boolean, should the first (bottom) segment always be categorized as a stem? Defaults to True.
-	  - **reprune**: Boolean, should the prune be done on the updated, already pruned, skeleton? If False, the default, each prune will start from the original skeleton.
+		- **size**: size to be pruned off of each branch, branches below this size will be removed.
+		- **first_stem**: Boolean, should the first (bottom) segment always be categorized as a stem? Defaults to True.
+		- **reprune**: Boolean, should the prune be done on the updated, already pruned, skeleton? If False, the default, each prune will start from the original skeleton.
 
 - **Context:**
 	- Used to generate and store a skeletonized mask from a mask for use with morphology functions. (More pending?)
