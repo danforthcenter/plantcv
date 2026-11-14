@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 from plantcv.plantcv import outputs, params
 from plantcv.plantcv.analyze.morphology import morphology as analyze_morphology
-from plantcv.plantcv.morphology.morph_class import morph
+from plantcv.plantcv.morphology.morph_class import Morph
 from plantcv.plantcv.morphology.segment_euclidean_length import _segment_euclidean_length
 from plantcv.plantcv.morphology.segment_insertion_angle import _segment_insertion_angle
 from plantcv.plantcv.morphology.segment_tangent_angle import _segment_tangent_angle
@@ -28,12 +28,12 @@ def _make_morph(skeleton=None, leaves=None, stem=None, mask=None):
 
     Returns
     -------
-    plantcv.plantcv.morphology.morph
+    plantcv.plantcv.morphology.Morph
         Morph object holding the given skeleton and segments.
     """
     syn_leaves, syn_stem = synthetic.skeleton_segments()
     mask = synthetic.skeleton_mask() if mask is None else mask
-    morpho = morph(mask)
+    morpho = Morph(mask)
     morpho.pruned_skeleton = synthetic.skeleton() if skeleton is None else skeleton
     morpho.leaves = syn_leaves if leaves is None else list(leaves)
     morpho.stem = syn_stem if stem is None else list(stem)
@@ -102,7 +102,7 @@ def test_analyze_morphology_debug(monkeypatch, tmpdir):
 def test_analyze_morphology_from_mask():
     """Test for PlantCV."""
     # End to end: skeletonize, prune and segment a real mask, then analyze it
-    morpho = morph(synthetic.plant_mask(small_object=False))
+    morpho = Morph(synthetic.plant_mask(small_object=False))
     morpho.prune(size=5)
     analyze_morphology(morpho, size=3, label="default")
     obs = outputs.observations["default"]
