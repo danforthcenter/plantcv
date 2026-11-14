@@ -7,7 +7,7 @@ Calculates morphological traits and stores them to `pcv.outputs`.
 **returns** Segmented mask, mask with leaves/stems labeled.
 
 - **Parameters:**
-    - morph - A [`pcv.morphology.morph`](morphology_class.md) object.
+    - morph - A [`pcv.morph`](morphology_class.md) object.
 	- size - The size of segment ends to be used in calculating angles and tangents.
 	- stems - Logical, should stems be segmented separately (False, the default) or included as their own sections (True).
 	- label - Optional label parameter, modifies the variable name of observations recorded. Can be a prefix or list (default = pcv.params.sample_label).
@@ -23,7 +23,7 @@ Calculates morphological traits and stores them to `pcv.outputs`.
 ```python
 from plantcv import plantcv as pcv
 
-morph = pcv.morphology.morph(mask)
+morph = pcv.morph(mask)
 
 leaf_segmented_img = pcv.analyze.morphology(morph)
 

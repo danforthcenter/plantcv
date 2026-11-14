@@ -2,9 +2,9 @@
 
 Object to store morphology elements including skeletonized mask, stem and leaf contours, and masks/images.
 
-**plantcv.morphology.Morph**(*mask, first_stem=True*)
+**plantcv.Morph**(*mask, first_stem=True*)
 
-**returns** `morph` class object
+**returns** `Morph` class object
 
 - **Parameters:**
     - mask - Binary or Labeled mask of an object.
@@ -37,7 +37,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 # create a morph object
 
-morpho = pcv.morphology.Morph(mask)
+morpho = pcv.Morph(mask)
 
 # view the skeleton
 pcv.plot_image(morpho.skeleton)
@@ -57,4 +57,4 @@ morpho.prune(60)
 ![Screenshot](img/documentation_images/morphology_class/pruned_skel_mask.png)
 
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv.morphology.Morph_class.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/morph_class.py)
