@@ -36,3 +36,25 @@ def test_morph_prune(monkeypatch, tmpdir):
     morpho.prune(size=60, reprune=True)
     assert np.count_nonzero(morpho.skeleton) == 65
     assert os.path.exists(os.path.join(cache, "3_pruned_debug.png"))
+
+
+def test_morph_cycles(monkeypatch, tmpdir):
+    """Test for PlantCV."""
+    cache = tmpdir.mkdir("cache")
+    monkeypatch.setattr(params, "debug_outdir", cache)
+    monkeypatch.setattr(params, "debug", "print")
+    monkeypatch.setattr(params, "device", 0)
+    cycling_skeleton = synthetic.skeleton(cycle=True).astype(np.uint8)
+    morpho = Morph(cycling_skeleton)
+    n_cycles = morpho.cycles
+    assert n_cycles == 1
+    assert os.path.exists(os.path.join(cache, "1_cycles.png"))
+    params.saved_color_scale = None
+
+
+def test_morph_cycles_no_debug(monkeypatch):
+    """Check cyclic and acyclic skeletons without debugging."""
+    monkeypatch.setattr(params, "debug", None)
+    monkeypatch.setattr(params, "saved_color_scale", None)
+    assert Morph(synthetic.skeleton(cycle=True)).cycles == 1
+    assert Morph(synthetic.skeleton()).cycles == 0

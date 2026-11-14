@@ -1,7 +1,16 @@
 import pytest
 import numpy as np
+from plantcv.plantcv._globals import params
 from plantcv.plantcv.morphology.segment_combine import segment_combine
 from tests import synthetic
+
+
+@pytest.fixture(autouse=True)
+def setup_and_teardown():
+    """Helper to reset color scale before and after tests"""
+    params.saved_color_scale = None
+    yield
+    params.saved_color_scale = None
 
 
 def test_segment_combine():
