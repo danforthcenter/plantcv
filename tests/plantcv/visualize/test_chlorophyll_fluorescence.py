@@ -1,7 +1,7 @@
 import pytest
 from plantcv.plantcv.visualize import chlorophyll_fluorescence
 from plantcv.plantcv import PSII_data
-from altair.vegalite.v5.api import LayerChart
+from altair import LayerChart
 from tests import synthetic
 
 

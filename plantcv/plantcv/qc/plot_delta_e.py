@@ -60,7 +60,7 @@ def plot_deltaE(source, n=20, ext="png", **kwargs):
 
     Returns
     -------
-    chart = altair.vegalite.v5.api.LayerChart
+    chart = altair.LayerChart
         Altair layered chart with boxes for a dataset input or
         bars for a single image's deltaE values
         colored by deltaE category, reference lines,
@@ -98,7 +98,7 @@ def _plot_dataset_deltaE(source, n=20, ext="png", **kwargs):
 
     Returns
     -------
-    chart = altair.vegalite.v5.api.LayerChart
+    chart = altair.LayerChart
         Altair layered chart with boxes colored by deltaE category, reference lines,
         and standard chip color swatches below the x-axis
     """
@@ -210,7 +210,7 @@ def _plot_single_deltaE(deltaE_matrix):
 
     Returns
     -------
-    chart = altair.vegalite.v5.api.LayerChart
+    chart = altair.LayerChart
         Altair layered chart with bars colored by deltaE category, reference lines,
         and standard chip color swatches below the x-axis
     """
