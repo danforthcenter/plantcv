@@ -235,7 +235,6 @@ nav:
       - 'Segment Skeleton': segment_skeleton.md
       - 'Find Branches': find_branch_pts.md
       - 'Find Tips': find_tips.md
-      - 'Check Cycles': check_cycles.md
       - 'Segment Sort': segment_sort.md
       - 'Segment ID': segment_id.md
       - 'Combine Segments': segment_combine.md
