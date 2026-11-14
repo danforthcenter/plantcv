@@ -19,7 +19,7 @@ def color_palette(num, saved=False):
     :return colors: list
     """
     # If a previous palette is saved and saved = True, return it
-    if params.saved_color_scale is not None and saved is True:
+    if params.saved_color_scale is not None and saved is True and num == len(params.saved_color_scale):
         return params.saved_color_scale
     # Retrieve the matplotlib colormap
     cmap = plt.get_cmap(params.color_scale)

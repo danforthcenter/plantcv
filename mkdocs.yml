@@ -239,16 +239,8 @@ nav:
       - 'Segment ID': segment_id.md
       - 'Combine Segments': segment_combine.md
     - 'Measure Segments':
-      - 'Analyze Stem': analyze_stem.md
-      - 'Fill Segments': fill_segments.md
-      - 'Segment Angles': segment_angle.md
-      - 'Segment Curvature': segment_curvature.md
+      - 'Analyze morphological traits': analyze_morphology.md
       - 'Segment Ends': segment_ends.md
-      - 'Segment Euclidean Length': segment_euclidean_length.md
-      - 'Segment Insertion Angle': segment_insertion_angle.md
-      - 'Segment Path Length': segment_pathlength.md  
-      - 'Segment Tangent Angle': segment_tangent_angle.md
-      - 'Segment Width': segment_width.md
   - 'Shape Landmarks Analysis':
     - 'Find Landmark Points': homology_acute.md
     - 'Build Landmark Comparison Table': homology_space.md
