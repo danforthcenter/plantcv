@@ -1,5 +1,5 @@
 import numpy as np
-from plantcv.plantcv.morphology.segment_skeleton import segment_skeleton
+from plantcv.plantcv.morphology.segment_skeleton import _segment_skeleton as segment_skeleton
 from tests import synthetic
 
 
@@ -12,7 +12,7 @@ def test_segment_skeleton():
     """Test for PlantCV."""
     skeleton = synthetic.skeleton()
     leaves, stem = synthetic.skeleton_segments()
-    _, segment_objects = segment_skeleton(skel_img=skeleton, mask=skeleton)
+    segment_objects = segment_skeleton(skel_img=skeleton)
     # 4 leaf segments and 3 stem segments between the branch points
     assert _same_segments(segment_objects, leaves + stem)
 
@@ -20,5 +20,5 @@ def test_segment_skeleton():
 def test_segment_skeleton_no_mask():
     """Test for PlantCV."""
     leaves, stem = synthetic.skeleton_segments()
-    _, segment_objects = segment_skeleton(skel_img=synthetic.skeleton())
+    segment_objects = segment_skeleton(skel_img=synthetic.skeleton())
     assert _same_segments(segment_objects, leaves + stem)
