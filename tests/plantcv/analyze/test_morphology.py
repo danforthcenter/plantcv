@@ -107,7 +107,19 @@ def test_analyze_morphology_from_mask():
     analyze_morphology(morpho, size=3, label="default")
     obs = outputs.observations["default"]
     assert len(obs["segment_path_length"]["value"]) == len(morpho.leaves)
-    assert obs["stem_height"]["value"] > 0
+    assert np.isclose(obs["mean_segment_width"]["value"][0], 6.6146)
+    assert np.isclose(obs["segment_angle"]["value"][1], 0.3882282078266144)
+    assert obs["segment_area"]["value"][0] == 432
+    assert np.isclose(obs["segment_curvature"]["value"][0], 0.975)
+    assert np.isclose(obs["segment_eu_length"]["value"][0], 20.0)
+    assert np.isclose(obs["segment_insertion_angle"]["value"][0], 89.931)
+    assert np.isclose(obs["segment_path_length"]["value"][0], 19.5)
+    assert np.isclose(obs["segment_tangent_angle"]["value"][1], 151.0027)
+    assert obs["segment_width_max"]["value"][0] == 10.0
+    assert np.isclose(obs["segment_width_std"]["value"][0], 1.4331)
+    assert np.isclose(obs["stem_angle"]["value"], 1851.5308)
+    assert obs["stem_height"]["value"] == 42
+    assert np.isclose(obs["stem_length"]["value"], 45.09779)
 
 
 def test_segment_euclidean_length_bad_input():
