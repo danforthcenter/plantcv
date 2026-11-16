@@ -7,4 +7,4 @@ from plantcv.plantcv.morphology.morph_class import Morph
 
 
 __all__ = ["segment_skeleton", "segment_sort", "segment_id",
-           "segment_combine", "segment_ends", "morph"]
+           "segment_combine", "segment_ends", "Morph"]
