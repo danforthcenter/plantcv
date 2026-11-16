@@ -192,7 +192,7 @@ def test_segment_width():
     assert obs["mean_segment_width"]["value"] == [7, 0]
     assert obs["segment_width_max"]["value"] == [8, 0]
     assert obs["segment_width_std"]["value"] == [0.5, "NA"]
-    assert obs["mean_segment_width"]["label"] == [1, 2]
+    assert obs["mean_segment_width"]["label"] == [0, 1]
 
 
 @pytest.mark.parametrize("size,expected", [

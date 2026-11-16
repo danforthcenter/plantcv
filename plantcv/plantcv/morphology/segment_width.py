@@ -60,14 +60,14 @@ def _segment_width(morph, labeled_mask, n_labels=1, label=None):
                             method='plantcv.plantcv.analyze.morphology',
                             scale=params.unit, datatype=list,
                             value=_scale_size(value=widths, trait_type="linear"),
-                            label=list(range(1, n_labels + 1)))
+                            label=list(range(n_labels)))
     outputs.add_observation(sample=label, variable='segment_width_std', trait='segment width standard deviation',
                             method='plantcv.plantcv.analyze.morphology',
                             scale="pixels", datatype=list,
                             value=stdevs,
-                            label=list(range(1, n_labels + 1)))
+                            label=list(range(n_labels)))
     outputs.add_observation(sample=label, variable='segment_width_max', trait='maximum segment widths',
                             method='plantcv.plantcv.analyze.morphology',
                             scale=params.unit, datatype=list,
                             value=_scale_size(value=max_width, trait_type="linear"),
-                            label=list(range(1, n_labels + 1)))
+                            label=list(range(n_labels)))
