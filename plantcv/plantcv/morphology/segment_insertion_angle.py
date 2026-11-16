@@ -78,36 +78,38 @@ def _segment_insertion_angle(morph, size=20, label=None):
 
     # Plot stem segments
     combined_stem = _combine_stem(segmented_img, stem_objects)
-    # Find slope of the stem
-    [vx, vy, _, _] = cv2.fitLine(combined_stem[0], cv2.DIST_L2, 0, 0.01, 0.01)
-    stem_slope = -vy / vx
-    stem_slope = stem_slope[0]
 
-    for segment in insertion_segments:
-        # Find line fit to each segment
-        [vx, vy, _, _] = cv2.fitLine(segment, cv2.DIST_L2, 0, 0.01, 0.01)
-        slope = -vy / vx
-        segment_slopes.append(slope[0])
+    if len(combined_stem):
+        # Find slope of the stem
+        [vx, vy, _, _] = cv2.fitLine(combined_stem[0], cv2.DIST_L2, 0, 0.01, 0.01)
+        stem_slope = -vy / vx
+        stem_slope = stem_slope[0]
 
-        # Store intersection angles between insertion segment and stem line
-        intersection_angle = _slope_to_intersect_angle(slope[0], stem_slope)
-        # Function measures clockwise but we want the acute angle between stem and leaf insertion
-        if intersection_angle > 90:
-            intersection_angle = 180 - intersection_angle
-        intersection_angles.append(intersection_angle)
+        for segment in insertion_segments:
+            # Find line fit to each segment
+            [vx, vy, _, _] = cv2.fitLine(segment, cv2.DIST_L2, 0, 0.01, 0.01)
+            slope = -vy / vx
+            segment_slopes.append(slope[0])
 
-    intersection_angles_editing = intersection_angles.copy()
-    for j in pruned_away:
-        if j:
-            all_intersection_angles.append('NA')
-        else:
-            all_intersection_angles.append(intersection_angles_editing.pop(0))
+            # Store intersection angles between insertion segment and stem line
+            intersection_angle = _slope_to_intersect_angle(slope[0], stem_slope)
+            # Function measures clockwise but we want the acute angle between stem and leaf insertion
+            if intersection_angle > 90:
+                intersection_angle = 180 - intersection_angle
+            intersection_angles.append(intersection_angle)
 
-    segment_ids = list(range(len(insertion_segments)))
+        intersection_angles_editing = intersection_angles.copy()
+        for j in pruned_away:
+            if j:
+                all_intersection_angles.append('NA')
+            else:
+                all_intersection_angles.append(intersection_angles_editing.pop(0))
 
-    outputs.add_observation(sample=label, variable='segment_insertion_angle', trait='segment insertion angle',
-                            method='plantcv.plantcv.morphology.segment_insertion_angle', scale='degrees', datatype=list,
-                            value=all_intersection_angles, label=segment_ids)
+        segment_ids = list(range(len(insertion_segments)))
+
+        outputs.add_observation(sample=label, variable='segment_insertion_angle', trait='segment insertion angle',
+                                method='plantcv.plantcv.morphology.segment_insertion_angle',
+                                scale='degrees', datatype=list, value=all_intersection_angles, label=segment_ids)
 
 
 def _combine_stem(segmented_img, stem_objects, maxiter=50):
