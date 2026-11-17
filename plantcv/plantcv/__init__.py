@@ -152,7 +152,7 @@ __all__ = [
     "roi",
     "threshold",
     "visualize",
-    "morph",
+    "Morph",
     "fill_holes",
     "get_kernel",
     "crop",
