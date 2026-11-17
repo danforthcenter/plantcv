@@ -34,10 +34,13 @@ def test_morph_prune(monkeypatch, tmpdir):
     morpho.prune(size=30)
     assert np.count_nonzero(morpho._skeleton) == 106
     assert np.count_nonzero(morpho.skeleton) == 89
+    assert morpho.branch_points == [(62, 59)]
     # test that repruning with reprune on starts from pruned skeleton
     morpho.prune(size=60, reprune=True)
     assert np.count_nonzero(morpho.skeleton) == 65
     assert os.path.exists(os.path.join(cache, "1_pruned_debug.png"))
+    assert morpho.leaf_tips == [(59, 86), (35, 44)]
+    assert morpho.branch_points == []
 
 
 def test_morph_cycles(monkeypatch, tmpdir):
