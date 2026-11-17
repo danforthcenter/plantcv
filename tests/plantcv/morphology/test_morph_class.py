@@ -72,7 +72,7 @@ def test_morph_combine_leaves(monkeypatch, tmpdir):
     monkeypatch.setattr(params, "debug_outdir", cache)
     monkeypatch.setattr(params, "debug", "print")
     monkeypatch.setattr(params, "device", 0)
-    morpho = morph(synthetic.plant_mask(small_object=False))
+    morpho = Morph(synthetic.plant_mask(small_object=False))
     combined = np.concatenate([morpho.leaves[1], morpho.leaves[0]], axis=0)
     morpho.combine_segments(leaves=[0, 1])
     assert len(morpho.leaves) == 2 and len(morpho.stem) == 2
@@ -82,7 +82,7 @@ def test_morph_combine_leaves(monkeypatch, tmpdir):
 
 def test_morph_combine_stems():
     """Test for PlantCV."""
-    morpho = morph(synthetic.plant_mask(small_object=False))
+    morpho = Morph(synthetic.plant_mask(small_object=False))
     exp_leaves = len(morpho.leaves)
     morpho.combine_segments(stems=[0, 1])
     assert len(morpho.leaves) == exp_leaves and len(morpho.stem) == 1
@@ -90,7 +90,7 @@ def test_morph_combine_stems():
 
 def test_morph_combine_mixed():
     """Test for PlantCV."""
-    morpho = morph(synthetic.plant_mask(small_object=False))
+    morpho = Morph(synthetic.plant_mask(small_object=False))
     morpho.combine_segments(leaves=[2], stems=[1], combined_type="stem")
     assert len(morpho.leaves) == 2 and len(morpho.stem) == 2
 
@@ -104,6 +104,6 @@ def test_morph_combine_mixed():
 ])
 def test_morph_combine_bad_input(kwargs):
     """Test for PlantCV."""
-    morpho = morph(synthetic.plant_mask(small_object=False))
+    morpho = Morph(synthetic.plant_mask(small_object=False))
     with pytest.raises(RuntimeError):
         morpho.combine_segments(**kwargs)
