@@ -107,7 +107,7 @@ def test_analyze_morphology_from_mask():
     analyze_morphology(morpho, size=3, label="default")
     obs = outputs.observations["default"]
     assert len(obs["segment_path_length"]["value"]) == len(morpho.leaves)
-    assert np.isclose(obs["mean_segment_width"]["value"][0], 6.6146)
+    assert np.isclose(obs["mean_segment_width"]["value"][0], 6.61457)
     assert np.isclose(obs["segment_angle"]["value"][1], 0.3882282078266144)
     assert obs["segment_area"]["value"][0] == 432
     assert np.isclose(obs["segment_curvature"]["value"][0], 0.975)
