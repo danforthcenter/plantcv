@@ -145,11 +145,10 @@ def test_triangle(debug, synthetic_gray, tmpdir):
     assert gray_img.shape == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
 
-def test_triangle_dark(synthetic_gray):
+def test_triangle_dark():
     """Test for PlantCV."""
-    gray_img = synthetic_gray
+    gray_img, _ = small_object_on_textured_background(object_mean=60)
     binary_img = triangle(gray_img=gray_img, object_type="dark", xstep=10)
-    # Assert that the output image has the dimensions of the input image and is binary
     assert gray_img.shape == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
 
