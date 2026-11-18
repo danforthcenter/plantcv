@@ -225,14 +225,6 @@ def _find_segment_ends(skel_img, leaf_objects, size=10):
                 tip_list.append(coord)
         if not branch_pt_found:  # there is no branch point associated with a given segment and therefore it cannot be sorted
             remove.append(i)
-            # Plot the ends if found
-            if len(coords) > 1:
-                # Plot the tip that is closest to the stem
-                x_min, y_min, w, h = cv2.boundingRect(skel_img)
-                cx = int((x_min + (w / 2)))
-                cy = int(y_min + h)
-                dist0 = math.dist(coords[0], (cx, cy))
-                dist1 = math.dist(coords[1], (cx, cy))
 
     # Remove the segments that cannot be resorted, since they do not have a branch point
     for k in remove[::-1]:
