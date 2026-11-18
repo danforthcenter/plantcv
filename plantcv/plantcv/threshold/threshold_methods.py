@@ -180,21 +180,19 @@ def otsu(gray_img, object_type="light"):
 def triangle(gray_img, object_type="light", xstep=1):
     """Creates a binary image from a grayscale image using Zack et al.'s (1977) thresholding.
 
-    Inputs:
-    gray_img     = Grayscale image data
-    object_type  = "light" or "dark" (default: "light")
-                   - If object is lighter than the background then standard thresholding is done
-                   - If object is darker than the background then inverse thresholding is done
-    xstep        = value to move along x-axis to determine the points from which to calculate distance recommended to
-                   start at 1 and change if needed)
+    Parameters:
+    -----------
+    gray_img     : numpy.ndarray, Grayscale image data
+    object_type  : str,
+        Object "color", either "light" or "dark" (default: "light" which will segment the lighter objects)
+    xstep        : int,
+        value to move along x-axis to determine the points from which to calculate distance.
+        Defaults to 1, higher values will keep fewer objects in the binary mask as a general rule.
 
     Returns:
-    bin_img      = Thresholded, binary image
-
-    :param gray_img: numpy.ndarray
-    :param object_type: str
-    :param xstep: int
-    :return bin_img: numpy.ndarray
+    --------
+    bin_img      : numpy.ndarray,
+        Thresholded binary image
     """
     # Calculate automatic threshold value based on triangle algorithm
     hist = cv2.calcHist([gray_img], [0], None, [256], [0, 255])
@@ -204,11 +202,7 @@ def triangle(gray_img, object_type="light", xstep=1):
     for item in hist:
         newhist.extend(item)
 
-    # Detect peaks
-    show = False
-    if params.debug == "plot":
-        show = True
-    ind = _detect_peaks(newhist, mph=None, mpd=1, show=show)
+    ind = _detect_peaks(newhist)
 
     # Find point corresponding to highest peak
     # Find intensity value (y) of highest peak
@@ -218,8 +212,17 @@ def triangle(gray_img, object_type="light", xstep=1):
     # Combine x,y
     max_peak_xy = [max_peak[0], max_peak_int]
 
-    # Find final point at end of long tail
+    threshold_method = cv2.THRESH_BINARY
+    direction = 1
     end_x = len(newhist) - 1
+    if object_type.upper() == "DARK":
+        threshold_method = cv2.THRESH_BINARY_INV
+        direction = -1
+        end_x = 0
+
+    if max_peak[0] == end_x:
+        fatal_error(f"The histogram peak is at {end_x}, the end of the {object_type} side, so there is no tail "
+                    "to search for a triangle threshold.")
     end_y = newhist[end_x]
     end_xy = [end_x, end_y]
 
@@ -231,9 +234,11 @@ def triangle(gray_img, object_type="light", xstep=1):
     peaks = []
     dists = []
 
-    for i in range(x_coords[0], x_coords[1], xstep):
-        distance = (((x_coords[1] - x_coords[0]) * (y_coords[0] - hist[i])) -
-                    ((x_coords[0] - i) * (y_coords[1] - y_coords[0]))) / math.sqrt(
+    for i in range(x_coords[0], x_coords[1], direction * xstep):
+        # Signed distance from the peak-to-end line; multiplied by the direction so that, searching either
+        # way, it is largest for the bin furthest below the line
+        distance = direction * (((x_coords[1] - x_coords[0]) * (y_coords[0] - hist[i])) -
+                                ((x_coords[0] - i) * (y_coords[1] - y_coords[0]))) / math.sqrt(
             (float(x_coords[1]) - float(x_coords[0])) *
             (float(x_coords[1]) - float(x_coords[0])) +
             ((float(y_coords[1]) - float(y_coords[0])) *
@@ -243,28 +248,18 @@ def triangle(gray_img, object_type="light", xstep=1):
     autothresh = [peaks[x] for x in [i for i, x in enumerate(list(dists)) if x == max(list(dists))]]
     autothreshval = autothresh[0]
 
-    # Set the threshold method
-    threshold_method = ""
-    if object_type.upper() == "LIGHT":
-        threshold_method = cv2.THRESH_BINARY + cv2.THRESH_OTSU
-    elif object_type.upper() == "DARK":
-        threshold_method = cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU
-    else:
-        fatal_error('Object type ' + str(object_type) + ' is not "light" or "dark"!')
-
-    params.device += 1
-
     # Threshold the image
     bin_img = _call_threshold(gray_img, autothreshval, threshold_method, "_triangle_threshold_")
 
     # Additional figures created by this method, if debug is on
     if params.debug is not None:
+        params.device += 1
+        _, ax = plt.subplots()
+        ax.plot(hist)
+        ax.set(title=f"Threshold value = {autothreshval}")
+        ax.axis([0, 256, 0, max(hist)])
+        ax.grid(True)
         if params.debug == 'print':
-            _, ax = plt.subplots()
-            ax.plot(hist)
-            ax.set(title=f"Threshold value = {autothreshval}")
-            ax.axis([0, 256, 0, max(hist)])
-            ax.grid(True)
             fig_name_hist = os.path.join(params.debug_outdir,
                                          str(params.device) + '_triangle_thresh_hist_' + str(autothreshval) + ".png")
             # write the figure to current directory
@@ -272,11 +267,6 @@ def triangle(gray_img, object_type="light", xstep=1):
             # close pyplot plotting window
             plt.clf()
         elif params.debug == 'plot':
-            print(f"Threshold value = {autothreshval}")
-            _, ax = plt.subplots()
-            ax.plot(hist)
-            ax.axis([0, 256, 0, max(hist)])
-            ax.grid(True)
             plt.show()
 
     return bin_img
@@ -624,7 +614,7 @@ def _call_adaptive_threshold(gray_img, ksize, offset, adaptive_method, threshold
 
 
 # Internal method for detecting peaks for the triangle autothreshold method
-def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', valley=False, show=False, ax=None):
+def _detect_peaks(x, edge="rising"):
     """Marcos Duarte, https://github.com/demotu/BMC; version 1.0.4; license MIT
 
     Detect peaks in data based on their amplitude and other features.
@@ -632,147 +622,23 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', valley=False, 
     Parameters
     ----------
     x : 1D array_like
-        data.
-    mph : {None, number}, optional (default = None)
-        detect peaks that are greater than minimum peak height.
-    mpd : positive integer, optional (default = 1)
-        detect peaks that are at least separated by minimum peak distance (in
-        number of data).
-    threshold : positive number, optional (default = 0)
-        detect peaks (valleys) that are greater (smaller) than `threshold`
-        in relation to their immediate neighbors.
-    edge : {None, 'rising', 'falling', 'both'}, optional (default = 'rising')
-        for a flat peak, keep only the rising edge ('rising'), only the
-        falling edge ('falling'), both edges ('both'), or don't detect a
-        flat peak (None).
-    valley : bool, optional (default = False)
-        if True (1), detect valleys (local minima) instead of peaks.
-    show : bool, optional (default = False)
-        if True (1), plot data in matplotlib figure.
-    ax : a matplotlib.axes.Axes instance, optional (default = None).
-
+        data
     Returns
     -------
     ind : 1D array_like
         indices of the peaks in `x`.
-
-    Notes
-    -----
-    The detection of valleys instead of peaks is performed internally by simply
-    negating the data: `ind_valleys = detect_peaks(-x)`
-
-    The function can handle NaN's
-
-    See this IPython Notebook [1]_.
-
-    References
-    ----------
-    .. [1] http://nbviewer.ipython.org/github/demotu/BMC/blob/master/notebooks/DetectPeaks.ipynb
-
-    Examples
-    --------
-    from detect_peaks import detect_peaks
-    x = np.random.randn(100)
-    x[60:81] = np.nan
-    # detect all peaks and plot data
-    ind = detect_peaks(x, show=True)
-    print(ind)
-
-    x = np.sin(2*np.pi*5*np.linspace(0, 1, 200)) + np.random.randn(200)/5
-    # set minimum peak height = 0 and minimum peak distance = 20
-    detect_peaks(x, mph=0, mpd=20, show=True)
-
-    x = [0, 1, 0, 2, 0, 3, 0, 2, 0, 1, 0]
-    # set minimum peak distance = 2
-    detect_peaks(x, mpd=2, show=True)
-
-    x = np.sin(2*np.pi*5*np.linspace(0, 1, 200)) + np.random.randn(200)/5
-    # detection of valleys instead of peaks
-    detect_peaks(x, mph=0, mpd=20, valley=True, show=True)
-
-    x = [0, 1, 1, 0, 1, 1, 0]
-    # detect both edges
-    detect_peaks(x, edge='both', show=True)
-
-    x = [-2, 1, -2, 2, 1, 1, 3, 0]
-    # set threshold = 2
-    detect_peaks(x, threshold = 2, show=True)
     """
     x = np.atleast_1d(x).astype('float64')
 
-    # It is always the case that x.size=256 since 256 hardcoded in line 186 ->
-    # cv2.calcHist([gray_img], [0], None, [256], [0, 255])
-    # if x.size < 3:
-    #     return np.array([], dtype=int)
-
-    # # Where this function is used it is hardcoded to use the default valley=False so this will never be used
-    # if valley:
-    #     x = -x
-    # find indices of all peaks
     dx = x[1:] - x[:-1]
-    # handle NaN's
-    # indnan = np.where(np.isnan(x))[0]
 
-    # x will never contain NaN since calcHist will never return NaN
-    # if indnan.size:
-    #     x[indnan] = np.inf
-    #     dx[np.where(np.isnan(dx))[0]] = np.inf
     ine, ire, ife = np.array([[], [], []], dtype=int)
 
     if edge.lower() in ['rising', 'both']:
         ire = np.where((np.hstack((dx, 0)) <= 0) & (np.hstack((0, dx)) > 0))[0]
     ind = np.unique(np.hstack((ine, ire, ife)))
-    # x will never contain NaN since calcHist will never return NaN
-    # if ind.size and indnan.size:
-    #     # NaN's and values close to NaN's cannot be peaks
-    #     ind = ind[np.in1d(ind, np.unique(np.hstack((indnan, indnan - 1, indnan + 1))), invert=True)]
-    # first and last values of x cannot be peaks
-    # if ind.size and ind[0] == 0:
-    #     ind = ind[1:]
-    # if ind.size and ind[-1] == x.size - 1:
-    #     ind = ind[:-1]
-    # We think the above code will never be reached given some of the hardcoded properties used
-
-    # # Where this function is used has hardcoded mph=None so this will never be used
-    # # remove peaks < minimum peak height
-    # if ind.size and mph is not None:
-    #     ind = ind[x[ind] >= mph]
-    # remove peaks - neighbors < threshold
-
-    if show:
-        # x will never contain NaN since calcHist will never return NaN
-        # if indnan.size:
-        #     x[indnan] = np.nan
-        # # Where this function is used it is hardcoded to use the default valley=False so this will never be used
-        # if valley:
-        #     x = -x
-        _plot(x, mph, mpd, threshold, edge, valley, ax, ind)
 
     return ind
-
-
-# Internal plotting function for the triangle autothreshold method
-def _plot(x, mph, mpd, threshold, edge, valley, ax, ind):
-    """Plot results of the detect_peaks function, see its help."""
-    if ax is None:
-        _, ax = plt.subplots(1, 1, figsize=(8, 4))
-
-    ax.plot(x, 'b', lw=1)
-    if ind.size:
-        label = 'valley' if valley else 'peak'
-        label = label + 's' if ind.size > 1 else label
-        ax.plot(ind, x[ind], '+', mfc=None, mec='r', mew=2, ms=8,
-                label=f'{ind.size} {label}')
-        ax.legend(loc='best', framealpha=.5, numpoints=1)
-    ax.set_xlim(-.02 * x.size, x.size * 1.02 - 1)
-    ymin, ymax = x[np.isfinite(x)].min(), x[np.isfinite(x)].max()
-    yrange = ymax - ymin if ymax > ymin else 1
-    ax.set_ylim(ymin - 0.1 * yrange, ymax + 0.1 * yrange)
-    ax.set_xlabel('Data #', fontsize=14)
-    ax.set_ylabel('Amplitude', fontsize=14)
-    mode = 'Valley detection' if valley else 'Peak detection'
-    ax.set_title(f"{mode} ({mph=}, {mpd=}, {threshold=}, {edge=})")
-    plt.show()
 
 
 def saturation(rgb_img, threshold=255, channel="any"):
