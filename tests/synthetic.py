@@ -1298,3 +1298,27 @@ def bayer_mosaic(img):
     mosaic[1::2, 1::2] = img[1::2, 1::2, 0]
     mosaic[0::2, 0::2] = img[0::2, 0::2, 2]
     return mosaic
+
+
+def small_object_on_textured_background(object_mean):
+    """A disc covering 1.5% of the frame on a noisy background (mean 130).
+
+    Parameters
+    ----------
+    object_mean : int
+        Mean intensity of the object.
+
+    Returns
+    -------
+    tuple
+        gray_img : numpy.ndarray
+            200 x 200 uint8 image.
+        obj : numpy.ndarray
+            Boolean mask of the object.
+    """
+    rng = np.random.default_rng(0)
+    gray_img = rng.normal(130, 4, (200, 200))
+    yy, xx = np.mgrid[:200, :200]
+    obj = (yy - 100) ** 2 + (xx - 100) ** 2 < 14 ** 2
+    gray_img[obj] = rng.normal(object_mean, 3, obj.sum())
+    return np.clip(gray_img, 0, 255).astype(np.uint8), obj
