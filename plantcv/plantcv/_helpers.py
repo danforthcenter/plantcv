@@ -1,4 +1,5 @@
 import cv2
+import math
 import numpy as np
 from scipy import ndimage
 from skimage import morphology
@@ -167,6 +168,80 @@ def _dilate(gray_img, ksize, i, roi=None):
     dil_img = _rect_replace(gray_img, sub_dil_img, roi)
 
     return dil_img
+
+
+def _find_segment_ends(skel_img, leaf_objects, size=10):
+    """Find both segment ends and sort into tips or inner branchpoints.
+    Parameters:
+    -----------
+    skel_img     : numpy.ndarray,
+        Skeletonized image
+    leaf_objects : list,
+        List of leaf segments
+    size         : int,
+        Size of inner segment ends (in pixels)
+
+    Returns:
+    --------
+    tip_list
+    branch_point_list
+    sortabled_objs
+    """
+    labeled_img = cv2.cvtColor(skel_img, cv2.COLOR_GRAY2RGB)
+    leaf_tip_img, _, _ = _find_tips(skel_img)
+    # Initialize list of tip data points
+    tip_list = []
+    branch_point_list = []
+    remove = []
+    sortabled_objs = leaf_objects.copy()
+
+    # Find segment end coordinates
+    for i in range(len(leaf_objects)):
+        # Draw leaf objects
+        find_segment_tangents = np.zeros(labeled_img.shape[:2], np.uint8)
+        cv2.drawContours(find_segment_tangents, leaf_objects, i, 255, 1, lineType=8)
+        # Prune back ends of leaves
+        pruned_segment = _iterative_prune(find_segment_tangents, size)
+        # Segment ends are the portions pruned off
+        ends = find_segment_tangents - pruned_segment
+        segment_end_obj, _ = _cv2_findcontours(bin_img=ends)
+        branch_pt_found = False
+        coords = []
+        # Determine if a segment is segment tip or branch point
+        for j, obj in enumerate(segment_end_obj):
+            segment_plot = np.zeros(skel_img.shape[:2], np.uint8)
+            cv2.drawContours(segment_plot, obj, -1, 255, 1, lineType=8)
+            segment_plot = _dilate(segment_plot, 3, 1)
+            overlap_img = _logical_operation(segment_plot, leaf_tip_img, 'and')
+            x, y = segment_end_obj[j].ravel()[:2]
+            coord = (int(x), int(y))
+            coords.append(coord)
+            # If none of the leaf tips in the leaf_tip_img are within a segment_end
+            # then it's an insertion segment
+            if np.sum(overlap_img) == 0:
+                branch_point_list.append(coord)
+                branch_pt_found = True
+            else:
+                tip_list.append(coord)
+        if not branch_pt_found:  # there is no branch point associated with a given segment and therefore it cannot be sorted
+            remove.append(i)
+            # Plot the ends if found
+            if len(coords) > 1:
+                # Plot the tip that is closest to the stem
+                x_min, y_min, w, h = cv2.boundingRect(skel_img)
+                cx = int((x_min + (w / 2)))
+                cy = int(y_min + h)
+                dist0 = math.dist(coords[0], (cx, cy))
+                dist1 = math.dist(coords[1], (cx, cy))
+                m = 1
+                if dist0 < dist1:
+                    m = 0
+
+    # Remove the segments that cannot be resorted, since they do not have a branch point
+    for k in remove[::-1]:
+        sortabled_objs.pop(k)
+
+    return tip_list, branch_point_list, sortabled_objs
 
 
 def _iterative_prune(skel_img, size):

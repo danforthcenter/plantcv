@@ -10,7 +10,7 @@ from plantcv.plantcv.morphology.segment_sort import _segment_sort
 from plantcv.plantcv.morphology.find_branch_pts import _find_branch_pts
 from plantcv.plantcv.morphology.segment_skeleton import _segment_skeleton
 from plantcv.plantcv._helpers import (_cv2_findcontours, _iterative_prune, _image_subtract,
-                                      _dilate, _erode, _find_tips)
+                                      _dilate, _erode, _find_tips, _find_segment_ends)
 
 
 class Morph:
@@ -37,6 +37,7 @@ class Morph:
         self._cycles = 0
         self._leaf_tips = []
         self._branch_points = []
+        self._align_objects()
 
     # `mask`
     @property
@@ -195,6 +196,8 @@ class Morph:
         self._pruned_skeleton = pruned_skel
         self._leaves = pruned_leaves
         self._stem = pruned_stems
+        # Re-sort objects for new skeleton
+        self._align_objects()
 
         # Make debugging image
         if params.debug:
@@ -243,3 +246,27 @@ class Morph:
             _debug(visual=cycle_img, filename=os.path.join(params.debug_outdir,
                                                            f"{params.device}_cycles.png"))
         self.cycles = num_cycles
+
+    def _align_objects(self):
+        """Align leaf_tips and branch_points so that the order of each list matches along leaf objects
+        """
+        skel_img = self.skeleton
+        leaf_objects = self.leaves
+
+        tip_list, branch_point_list, sortable_objs = _find_segment_ends(
+            skel_img, leaf_objects, size=1
+        )
+
+        d = {}
+        for i, coord in enumerate(branch_point_list):
+            d[i] = coord[1]  # y-coord is the key and index the value
+        values = list(d.values())
+        sorted_key_index = np.argsort(values)
+        sorted_objs = [sortable_objs[i] for i in sorted_key_index[::-1]]
+
+        self.leaves = sorted_objs
+        self.leaf_tips = tip_list
+
+        self._leaves = sorted_objs
+        self._branch_points = branch_point_list
+        self._leaf_tips = tip_list
