@@ -233,9 +233,6 @@ def _find_segment_ends(skel_img, leaf_objects, size=10):
                 cy = int(y_min + h)
                 dist0 = math.dist(coords[0], (cx, cy))
                 dist1 = math.dist(coords[1], (cx, cy))
-                m = 1
-                if dist0 < dist1:
-                    m = 0
 
     # Remove the segments that cannot be resorted, since they do not have a branch point
     for k in remove[::-1]:

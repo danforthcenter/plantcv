@@ -248,8 +248,7 @@ class Morph:
         self.cycles = num_cycles
 
     def _align_objects(self):
-        """Align leaf_tips and branch_points so that the order of each list matches along leaf objects
-        """
+        """Align leaf_tips and branch_points so that the order of each list matches along leaf objects"""
         skel_img = self.skeleton
         leaf_objects = self.leaves
 
