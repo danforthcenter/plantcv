@@ -32,6 +32,9 @@ PSII_data instance containing [xarray DataArrays](http://xarray.pydata.org/en/st
     - Spectral measurements are stored as a PlantCV [Spectral_data](Spectral_data.md) object in the attribute
       `spectral`. Frames are stored by reflectance wavelength and can include: blue (475nm), green (550nm), red (640nm),
       green2 (540nm), far-red (710nm), and near-infrared (770nm).
+    - Camera software version 7 and later (`Version` in the .INF file) stores 4 non-image values in place of the last
+      4 pixels of the bottom row of every frame. For these captures, those 4 values are replaced with the pixels in
+      the row above so they do not skew whole-frame statistics such as the minimum and maximum.
 - **Example use:**
     - [Use In PSII Tutorial](https://plantcv.org/tutorials/photosynthesis-multiobject)
 

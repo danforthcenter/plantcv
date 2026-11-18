@@ -276,3 +276,39 @@ def test_read_cropreporter_pmt_only_13_labels(tmp_path):
 
     # Verify the F0p (the very last line of your function)
     assert "F0p" in ps.pmt.pam_time.frame_label.values
+
+
+def _footer_frame():
+    """A CHL frame whose last 4 values in the bottom row hold non-image values."""
+    frame = np.arange(120, dtype=np.uint16).reshape(10, 12) + 200
+    frame[-1, -4:] = [18432, 61440, 49152, 43008]
+    return frame
+
+
+def test_read_cropreporter_frame_footer(tmp_path):
+    """Test that the 4 non-image values from camera software 7 and later are replaced."""
+    frame = _footer_frame()
+    filename = synthetic.write_cropreporter(tmp_path, "aph", {"CHL": [10, frame]})
+    ps = read_cropreporter(filename=filename)
+    chl = ps.chl.chlorophyll
+    # The last 4 values of the bottom row are copied from the row above
+    assert np.array_equal(chl[-1, -4:], frame[-2, -4:])
+    # Every other pixel is unchanged
+    assert np.array_equal(chl[:-1], frame[:-1])
+    assert np.array_equal(chl[-1, :-4], frame[-1, :-4])
+
+
+def test_read_cropreporter_no_frame_footer(tmp_path):
+    """Test that frames from camera software before version 7 are unchanged."""
+    frame = _footer_frame()
+    filename = synthetic.write_cropreporter(tmp_path, "v653", {"CHL": [10, frame]})
+    ps = read_cropreporter(filename=filename)
+    assert np.array_equal(ps.chl.chlorophyll, frame)
+
+
+def test_read_cropreporter_no_version(tmp_path):
+    """Test that frames are unchanged when the header has no Version."""
+    frame = _footer_frame()
+    filename = synthetic.write_cropreporter(tmp_path, "aph", {"CHL": [10, frame]}, metadata={"Version": ""})
+    ps = read_cropreporter(filename=filename)
+    assert np.array_equal(ps.chl.chlorophyll, frame)
