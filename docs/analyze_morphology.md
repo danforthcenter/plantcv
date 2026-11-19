@@ -27,7 +27,7 @@ morph = pcv.Morph(mask)
 
 leaf_segmented_img = pcv.analyze.morphology(morph)
 
-pcv.outputs.observations["default"]["segment_path_length"]["values"]
+pcv.outputs.observations["default"]["segment_path_length"]["value"]
 
 ```
 
