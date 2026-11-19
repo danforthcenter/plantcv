@@ -81,27 +81,27 @@ Renamed parameter `ps_da` to `ps` to reflect that it now takes a `PSII_data` obj
 
 #### plantcv.morphology
 
-The `plantcv.morphology` submodule has been removed with the functionality moved to a new `plantcv.morph` class and associated `plantcv.analyze.morphology` function.
+The `plantcv.morphology` submodule has been removed with the functionality moved to a new `plantcv.Morph` class and associated `plantcv.analyze.morphology` function.
 
 ##### plantcv.morphology.check_cycles
 
-- removed, functionality is now part of the `morph` class accessible as the `cycles` attribute.
+- removed, functionality is now part of the `Morph` class accessible as the `cycles` attribute.
 
 ##### plantcv.morphology.find_branch_pts
 
-- removed, functionality is now part of the `morph` class accessible as the `branch_points` attribute.
+- removed, functionality is now part of the `Morph` class accessible as the `branch_points` attribute.
 
 ##### plantcv.morphology.find_tips
 
-- removed, functionality is now part of the `morph` class accessible as the `leaf_tips` attribute.
+- removed, functionality is now part of the `Morph` class accessible as the `leaf_tips` attribute.
 
 ##### plantcv.morphology.prune
 
-- removed, functionality is now part of the `morph` class accessible as the `prune` method.
+- removed, functionality is now part of the `Morph` class accessible as the `prune` method.
 
 ##### plantcv.morphology.skeletonize
 
-- removed, functionality is now part of the `morph` class, which skeletonizes a mask on initialization.
+- removed, functionality is now part of the `Morph` class, which skeletonizes a mask on initialization.
 
 ##### plantcv.morphology.segment_angle
 
@@ -923,7 +923,7 @@ Below is an overview of all updates to function signatures through the developme
 * post v3.3: cycle_img = **plantcv.morphology.check_cycles**(*skel_img*)
 * post v3.11: cycle_img = **plantcv.morphology.check_cycles**(*skel_img, label="default"*)
 * post v4.0: cycle_img = **plantcv.morphology.check_cycles**(*skel_img, label=None*)
-* post v5.0: NA, see `plantcv.morph` class
+* post v5.0: NA, see `plantcv.Morph` class
 
 #### plantcv.morphology.fill_segments
 * pre v3.13: filled_img = **plantcv.morphology.fill_segments**(*mask, objects, stem_objects=None, label="default"*)
@@ -937,7 +937,7 @@ Below is an overview of all updates to function signatures through the developme
 * post v3.3: branch_pts_img = **plantcv.morphology.find_branch_pts**(*skel_img, mask=None*)
 * post v3.11: branch_pts_img = **plantcv.morphology.find_branch_pts**(*skel_img, mask=None, label="default"*)
 * post v4.0: branch_pts_img = **plantcv.morphology.find_branch_pts**(*skel_img, mask=None, label=None*)
-* post v5.0: NA, see `plantcv.morph` class
+* post v5.0: NA, see `plantcv.Morph` class
 
 #### plantcv.morphology.find_tips
 
@@ -974,7 +974,7 @@ Below is an overview of all updates to function signatures through the developme
 
 * pre v4.8: NA
 * post v4.8: sorted_obs, branch_pts, tips = **plantcv.morphology.segment_ends**(*skel_img, leaf_objects, mask=None, label=None*)
-* post v5.0: NA, see `plantcv.analyze.morphology`
+* post v5.0: NA, see `plantcv.Morph` class
 
 #### plantcv.morphology.segment_euclidean_length
 
@@ -1002,7 +1002,7 @@ Below is an overview of all updates to function signatures through the developme
 
 * pre v3.3: NA
 * post v3.3: segmented_img, segment_objects = **plantcv.morphology.segment_skeleton**(*skel_img, mask=None*)
-* post v5.0: NA, see `plantcv.morph` class
+* post v5.0: NA, see `plantcv.Morph` class
 
 #### plantcv.morphology.segment_sort
 
