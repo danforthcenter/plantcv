@@ -33,4 +33,4 @@ pcv.outputs.observations["default"]["segment_path_length"]["values"]
 
 ![screenshot](img/documentation_images/analyze_morphology/analyze_morphology_debug.png)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/analyze/morphology.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/analyze/morphology.py)
