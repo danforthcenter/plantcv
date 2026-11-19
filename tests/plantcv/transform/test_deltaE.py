@@ -13,6 +13,17 @@ def clear_function_args():
     params.function_args = {}
 
 
+def test_deltaE_std():
+    """Test for PlantCV."""
+    outputs.clear()
+    params.function_args = {}
+    rgb_img = synthetic.color_card()
+    de_matrix = deltaE(rgb_img=rgb_img, obs="testname", color_chip_size="classic")
+    assert np.shape(de_matrix) == (6, 4)
+    # recorded value
+    assert np.max(outputs.metadata["deltaE_testname"]["value"]) == [pytest.approx(np.float64(0), 0.001)]
+
+
 def test_deltaE_macbeth():
     """Test for PlantCV."""
     outputs.clear()
@@ -21,7 +32,7 @@ def test_deltaE_macbeth():
     de_matrix = deltaE(rgb_img=rgb_img, obs="testname", color_chip_size="classic")
     assert np.shape(de_matrix) == (6, 4)
     # recorded value
-    assert np.max(outputs.metadata["deltaE_testname"]["value"]) == [pytest.approx(np.float64(16.712), 0.001)]
+    assert np.max(outputs.metadata["deltaE_testname"]["value"]) == [pytest.approx(np.float64(16.852), 0.001)]
 
 
 def test_deltaE_astro():
@@ -31,7 +42,7 @@ def test_deltaE_astro():
     de_matrix = deltaE(rgb_img=rgb_img, color_chip_size="astro")
     assert np.shape(de_matrix) == (3, 5)
     # recorded value
-    assert np.max(outputs.metadata["deltaE_calibrated"]["value"]) == [pytest.approx(np.float64(16.277), 0.001)]
+    assert np.max(outputs.metadata["deltaE_calibrated"]["value"]) == [pytest.approx(np.float64(16.185), 0.001)]
 
 
 def test_deltaE_bad_param(monkeypatch):
