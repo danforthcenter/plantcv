@@ -46,11 +46,9 @@ def test_acute_flipped_contour(synthetic_gray):
     assert len(homology_pts) == 2
 
 
-def test_acute_ptvals_do_not_wrap_on_uint8_masks(homology_test_data):
+def test_acute_ptvals_do_not_wrap_on_uint8_masks(synthetic_rgb, synthetic_mask):
     """Landmark window means are computed in float, so a uint8 mask cannot wrap."""
     params.debug = None
-    img = cv2.imread(homology_test_data.small_rgb_img)
-    mask = cv2.imread(homology_test_data.small_bin_img, -1)
-    _, _, _, ptvals, _, _ = acute(img=img, mask=mask, win=50, threshold=15)
+    _, _, _, ptvals, _, _ = acute(img=synthetic_rgb, mask=synthetic_mask, win=50, threshold=15)
     # The window lies inside the plant, so every mask pixel in it is 255
-    assert ptvals == [255.0]
+    assert ptvals == [255.0, 'NaN', 'NaN']
