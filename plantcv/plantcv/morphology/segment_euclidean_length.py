@@ -1,47 +1,30 @@
 """Find euclidean lengths of skeleton segments."""
-import os
 import cv2
 import numpy as np
 from plantcv.plantcv._globals import params
 from plantcv.plantcv._globals import outputs
 from plantcv.plantcv.fatal_error import fatal_error
-from plantcv.plantcv.color_palette import color_palette
-from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _cv2_findcontours, _find_tips, _scale_size
 from scipy.spatial.distance import euclidean
 
 
-def segment_euclidean_length(segmented_img, objects, label=None):
+def _segment_euclidean_length(morph, label=None):
     """Use segmented skeleton image to gather euclidean length measurements per segment.
 
-    Inputs:
-    segmented_img = Segmented image to plot lengths on
-    objects       = List of contours
-    label         = Optional label parameter, modifies the variable name of
-                    observations recorded (default = pcv.params.sample_label).
-
-    Returns:
-    labeled_img      = Segmented debugging image with lengths labeled
-
-    :param segmented_img: numpy.ndarray
-    :param objects: list
-    :param label: str
-    :return labeled_img: numpy.ndarray
+    Parameters
+    ----------
+    morph = plantcv.plantcv.morphology.morph object,
+        Morphology object to analyze
+    label = str,
+        Optional label parameter, modifies the variable name of
+        observations recorded (default = pcv.params.sample_label).
     """
-    # Set lable to params.sample_label if None
-    if label is None:
-        label = params.sample_label
+    segmented_img = morph.skeleton
+    objects = morph.leaves
 
     x_list = []
     y_list = []
     segment_lengths = []
-    # Create a color scale, use a previously stored scale if available
-    rand_color = color_palette(num=len(objects), saved=True)
-
-    labeled_img = segmented_img.copy()
-    # Store debug
-    debug = params.debug
-    params.debug = None
 
     for i, obj in enumerate(objects):
         # Store coordinates for labels
@@ -62,29 +45,11 @@ def segment_euclidean_length(segmented_img, objects, label=None):
             coord = (x, y)
             points.append(coord)
 
-        # Draw euclidean distance lines
-        cv2.line(labeled_img, points[0], points[1], rand_color[i], 1)
-
         # Calculate euclidean distance between tips of each contour
         segment_lengths.append(float(euclidean(points[0], points[1])))
 
-    segment_ids = []
-    # Reset debug mode
-    params.debug = debug
-
-    # Put labels of length
-    for c, value in enumerate(segment_lengths):
-        text = f"{value:0,.2f}"
-        w = x_list[c]
-        h = y_list[c]
-        cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                    fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
-        segment_ids.append(c)
+    segment_ids = list(range(len(segment_lengths)))
 
     outputs.add_observation(sample=label, variable='segment_eu_length', trait='segment euclidean length',
-                            method='plantcv.plantcv.morphology.segment_euclidean_length', scale=params.unit, datatype=list,
+                            method='plantcv.plantcv.analyze.morphology', scale=params.unit, datatype=list,
                             value=_scale_size(segment_lengths), label=segment_ids)
-
-    _debug(visual=labeled_img, filename=os.path.join(params.debug_outdir, f"{params.device}_segment_eu_lengths.png"))
-
-    return labeled_img
