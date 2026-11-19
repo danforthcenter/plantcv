@@ -10,12 +10,12 @@ from skimage.util import img_as_ubyte
 class APH:
     """Alpha light absorption coefficient (APH) dataset. Stores the file path at init; image data is loaded on first access."""
 
-    def __init__(self, filepath, height, width, footer=False):
+    def __init__(self, filepath, height, width, metadata):
         """Initialize APH dataset with file path and image dimensions."""
         self._filepath = filepath
         self._height = height
         self._width = width
-        self._footer = footer
+        self._footer = metadata['footer']
         self._red = None
         self._farred = None
 
@@ -59,12 +59,12 @@ class APH:
 class CHL:
     """Chlorophyll dataset. Stores the file path at init; image data is loaded on first access."""
 
-    def __init__(self, filepath, height, width, footer=False):
+    def __init__(self, filepath, height, width, metadata):
         """Initialize CHL dataset with file path and image dimensions."""
         self._filepath = filepath
         self._height = height
         self._width = width
-        self._footer = footer
+        self._footer = metadata['footer']
         self._chlorophyll = None
 
     def __bool__(self):
@@ -99,12 +99,12 @@ class CHL:
 class CLR:
     """Color dataset. Stores the file path at init; image data is loaded on first access."""
 
-    def __init__(self, filepath, height, width, footer=False):
+    def __init__(self, filepath, height, width, metadata):
         """Initialize CLR dataset with file path and image dimensions."""
         self._filepath = filepath
         self._height = height
         self._width = width
-        self._footer = footer
+        self._footer = metadata['footer']
         self._color = None
 
     def __bool__(self):
@@ -139,12 +139,12 @@ class CLR:
 class GFP:
     """GFP dataset. Stores the file path at init; image data is loaded on first access."""
 
-    def __init__(self, filepath, height, width, metadata, footer=False):
+    def __init__(self, filepath, height, width, metadata):
         """Initialize GFP dataset with file path and image dimensions."""
         self._filepath = filepath
         self._height = height
         self._width = width
-        self._footer = footer
+        self._footer = metadata['footer']
         self._metadata = metadata
         self._green = None
         self._auto = None
@@ -186,12 +186,12 @@ class GFP:
 class RFP:
     """RFP dataset. Stores the file path at init; image data is loaded on first access."""
 
-    def __init__(self, filepath, height, width, metadata, footer=False):
+    def __init__(self, filepath, height, width, metadata):
         """Initialize RFP dataset with file path and image dimensions."""
         self._filepath = filepath
         self._height = height
         self._width = width
-        self._footer = footer
+        self._footer = metadata['footer']
         self._metadata = metadata
         self._rfp = None
 
@@ -224,12 +224,12 @@ class RFP:
 class PSD:
     """OJIP dark-adapted measurements dataset. Stores the file path at init; image data is loaded on first access."""
 
-    def __init__(self, filepath, height, width, metadata, footer=False):
+    def __init__(self, filepath, height, width, metadata):
         """Initialize PSD dataset with file path and image dimensions."""
         self._filepath = filepath
         self._height = height
         self._width = width
-        self._footer = footer
+        self._footer = metadata['footer']
         self._metadata = metadata
         self._ojip_dark = None
 
@@ -290,12 +290,12 @@ class PSD:
 class PSL:
     """OJIP light-adapted measurements dataset. Stores the file path at init; image data is loaded on first access."""
 
-    def __init__(self, filepath, height, width, metadata, footer=False):
+    def __init__(self, filepath, height, width, metadata):
         """Initialize PSL dataset with file path and image dimensions."""
         self._filepath = filepath
         self._height = height
         self._width = width
-        self._footer = footer
+        self._footer = metadata['footer']
         self._metadata = metadata
         self._ojip_light = None
 
@@ -356,12 +356,12 @@ class PSL:
 class NPQ:
     """NPQ measurements dataset. Stores the file path at init; image data is loaded on first access."""
 
-    def __init__(self, filepath, height, width, metadata, footer=False):
+    def __init__(self, filepath, height, width, metadata):
         """Initialize PSL dataset with file path and image dimensions."""
         self._filepath = filepath
         self._height = height
         self._width = width
-        self._footer = footer
+        self._footer = metadata['footer']
         self._metadata = metadata
         self._ojip_light = None
         self._ojip_dark = None
@@ -427,12 +427,12 @@ class NPQ:
 class PMD:
     """Class to hold a PMD dataset"""
 
-    def __init__(self, filepath, height, width, metadata, footer=False):
+    def __init__(self, filepath, height, width, metadata):
         """Initialize PMD dataset with file path and image dimensions."""
         self._filepath = filepath
         self._height = height
         self._width = width
-        self._footer = footer
+        self._footer = metadata['footer']
         self._metadata = metadata
         self._pam_dark = None
 
@@ -476,12 +476,12 @@ class PMD:
 class PML:
     """Class to hold a PML dataset"""
 
-    def __init__(self, filepath, height, width, metadata, footer=False):
+    def __init__(self, filepath, height, width, metadata):
         """Initialize PML dataset with file path and image dimensions."""
         self._filepath = filepath
         self._height = height
         self._width = width
-        self._footer = footer
+        self._footer = metadata['footer']
         self._metadata = metadata
         self._pam_light = None
 
@@ -525,12 +525,12 @@ class PML:
 class PMT:
     """Class to hold a PMT dataset"""
 
-    def __init__(self, filepath, height, width, metadata, footer=False):
+    def __init__(self, filepath, height, width, metadata):
         """Initialize PMT dataset with file path and image dimensions."""
         self._filepath = filepath
         self._height = height
         self._width = width
-        self._footer = footer
+        self._footer = metadata['footer']
         self._metadata = metadata
         self._pam_time = None
 
@@ -620,12 +620,12 @@ class PMT:
 class SPC:
     """Class to hold a SPC dataset"""
 
-    def __init__(self, filepath, height, width, metadata, footer=False):
+    def __init__(self, filepath, height, width, metadata):
         """Initialize SPC dataset with file path and image dimensions."""
         self._filepath = filepath
         self._height = height
         self._width = width
-        self._footer = footer
+        self._footer = metadata['footer']
         self._metadata = metadata
         self._spectral = None
 
@@ -743,34 +743,34 @@ def read_cropreporter(filename):
     height = int(ps.metadata["ImageRows"])
     width = int(ps.metadata["ImageCols"])
     # Camera software 7 and later ends every frame with 4 non-image values
-    footer = _has_frame_footer(metadata=ps.metadata)
+    ps.metadata['footer'] = _has_frame_footer(metadata=ps.metadata)
 
     # Dataset-specific processing functions. Class constructors for lazy loading.
     dataset_classes = {
         # Alpha light absorption coefficient (APH) data
-        "APH": lambda fp: APH(filepath=fp, height=height, width=width, footer=footer),
+        "APH": lambda fp: APH(filepath=fp, height=height, width=width, metadata=ps.metadata),
         # Chlorophyll fluorescence data
-        "CHL": lambda fp: CHL(filepath=fp, height=height, width=width, footer=footer),
+        "CHL": lambda fp: CHL(filepath=fp, height=height, width=width, metadata=ps.metadata),
         # Color data
-        "CLR": lambda fp: CLR(filepath=fp, height=height, width=width, footer=footer),
+        "CLR": lambda fp: CLR(filepath=fp, height=height, width=width, metadata=ps.metadata),
         # OJIP dark data
-        "PSD": lambda fp: PSD(filepath=fp, height=height, width=width, metadata=ps.metadata, footer=footer),
+        "PSD": lambda fp: PSD(filepath=fp, height=height, width=width, metadata=ps.metadata),
         # OJIP light data
-        "PSL": lambda fp: PSL(filepath=fp, height=height, width=width, metadata=ps.metadata, footer=footer),
+        "PSL": lambda fp: PSL(filepath=fp, height=height, width=width, metadata=ps.metadata),
         # NPQ data
-        "NPQ": lambda fp: NPQ(filepath=fp, height=height, width=width, metadata=ps.metadata, footer=footer),
+        "NPQ": lambda fp: NPQ(filepath=fp, height=height, width=width, metadata=ps.metadata),
         # PMD data
-        "PMD": lambda fp: PMD(filepath=fp, height=height, width=width, metadata=ps.metadata, footer=footer),
+        "PMD": lambda fp: PMD(filepath=fp, height=height, width=width, metadata=ps.metadata),
         # PML data
-        "PML": lambda fp: PML(filepath=fp, height=height, width=width, metadata=ps.metadata, footer=footer),
+        "PML": lambda fp: PML(filepath=fp, height=height, width=width, metadata=ps.metadata),
         # PMT data
-        "PMT": lambda fp: PMT(filepath=fp, height=height, width=width, metadata=ps.metadata, footer=footer),
+        "PMT": lambda fp: PMT(filepath=fp, height=height, width=width, metadata=ps.metadata),
         # GFP data
-        "GFP": lambda fp: GFP(filepath=fp, height=height, width=width, metadata=ps.metadata, footer=footer),
+        "GFP": lambda fp: GFP(filepath=fp, height=height, width=width, metadata=ps.metadata),
         # RFP data
-        "RFP": lambda fp: RFP(filepath=fp, height=height, width=width, metadata=ps.metadata, footer=footer),
+        "RFP": lambda fp: RFP(filepath=fp, height=height, width=width, metadata=ps.metadata),
         # SPC data
-        "SPC": lambda fp: SPC(filepath=fp, height=height, width=width, metadata=ps.metadata, footer=footer)
+        "SPC": lambda fp: SPC(filepath=fp, height=height, width=width, metadata=ps.metadata)
     }
 
     # Process datasets
