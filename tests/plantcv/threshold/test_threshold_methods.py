@@ -4,6 +4,7 @@ from plantcv.plantcv.threshold import binary, gaussian, mean, otsu, custom_range
     mask_bad, dual_channels
 from plantcv.plantcv.classes import Objects
 from plantcv.plantcv import params
+from tests.synthetic import small_object_on_textured_background
 
 
 @pytest.mark.parametrize("objtype", ["dark", "light"])
@@ -144,19 +145,36 @@ def test_triangle(debug, synthetic_gray, tmpdir):
     assert gray_img.shape == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
 
-def test_triangle_dark(synthetic_gray):
+def test_triangle_dark():
     """Test for PlantCV."""
-    gray_img = synthetic_gray
+    gray_img, _ = small_object_on_textured_background(object_mean=60)
     binary_img = triangle(gray_img=gray_img, object_type="dark", xstep=10)
-    # Assert that the output image has the dimensions of the input image and is binary
     assert gray_img.shape == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
 
-def test_triangle_incorrect_object_type(synthetic_gray):
+@pytest.mark.parametrize("object_type,object_mean", [["dark", 114], ["light", 146]])
+def test_triangle_thresholds_at_the_triangle_value(object_type, object_mean):
     """Test for PlantCV."""
-    gray_img = synthetic_gray
-    with pytest.raises(RuntimeError):
-        _ = triangle(gray_img=gray_img, object_type="lite", xstep=10)
+    gray_img, obj = small_object_on_textured_background(object_mean)
+    binary_img = triangle(gray_img=gray_img, object_type=object_type)
+    # Otsu's threshold on this image selects about 41% of the frame; the triangle threshold, searched on the
+    # object's side of the background peak, selects about the object
+    assert not np.array_equal(binary_img, otsu(gray_img=gray_img, object_type=object_type))
+    assert (binary_img > 0).mean() < 0.03
+    assert ((binary_img > 0) & obj).sum() / obj.sum() > 0.85
+
+
+def test_triangle_dark_peak_at_zero():
+    """Test for PlantCV."""
+    # A dark object inside a background already masked to 0: the histogram peak is at 0, so there is no tail
+    # below it to search
+    gray_img, _ = small_object_on_textured_background(114)
+    gray_img[:, :120] = 0
+    with pytest.raises(RuntimeError, match="no tail"):
+        _ = triangle(gray_img=gray_img, object_type="dark")
+    # The light side of the same histogram still has a tail
+    binary_img = triangle(gray_img=gray_img, object_type="light")
+    assert np.array_equal(np.unique(binary_img), np.array([0, 255]))
 
 
 def test_texture(synthetic_gray):

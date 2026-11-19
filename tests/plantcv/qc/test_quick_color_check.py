@@ -1,5 +1,5 @@
 import numpy as np
-from altair.vegalite.v5.api import Chart
+from altair import Chart
 from plantcv.plantcv.qc.quick_color_check import quick_color_check
 from plantcv.plantcv.transform.standard_matrices import std_color_matrix
 from tests import synthetic

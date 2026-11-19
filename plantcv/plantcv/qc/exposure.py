@@ -58,7 +58,7 @@ def exposure(rgb_img, warning_threshold=0.05, label=None):
 
     Returns:
     -------
-    chart : altair.vegalite.v5.api.Chart
+    chart : altair.Chart
         Histogram chart of RGB image intensity values.
     """
     params.device += 1

@@ -44,3 +44,11 @@ def test_acute_flipped_contour(synthetic_gray):
     homology_pts, _, _, _, _, _ = acute(img=synthetic_gray, mask=mask, win=5, threshold=60)
     # recorded value: (30, 58) and (89, 61), the transposed stem corners
     assert len(homology_pts) == 2
+
+
+def test_acute_ptvals_do_not_wrap_on_uint8_masks(synthetic_rgb, synthetic_mask):
+    """Landmark window means are computed in float, so a uint8 mask cannot wrap."""
+    params.debug = None
+    _, _, _, ptvals, _, _ = acute(img=synthetic_rgb, mask=synthetic_mask, win=50, threshold=15)
+    # The window lies inside the plant, so every mask pixel in it is 255
+    assert ptvals == [255.0, 'NaN', 'NaN']

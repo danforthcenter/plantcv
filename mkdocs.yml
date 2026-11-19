@@ -230,27 +230,8 @@ nav:
     - 'Naive Bayes Multiclass': naive_bayes_multiclass.md
     - 'Naive Bayes Multiclass Samples File QC': naive_bayes_check_samples_file.md
   - 'Plant Architecture (Skeleton Analysis)':
-    - 'Build the Skeleton':
-      - 'Skeletonize': skeletonize.md
-      - 'Prune (by size)': prune.md
-      - 'Segment Skeleton': segment_skeleton.md
-      - 'Find Branches': find_branch_pts.md
-      - 'Find Tips': find_tips.md
-      - 'Check Cycles': check_cycles.md
-      - 'Segment Sort': segment_sort.md
-      - 'Segment ID': segment_id.md
-      - 'Combine Segments': segment_combine.md
-    - 'Measure Segments':
-      - 'Analyze Stem': analyze_stem.md
-      - 'Fill Segments': fill_segments.md
-      - 'Segment Angles': segment_angle.md
-      - 'Segment Curvature': segment_curvature.md
-      - 'Segment Ends': segment_ends.md
-      - 'Segment Euclidean Length': segment_euclidean_length.md
-      - 'Segment Insertion Angle': segment_insertion_angle.md
-      - 'Segment Path Length': segment_pathlength.md  
-      - 'Segment Tangent Angle': segment_tangent_angle.md
-      - 'Segment Width': segment_width.md
+    - 'Build the Skeleton (Morphology class)': morphology_class.md
+    - 'Measure Segments': analyze_morphology.md
   - 'Shape Landmarks Analysis':
     - 'Find Landmark Points': homology_acute.md
     - 'Build Landmark Comparison Table': homology_space.md

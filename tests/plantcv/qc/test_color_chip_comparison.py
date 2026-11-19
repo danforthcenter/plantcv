@@ -1,5 +1,5 @@
 import numpy as np
-import altair.vegalite.v5.api as alt
+from altair import VConcatChart
 from plantcv.plantcv.qc import color_chip_comparison
 
 
@@ -55,4 +55,4 @@ def test_color_chip_comparison():
                        [2.30000000e+02, 8.78431373e-01, 6.39215686e-01, 1.80392157e-01],
                        [2.40000000e+02, 4.03921569e-01, 7.41176471e-01, 6.66666667e-01]])
     fig = color_chip_comparison(stdmat, colmat)
-    assert isinstance(fig, alt.VConcatChart)
+    assert isinstance(fig, VConcatChart)

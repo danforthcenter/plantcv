@@ -79,6 +79,66 @@ Removed `ps_da_light` and `ps_da_dark` arguments in favor of `ps` argument that 
 
 Renamed parameter `ps_da` to `ps` to reflect that it now takes a `PSII_data` object instead of a single frame from that object.
 
+#### plantcv.morphology
+
+The `plantcv.morphology` submodule has been removed with the functionality moved to a new `plantcv.Morph` class and associated `plantcv.analyze.morphology` function.
+
+##### plantcv.morphology.check_cycles
+
+- removed, functionality is now part of the `Morph` class accessible as the `cycles` attribute.
+
+##### plantcv.morphology.find_branch_pts
+
+- removed, functionality is now part of the `Morph` class accessible as the `branch_points` attribute.
+
+##### plantcv.morphology.find_tips
+
+- removed, functionality is now part of the `Morph` class accessible as the `leaf_tips` attribute.
+
+##### plantcv.morphology.prune
+
+- removed, functionality is now part of the `Morph` class accessible as the `prune` method.
+
+##### plantcv.morphology.skeletonize
+
+- removed, functionality is now part of the `Morph` class, which skeletonizes a mask on initialization.
+
+##### plantcv.morphology.segment_angle
+
+- removed, functionality is now part of `plantcv.analyze.morphology`.
+
+##### plantcv.morphology.segment_path_length
+
+- removed, functionality is now part of `plantcv.analyze.morphology`.
+
+##### plantcv.morphology.segment_euclidean_length
+
+- removed, functionality is now part of `plantcv.analyze.morphology`.
+
+##### plantcv.morphology.segment_curvature
+
+- removed, functionality is now part of `plantcv.analyze.morphology`.
+
+##### plantcv.morphology.segment_tangent_angle
+
+- removed, functionality is now part of `plantcv.analyze.morphology`.
+
+##### plantcv.morphology.segment_insertion_angle
+
+- removed, functionality is now part of `plantcv.analyze.morphology`.
+
+##### plantcv.morphology.analyze_stem
+
+- removed, functionality is now part of `plantcv.analyze.morphology`.
+
+##### plantcv.morphology.fill_segments
+
+- removed, functionality is now part of `plantcv.analyze.morphology`.
+
+##### plantcv.morphology.segment_width
+
+- removed, functionality is now part of `plantcv.analyze.morphology`.
+
 #### plantcv.utils
 
 The `plantcv.utils` module has been deleted with `sample_images` moving to `plantcv.parallel`, `json2csv` moving to `plantcv.plantcv`, and `tabulate_bayes_classes` moving to `plantcv.learn`. Command-line interfaces are still available for `sample_images` [plantcv-sample](tools.md#plantcv-parallel) and `tabulate_bayes_classes` as [plantcv-learn tabulate_bayes_classes](tools.md#training-machine-learning-models).
@@ -442,6 +502,11 @@ Below is an overview of all updates to function signatures through the developme
 
 * pre v4.0: (see plantcv.analyze_nir_intensity)
 * post v4.0: histogram = **plantcv.analyze.grayscale**(*gray_img, labeled_mask, n_labels=1, bins=100, label=None*)
+
+#### plantcv.analyze.morphology
+
+* pre v5.0: NA
+* post v5.0: labeled_img = **plantcv.analyze.morphology**(*morph_obj, size=20, stems=False, label=None*)
 
 #### plantcv.analyze.npq
 
@@ -839,12 +904,18 @@ Below is an overview of all updates to function signatures through the developme
 * post v3.2: img_blur = **plantcv.median_blur**(*gray_img, ksize*)
 * post v4.9: img_blur = **plantcv.median_blur**(*gray_img, ksize, roi=None*)
 
+#### plantcv.Morph
+
+* pre v5.0: NA
+* post v5.0: morph_obj = **plantcv.Morph**(*mask, first_stem=True*)
+
 #### plantcv.morphology.analyze_stem
 
 * pre v3.8: NA
 * post v3.8: labeled_img = **plantcv.morphology.analyze_stem**(*rgb_img, stem_objects*)
 * post v3.11: labeled_img = **plantcv.morphology.analyze_stem**(*rgb_img, stem_objects, label="default"*)
 * post v4.0: labeled_img = **plantcv.morphology.analyze_stem**(*rgb_img, stem_objects, label=None*)
+* post v5.0: NA, see `plantcv.analyze.morphology`
 
 #### plantcv.morphology.check_cycles
 
@@ -852,11 +923,13 @@ Below is an overview of all updates to function signatures through the developme
 * post v3.3: cycle_img = **plantcv.morphology.check_cycles**(*skel_img*)
 * post v3.11: cycle_img = **plantcv.morphology.check_cycles**(*skel_img, label="default"*)
 * post v4.0: cycle_img = **plantcv.morphology.check_cycles**(*skel_img, label=None*)
+* post v5.0: NA, see `plantcv.Morph` class
 
 #### plantcv.morphology.fill_segments
 * pre v3.13: filled_img = **plantcv.morphology.fill_segments**(*mask, objects, stem_objects=None, label="default"*)
 * post v3.13: filled_mask = **plantcv.morphology.fill_segments**(*mask, objects, stem_objects=None, label="default"*)
 * post v4.0: filled_mask = **plantcv.morphology.fill_segments**(*mask, objects, stem_objects=None, label=None*)
+* post v5.0: NA, see `plantcv.analyze.morphology`
 
 #### plantcv.morphology.find_branch_pts
 
@@ -864,6 +937,7 @@ Below is an overview of all updates to function signatures through the developme
 * post v3.3: branch_pts_img = **plantcv.morphology.find_branch_pts**(*skel_img, mask=None*)
 * post v3.11: branch_pts_img = **plantcv.morphology.find_branch_pts**(*skel_img, mask=None, label="default"*)
 * post v4.0: branch_pts_img = **plantcv.morphology.find_branch_pts**(*skel_img, mask=None, label=None*)
+* post v5.0: NA, see `plantcv.Morph` class
 
 #### plantcv.morphology.find_tips
 
@@ -871,12 +945,14 @@ Below is an overview of all updates to function signatures through the developme
 * post v3.3: tip_img = **plantcv.morphology.find_tips**(*skel_img, mask=None*)
 * post v3.11: tip_img = **plantcv.morphology.find_tips**(*skel_img, mask=None, label="default"*)
 * post v4.0: tip_img = **plantcv.morphology.find_tips**(*skel_img, mask=None, label=None*)
+* post v5.0: NA, see `plantcv.Morph` class
 
 #### plantcv.morphology.prune
 
 * pre v3.3: NA
 * post v3.3: pruned_img = **plantcv.morphology.prune**(*skel_img, size*)
 * post v3.4: pruned_skeleton, segmented_img, segment_objects = **plantcv.morphology.prune**(*skel_img, size=0, mask=None*)
+* post v5.0: NA, see `plantcv.Morph` class
 
 #### plantcv.morphology.segment_angle
 
@@ -884,6 +960,7 @@ Below is an overview of all updates to function signatures through the developme
 * post v3.3: labeled_img = **plantcv.morphology.segment_angle**(*segmented_img, objects*)
 * post v3.11: labeled_img = **plantcv.morphology.segment_angle**(*segmented_img, objects, label="default"*)
 * post v4.0: labeled_img = **plantcv.morphology.segment_angle**(*segmented_img, objects, label=None*)
+* post v5.0: NA, see `plantcv.analyze.morphology`
 
 #### plantcv.morphology.segment_curvature
 
@@ -891,11 +968,13 @@ Below is an overview of all updates to function signatures through the developme
 * post v3.3: labeled_img = **plantcv.morphology.segment_curvature**(*segmented_img, objects*)
 * post v3.11: labeled_img = **plantcv.morphology.segment_curvature**(*segmented_img, objects, label="default"*)
 * post v4.0: labeled_img = **plantcv.morphology.segment_curvature**(*segmented_img, objects, label=None*)
+* post v5.0: NA, see `plantcv.analyze.morphology`
 
 #### plantcv.morphology.segment_ends 
 
 * pre v4.8: NA
 * post v4.8: sorted_obs, branch_pts, tips = **plantcv.morphology.segment_ends**(*skel_img, leaf_objects, mask=None, label=None*)
+* post v5.0: NA, see `plantcv.Morph` class
 
 #### plantcv.morphology.segment_euclidean_length
 
@@ -903,11 +982,13 @@ Below is an overview of all updates to function signatures through the developme
 * post v3.3: labeled_img = **plantcv.morphology.segment_euclidean_length**(*segmented_img, objects*)
 * post v3.11: labeled_img = **plantcv.morphology.segment_euclidean_length**(*segmented_img, objects, label="default"*)
 * post v4.0: labeled_img = **plantcv.morphology.segment_euclidean_length**(*segmented_img, objects, label=None*)
+* post v5.0: NA, see `plantcv.analyze.morphology`
 
 #### plantcv.morphology.segment_id
 
 * pre v3.3: NA
 * post v3.3: segmented_img, labeled_img = **plantcv.morphology.segment_id**(*skel_img, objects, mask=None*)
+* post v5.0: NA, see `plantcv.analyze.morphology`
 
 #### plantcv.morphology.segment_path_length
 
@@ -915,16 +996,19 @@ Below is an overview of all updates to function signatures through the developme
 * post v3.3: labeled_img = **plantcv.morphology.segment_path_length**(*segmented_img, objects*)
 * post v3.11: labeled_img = **plantcv.morphology.segment_path_length**(*segmented_img, objects, label="default"*)
 * post v4.0: labeled_img = **plantcv.morphology.segment_path_length**(*segmented_img, objects, label=None*)
+* post v5.0: NA, see `plantcv.analyze.morphology`
 
 #### plantcv.morphology.segment_skeleton
 
 * pre v3.3: NA
 * post v3.3: segmented_img, segment_objects = **plantcv.morphology.segment_skeleton**(*skel_img, mask=None*)
+* post v5.0: NA, see `plantcv.Morph` class
 
 #### plantcv.morphology.segment_sort
 
 * pre v3.3: NA
 * post v3.3: secondary_objects, primary_objects = **plantcv.morphology.segment_sort**(*skel_img, objects, mask=None*)
+* post v5.0: NA, see `plantcv.Morph` class
 
 #### plantcv.morphology.segment_tangent_angle
 
@@ -932,16 +1016,19 @@ Below is an overview of all updates to function signatures through the developme
 * post v3.3: labeled_img = **plantcv.morphology.segment_tangent_angle**(*segmented_img, objects, size*)
 * post v3.11: labeled_img = **plantcv.morphology.segment_tangent_angle**(*segmented_img, objects, size, label="default"*)
 * post v4.0: labeled_img = **plantcv.morphology.segment_tangent_angle**(*segmented_img, objects, size, label=None*)
+* post v5.0: NA, see `plantcv.analyze.morphology`
 
 #### plantcv.morphology.segment_width
 
 * pre v4.10: NA
 * post v4.10: labeled_img = **plantcv.morphology.segment_width**(*segmented_img, skel_img, labeled_mask, n_labels=1, label=None*)
+* post v5.0: NA, see `plantcv.analyze.morphology`
 
 #### plantcv.morphology.skeletontize
 
 * pre v3.3: NA
 * post v3.3: skeleton = **plantcv.morphology.skeletonize**(*mask*)
+* post v5.0: NA, see `plantcv.Morph` class
 
 #### plantcv.MS_data
 

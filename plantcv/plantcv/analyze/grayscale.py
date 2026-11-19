@@ -25,7 +25,7 @@ def grayscale(gray_img, labeled_mask, n_labels=1, bins=100, label=None):
 
     Returns
     -------
-    analysis_image : altair.vegalite.v5.api.FacetChart
+    analysis_image : altair.FacetChart
         Grayscale histogram image.
     """
     # Set lable to params.sample_label if None

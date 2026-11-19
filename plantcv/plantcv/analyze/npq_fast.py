@@ -35,7 +35,7 @@ def npqfast(ps, labeled_mask, n_labels=1, min_bin=0, max_bin="auto", measurement
     --------
     npq_global         = list of xarray.core.dataarray.DataArray,
         NPQ values, one element per light input frame
-    npq_chart          = list of altair.vegalite.v4.api.FacetChart,
+    npq_chart          = list of altair.FacetChart,
         Histograms of NPQ estimates, one element per light input frame
     """
     # Set labels

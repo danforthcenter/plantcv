@@ -275,7 +275,7 @@ class Outputs:
 
         Returns
         -------
-        chart : altair.vegalite.v4.api.Chart
+        chart : altair.Chart
             Altair chart object displaying the distribution of the specified variable
             across samples, with faceted rows for each sample and area plot visualization.
         """

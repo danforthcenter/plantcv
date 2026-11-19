@@ -242,7 +242,7 @@ def _process_islands(obj, isle, chain, mask):
                 if pos > 0:
                     vals.append(mask[pix_y + r][pix_x + c])  # Store pixel value if internal
         if len(vals) > 0:
-            ptvals.append(sum(vals) / len(vals))
+            ptvals.append(float(np.mean(vals)))
             vals = []
         else:
             ptvals.append('NaN')

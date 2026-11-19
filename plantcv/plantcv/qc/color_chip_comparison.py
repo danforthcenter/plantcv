@@ -16,7 +16,7 @@ def color_chip_comparison(std_matrix, *args):
 
     Returns
     -------
-    altair.vegalite.v5.api.VConcatChart of color chip greenness ranks between observed and expected values.
+    altair.VConcatChart of color chip greenness ranks between observed and expected values.
     """
     # make standard color matrix into a rescaled dataframe
     stddf = pd.DataFrame(std_matrix)

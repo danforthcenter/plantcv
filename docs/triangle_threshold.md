@@ -9,7 +9,10 @@ Creates a binary image from a gray image using adaptive thresholding.
 - **Parameters:**
     - gray_img - Grayscale image data
     - object_type - "light" or "dark" (default: "light"). If object is lighter than the background then standard 
-    thresholding is done. If object is darker than the background then inverse thresholding is done.
+    thresholding is done. If object is darker than the background then inverse thresholding is done. The threshold
+    is searched for on the object's side of the histogram peak: above the peak for "light", below it for "dark".
+    If the peak is already at that end of the histogram (for example, a dark object on a background masked to 0),
+    there is nothing to search and an error is raised.
     - xstep - Value to move along x-axis to determine the points from which to calculate distance
               recommended to start at 1 (default) and change if needed.
 - **Context:**
