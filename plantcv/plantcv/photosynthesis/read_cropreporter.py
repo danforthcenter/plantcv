@@ -10,11 +10,12 @@ from skimage.util import img_as_ubyte
 class APH:
     """Alpha light absorption coefficient (APH) dataset. Stores the file path at init; image data is loaded on first access."""
 
-    def __init__(self, filepath, height, width):
+    def __init__(self, filepath, height, width, metadata):
         """Initialize APH dataset with file path and image dimensions."""
         self._filepath = filepath
         self._height = height
         self._width = width
+        self._footer = metadata['footer']
         self._red = None
         self._farred = None
 
@@ -48,6 +49,7 @@ class APH:
             filename=str(self._filepath),
             height=self._height,
             width=self._width,
+            footer=self._footer,
         )
         # red = second to last frame, far-red = last frame. Fdark frame, if collected, is not stored.
         self._red = img_cube[:, :, -2]
@@ -57,11 +59,12 @@ class APH:
 class CHL:
     """Chlorophyll dataset. Stores the file path at init; image data is loaded on first access."""
 
-    def __init__(self, filepath, height, width):
+    def __init__(self, filepath, height, width, metadata):
         """Initialize CHL dataset with file path and image dimensions."""
         self._filepath = filepath
         self._height = height
         self._width = width
+        self._footer = metadata['footer']
         self._chlorophyll = None
 
     def __bool__(self):
@@ -87,6 +90,7 @@ class CHL:
             filename=str(self._filepath),
             height=self._height,
             width=self._width,
+            footer=self._footer,
         )
         # index 0 = Fdark (when present), last index = Chl
         self._chlorophyll = img_cube[:, :, img_cube.shape[2] - 1]
@@ -95,11 +99,12 @@ class CHL:
 class CLR:
     """Color dataset. Stores the file path at init; image data is loaded on first access."""
 
-    def __init__(self, filepath, height, width):
+    def __init__(self, filepath, height, width, metadata):
         """Initialize CLR dataset with file path and image dimensions."""
         self._filepath = filepath
         self._height = height
         self._width = width
+        self._footer = metadata['footer']
         self._color = None
 
     def __bool__(self):
@@ -125,6 +130,7 @@ class CLR:
             filename=str(self._filepath),
             height=self._height,
             width=self._width,
+            footer=self._footer,
         )
         # Store the color data as BGR uint8
         self._color = img_as_ubyte(img_cube[:, :, [2, 1, 0]])
@@ -138,6 +144,7 @@ class GFP:
         self._filepath = filepath
         self._height = height
         self._width = width
+        self._footer = metadata['footer']
         self._metadata = metadata
         self._green = None
         self._auto = None
@@ -170,7 +177,8 @@ class GFP:
         img_cube, _, _ = _read_dat_file(dataset="GFP",
                                         filename=self._filepath,
                                         height=self._height,
-                                        width=self._width)
+                                        width=self._width,
+                                        footer=self._footer)
         self._green = img_cube[:, :, -2]
         self._auto = img_cube[:, :, -1]
 
@@ -183,6 +191,7 @@ class RFP:
         self._filepath = filepath
         self._height = height
         self._width = width
+        self._footer = metadata['footer']
         self._metadata = metadata
         self._rfp = None
 
@@ -207,7 +216,8 @@ class RFP:
         img_cube, _, _ = _read_dat_file(dataset="RFP",
                                         filename=self._filepath,
                                         height=self._height,
-                                        width=self._width)
+                                        width=self._width,
+                                        footer=self._footer)
         self._rfp = img_cube[:, :, img_cube.shape[2] - 1]
 
 
@@ -219,6 +229,7 @@ class PSD:
         self._filepath = filepath
         self._height = height
         self._width = width
+        self._footer = metadata['footer']
         self._metadata = metadata
         self._ojip_dark = None
 
@@ -245,6 +256,7 @@ class PSD:
             filename=str(self._filepath),
             height=self._height,
             width=self._width,
+            footer=self._footer,
         )
         # If not all frames are saved the order is fixed
         # Phenovation does not update the framenumbers in the references.
@@ -283,6 +295,7 @@ class PSL:
         self._filepath = filepath
         self._height = height
         self._width = width
+        self._footer = metadata['footer']
         self._metadata = metadata
         self._ojip_light = None
 
@@ -309,6 +322,7 @@ class PSL:
             filename=str(self._filepath),
             height=self._height,
             width=self._width,
+            footer=self._footer,
         )
         # If not all frames are saved the order is fixed
         # Phenovation does not update the framenumbers in the references.
@@ -347,6 +361,7 @@ class NPQ:
         self._filepath = filepath
         self._height = height
         self._width = width
+        self._footer = metadata['footer']
         self._metadata = metadata
         self._ojip_light = None
         self._ojip_dark = None
@@ -379,7 +394,8 @@ class NPQ:
         img_cube, frame_labels, frame_nums = _read_dat_file(
             dataset="NPQ", filename=self._filepath,
             height=self._height,
-            width=self._width
+            width=self._width,
+            footer=self._footer,
         )
         # Add the OJIP dark frames
         frame_labels[0] = 'Fdark'
@@ -416,6 +432,7 @@ class PMD:
         self._filepath = filepath
         self._height = height
         self._width = width
+        self._footer = metadata['footer']
         self._metadata = metadata
         self._pam_dark = None
 
@@ -442,6 +459,7 @@ class PMD:
             filename=str(self._filepath),
             height=self._height,
             width=self._width,
+            footer=self._footer,
         )
 
         frame_labels = ["Fdark", "F0", "Fm", "Fdarksat"]
@@ -463,6 +481,7 @@ class PML:
         self._filepath = filepath
         self._height = height
         self._width = width
+        self._footer = metadata['footer']
         self._metadata = metadata
         self._pam_light = None
 
@@ -489,6 +508,7 @@ class PML:
             filename=str(self._filepath),
             height=self._height,
             width=self._width,
+            footer=self._footer,
         )
 
         frame_labels = ["Flight", "Fp", "Fmp", "Flightsat"]
@@ -510,6 +530,7 @@ class PMT:
         self._filepath = filepath
         self._height = height
         self._width = width
+        self._footer = metadata['footer']
         self._metadata = metadata
         self._pam_time = None
 
@@ -535,7 +556,8 @@ class PMT:
             dataset="PMT",
             filename=str(self._filepath),
             height=self._height,
-            width=self._width
+            width=self._width,
+            footer=self._footer,
         )
 
         # metadata-driven measurement counts
@@ -603,6 +625,7 @@ class SPC:
         self._filepath = filepath
         self._height = height
         self._width = width
+        self._footer = metadata['footer']
         self._metadata = metadata
         self._spectral = None
 
@@ -634,14 +657,16 @@ class SPC:
         if os.path.exists(clr_filepath):
             rgb_cube, _, _ = _read_dat_file(dataset="CLR", filename=clr_filepath,
                                             height=self._height,
-                                            width=self._width)
+                                            width=self._width,
+                                            footer=self._footer)
             img_cubes.append(rgb_cube)
             wavelengths += [640, 550, 475]
             rgb = img_as_ubyte(rgb_cube[:, :, [2, 1, 0]])
         if os.path.exists(spc_filepath):
             spc_cube, _, _ = _read_dat_file(dataset="SPC", filename=spc_filepath,
                                             height=self._height,
-                                            width=self._width)
+                                            width=self._width,
+                                            footer=self._footer)
             img_cubes.append(spc_cube)
             wavelengths += [540, 710, 770]
             if rgb is None:
@@ -717,15 +742,17 @@ def read_cropreporter(filename):
     # Image dimensions (assumed to be consistent across all datasets for a given acquisition)
     height = int(ps.metadata["ImageRows"])
     width = int(ps.metadata["ImageCols"])
+    # Camera software 7 and later ends every frame with 4 non-image values
+    ps.metadata['footer'] = _has_frame_footer(metadata=ps.metadata)
 
     # Dataset-specific processing functions. Class constructors for lazy loading.
     dataset_classes = {
         # Alpha light absorption coefficient (APH) data
-        "APH": lambda fp: APH(filepath=fp, height=height, width=width),
+        "APH": lambda fp: APH(filepath=fp, height=height, width=width, metadata=ps.metadata),
         # Chlorophyll fluorescence data
-        "CHL": lambda fp: CHL(filepath=fp, height=height, width=width),
+        "CHL": lambda fp: CHL(filepath=fp, height=height, width=width, metadata=ps.metadata),
         # Color data
-        "CLR": lambda fp: CLR(filepath=fp, height=height, width=width),
+        "CLR": lambda fp: CLR(filepath=fp, height=height, width=width, metadata=ps.metadata),
         # OJIP dark data
         "PSD": lambda fp: PSD(filepath=fp, height=height, width=width, metadata=ps.metadata),
         # OJIP light data
@@ -793,7 +820,28 @@ def _dat_filepath(dataset, datapath, filename):
     return bin_filepath
 
 
-def _read_dat_file(dataset, filename, height, width):
+def _has_frame_footer(metadata):
+    """Check whether the capture's frames end with 4 non-image values.
+
+    Captures from camera software version 7 and later store 4 non-image values in place of the
+    last 4 pixels of the bottom row of every frame.
+
+    Parameters
+    ----------
+    metadata : dict
+        Metadata from the .INF header.
+
+    Returns
+    -------
+    bool
+        True if the header Version is 7 or later.
+    """
+    version = metadata.get("Version", "")
+    major = version.split(".")[0]
+    return major.isdigit() and int(major) >= 7
+
+
+def _read_dat_file(dataset, filename, height, width, footer=False):
     """
     Read raw data from DAT file.
 
@@ -802,6 +850,8 @@ def _read_dat_file(dataset, filename, height, width):
         filename = fully-qualified path to the DAT file
         height   = height (rows) of the images
         width    = width (columns) of the image
+        footer   = if True, the last 4 values of every frame are not image data and are replaced
+                   with the pixels in the row above
 
     Returns:
         img_cube     = raw data cube in NumPy shape
@@ -812,6 +862,7 @@ def _read_dat_file(dataset, filename, height, width):
     :param filename: str
     :param height: int
     :param width: int
+    :param footer: bool
     :return img_cube: numpy.ndarray
     :return frame_labels: list
     :return frame_numbs: int
@@ -821,6 +872,9 @@ def _read_dat_file(dataset, filename, height, width):
     raw_data = np.fromfile(filename, np.uint16, -1)
     # Reshape, numpy shaped
     img_cube = raw_data.reshape(int(len(raw_data) / (height * width)), width, height).transpose((2, 1, 0))
+    if footer:
+        # Replace the 4 non-image values at the end of the bottom row with the pixels above them
+        img_cube[-1, -4:, :] = img_cube[-2, -4:, :]
 
     # Calculate frames of interest and keep track of their labels. labels must be unique across all measurements
     frame_labels = [(dataset + str(i)) for i in range(img_cube.shape[2])]
