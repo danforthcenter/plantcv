@@ -801,6 +801,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "sahandtkod-byte",
+      "name": "Sahand Touri",
+      "avatar_url": "https://avatars.githubusercontent.com/u/301056230?v=4",
+      "profile": "https://dev.to/sahandtkodbyte",
+      "contributions": [
+        "code",
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
