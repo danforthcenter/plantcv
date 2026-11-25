@@ -2,6 +2,7 @@
 import os
 import numpy as np
 from plantcv.plantcv._globals import params, outputs
+from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.auto_crop import auto_crop
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv._helpers import _iterate_analysis
@@ -93,6 +94,12 @@ def _analyze_distribution(img, mask, direction="y", bin_size=100, hist_range="ab
     # find the height, in pixels, for this image
     height = mask.shape[0]
     num_bins = height // bin_size
+
+    # A zero-bin histogram cannot be indexed; say so instead of raising IndexError
+    if num_bins == 0 and np.count_nonzero(mask) != 0:
+        extent = "object" if hist_range == "relative" else "image"
+        fatal_error(f"bin_size ({bin_size} px) is larger than the {extent} extent "
+                    f"({height} px) along the analysis axis; lower bin_size")
 
     # Initialize output measurements
     hist = np.zeros(num_bins)  # Histogram of the distribution
