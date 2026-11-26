@@ -8,7 +8,7 @@ Shifts image, but keeps dimensions the same
 
 - **Parameters:**
     - img - RGB or grayscale image data
-    - number - number(int) of rows or columns to add
+    - number - number(int) of rows or columns to add, a positive integer smaller than the image height for "top"/"bottom" or the image width for "left"/"right"
     - side - "top", "bottom", "right", "left" where to add the rows or columns (default: "right")
 - **Context:**
     - Shifts image from the specified direction.
@@ -27,7 +27,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 # Shift image
-shifted_img = pcv.shift_img(img, 300, "top")
+shifted_img = pcv.shift_img(img, 100, "top")
 
 ```
 

@@ -13,7 +13,8 @@ def shift_img(img, number, side="right"):
 
     Inputs:
     img     = RGB or grayscale image data
-    number  = number of rows or columns to add
+    number  = number of rows or columns to add, a positive integer smaller than
+              the image dimension being shifted
     side   = "top", "bottom", "right", "left" where to add the rows or columns to
 
     Returns:
@@ -24,9 +25,7 @@ def shift_img(img, number, side="right"):
     :param side: str
     :return newmask: numpy.ndarray
     """
-    number -= 1
-
-    if number < 0:
+    if not isinstance(number, (int, np.integer)) or number < 1:
         fatal_error("number cannot be 0, negative numbers, or non-integers")
 
     # get the sizes of the images
@@ -38,6 +37,11 @@ def shift_img(img, number, side="right"):
         ix, iy = np.shape(img)
         ori_img = np.dstack((img, img, img))
         cmap = 'gray'
+
+    if side.upper() in ("TOP", "BOTTOM") and number >= ix:
+        fatal_error(f"number ({number}) must be smaller than the image height ({ix})")
+    if side.upper() in ("LEFT", "RIGHT") and number >= iy:
+        fatal_error(f"number ({number}) must be smaller than the image width ({iy})")
 
     if side.upper() == "TOP":
         top = np.zeros((number, iy, 3), dtype=np.uint8)
